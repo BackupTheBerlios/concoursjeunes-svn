@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<java version="1.6.0-rc" class="java.beans.XMLDecoder"> 
+ <object class="ajinteractive.concours.Configuration"> 
+  <void property="correspondanceDifferentiationCriteria_DB"> 
+   <void method="put"> 
+    <object class="ajinteractive.concours.DifferentiationCriteria"> 
+     <void property="criteria"> 
+      <void method="put"> 
+       <string>genre</string> 
+       <int>0</int> 
+      </void> 
+      <void method="put"> 
+       <string>arc</string> 
+       <int>0</int> 
+      </void> 
+      <void method="put"> 
+       <string>niveau</string> 
+       <int>3</int> 
+      </void> 
+      <void method="put"> 
+       <string>categorie</string> 
+       <int>0</int> 
+      </void> 
+     </void> 
+     <void property="filtreCriteria"> 
+      <void method="put"> 
+       <string>genre</string> 
+       <boolean>false</boolean> 
+      </void> 
+      <void method="put"> 
+       <string>arc</string> 
+       <boolean>false</boolean> 
+      </void> 
+      <void method="put"> 
+       <string>niveau</string> 
+       <boolean>true</boolean> 
+      </void> 
+      <void method="put"> 
+       <string>categorie</string> 
+       <boolean>false</boolean> 
+      </void> 
+     </void> 
+    </object> 
+    <object class="ajinteractive.concours.DistancesEtBlason"> 
+     <void property="blason"> 
+      <int>122</int> 
+     </void> 
+     <void property="distance"> 
+      <void index="0"> 
+       <int>15</int> 
+      </void> 
+      <void index="1"> 
+       <int>15</int> 
+      </void> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="put"> 
+    <object class="ajinteractive.concours.DifferentiationCriteria"> 
+     <void property="criteria"> 
+      <void method="put"> 
+       <string>genre</string> 
+       <int>0</int> 
+      </void> 
+      <void method="put"> 
+       <string>arc</string> 
+       <int>0</int> 
+      </void> 
+      <void method="put"> 
+       <string>niveau</string> 
+       <int>2</int> 
+      </void> 
+      <void method="put"> 
+       <string>categorie</string> 
+       <int>0</int> 
+      </void> 
+     </void> 
+     <void property="filtreCriteria"> 
+      <void method="put"> 
+       <string>genre</string> 
+       <boolean>false</boolean> 
+      </void> 
+      <void method="put"> 
+       <string>arc</string> 
+       <boolean>false</boolean> 
+      </void> 
+      <void method="put"> 
+       <string>niveau</string> 
+       <boolean>true</boolean> 
+      </void> 
+      <void method="put"> 
+       <string>categorie</string> 
+       <boolean>false</boolean> 
+      </void> 
+     </void> 
+    </object> 
+    <object class="ajinteractive.concours.DistancesEtBlason"> 
+     <void property="distance"> 
+      <void index="0"> 
+       <int>15</int> 
+      </void> 
+      <void index="1"> 
+       <int>15</int> 
+      </void> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="put"> 
+    <object class="ajinteractive.concours.DifferentiationCriteria"> 
+     <void property="criteria"> 
+      <void method="put"> 
+       <string>genre</string> 
+       <int>0</int> 
+      </void> 
+      <void method="put"> 
+       <string>arc</string> 
+       <int>0</int> 
+      </void> 
+      <void method="put"> 
+       <string>niveau</string> 
+       <int>1</int> 
+      </void> 
+      <void method="put"> 
+       <string>categorie</string> 
+       <int>0</int> 
+      </void> 
+     </void> 
+     <void property="filtreCriteria"> 
+      <void method="put"> 
+       <string>genre</string> 
+       <boolean>false</boolean> 
+      </void> 
+      <void method="put"> 
+       <string>arc</string> 
+       <boolean>false</boolean> 
+      </void> 
+      <void method="put"> 
+       <string>niveau</string> 
+       <boolean>true</boolean> 
+      </void> 
+      <void method="put"> 
+       <string>categorie</string> 
+       <boolean>false</boolean> 
+      </void> 
+     </void> 
+    </object> 
+    <object class="ajinteractive.concours.DistancesEtBlason"> 
+     <void property="blason"> 
+      <int>60</int> 
+     </void> 
+     <void property="distance"> 
+      <void index="0"> 
+       <int>15</int> 
+      </void> 
+      <void index="1"> 
+       <int>15</int> 
+      </void> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="put"> 
+    <object class="ajinteractive.concours.DifferentiationCriteria"> 
+     <void property="criteria"> 
+      <void method="put"> 
+       <string>genre</string> 
+       <int>0</int> 
+      </void> 
+      <void method="put"> 
+       <string>arc</string> 
+       <int>0</int> 
+      </void> 
+      <void method="put"> 
+       <string>niveau</string> 
+       <int>0</int> 
+      </void> 
+      <void method="put"> 
+       <string>categorie</string> 
+       <int>0</int> 
+      </void> 
+     </void> 
+     <void property="filtreCriteria"> 
+      <void method="put"> 
+       <string>genre</string> 
+       <boolean>false</boolean> 
+      </void> 
+      <void method="put"> 
+       <string>arc</string> 
+       <boolean>false</boolean> 
+      </void> 
+      <void method="put"> 
+       <string>niveau</string> 
+       <boolean>true</boolean> 
+      </void> 
+      <void method="put"> 
+       <string>categorie</string> 
+       <boolean>false</boolean> 
+      </void> 
+     </void> 
+    </object> 
+    <object class="ajinteractive.concours.DistancesEtBlason"> 
+     <void property="blason"> 
+      <int>40</int> 
+     </void> 
+     <void property="distance"> 
+      <void index="0"> 
+       <int>15</int> 
+      </void> 
+      <void index="1"> 
+       <int>15</int> 
+      </void> 
+     </void> 
+    </object> 
+   </void> 
+  </void> 
+  <void property="criteriaPopulation"> 
+   <void method="put"> 
+    <object id="Criterion0" class="ajinteractive.concours.Criterion"> 
+     <void property="code"> 
+      <string>genre</string> 
+     </void> 
+     <void property="libelle"> 
+      <string>Genre</string> 
+     </void> 
+     <void property="sortOrder"> 
+      <int>-1</int> 
+     </void> 
+    </object> 
+    <object class="java.util.ArrayList"> 
+     <void method="add"> 
+      <object class="ajinteractive.concours.CriterionElement"> 
+       <void property="code"> 
+        <string>H</string> 
+       </void> 
+       <void property="libelle"> 
+        <string>Homme</string> 
+       </void> 
+      </object> 
+     </void> 
+     <void method="add"> 
+      <object class="ajinteractive.concours.CriterionElement"> 
+       <void property="code"> 
+        <string>D</string> 
+       </void> 
+       <void property="libelle"> 
+        <string>Dame</string> 
+       </void> 
+      </object> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="put"> 
+    <object id="Criterion1" class="ajinteractive.concours.Criterion"> 
+     <void property="code"> 
+      <string>arc</string> 
+     </void> 
+     <void property="libelle"> 
+      <string>Type d&apos;Arc</string> 
+     </void> 
+    </object> 
+    <object class="java.util.ArrayList"> 
+     <void method="add"> 
+      <object class="ajinteractive.concours.CriterionElement"> 
+       <void property="code"> 
+        <string>CL</string> 
+       </void> 
+       <void property="libelle"> 
+        <string>Classique</string> 
+       </void> 
+      </object> 
+     </void> 
+     <void method="add"> 
+      <object class="ajinteractive.concours.CriterionElement"> 
+       <void property="code"> 
+        <string>CO</string> 
+       </void> 
+       <void property="libelle"> 
+        <string>Arc à poulies</string> 
+       </void> 
+      </object> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="put"> 
+    <object id="Criterion2" class="ajinteractive.concours.Criterion"> 
+     <void property="classement"> 
+      <boolean>true</boolean> 
+     </void> 
+     <void property="code"> 
+      <string>niveau</string> 
+     </void> 
+     <void property="libelle"> 
+      <string>Niveau</string> 
+     </void> 
+     <void property="placement"> 
+      <boolean>true</boolean> 
+     </void> 
+     <void property="sortOrder"> 
+      <int>-1</int> 
+     </void> 
+    </object> 
+    <object class="java.util.ArrayList"> 
+     <void method="add"> 
+      <object class="ajinteractive.concours.CriterionElement"> 
+       <void property="code"> 
+        <string>0</string> 
+       </void> 
+       <void property="libelle"> 
+        <string>As</string> 
+       </void> 
+      </object> 
+     </void> 
+     <void method="add"> 
+      <object class="ajinteractive.concours.CriterionElement"> 
+       <void property="code"> 
+        <string>1</string> 
+       </void> 
+       <void property="libelle"> 
+        <string>1</string> 
+       </void> 
+      </object> 
+     </void> 
+     <void method="add"> 
+      <object class="ajinteractive.concours.CriterionElement"> 
+       <void property="code"> 
+        <string>2</string> 
+       </void> 
+       <void property="libelle"> 
+        <string>2</string> 
+       </void> 
+      </object> 
+     </void> 
+     <void method="add"> 
+      <object class="ajinteractive.concours.CriterionElement"> 
+       <void property="code"> 
+        <string>3</string> 
+       </void> 
+       <void property="libelle"> 
+        <string>3</string> 
+       </void> 
+      </object> 
+     </void> 
+    </object> 
+   </void> 
+   <void method="put"> 
+    <object id="Criterion3" class="ajinteractive.concours.Criterion"> 
+     <void property="code"> 
+      <string>categorie</string> 
+     </void> 
+     <void property="libelle"> 
+      <string>Catégorie</string> 
+     </void> 
+    </object> 
+    <object class="java.util.ArrayList"> 
+     <void method="add"> 
+      <object class="ajinteractive.concours.CriterionElement"> 
+       <void property="code"> 
+        <string>P</string> 
+       </void> 
+       <void property="libelle"> 
+        <string>Poussin</string> 
+       </void> 
+      </object> 
+     </void> 
+     <void method="add"> 
+      <object class="ajinteractive.concours.CriterionElement"> 
+       <void property="code"> 
+        <string>B</string> 
+       </void> 
+       <void property="libelle"> 
+        <string>Benjamin</string> 
+       </void> 
+      </object> 
+     </void> 
+     <void method="add"> 
+      <object class="ajinteractive.concours.CriterionElement"> 
+       <void property="code"> 
+        <string>M</string> 
+       </void> 
+       <void property="libelle"> 
+        <string>Minime</string> 
+       </void> 
+      </object> 
+     </void> 
+     <void method="add"> 
+      <object class="ajinteractive.concours.CriterionElement"> 
+       <void property="code"> 
+        <string>C</string> 
+       </void> 
+       <void property="libelle"> 
+        <string>Cadet</string> 
+       </void> 
+      </object> 
+     </void> 
+     <void method="add"> 
+      <object class="ajinteractive.concours.CriterionElement"> 
+       <void property="active"> 
+        <boolean>false</boolean> 
+       </void> 
+       <void property="code"> 
+        <string>J</string> 
+       </void> 
+       <void property="libelle"> 
+        <string>Junior</string> 
+       </void> 
+      </object> 
+     </void> 
+     <void method="add"> 
+      <object class="ajinteractive.concours.CriterionElement"> 
+       <void property="active"> 
+        <boolean>false</boolean> 
+       </void> 
+       <void property="code"> 
+        <string>S</string> 
+       </void> 
+       <void property="libelle"> 
+        <string>Sénior</string> 
+       </void> 
+      </object> 
+     </void> 
+     <void method="add"> 
+      <object class="ajinteractive.concours.CriterionElement"> 
+       <void property="active"> 
+        <boolean>false</boolean> 
+       </void> 
+       <void property="code"> 
+        <string>V</string> 
+       </void> 
+       <void property="libelle"> 
+        <string>Vétéran</string> 
+       </void> 
+      </object> 
+     </void> 
+     <void method="add"> 
+      <object class="ajinteractive.concours.CriterionElement"> 
+       <void property="active"> 
+        <boolean>false</boolean> 
+       </void> 
+       <void property="code"> 
+        <string>SV</string> 
+       </void> 
+       <void property="libelle"> 
+        <string>Super Vétéran</string> 
+       </void> 
+      </object> 
+     </void> 
+    </object> 
+   </void> 
+  </void> 
+  <void property="curProfil"> 
+   <string>defaut</string> 
+  </void> 
+  <void property="firstboot"> 
+   <boolean>true</boolean> 
+  </void> 
+  <void property="intituleConcours"> 
+   <string>Concours Jeunes</string> 
+  </void> 
+  <void property="langue"> 
+   <string>fr</string> 
+  </void> 
+  <void property="listCriteria"> 
+   <void method="add"> 
+    <object idref="Criterion0"/> 
+   </void> 
+   <void method="add"> 
+    <object idref="Criterion3"/> 
+   </void> 
+   <void method="add"> 
+    <object idref="Criterion1"/> 
+   </void> 
+   <void method="add"> 
+    <object idref="Criterion2"/> 
+   </void> 
+  </void> 
+  <void property="nbVoleeParSerie"> 
+   <int>7</int> 
+  </void> 
+  <void property="officialProfile"> 
+   <boolean>true</boolean> 
+  </void> 
+ </object> 
+</java> 

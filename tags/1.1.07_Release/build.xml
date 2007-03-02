@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ConcoursJeunes" default="all">
+	<description>
+		Generation de ConcoursJeunes
+	</description>
+	
+	<property name="projet.bin.dir" location="bin"/>
+	<property name="projet.sources.dir" location="src"/>
+	<property name="projet.pack.dir" location="pack" />
+	
+	<target name="dev_doc">
+		<echo message="Construction de la documentation developpeur..."/>
+		<!--création du répertoire de documentation-->
+		<mkdir dir="docs" />
+		<javadoc sourcepath="src" destdir="docs" >
+			<fileset dir="src" defaultexcludes="yes">
+				<include name="**/*.java" />
+			</fileset>
+		</javadoc>
+		<echo message="Fin de la generation de la doc..."/>
+	</target>
+	
+	<target name="user_doc">
+		<jar jarfile="lib/aide.jar" basedir="Aide" />
+	</target>
+	
+	<target name="pakager" depends="pack">
+		<!--Ajoute fichier natif pour l'installeur dans le rep bin-->
+		<copy todir=".">
+			<fileset dir="packager" >
+				<include name="bin/native/**"/>
+			</fileset>
+		</copy>
+		
+		<!--Ajoute les ressources suplémentaires au pack-->
+		<copy todir="${projet.pack.dir}">
+			<fileset dir="packager" >
+		    		<include name="*.txt"/>
+				<include name="*.exe"/>
+				<include name="*.pdf"/>
+				<include name="bin/native/**"/>
+			</fileset>
+		</copy>
+
+		<!--ajoute la tache de création d'installeur-->
+		<taskdef name="izpack" classpath="packager/standalone-compiler.jar"
+				classname="com.izforge.izpack.ant.IzPackTask"/>
+		
+		<echo message="Makes the installer using IzPack"/>
+		<!--Crée l'installeur-->
+		<izpack input="packager/install.xml"
+			output="${projet.pack.dir}/install.jar"
+			installerType="standard"
+			basedir="packager"/>
+		
+		<zip destfile="${projet.pack.dir}/ConcoursJeunes-windows.zip">
+		    <fileset dir="packager/windows/"/>
+		    <fileset dir="${projet.pack.dir}" includes="install.jar"/>
+		</zip>
+	</target>
+	
+	<target name="makerpm" description="construction du package rpm pour fedora">
+			
+		<mkdir dir="${projet.pack.dir}/linux" />
+		<property name="rpm.pack.path" location="${projet.pack.dir}/linux" />
+		
+		<mkdir dir="${rpm.pack.path}/SOURCES/" />
+		<mkdir dir="${rpm.pack.path}/BUILD/" />
+		<mkdir dir="${rpm.pack.path}/RPMS/" />
+		<delete includeemptydirs="true">
+			<fileset dir="${rpm.pack.path}/SOURCES/" includes="**/*"/>
+			<fileset dir="${rpm.pack.path}/BUILD/" includes="**/*"/>
+			<fileset dir="${rpm.pack.path}/RPMS/" includes="**/*"/>
+		</delete>
+		
+		<copy todir="${rpm.pack.path}/SOURCES/usr/lib/ConcoursJeunes/" >
+			<fileset dir="pack" >
+		    	<include name="base/**"/>
+				<include name="config/**"/>
+				<include name="lang/**"/>
+				<include name="lib/**"/>
+				<include name="ressources/**"/>
+				<include name="ConcoursJeunes.jar"/>
+			</fileset>
+	    </copy>
+		
+		<copy todir="${rpm.pack.path}/SOURCES/usr/bin/">
+			<fileset dir="packager/linux/bin/">
+				<include name="ConcoursJeunes"/>
+			</fileset>
+		</copy>
+		
+		<copy todir="${rpm.pack.path}/SOURCES/usr/share/pixmaps/">
+			<fileset dir="packager/linux/">
+				<include name="ConcoursJeunes.xpm" />
+			</fileset>
+		</copy>
+			
+		<copy todir="${rpm.pack.path}/SOURCES/usr/share/applications/" >
+			<fileset dir="packager/linux/">
+				<include name="ConcoursJeunes.desktop" />
+			</fileset>
+		</copy>
+		
+		<replace 
+		    file="${rpm.pack.path}/SOURCES/usr/share/applications/ConcoursJeunes.desktop"
+			propertyFile="packager/version.properties">
+		  <replacefilter 
+		    token="@version.name@" 
+		    property="version.name" />
+		  <replacefilter 
+		    token="@version.numero@" 
+		    property="version.numero" />
+		  <replacefilter 
+		    token="@fr.summary@" 
+		    property="fr.summary" />
+		  <replacefilter 
+		    token="@en.summary@" 
+		    property="en.summary" />
+		</replace>
+		
+		<tar tarfile="${rpm.pack.path}/SOURCES/ConcoursJeunes.tar">
+			<tarfileset dir="${rpm.pack.path}/SOURCES" >
+		    	<include name="usr/**" />
+			</tarfileset>
+		</tar>
+		<gzip zipfile="${rpm.pack.path}/SOURCES/ConcoursJeunes.tar.gz" src="${rpm.pack.path}/SOURCES/ConcoursJeunes.tar"/>
+		<delete file="${rpm.pack.path}/SOURCES/ConcoursJeunes.tar" />
+		<delete includeemptydirs="true">
+				<fileset dir="${rpm.pack.path}/SOURCES/usr" includes="**/*" />
+		</delete>
+		<delete dir="${rpm.pack.path}/SOURCES/usr" />
+		
+		<copy todir="${rpm.pack.path}/SPECS" >
+			<fileset dir="packager/linux/">
+				<include name="ConcoursJeunes.spec" />
+			</fileset>
+		</copy>
+		
+		<replace 
+		    file="${rpm.pack.path}/SPECS/ConcoursJeunes.spec"
+			propertyFile="packager/version.properties">
+		  <replacefilter 
+		    token="@version.name@" 
+		    property="version.name" />
+		  <replacefilter 
+		    token="@version.numero@" 
+		    property="version.numero" />
+		  <replacefilter 
+		    token="@version.release@" 
+		    property="version.release" />
+		  <replacefilter 
+		    token="@version.url@" 
+		    property="version.url" />
+		  <replacefilter 
+		    token="@fr.summary@" 
+		    property="fr.summary" />
+		  <replacefilter 
+		    token="@fr.description@" 
+		    property="fr.description" />
+		  <replacefilter 
+		    token="@en.summary@" 
+		    property="en.summary" />
+		  <replacefilter 
+		    token="@en.description@" 
+		    property="en.description" />
+		</replace>
+		
+		<rpm specFile="ConcoursJeunes.spec" topDir="${rpm.pack.path}/" />
+	</target>
+	
+	<target name="pack">
+		
+		<mkdir dir="${projet.pack.dir}" />
+		
+		<delete includeemptydirs="true">
+			<fileset dir="${projet.pack.dir}" includes="**/*"/>
+		</delete>
+		
+		<copy file="src/start.sh" todir="pack" />
+		
+		<jar jarfile="${projet.pack.dir}/ConcoursJeunes.jar"
+			basedir="${projet.bin.dir}"
+			manifest="MANIFEST.MF">
+			
+			<exclude name="web/**" />
+		</jar>
+		
+		<!--Copie des ressources du projet-->
+		<copy todir="${projet.pack.dir}" >
+			<fileset dir="." >
+			    	<include name="base/**"/>
+				<include name="config/**"/>
+				<!--<include name="docs/**"/>-->
+				<include name="lang/**"/>
+				<include name="lib/**"/>
+				<include name="ressources/**"/>
+				<!--<include name="src/**"/>-->
+				<exclude name="src/web/**" />
+				<exclude name="**/.svn*" />
+			</fileset>
+	    </copy>
+
+		<replace 
+		    file="${projet.pack.dir}/config/parametre.properties">
+		  <replacefilter 
+		    token="debug.mode=1" 
+		    value="debug.mode=0"/>
+		</replace>
+
+	</target>
+	
+	<!--<replace 
+    file="configure.sh"
+    value="defaultvalue"
+    propertyFile="source/name.properties">
+  <replacefilter 
+    token="@token1@"/>
+  <replacefilter 
+    token="@token2@" 
+    value="value2"/>
+  <replacefilter 
+    token="@token3@" 
+    property="property.key"/>
+</replace>-->
+	
+	<target name="all" depends="user_doc, pakager" />
+</project>

@@ -1,0 +1,102 @@
+Confirmé:
+#P0010
+#P0018
+
+
+P0020 - Affichage ecran du nombre total d'archer enregistré -  Corrigé - 23/11/2005
+	#
+
+P0019 - Logique Ecran de place libre par catgerie de placement et non par distance blason - Corrigé - 23/11/2005
+	Dans le pavé Place libre, il serait préférable d’avoir les Niveaux 0, Niveaux 1, Niveaux 2, et Niveaux 3 classés dans cet
+	ordre à la place des distances car lors de la recherche de place libre on raisonne en niveau et non pas en distance
+	(on conservera l’info de distances 10m, 15m, 18m et de diamètres de blason 60cm et 80 cm Par exemple : 
+	Niveau0 : 10m/80cm, Niveau1 : 15m/80cm…)
+	#
+
+P0018 - Recherche des Ex-Equo fastidieuse - Confirmé - 23/11/2005
+	La recherche des Ex-Equo n'est pas évidente de même que la recuperation des fiches archer correspondante
+	pour saisie des 10/9/M
+	#A Coder, Assistant de resolution des Ex-Equo.
+
+P0017 - Affichage des 10/9/M sur la sortie ecran - Corriger - 23/11/2005
+	Besoin des 10/9/M sur la sortie ecran
+	#FicheConcours.java
+
+I0016 - Arret du bouton suivant de la fiche concurrent à la cible n-1 - Corriger - 20/11/2005
+	#FicheConcours.java
+
+P0015 - Absence de classement sur le 10/9/M - Corriger - 19/11/2005
+	Le classement est effectué sur les points, mais le 10/9/M n'est pas considerer pour departager les ex-equo
+	#ArcherList.java (ArcherList::sort())
+
+P0014 - Problème dans l'insertion et l'affichage des 10/9/M - Corriger - 19/11/2005
+  Insertion des 10/9/M impossible dans la boite du concurrent
+  Inversion entre 10 et 9 dans la boite de saisie de resultats
+  #FicheConcours.java, ConcurrentDialog.java
+
+P0013 - Remplacement du libellé "payée/reservée" par "oui/non" sur les impression pour le greffe - Corriger - 11/11/2005
+	Liste des concurrents pour le greffe
+	Dans la colonne ‘payée’ voir si possible de faire apparaître ‘non’ au lieu de ‘réservée’ (cadré à gauche ce qui permettrai au greffe
+	de noter ‘Oui’ lors du payement de l’inscription). 
+	#FicheConcours.java (liste Participant XML)
+
+P0012 - Ajout du nombre de participants à la liste alphabetique (impression) - Corriger - 11/11/2005
+	Ajouter le nombre total de participants en fin de liste
+	#FicheConcours.java (liste Participant XML)
+
+P0011 - Correction d'une regression au chargement d'un template - Corriger - 11/11/2005
+	Classements individuels
+	Seul le titre apparaît
+	Pas de données : noms, scores niveaux…
+	#FicheConcours.java (Classement XML)
+	
+P0010 Gestion des Equipe à réécrire intégralement - Confirmé - 11/11/2005
+	Lorsque l’on valide une équipe il  faudrait revenir automatiquement sur la même fenêtre après la validation pour
+	voir l’équipe validée et pouvoir directement soit en créer une Suivante ou Sortir ( boutons a rajouter)
+	Est-il possible de sélectionner un archer dans la liste par un double clic pour le faire apparaître dans l’équipe ?
+	#EquipeDialog.java
+
+P0009 - Reordonnancement des SCNA - Corriger - 11/11/2005
+	L’ordre des catégories n’est pas logique : Homme et Dame et ordre des niveaux
+	(Il devrait être le suivant Dn0, Dn1, Dn2,Dn3,Hn0,Hn1,Hn2,Hn3.)
+	#FicheConcours.java (Classement XML et HTML)
+
+P0008 - Reordonnancement des Distances/Blasons - Corriger - 11/11/2005
+	Positionner les cibles dans l’ordre croissant des distances et blasons (10m,15m,18m et blasons de 80 et 60cm)
+	#FicheConcours.java (FicheConcours::placementConcurrent(), ArcherList.java)
+
+P0007 - Ajout du numero de cible dans l'impression du pas de tir - Corriger - 11/11/2005
+	Faire apparaître le Numéro de la cible pour chaque cible (1,2,3,4,5…X) en complément de la distance et du diamètre de blason
+	#FicheConcours.java (FicheConcours::getXMLPasDeTir())
+	
+P0006 Interface de saisie de résultat pouvant être mal interpreter et entrainer des erreurs de saisie - Corrigé - 12/11/2005
+	"Dans la pratique le score de la 1ère série (de 6 volées de 3 flèches) est saisi, ces résultats intermédiaires peuvent être
+	édités et ou imprimés  pour affichage, ensuite la 2ème série sera saisie pour les résultats finaux
+	( est-ce prévu pour un FITA STAR ?) Il vaudrai mieux avoir la saisie des 10, 9 et M dans cette fenêtre."
+	#ResultatDialog.java
+	
+P0005 Ordre des tabulations dans la boite de dialogue de saisie des résultats - Corrigé - 12/11/2005
+	La Tabulation Droite devrait faire valider le score saisi et passer à l’archer suivant dans la même distance
+	#ResultatDialog.java
+
+P0004 - impossible d'aller à la cible "index" directement - Corriger - 11/11/2005
+	Dans cette fenêtre les curseurs monter (1,2,3,4…)et descendre (4,3,2,1) d’une cible ne fonctionnent que dans le sens monter 
+	#ResultatDialog.java, FicheConcours.java révision générale
+
+P0003 - Controle des points sur ResultatDialog - Corriger - 11/11/2005
+	le cumul des 2 séries s’affiche dans la 1ère distance = Pb. avec le contrôle de score
+	#ResultatDialog.java (ResultatDialog::actionPerformed())
+
+P0002 - Bug de Limite du nombre d'archer - Corriger - 11/11/2005
+	-Dés lors que le bouton Supprimer est valide, et si aucune place libre, il n’est pas possible de revenir
+	sur la fiche d’un archer « Message :Ajout impossible : il n’y a plus de cible pour le concurrent » pour modifier une donnée d’un archer
+	-Pouvoir modifier le niveau de chaque archer si celui ci n’est pas le bon :impossible si aucune place libre.
+	Message :Ajout impossible : il n’y a plus de cible pour le concurrent
+	-Impossible de sortir, ça tourne en boucle !!! après de multiples appels successifs pour fermer la fenêtre, celle-ci est remplacée par celle de Saisie des résultats ! que l’on peut quitter normalement 
+	(Pour effectuer un brassage des niveaux j’ai du ajouter deux cibles (une aurait pu suffire) afin de conserver des places libres et en fin de brassage j’ai supprimé les cibles précédemment ajoutées. Sinon on part dans la boucle.
+	#ConcurrentDialog.java -> (ConcurrentDialog::editConcurrent() et ConcurrentDialog::actionPerformed())
+  
+P0001 - Tri des archers - Corriger - 11/11/2005
+	A l’ouverture du concours, l’affichage des archers se fait par ordre alphabétique mais c’est la case n° de cible
+	qui apparaît cochée par défaut au lieu de la case nom
+	#FicheConcours.java -> (FicheConcours::setFiche())

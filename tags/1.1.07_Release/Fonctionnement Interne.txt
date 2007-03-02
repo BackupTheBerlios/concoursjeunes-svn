@@ -1,0 +1,24 @@
+Fonctionnement interne ConcoursJeunes
+
+Initialisation
+	ConcoursJeunes
+		Test presence fichier de config
+		->non
+			ouvre la boite de dialogue de config
+			sauvegarde la config
+		->oui
+			charge la config
+			test la validite de la config
+			->oui
+				ouvre la boite de dialogue de config
+				sauvegarde la config
+			charge le fichier de localisation
+		redirection des sorties pour debugage si necessaire
+		Chargement des entites (club, cd, cligue, etc...)
+		Initialisation du skin d'affichage (desktopUI)
+		comportement sur fermeture
+		creation de la barre de menu
+		ajout de la gestion multi document
+		configuration de la fenetre
+		Affichage
+		ouverture de la boite de dialogue de gestion des concours
