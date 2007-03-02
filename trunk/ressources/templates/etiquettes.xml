@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE itext SYSTEM "ressources/templates/itext.dtd">
+<itext creationdate="{CURRENT_TIME}"
+	producer="{producer}"
+	pagesize="{pagesize}"
+	orientation="{orientation}"
+	top="{top}"
+	bottom="{bottom}"
+	left="{left}"
+	right="{right}"
+	author="{author}">
+	<bloc::page>
+	<table columns="{columns}" width="100%" widths="{widths}">
+		<bloc::ligne>
+		<row>
+			<cell leading="{leading}">
+				<phrase color="#FFFFFF">_</phrase>
+			</cell>
+			<bloc::colonne>
+			<cell verticalalign="Top" header="false" top="false" bottom="false" right="false" left="false">
+				<phrase size="10">
+					{cid}<newline/>
+					{cclub}<newline/>
+					{clicence}<newline/>
+				</phrase>
+			</cell>
+			<cell horizontalalign="Center" verticalalign="Top" header="false" top="false" bottom="false" right="false" left="false">
+				{emplacement}
+			</cell>
+			<bloc::interbloc>
+			<cell>
+				<phrase color="#FFFFFF">_</phrase>
+			</cell>
+			</bloc::interbloc>
+			</bloc::colonne>
+		</row>
+		</bloc::ligne>
+	</table>
+	<newpage/>
+	</bloc::page>
+</itext>

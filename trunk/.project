@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>ConcoursJeunes</name>
+	<comment>@key 32303036313031382D3130303020436F6E636F7572734A65756E65732F617572656C69656E </comment>
+	<projects>
+		<project>ClassAJ</project>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>net.sf.eclipsensis.installoptions.InstallOptionsBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>com.soyatec.uml.std.Builder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.jem.workbench.JavaEMFNature</nature>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+		<nature>org.eclipse.jem.beaninfo.BeanInfoNature</nature>
+		<nature>net.sf.eclipsensis.installoptions.InstallOptionsNature</nature>
+		<nature>com.soyatec.uml.std.Nature</nature>
+	</natures>
+</projectDescription>

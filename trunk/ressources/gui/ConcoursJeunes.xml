@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<screen>
+	<frame width="1024" height="768" extendedstate="MAXIMIZED_BOTH">
+		<title>%s - %s</title>
+		<icon src="ressources/iconCJ.jpg" />
+		<menubar>
+			<menu id="file">
+				<label>menubar.fichier</label>
+				<menuitems>
+					<menuitem keycode="C" modifier="CTRL">menubar.fichier.crearesto</menuitem>
+					<separator />
+					<menuitem>menubar.fichier.exporter</menuitem>
+					<menuitem>menubar.fichier.importer</menuitem>
+					<separator />
+					<menuitem keycode="F4" modifier="ALT">menubar.fichier.quitter</menuitem>
+				</menuitems>
+			</menu>
+			<menu id="edit">
+				<label>menubar.edition</label>
+				<menuitems>
+					<menuitem>menubar.edition.entite</menuitem>
+					<separator />
+					<menuitem>menubar.edition.parametre</menuitem>
+					<menuitem>menubar.edition.reglement</menuitem>
+					<menuitem>menubar.edition.configuration</menuitem>
+				</menuitems>
+			</menu>
+			<menu id="print">
+				<label>menubar.impression</label>
+				<menuitems>
+					<menuitem>menubar.impression.listeconcurrent.ordrealpha</menuitem>
+					<menuitem>menubar.impression.listeconcurrent.greffe</menuitem>
+					<menuitem>menubar.impression.listeconcurrent.etiquette</menuitem>
+					<menuitem>menubar.impression.pasdetir</menuitem>
+					<menuitem>menubar.impression.classement.individuel</menuitem>
+					<menuitem>menubar.impression.classement.equipe</menuitem>
+				</menuitems>
+			</menu>
+			<menu id="help">
+				<label>menubar.aide</label>
+				<menuitems>
+					<menuitem>menubar.aide.aide</menuitem>
+					<separator />
+					<menuitem>menubar.aide.apropos</menuitem>
+				</menuitems>
+			</menu>
+			<menu id="debug" visible="false">
+				<label>menubar.debug</label>
+				<menuitems>
+					<menuitem>menubar.debug.generateconcurrent</menuitem>
+					<menuitem>menubar.debug.addpoints</menuitem>
+					<menuitem>menubar.debug.resetpoints</menuitem>
+					<menuitem>menubar.debug.atriblevel</menuitem>
+				</menuitems>
+			</menu>
+		</menubar>
+		<contentpane>
+			<panel class="javax.swing.JTabbedPane" name="tabbedpane">
+				<method name="setUI">
+					<param paramclass="javax.swing.plaf.TabbedPaneUI" class="ajinteractive.standard.java2.AJTabbedPaneUI">
+						<param paramclass="javax.swing.ImageIcon" class="javax.swing.ImageIcon">
+							<param paramclass="java.lang.String" value="ressources/fnd.jpg" />
+						</param>
+					</param>
+				</method>
+			</panel>
+		</contentpane>
+	</frame>
+</screen>

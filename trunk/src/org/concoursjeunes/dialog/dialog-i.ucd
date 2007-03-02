@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<editmodel:ClassDiagramEditModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:editmodel="editmodel.xmi" xmlns:options="options.xmi" name="dialog-i" size="1013,1269" id="org.concoursjeunes.dialog" metadata="uml2-1.0" initialized="true" tag="1000" key="323030363130313820436F6E636F7572734A65756E65732F617572656C69656E">
+  <children xsi:type="editmodel:ClassEditModel" name="ResultatDialog" location="50,50" size="292,416" id="org.concoursjeunes.dialog/ResultatDialog" runTimeClassModel="keyPressed(Ljava.awt.event.KeyEvent;),focusLost(Ljava.awt.event.FocusEvent;),nEXT_TARGET,org.concoursjeunes.dialog.ResultatDialog.ResultatDialogFocusTraversalPolicy,keyTyped(Ljava.awt.event.KeyEvent;),sAVE_AND_QUIT,focusGained(Ljava.awt.event.FocusEvent;),keyReleased(Ljava.awt.event.KeyEvent;),showResultatDialog(),actionPerformed(Ljava.awt.event.ActionEvent;),ResultatDialog(Ljavax.swing.JFrame;[Lorg.concoursjeunes.Concurrent;Lorg.concoursjeunes.Parametre;),pREVIOUS_TARGET,cANCEL">
+    <children xsi:type="editmodel:CompartmentEditModel" size="133,72">
+      <children xsi:type="editmodel:AttributeEditModel" name="cANCEL" id="org.concoursjeunes.dialog/ResultatDialog#cANCEL"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="nEXT_TARGET" id="org.concoursjeunes.dialog/ResultatDialog#nEXT_TARGET"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="pREVIOUS_TARGET" id="org.concoursjeunes.dialog/ResultatDialog#pREVIOUS_TARGET"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="sAVE_AND_QUIT" id="org.concoursjeunes.dialog/ResultatDialog#sAVE_AND_QUIT"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="126,144">
+      <children xsi:type="editmodel:MethodEditModel" name="ResultatDialog" id="org.concoursjeunes.dialog/ResultatDialog#ResultatDialog(Ljavax.swing.JFrame;[Lorg.concoursjeunes.Concurrent;Lorg.concoursjeunes.Parametre;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="actionPerformed" id="org.concoursjeunes.dialog/ResultatDialog#actionPerformed(Ljava.awt.event.ActionEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="focusGained" id="org.concoursjeunes.dialog/ResultatDialog#focusGained(Ljava.awt.event.FocusEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="focusLost" id="org.concoursjeunes.dialog/ResultatDialog#focusLost(Ljava.awt.event.FocusEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="keyPressed" id="org.concoursjeunes.dialog/ResultatDialog#keyPressed(Ljava.awt.event.KeyEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="keyReleased" id="org.concoursjeunes.dialog/ResultatDialog#keyReleased(Ljava.awt.event.KeyEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="keyTyped" id="org.concoursjeunes.dialog/ResultatDialog#keyTyped(Ljava.awt.event.KeyEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="showResultatDialog" id="org.concoursjeunes.dialog/ResultatDialog#showResultatDialog()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="269,141">
+      <children xsi:type="editmodel:ClassEditModel" name="ResultatDialogFocusTraversalPolicy" size="269,139" id="org.concoursjeunes.dialog/ResultatDialog$ResultatDialogFocusTraversalPolicy" runTimeClassModel="getComponentBefore(Ljava.awt.Container;Ljava.awt.Component;),getLastComponent(Ljava.awt.Container;),getFirstComponent(Ljava.awt.Container;),getComponentAfter(Ljava.awt.Container;Ljava.awt.Component;),getDefaultComponent(Ljava.awt.Container;)">
+        <children xsi:type="editmodel:CompartmentEditModel"/>
+        <children xsi:type="editmodel:CompartmentEditModel" size="133,90">
+          <children xsi:type="editmodel:MethodEditModel" name="getComponentAfter" id="org.concoursjeunes.dialog/ResultatDialog$ResultatDialogFocusTraversalPolicy#getComponentAfter(Ljava.awt.Container;Ljava.awt.Component;)"/>
+          <children xsi:type="editmodel:MethodEditModel" name="getComponentBefore" id="org.concoursjeunes.dialog/ResultatDialog$ResultatDialogFocusTraversalPolicy#getComponentBefore(Ljava.awt.Container;Ljava.awt.Component;)"/>
+          <children xsi:type="editmodel:MethodEditModel" name="getDefaultComponent" id="org.concoursjeunes.dialog/ResultatDialog$ResultatDialogFocusTraversalPolicy#getDefaultComponent(Ljava.awt.Container;)"/>
+          <children xsi:type="editmodel:MethodEditModel" name="getFirstComponent" id="org.concoursjeunes.dialog/ResultatDialog$ResultatDialogFocusTraversalPolicy#getFirstComponent(Ljava.awt.Container;)"/>
+          <children xsi:type="editmodel:MethodEditModel" name="getLastComponent" id="org.concoursjeunes.dialog/ResultatDialog$ResultatDialogFocusTraversalPolicy#getLastComponent(Ljava.awt.Container;)"/>
+        </children>
+        <children xsi:type="editmodel:CompartmentEditModel"/>
+        <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" showAttributeProperty="true"/>
+      </children>
+    </children>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="ConcurrentListDialog" location="234,516" size="175,229" id="org.concoursjeunes.dialog/ConcurrentListDialog" runTimeClassModel="caretUpdate(Ljavax.swing.event.CaretEvent;),mouseReleased(Ljava.awt.event.MouseEvent;),mouseClicked(Ljava.awt.event.MouseEvent;),ConcurrentListDialog(Ljava.awt.Window;Ljava.lang.String;),mousePressed(Ljava.awt.event.MouseEvent;),isValider,actionPerformed(Ljava.awt.event.ActionEvent;),initConcurrent(Lorg.concoursjeunes.Concurrent;),mouseExited(Ljava.awt.event.MouseEvent;),mouseEntered(Ljava.awt.event.MouseEvent;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="105,18">
+      <children xsi:type="editmodel:AttributeEditModel" name="isValider" id="org.concoursjeunes.dialog/ConcurrentListDialog#isValider"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="130,162">
+      <children xsi:type="editmodel:MethodEditModel" name="ConcurrentListDialog" id="org.concoursjeunes.dialog/ConcurrentListDialog#ConcurrentListDialog(Ljava.awt.Window;Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="actionPerformed" id="org.concoursjeunes.dialog/ConcurrentListDialog#actionPerformed(Ljava.awt.event.ActionEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="caretUpdate" id="org.concoursjeunes.dialog/ConcurrentListDialog#caretUpdate(Ljavax.swing.event.CaretEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="initConcurrent" id="org.concoursjeunes.dialog/ConcurrentListDialog#initConcurrent(Lorg.concoursjeunes.Concurrent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="mouseClicked" id="org.concoursjeunes.dialog/ConcurrentListDialog#mouseClicked(Ljava.awt.event.MouseEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="mouseEntered" id="org.concoursjeunes.dialog/ConcurrentListDialog#mouseEntered(Ljava.awt.event.MouseEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="mouseExited" id="org.concoursjeunes.dialog/ConcurrentListDialog#mouseExited(Ljava.awt.event.MouseEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="mousePressed" id="org.concoursjeunes.dialog/ConcurrentListDialog#mousePressed(Ljava.awt.event.MouseEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="mouseReleased" id="org.concoursjeunes.dialog/ConcurrentListDialog#mouseReleased(Ljava.awt.event.MouseEvent;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="EntiteDialog" location="50,1110" size="132,139" id="org.concoursjeunes.dialog/EntiteDialog" runTimeClassModel="EntiteDialog(Ljavax.swing.JDialog;),initialize(),showEntite(Lorg.concoursjeunes.Entite;),EntiteDialog(Ljavax.swing.JFrame;),actionPerformed(Ljava.awt.event.ActionEvent;)">
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="109,90">
+      <children xsi:type="editmodel:MethodEditModel" name="EntiteDialog" id="org.concoursjeunes.dialog/EntiteDialog#EntiteDialog(Ljavax.swing.JFrame;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="EntiteDialog" id="org.concoursjeunes.dialog/EntiteDialog#EntiteDialog(Ljavax.swing.JDialog;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="actionPerformed" id="org.concoursjeunes.dialog/EntiteDialog#actionPerformed(Ljava.awt.event.ActionEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="initialize" id="org.concoursjeunes.dialog/EntiteDialog#initialize()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="showEntite" id="org.concoursjeunes.dialog/EntiteDialog#showEntite(Lorg.concoursjeunes.Entite;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="EntiteListDialog" location="459,516" size="141,283" id="org.concoursjeunes.dialog/EntiteListDialog" runTimeClassModel="action,mouseReleased(Ljava.awt.event.MouseEvent;),mouseClicked(Ljava.awt.event.MouseEvent;),vALIDER,aNNULER,focusLost(Ljava.awt.event.FocusEvent;),EntiteListDialog(Ljavax.swing.JFrame;),mouseExited(Ljava.awt.event.MouseEvent;),mouseEntered(Ljava.awt.event.MouseEvent;),getSelectedEntite(),caretUpdate(Ljavax.swing.event.CaretEvent;),mousePressed(Ljava.awt.event.MouseEvent;),actionPerformed(Ljava.awt.event.ActionEvent;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="84,54">
+      <children xsi:type="editmodel:AttributeEditModel" name="aNNULER" id="org.concoursjeunes.dialog/EntiteListDialog#aNNULER"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="action" id="org.concoursjeunes.dialog/EntiteListDialog#action"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="vALIDER" id="org.concoursjeunes.dialog/EntiteListDialog#vALIDER"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="113,180">
+      <children xsi:type="editmodel:MethodEditModel" name="EntiteListDialog" id="org.concoursjeunes.dialog/EntiteListDialog#EntiteListDialog(Ljavax.swing.JFrame;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="actionPerformed" id="org.concoursjeunes.dialog/EntiteListDialog#actionPerformed(Ljava.awt.event.ActionEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="caretUpdate" id="org.concoursjeunes.dialog/EntiteListDialog#caretUpdate(Ljavax.swing.event.CaretEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="focusLost" id="org.concoursjeunes.dialog/EntiteListDialog#focusLost(Ljava.awt.event.FocusEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getSelectedEntite" id="org.concoursjeunes.dialog/EntiteListDialog#getSelectedEntite()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="mouseClicked" id="org.concoursjeunes.dialog/EntiteListDialog#mouseClicked(Ljava.awt.event.MouseEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="mouseEntered" id="org.concoursjeunes.dialog/EntiteListDialog#mouseEntered(Ljava.awt.event.MouseEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="mouseExited" id="org.concoursjeunes.dialog/EntiteListDialog#mouseExited(Ljava.awt.event.MouseEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="mousePressed" id="org.concoursjeunes.dialog/EntiteListDialog#mousePressed(Ljava.awt.event.MouseEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="mouseReleased" id="org.concoursjeunes.dialog/EntiteListDialog#mouseReleased(Ljava.awt.event.MouseEvent;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="CriterionElementDialog" location="671,885" size="200,121" id="org.concoursjeunes.dialog/CriterionElementDialog" runTimeClassModel="CriterionElementDialog(Lorg.concoursjeunes.dialog.ConfigurationDialog;Lorg.concoursjeunes.Criterion;Lorg.concoursjeunes.CriterionElement;),CriterionElementDialog(Lorg.concoursjeunes.dialog.ConfigurationDialog;Lorg.concoursjeunes.Criterion;),actionPerformed(Ljava.awt.event.ActionEvent;),criterionIndividu">
+    <children xsi:type="editmodel:CompartmentEditModel" size="177,18">
+      <children xsi:type="editmodel:AttributeEditModel" name="criterionIndividu" id="org.concoursjeunes.dialog/CriterionElementDialog#criterionIndividu"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="136,54">
+      <children xsi:type="editmodel:MethodEditModel" name="CriterionElementDialog" id="org.concoursjeunes.dialog/CriterionElementDialog#CriterionElementDialog(Lorg.concoursjeunes.dialog.ConfigurationDialog;Lorg.concoursjeunes.Criterion;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="CriterionElementDialog" id="org.concoursjeunes.dialog/CriterionElementDialog#CriterionElementDialog(Lorg.concoursjeunes.dialog.ConfigurationDialog;Lorg.concoursjeunes.Criterion;Lorg.concoursjeunes.CriterionElement;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="actionPerformed" id="org.concoursjeunes.dialog/CriterionElementDialog#actionPerformed(Ljava.awt.event.ActionEvent;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="ExportDialog" location="470,885" size="151,175" id="org.concoursjeunes.dialog/ExportDialog" runTimeClassModel="eXPORT_FILE,eXPORT_INTERNET,init(),ExportDialog(Ljavax.swing.JFrame;),actionPerformed(Ljava.awt.event.ActionEvent;),eXPORT_NONE,exportType">
+    <children xsi:type="editmodel:CompartmentEditModel" size="128,72">
+      <children xsi:type="editmodel:AttributeEditModel" name="eXPORT_FILE" id="org.concoursjeunes.dialog/ExportDialog#eXPORT_FILE"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="eXPORT_INTERNET" id="org.concoursjeunes.dialog/ExportDialog#eXPORT_INTERNET"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="eXPORT_NONE" id="org.concoursjeunes.dialog/ExportDialog#eXPORT_NONE"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="exportType" id="org.concoursjeunes.dialog/ExportDialog#exportType"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="109,54">
+      <children xsi:type="editmodel:MethodEditModel" name="ExportDialog" id="org.concoursjeunes.dialog/ExportDialog#ExportDialog(Ljavax.swing.JFrame;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="actionPerformed" id="org.concoursjeunes.dialog/ExportDialog#actionPerformed(Ljava.awt.event.ActionEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="init" id="org.concoursjeunes.dialog/ExportDialog#init()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="ConfigurationDialog" location="631,50" size="216,229" id="org.concoursjeunes.dialog/ConfigurationDialog" runTimeClassModel="mouseReleased(Ljava.awt.event.MouseEvent;),workConfiguration,mouseClicked(Ljava.awt.event.MouseEvent;),ConfigurationDialog(Ljavax.swing.JFrame;),tabbedpaneConcours,mousePressed(Ljava.awt.event.MouseEvent;),actionPerformed(Ljava.awt.event.ActionEvent;),stateChanged(Ljavax.swing.event.ChangeEvent;),mouseExited(Ljava.awt.event.MouseEvent;),mouseEntered(Ljava.awt.event.MouseEvent;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="193,36">
+      <children xsi:type="editmodel:AttributeEditModel" name="tabbedpaneConcours" id="org.concoursjeunes.dialog/ConfigurationDialog#tabbedpaneConcours"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="workConfiguration" id="org.concoursjeunes.dialog/ConfigurationDialog#workConfiguration"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="123,144">
+      <children xsi:type="editmodel:MethodEditModel" name="ConfigurationDialog" id="org.concoursjeunes.dialog/ConfigurationDialog#ConfigurationDialog(Ljavax.swing.JFrame;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="actionPerformed" id="org.concoursjeunes.dialog/ConfigurationDialog#actionPerformed(Ljava.awt.event.ActionEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="mouseClicked" id="org.concoursjeunes.dialog/ConfigurationDialog#mouseClicked(Ljava.awt.event.MouseEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="mouseEntered" id="org.concoursjeunes.dialog/ConfigurationDialog#mouseEntered(Ljava.awt.event.MouseEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="mouseExited" id="org.concoursjeunes.dialog/ConfigurationDialog#mouseExited(Ljava.awt.event.MouseEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="mousePressed" id="org.concoursjeunes.dialog/ConfigurationDialog#mousePressed(Ljava.awt.event.MouseEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="mouseReleased" id="org.concoursjeunes.dialog/ConfigurationDialog#mouseReleased(Ljava.awt.event.MouseEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="stateChanged" id="org.concoursjeunes.dialog/ConfigurationDialog#stateChanged(Ljavax.swing.event.ChangeEvent;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="ImportDialog" location="50,885" size="165,175" id="org.concoursjeunes.dialog/ImportDialog" runTimeClassModel="iMPORT_FILE,init(),ImportDialog(Ljavax.swing.JFrame;),actionPerformed(Ljava.awt.event.ActionEvent;),iMPORT_FFTA,iMPORT_INTERNET,importClass">
+    <children xsi:type="editmodel:CompartmentEditModel" size="142,72">
+      <children xsi:type="editmodel:AttributeEditModel" name="iMPORT_FFTA" id="org.concoursjeunes.dialog/ImportDialog#iMPORT_FFTA"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="iMPORT_FILE" id="org.concoursjeunes.dialog/ImportDialog#iMPORT_FILE"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="iMPORT_INTERNET" id="org.concoursjeunes.dialog/ImportDialog#iMPORT_INTERNET"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="importClass" id="org.concoursjeunes.dialog/ImportDialog#importClass"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="109,54">
+      <children xsi:type="editmodel:MethodEditModel" name="ImportDialog" id="org.concoursjeunes.dialog/ImportDialog#ImportDialog(Ljavax.swing.JFrame;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="actionPerformed" id="org.concoursjeunes.dialog/ImportDialog#actionPerformed(Ljava.awt.event.ActionEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="init" id="org.concoursjeunes.dialog/ImportDialog#init()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="FicheLoaderDialog" location="650,516" size="163,229" id="org.concoursjeunes.dialog/FicheLoaderDialog" runTimeClassModel="sUPPRIMER,action,getSelectedFiche(),initDialog(),aNNULER,oUVRIR,actionPerformed(Ljava.awt.event.ActionEvent;),nOUVEAU,listFicheConcours,FicheLoaderDialog(Ljavax.swing.JFrame;[Ljava.lang.String;I)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="139,108">
+      <children xsi:type="editmodel:AttributeEditModel" name="aNNULER" id="org.concoursjeunes.dialog/FicheLoaderDialog#aNNULER"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="action" id="org.concoursjeunes.dialog/FicheLoaderDialog#action"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="listFicheConcours" id="org.concoursjeunes.dialog/FicheLoaderDialog#listFicheConcours"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="nOUVEAU" id="org.concoursjeunes.dialog/FicheLoaderDialog#nOUVEAU"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="oUVRIR" id="org.concoursjeunes.dialog/FicheLoaderDialog#oUVRIR"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="sUPPRIMER" id="org.concoursjeunes.dialog/FicheLoaderDialog#sUPPRIMER"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="119,72">
+      <children xsi:type="editmodel:MethodEditModel" name="FicheLoaderDialog" id="org.concoursjeunes.dialog/FicheLoaderDialog#FicheLoaderDialog(Ljavax.swing.JFrame;[Ljava.lang.String;I)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="actionPerformed" id="org.concoursjeunes.dialog/FicheLoaderDialog#actionPerformed(Ljava.awt.event.ActionEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getSelectedFiche" id="org.concoursjeunes.dialog/FicheLoaderDialog#getSelectedFiche()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="initDialog" id="org.concoursjeunes.dialog/FicheLoaderDialog#initDialog()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="CriterionDialog" location="232,1110" size="138,121" id="org.concoursjeunes.dialog/CriterionDialog" runTimeClassModel="actionPerformed(Ljava.awt.event.ActionEvent;),CriterionDialog(Lorg.concoursjeunes.dialog.ConfigurationDialog;Lorg.concoursjeunes.Criterion;),CriterionDialog(Lorg.concoursjeunes.dialog.ConfigurationDialog;),criterion">
+    <children xsi:type="editmodel:CompartmentEditModel" size="104,18">
+      <children xsi:type="editmodel:AttributeEditModel" name="criterion" id="org.concoursjeunes.dialog/CriterionDialog#criterion"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="109,54">
+      <children xsi:type="editmodel:MethodEditModel" name="CriterionDialog" id="org.concoursjeunes.dialog/CriterionDialog#CriterionDialog(Lorg.concoursjeunes.dialog.ConfigurationDialog;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="CriterionDialog" id="org.concoursjeunes.dialog/CriterionDialog#CriterionDialog(Lorg.concoursjeunes.dialog.ConfigurationDialog;Lorg.concoursjeunes.Criterion;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="actionPerformed" id="org.concoursjeunes.dialog/CriterionDialog#actionPerformed(Ljava.awt.event.ActionEvent;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="ConcurrentDialog" location="392,50" size="189,319" id="org.concoursjeunes.dialog/ConcurrentDialog" runTimeClassModel="entiteFinded(Lorg.concoursjeunes.AutoCompleteDocumentEvent;),showNewConcurrentDialog(I),focusLost(Ljava.awt.event.FocusEvent;),focusGained(Ljava.awt.event.FocusEvent;),ConcurrentDialog(Lorg.concoursjeunes.ui.ConcoursJeunesFrame;Lorg.concoursjeunes.FicheConcours;),cONFIRM_AND_CLOSE,cONFIRM_AND_PREVIOUS,concurrentFinded(Lorg.concoursjeunes.AutoCompleteDocumentEvent;),entiteNotFound(Lorg.concoursjeunes.AutoCompleteDocumentEvent;),concurrentNotFound(Lorg.concoursjeunes.AutoCompleteDocumentEvent;),actionPerformed(Ljava.awt.event.ActionEvent;),concurrent,cONFIRM_AND_NEXT,cANCEL,showConcurrentDialog(Lorg.concoursjeunes.Concurrent;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="166,90">
+      <children xsi:type="editmodel:AttributeEditModel" name="cANCEL" id="org.concoursjeunes.dialog/ConcurrentDialog#cANCEL"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="cONFIRM_AND_CLOSE" id="org.concoursjeunes.dialog/ConcurrentDialog#cONFIRM_AND_CLOSE"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="cONFIRM_AND_NEXT" id="org.concoursjeunes.dialog/ConcurrentDialog#cONFIRM_AND_NEXT"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="cONFIRM_AND_PREVIOUS" id="org.concoursjeunes.dialog/ConcurrentDialog#cONFIRM_AND_PREVIOUS"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="concurrent" id="org.concoursjeunes.dialog/ConcurrentDialog#concurrent"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="164,180">
+      <children xsi:type="editmodel:MethodEditModel" name="ConcurrentDialog" id="org.concoursjeunes.dialog/ConcurrentDialog#ConcurrentDialog(Lorg.concoursjeunes.ui.ConcoursJeunesFrame;Lorg.concoursjeunes.FicheConcours;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="actionPerformed" id="org.concoursjeunes.dialog/ConcurrentDialog#actionPerformed(Ljava.awt.event.ActionEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="concurrentFinded" id="org.concoursjeunes.dialog/ConcurrentDialog#concurrentFinded(Lorg.concoursjeunes.AutoCompleteDocumentEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="concurrentNotFound" id="org.concoursjeunes.dialog/ConcurrentDialog#concurrentNotFound(Lorg.concoursjeunes.AutoCompleteDocumentEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="entiteFinded" id="org.concoursjeunes.dialog/ConcurrentDialog#entiteFinded(Lorg.concoursjeunes.AutoCompleteDocumentEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="entiteNotFound" id="org.concoursjeunes.dialog/ConcurrentDialog#entiteNotFound(Lorg.concoursjeunes.AutoCompleteDocumentEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="focusGained" id="org.concoursjeunes.dialog/ConcurrentDialog#focusGained(Ljava.awt.event.FocusEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="focusLost" id="org.concoursjeunes.dialog/ConcurrentDialog#focusLost(Ljava.awt.event.FocusEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="showConcurrentDialog" id="org.concoursjeunes.dialog/ConcurrentDialog#showConcurrentDialog(Lorg.concoursjeunes.Concurrent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="showNewConcurrentDialog" id="org.concoursjeunes.dialog/ConcurrentDialog#showNewConcurrentDialog(I)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="EquipeDialog" location="50,516" size="134,319" id="org.concoursjeunes.dialog/EquipeDialog" runTimeClassModel="mouseReleased(Ljava.awt.event.MouseEvent;),mouseClicked(Ljava.awt.event.MouseEvent;),mouseMoved(Ljava.awt.event.MouseEvent;),valueChanged(Ljavax.swing.event.TreeSelectionEvent;),popup(),mouseExited(Ljava.awt.event.MouseEvent;),mouseEntered(Ljava.awt.event.MouseEvent;),mouseDragged(Ljava.awt.event.MouseEvent;),popup,isValider(),mousePressed(Ljava.awt.event.MouseEvent;),getEquipes(),actionPerformed(Ljava.awt.event.ActionEvent;),valueChanged(Ljavax.swing.event.ListSelectionEvent;),EquipeDialog(Ljavax.swing.JFrame;Lorg.concoursjeunes.FicheConcours;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="111,18">
+      <children xsi:type="editmodel:AttributeEditModel" name="popup" id="org.concoursjeunes.dialog/EquipeDialog#popup"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="109,252">
+      <children xsi:type="editmodel:MethodEditModel" name="EquipeDialog" id="org.concoursjeunes.dialog/EquipeDialog#EquipeDialog(Ljavax.swing.JFrame;Lorg.concoursjeunes.FicheConcours;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="actionPerformed" id="org.concoursjeunes.dialog/EquipeDialog#actionPerformed(Ljava.awt.event.ActionEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getEquipes" id="org.concoursjeunes.dialog/EquipeDialog#getEquipes()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="isValider" id="org.concoursjeunes.dialog/EquipeDialog#isValider()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="mouseClicked" id="org.concoursjeunes.dialog/EquipeDialog#mouseClicked(Ljava.awt.event.MouseEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="mouseDragged" id="org.concoursjeunes.dialog/EquipeDialog#mouseDragged(Ljava.awt.event.MouseEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="mouseEntered" id="org.concoursjeunes.dialog/EquipeDialog#mouseEntered(Ljava.awt.event.MouseEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="mouseExited" id="org.concoursjeunes.dialog/EquipeDialog#mouseExited(Ljava.awt.event.MouseEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="mouseMoved" id="org.concoursjeunes.dialog/EquipeDialog#mouseMoved(Ljava.awt.event.MouseEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="mousePressed" id="org.concoursjeunes.dialog/EquipeDialog#mousePressed(Ljava.awt.event.MouseEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="mouseReleased" id="org.concoursjeunes.dialog/EquipeDialog#mouseReleased(Ljava.awt.event.MouseEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="popup" id="org.concoursjeunes.dialog/EquipeDialog#popup()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="valueChanged" id="org.concoursjeunes.dialog/EquipeDialog#valueChanged(Ljavax.swing.event.TreeSelectionEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="valueChanged" id="org.concoursjeunes.dialog/EquipeDialog#valueChanged(Ljavax.swing.event.ListSelectionEvent;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="TypeListingDialog" location="265,885" size="155,175" id="org.concoursjeunes.dialog/TypeListingDialog" runTimeClassModel="TypeListingDialog(Ljavax.swing.JFrame;),init(),nONE,actionPerformed(Ljava.awt.event.ActionEvent;),returnType,aLPHA,gREFFE">
+    <children xsi:type="editmodel:CompartmentEditModel" size="89,72">
+      <children xsi:type="editmodel:AttributeEditModel" name="aLPHA" id="org.concoursjeunes.dialog/TypeListingDialog#aLPHA"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="gREFFE" id="org.concoursjeunes.dialog/TypeListingDialog#gREFFE"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="nONE" id="org.concoursjeunes.dialog/TypeListingDialog#nONE"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="returnType" id="org.concoursjeunes.dialog/TypeListingDialog#returnType"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="114,54">
+      <children xsi:type="editmodel:MethodEditModel" name="TypeListingDialog" id="org.concoursjeunes.dialog/TypeListingDialog#TypeListingDialog(Ljavax.swing.JFrame;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="actionPerformed" id="org.concoursjeunes.dialog/TypeListingDialog#actionPerformed(Ljava.awt.event.ActionEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="init" id="org.concoursjeunes.dialog/TypeListingDialog#init()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="ParametreDialog" location="420,1110" size="150,103" id="org.concoursjeunes.dialog/ParametreDialog" runTimeClassModel="isAnnule(),ParametreDialog(Lorg.concoursjeunes.ui.FicheConcoursPane;),actionPerformed(Ljava.awt.event.ActionEvent;)">
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="109,54">
+      <children xsi:type="editmodel:MethodEditModel" name="ParametreDialog" id="org.concoursjeunes.dialog/ParametreDialog#ParametreDialog(Lorg.concoursjeunes.ui.FicheConcoursPane;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="actionPerformed" id="org.concoursjeunes.dialog/ParametreDialog#actionPerformed(Ljava.awt.event.ActionEvent;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="isAnnule" id="org.concoursjeunes.dialog/ParametreDialog#isAnnule()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" showAttributeProperty="true"/>
+  </children>
+  <diagramOptions xsi:type="options:ClassDiagramOptions" interactive="false" level="-1" showScope="InPackage" properties="wireOptions=1"/>
+  <boardSetting snapToGeometry="true" gridEnabled="true" gridSpacing="15,15" gridOrigin="0,0" rulerUnit="pixel">
+    <leftRuler/>
+    <topRuler/>
+  </boardSetting>
+  <classDiagramPreferences xsi:type="editmodel:UMLClassDiagramPreference" attributeSorter="Natural" methodSorter="Natural" showClassStereotype="true" showPackageStereotype="true" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" showInterfaceStereotype="true" showAttributeProperty="true"/>
+</editmodel:ClassDiagramEditModel>
