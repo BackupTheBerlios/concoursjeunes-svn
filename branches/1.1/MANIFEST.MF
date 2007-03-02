@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Class-Path: config/. lang/. lib/aide.jar lib/AJPackage.jar lib/itext-1.4.8.jar lib/jhall.jar
+Created-By: 1.5.0 (Sun Microsystems Inc.)
+Main-Class: ConcoursJeunes
+

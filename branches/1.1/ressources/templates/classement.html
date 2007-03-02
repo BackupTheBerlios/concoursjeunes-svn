@@ -1,0 +1,33 @@
+<html>
+<body>
+	<table width="100%">
+		<tr>
+			<td width="100"><img src="file:{LOGO_CLUB_URI}" width="100" height="110"></td>
+			<td colspan="2"><h1>{INTITULE_CLUB}</h1></td>
+		</tr>
+	</table>
+	<table width="100.0%">
+		<bloc::categories>
+		<tr bgcolor="#aaaaaa">
+			<td><b><i>{CATEGORIE}</i></b></td>
+			<td width="300.0">Club</td>
+			<bloc::distances>
+			<td>{DISTANCE}</td>
+			</bloc::distances>
+			<td><i>Total</i></td>
+			<td>0-10-9</td>
+		</tr>
+		<bloc::classement>
+		<tr {COULEUR}>
+			<td align="Left"><a name="{POSITION}">{PLACE}</a>. <a href="file://id#{POSITION}">{IDENTITEE}</a></td>
+		        <td>{CLUB}</td>
+			<bloc::scores>
+			<td>{PT_DISTANCE}</td>
+			</bloc::scores>
+			<td>{TOTAL}</td>
+			<td>{0_10_9}</td>
+		</tr>
+		</bloc::classement>
+		</bloc::categories>
+	</table>
+</html>
