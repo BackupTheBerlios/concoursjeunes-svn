@@ -31,7 +31,6 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 	 */
 	private Concurrent[] concurrents;
 	private Parametre parametres;
-	private Reglement reglement;
 
 	private JLabel jlCible = new JLabel();
 	private JLabel jlDistance = new JLabel();
@@ -56,12 +55,11 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 	 * @param ficheConcoursPane - la fiche concours correspondant aux resultats à exploiter
 	 * @param indexCible - numero de la cible à saisir
 	 */
-	public ResultatDialog(JFrame parentframe, Concurrent[] concurrents, Parametre parametres, Reglement reglement) {
+	public ResultatDialog(JFrame parentframe, Concurrent[] concurrents, Parametre parametres) {
 		super(parentframe, "", true);
 
 		this.concurrents = concurrents;
 		this.parametres = parametres;
-		this.reglement = reglement;
 
 		init();
 		completePanel();
@@ -76,7 +74,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 	}
 	
 	private void init() {
-		int nbSerie = reglement.getNbSerie();
+		int nbSerie = parametres.getReglement().getNbSerie();
 
 		//initialise les champs
 		oldPoints = new JTextField[parametres.getNbTireur()][nbSerie];
@@ -222,7 +220,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 		for(Concurrent concurrent : concurrents) {
 			ArrayList<Integer> p = concurrent.getScore();
 			
-			for(int j = 0; j < reglement.getNbSerie(); j++) {
+			for(int j = 0; j < parametres.getReglement().getNbSerie(); j++) {
 				oldPoints[concurrent.getPosition()][j].setText(p.get(j)+""); //$NON-NLS-1$
 				oldPoints[concurrent.getPosition()][j].setEnabled(true);
 				pointsCum2V[concurrent.getPosition()][j].setEnabled(true);
@@ -271,7 +269,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 		if(source == jbValider || source == jbSuivant) {
 			for(Concurrent concurrent : concurrents) {
 				ArrayList<Integer> concPoints = new ArrayList<Integer>();
-				for(int i = 0; i < reglement.getNbSerie(); i++) {
+				for(int i = 0; i < parametres.getReglement().getNbSerie(); i++) {
 					if(ConcoursJeunes.configuration.isInterfaceResultatCumul())
 						points[concurrent.getPosition()][i].setText(
 								Integer.parseInt(oldPoints[concurrent.getPosition()][i].getText())
@@ -281,9 +279,9 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 					concPoints.set(i, Integer.parseInt(points[concurrent.getPosition()][i].getText()));
 				}
 				
-				if(!reglement.isValidScore(concPoints)) {
+				if(!parametres.getReglement().isValidScore(concPoints)) {
 					JOptionPane.showMessageDialog(new JDialog(),
-							ConcoursJeunes.ajrLibelle.getResourceString("erreur.impscore") + "<br>" + concurrent.getNom(), //$NON-NLS-1$ //$NON-NLS-2$
+							ConcoursJeunes.ajrLibelle.getResourceString("erreur.impscore") + "<br>" + concurrent.getNomArcher(), //$NON-NLS-1$ //$NON-NLS-2$
 							ConcoursJeunes.ajrLibelle.getResourceString("erreur"),JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 					return;
 				}
@@ -317,7 +315,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 			char key = e.getKeyChar();
 			if(Character.isDigit(key)) {
 				for(int i = 0; i < parametres.getNbTireur(); i++) {
-					for(int j = 0; j < reglement.getNbSerie(); j++) {
+					for(int j = 0; j < parametres.getReglement().getNbSerie(); j++) {
 						points[i][j].setText(Integer.parseInt(oldPoints[i][j].getText())+Integer.parseInt(pointsCum2V[i][j].getText())+""); //$NON-NLS-1$
 					}
 				}
@@ -341,11 +339,11 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 		public Component getComponentAfter(Container focusCycleRoot, Component aComponent) {
 			Component nextComp = null;
 			for(int i = 0; i < parametres.getNbTireur(); i++) {
-				for(int j = 0; j < reglement.getNbSerie(); j++) {
+				for(int j = 0; j < parametres.getReglement().getNbSerie(); j++) {
 					if(aComponent == oldPoints[i][j]) {
 						if(i+1 < parametres.getNbTireur() && oldPoints[i+1][j].isEnabled())
 							nextComp = oldPoints[i+1][j];
-						else if(j+1 < reglement.getNbSerie())
+						else if(j+1 < parametres.getReglement().getNbSerie())
 							nextComp = oldPoints[0][j+1];
 						else if(dix[0].isEnabled())
 							nextComp = dix[0];
@@ -355,7 +353,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 					} else if(aComponent == pointsCum2V[i][j]) {
 						if(i+1 < parametres.getNbTireur() && pointsCum2V[i+1][j].isEnabled())
 							nextComp = pointsCum2V[i+1][j];
-						else if(j+1 < reglement.getNbSerie())
+						else if(j+1 < parametres.getReglement().getNbSerie())
 							nextComp = pointsCum2V[0][j+1];
 						else if(dix[0].isEnabled())
 							nextComp = dix[0];
@@ -365,7 +363,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 					} else if(aComponent == points[i][j]) {
 						if(i+1 < parametres.getNbTireur() && points[i+1][j].isEnabled())
 							nextComp = points[i+1][j];
-						else if(j+1 < reglement.getNbSerie())
+						else if(j+1 < parametres.getReglement().getNbSerie())
 							nextComp = points[0][j+1];
 						else if(dix[0].isEnabled())
 							nextComp = dix[0];
@@ -399,7 +397,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 			int nbConc = concurrents.length ;
 			Component nextComp = null;
 			for(int i = nbConc - 1; i >= 0; i--) {
-				for(int j = reglement.getNbSerie() - 1; j >= 0; j--) {
+				for(int j = parametres.getReglement().getNbSerie() - 1; j >= 0; j--) {
 					if(aComponent == oldPoints[i][j]) {
 						if(i-1 >= 0)
 							nextComp = oldPoints[i - 1][j];
@@ -408,7 +406,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 						else if(manque[nbConc - 1].isEnabled())
 							nextComp = manque[nbConc - 1];
 						else
-							nextComp = oldPoints[nbConc - 1][reglement.getNbSerie() - 1];
+							nextComp = oldPoints[nbConc - 1][parametres.getReglement().getNbSerie() - 1];
 						break;
 					} else if(aComponent == pointsCum2V[i][j]) {
 						if(i-1 >= 0)
@@ -418,7 +416,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 						else if(manque[nbConc - 1].isEnabled())
 							nextComp = manque[nbConc - 1];
 						else
-							nextComp = pointsCum2V[nbConc - 1][reglement.getNbSerie() - 1];
+							nextComp = pointsCum2V[nbConc - 1][parametres.getReglement().getNbSerie() - 1];
 						break;
 					} else if(aComponent == points[i][j]) {
 						if(i-1 >= 0)
@@ -428,7 +426,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 						else if(manque[nbConc - 1].isEnabled())
 							nextComp = manque[nbConc - 1];
 						else
-							nextComp = points[nbConc - 1][reglement.getNbSerie() - 1];
+							nextComp = points[nbConc - 1][parametres.getReglement().getNbSerie() - 1];
 						break;
 					} else if(aComponent == manque[i]) {
 						nextComp = neuf[i];
@@ -440,9 +438,9 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 						if(i-1 >= 0)
 							nextComp = manque[i-1];
 						else if(ConcoursJeunes.configuration.isInterfaceResultatCumul())
-							nextComp = oldPoints[nbConc - 1][reglement.getNbSerie() - 1];
+							nextComp = oldPoints[nbConc - 1][parametres.getReglement().getNbSerie() - 1];
 						else
-							nextComp = points[nbConc - 1][reglement.getNbSerie() - 1];
+							nextComp = points[nbConc - 1][parametres.getReglement().getNbSerie() - 1];
 						break;
 					}
 				}

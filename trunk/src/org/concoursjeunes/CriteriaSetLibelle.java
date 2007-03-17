@@ -6,28 +6,27 @@ package org.concoursjeunes;
 import java.util.*;
 
 /**
- * @author  xp
+ * @author Aurelien JEOFFRAY
  */
 public class CriteriaSetLibelle {
-    private CriteriaSet differentiationCriteria;
+    
+    private CriteriaSet criteriaSet;
     private String libelle = ""; //$NON-NLS-1$
     
     public CriteriaSetLibelle(CriteriaSet differentiationCriteria, String libelle) {
-        this.differentiationCriteria = differentiationCriteria;
+        this.criteriaSet = differentiationCriteria;
         this.libelle = libelle;
     }
     
-    public CriteriaSetLibelle(CriteriaSet differentiationCriteria) {
-        this.differentiationCriteria = differentiationCriteria;
+    public CriteriaSetLibelle(CriteriaSet criteriaSet) {
+        this.criteriaSet = criteriaSet;
         
         String strSCNA = ""; //$NON-NLS-1$
         
-        Hashtable<Criterion, CriterionElement> criteria = differentiationCriteria.getCriteria();
-        Enumeration<Criterion> keyCriteria = criteria.keys();
-        while(keyCriteria.hasMoreElements()) {
-        	Criterion keyCriterion = keyCriteria.nextElement();
+        Hashtable<Criterion, CriterionElement> criteria = criteriaSet.getCriteria();
+        for(Criterion keyCriterion : criteria.keySet()) {
             
-            if(differentiationCriteria.isEnableCriterion(keyCriterion)) {
+            if(criteriaSet.getCriterionElement(keyCriterion) != null) {
                 strSCNA += criteria.get(keyCriterion) + " "; //$NON-NLS-1$
             }
         }
@@ -43,10 +42,10 @@ public class CriteriaSetLibelle {
     
     /**
 	 * @return
-	 * @uml.property  name="differentiationCriteria"
+	 * @uml.property  name="criteriaSet"
 	 */
-    public CriteriaSet getDifferentiationCriteria() {
-        return differentiationCriteria;
+    public CriteriaSet getCriteriaSet() {
+        return criteriaSet;
     }
     
     @Override

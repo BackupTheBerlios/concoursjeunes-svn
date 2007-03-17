@@ -10,7 +10,8 @@ public class AutoCompleteDocumentEvent {
 	private Object source;
 	private Concurrent concurrent;
 	private Entite entite;
-	private String sqlfilter = "";
+	private Archer genericArcher;
+	private Entite genericEntite;
 	
 	/**
 	 * @param source
@@ -75,18 +76,30 @@ public class AutoCompleteDocumentEvent {
 	}
 
 	/**
-	 * @return  sqlfilter
-	 * @uml.property  name="sqlfilter"
+	 * @return  genericArcher
 	 */
-	public String getSqlfilter() {
-		return sqlfilter;
+	public Archer getGenericArcher() {
+		return genericArcher;
 	}
 
 	/**
-	 * @param sqlfilter  sqlfilter à définir
-	 * @uml.property  name="sqlfilter"
+	 * @param genericArcher genericArcher à définir
 	 */
-	public void setSqlfilter(String sqlfilter) {
-		this.sqlfilter = sqlfilter;
+	public void setGenericArcher(Archer genericArcher) {
+		this.genericArcher = genericArcher;
+	}
+
+	/**
+	 * @return genericEntite
+	 */
+	public Entite getGenericEntite() {
+		return genericEntite;
+	}
+
+	/**
+	 * @param genericEntite genericEntite à définir
+	 */
+	public void setGenericEntite(Entite genericEntite) {
+		this.genericEntite = genericEntite;
 	}
 }

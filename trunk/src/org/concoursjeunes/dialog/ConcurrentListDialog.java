@@ -42,13 +42,16 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	 * 
 	 * @param parentframe - la fenetre principal de l'application (pour le point modal)
 	 */
-	public ConcurrentListDialog(Window parentframe, Reglement reglement, String filter) {
+	public ConcurrentListDialog(Window parentframe, Reglement reglement, Archer filter) {
 		super(parentframe, ConcoursJeunes.ajrLibelle.getResourceString("concurrent.nouveau.titre"), ModalityType.APPLICATION_MODAL);
 		this.reglement = reglement;
 		
-		if(filter == null && ConcoursJeunes.configuration.getClub().getAgrement().length() > 0)
-			filter = "AGREMENTENTITE like '" 
-				+ ConcoursJeunes.configuration.getClub().getAgrement().substring(0, 2) + "%'";
+		if(filter == null && ConcoursJeunes.configuration.getClub().getAgrement().length() > 0) {
+			filter = new Archer();
+			Entite entite = new Entite();
+			entite.setAgrement(ConcoursJeunes.configuration.getClub().getAgrement().substring(0, 2) + "%'");
+			filter.setClub(entite);
+		}
 		dtm = new ArchersTableModel(filter);
 
 		init();
@@ -60,7 +63,6 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	/**
 	 * This method initializes this
 	 * 
-	 * @return void
 	 */
 	private void init() {
 		JPanel jContentPane = new JPanel();
@@ -240,9 +242,9 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		if(dtm != null) {
 			int rowIndex = jTable.convertRowIndexToModel(jTable.getSelectedRow());
 	
-			concurrent.setLicence(dtm.getConcurrentAtRow(rowIndex).getLicence());
-			concurrent.setNom(dtm.getConcurrentAtRow(rowIndex).getNom());
-			concurrent.setPrenom(dtm.getConcurrentAtRow(rowIndex).getPrenom());
+			concurrent.setNumLicenceArcher(dtm.getConcurrentAtRow(rowIndex).getNumLicenceArcher());
+			concurrent.setNomArcher(dtm.getConcurrentAtRow(rowIndex).getNomArcher());
+			concurrent.setPrenomArcher(dtm.getConcurrentAtRow(rowIndex).getPrenomArcher());
 			concurrent.setClub(dtm.getConcurrentAtRow(rowIndex).getClub());
 			concurrent.setCriteriaSet(dtm.getConcurrentAtRow(rowIndex).getCriteriaSet());
 		}
@@ -322,16 +324,17 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 
 		private ArrayList<TableModelListener> tmListeners = new ArrayList<TableModelListener>();
 		private ArrayList<String> columnsName = new ArrayList<String>();
-		private ArrayList<Concurrent> rows = new ArrayList<Concurrent>();
+		private ArrayList<Archer> rows = new ArrayList<Archer>();
 
-		private Concurrent curConcurrent = null;
+		private Archer curConcurrent = null;
 
 		public ArchersTableModel() {
 			this(null);
 		}
 		
-		public ArchersTableModel(String filter) {
-			rows = ConcoursJeunes.databaseManager.getAllArchers(filter, "NomArcher", reglement);
+		public ArchersTableModel(Archer filter) {
+			
+			rows = Archer.getArchersInDatabase(filter, reglement, "NOMARCHER");
 
 			columnsName.add(ConcoursJeunes.ajrLibelle.getResourceString("listeconcurrent.numlicence")); //$NON-NLS-1$
 			columnsName.add(ConcoursJeunes.ajrLibelle.getResourceString("listeconcurrent.nom")); //$NON-NLS-1$
@@ -383,11 +386,11 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 
 			switch(columnIndex) {
 			case 0:
-				return curConcurrent.getLicence();
+				return curConcurrent.getNumLicenceArcher();
 			case 1:
-				return curConcurrent.getNom();
+				return curConcurrent.getNomArcher();
 			case 2:
-				return curConcurrent.getPrenom();
+				return curConcurrent.getPrenomArcher();
 			case 3:
 				return curConcurrent.getClub().getNom();
 			case 4:
@@ -434,7 +437,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 		}
 
-		public Concurrent getConcurrentAtRow(int rowIndex) {
+		public Archer getConcurrentAtRow(int rowIndex) {
 			return rows.get(rowIndex);
 		}
 	}

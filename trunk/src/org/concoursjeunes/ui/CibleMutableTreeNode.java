@@ -116,7 +116,7 @@ public class CibleMutableTreeNode implements MutableTreeNode, CibleListener {
 	/* (non-Javadoc)
 	 * @see javax.swing.tree.TreeNode#children()
 	 */
-	public Enumeration children() {
+	public Enumeration<TreeNode> children() {
 		return childrens.elements();
 	}
 

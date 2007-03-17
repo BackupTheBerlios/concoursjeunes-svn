@@ -69,11 +69,12 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 
 		this.parentframe = parentframe;
 		this.ficheConcours = ficheConcours;
+		
+		paramDialog = new ParametreDialog(this);
 
 		init();
 
 		concDialog = new ConcurrentDialog(parentframe, ficheConcours);
-		paramDialog = new ParametreDialog(this);
 	}
 
 	/**
@@ -105,11 +106,11 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		northpane.add(jbResultat);
 
 		northpane.add(jlCritClassement);
-		for(Criterion criteria : ficheConcours.getReglement().getListCriteria()) {
+		for(Criterion criteria : ficheConcours.getParametre().getReglement().getListCriteria()) {
 			JCheckBox checkBox = new JCheckBox(criteria.getLibelle(), criteria.isClassement());
 
 			checkBox.addActionListener(this);
-			if(ficheConcours.getReglement().isOfficialReglement())
+			if(ficheConcours.getParametre().getReglement().isOfficialReglement())
 				checkBox.setEnabled(false);
 			northpane.add(checkBox);
 			
@@ -235,8 +236,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	public void openResultatDialog() {
 		ResultatDialog resultat = new ResultatDialog(parentframe, 
 				ficheConcours.getArcherlist().list(index, ficheConcours.getCurrentDepart()),
-				ficheConcours.getParametre(),
-				ficheConcours.getReglement());
+				ficheConcours.getParametre());
 
 		//si annulation ne pas continuer
 		int returnVal = resultat.showResultatDialog();
@@ -366,7 +366,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		} else if(source == printClassementEquipe) {
 			ficheConcours.printClassementEquipe();
 		} else if(source instanceof JCheckBox) {
-			for(Criterion criterion : ficheConcours.getReglement().getListCriteria()) {
+			for(Criterion criterion : ficheConcours.getParametre().getReglement().getListCriteria()) {
 				criterion.setClassement(classmentCriteriaCB.get(criterion.getCode()).isSelected());
 			}
 

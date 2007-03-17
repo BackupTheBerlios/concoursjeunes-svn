@@ -50,8 +50,6 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 
 	/**
 	 * This method initializes this
-	 * 
-	 * @return void
 	 */
 	private void initialize() {
 		JPanel jpEntete = new JPanel();

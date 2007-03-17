@@ -42,7 +42,7 @@ import javax.swing.event.ListSelectionListener;
 //import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
-import org.concoursjeunes.ArcherList;
+import org.concoursjeunes.ConcurrentList;
 import org.concoursjeunes.Cible;
 import org.concoursjeunes.ConcoursJeunes;
 import org.concoursjeunes.Concurrent;
@@ -312,8 +312,8 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 	 */
 	private void createListeParNom() {
 		ajlConcurrent.setListData(
-				ArcherList.sort(ficheConcoursPane.ficheConcours.getArcherlist().list(depart), 
-						ArcherList.SORT_BY_CIBLES));
+				ConcurrentList.sort(ficheConcoursPane.ficheConcours.getArcherlist().list(depart), 
+						ConcurrentList.SORT_BY_CIBLES));
 	}
 
 	/**
@@ -333,7 +333,7 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 		do {
 			codeRetour = ficheConcoursPane.concDialog.showNewConcurrentDialog(depart);
 			if(codeRetour != ConcurrentDialog.CANCEL 
-					&& !ficheConcoursPane.concDialog.getConcurrent().getNom().equals("")) { //$NON-NLS-1$
+					&& !ficheConcoursPane.concDialog.getConcurrent().getNomArcher().equals("")) { //$NON-NLS-1$
 				
 				ficheConcoursPane.ficheConcours.addConcurrent(ficheConcoursPane.concDialog.getConcurrent());
 			}
@@ -369,8 +369,8 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 		
 		if(jcbSortCible.isSelected()) {
 			ajlConcurrent.setListData(
-					ArcherList.sort(ficheConcoursPane.ficheConcours.getArcherlist().list(depart), 
-							ArcherList.SORT_BY_CIBLES));
+					ConcurrentList.sort(ficheConcoursPane.ficheConcours.getArcherlist().list(depart), 
+							ConcurrentList.SORT_BY_CIBLES));
 		}
 		treeTarget.repaint();
 	}
@@ -500,14 +500,14 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 			ficheConcoursPane.ficheConcours.printPasDeTir();
 		} else if(source instanceof JRadioButton) {
 			if(source == jcbSortCible)
-				ajlConcurrent.setListData(ArcherList.sort(ficheConcoursPane.ficheConcours.getArcherlist().list(depart), 
-						ArcherList.SORT_BY_CIBLES));
+				ajlConcurrent.setListData(ConcurrentList.sort(ficheConcoursPane.ficheConcours.getArcherlist().list(depart), 
+						ConcurrentList.SORT_BY_CIBLES));
 			else if(source == jcbSortNom)
-				ajlConcurrent.setListData(ArcherList.sort(ficheConcoursPane.ficheConcours.getArcherlist().list(depart), 
-						ArcherList.SORT_BY_NAME));
+				ajlConcurrent.setListData(ConcurrentList.sort(ficheConcoursPane.ficheConcours.getArcherlist().list(depart), 
+						ConcurrentList.SORT_BY_NAME));
 			else if(source == jcbSortClub)
-				ajlConcurrent.setListData(ArcherList.sort(ficheConcoursPane.ficheConcours.getArcherlist().list(depart), 
-						ArcherList.SORT_BY_CLUBS));
+				ajlConcurrent.setListData(ConcurrentList.sort(ficheConcoursPane.ficheConcours.getArcherlist().list(depart), 
+						ConcurrentList.SORT_BY_CLUBS));
 			ajlConcurrent.repaint();
 		} else if(cmd.equals("popup.edition")) { //$NON-NLS-1$
 			ficheConcoursPane.openConcurrentDialog((Concurrent)ajlConcurrent.getSelectedValue());

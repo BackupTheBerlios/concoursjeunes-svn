@@ -4,31 +4,44 @@
  */
 package org.concoursjeunes;
 
-import java.awt.Insets;
+import java.io.File;
+//import java.io.FileNotFoundException;
+//import java.io.FileOutputStream;
+import java.util.ArrayList;
+
+//import javax.xml.bind.JAXBContext;
+//import javax.xml.bind.JAXBException;
+//import javax.xml.bind.Marshaller;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import ajinteractive.standard.java2.AJToolKit;
 
 /**
  * parametre de configuration de l'application
  * @author  Aurelien Jeoffray
  * @version  3.0
  */
+@XmlRootElement
 public class Configuration extends DefaultParameters {
 
-	private String langue           = "";               //reboot //$NON-NLS-1$
-	private String logoPath         = "ressources/logo_ffta.gif";   //noreboot //$NON-NLS-1$
+	private String langue           = "";               //$NON-NLS-1$
+	private String logoPath         = "ressources/logo_ffta.gif";   //$NON-NLS-1$
 
-	private String pdfReaderPath    = "";               //noreboot //$NON-NLS-1$
-	private String importURL        = "http://";        //noreboot //$NON-NLS-1$
-	private String exportURL        = "http://";        //noreboot //$NON-NLS-1$
+	private String pdfReaderPath    = "";               //$NON-NLS-1$
+	private String importURL        = "http://";        //$NON-NLS-1$
+	private String exportURL        = "http://";        //$NON-NLS-1$
 
-	private String formatPapier     = "A4";             //noreboot //$NON-NLS-1$
-	private String orientation      = "portrait";       //noreboot //$NON-NLS-1$
-	private int[] colonneAndLigne   = new int[] {9, 3}; //noreboot
-	private Insets marges           = new Insets(0, 0, 0, 0);     //noreboot
-	private double[] espacements    = new double[] {0.5, 0.5};//noreboot
+	private String formatPapier     = "A4";             //$NON-NLS-1$
+	private String orientation      = "portrait";       //$NON-NLS-1$
+	private int[] colonneAndLigne   = new int[] {9, 3}; 
+	private Marges marges           = new Marges(0, 0, 0, 0);
+	private double[] espacements    = new double[] {0.5, 0.5};
 
 	private boolean interfaceResultatCumul = false;     //noreboot
 	private boolean interfaceResultatSupl = true;       //noreboot
 	private boolean interfaceAffResultatExEquo = true;  //noreboot
+	
+	private ArrayList<String> reglementName = new ArrayList<String>();
 
 	//propriete caché
 	private boolean firstboot       = false;            //noreboot
@@ -52,7 +65,6 @@ public class Configuration extends DefaultParameters {
 	 * @return  String - l'adresse du lecteur pdf
 	 * @uml.property  name="pdfReaderPath"
 	 */
-	//@Deprecated
 	public String getPdfReaderPath() {
 		return this.pdfReaderPath;
 	}
@@ -134,7 +146,7 @@ public class Configuration extends DefaultParameters {
 	 * @return  Returns the marges.
 	 * @uml.property  name="marges"
 	 */
-	public Insets getMarges() {
+	public Marges getMarges() {
 		return this.marges;
 	}
 
@@ -197,7 +209,7 @@ public class Configuration extends DefaultParameters {
 	 * @param marges  The marges to set.
 	 * @uml.property  name="marges"
 	 */
-	public void setMarges(Insets marges) {
+	public void setMarges(Marges marges) {
 		this.marges = marges;
 	}
 
@@ -310,17 +322,65 @@ public class Configuration extends DefaultParameters {
 		this.logoPath = logoPath;
 	}
 
+	/**
+	 * @return reglementName
+	 */
+	public ArrayList<String> getReglementName() {
+		return reglementName;
+	}
+	
+	public void addReglementName(String name) {
+		if(!reglementName.contains(name))
+			reglementName.add(name);
+	}
+	
+	public void removeReglementName(String name) {
+		reglementName.remove(name);
+	}
 
+	/**
+	 * @param reglementName reglementName à définir
+	 */
+	public void setReglementName(ArrayList<String> reglementName) {
+		this.reglementName = reglementName;
+	}
+	
+	/**
+	 * sauvegarde la configuration général du programme
+	 *
+	 */
+	public void saveConfig() {
+		/*try {
+			File f = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + 
+					File.separator + "test_" + 
+					ConcoursJeunes.ajrParametreAppli.getResourceString("file.configuration")); //$NON-NLS-1$
+			
+			//on crée un contexte JAXB pour la classe Person
+			JAXBContext context = JAXBContext.newInstance(Configuration.class);
 
-	/*blic void resetOfficialInfo(Configuration officialProfile) {
-		setCorrespondanceDifferentiationCriteria_DB(
-				officialProfile.getCorrespondanceDifferentiationCriteria_DB());
-		setNbSerie(officialProfile.getNbSerie());
-		setNbVoleeParSerie(officialProfile.getNbVoleeParSerie());
-		setNbFlecheParVolee(officialProfile.getNbFlecheParVolee());
-		setNbDepart(officialProfile.getNbDepart());
-		setNbMembresEquipe(officialProfile.getNbMembresEquipe());
-		setNbMembresRetenu(officialProfile.getNbMembresRetenu());
-		setListCriteria(officialProfile.getListCriteria());
-	}*/
+			//on crée un marshaller à partir du contexte
+			Marshaller m = context.createMarshaller();
+
+			//on veut un affichage formatté
+			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+			// on demande au marshaller de générer le XML de la personne "serge"
+			// et de l'afficher dans la console
+			
+			m.marshal(this, new FileOutputStream(f));
+
+		} catch (JAXBException ex) {
+			ex.printStackTrace();
+		} catch(FileNotFoundException e) {
+			e.printStackTrace();
+		}*/
+		try {
+			File f = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + 
+					File.separator + 
+					ConcoursJeunes.ajrParametreAppli.getResourceString("file.configuration")); //$NON-NLS-1$
+			AJToolKit.saveXMLStructure(f, ConcoursJeunes.configuration, false);
+		} catch(NullPointerException npe) {
+			npe.printStackTrace();
+		}
+	}
 }

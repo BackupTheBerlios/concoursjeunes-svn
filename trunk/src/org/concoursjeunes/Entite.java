@@ -3,6 +3,11 @@
  */
 package org.concoursjeunes;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+
 /**
  * Entite organisationnelle
  * @author  Aurelien
@@ -157,6 +162,58 @@ public class Entite {
 	 */
 	public void setNote(String note) {
 		this.note = note;
+	}
+	
+	public static ArrayList<Entite> getEntitesInDatabase(Entite eGeneric, String orderfield) {
+		ArrayList<Entite> entites = new ArrayList<Entite>();
+		Statement stmt = null;
+		
+		try {
+			stmt = ConcoursJeunes.dbConnection.createStatement();
+			
+			String sql = "select * from Entite ";
+			if(eGeneric != null) {
+				sql += "where ";
+				ArrayList<String> filters = new ArrayList<String>();
+				if(eGeneric.getNom().length() > 0) {
+					filters.add("NOMENTITE like \"" + eGeneric.getNom().toUpperCase() + "\"");
+				}
+				if(eGeneric.getAgrement().length() > 0) {
+					filters.add("AGREMENTENTITE like \"" + eGeneric.getAgrement().toUpperCase() + "\"");
+				}
+				if(eGeneric.getVille().length() > 0) {
+					filters.add("VILLEENTITE like \"" + eGeneric.getVille().toUpperCase() + "\"");
+				}
+				
+				for(String filter : filters) {
+					sql += " and " + filter;
+				}
+			}
+			sql = sql.replaceFirst(" and ", "");
+			if(orderfield.length() > 0)
+				sql += "order by " + orderfield;
+			
+			ResultSet rs = stmt.executeQuery(sql);
+
+			if(rs.next()) {
+				Entite entite = new Entite();
+				entite.setAgrement(rs.getString("AgrementEntite"));
+				entite.setNom(rs.getString("NomEntite"));
+				entite.setAdresse(rs.getString("AdresseEntite"));
+				entite.setCodePostal(rs.getString("CodePostalEntite"));
+				entite.setVille(rs.getString("VilleEntite"));
+				entite.setNote(rs.getString("NoteEntite"));
+				entite.setType(rs.getInt("TypeEntite"));
+				
+				entites.add(entite);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try { if(stmt != null) stmt.close(); } catch(Exception e) { }
+		}
+		
+		return entites;
 	}
 
 	/* (non-Javadoc)

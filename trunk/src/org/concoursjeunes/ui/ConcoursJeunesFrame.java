@@ -21,10 +21,12 @@ import org.concoursjeunes.ConcoursJeunes;
 import org.concoursjeunes.FicheConcours;
 import org.concoursjeunes.MetaDataFicheConcours;
 import org.concoursjeunes.MetaDataFichesConcours;
+import org.concoursjeunes.Reglement;
 import org.concoursjeunes.dialog.ConfigurationDialog;
 import org.concoursjeunes.dialog.EntiteListDialog;
 import org.concoursjeunes.dialog.FicheLoaderDialog;
 import org.concoursjeunes.dialog.ImportDialog;
+import org.concoursjeunes.dialog.ReglementDialog;
 import org.concoursjeunes.plugins.ImportPlugin;
 
 import ajinteractive.standard.java2.GhostGlassPane;
@@ -75,6 +77,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener {
 		frameCreator.setLibelleAjResourcesReader(ConcoursJeunes.ajrLibelle);
 		frameCreator.addActionListener(this);
 		frameCreator.addWindowListener(new WindowAdapter() {
+			@Override
 			public void windowClosing(WindowEvent e) {
 				closeApp();
 			}
@@ -263,7 +266,14 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener {
 
 			//affiche la boite de dialogue des reglements de concours
 		} else if (cmd.equals("menubar.edition.reglement")) { //$NON-NLS-1$
-			
+			ReglementDialog reglementDialog = new ReglementDialog(this);
+			Reglement reglement = reglementDialog.showReglementDialog();
+			if(reglement != null) {
+				reglement.saveReglement();
+				
+				ConcoursJeunes.configuration.addReglementName(reglement.getName());
+				ConcoursJeunes.configuration.saveConfig();
+			}
 			//affiche la boite de dialogue de configuartion
 		} else if (cmd.equals("menubar.edition.configuration")) { //$NON-NLS-1$
 			new ConfigurationDialog(this);
@@ -308,7 +318,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener {
 		} else if(cmd.equals("menubar.debug.generateconcurrent")) { //$NON-NLS-1$
 			if(jif != null) org.concoursjeunes.debug.Debug.generateConcurrent(jif, 0);
 
-			//debugage -> Att-ribution rapide de points au concurrents
+			//debugage -> Attribution rapide de points au concurrents
 		} else if(cmd.equals("menubar.debug.addpoints")) { //$NON-NLS-1$
 			if(jif != null) {
 				org.concoursjeunes.debug.Debug.attributePoints(jif.ficheConcours.getArcherlist(), 0);

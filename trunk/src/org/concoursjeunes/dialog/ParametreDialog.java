@@ -35,6 +35,7 @@ public class ParametreDialog extends JDialog implements ActionListener {
 	private JTextField jtfIntituleConcours;
 	//private JFormattedTextField jtfDateConcours;
 	private JXDatePicker jtfDateConcours;
+	private JComboBox jcbReglement;
 	private JTextField jtfNombreCible;
 	private JComboBox jcbNombreTireurParCible;
 	private JTextField jtfNombreDepart;
@@ -59,8 +60,6 @@ public class ParametreDialog extends JDialog implements ActionListener {
     
 	/**
 	 * This method initializes this
-	 * 
-	 * @return void
 	 */
 	private void initialize() {
 		this.setTitle(ConcoursJeunes.ajrLibelle.getResourceString("parametre.titre")); //$NON-NLS-1$
@@ -96,6 +95,7 @@ public class ParametreDialog extends JDialog implements ActionListener {
 		if (jpParametre == null) {
 			JLabel jlIntituleConcours = new JLabel(ConcoursJeunes.ajrLibelle.getResourceString("parametre.intituleconcours")); //$NON-NLS-1$
 			JLabel jlDateConcours = new JLabel(ConcoursJeunes.ajrLibelle.getResourceString("parametre.dateconcours")); //$NON-NLS-1$
+			JLabel jlReglement = new JLabel(ConcoursJeunes.ajrLibelle.getResourceString("parametre.reglement")); //$NON-NLS-1$
 			JLabel jlNombreCible = new JLabel(ConcoursJeunes.ajrLibelle.getResourceString("parametre.nombrecible")); //$NON-NLS-1$
 			JLabel jlNombreTireurParCible = new JLabel(ConcoursJeunes.ajrLibelle.getResourceString("parametre.nombretireurparcible")); //$NON-NLS-1$
 			JLabel jlNombreDepart = new JLabel(ConcoursJeunes.ajrLibelle.getResourceString("parametre.nombredepart")); //$NON-NLS-1$
@@ -119,6 +119,12 @@ public class ParametreDialog extends JDialog implements ActionListener {
 			gridbagComposer.addComponentIntoGrid(jlDateConcours, c);
 			c.gridx = 2; //c.anchor = GridBagConstraints.WEST;
 			gridbagComposer.addComponentIntoGrid(getJtfDateConcours(), c);
+			
+			c.gridy++;
+			c.gridx = 1; //c.anchor = GridBagConstraints.EAST;
+			gridbagComposer.addComponentIntoGrid(jlReglement, c);
+			c.gridx = 2; //c.anchor = GridBagConstraints.WEST;
+			gridbagComposer.addComponentIntoGrid(getJcbReglement(), c);
 			
 			c.gridy++;
 			c.gridx = 1; //c.anchor = GridBagConstraints.EAST;
@@ -188,6 +194,18 @@ public class ParametreDialog extends JDialog implements ActionListener {
             jtfDateConcours.setDate(ficheConcours.getParametre().getDate());
 		}
 		return jtfDateConcours;
+	}
+	
+	private JComboBox getJcbReglement() {
+		if (jcbReglement == null) {
+			jcbReglement = new JComboBox();
+			for(String name : ConcoursJeunes.configuration.getReglementName()) {
+
+				jcbReglement.addItem(name);
+			}
+			jcbReglement.setSelectedItem(ficheConcours.getParametre().getReglement().getName());
+		}
+		return jcbReglement;
 	}
     
 	/**
@@ -342,6 +360,8 @@ public class ParametreDialog extends JDialog implements ActionListener {
 			ficheConcours.getParametre().setNbCible(Integer.parseInt(jtfNombreCible.getText()));
 			ficheConcours.getParametre().setNbTireur((Integer)jcbNombreTireurParCible.getSelectedItem());
 			ficheConcours.getParametre().setNbDepart(Integer.parseInt(jtfNombreDepart.getText()));
+			
+			//ficheConcours.setReglement(reglement)
 			
 			//sauvegarde en tache de fond
 			ficheConcours.silentSave();

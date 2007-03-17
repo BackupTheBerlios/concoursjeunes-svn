@@ -81,8 +81,8 @@ public class UserRessources {
                 e.printStackTrace();
             } finally {
                 try {
-                    fis.close();
-                    fos.close();
+                	if(fis != null) fis.close();
+                    if(fos != null) fos.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

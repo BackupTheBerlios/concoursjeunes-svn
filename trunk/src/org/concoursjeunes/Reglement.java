@@ -3,14 +3,20 @@
  */
 package org.concoursjeunes;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Hashtable;
+
+import ajinteractive.standard.java2.AJToolKit;
 
 /**
  * @author aurelien
  *
  */
 public class Reglement {
+	
+	private String name				= "default";
+	
 	private int nbSerie             = 2;
 	private int nbVoleeParSerie     = 6;
 	private int nbFlecheParVolee    = 3;
@@ -24,6 +30,20 @@ public class Reglement {
 	
 	public Reglement() {
 		
+	}	
+	
+	/**
+	 * @return name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name name à définir
+	 */
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**
@@ -38,7 +58,11 @@ public class Reglement {
 	 * @return
 	 */
 	public DistancesEtBlason getCorrespondanceCriteriaSet_DB(CriteriaSet criteriaSet) {
-		return correspondanceCriteriaSet_DB.get(criteriaSet);
+		for(CriteriaSet criteriaSet2 : correspondanceCriteriaSet_DB.keySet()) {
+			if(criteriaSet.equals(criteriaSet2))
+				return correspondanceCriteriaSet_DB.get(criteriaSet2);
+		}
+		return null;
 	}
 
 	/**
@@ -81,6 +105,20 @@ public class Reglement {
 		Hashtable<Criterion, Boolean> filterCriteria = new Hashtable<Criterion, Boolean>();
 		for(Criterion criterion : listCriteria) {
 			filterCriteria.put(criterion, criterion.isPlacement());
+		}
+
+		return filterCriteria;
+	}
+	
+	/**
+	 * Renvoi la politique de classement
+	 * 
+	 * @return Hashtable<String, Boolean> Renvoi le filtre de critere en place pour le classement des archers
+	 */
+	public Hashtable<Criterion, Boolean> getClassementFilter() {
+		Hashtable<Criterion, Boolean> filterCriteria = new Hashtable<Criterion, Boolean>();
+		for(Criterion criterion : listCriteria) {
+			filterCriteria.put(criterion, criterion.isClassement());
 		}
 
 		return filterCriteria;
@@ -179,5 +217,21 @@ public class Reglement {
 			}
 		}
 		return valid;
+	}
+	
+	public void saveReglement() {
+		File fUserReglement = new File(ConcoursJeunes.userRessources.getConfigPathForUser() 
+				+ File.separator + "reglement_" + name + ".xml");
+		AJToolKit.saveXMLStructure(fUserReglement, this, false);
+	}
+	
+	public boolean deleteReglement() {
+		boolean success = false;
+		if(!officialReglement) {
+			File fUserReglement = new File(ConcoursJeunes.userRessources.getConfigPathForUser() 
+					+ File.separator + "reglement_" + name + ".xml");
+			success = fUserReglement.delete();
+		}
+		return success;
 	}
 }

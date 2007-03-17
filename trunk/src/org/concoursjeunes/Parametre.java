@@ -13,8 +13,9 @@ import java.util.*;
  * @author  aurelien
  */
 public class Parametre extends DefaultParameters {
-	private Date dDateConcours       = new Date(); //$NON-NLS-1$
+	private Date dDateConcours		= new Date(); //$NON-NLS-1$
 	private ArrayList<String> vArbitres = new ArrayList<String>();
+	private Reglement reglement		= new Reglement();
 
 	private String saveName            = ""; //$NON-NLS-1$
 
@@ -70,5 +71,19 @@ public class Parametre extends DefaultParameters {
 	 */
 	public void setSaveName(String saveName) {
 		this.saveName = saveName;
+	}
+
+	/**
+	 * @return reglement
+	 */
+	public Reglement getReglement() {
+		return reglement;
+	}
+
+	/**
+	 * @param reglement reglement à définir
+	 */
+	public void setReglement(Reglement reglement) {
+		this.reglement = reglement;
 	}
 }

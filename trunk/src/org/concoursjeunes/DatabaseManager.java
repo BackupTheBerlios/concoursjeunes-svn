@@ -187,9 +187,9 @@ public class DatabaseManager {
 			}
 
 			concurrent.setCriteriaSet(differentiationCriteria);
-			concurrent.setLicence(rs.getString("NUMLICENCEARCHER"));
-			concurrent.setNom(rs.getString("NOMARCHER"));
-			concurrent.setPrenom(rs.getString("PRENOMARCHER"));
+			concurrent.setNumLicenceArcher(rs.getString("NUMLICENCEARCHER"));
+			concurrent.setNomArcher(rs.getString("NOMARCHER"));
+			concurrent.setPrenomArcher(rs.getString("PRENOMARCHER"));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

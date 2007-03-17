@@ -5,6 +5,9 @@ package org.concoursjeunes;
 
 import java.awt.Desktop;
 import java.io.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.*;
 
 import javax.xml.parsers.SAXParser;
@@ -64,7 +67,7 @@ public class ConcoursJeunes {
 	 */
 	public static UserRessources userRessources        = new UserRessources(NOM);
 	
-	public static DatabaseManager databaseManager	   = new DatabaseManager();
+	public static Connection dbConnection;
 
 	private MetaDataFichesConcours metaDataFichesConcours;
 	private ArrayList<FicheConcours> fichesConcours    = new ArrayList<FicheConcours>();
@@ -101,6 +104,24 @@ public class ConcoursJeunes {
 		System.out.println("Architecture: " + System.getProperty("os.arch")); //$NON-NLS-1$ //$NON-NLS-2$
 		System.out.println("Version: " + System.getProperty("os.version")); //$NON-NLS-1$ //$NON-NLS-2$
 		System.out.println("Repertoire utilisateur: " + System.getProperty("user.home")); //$NON-NLS-1$ //$NON-NLS-2$
+		
+		try {
+			//chargement du driver
+			Class.forName(ajrParametreAppli.getResourceString("database.driver")).newInstance();
+
+			dbConnection = DriverManager.getConnection(
+					ajrParametreAppli.getResourceString("database.url"),
+					ajrParametreAppli.getResourceString("database.user"),
+					ajrParametreAppli.getResourceString("database.password"));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}        
 	}
 
 	/**
@@ -113,12 +134,7 @@ public class ConcoursJeunes {
 		configuration = (Configuration)AJToolKit.loadXMLStructure(new File(userRessources.getConfigPathForUser() + File.separator + 
 				ajrParametreAppli.getResourceString("file.configuration")), false); //$NON-NLS-1$
 
-		if(configuration != null) {
-			//evite la corruption du configuration.xml
-			//Configuration confRef = (Configuration)AJToolKit.loadXMLStructure(new File(userRessources.getConfigPathForUser() + File.separator + 
-			//		"configuration_" + configuration.getCurProfil() + ".xml"), false); //$NON-NLS-1$ //$NON-NLS-2$
-			//configuration.resetOfficialInfo(confRef);
-		} else {
+		if(configuration == null) {
 			configuration = new Configuration();
 		}
 

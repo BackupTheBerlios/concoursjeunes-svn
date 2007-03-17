@@ -56,7 +56,7 @@ public class FileImportPlugin extends Thread implements ImportPlugin {
         File source;
         File destination;
         
-        java.io.FileInputStream sourceFile = null;
+        //java.io.FileInputStream sourceFile = null;
         FileOutputStream destinationFile = null;
         
         try {
@@ -116,8 +116,7 @@ public class FileImportPlugin extends Thread implements ImportPlugin {
             return false;
         } finally {
             // Quoi qu'il arrive, on ferme les flux
-            try { sourceFile.close(); } catch(Exception e) { }
-            try { destinationFile.close(); } catch(Exception e) { }
+            try { if(destinationFile != null) destinationFile.close(); } catch(Exception e) { }
         }
     }
 }

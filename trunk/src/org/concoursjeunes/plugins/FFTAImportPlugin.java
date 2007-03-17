@@ -74,8 +74,6 @@ public class FFTAImportPlugin extends Thread implements ImportPlugin {
     private boolean fftaLoader() {
     	if(parentframe == null)
     		return false;
-    	
-        BufferedReader sourceReader = null;
 
         try {
         	if(System.getProperty("os.name").startsWith("Windows")) { //$NON-NLS-1$ //$NON-NLS-2$
@@ -140,8 +138,6 @@ public class FFTAImportPlugin extends Thread implements ImportPlugin {
                     "<html>" + pluginLocalisation.getResourceString("erreur.import.outofmemory") + "</html>", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     pluginLocalisation.getResourceString("erreur"),JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
             return false;
-        } finally {
-            try { sourceReader.close(); } catch(Exception e) { }
         }
     }
 }

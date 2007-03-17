@@ -45,6 +45,9 @@
 				<include name="ressources/**"/>
 				<include name="src/**"/>
 				<exclude name="**/.svn*" />
+				<exclude name="src/org/concoursjeunes/test/**" />
+				<exclude name="base/concoursjeunesdb.backup" />
+				<exclude name="base/concoursjeunesdb.data" />
 				<exclude name="config/*Plugin*" />
 				<exclude name="lang/*Plugin*" />
 				<exclude name="ressources/BASE.TXT" />
@@ -87,13 +90,6 @@
 	</target>
 	
 	<target name="compile" depends="pack_stage1">
-		
-		<copy todir="${projet.pack.dir}" >
-			<fileset dir="." >
-				<include name="src/**"/>
-				<exclude name="**/.svn*" />
-			</fileset>
-		</copy>
 		
 		<replace 
 		    file="${projet.pack.dir}/src/org/concoursjeunes/ConcoursJeunes.java"

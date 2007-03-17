@@ -2,14 +2,15 @@ package org.concoursjeunes;
 
 import java.util.*;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Collection des concurrents présent sur le concours
  * @author  Aurelien Jeoffray
- * @version  3.2
+ * @version  3.3
  */
-
-public class ArcherList {
-//	static:
+@XmlRootElement
+public class ConcurrentList {
 	/**
 	 * Trie les archers par nom
 	 */
@@ -31,14 +32,14 @@ public class ArcherList {
 	private Parametre parametre;
 
 	//Constructeur Obligatoire pour la sérialisation XML
-	public ArcherList() { }
+	public ConcurrentList() { }
 
 	/**
 	 * Construit la liste d'archer sur les parametre donnée
 	 * 
 	 * @param parametre - les parametres de réference de la liste
 	 */
-	public ArcherList(Parametre parametre) {
+	public ConcurrentList(Parametre parametre) {
 		this.parametre = parametre;
 	}
 
@@ -47,9 +48,8 @@ public class ArcherList {
 	 * @param concurrent - le concurrent à ajouter
 	 */
 	public void add(Concurrent concurrent) {
-		assert concurrent != null : "concurrent ne doit pas être null";
-
-		this.archList.add(concurrent);
+		if(concurrent != null)
+			archList.add(concurrent);
 	}
 
 	/**
@@ -60,11 +60,10 @@ public class ArcherList {
 	 * @return boolean - true si la suppression à réussi, false sinon
 	 */
 	public boolean remove(int index) {
-		assert index > 0;
-		assert index < archList.size();
-
-		Concurrent concurrent = archList.get(index);
-		return remove(concurrent);
+		if(index > 0 && index < archList.size()) {
+			return remove(archList.get(index));
+		}
+		return false;
 	}
 
 	/**
@@ -75,13 +74,13 @@ public class ArcherList {
 	 * @return boolean - true si la suppression à réussi, false sinon
 	 */
 	public boolean remove(Concurrent concurrent) {
-		assert concurrent != null;
-
-		return archList.remove(concurrent);
+		if(concurrent != null)
+			return archList.remove(concurrent);
+		return false;
 	}
 
 	/**
-	 * supprime tout les concurrentde la liste
+	 * supprime tout les concurrent de la liste
 	 *
 	 */
 	public void removeAll() {
@@ -111,23 +110,23 @@ public class ArcherList {
 	 * Extrait tous les concurrents appartenant à un club donné
 	 * 
 	 * @param compagnie - le club dont on veut la liste
-	 * @param differentiationCriteria - le filtre se selection
+	 * @param criteriaSet - le filtre se selection
 	 * 
 	 * @return Concurrent[] - la liste des concurrents appartenant au meme club
 	 */
-	public Concurrent[] list(Entite compagnie, CriteriaSet differentiationCriteria) {
-		return list(compagnie, differentiationCriteria, -1);
+	public Concurrent[] list(Entite compagnie, CriteriaSet criteriaSet) {
+		return list(compagnie, criteriaSet, -1);
 	}
 
 	/**
 	 * Extrait tous les concurrents appartenant à un club donné
 	 * 
 	 * @param compagnie - le club dont on veut la liste
-	 * @param differentiationCriteria - le filtre se selection
+	 * @param criteriaSet - le filtre se selection
 	 * @param depart - le depart concerne
 	 * @return Concurrent[] - la liste des concurrents appartenant au meme club
 	 */
-	public Concurrent[] list(Entite compagnie, CriteriaSet differentiationCriteria, int depart) {
+	private Concurrent[] list(Entite compagnie, CriteriaSet criteriaSet, int depart) {
 
 		assert compagnie != null;
 
@@ -137,8 +136,8 @@ public class ArcherList {
 		//recherche
 		for(Concurrent concurrent : archList) {
 			if(concurrent.getClub().equals(compagnie)
-					&& (differentiationCriteria == null || 
-							differentiationCriteria.equals(concurrent.getCriteriaSet()))
+					&& (criteriaSet == null || 
+							criteriaSet.equals(concurrent.getCriteriaSet()))
 							&& (depart == -1 || concurrent.getDepart() == depart))
 				sel.add(concurrent);
 		}
@@ -149,18 +148,18 @@ public class ArcherList {
 	/**
 	 * Extrait la liste des concurrents pour une categorie donnée
 	 * 
-	 * @param differentiationCriteria - points commun des archers à récuperer
+	 * @param criteriaSet - points commun des archers à récuperer
 	 * @param depart - le depart concerné
 	 * @return Concurrent[] - la liste des concurrents correspondant aux critere de recherche
 	 */
-	public Concurrent[] list(CriteriaSet differentiationCriteria, int depart) {
+	public Concurrent[] list(CriteriaSet criteriaSet, int depart) {
 
-		assert differentiationCriteria != null;
+		assert criteriaSet != null;
 
 		ArrayList<Concurrent> sel = new ArrayList<Concurrent>();
 
 		for(Concurrent concurrent : archList) {
-			if(differentiationCriteria.equals(concurrent.getCriteriaSet()) && 
+			if(criteriaSet.equals(concurrent.getCriteriaSet()) && 
 					(depart == -1 || concurrent.getDepart() == depart))
 				sel.add(concurrent);
 		}
@@ -184,7 +183,6 @@ public class ArcherList {
 		for(Concurrent concurrent : archList) {
 			if(depart == -1 || concurrent.getDepart() == depart) {
 				DistancesEtBlason db = DistancesEtBlason.getDistancesEtBlasonForConcurrent(reglement, concurrent);
-				
 
 				if(distancesEtBlason == null || db.equals(distancesEtBlason))
 					sel.add(concurrent);
@@ -366,8 +364,7 @@ public class ArcherList {
 					}
 				}
 				if(add) {
-					DistancesEtBlason db = DistancesEtBlason.getDistancesEtBlasonForConcurrent(reglement, concurrent);
-					alDB.add(db);
+					alDB.add(DistancesEtBlason.getDistancesEtBlasonForConcurrent(reglement, concurrent));
 				}
 			}
 		}
@@ -397,7 +394,7 @@ public class ArcherList {
 	}
 
 	/**
-	 * test si la ArcherList contient le concurrent donnée en parametre
+	 * test si la ConcurrentList contient le concurrent donnée en parametre
 	 * 
 	 * @param concurrent - le concurrent à tester
 	 * @return boolean - true si concurrent est présent
@@ -425,17 +422,6 @@ public class ArcherList {
 	 */
 	public int countArcher(int depart) {
 		return list(depart).length;
-	}
-
-	/**
-	 * Donne le nombre de concurrent pour la compagnie donne
-	 * 
-	 * @param depart
-	 * @param compagnie
-	 * @return int
-	 */
-	public int countArcher(Entite compagnie, int depart) {
-		return list(compagnie, null, depart).length;
 	}
 
 	/**

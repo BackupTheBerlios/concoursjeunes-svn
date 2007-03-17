@@ -27,9 +27,13 @@ public class AutoCompleteDocument extends PlainDocument {
 	 * Type de recherche : recherche par le prenom
 	 */
 	public static final int FIRSTNAME_SEARCH = 3;
-	
+	/**
+	 * Type de recherche : recherche par le nom du club
+	 */
 	public static final int CLUB_SEARCH = 4;
-	
+	/**
+	 * Type de recherche : recherche par le numero d'agrement du club
+	 */
 	public static final int AGREMENT_SEARCH = 5;
 	
 	private static Concurrent concurrent;
@@ -191,9 +195,11 @@ public class AutoCompleteDocument extends PlainDocument {
 			return;
 		
 		String searchString = getText(0, getLength());
-		String sqlfilter = "NomArcher like '" + searchString.toUpperCase() + "%'";
+		Archer searchArcher = new Archer();
+		searchArcher.setNomArcher(searchString.toUpperCase() + "%");
+		
 		if(getLength() > 0) {
-			concurrent = ConcoursJeunes.databaseManager.getFirstArcherWith(sqlfilter, "NomArcher", reglement);
+			concurrent = (Concurrent)Archer.getArchersInDatabase(searchArcher, reglement, "NOMARCHER").get(0);
 			autocompleteLicence = false;
 		} else {
 			concurrent = null;
@@ -201,7 +207,7 @@ public class AutoCompleteDocument extends PlainDocument {
 		}
 
 		//aucun concurrent trouvé ou concurrent trouvé ne correspondant pas à la recherche
-		if(concurrent == null || (strict && !concurrent.getNom().equals(searchString))) {
+		if(concurrent == null || (strict && !concurrent.getNomArcher().equals(searchString))) {
 			if(strict && concurrent != null)
 				concurrent = null;
 
@@ -209,11 +215,11 @@ public class AutoCompleteDocument extends PlainDocument {
 
 		} else {
 			super.remove(0, getLength());
-			super.insertString(0, concurrent.getNom(), null);
-			textField.setCaretPosition(concurrent.getNom().length());
+			super.insertString(0, concurrent.getNomArcher(), null);
+			textField.setCaretPosition(concurrent.getNomArcher().length());
 			textField.moveCaretPosition(caretpos);
 			
-			fireConcurrendFinded(concurrent, sqlfilter);
+			fireConcurrendFinded(concurrent, searchArcher);
 		}
 	}
 	
@@ -222,32 +228,33 @@ public class AutoCompleteDocument extends PlainDocument {
 			return;
 		
 		String searchString = getText(0, getLength());
-		String sqlfilter = "";
+		Archer searchArcher = new Archer();
 		Concurrent tempConcurrent = null;
 		if(getLength() > 0 && concurrent != null) {
-			sqlfilter = "NomArcher='" + concurrent.getNom() 
-					+ "' and UPPER(PrenomArcher) like '" + searchString.toUpperCase() + "%'";
-			tempConcurrent = ConcoursJeunes.databaseManager.getFirstArcherWith(sqlfilter, "NumLicenceArcher", reglement);
+			searchArcher.setNomArcher(concurrent.getNomArcher());
+			searchArcher.setPrenomArcher(searchString + "%");
+			
+			tempConcurrent = (Concurrent)Archer.getArchersInDatabase(searchArcher, reglement, "PRENOMARCHER").get(0);
 			
 			autocompleteLicence = false;
 		} else {
 			autocompleteLicence = (concurrent != null);
 		}
 
-		if(tempConcurrent == null || (strict && !tempConcurrent.getPrenom().equals(getText(0, getLength())))) {
+		if(tempConcurrent == null || (strict && !tempConcurrent.getPrenomArcher().equals(getText(0, getLength())))) {
 			if(concurrent != null)
-				concurrent.setPrenom(getText(0, getLength()));
+				concurrent.setPrenomArcher(getText(0, getLength()));
 			fireConcurrentNotFound();
 
 		} else {
 			concurrent = tempConcurrent;
 			
 			super.remove(0, getLength());
-			super.insertString(0, concurrent.getPrenom(), null);
-			textField.setCaretPosition(concurrent.getPrenom().length());
+			super.insertString(0, concurrent.getPrenomArcher(), null);
+			textField.setCaretPosition(concurrent.getPrenomArcher().length());
 			textField.moveCaretPosition(caretpos);
 			
-			fireConcurrendFinded(concurrent, sqlfilter);
+			fireConcurrendFinded(concurrent, searchArcher);
 		}
 	}
 	
@@ -256,14 +263,15 @@ public class AutoCompleteDocument extends PlainDocument {
 			strict = !autocompleteLicence;
 		
 		String searchString = getText(0, getLength());
-		String sqlfilter = "NumLicenceArcher like '" + searchString.toUpperCase() + "%'";
+		Archer searchArcher = new Archer();
+		searchArcher.setNumLicenceArcher(searchString + "%");
 		if(getLength() > 0) {
-			concurrent = ConcoursJeunes.databaseManager.getFirstArcherWith(sqlfilter, "NumLicenceArcher", reglement);
+			concurrent = (Concurrent)Archer.getArchersInDatabase(searchArcher, reglement, "NUMLICENCEARCHER").get(0);
 		} else {
 			concurrent = null;
 		}
 		
-		if(concurrent == null || (strict && !concurrent.getLicence().equals(getText(0, getLength())))) {
+		if(concurrent == null || (strict && !concurrent.getNumLicenceArcher().equals(getText(0, getLength())))) {
 			if(strict && concurrent != null)
 				concurrent = null;
 			
@@ -276,11 +284,11 @@ public class AutoCompleteDocument extends PlainDocument {
 			autocompleteLicence = true;
 			
 			super.remove(0, getLength());
-			super.insertString(0, concurrent.getLicence(), null);
-			textField.setCaretPosition(concurrent.getLicence().length());
+			super.insertString(0, concurrent.getNumLicenceArcher(), null);
+			textField.setCaretPosition(concurrent.getNumLicenceArcher().length());
 			textField.moveCaretPosition(caretpos);
 			
-			fireConcurrendFinded(concurrent, sqlfilter);
+			fireConcurrendFinded(concurrent, searchArcher);
 		}
 	}
 	
@@ -289,9 +297,10 @@ public class AutoCompleteDocument extends PlainDocument {
 			return;
 		
 		String searchString = getText(0, getLength());
-		String sqlfilter = "VILLEENTITE like '" + searchString.toUpperCase() + "%'";
+		Entite searchEntite = new Entite();
+		searchEntite.setVille(searchString.toUpperCase() + "%");
 		if(getLength() > 0) {
-			entite = ConcoursJeunes.databaseManager.getFirstEntiteWith(sqlfilter, "VILLEENTITE");
+			entite = Entite.getEntitesInDatabase(searchEntite, "VILLEENTITE").get(0);
 			autocompleteAgrement = false;
 		} else {
 			entite = null;
@@ -311,7 +320,7 @@ public class AutoCompleteDocument extends PlainDocument {
 			textField.setCaretPosition(entite.getVille().length());
 			textField.moveCaretPosition(caretpos);
 			
-			fireEntiteFinded(entite, sqlfilter);
+			fireEntiteFinded(entite, searchEntite);
 		}
 	}
 	
@@ -320,9 +329,10 @@ public class AutoCompleteDocument extends PlainDocument {
 			strict = !autocompleteAgrement;
 		
 		String searchString = getText(0, getLength());
-		String sqlfilter = "AGREMENTENTITE like '" + searchString.toUpperCase() + "%'";
+		Entite searchEntite = new Entite();
+		searchEntite.setAgrement(searchString.toUpperCase() + "%");
 		if(getLength() > 0) {
-			entite = ConcoursJeunes.databaseManager.getFirstEntiteWith(sqlfilter, "AGREMENTENTITE");
+			entite = Entite.getEntitesInDatabase(searchEntite, "AGREMENTENTITE").get(0);
 		} else {
 			entite = null;
 		}
@@ -344,14 +354,14 @@ public class AutoCompleteDocument extends PlainDocument {
 			textField.setCaretPosition(entite.getAgrement().length());
 			textField.moveCaretPosition(caretpos);
 			
-			fireEntiteFinded(entite, sqlfilter);
+			fireEntiteFinded(entite, searchEntite);
 		}
 	}
 
-	private void fireConcurrendFinded(Concurrent concurrent, String searchString) {
+	private void fireConcurrendFinded(Concurrent concurrent, Archer searchArcher) {
 		for(AutoCompleteDocumentListener acdl : listeners.getListeners(AutoCompleteDocumentListener.class)) {
 			AutoCompleteDocumentEvent autoCompleteDocumentEvent = new AutoCompleteDocumentEvent(textField, concurrent);
-			autoCompleteDocumentEvent.setSqlfilter(searchString);
+			autoCompleteDocumentEvent.setGenericArcher(searchArcher);
 			acdl.concurrentFinded(autoCompleteDocumentEvent);
 		}
 	}
@@ -362,10 +372,10 @@ public class AutoCompleteDocument extends PlainDocument {
 		}
 	}
 	
-	private void fireEntiteFinded(Entite entite, String searchString) {
+	private void fireEntiteFinded(Entite entite, Entite searchEntite) {
 		for(AutoCompleteDocumentListener acdl : listeners.getListeners(AutoCompleteDocumentListener.class)) {
 			AutoCompleteDocumentEvent autoCompleteDocumentEvent = new AutoCompleteDocumentEvent(textField, entite);
-			autoCompleteDocumentEvent.setSqlfilter(searchString);
+			autoCompleteDocumentEvent.setGenericEntite(searchEntite);
 			acdl.entiteFinded(autoCompleteDocumentEvent);
 		}
 	}

@@ -45,7 +45,7 @@ public class Debug {
         //TODO ficheConcoursFrame.initContent();
     }
     
-    public static void attributePoints(ArcherList archerList, int depart) {
+    public static void attributePoints(ConcurrentList archerList, int depart) {
         /*for(Concurrent concurrent : archerList.list(depart)) {
             int[] points = new int[ConcoursJeunes.configuration.getNbSerie()];
             for(int i = 0; i < points.length; i++) {
@@ -55,7 +55,7 @@ public class Debug {
         }*/
     }
     
-    public static void resetPoints(ArcherList archerList, int depart) {
+    public static void resetPoints(ConcurrentList archerList, int depart) {
         /*for(Concurrent concurrent : archerList.list(depart)) {
             int[] points = new int[ConcoursJeunes.configuration.getNbSerie()];
             for(int i = 0; i < points.length; i++) {
@@ -68,7 +68,7 @@ public class Debug {
         }*/
     }
     
-    public static void attributeLevel(ArcherList archerList, int depart) {
+    public static void attributeLevel(ConcurrentList archerList, int depart) {
         for(Concurrent concurrent : archerList.list(depart)) {
         	
             //concurrent.getDifferentiationCriteria().setCriterion(new Criterion("niveau"), (int)Math.round(Math.random() * 3)); //$NON-NLS-1$

@@ -568,10 +568,10 @@ public class ConfigurationDialog extends JDialog implements ActionListener {
 
 		jtfLignes.setText("" + configuration.getColonneAndLigne()[0]); //$NON-NLS-1$
 		jtfColonnes.setText("" + configuration.getColonneAndLigne()[1]); //$NON-NLS-1$
-		jtfMargesH.setText("" + configuration.getMarges().top); //$NON-NLS-1$
-		jtfMargesB.setText("" +configuration.getMarges().bottom); //$NON-NLS-1$
-		jtfMargesG.setText("" + configuration.getMarges().left); //$NON-NLS-1$
-		jtfMargesD.setText("" +configuration.getMarges().right); //$NON-NLS-1$
+		jtfMargesH.setText("" + configuration.getMarges().getTop()); //$NON-NLS-1$
+		jtfMargesB.setText("" +configuration.getMarges().getBottom()); //$NON-NLS-1$
+		jtfMargesG.setText("" + configuration.getMarges().getLeft()); //$NON-NLS-1$
+		jtfMargesD.setText("" +configuration.getMarges().getRight()); //$NON-NLS-1$
 		jtfEspacementsH.setText("" + configuration.getEspacements()[0]); //$NON-NLS-1$
 		jtfEspacementsV.setText("" + configuration.getEspacements()[1]); //$NON-NLS-1$
 	}
@@ -740,11 +740,11 @@ public class ConfigurationDialog extends JDialog implements ActionListener {
 		workConfiguration.setFormatPapier((String)this.jcbFormatPapier.getSelectedItem());
 		workConfiguration.setOrientation((String)this.jcbOrientation.getSelectedItem());
 		workConfiguration.setColonneAndLigne(new int[] {Integer.parseInt(this.jtfLignes.getText()), Integer.parseInt(this.jtfColonnes.getText())});
-		workConfiguration.setMarges(new Insets(
-				Integer.parseInt(this.jtfMargesH.getText()), 
-				Integer.parseInt(this.jtfMargesB.getText()), 
-				Integer.parseInt(this.jtfMargesG.getText()), 
-				Integer.parseInt(this.jtfMargesD.getText())));
+		workConfiguration.setMarges(new Marges(
+				Double.parseDouble(this.jtfMargesH.getText()), 
+				Double.parseDouble(this.jtfMargesB.getText()), 
+				Double.parseDouble(this.jtfMargesG.getText()), 
+				Double.parseDouble(this.jtfMargesD.getText())));
 		workConfiguration.setEspacements(new double[] {Double.parseDouble(this.jtfEspacementsH.getText()), Double.parseDouble(this.jtfEspacementsV.getText())});
 		workConfiguration.setInterfaceResultatCumul(jcbAvanceResultatCumul.isSelected());
 		workConfiguration.setInterfaceResultatSupl(jcbAvanceResultatSupl.isSelected());
