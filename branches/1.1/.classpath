@@ -5,9 +5,9 @@
 	<classpathentry kind="lib" path="lang"/>
 	<classpathentry kind="lib" path="lib/aide.jar"/>
 	<classpathentry kind="lib" path="lib/jhall.jar"/>
-	<classpathentry kind="lib" path="lib"/>
 	<classpathentry kind="lib" path="lib/AJPackage.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/itext-1.4.8.jar"/>
+	<classpathentry kind="lib" path="lib"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

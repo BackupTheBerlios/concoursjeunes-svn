@@ -29,6 +29,11 @@ afin d'apporter le support complet Vista
 038 - (01/02/2007) - Pour faire suite à l'arret du support par
 la FFTA du logiciel de gestion de Concours WinFFTA2, suppression
 de l'import WinFFTA
+039 - (17/03/2007) - Correction de fautes d'orthographe dans les
+libellés (merci Pepelle)
+040 - (17/03/2007) - Problème connu: si on saisi une valeur anormal
+dans les dimensions des étiquettes, peut faire planter l'application!
+Faire très attention donc à saisir des valeurs cohérentes!!!
 
 Mofification depuis la 1.10.06:
 030 - (16/01/2007) Bugfix #P0027 - Remplacment de la librairie
