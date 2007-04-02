@@ -324,9 +324,9 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 
 		private ArrayList<TableModelListener> tmListeners = new ArrayList<TableModelListener>();
 		private ArrayList<String> columnsName = new ArrayList<String>();
-		private ArrayList<Archer> rows = new ArrayList<Archer>();
+		private ArrayList<Concurrent> rows = new ArrayList<Concurrent>();
 
-		private Archer curConcurrent = null;
+		private Concurrent curConcurrent = null;
 
 		public ArchersTableModel() {
 			this(null);
@@ -334,7 +334,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		
 		public ArchersTableModel(Archer filter) {
 			
-			rows = Archer.getArchersInDatabase(filter, reglement, "NOMARCHER");
+			rows = Concurrent.getArchersInDatabase(filter, reglement, "NOMARCHER");
 
 			columnsName.add(ConcoursJeunes.ajrLibelle.getResourceString("listeconcurrent.numlicence")); //$NON-NLS-1$
 			columnsName.add(ConcoursJeunes.ajrLibelle.getResourceString("listeconcurrent.nom")); //$NON-NLS-1$
@@ -437,7 +437,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 		}
 
-		public Archer getConcurrentAtRow(int rowIndex) {
+		public Concurrent getConcurrentAtRow(int rowIndex) {
 			return rows.get(rowIndex);
 		}
 	}

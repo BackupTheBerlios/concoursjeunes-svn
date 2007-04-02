@@ -1,5 +1,8 @@
 package org.concoursjeunes;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 /**
@@ -9,7 +12,6 @@ import java.util.ArrayList;
  * @version  3.0
  */
 public class Concurrent extends Archer {
-//	public:
 	/**
 	 * Statut de l'archer: réservé
 	 */
@@ -23,7 +25,8 @@ public class Concurrent extends Archer {
 	 */
 	public static final int UNINIT      = 2;
 
-//	private:
+	private CriteriaSet criteriaSet;
+	
 	private int depart                  = 0;
 	private int cible                   = 0;	//position sur le concours
 	private int position                = 0;
@@ -41,6 +44,24 @@ public class Concurrent extends Archer {
 	 */
 	public Concurrent() { }
 
+	/**
+	 * Retourne les critères distinguant l'archer
+	 * 
+	 * @return criteriaSet le jeux de critères distinguant l'archer
+	 */
+	public CriteriaSet getCriteriaSet() {
+		return criteriaSet;
+	}
+
+	/**
+	 * Définit le jeux de critère d'istinguant l'archer
+	 * 
+	 * @param criteriaSet le jeux de critères de distinction
+	 */
+	public void setCriteriaSet(CriteriaSet criteriaSet) {
+		this.criteriaSet = criteriaSet;
+	}
+	
 	/**
 	 * Affectation des scores pour le concurrent
 	 * 
@@ -217,5 +238,80 @@ public class Concurrent extends Archer {
 		getNomArcher() + " " + //$NON-NLS-1$
 		getPrenomArcher() + " (" + //$NON-NLS-1$
 		getClub() + ")"; //$NON-NLS-1$
+	}
+	
+	/**
+	 * Test si l'archer possede dans la base des homonymes (même nom et prenom)
+	 * 
+	 * @return true su l'archer possede des homonyme, false sinon
+	 */
+	public boolean haveHomonyme() {
+		Archer aComparant = new Archer();
+		aComparant.setNomArcher(getNomArcher());
+		aComparant.setPrenomArcher(getPrenomArcher());
+
+		ArrayList<Concurrent> homonyme = getArchersInDatabase(aComparant, null, "");
+
+		return (homonyme.size() > 1);
+	}
+
+	/**
+	 * Retourne une liste d'archer en provenance de la base de données en fonction
+	 * des critères de recherche fournit en parametres
+	 * 
+	 * @param aGeneric objet Archer generique servant de filtre de recherche (la recherche se
+	 * fait sur les champs renseigné, le caractères genérique (%, ?) sont accepté
+	 * 
+	 * @param reglement le reglement à appliqué aux objets archers retourné
+	 * 
+	 * @param orderfield l'ordre de trie des objets retourné. Doivent être listé dans 
+	 * l'ordre les champs de la base de données (table ARCHERS) servant au trie.
+	 * 
+	 * @return la liste des archers correspondant aux critères de recherche
+	 */
+	public static ArrayList<Concurrent> getArchersInDatabase(Archer aGeneric, Reglement reglement, String orderfield) {
+		ArrayList<Concurrent> concurrents = new ArrayList<Concurrent>();
+		Statement stmt = null;
+		try {
+			stmt = ConcoursJeunes.dbConnection.createStatement();
+
+			String sql = "select * from archers ";
+			if(aGeneric != null) {
+				sql += "where ";
+				ArrayList<String> filters = new ArrayList<String>();
+				if(aGeneric.getNumLicenceArcher().length() > 0) {
+					filters.add("NUMLICENCEARCHER like '" + aGeneric.getNumLicenceArcher() + "'");
+				}
+				if(aGeneric.getNomArcher().length() > 0) {
+					filters.add("NOMARCHER like '" + aGeneric.getNomArcher() + "'");
+				}
+				if(aGeneric.getPrenomArcher().length() > 0) {
+					filters.add("UPPER(PRENOMARCHER) like '" + aGeneric.getPrenomArcher().toUpperCase() + "'");
+				}
+				if(aGeneric.getClub().getAgrement().length() > 0) {
+					filters.add("AGREMENTENTITE like '" + aGeneric.getClub().getAgrement() + "'");
+				}
+
+				for(String filter : filters) {
+					sql += " and " + filter;
+				}
+			}
+			sql = sql.replaceFirst(" and ", "");
+			if(orderfield.length() > 0)
+				sql += " order by " + orderfield;
+
+			ResultSet rs = stmt.executeQuery(sql);
+
+			while(rs.next()) {
+				Concurrent concurrent = ConcurrentFactory.getConcurrent(rs, reglement);
+
+				concurrents.add(concurrent);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try { if(stmt != null) stmt.close(); } catch(Exception e) { }
+		}
+		return null;
 	}
 }

@@ -58,7 +58,7 @@ public class CibleMutableTreeNode implements MutableTreeNode, CibleListener {
 	
 	private void createChildren() {
 		if(cible != null) {
-			for(int i = 0; i < cible.getNbMaxArchers(); i++) {
+			for(int i = 0; i < cible.getFicheConcours().getParametre().getNbTireur(); i++) {
 				Concurrent concurrent = cible.getConcurrentAt(i);
 				if(concurrent == null)
 					insert(new DefaultMutableTreeNode(Cible.getCibleLibelle(cible.getNumCible(), i)), i);

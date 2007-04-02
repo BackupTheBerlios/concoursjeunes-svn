@@ -14,7 +14,7 @@ import org.junit.Test;
 
 /**
  * @author aurelien
- *
+ * TODO revoir les test avec creation de concours
  */
 public class FicheConcoursTest {
 	
@@ -27,7 +27,7 @@ public class FicheConcoursTest {
 	@Before
 	public void setUp() throws Exception {
 		concoursJeunes = new ConcoursJeunes();
-		ficheConcours = concoursJeunes.createFicheConcours();
+		//concoursJeunes.createFicheConcours();
 	}
 
 	/**

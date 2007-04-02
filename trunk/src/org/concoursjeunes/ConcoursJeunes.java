@@ -10,6 +10,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.*;
 
+import javax.swing.event.EventListenerList;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -72,6 +73,8 @@ public class ConcoursJeunes {
 	private MetaDataFichesConcours metaDataFichesConcours;
 	private ArrayList<FicheConcours> fichesConcours    = new ArrayList<FicheConcours>();
 	
+	private EventListenerList listeners = new EventListenerList();
+	
 	/**	
 	 * constructeur, création de la fenetre principale
 	 */
@@ -122,6 +125,14 @@ public class ConcoursJeunes {
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}        
+	}
+	
+	public void addConcoursJeunesListener(ConcoursJeunesListener concoursJeunesListener) {
+		listeners.add(ConcoursJeunesListener.class, concoursJeunesListener);
+	}
+	
+	public void removeConcoursJeunesListener(ConcoursJeunesListener concoursJeunesListener) {
+		listeners.remove(ConcoursJeunesListener.class, concoursJeunesListener);
 	}
 
 	/**
@@ -178,7 +189,7 @@ public class ConcoursJeunes {
 	 * 
 	 * @return FicheConcours la fiche du concours créé
 	 */
-	public FicheConcours createFicheConcours() {
+	public void createFicheConcours() {
 		if(configuration != null) {
 			FicheConcours ficheConcours = new FicheConcours();
 			fichesConcours.add(ficheConcours);
@@ -195,19 +206,17 @@ public class ConcoursJeunes {
 			metaDataFichesConcours.addMetaDataFicheConcours(metaDataFicheConcours);
 			
 			saveMetaDataFichesConcours();
-	
-			return ficheConcours;
+			
+			fireFicheConcoursCreated(ficheConcours);
 		}
-		
-		return null;
 	}
 	
 	/**
 	 * 
 	 * @param ficheConcours
 	 */
-	public boolean deleteFicheConcours(String filename) {
-		boolean success = false;
+	public void deleteFicheConcours(String filename) {
+
 		if(configuration != null) {
 			for(MetaDataFicheConcours metaDataFicheConcours : metaDataFichesConcours.getFiches()) {
 				String filenameConcours = metaDataFicheConcours.getFilenameConcours();
@@ -217,12 +226,16 @@ public class ConcoursJeunes {
 				}
 			}
 			
-			success = new File(userRessources.getConcoursPathForProfile(configuration.getCurProfil()) + File.separator + 
-					filename).delete();
-			
-			saveMetaDataFichesConcours();
+			if(new File(userRessources.getConcoursPathForProfile(configuration.getCurProfil()) + File.separator + 
+					filename).delete()) {
+				fireFicheConcoursDeleted(null);
+				saveMetaDataFichesConcours();
+			} else {
+				//TODO gerer l'exception
+				//throw
+			}
 		}
-		return success;
+
 	}
 
 	/**
@@ -231,9 +244,11 @@ public class ConcoursJeunes {
 	 * @param ficheConcours
 	 * @return true si la fiche à été fermé et false sinon
 	 */
-	public boolean closeFicheConcours(FicheConcours ficheConcours) {
+	public void closeFicheConcours(FicheConcours ficheConcours) {
 		ficheConcours.silentSave();
-		return fichesConcours.remove(ficheConcours);
+		if(fichesConcours.remove(ficheConcours)) {
+			fireFicheConcoursClosed(ficheConcours);
+		}
 	}
 
 	/**
@@ -243,7 +258,7 @@ public class ConcoursJeunes {
 	 * 
 	 * @return FicheConcours la fiche du concours restauré
 	 */
-	public FicheConcours restoreFicheConcours(File concoursFile) {
+	public void restoreFicheConcours(File concoursFile) {
 		System.out.println("chargement d'un concours");
 		FicheConcours ficheConcours = null;
 		
@@ -256,10 +271,11 @@ public class ConcoursJeunes {
 
 			fichesConcours.add(ficheConcours);
 		}
+		
+		fireFicheConcoursRestored(ficheConcours);
+		
 
 		System.out.println("Fin chargement d'un concours");
-
-		return ficheConcours;
 	}
 
 	/**
@@ -318,5 +334,29 @@ public class ConcoursJeunes {
 		}
 
 		return printOK;
+	}
+	
+	private void fireFicheConcoursCreated(FicheConcours ficheConcours) {
+		for(ConcoursJeunesListener concoursJeunesListener : listeners.getListeners(ConcoursJeunesListener.class)) {
+			concoursJeunesListener.ficheConcoursCreated(new ConcoursJeunesEvent(ficheConcours, ConcoursJeunesEvent.CREATE_CONCOURS));
+		}
+	}
+	
+	private void fireFicheConcoursDeleted(FicheConcours ficheConcours) {
+		for(ConcoursJeunesListener concoursJeunesListener : listeners.getListeners(ConcoursJeunesListener.class)) {
+			concoursJeunesListener.ficheConcoursDeleted(new ConcoursJeunesEvent(ficheConcours, ConcoursJeunesEvent.DELETE_CONCOURS));
+		}
+	}
+	
+	private void fireFicheConcoursClosed(FicheConcours ficheConcours) {
+		for(ConcoursJeunesListener concoursJeunesListener : listeners.getListeners(ConcoursJeunesListener.class)) {
+			concoursJeunesListener.ficheConcoursClosed(new ConcoursJeunesEvent(ficheConcours, ConcoursJeunesEvent.CLOSE_CONCOURS));
+		}
+	}
+	
+	private void fireFicheConcoursRestored(FicheConcours ficheConcours) {
+		for(ConcoursJeunesListener concoursJeunesListener : listeners.getListeners(ConcoursJeunesListener.class)) {
+			concoursJeunesListener.ficheConcoursRestored(new ConcoursJeunesEvent(ficheConcours, ConcoursJeunesEvent.OPEN_CONCOURS));
+		}
 	}
 }

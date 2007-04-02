@@ -199,7 +199,7 @@ public class AutoCompleteDocument extends PlainDocument {
 		searchArcher.setNomArcher(searchString.toUpperCase() + "%");
 		
 		if(getLength() > 0) {
-			concurrent = (Concurrent)Archer.getArchersInDatabase(searchArcher, reglement, "NOMARCHER").get(0);
+			concurrent = Concurrent.getArchersInDatabase(searchArcher, reglement, "NOMARCHER").get(0);
 			autocompleteLicence = false;
 		} else {
 			concurrent = null;
@@ -234,7 +234,7 @@ public class AutoCompleteDocument extends PlainDocument {
 			searchArcher.setNomArcher(concurrent.getNomArcher());
 			searchArcher.setPrenomArcher(searchString + "%");
 			
-			tempConcurrent = (Concurrent)Archer.getArchersInDatabase(searchArcher, reglement, "PRENOMARCHER").get(0);
+			tempConcurrent = Concurrent.getArchersInDatabase(searchArcher, reglement, "PRENOMARCHER").get(0);
 			
 			autocompleteLicence = false;
 		} else {
@@ -266,7 +266,7 @@ public class AutoCompleteDocument extends PlainDocument {
 		Archer searchArcher = new Archer();
 		searchArcher.setNumLicenceArcher(searchString + "%");
 		if(getLength() > 0) {
-			concurrent = (Concurrent)Archer.getArchersInDatabase(searchArcher, reglement, "NUMLICENCEARCHER").get(0);
+			concurrent = Concurrent.getArchersInDatabase(searchArcher, reglement, "NUMLICENCEARCHER").get(0);
 		} else {
 			concurrent = null;
 		}

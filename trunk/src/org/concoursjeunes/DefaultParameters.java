@@ -9,7 +9,7 @@ package org.concoursjeunes;
  */
 public class DefaultParameters {
 	private Entite club = new Entite();
-	private String intituleConcours = ""; //$NON-NLS-1$
+	private String intituleConcours = "Concours Jeunes"; //$NON-NLS-1$
 
 	private int nbCible             = 10;
 	private int nbTireur            = 4;

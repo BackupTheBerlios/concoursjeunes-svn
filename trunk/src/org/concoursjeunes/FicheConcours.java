@@ -24,15 +24,15 @@ import ajinteractive.standard.java2.*;
  */
 public class FicheConcours {
 
-	public static final int ALPHA      = 0;    //par ordre alphabetique
-	public static final int GREFFE     = 1;    //pour le greffe
+	public static final int ALPHA		= 0;    //par ordre alphabetique
+	public static final int GREFFE		= 1;    //pour le greffe
 
-	public static final int OUT_XML    = 0;    //Sortie XML
-	public static final int OUT_HTML   = 1;    //Sortie HTML
+	public static final int OUT_XML		= 0;    //Sortie XML
+	public static final int OUT_HTML	= 1;    //Sortie HTML
 
-	private Parametre parametre     = new Parametre();
+	private Parametre parametre			= new Parametre();
 	private ConcurrentList archerlist   = new ConcurrentList(parametre);
-	private EquipeList equipes      = new EquipeList();
+	private EquipeList equipes			= new EquipeList();
 	private Hashtable<Integer, ArrayList<Cible>> pasDeTir = new Hashtable<Integer, ArrayList<Cible>>();
 
 	private EventListenerList ficheConcoursListeners = new EventListenerList();
@@ -54,16 +54,7 @@ public class FicheConcours {
 	 * 
 	 */
 	public FicheConcours() {
-		parametre.setIntituleConcours(ConcoursJeunes.configuration.getIntituleConcours());
-		parametre.setNbTireur(ConcoursJeunes.configuration.getNbTireur());
-		parametre.setSaveName(System.currentTimeMillis() + ConcoursJeunes.ajrParametreAppli.getResourceString("extention.concours")); //$NON-NLS-1$
-		parametre.setNbDepart(ConcoursJeunes.configuration.getNbDepart());
-		parametre.setNbCible(ConcoursJeunes.configuration.getNbCible());
-		parametre.setClub(ConcoursJeunes.configuration.getClub());
-
 		makePasDeTir();
-
-		//silentSave();
 
 		loadTemplates();
 	}
@@ -470,7 +461,7 @@ public class FicheConcours {
 		for(int i = 0; i < parametre.getNbDepart(); i++) {
 			ArrayList<Cible> departCibles = new ArrayList<Cible>();
 			for(int j = 0; j < parametre.getNbCible(); j++) {
-				Cible cible = new Cible(j+1, parametre.getReglement(), parametre.getNbTireur());
+				Cible cible = new Cible(j+1, this);
 				if(archerlist.countArcher(i) > 0) {
 					for(Concurrent concurrent : archerlist.list(j + 1, i))
 						cible.setConcurrentAt(concurrent, concurrent.getPosition());

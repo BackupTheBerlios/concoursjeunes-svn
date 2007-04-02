@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * @author Aurélien JEOFFRAY
  * @version 1.0
  */
-public class ArcherFactory {
+public class ConcurrentFactory {
 
 	/**
 	 * Construit un archer à partir d'un jeux de resultat sgbd et un reglement donnée
@@ -19,12 +19,12 @@ public class ArcherFactory {
 	 * @param reglement - le reglement appliqué
 	 * @return l'archer construit
 	 */
-	public static Archer getArcher(ResultSet rs, Reglement reglement) {
-		Archer archer = new Archer();
+	public static Concurrent getConcurrent(ResultSet rs, Reglement reglement) {
+		Concurrent concurrent = new Concurrent();
 
 		try {
-			archer.setCertificat(rs.getBoolean("CERTIFMEDICAL"));
-			archer.setClub(EntiteFactory.getEntite(rs.getString("AGREMENTENTITE")));
+			concurrent.setCertificat(rs.getBoolean("CERTIFMEDICAL"));
+			concurrent.setClub(EntiteFactory.getEntite(rs.getString("AGREMENTENTITE")));
 
 			if(reglement != null) {
 				CriteriaSet differentiationCriteria = new CriteriaSet();
@@ -41,15 +41,15 @@ public class ArcherFactory {
 					}
 				}
 
-				archer.setCriteriaSet(differentiationCriteria);
+				concurrent.setCriteriaSet(differentiationCriteria);
 			}
-			archer.setNumLicenceArcher(rs.getString("NUMLICENCEARCHER"));
-			archer.setNomArcher(rs.getString("NOMARCHER"));
-			archer.setPrenomArcher(rs.getString("PRENOMARCHER"));
+			concurrent.setNumLicenceArcher(rs.getString("NUMLICENCEARCHER"));
+			concurrent.setNomArcher(rs.getString("NOMARCHER"));
+			concurrent.setPrenomArcher(rs.getString("PRENOMARCHER"));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-		return archer;
+		return concurrent;
 	}
 }

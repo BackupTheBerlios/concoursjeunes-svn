@@ -16,14 +16,13 @@ import javax.swing.event.EventListenerList;
 public class Cible {
 
 	private int numCible				= 0;	//le numero de la cible
-	private Reglement reglement			= new Reglement();
+	private FicheConcours concours;
 	/**
 	 * @uml.property  name="concurrents"
 	 * @uml.associationEnd  multiplicity="(0 -1)"
 	 */
 	private Concurrent[] concurrents;			//le liste des concurrents présents sur la cible
 	private int nbArcher				= 0;	//le nombre d'archer sur la cible
-	private int nbMaxArchers			= 0;
 	
 	private EventListenerList listeners = new EventListenerList();
 
@@ -34,11 +33,10 @@ public class Cible {
 	 * @param numCible - le numero de la cible
 	 * @param ficheConcours - La fiche concours associé à la cible
 	 */
-	public Cible(int iNumCible, Reglement reglement, int nbMaxArchers) {
+	public Cible(int iNumCible, FicheConcours concours) {
 		this.numCible = iNumCible;
-		this.reglement = reglement;
-		this.nbMaxArchers = nbMaxArchers;
-		this.concurrents = new Concurrent[nbMaxArchers];
+		this.concours = concours;
+		this.concurrents = new Concurrent[concours.getParametre().getNbTireur()];
 	}
 	
 	public void addCibleListener(CibleListener cibleListener) {
@@ -70,29 +68,15 @@ public class Cible {
 	/**
 	 * @return reglement
 	 */
-	public Reglement getReglement() {
-		return reglement;
+	public FicheConcours getFicheConcours() {
+		return concours;
 	}
 
 	/**
 	 * @param reglement reglement à définir
 	 */
-	public void setReglement(Reglement reglement) {
-		this.reglement = reglement;
-	}
-
-	/**
-	 * @return nbMaxArchers
-	 */
-	public int getNbMaxArchers() {
-		return nbMaxArchers;
-	}
-
-	/**
-	 * @param nbMaxArchers nbMaxArchers à définir
-	 */
-	public void setNbMaxArchers(int nbMaxArchers) {
-		this.nbMaxArchers = nbMaxArchers;
+	public void setFicheConcours(FicheConcours concours) {
+		this.concours = concours;
 	}
 
 	/**
@@ -105,9 +89,9 @@ public class Cible {
 	public int insertConcurrent(Concurrent concurrent) {
 		int position = -1;
 
-		if(concurrent != null && nbArcher < nbMaxArchers) {
+		if(concurrent != null && nbArcher < concours.getParametre().getNbTireur()) {
 			if((nbArcher > 0
-					&& DistancesEtBlason.getDistancesEtBlasonForConcurrent(reglement, concurrent).equals(getDistancesEtBlason()))
+					&& DistancesEtBlason.getDistancesEtBlasonForConcurrent(concours.getParametre().getReglement(), concurrent).equals(getDistancesEtBlason()))
 					|| nbArcher == 0) {
 				for(int i = 0; i < concurrents.length; i++) {
 					if(concurrents[i] == null) {
@@ -138,7 +122,7 @@ public class Cible {
 	 * @return Concurrent - le concurrent à la position donnée ou <i>null</i> si aucun concurrent trouvé
 	 */
 	public Concurrent getConcurrentAt(int position) {
-		if(position < nbMaxArchers)
+		if(position < concours.getParametre().getNbTireur())
 			return concurrents[position];
 		return null;
 	}
@@ -158,7 +142,7 @@ public class Cible {
 	}
 	
 	public int indexOf(Concurrent concurrent) {
-		for(int i = 0; i < nbMaxArchers; i++)
+		for(int i = 0; i < concours.getParametre().getNbTireur(); i++)
 			if(concurrents[i] != null && concurrents[i].equals(concurrent))
 				return i;
 		return -1;
@@ -180,9 +164,9 @@ public class Cible {
 		if(concurrent != null) {
 			if(position == -1) {
 				return insertConcurrent(concurrent) > -1;
-			} else if(position >= 0 && position < nbMaxArchers) {
+			} else if(position >= 0 && position < concours.getParametre().getNbTireur()) {
 				if((nbArcher > 0
-						&& DistancesEtBlason.getDistancesEtBlasonForConcurrent(reglement, concurrent).equals(getDistancesEtBlason()))
+						&& DistancesEtBlason.getDistancesEtBlasonForConcurrent(concours.getParametre().getReglement(), concurrent).equals(getDistancesEtBlason()))
 						|| nbArcher == 0) {
 					concurrent.setCible(numCible);
 					concurrent.setPosition(position);
@@ -206,7 +190,7 @@ public class Cible {
 	 * @param position - la position du concurrent à supprimer
 	 */
 	public void removeConcurrentAt(int position) {
-		if(position < nbMaxArchers && concurrents[position] != null) {
+		if(position < concours.getParametre().getNbTireur() && concurrents[position] != null) {
 			nbArcher--;
 
 			Concurrent removedConcurrent = concurrents[position]; 
@@ -258,7 +242,7 @@ public class Cible {
 				}
 			}
 
-			db = DistancesEtBlason.getDistancesEtBlasonForConcurrent(reglement, firstConcurrent);
+			db = DistancesEtBlason.getDistancesEtBlasonForConcurrent(concours.getParametre().getReglement(), firstConcurrent);
 		}
 
 		return db;
@@ -271,7 +255,7 @@ public class Cible {
 	@Override
 	public String toString() {
 		String strCouleur = "<font color=\"#00AA00\">"; //$NON-NLS-1$
-		if(nbMaxArchers == nbArcher)
+		if(concours.getParametre().getNbTireur() == nbArcher)
 			strCouleur = "<font color=\"#0000FF\">"; //$NON-NLS-1$
 		String strCibleLibelle = "<html>" + strCouleur + "<b>" + ConcoursJeunes.ajrLibelle.getResourceString("treenode.cible") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				+ ((this.numCible < 10) ? "0" : "") //$NON-NLS-1$ //$NON-NLS-2$

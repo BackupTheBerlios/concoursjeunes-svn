@@ -18,6 +18,8 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.ConcoursJeunesEvent;
+import org.concoursjeunes.ConcoursJeunesListener;
 import org.concoursjeunes.FicheConcours;
 import org.concoursjeunes.MetaDataFicheConcours;
 import org.concoursjeunes.MetaDataFichesConcours;
@@ -35,7 +37,7 @@ import ajinteractive.standard.ui.FrameCreator;
 /**
  * @author  aurelien
  */
-public class ConcoursJeunesFrame extends JFrame implements ActionListener {
+public class ConcoursJeunesFrame extends JFrame implements ActionListener, ConcoursJeunesListener {
 
 	private JTabbedPane tabbedpane;
 
@@ -140,11 +142,11 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener {
 
 		//si 1 concours est selectionné
 		if(fld.getAction() == FicheLoaderDialog.OUVRIR && fld.getSelectedFiche() != -1) {
-			addFicheConcours(concoursJeunes.restoreFicheConcours(new File(ConcoursJeunes.userRessources.getConcoursPathForProfile(
+			concoursJeunes.restoreFicheConcours(new File(ConcoursJeunes.userRessources.getConcoursPathForProfile(
 					ConcoursJeunes.configuration.getCurProfil()) + File.separator + 
-					metaDataFichesConcours.getMetaDataFicheConcours(fld.getSelectedFiche()).getFilenameConcours())));
+					metaDataFichesConcours.getMetaDataFicheConcours(fld.getSelectedFiche()).getFilenameConcours()));
 		} else if(fld.getAction() == FicheLoaderDialog.NOUVEAU) {
-			addFicheConcours(concoursJeunes.createFicheConcours());
+			concoursJeunes.createFicheConcours();
 		} else if(fld.getAction() == FicheLoaderDialog.SUPPRIMER && fld.getSelectedFiche() != -1) {
 			concoursJeunes.deleteFicheConcours(
 					metaDataFichesConcours.getMetaDataFicheConcours(fld.getSelectedFiche()).getFilenameConcours());
@@ -334,6 +336,35 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursCreated(org.concoursjeunes.ConcoursJeunesEvent)
+	 */
+	public void ficheConcoursCreated(ConcoursJeunesEvent concoursJeunesEvent) {
+		addFicheConcours(concoursJeunesEvent.getFicheConcours());
+	}
+
+	/* (non-Javadoc)
+	 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursDeleted(org.concoursjeunes.ConcoursJeunesEvent)
+	 */
+	public void ficheConcoursDeleted(ConcoursJeunesEvent concoursJeunesEvent) {
+		
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursClosed(org.concoursjeunes.ConcoursJeunesEvent)
+	 */
+	public void ficheConcoursClosed(ConcoursJeunesEvent concoursJeunesEvent) {
+		// TODO Raccord de méthode auto-généré
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursRestored(org.concoursjeunes.ConcoursJeunesEvent)
+	 */
+	public void ficheConcoursRestored(ConcoursJeunesEvent concoursJeunesEvent) {
+		addFicheConcours(concoursJeunesEvent.getFicheConcours());
+	}
+
 	public static void main(String[] args) {
         new ConcoursJeunesFrame(args);
     }
