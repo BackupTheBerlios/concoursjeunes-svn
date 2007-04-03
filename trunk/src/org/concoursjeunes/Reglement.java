@@ -30,7 +30,11 @@ public class Reglement {
 	
 	public Reglement() {
 		
-	}	
+	}
+	
+	public Reglement(String name) {
+		this.name = name;
+	}
 	
 	/**
 	 * @return name
@@ -219,16 +223,16 @@ public class Reglement {
 		return valid;
 	}
 	
-	public void saveReglement() {
-		File fUserReglement = new File(ConcoursJeunes.userRessources.getConfigPathForUser() 
+	public void save() {
+		File fUserReglement = new File(ConcoursJeunes.userRessources.getReglementPathForUser()
 				+ File.separator + "reglement_" + name + ".xml");
 		AJToolKit.saveXMLStructure(fUserReglement, this, false);
 	}
 	
-	public boolean deleteReglement() {
+	public boolean delete() {
 		boolean success = false;
 		if(!officialReglement) {
-			File fUserReglement = new File(ConcoursJeunes.userRessources.getConfigPathForUser() 
+			File fUserReglement = new File(ConcoursJeunes.userRessources.getReglementPathForUser() 
 					+ File.separator + "reglement_" + name + ".xml");
 			success = fUserReglement.delete();
 		}

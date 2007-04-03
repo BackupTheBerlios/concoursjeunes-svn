@@ -6,7 +6,7 @@ import ajinteractive.standard.java2.AJToolKit;
 
 public class ReglementFactory {
 	/**
-	 * Cré un nouveau reglement de concours
+	 * Crée un nouveau reglement de concours
 	 * 
 	 * @return le reglement créer
 	 */
@@ -31,14 +31,14 @@ public class ReglementFactory {
 		if(fOfficialReglement.exists()) {
 			fReglement = fOfficialReglement;
 		} else {
-			File fUserReglement = new File(ConcoursJeunes.userRessources.getConfigPathForUser() 
+			File fUserReglement = new File(ConcoursJeunes.userRessources.getReglementPathForUser() 
 					+ File.separator + "reglement_" + reglementName + ".xml");
 			if(fUserReglement.exists())
 				fReglement = fUserReglement;
 		}
 		
 		if(fReglement != null) {
-			reglement = (Reglement)AJToolKit.loadXMLStructure(fReglement, true);
+			reglement = (Reglement)AJToolKit.loadXMLStructure(fReglement, false);
 		}
 		
 		return reglement;

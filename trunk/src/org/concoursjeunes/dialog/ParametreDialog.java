@@ -199,8 +199,7 @@ public class ParametreDialog extends JDialog implements ActionListener {
 	private JComboBox getJcbReglement() {
 		if (jcbReglement == null) {
 			jcbReglement = new JComboBox();
-			for(String name : ConcoursJeunes.configuration.getReglementName()) {
-
+			for(String name : ConcoursJeunes.userRessources.listAvailableReglements()) {
 				jcbReglement.addItem(name);
 			}
 			jcbReglement.setSelectedItem(ficheConcours.getParametre().getReglement().getName());

@@ -22,6 +22,7 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -45,6 +46,8 @@ import org.concoursjeunes.ReglementFactory;
 
 import ajinteractive.standard.java2.GridbagComposer;
 import ajinteractive.standard.java2.NumberDocument;
+
+import static org.concoursjeunes.ConcoursJeunes.userRessources;
 
 /**
  * @author aurelien
@@ -243,16 +246,21 @@ public class ReglementDialog extends JDialog implements ActionListener, ItemList
 	}
 	
 	private void completeGeneral() {
-		for(String reglementName : ConcoursJeunes.configuration.getReglementName())
-			jcbReglementName.addItem(reglementName);
+		jcbReglementName.removeAllItems();
+		
+		String[] availableReglements = userRessources.listAvailableReglements();
+		if(availableReglements != null) {
+			for(String reglementName : availableReglements)
+				jcbReglementName.addItem(reglementName);
+		}
 		jcbReglementName.addItem("---");
 		jcbReglementName.addItem("Nouveau Réglement");
 		
 		if(reglement == null) {
 			reglement = ReglementFactory.getReglement((String)jcbReglementName.getItemAt(0));
-			if(reglement == null)
-				return;
-			completePanel();
+			if(reglement != null)
+				completePanel();
+			return;
 		}
 		
 		//jcbReglementName.setSelectedItem(reglement.getName());
@@ -267,6 +275,7 @@ public class ReglementDialog extends JDialog implements ActionListener, ItemList
 	private void completeCriteria() {
 		if(reglement == null)
 			return;
+		treeRoot.removeAllChildren();
 		for(Criterion critere : reglement.getListCriteria()) {
 			if(critere != null) {
 				DefaultMutableTreeNode dmtnCriteria = new DefaultMutableTreeNode(critere);
@@ -563,6 +572,11 @@ public class ReglementDialog extends JDialog implements ActionListener, ItemList
 	public void itemStateChanged(ItemEvent e) {
 		if(jcbReglementName.getSelectedIndex() < jcbReglementName.getItemCount() - 2) {
 			reglement = ReglementFactory.getReglement((String)e.getItem());
+			completePanel();
+		} else if(jcbReglementName.getItemCount() > 1 && jcbReglementName.getSelectedIndex() == jcbReglementName.getItemCount() - 1) {
+			String reglementName = JOptionPane.showInputDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("reglement.general.addreglement")); //$NON-NLS-1$
+			reglement = new Reglement(reglementName);
+			reglement.save();
 			completePanel();
 		}
 	}

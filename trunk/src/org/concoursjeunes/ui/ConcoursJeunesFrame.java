@@ -50,6 +50,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Conco
 	 */
 	public ConcoursJeunesFrame() {
 		concoursJeunes = new ConcoursJeunes();
+		concoursJeunes.addConcoursJeunesListener(this);
 		
 		//affiche la boite de dialogue si le fichier de configuration n'existe pas ou si il est
 		//configurer pour un affichage
@@ -271,9 +272,8 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Conco
 			ReglementDialog reglementDialog = new ReglementDialog(this);
 			Reglement reglement = reglementDialog.showReglementDialog();
 			if(reglement != null) {
-				reglement.saveReglement();
+				reglement.save();
 				
-				ConcoursJeunes.configuration.addReglementName(reglement.getName());
 				ConcoursJeunes.configuration.saveConfig();
 			}
 			//affiche la boite de dialogue de configuartion

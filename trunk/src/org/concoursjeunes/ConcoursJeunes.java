@@ -80,7 +80,7 @@ public class ConcoursJeunes {
 	 */
 	public ConcoursJeunes() {
 		//tente de recuperer la configuration générale du programme
-		restoreConfig();
+		configuration = ConfigurationFactory.getCurrentConfiguration();
 
 		//fige la langue de ressource de l'appli sur la locale du fichier de config
 		AjResourcesReader.setLocale(new Locale(configuration.getLangue()));
@@ -134,43 +134,19 @@ public class ConcoursJeunes {
 	public void removeConcoursJeunesListener(ConcoursJeunesListener concoursJeunesListener) {
 		listeners.remove(ConcoursJeunesListener.class, concoursJeunesListener);
 	}
-
-	/**
-	 * restaure la configuration général du programme
-	 *
-	 */
-	private void restoreConfig() {
-		System.out.println("chargement de la configuration");
-
-		configuration = (Configuration)AJToolKit.loadXMLStructure(new File(userRessources.getConfigPathForUser() + File.separator + 
-				ajrParametreAppli.getResourceString("file.configuration")), false); //$NON-NLS-1$
-
-		if(configuration == null) {
-			configuration = new Configuration();
-		}
-
-		System.out.println("fin chargement de la configuration");
-	}
 	
 	private void saveMetaDataFichesConcours() {
 		if(configuration != null) {
 			if(metaDataFichesConcours == null)
 				loadMetaDataFichesConcours();
 	
-			AJToolKit.saveXMLStructure(
-					new File(userRessources.getConcoursPathForProfile(configuration.getCurProfil()) + File.separator + 
-							ajrParametreAppli.getResourceString("file.metadatafichesconcours")), metaDataFichesConcours, false);
+			metaDataFichesConcours.save();
 		}
 	}
 	
 	private void loadMetaDataFichesConcours() {
 		if(configuration != null) {
-			metaDataFichesConcours = (MetaDataFichesConcours)AJToolKit.loadXMLStructure(
-					new File(userRessources.getConcoursPathForProfile(configuration.getCurProfil()) + File.separator + 
-							ajrParametreAppli.getResourceString("file.metadatafichesconcours")), false);
-			
-			if(metaDataFichesConcours == null)
-				metaDataFichesConcours = new MetaDataFichesConcours();
+			metaDataFichesConcours = MetaDataFichesConcoursFactory.getMetaDataFichesConcours();
 		}
 	}
 	
@@ -273,7 +249,6 @@ public class ConcoursJeunes {
 		}
 		
 		fireFicheConcoursRestored(ficheConcours);
-		
 
 		System.out.println("Fin chargement d'un concours");
 	}

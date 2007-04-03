@@ -7,6 +7,10 @@ import java.io.*;
  * @author  Aurélien Jeoffray
  */
 public class UserRessources {
+	private static String CONFIG_PROFILE = "configuration_"; //$NON-NLS-1$
+	private static String REGLEMENT_PROFILE = "reglement_"; //$NON-NLS-1$
+	private static String EXT_XML = ".xml"; //$NON-NLS-1$
+	
     public String userPath;
     
     /**
@@ -149,12 +153,69 @@ public class UserRessources {
         return concoursPath;
     }
     
+    /**
+     * 
+     * 
+     * @param profile
+     * @return
+     */
     public String getLogPathForProfile(String profile) {
         String concoursPath = getProfilePath(profile) + File.separator + "log"; //$NON-NLS-1$
         
         createPathIfNotExist(concoursPath);
         
         return concoursPath;
+    }
+    
+    /**
+     * 
+     * 
+     * @return
+     */
+    public String getReglementPathForUser() {
+    	String reglementPath = userPath + File.separator + "reglements"; //$NON-NLS-1$
+        
+        createPathIfNotExist(reglementPath);
+    	
+    	return reglementPath;
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public String[] listAvailableReglements() {
+    	String[] strReglement = new File(getReglementPathForUser()).list(new FilenameFilter() {
+			public boolean accept(File dir, String name) {
+				if(name.startsWith(REGLEMENT_PROFILE) && name.endsWith(EXT_XML))
+					return true;
+				return false;
+			}
+		});
+    	if(strReglement != null) {
+			for(int i = 0; i < strReglement.length; i++)
+				strReglement[i] = strReglement[i].substring(REGLEMENT_PROFILE.length(), strReglement[i].length() - EXT_XML.length());
+    	}
+		return strReglement;
+    }
+    
+    /**
+     * 
+     * 
+     * @return
+     */
+    public String[] listAvailableConfigurations() {
+    	String[] strConfig = new File(getConfigPathForUser()).list(new FilenameFilter() {
+			public boolean accept(File dir, String name) {
+				if(name.startsWith(CONFIG_PROFILE) && name.endsWith(EXT_XML))
+					return true;
+				return false;
+			}
+		});
+
+		for(int i = 0; i < strConfig.length; i++)
+			strConfig[i] = strConfig[i].substring(CONFIG_PROFILE.length(), strConfig[i].length() - EXT_XML.length());
+		return strConfig;
     }
 
     /**

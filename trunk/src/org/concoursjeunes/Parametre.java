@@ -15,7 +15,6 @@ import java.util.*;
 public class Parametre extends DefaultParameters {
 	private Date dDateConcours		= new Date(); //$NON-NLS-1$
 	private ArrayList<String> vArbitres = new ArrayList<String>();
-	private Reglement reglement		= new Reglement();
 
 	private String saveName         = System.currentTimeMillis()
 			+ ConcoursJeunes.ajrParametreAppli.getResourceString("extention.concours"); //$NON-NLS-1$
@@ -26,6 +25,7 @@ public class Parametre extends DefaultParameters {
 		setNbCible(ConcoursJeunes.configuration.getNbCible());
 		setNbTireur(ConcoursJeunes.configuration.getNbTireur());
 		setNbDepart(ConcoursJeunes.configuration.getNbDepart());
+		setReglement(ConcoursJeunes.configuration.getReglement());
 	}
 	/**
 	 * Donne la date du concours
@@ -79,19 +79,5 @@ public class Parametre extends DefaultParameters {
 	 */
 	public void setSaveName(String saveName) {
 		this.saveName = saveName;
-	}
-
-	/**
-	 * @return reglement
-	 */
-	public Reglement getReglement() {
-		return reglement;
-	}
-
-	/**
-	 * @param reglement reglement à définir
-	 */
-	public void setReglement(Reglement reglement) {
-		this.reglement = reglement;
 	}
 }

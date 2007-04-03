@@ -4,6 +4,8 @@
  */
 package org.concoursjeunes.dialog;
 
+import static org.concoursjeunes.ConcoursJeunes.userRessources;
+
 import java.util.*;
 import java.io.*;
 import java.lang.reflect.*;
@@ -38,7 +40,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener {
 
 	private TitledBorder tbProfil       = new TitledBorder(""); //$NON-NLS-1$
 	private JLabel jlNomProfil          = new JLabel();
-	private JComboBox  jcbProfil        = new JComboBox(listConfiguration());
+	private JComboBox  jcbProfil        = new JComboBox(ConcoursJeunes.userRessources.listAvailableConfigurations());
 	private JButton jbAjouterProfil     = new JButton();
 
 	//Ecran general personnalisation
@@ -59,10 +61,12 @@ public class ConfigurationDialog extends JDialog implements ActionListener {
 	private JButton jbLogoPath          = new JButton();
 
 	//Ecran concours/pas de tir
+	private JLabel jlReglement			= new JLabel();
 	private JLabel jlNbCible            = new JLabel();
 	private JLabel jlNbTireur           = new JLabel();
 	private JLabel jlNbDepart           = new JLabel();
 
+	private JComboBox jcbReglement		= new JComboBox();
 	private JTextField jtfNbCible       = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
 	private JTextField jtfNbTireur      = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
 	private JTextField jtfNbDepart      = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
@@ -253,6 +257,9 @@ public class ConfigurationDialog extends JDialog implements ActionListener {
 
 		gridbagComposer.setParentPanel(jpPasDeTir);
 		c.gridy = 0; c.anchor = GridBagConstraints.WEST;     //Défaut,Haut
+		gridbagComposer.addComponentIntoGrid(jlReglement, c);
+		gridbagComposer.addComponentIntoGrid(jcbReglement, c);
+		c.gridy ++;
 		gridbagComposer.addComponentIntoGrid(jlNbCible, c);
 		gridbagComposer.addComponentIntoGrid(jtfNbCible, c);
 		c.gridy ++;
@@ -480,6 +487,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener {
 	}
 
 	private void affectLibelleConcours() {
+		jlReglement.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.concours.reglement"));
 		jlNbCible.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.concours.cible")); //$NON-NLS-1$
 		jlNbTireur.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.concours.tireur")); //$NON-NLS-1$
 		jlNbDepart.setText( ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.concours.depart")); //$NON-NLS-1$
@@ -550,6 +558,12 @@ public class ConfigurationDialog extends JDialog implements ActionListener {
 	}
 
 	private void completeConcoursPanel(Configuration configuration) {
+		String[] availableReglements = userRessources.listAvailableReglements();
+		if(availableReglements != null) {
+			for(String reglementName : availableReglements)
+				jcbReglement.addItem(reglementName);
+		}
+		jcbReglement.setSelectedItem(configuration.getReglement().getName());
 		jtfNbCible.setText("" + configuration.getNbCible()); //$NON-NLS-1$
 		jtfNbTireur.setText("" + configuration.getNbTireur()); //$NON-NLS-1$
 		jtfNbDepart.setText("" + configuration.getNbDepart()); //$NON-NLS-1$
@@ -620,27 +634,6 @@ public class ConfigurationDialog extends JDialog implements ActionListener {
 		this.workConfiguration = workConfiguration;
 	}
 
-	
-
-	/**
-	 * renvois la liste des profils de configuration
-	 * 
-	 * @return String[] - la liste des profils de configuration
-	 */
-	private String[] listConfiguration() {
-		String[] strConfig = new File(ConcoursJeunes.userRessources.getConfigPathForUser()).list(new FilenameFilter() {
-			public boolean accept(File dir, String name) {
-				if(name.startsWith(CONFIG_PROFILE) && name.endsWith(EXT_XML))
-					return true;
-				return false;
-			}
-		});
-
-		for(int i = 0; i < strConfig.length; i++)
-			strConfig[i] = strConfig[i].substring(14, strConfig[i].length() - 4);
-		return strConfig;
-	}
-
 	/**
 	 * Renvoie la liste des langues disponibles
 	 * 
@@ -662,23 +655,6 @@ public class ConfigurationDialog extends JDialog implements ActionListener {
 		}
 
 		return strLstLangue;
-	}
-
-	/**
-	 * sauvegarde la configuration général du programme
-	 *
-	 */
-	private void saveConfig() {
-		try {
-			File f = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + 
-					File.separator + 
-					ConcoursJeunes.ajrParametreAppli.getResourceString("file.configuration")); //$NON-NLS-1$
-			AJToolKit.saveXMLStructure(f, ConcoursJeunes.configuration, false);
-		} catch(NullPointerException npe) {
-			JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur.save.config"), //$NON-NLS-1$
-					ConcoursJeunes.ajrLibelle.getResourceString("erreur"),JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
-			npe.printStackTrace();
-		}
 	}
 
 	private void loadProfile() {
@@ -732,6 +708,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener {
 		workConfiguration.setExportURL(jtfURLExport.getText());
 		workConfiguration.setImportURL(jtfURLImport.getText());
 
+		workConfiguration.setReglement(ReglementFactory.getReglement(jcbReglement.getSelectedItem().toString()));
 		workConfiguration.setNbCible(Integer.parseInt(jtfNbCible.getText()));
 		workConfiguration.setNbTireur(Integer.parseInt(jtfNbTireur.getText()));
 		workConfiguration.setNbDepart(Integer.parseInt(jtfNbDepart.getText()));
@@ -761,7 +738,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener {
 			registerConfig();
 
 			saveProfile();
-			saveConfig();
+			workConfiguration.saveConfig();
 
 			ConcoursJeunes.configuration = workConfiguration;
 
@@ -796,146 +773,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener {
 		} else if(source == this.jbDetail) {
 			EntiteDialog ed = new EntiteDialog(this);
 			ed.showEntite(workConfiguration.getClub());
-		} /*else if(source == jbAddCriteria) {
-			DefaultMutableTreeNode dmtn = (DefaultMutableTreeNode)treeCriteria.getPathForRow(0).getLastPathComponent();
-			if(dmtn != null) {
-				CriterionDialog cd = new CriterionDialog(this);
-
-				if(cd.getCriterion() != null) {
-					DefaultMutableTreeNode dmtnCrit = new DefaultMutableTreeNode(cd.getCriterion());
-
-					dmtn.add(dmtnCrit);
-
-					treeModel.reload();
-				}
-			}
-		} else if(source == jbAddCriteriaMember) { 
-			DefaultMutableTreeNode dmtn = (DefaultMutableTreeNode)treeCriteria.getLastSelectedPathComponent();
-			if(dmtn != null) {
-				Object dmtnObj = dmtn.getUserObject();
-				if(dmtnObj instanceof Criterion) {
-					TreePath selectedPath = treeCriteria.getSelectionPath();
-					CriterionElementDialog cpd = new CriterionElementDialog(this, (Criterion)dmtnObj);
-
-					if(cpd.getCriterionIndividu() != null) {
-						DefaultMutableTreeNode dmtnIndiv = new DefaultMutableTreeNode(cpd.getCriterionIndividu());
-
-						dmtn.add(dmtnIndiv);
-
-						treeModel.reload();
-						treeCriteria.setSelectionPath(selectedPath);
-						//treeCriteria.expandPath(selectedPath);
-
-						generateSCNA_DBRow(workConfiguration);
-					}
-				}
-			}
-		} else if(source == jbUpElement) { 
-			DefaultMutableTreeNode dmtn = (DefaultMutableTreeNode)treeCriteria.getLastSelectedPathComponent();
-			if(dmtn != null) {
-				Object dmtnObj = dmtn.getUserObject();
-				if(dmtnObj instanceof Criterion) {
-					int curIndex = workConfiguration.getListCriteria().indexOf(dmtnObj);
-					if(curIndex > 0) {
-						workConfiguration.getListCriteria().set(curIndex, workConfiguration.getListCriteria().get(curIndex-1));
-						workConfiguration.getListCriteria().set(curIndex-1, (Criterion)dmtnObj);
-					}
-					treeModel.removeNodeFromParent(dmtn);
-
-					DefaultMutableTreeNode dmtnRoot = (DefaultMutableTreeNode)treeCriteria.getPathForRow(0).getLastPathComponent();
-					dmtnRoot.insert(dmtn, curIndex - 1);
-
-					treeModel.reload();
-
-					generateSCNA_DBRow(workConfiguration);
-				} else if(dmtnObj instanceof CriterionElement) {
-					TreePath selectedPath = treeCriteria.getSelectionPath();
-					DefaultMutableTreeNode dmtnParent = (DefaultMutableTreeNode)
-					selectedPath.getParentPath().getLastPathComponent();
-
-					Criterion curCriterion = (Criterion)dmtnParent.getUserObject();
-
-					int curIndex = curCriterion.getCriterionElements().indexOf(dmtnObj);
-					if(curIndex > 0) {
-						ArrayList<CriterionElement> alce = curCriterion.getCriterionElements(); 
-
-						CriterionElement precElement = alce.get(curIndex-1);
-						CriterionElement curElement = (CriterionElement)dmtnObj;
-						alce.set(curIndex, precElement);
-						alce.set(curIndex-1, curElement);
-					}
-					treeModel.removeNodeFromParent(dmtn);
-
-					dmtnParent.insert(dmtn, curIndex - 1);
-
-					treeModel.reload();
-
-					generateSCNA_DBRow(workConfiguration);
-				}
-			}
-		} else if(source == jbDownElement) { 
-			DefaultMutableTreeNode dmtn = (DefaultMutableTreeNode)treeCriteria.getLastSelectedPathComponent();
-			if(dmtn != null) {
-				Object dmtnObj = dmtn.getUserObject();
-				if(dmtnObj instanceof Criterion) {
-					int curIndex = workConfiguration.getListCriteria().indexOf(dmtnObj);
-					if(curIndex < workConfiguration.getListCriteria().size() - 1) {
-						workConfiguration.getListCriteria().set(curIndex, workConfiguration.getListCriteria().get(curIndex+1));
-						workConfiguration.getListCriteria().set(curIndex+1, (Criterion)dmtnObj);
-					}
-					treeModel.removeNodeFromParent(dmtn);
-
-					DefaultMutableTreeNode dmtnRoot = (DefaultMutableTreeNode)treeCriteria.getPathForRow(0).getLastPathComponent();
-					dmtnRoot.insert(dmtn, curIndex + 1);
-
-					treeModel.reload();
-
-					generateSCNA_DBRow(workConfiguration);
-				} else if(dmtnObj instanceof CriterionElement) {
-					TreePath selectedPath = treeCriteria.getSelectionPath();
-					DefaultMutableTreeNode dmtnParent = (DefaultMutableTreeNode)
-					selectedPath.getParentPath().getLastPathComponent();
-
-					Criterion curCriterion = (Criterion)dmtnParent.getUserObject();
-
-					int curIndex = curCriterion.getCriterionElements().indexOf(dmtnObj);
-					if(curIndex < curCriterion.getCriterionElements().size() - 1) {
-						curCriterion.getCriterionElements().set(curIndex, curCriterion.getCriterionElements().get(curIndex+1));
-						curCriterion.getCriterionElements().set(curIndex+1, (CriterionElement)dmtnObj);
-					}
-					treeModel.removeNodeFromParent(dmtn);
-
-					dmtnParent.insert(dmtn, curIndex + 1);
-
-					treeModel.reload();
-
-					generateSCNA_DBRow(workConfiguration);
-				}
-			}
-		} else if(source == jbRemoveElement) {
-			DefaultMutableTreeNode dmtn = (DefaultMutableTreeNode)treeCriteria.getLastSelectedPathComponent();
-			if(dmtn != null) {
-				Object dmtnObj = dmtn.getUserObject();
-				if(dmtnObj instanceof Criterion) {
-					workConfiguration.getListCriteria().remove(dmtnObj);
-
-					treeModel.removeNodeFromParent(dmtn);
-
-					generateSCNA_DBRow(workConfiguration);
-				} else if(dmtnObj instanceof CriterionElement) {
-					TreePath selectedPath = treeCriteria.getSelectionPath();
-					DefaultMutableTreeNode dmtnParent = (DefaultMutableTreeNode)
-					selectedPath.getParentPath().getLastPathComponent();
-
-					Criterion curCriterion = (Criterion)dmtnParent.getUserObject();
-					curCriterion.getCriterionElements().remove(dmtnObj);
-
-					treeModel.removeNodeFromParent(dmtn);
-
-					generateSCNA_DBRow(workConfiguration);
-				}
-			}
-		}*/ else if(source == jcbProfil) {
+		} else if(source == jcbProfil) {
 			if(!runInitDialog && jcbProfil.getSelectedIndex() > -1)
 				loadProfile();
 		} else if(source == jcbLangue) {
@@ -949,74 +787,4 @@ public class ConfigurationDialog extends JDialog implements ActionListener {
 			jtfURLImport.setEnabled(this.jcbExpert.isSelected());
 		}
 	}
-
-	/**
-	 * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
-	 */
-	/*public void mouseClicked(MouseEvent e) {
-		if(e.getClickCount() == 2) {
-			DefaultMutableTreeNode dmtn = (DefaultMutableTreeNode)treeCriteria.getLastSelectedPathComponent();
-
-			Object dmtnObj = dmtn.getUserObject();
-			if(dmtnObj instanceof Criterion) {
-				TreePath selectedPath = treeCriteria.getSelectionPath();
-				new CriterionDialog(this, (Criterion)dmtnObj);
-
-				treeModel.reload((TreeNode)treeCriteria.getSelectionPath().getLastPathComponent());
-				treeCriteria.setSelectionPath(selectedPath);
-
-				generateSCNA_DBRow(workConfiguration);
-			} else if(dmtnObj instanceof CriterionElement) {
-				TreePath selectedPath = treeCriteria.getSelectionPath();
-				DefaultMutableTreeNode dmtnParent = (DefaultMutableTreeNode)
-				selectedPath.getParentPath().getLastPathComponent();
-				new CriterionElementDialog(this, (Criterion)dmtnParent.getUserObject(), 
-						(CriterionElement)dmtnObj);
-
-				treeModel.reload((TreeNode)treeCriteria.getSelectionPath().getLastPathComponent());
-				treeCriteria.setSelectionPath(selectedPath);
-
-				generateSCNA_DBRow(workConfiguration);
-			}
-		}
-	}*/
-
-	/* (non-Javadoc)
-	 * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
-	 */
-	public void mouseEntered(MouseEvent e) {
-
-	}
-
-	/* (non-Javadoc)
-	 * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
-	 */
-	public void mouseExited(MouseEvent e) {
-
-	}
-
-	/* (non-Javadoc)
-	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
-	 */
-	public void mousePressed(MouseEvent e) {
-
-	}
-
-	/* (non-Javadoc)
-	 * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
-	 */
-	public void mouseReleased(MouseEvent e) {
-
-	}
-
-	/**
-	 * @see javax.swing.event.ChangeListener#stateChanged(javax.swing.event.ChangeEvent)
-	 */
-	/*public void stateChanged(ChangeEvent e) {
-		if(workConfiguration != null) {
-			registerConfig();
-			jtDistanceBlason = new JTable(createTableModel());
-			jspDistanceBlason.setViewportView(jtDistanceBlason);
-		}
-	}*/
 }

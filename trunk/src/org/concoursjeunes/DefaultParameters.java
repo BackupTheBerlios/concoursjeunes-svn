@@ -11,6 +11,8 @@ public class DefaultParameters {
 	private Entite club = new Entite();
 	private String intituleConcours = "Concours Jeunes"; //$NON-NLS-1$
 
+	private Reglement reglement = new Reglement();
+	
 	private int nbCible             = 10;
 	private int nbTireur            = 4;
 	private int nbDepart            = 1;
@@ -35,6 +37,20 @@ public class DefaultParameters {
 		this.intituleConcours = intituleConcours;
 	}
 
+	/**
+	 * @return reglement
+	 */
+	public Reglement getReglement() {
+		return reglement;
+	}
+
+	/**
+	 * @param reglement reglement à définir
+	 */
+	public void setReglement(Reglement reglement) {
+		this.reglement = reglement;
+	}
+	
 	/**
 	 * @return  Renvoie nbCible.
 	 * @uml.property  name="nbCible"

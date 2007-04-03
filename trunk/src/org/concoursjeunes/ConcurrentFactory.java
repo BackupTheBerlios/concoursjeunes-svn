@@ -52,4 +52,22 @@ public class ConcurrentFactory {
 
 		return concurrent;
 	}
+	
+	/**
+	 * Construit un nouveau concurrent à parametrer en se basant sur le reglement donnée
+	 * 
+	 * @param reglement
+	 * @return
+	 */
+	public static Concurrent getConcurrent(Reglement reglement) {
+		Concurrent concurrent = new Concurrent();
+		
+		CriteriaSet differentiationCriteria = new CriteriaSet();
+		for(Criterion key : reglement.getListCriteria()) {
+			differentiationCriteria.getCriteria().put(key, key.getCriterionElements().get(0));
+		}
+		concurrent.setCriteriaSet(differentiationCriteria);
+		
+		return concurrent;
+	}
 }

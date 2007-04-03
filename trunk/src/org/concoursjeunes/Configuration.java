@@ -7,7 +7,6 @@ package org.concoursjeunes;
 import java.io.File;
 //import java.io.FileNotFoundException;
 //import java.io.FileOutputStream;
-import java.util.ArrayList;
 
 //import javax.xml.bind.JAXBContext;
 //import javax.xml.bind.JAXBException;
@@ -18,6 +17,7 @@ import ajinteractive.standard.java2.AJToolKit;
 
 /**
  * parametre de configuration de l'application
+ * 
  * @author  Aurelien Jeoffray
  * @version  3.0
  */
@@ -40,8 +40,6 @@ public class Configuration extends DefaultParameters {
 	private boolean interfaceResultatCumul = false;     //noreboot
 	private boolean interfaceResultatSupl = true;       //noreboot
 	private boolean interfaceAffResultatExEquo = true;  //noreboot
-	
-	private ArrayList<String> reglementName = new ArrayList<String>();
 
 	//propriete caché
 	private boolean firstboot       = false;            //noreboot
@@ -320,29 +318,6 @@ public class Configuration extends DefaultParameters {
 	 */
 	public void setLogoPath(String logoPath) {
 		this.logoPath = logoPath;
-	}
-
-	/**
-	 * @return reglementName
-	 */
-	public ArrayList<String> getReglementName() {
-		return reglementName;
-	}
-	
-	public void addReglementName(String name) {
-		if(!reglementName.contains(name))
-			reglementName.add(name);
-	}
-	
-	public void removeReglementName(String name) {
-		reglementName.remove(name);
-	}
-
-	/**
-	 * @param reglementName reglementName à définir
-	 */
-	public void setReglementName(ArrayList<String> reglementName) {
-		this.reglementName = reglementName;
 	}
 	
 	/**
