@@ -11,11 +11,21 @@ import java.util.ArrayList;
 public class EquipeList {
    
     private ArrayList<Equipe> equipeList  = new ArrayList<Equipe>();
+    private FicheConcours ficheConcours;
     
-    public EquipeList() { 
+    public EquipeList(FicheConcours ficheConcours) { 
+    	this.ficheConcours = ficheConcours;
     }
+    
+    public FicheConcours getFicheConcours() {
+		return ficheConcours;
+	}
 
-    /**
+	public void setFicheConcours(FicheConcours ficheConcours) {
+		this.ficheConcours = ficheConcours;
+	}
+
+	/**
      * 
      * @param newEquipe
      */
@@ -56,13 +66,13 @@ public class EquipeList {
      * @param concurrent - le concurrent à retirer
      * @return boolean true si retiré et false si non trouvé
      */
-    public boolean removeConcurrent(Reglement reglement, Concurrent concurrent) {
+    public boolean removeConcurrent(Concurrent concurrent) {
         boolean remove = false;
         for(Equipe equipe : equipeList) {
             if(equipe.contains(concurrent)) {
                 equipe.removeConcurrent(concurrent);
                 
-                if(equipe.getMembresEquipe().size() < reglement.getNbMembresRetenu())
+                if(equipe.getMembresEquipe().size() < ficheConcours.getParametre().getReglement().getNbMembresRetenu())
                     remove(equipe);
                 remove = true;
                 break;

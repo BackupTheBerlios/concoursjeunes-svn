@@ -58,7 +58,7 @@ public class FicheConcoursTest {
 	}
 
 	/**
-	 * Méthode de test pour {@link org.concoursjeunes.FicheConcours#removeConcurrentInTeam(org.concoursjeunes.Concurrent)}.
+	 * Méthode de test pour {@link org.concoursjeunes.FicheConcours#excludeConcurrentOfTeam(org.concoursjeunes.Concurrent)}.
 	 */
 	@Test
 	public void testRemoveConcurrentInTeam() {
@@ -122,7 +122,7 @@ public class FicheConcoursTest {
 	}
 
 	/**
-	 * Méthode de test pour {@link org.concoursjeunes.FicheConcours#silentSave()}.
+	 * Méthode de test pour {@link org.concoursjeunes.FicheConcours#save()}.
 	 */
 	@Test
 	public void testSilentSave() {
@@ -147,6 +147,6 @@ public class FicheConcoursTest {
 
 	@After
 	public void tearDown() {
-		concoursJeunes.deleteFicheConcours(ficheConcours.getParametre().getSaveName());
+		//concoursJeunes.deleteFicheConcours(ficheConcours.getParametre().getSaveName());
 	}
 }

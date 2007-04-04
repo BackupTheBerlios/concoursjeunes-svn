@@ -293,6 +293,50 @@ public class ConcurrentList {
 		}
 		return sort_list;
 	}
+	
+	/**
+	 * Passe au concurrent suivant par ordre de cible/position
+	 * 
+	 * @param curConcurrent - le concurrent courrant
+	 * @return Concurrent - le concurrent suivant
+	 */
+	public Concurrent nextConcurrent(Concurrent curConcurrent) {
+		int depart = curConcurrent.getDepart();
+		int cible = curConcurrent.getCible(); 
+		int position = curConcurrent.getPosition();
+
+		do {
+			position++;
+			if(position == parametre.getNbTireur()) {
+				position = 0;
+				cible++;
+			}
+		} while(getConcurrentAt(depart, cible, position) == null && cible <= parametre.getNbCible());
+
+		return getConcurrentAt(depart, cible, position);
+	}
+
+	/**
+	 * Passe au concurrent précédent par ordre de cible/position
+	 * 
+	 * @param curConcurrent - le concurrent courrant
+	 * @return Concurrent - le concurrent précedent
+	 */
+	public Concurrent previousConcurrent(Concurrent curConcurrent) {
+		int depart = curConcurrent.getDepart();
+		int cible = curConcurrent.getCible(); 
+		int position = curConcurrent.getPosition();
+
+		do {
+			position--;
+			if(position == -1) {
+				position = parametre.getNbTireur() - 1;
+				cible--;
+			}
+		} while(getConcurrentAt(depart, cible, position) == null && cible > 0);
+
+		return getConcurrentAt(depart, cible, position);
+	}
 
 	/**
 	 * Donne la liste des clubs représenté sur le concours

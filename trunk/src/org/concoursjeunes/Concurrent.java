@@ -303,8 +303,9 @@ public class Concurrent extends Archer {
 			ResultSet rs = stmt.executeQuery(sql);
 
 			while(rs.next()) {
+				
 				Concurrent concurrent = ConcurrentFactory.getConcurrent(rs, reglement);
-
+				
 				concurrents.add(concurrent);
 			}
 		} catch (SQLException e) {
@@ -312,6 +313,6 @@ public class Concurrent extends Archer {
 		} finally {
 			try { if(stmt != null) stmt.close(); } catch(Exception e) { }
 		}
-		return null;
+		return concurrents;
 	}
 }

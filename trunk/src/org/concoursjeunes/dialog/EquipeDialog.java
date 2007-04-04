@@ -202,7 +202,7 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 		//Pour chaque categorie
 		for(int i = 0; i < catList.length; i++) {
 			//test si il existe des archers dans la catégorie
-			if(ficheConcours.getArcherlist().list(catList[i], -1).length > 0) {
+			if(ficheConcours.getConcurrentList().list(catList[i], -1).length > 0) {
 				if(firstIndex == -1)
 					firstIndex = i;
 				//generer le noeud correspondant
@@ -265,7 +265,7 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 			jcbClubs.addItem(ConcoursJeunes.ajrLibelle.getResourceString("equipe.contrainte.club.tous")); //$NON-NLS-1$
 
 			//liste l'ensemble des compagnies présente sur le concours
-			compagnies = ficheConcours.getArcherlist().listCompagnie();
+			compagnies = ficheConcours.getConcurrentList().listCompagnie();
 		} else {
 			compagnies = new Entite[] { forclub };
 		}
@@ -276,7 +276,7 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 		//parcours les compagnies
 		for(Entite compagnie : compagnies) {
 			//liste les archers pour chaque compagnie
-			Concurrent[] concurrents = ficheConcours.getArcherlist().list(compagnie, criteriaSet);
+			Concurrent[] concurrents = ficheConcours.getConcurrentList().list(compagnie, criteriaSet);
 			//regarde si leurs nombre est suffisant pour créer une équipe
 			if(!cbEquipeClub.isSelected() || concurrents.length >= ficheConcours.getParametre().getReglement().getNbMembresRetenu()) {
 				//ajoute le club à la liste

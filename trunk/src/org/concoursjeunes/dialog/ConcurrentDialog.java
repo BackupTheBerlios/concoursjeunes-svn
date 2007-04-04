@@ -485,7 +485,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		
 		//affiche le nombre de concurrent total sur le pas de tir
 		strPlaceLibre += ConcoursJeunes.ajrLibelle.getResourceString("concurrent.placelibre.nbarcher") + //$NON-NLS-1$
-		": " + ficheConcours.getArcherlist().countArcher() + "<br><br>"; //$NON-NLS-1$ //$NON-NLS-2$
+		": " + ficheConcours.getConcurrentList().countArcher() + "<br><br>"; //$NON-NLS-1$ //$NON-NLS-2$
 
 		//recupere la table d'occupation des cibles
 		Hashtable<DistancesEtBlason, OccupationCibles> occupationCibles = 
@@ -565,7 +565,10 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	private ArrayList<Integer> readScores() {
 		ArrayList<Integer> points = new ArrayList<Integer>();
 		for(int i = 0; i < tfpd.length; i++) {
-			points.set(i, Integer.parseInt(tfpd[i].getText()));
+			if(points.size() > i)
+				points.set(i, Integer.parseInt(tfpd[i].getText()));
+			else
+				points.add(Integer.parseInt(tfpd[i].getText()));
 		}
 		
 		return points;
@@ -677,7 +680,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 								ConcoursJeunes.ajrLibelle.getResourceString("erreur.maxcible.titre"),JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 						return;
 					//si le concurrent existe déjà alors retourner une erreur
-					} else if(ficheConcours.getArcherlist().contains(concurrent)) {
+					} else if(ficheConcours.getConcurrentList().contains(concurrent)) {
 						JOptionPane.showMessageDialog(this,
 								ConcoursJeunes.ajrLibelle.getResourceString("erreur.alreadyexist"), //$NON-NLS-1$
 								ConcoursJeunes.ajrLibelle.getResourceString("erreur.alreadyexist.titre"),JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$

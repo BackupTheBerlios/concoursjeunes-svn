@@ -17,6 +17,8 @@ import com.lowagie.text.PageSize;
 
 import ajinteractive.standard.java2.*;
 
+import static org.concoursjeunes.ConcoursJeunes.ajrParametreAppli;
+
 /**
  * Represente la fiche concours, regroupe l'ensemble des informations commune à un concours donné
  * 
@@ -31,8 +33,8 @@ public class FicheConcours {
 	public static final int OUT_HTML	= 1;    //Sortie HTML
 
 	private Parametre parametre			= new Parametre();
-	private ConcurrentList archerlist   = new ConcurrentList(parametre);
-	private EquipeList equipes			= new EquipeList();
+	private ConcurrentList concurrentList   = new ConcurrentList(parametre);
+	private EquipeList equipes			= new EquipeList(this);
 	private Hashtable<Integer, ArrayList<Cible>> pasDeTir = new Hashtable<Integer, ArrayList<Cible>>();
 
 	private EventListenerList ficheConcoursListeners = new EventListenerList();
@@ -49,14 +51,16 @@ public class FicheConcours {
 	private static AJTemplate templatePasDeTirXML          = new AJTemplate();
 
 	private Hashtable<CriteriaSet, Concurrent[]> concurrentsClasse;
+	
+	static {
+		loadTemplates();
+	}
 
 	/**
 	 * 
 	 */
 	public FicheConcours() {
 		makePasDeTir();
-
-		loadTemplates();
 	}
 
 	/**
@@ -80,11 +84,11 @@ public class FicheConcours {
 	/**
 	 * Retourne la liste des archers inscrit sur le concours
 	 * 
-	 * @return  archerlist - la liste des archers inscrit sur le concours
+	 * @return la liste des archers inscrit sur le concours
 	 * @uml.property  name="archerlist"
 	 */
-	public ConcurrentList getArcherlist() {
-		return archerlist;
+	public ConcurrentList getConcurrentList() {
+		return concurrentList;
 	}
 
 	/**
@@ -93,8 +97,8 @@ public class FicheConcours {
 	 * @param archerlist - la liste des archers inscrit sur le concours
 	 * @uml.property  name="archerlist"
 	 */
-	public void setArcherlist(ConcurrentList archerlist) {
-		this.archerlist = archerlist;
+	public void setConcurrentlist(ConcurrentList concurrentList) {
+		this.concurrentList = concurrentList;
 	}
 
 	/**
@@ -145,15 +149,15 @@ public class FicheConcours {
 	 */
 	public boolean havePlaceForConcurrent(Concurrent concurrent) {
 		OccupationCibles place = null;
-		if(!archerlist.contains(concurrent)) {
+		if(!concurrentList.contains(concurrent)) {
 			place = getOccupationCibles(concurrent.getDepart()).get(
 					DistancesEtBlason.getDistancesEtBlasonForConcurrent(parametre.getReglement(), concurrent));
 
 			return place.getPlaceLibre() > 0 || getNbCiblesLibre(concurrent.getDepart()) > 0;
 		}
 
-		int index = archerlist.getArchList().indexOf(concurrent);
-		Concurrent conc2 = archerlist.get(index);
+		int index = concurrentList.getArchList().indexOf(concurrent);
+		Concurrent conc2 = concurrentList.get(index);
 
 		DistancesEtBlason db1 = DistancesEtBlason.getDistancesEtBlasonForConcurrent(parametre.getReglement(), concurrent);
 		DistancesEtBlason db2 = DistancesEtBlason.getDistancesEtBlasonForConcurrent(parametre.getReglement(), conc2);
@@ -187,62 +191,38 @@ public class FicheConcours {
 	 */
 	public boolean addConcurrent(Concurrent concurrent) {
 		//TODO interdire seulement sur le même départ
-		if(archerlist.contains(concurrent))
+		if(concurrentList.contains(concurrent))
 			return false;
 
 		if(!havePlaceForConcurrent(concurrent))
 			return false;
 
-		archerlist.add(concurrent);
+		concurrentList.add(concurrent);
 
 		fireConcurrentAdded(concurrent);
-		silentSave();
+		save();
 
 		return true;
 	}
 
 	/**
 	 * retire un concurrent du concours
+	 * TODO controler le depart
 	 * 
 	 * @param removedConcurrent - Le concurrent à supprimer
 	 * @return true si suppression avec succès, false sinon
 	 */
-	public boolean removeConcurrent(Concurrent removedConcurrent) {
-		boolean remove = false;
-
+	public void removeConcurrent(Concurrent removedConcurrent) {
 		//retire le concurrent du pas de tir si present
 		if(removedConcurrent.getCible() > 0)
 			pasDeTir.get(removedConcurrent.getDepart()).get(removedConcurrent.getCible()-1).removeConcurrent(removedConcurrent);
 		//suppression dans la liste
-		//TODO controler le depart
-		remove = archerlist.remove(removedConcurrent);
-		if(remove) {
+		//suppression dans l'equipe si presence dans equipe
+		equipes.removeConcurrent(removedConcurrent);
+		if(concurrentList.remove(removedConcurrent))
 			fireConcurrentRemoved(removedConcurrent);
-			//suppression dans l'equipe si presence dans equipe
-			remove = removeConcurrentInTeam(removedConcurrent);
-		}
 
-		silentSave();
-
-		return remove;
-	}
-
-	/**
-	 * retire un concurrent de l'équipe
-	 * 
-	 * @param removedConcurrent - Le concurrent à supprimer de l'équipe
-	 * @return true si suppression avec succès, false sinon
-	 */
-	public boolean removeConcurrentInTeam(Concurrent removedConcurrent) {
-		boolean remove = false;
-
-		if(equipes != null) {
-			remove = equipes.removeConcurrent(parametre.getReglement(), removedConcurrent);
-		}
-
-		silentSave();
-
-		return remove;
+		save();
 	}
 
 	/**
@@ -274,16 +254,16 @@ public class FicheConcours {
 		int curCible = 1;
 
 		//pour chaque distance/blason
-		for(DistancesEtBlason distancesEtBlason : archerlist.listDistancesEtBlason(parametre.getReglement(), true, depart)) {
+		for(DistancesEtBlason distancesEtBlason : concurrentList.listDistancesEtBlason(parametre.getReglement(), true, depart)) {
 			//liste les archers pour le distance/blason
-			Concurrent[] concurrents = ConcurrentList.sort(archerlist.list(parametre.getReglement(), distancesEtBlason, depart), ConcurrentList.SORT_BY_CLUBS);
+			Concurrent[] concurrents = ConcurrentList.sort(concurrentList.list(parametre.getReglement(), distancesEtBlason, depart), ConcurrentList.SORT_BY_CLUBS);
 
 			//defini le nombre de tireur par cible en fonction du nombre de tireurs
 			//max acceptés et du nombre de tireur présent
 			//FIXME calculer le taux d'occupation des cibles en fonction de chaque d/b afin d'eviter les effets de bord
 			int nbTireurParCible = parametre.getNbTireur();
 			for(int i = 2; i <= parametre.getNbTireur(); i+=2) {
-				if(archerlist.countArcher(depart) <= parametre.getNbCible() * i) {
+				if(concurrentList.countArcher(depart) <= parametre.getNbCible() * i) {
 					nbTireurParCible = i;
 				}
 			}
@@ -307,7 +287,7 @@ public class FicheConcours {
 			curCible = endCible + 1;
 		}
 
-		silentSave();
+		save();
 	}
 
 	/**
@@ -327,55 +307,10 @@ public class FicheConcours {
 		//tenter le placement
 		boolean success = cible.setConcurrentAt(concurrent, position);
 
-		silentSave();
+		save();
 
 		return success;
 	}
-
-	/**
-	 * Passe au concurrent suivant par ordre de cible/position
-	 * 
-	 * @param curConcurrent - le concurrent courrant
-	 * @return Concurrent - le concurrent suivant
-	 */
-	public Concurrent nextConcurrent(Concurrent curConcurrent) {
-		int depart = curConcurrent.getDepart();
-		int cible = curConcurrent.getCible(); 
-		int position = curConcurrent.getPosition();
-
-		do {
-			position++;
-			if(position == parametre.getNbTireur()) {
-				position = 0;
-				cible++;
-			}
-		} while(archerlist.getConcurrentAt(depart, cible, position) == null && cible <= parametre.getNbCible());
-
-		return archerlist.getConcurrentAt(depart, cible, position);
-	}
-
-	/**
-	 * Passe au concurrent précédent par ordre de cible/position
-	 * 
-	 * @param curConcurrent - le concurrent courrant
-	 * @return Concurrent - le concurrent précedent
-	 */
-	public Concurrent previousConcurrent(Concurrent curConcurrent) {
-		int depart = curConcurrent.getDepart();
-		int cible = curConcurrent.getCible(); 
-		int position = curConcurrent.getPosition();
-
-		do {
-			position--;
-			if(position == -1) {
-				position = parametre.getNbTireur() - 1;
-				cible--;
-			}
-		} while(archerlist.getConcurrentAt(depart, cible, position) == null && cible > 0);
-
-		return archerlist.getConcurrentAt(depart, cible, position);
-	}
-
 
 	/**
 	 * Retourne le nombre de cible libre sur un depart donné
@@ -439,7 +374,7 @@ public class FicheConcours {
 		int i = 0;
 		for(DistancesEtBlason distblas : distancesEtBlasons) {
 
-			nbParDistanceBlason[i] = archerlist.countArcher(parametre.getReglement(), distblas, depart);
+			nbParDistanceBlason[i] = concurrentList.countArcher(parametre.getReglement(), distblas, depart);
 
 			placeLibreSurCible = (parametre.getNbTireur() - nbParDistanceBlason[i] % parametre.getNbTireur()) 
 			% parametre.getNbTireur();
@@ -462,8 +397,8 @@ public class FicheConcours {
 			ArrayList<Cible> departCibles = new ArrayList<Cible>();
 			for(int j = 0; j < parametre.getNbCible(); j++) {
 				Cible cible = new Cible(j+1, this);
-				if(archerlist.countArcher(i) > 0) {
-					for(Concurrent concurrent : archerlist.list(j + 1, i))
+				if(concurrentList.countArcher(i) > 0) {
+					for(Concurrent concurrent : concurrentList.list(j + 1, i))
 						cible.setConcurrentAt(concurrent, concurrent.getPosition());
 				}
 				departCibles.add(cible);
@@ -487,7 +422,7 @@ public class FicheConcours {
 	public Object[] getFiche() {
 		Object[] fiche = {
 				parametre,
-				archerlist,
+				concurrentList,
 				equipes
 		};
 		return fiche;
@@ -500,17 +435,24 @@ public class FicheConcours {
 	 */
 	public void setFiche(Object[] fiche) {
 		parametre = (Parametre)fiche[0];
-		archerlist = (ConcurrentList)fiche[1];
+		concurrentList = (ConcurrentList)fiche[1];
 		equipes = (EquipeList)fiche[2];
 
 		makePasDeTir();
+	}
+	
+	public MetaDataFicheConcours getMetaDataFicheConcours() {
+		return new MetaDataFicheConcours(
+				parametre.getDate(), 
+				parametre.getIntituleConcours(),
+				parametre.getSaveName());
 	}
 
 	/**
 	 * sauvegarde "silencieuse" en arriere plan de la fiche concours
 	 *
 	 */
-	public void silentSave() {
+	public void save() {
 		File f = new File(ConcoursJeunes.userRessources.getConcoursPathForProfile(ConcoursJeunes.configuration.getCurProfil())
 				+ File.separator + parametre.getSaveName());
 		AJToolKit.saveXMLStructure(f, getFiche(), true);
@@ -543,7 +485,7 @@ public class FicheConcours {
 			//sort la liste des concurrents correspondant aux critéres de recherche
 			ArrayList<Concurrent> unsortList = new ArrayList<Concurrent>();
 			for(int j = 0; j <= depart; j++) {
-				for(Concurrent concurrent : archerlist.list(catList[i], j))
+				for(Concurrent concurrent : concurrentList.list(catList[i], j))
 					unsortList.add(concurrent);
 			}
 			Concurrent[] sortList = ConcurrentList.sort(unsortList.toArray(new Concurrent[unsortList.size()]), ConcurrentList.SORT_BY_POINTS);
@@ -557,37 +499,37 @@ public class FicheConcours {
 	 *
 	 */
 	private static void loadTemplates() {
-		templateClassementXML.loadTemplate(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
+		templateClassementXML.loadTemplate(ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
 				+ File.separator 
-				+ ConcoursJeunes.ajrParametreAppli.getResourceString("template.classement.xml")); //$NON-NLS-1$
+				+ ajrParametreAppli.getResourceString("template.classement.xml")); //$NON-NLS-1$
 
-		templateClassementHTML.loadTemplate(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
+		templateClassementHTML.loadTemplate(ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
 				+ File.separator 
-				+ ConcoursJeunes.ajrParametreAppli.getResourceString("template.classement.html")); //$NON-NLS-1$
+				+ ajrParametreAppli.getResourceString("template.classement.html")); //$NON-NLS-1$
 
-		templateClassementEquipeXML.loadTemplate(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
+		templateClassementEquipeXML.loadTemplate(ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
 				+ File.separator 
-				+ ConcoursJeunes.ajrParametreAppli.getResourceString("template.classement_equipe.xml")); //$NON-NLS-1$
+				+ ajrParametreAppli.getResourceString("template.classement_equipe.xml")); //$NON-NLS-1$
 
-		templateClassementEquipeHTML.loadTemplate(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
+		templateClassementEquipeHTML.loadTemplate(ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
 				+ File.separator 
-				+ ConcoursJeunes.ajrParametreAppli.getResourceString("template.classement_equipe.html")); //$NON-NLS-1$
+				+ ajrParametreAppli.getResourceString("template.classement_equipe.html")); //$NON-NLS-1$
 
-		templateListeArcherXML.loadTemplate(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
+		templateListeArcherXML.loadTemplate(ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
 				+ File.separator 
-				+ ConcoursJeunes.ajrParametreAppli.getResourceString("template.listarcher")); //$NON-NLS-1$
+				+ ajrParametreAppli.getResourceString("template.listarcher")); //$NON-NLS-1$
 
-		templateListeGreffeXML.loadTemplate(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
+		templateListeGreffeXML.loadTemplate(ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
 				+ File.separator 
-				+ ConcoursJeunes.ajrParametreAppli.getResourceString("template.listarcher.greffe")); //$NON-NLS-1$
+				+ ajrParametreAppli.getResourceString("template.listarcher.greffe")); //$NON-NLS-1$
 
-		templateEtiquettesXML.loadTemplate(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
+		templateEtiquettesXML.loadTemplate(ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
 				+ File.separator 
-				+ ConcoursJeunes.ajrParametreAppli.getResourceString("template.etiquettes")); //$NON-NLS-1$
+				+ ajrParametreAppli.getResourceString("template.etiquettes")); //$NON-NLS-1$
 
-		templatePasDeTirXML.loadTemplate(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
+		templatePasDeTirXML.loadTemplate(ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
 				+ File.separator 
-				+ ConcoursJeunes.ajrParametreAppli.getResourceString("template.pasdetir")); //$NON-NLS-1$
+				+ ajrParametreAppli.getResourceString("template.pasdetir")); //$NON-NLS-1$
 	}
 
 	/**
@@ -600,7 +542,7 @@ public class FicheConcours {
 	 */
 	public String getClassement(int outType, int depart) {
 		String strClassement = ""; //$NON-NLS-1$
-		if(archerlist != null && archerlist.countArcher() > 0) {
+		if(concurrentList != null && concurrentList.countArcher() > 0) {
 			classement(depart);
 
 			AJTemplate tplClassement = null;
@@ -641,8 +583,8 @@ public class FicheConcours {
 			tplClassement.parse("ARBITRE_RESPONSABLE", strArbitreResp); //$NON-NLS-1$
 			tplClassement.parse("ARBITRES_ASSISTANT", strArbitresAss); //$NON-NLS-1$
 			//TODO compter le nombre d'incrit selon la règle nb depart 0 à curdepart 
-			tplClassement.parse("NB_CLUB", "" + archerlist.countCompagnie(depart)); //$NON-NLS-1$ //$NON-NLS-2$
-			tplClassement.parse("NB_TIREURS", "" + archerlist.countArcher(depart)); //$NON-NLS-1$ //$NON-NLS-2$
+			tplClassement.parse("NB_CLUB", "" + concurrentList.countCompagnie(depart)); //$NON-NLS-1$ //$NON-NLS-2$
+			tplClassement.parse("NB_TIREURS", "" + concurrentList.countArcher(depart)); //$NON-NLS-1$ //$NON-NLS-2$
 			tplClassement.parse("TYPE_CLASSEMENT", ConcoursJeunes.ajrLibelle.getResourceString("classement.individuel")); //$NON-NLS-1$ //$NON-NLS-2$
 
 			//Entete de categorie
@@ -803,8 +745,8 @@ public class FicheConcours {
 
 			tplClassementEquipe.parse("ARBITRE_RESPONSABLE", strArbitreResp); //$NON-NLS-1$
 			tplClassementEquipe.parse("ARBITRES_ASSISTANT", strArbitresAss); //$NON-NLS-1$
-			tplClassementEquipe.parse("NB_CLUB", "" + archerlist.countCompagnie()); //$NON-NLS-1$ //$NON-NLS-2$
-			tplClassementEquipe.parse("NB_TIREURS", "" + archerlist.countArcher()); //$NON-NLS-1$ //$NON-NLS-2$
+			tplClassementEquipe.parse("NB_CLUB", "" + concurrentList.countCompagnie()); //$NON-NLS-1$ //$NON-NLS-2$
+			tplClassementEquipe.parse("NB_TIREURS", "" + concurrentList.countArcher()); //$NON-NLS-1$ //$NON-NLS-2$
 			tplClassementEquipe.parse("TYPE_CLASSEMENT", ConcoursJeunes.ajrLibelle.getResourceString("classement.equipe")); //$NON-NLS-1$ //$NON-NLS-2$
 
 			tplClassementEquipe.parse("categories.CATEGORIE", ConcoursJeunes.ajrLibelle.getResourceString("equipe.composition")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -858,12 +800,12 @@ public class FicheConcours {
 
 		listeArcherXML.reset();
 
-		listeArcherXML.parse("NB_PARTICIPANTS", "" + archerlist.countArcher(depart)); //$NON-NLS-1$ //$NON-NLS-2$
+		listeArcherXML.parse("NB_PARTICIPANTS", "" + concurrentList.countArcher(depart)); //$NON-NLS-1$ //$NON-NLS-2$
 		listeArcherXML.parse("CURRENT_TIME", DateFormat.getDateInstance(DateFormat.FULL).format(new Date())); //$NON-NLS-1$
 
 		listeArcherXML.parse("LISTE", strArcherListeXML); //$NON-NLS-1$
 
-		for(Concurrent concurrent : ConcurrentList.sort(archerlist.list(depart), ConcurrentList.SORT_BY_NAME)) {
+		for(Concurrent concurrent : ConcurrentList.sort(concurrentList.list(depart), ConcurrentList.SORT_BY_NAME)) {
 			listeArcherXML.parse("lignes.IDENTITEE", concurrent.getID()); //$NON-NLS-1$
 			listeArcherXML.parse("lignes.CLUB", concurrent.getClub().getNom()); //$NON-NLS-1$
 			listeArcherXML.parse("lignes.NUM_LICENCE", concurrent.getNumLicenceArcher()); //$NON-NLS-1$
@@ -929,7 +871,7 @@ public class FicheConcours {
 
 		int colonne = 0;
 		int ligne = 0;
-		for(Concurrent concurrent : ConcurrentList.sort(archerlist.list(depart), ConcurrentList.SORT_BY_CIBLES)) {
+		for(Concurrent concurrent : ConcurrentList.sort(concurrentList.list(depart), ConcurrentList.SORT_BY_CIBLES)) {
 			if(colonne == 0)
 				templateEtiquettesXML.parse("page.ligne.leading", "" + (PageSize.A4.height() * (cellule_y / 100) + PageSize.A4.height() * (espacement_cellule_v / 100))); //$NON-NLS-1$ //$NON-NLS-2$
 			templateEtiquettesXML.parse("page.ligne.colonne.cid", concurrent.getID()); //$NON-NLS-1$
@@ -984,7 +926,7 @@ public class FicheConcours {
 		for(int i = 1; i <= nbseq; i++) {
 			//Cible cible = null;
 
-			Concurrent[] concurrents = archerlist.list(i, depart);
+			Concurrent[] concurrents = concurrentList.list(i, depart);
 			if(concurrents != null && concurrents.length > 0) {
 				CriteriaSet dci = concurrents[0].getCriteriaSet();
 				DistancesEtBlason db = parametre.getReglement().getCorrespondanceCriteriaSet_DB(dci);

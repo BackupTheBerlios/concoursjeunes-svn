@@ -9,6 +9,9 @@ package org.concoursjeunes;
 
 import java.util.*;
 
+import static org.concoursjeunes.ConcoursJeunes.ajrParametreAppli;
+import static org.concoursjeunes.ConcoursJeunes.configuration;
+
 /**
  * @author  aurelien
  */
@@ -17,15 +20,15 @@ public class Parametre extends DefaultParameters {
 	private ArrayList<String> vArbitres = new ArrayList<String>();
 
 	private String saveName         = System.currentTimeMillis()
-			+ ConcoursJeunes.ajrParametreAppli.getResourceString("extention.concours"); //$NON-NLS-1$
+			+ ajrParametreAppli.getResourceString("extention.concours"); //$NON-NLS-1$
 
 	public Parametre() {
-		setClub(ConcoursJeunes.configuration.getClub());
-		setIntituleConcours(ConcoursJeunes.configuration.getIntituleConcours());
-		setNbCible(ConcoursJeunes.configuration.getNbCible());
-		setNbTireur(ConcoursJeunes.configuration.getNbTireur());
-		setNbDepart(ConcoursJeunes.configuration.getNbDepart());
-		setReglement(ConcoursJeunes.configuration.getReglement());
+		setClub(configuration.getClub());
+		setIntituleConcours(configuration.getIntituleConcours());
+		setNbCible(configuration.getNbCible());
+		setNbTireur(configuration.getNbTireur());
+		setNbDepart(configuration.getNbDepart());
+		setReglement(configuration.getReglement());
 	}
 	/**
 	 * Donne la date du concours

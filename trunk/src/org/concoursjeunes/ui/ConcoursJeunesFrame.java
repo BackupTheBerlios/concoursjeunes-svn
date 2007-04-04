@@ -150,7 +150,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Conco
 			concoursJeunes.createFicheConcours();
 		} else if(fld.getAction() == FicheLoaderDialog.SUPPRIMER && fld.getSelectedFiche() != -1) {
 			concoursJeunes.deleteFicheConcours(
-					metaDataFichesConcours.getMetaDataFicheConcours(fld.getSelectedFiche()).getFilenameConcours());
+					metaDataFichesConcours.getMetaDataFicheConcours(fld.getSelectedFiche()));
 			enumFicheConcours();
 		}
 	}
@@ -323,16 +323,16 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Conco
 			//debugage -> Attribution rapide de points au concurrents
 		} else if(cmd.equals("menubar.debug.addpoints")) { //$NON-NLS-1$
 			if(jif != null) {
-				org.concoursjeunes.debug.Debug.attributePoints(jif.ficheConcours.getArcherlist(), 0);
+				org.concoursjeunes.debug.Debug.attributePoints(jif.ficheConcours.getConcurrentList(), 0);
 			}
 
 			//debugage -> RAZ des points
 		} else if(cmd.equals("menubar.debug.resetpoints")) { //$NON-NLS-1$
-			if(jif != null) org.concoursjeunes.debug.Debug.resetPoints(jif.ficheConcours.getArcherlist(), 0);
+			if(jif != null) org.concoursjeunes.debug.Debug.resetPoints(jif.ficheConcours.getConcurrentList(), 0);
 
 			//debugage -> attribution de niveau aléatoire au archers
 		} else if(cmd.equals("menubar.debug.atriblevel")) { //$NON-NLS-1$
-			if(jif != null) org.concoursjeunes.debug.Debug.attributeLevel(jif.ficheConcours.getArcherlist(), 0);
+			if(jif != null) org.concoursjeunes.debug.Debug.attributeLevel(jif.ficheConcours.getConcurrentList(), 0);
 		}
 	}
 	

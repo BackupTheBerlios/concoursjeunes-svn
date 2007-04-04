@@ -218,11 +218,11 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 					|| codeRetour == ConcurrentDialog.CONFIRM_AND_PREVIOUS) {
 				
 				if(codeRetour == ConcurrentDialog.CONFIRM_AND_NEXT) {
-					openConcurrentDialog(ficheConcours.nextConcurrent(concurrent));
+					openConcurrentDialog(ficheConcours.getConcurrentList().nextConcurrent(concurrent));
 				} else {
 					assert codeRetour == ConcurrentDialog.CONFIRM_AND_PREVIOUS;
 					
-					openConcurrentDialog(ficheConcours.previousConcurrent(concurrent));
+					openConcurrentDialog(ficheConcours.getConcurrentList().previousConcurrent(concurrent));
 				}
 			}
 		}
@@ -235,7 +235,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	 */
 	public void openResultatDialog() {
 		ResultatDialog resultat = new ResultatDialog(parentframe, 
-				ficheConcours.getArcherlist().list(index, ficheConcours.getCurrentDepart()),
+				ficheConcours.getConcurrentList().list(index, ficheConcours.getCurrentDepart()),
 				ficheConcours.getParametre());
 
 		//si annulation ne pas continuer
@@ -246,11 +246,11 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		if(returnVal == ResultatDialog.NEXT_TARGET) {
 			do {
 				index++;
-			} while(ficheConcours.getArcherlist().list(index).length == 0 && index <= ficheConcours.getParametre().getNbCible());
+			} while(ficheConcours.getConcurrentList().list(index).length == 0 && index <= ficheConcours.getParametre().getNbCible());
 		} else if(returnVal == ResultatDialog.PREVIOUS_TARGET) {
 			do {
 				index--;
-			} while(ficheConcours.getArcherlist().list(index).length == 0 && index > 0);
+			} while(ficheConcours.getConcurrentList().list(index).length == 0 && index > 0);
 		}
 
 		if(returnVal != ResultatDialog.SAVE_AND_QUIT && (index > 0 && index <= ficheConcours.getParametre().getNbCible())) {
@@ -384,7 +384,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		if(e.getSource() == tabbedpane) {
 			int i = tabbedpane.getSelectedIndex();
 			if(i > 0) {
-				Concurrent[] listConcurrents = ficheConcours.getArcherlist().list(ficheConcours.getCurrentDepart());
+				Concurrent[] listConcurrents = ficheConcours.getConcurrentList().list(ficheConcours.getCurrentDepart());
 				for(Concurrent concurrent : listConcurrents) {
 					if(concurrent.getCible() == 0) {
 						JOptionPane.showMessageDialog(this,
@@ -407,7 +407,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 				((HTMLDocument)jepClassIndiv.getDocument()).processHTMLFrameHyperlinkEvent( 
 						(HTMLFrameHyperlinkEvent)e); 
 			} else {
-				openConcurrentDialog(ficheConcours.getArcherlist().getConcurrentAt(ficheConcours.getCurrentDepart(), Integer.parseInt(e.getURL().getRef().substring(1)), 
+				openConcurrentDialog(ficheConcours.getConcurrentList().getConcurrentAt(ficheConcours.getCurrentDepart(), Integer.parseInt(e.getURL().getRef().substring(1)), 
 						Integer.parseInt(e.getURL().getRef().substring(0,1))));
 
 				jepClassIndiv.setText(ficheConcours.getClassement(FicheConcours.OUT_HTML, ficheConcours.getCurrentDepart()));

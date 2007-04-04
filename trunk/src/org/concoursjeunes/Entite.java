@@ -176,13 +176,13 @@ public class Entite {
 				sql += "where ";
 				ArrayList<String> filters = new ArrayList<String>();
 				if(eGeneric.getNom().length() > 0) {
-					filters.add("NOMENTITE like \"" + eGeneric.getNom().toUpperCase() + "\"");
+					filters.add("NOMENTITE like '" + eGeneric.getNom().toUpperCase() + "'");
 				}
 				if(eGeneric.getAgrement().length() > 0) {
-					filters.add("AGREMENTENTITE like \"" + eGeneric.getAgrement().toUpperCase() + "\"");
+					filters.add("AGREMENTENTITE like '" + eGeneric.getAgrement().toUpperCase() + "'");
 				}
 				if(eGeneric.getVille().length() > 0) {
-					filters.add("VILLEENTITE like \"" + eGeneric.getVille().toUpperCase() + "\"");
+					filters.add("VILLEENTITE like '" + eGeneric.getVille().toUpperCase() + "'");
 				}
 				
 				for(String filter : filters) {

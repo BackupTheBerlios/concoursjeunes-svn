@@ -81,6 +81,7 @@ public class ConcoursJeunes {
 	public ConcoursJeunes() {
 		//tente de recuperer la configuration générale du programme
 		configuration = ConfigurationFactory.getCurrentConfiguration();
+		metaDataFichesConcours = MetaDataFichesConcoursFactory.getMetaDataFichesConcours();
 
 		//fige la langue de ressource de l'appli sur la locale du fichier de config
 		AjResourcesReader.setLocale(new Locale(configuration.getLangue()));
@@ -135,28 +136,11 @@ public class ConcoursJeunes {
 		listeners.remove(ConcoursJeunesListener.class, concoursJeunesListener);
 	}
 	
-	private void saveMetaDataFichesConcours() {
-		if(configuration != null) {
-			if(metaDataFichesConcours == null)
-				loadMetaDataFichesConcours();
-	
-			metaDataFichesConcours.save();
-		}
-	}
-	
-	private void loadMetaDataFichesConcours() {
-		if(configuration != null) {
-			metaDataFichesConcours = MetaDataFichesConcoursFactory.getMetaDataFichesConcours();
-		}
-	}
-	
 	/**
 	 * @return
 	 * @uml.property  name="metaDataFichesConcours"
 	 */
 	public MetaDataFichesConcours getMetaDataFichesConcours() {
-		if(metaDataFichesConcours == null)
-			loadMetaDataFichesConcours();
 		return metaDataFichesConcours;
 	}
 
@@ -166,52 +150,33 @@ public class ConcoursJeunes {
 	 * @return FicheConcours la fiche du concours créé
 	 */
 	public void createFicheConcours() {
-		if(configuration != null) {
-			FicheConcours ficheConcours = new FicheConcours();
-			fichesConcours.add(ficheConcours);
-			ficheConcours.silentSave();
-			
-			if(metaDataFichesConcours == null)
-				loadMetaDataFichesConcours();
-			
-			MetaDataFicheConcours metaDataFicheConcours 
-					= new MetaDataFicheConcours(
-							ficheConcours.getParametre().getDate(), 
-							ficheConcours.getParametre().getIntituleConcours(),
-							ficheConcours.getParametre().getSaveName());
-			metaDataFichesConcours.addMetaDataFicheConcours(metaDataFicheConcours);
-			
-			saveMetaDataFichesConcours();
-			
-			fireFicheConcoursCreated(ficheConcours);
-		}
+		assert configuration != null : "la configuration ne peut être à null";
+		
+		FicheConcours ficheConcours = new FicheConcours();
+		fichesConcours.add(ficheConcours);
+		metaDataFichesConcours.addMetaDataFicheConcours(ficheConcours.getMetaDataFicheConcours());
+		
+		metaDataFichesConcours.save();
+		ficheConcours.save();
+		
+		fireFicheConcoursCreated(ficheConcours);
 	}
 	
 	/**
 	 * 
 	 * @param ficheConcours
 	 */
-	public void deleteFicheConcours(String filename) {
+	public void deleteFicheConcours(MetaDataFicheConcours metaDataFicheConcours) {
+		assert configuration != null : "la configuration ne peut être à null";
 
-		if(configuration != null) {
-			for(MetaDataFicheConcours metaDataFicheConcours : metaDataFichesConcours.getFiches()) {
-				String filenameConcours = metaDataFicheConcours.getFilenameConcours();
-				if(filenameConcours.equals(filename)) {
-					metaDataFichesConcours.removeMetaDataFicheConcours(metaDataFicheConcours);
-					break;
-				}
-			}
+		metaDataFichesConcours.removeMetaDataFicheConcours(metaDataFicheConcours);
+
+		if(new File(userRessources.getConcoursPathForProfile(configuration.getCurProfil()) + File.separator + 
+				metaDataFicheConcours.getFilenameConcours()).delete()) {
+			metaDataFichesConcours.save();
 			
-			if(new File(userRessources.getConcoursPathForProfile(configuration.getCurProfil()) + File.separator + 
-					filename).delete()) {
-				fireFicheConcoursDeleted(null);
-				saveMetaDataFichesConcours();
-			} else {
-				//TODO gerer l'exception
-				//throw
-			}
+			fireFicheConcoursDeleted(null);
 		}
-
 	}
 
 	/**
@@ -221,7 +186,7 @@ public class ConcoursJeunes {
 	 * @return true si la fiche à été fermé et false sinon
 	 */
 	public void closeFicheConcours(FicheConcours ficheConcours) {
-		ficheConcours.silentSave();
+		ficheConcours.save();
 		if(fichesConcours.remove(ficheConcours)) {
 			fireFicheConcoursClosed(ficheConcours);
 		}
@@ -250,7 +215,7 @@ public class ConcoursJeunes {
 		
 		fireFicheConcoursRestored(ficheConcours);
 
-		System.out.println("Fin chargement d'un concours");
+		System.out.println("Fin chargement du concours " + ficheConcours.getParametre().getIntituleConcours());
 	}
 
 	/**
@@ -259,7 +224,7 @@ public class ConcoursJeunes {
 	 */
 	public void saveAllFichesConcours() {
 		for(FicheConcours fiche : fichesConcours) {
-			fiche.silentSave();
+			fiche.save();
 		}
 	}
 

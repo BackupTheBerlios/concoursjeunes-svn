@@ -363,7 +363,7 @@ public class ParametreDialog extends JDialog implements ActionListener {
 			//ficheConcours.setReglement(reglement)
 			
 			//sauvegarde en tache de fond
-			ficheConcours.silentSave();
+			ficheConcours.save();
 			
 			setVisible(false);
 		} else if(ae.getSource() == jbAnnuler) {
