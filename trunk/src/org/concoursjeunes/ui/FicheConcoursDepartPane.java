@@ -133,7 +133,7 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 		northpanePrintButton.add(jbPrintPasDeTir);
 		northpaneGestion.add(northpanePrintButton, BorderLayout.NORTH);
 		JLabel jl = new JLabel("Faites glisser un concurrent sur une cible ou une position pour l'affecter à celle ci");
-		jl.setBackground(Color.ORANGE);
+		jl.setBackground(new Color(255, 255, 80));
 		jl.setOpaque(true);
 		northpaneGestion.add(jl, BorderLayout.CENTER);
 
@@ -166,11 +166,14 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 		scrollarcher.setViewportView(ajlConcurrent);
 
 		jbAjouterArcher.setIcon(new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.addcriteria")
+				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.addarcher")
 		));
 		jbAjouterArcher.setMargin(new Insets(0,0,0,0));
 		jbAjouterArcher.addActionListener(this);
 
+		jbSupprimerArcher.setIcon(new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.removearcher")
+		));
 		jbSupprimerArcher.setMargin(new Insets(0,0,0,0));
 		jbSupprimerArcher.setEnabled(false);
 		jbSupprimerArcher.addActionListener(this);
@@ -296,7 +299,7 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 		jbPrintEtiquettes.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.printetiquettes")); //$NON-NLS-1$
 		jbPrintPasDeTir.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.printpasdetir")); //$NON-NLS-1$
 
-		//jbAjouterArcher.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.ajouter")); //$NON-NLS-1$
+		jbAjouterArcher.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.ajouter")); //$NON-NLS-1$
 		jbAjouterArcher.setToolTipText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.ajouter")); //$NON-NLS-1$
 		jbSupprimerArcher.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.supprimer")); //$NON-NLS-1$
 		jbEquipe.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.equipe")); //$NON-NLS-1$
