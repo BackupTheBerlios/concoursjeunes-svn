@@ -13,6 +13,9 @@ public class EquipeList {
     private ArrayList<Equipe> equipeList  = new ArrayList<Equipe>();
     private FicheConcours ficheConcours;
     
+    public EquipeList() {
+    	
+    }
     public EquipeList(FicheConcours ficheConcours) { 
     	this.ficheConcours = ficheConcours;
     }

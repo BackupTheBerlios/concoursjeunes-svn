@@ -8,6 +8,8 @@ import java.sql.Statement;
 
 import javax.swing.*;
 
+import org.concoursjeunes.ConcoursJeunes;
+
 import ajinteractive.standard.java2.*;
 /**
  * Plugin d'import d'une base WinFFTA 2 (Format Windev HF) vers ConcoursJeunes (Format Java XML) 
@@ -19,8 +21,6 @@ public class FFTAImportPlugin extends Thread implements ImportPlugin {
     
     private JFrame parentframe;
     
-    private Connection entiteConn;
-    
     private AjResourcesReader pluginRessources = new AjResourcesReader("FFTAImportPlugin");
     private AjResourcesReader pluginLocalisation = new AjResourcesReader("FFTAImportPlugin_libelle");
     
@@ -29,18 +29,7 @@ public class FFTAImportPlugin extends Thread implements ImportPlugin {
      *
      */
     public FFTAImportPlugin() {
-    	try {
-			Class.forName("org.hsqldb.jdbcDriver").newInstance();
-			entiteConn = DriverManager.getConnection("jdbc:hsqldb:file:base/concoursjeunesdb;shutdown=true", "sa", "");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		}
+    	
     }
     
     /**
@@ -83,9 +72,32 @@ public class FFTAImportPlugin extends Thread implements ImportPlugin {
         	}
 
         	try {
-            	entiteConn.setAutoCommit(true);
+        		//HACK problème retour caractère \r dans la table hyperfile FICLUB.FIC
+                //charge tous le fichier en mémoire
+                FileReader frficlub = new FileReader("base" + File.separator + pluginRessources.getResourceString("winffta.ficlub.fichier"));
+                StringBuffer sbuffer = new StringBuffer();
+                char[] buffer = new char[128];
+                int dataSize = 0;
+                while((dataSize = frficlub.read(buffer)) > -1) {
+                	sbuffer.append(buffer, 0, dataSize);
+                }
+                frficlub.close();
+                
+                String sFiclub = sbuffer.toString();
+                sbuffer = null;
+                
+                //supprime le caractère foireux
+                sFiclub = sFiclub.replaceAll("\\r;", ";");
+                
+                //réimprime le fichier
+                PrintStream psficlub = new PrintStream("base" + File.separator + pluginRessources.getResourceString("winffta.ficlub.fichier"));
+                psficlub.print(sFiclub);
+                psficlub.close();
+                //FIN HACK
+                
+            	ConcoursJeunes.dbConnection.setAutoCommit(true);
             	
-				Statement stmt = entiteConn.createStatement();
+				Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 
 				//monte les fichiers FFTA pour recuperation des données
 				stmt.executeUpdate("SET TABLE EntiteFFTA SOURCE \"FICLUB.TXT;fs=\\semi\"");
@@ -99,12 +111,14 @@ public class FFTAImportPlugin extends Thread implements ImportPlugin {
 				stmt.executeUpdate("INSERT INTO Archers (NUMLICENCEARCHER, NOMARCHER, " +
 						"PRENOMARCHER, CERTIFMEDICAL, AGREMENTENTITE, GENREFFTA, CATEGORIEFFTA, NIVEAUFFTA," +
 						"ARCFFTA) SELECT NUMLICENCEARCHER, NOMARCHER, " +
-						"PRENOMARCHER, CERTIFMEDICAL, AGREMENTCLUBARCHER, GENREARCHER-1, CATEGORIEARCHER-&," +
+						"PRENOMARCHER, CERTIFMEDICAL, AGREMENTCLUBARCHER, GENREARCHER-1, CATEGORIEARCHER-1," +
 						"NIVEAUARCHER-1, ARCARCHER-1 FROM ArchersFFTA");
 				
 				//demonte les fichiers FFTA (reduit le temps de lancement de la base)
 				stmt.executeUpdate("SET TABLE EntiteFFTA SOURCE \"\"");
 				stmt.executeUpdate("SET TABLE ArchersFFTA SOURCE \"\"");
+				
+				stmt.executeUpdate("COMMIT");
 				
 				stmt.close();
 				

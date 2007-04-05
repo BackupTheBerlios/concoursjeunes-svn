@@ -207,7 +207,6 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 	 */
 	private class EntiteTableModel implements TableModel {
 
-		private Connection entiteConn;
 		private EventListenerList listenerList = new EventListenerList();
 
 		private ArrayList<String> columnName = new ArrayList<String>();
@@ -218,19 +217,11 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 
 		public EntiteTableModel() {
 			try {
-				Class.forName("org.hsqldb.jdbcDriver").newInstance();
-				entiteConn = DriverManager.getConnection("jdbc:hsqldb:file:base/concoursjeunesdb;shutdown=true", "sa", "");
-
-				Statement stmt = entiteConn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+				
+				Statement stmt = ConcoursJeunes.dbConnection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 				rs = stmt.executeQuery("select * from Entite order by VilleEntite");
 			} catch (SQLException e) {
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			} catch (InstantiationException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
 				e.printStackTrace();
 			}
 
@@ -273,7 +264,7 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		 */
 		public int getRowCount() {
 			try {
-				Statement stmt = entiteConn.createStatement();
+				Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 
 				ResultSet rs = stmt.executeQuery("SELECT COUNT(*) as NbRows from Entite");
 

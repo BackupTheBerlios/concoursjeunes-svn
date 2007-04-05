@@ -44,9 +44,8 @@ public class FicheConcoursTest {
 	@Test
 	public void testAddConcurrent() {
 		Concurrent concurrent = new Concurrent();
-		concurrent.setDepart(0);
 		//concurrent.setDifferentiationCriteria();
-		assertTrue(ficheConcours.addConcurrent(concurrent));
+		assertTrue(ficheConcours.addConcurrent(concurrent, 0));
 	}
 
 	/**

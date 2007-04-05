@@ -389,12 +389,10 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	 * Affiche la boite de dialogue de création d'un concurrent
 	 * 
 	 * @param depart - le depart affecté au concurrent
-	 * @return le code de retour de la boite de dialogue
 	 */
-	public int showNewConcurrentDialog(int depart) {
+	public int showNewConcurrentDialog() {
 		
 		Concurrent concurrent = new Concurrent();
-		concurrent.setDepart(depart);
 		
 		AutoCompleteDocument acdNom = new AutoCompleteDocument(jtfNom, AutoCompleteDocument.NAME_SEARCH, ficheConcours.getParametre().getReglement());
 		acdNom.addAutoCompleteDocumentListener(this);
@@ -489,7 +487,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 
 		//recupere la table d'occupation des cibles
 		Hashtable<DistancesEtBlason, OccupationCibles> occupationCibles = 
-			ficheConcours.getOccupationCibles(concurrent.getDepart());
+			ficheConcours.getPasDeTir(concurrent.getDepart()).getOccupationCibles();
 
 		Hashtable<CriteriaSet, DistancesEtBlason> tableCorresp = 
 			ficheConcours.getParametre().getReglement().getCorrespondanceCriteriaSet_DB();
@@ -526,7 +524,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		}
 
 		strPlaceLibre += "<br>" + ConcoursJeunes.ajrLibelle.getResourceString("concurrent.placelibre.ciblelibre") + //$NON-NLS-1$ //$NON-NLS-2$
-				" " + ficheConcours.getNbCiblesLibre(concurrent.getDepart()) + "</html>"; //$NON-NLS-1$ //$NON-NLS-2$
+				" " + ficheConcours.getPasDeTir(concurrent.getDepart()).getNbCiblesLibre() + "</html>"; //$NON-NLS-1$ //$NON-NLS-2$
 		
 		return strPlaceLibre;
 	}
@@ -674,7 +672,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 
 				if(concurrent.getInscription() == Concurrent.UNINIT) {
 					//si il n'y a plus de place alors retourner une erreur
-					if(!ficheConcours.havePlaceForConcurrent(concurrent)) {
+					if(!ficheConcours.getPasDeTir(concurrent.getDepart()).havePlaceForConcurrent(concurrent)) {
 						JOptionPane.showMessageDialog(this,
 								ConcoursJeunes.ajrLibelle.getResourceString("erreur.maxcible"), //$NON-NLS-1$
 								ConcoursJeunes.ajrLibelle.getResourceString("erreur.maxcible.titre"),JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
@@ -687,7 +685,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 						return;
 					}
 				} else {
-					if(!ficheConcours.havePlaceForConcurrent(concurrent)) {
+					if(!ficheConcours.getPasDeTir(concurrent.getDepart()).havePlaceForConcurrent(concurrent)) {
 						JOptionPane.showMessageDialog(this,
 								ConcoursJeunes.ajrLibelle.getResourceString("erreur.maxcible"), //$NON-NLS-1$
 								ConcoursJeunes.ajrLibelle.getResourceString("erreur.maxcible.titre"),JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$

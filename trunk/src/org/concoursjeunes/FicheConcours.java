@@ -35,7 +35,7 @@ public class FicheConcours {
 	private Parametre parametre			= new Parametre();
 	private ConcurrentList concurrentList   = new ConcurrentList(parametre);
 	private EquipeList equipes			= new EquipeList(this);
-	private Hashtable<Integer, ArrayList<Cible>> pasDeTir = new Hashtable<Integer, ArrayList<Cible>>();
+	private Hashtable<Integer, PasDeTir> pasDeTir = new Hashtable<Integer, PasDeTir>();
 
 	private EventListenerList ficheConcoursListeners = new EventListenerList();
 
@@ -140,61 +140,20 @@ public class FicheConcours {
 	public void setParametre(Parametre parametre) {
 		this.parametre = parametre;
 	}
-
-	/**
-	 * Détermine, pour un concurrent donnée, si une place est diponible sur le pas de tir
-	 * 
-	 * @param concurrent - le concuurent à tester
-	 * @return true si une place est disponible pour le concurrent, false sinon
-	 */
-	public boolean havePlaceForConcurrent(Concurrent concurrent) {
-		OccupationCibles place = null;
-		if(!concurrentList.contains(concurrent)) {
-			place = getOccupationCibles(concurrent.getDepart()).get(
-					DistancesEtBlason.getDistancesEtBlasonForConcurrent(parametre.getReglement(), concurrent));
-
-			return place.getPlaceLibre() > 0 || getNbCiblesLibre(concurrent.getDepart()) > 0;
-		}
-
-		int index = concurrentList.getArchList().indexOf(concurrent);
-		Concurrent conc2 = concurrentList.get(index);
-
-		DistancesEtBlason db1 = DistancesEtBlason.getDistancesEtBlasonForConcurrent(parametre.getReglement(), concurrent);
-		DistancesEtBlason db2 = DistancesEtBlason.getDistancesEtBlasonForConcurrent(parametre.getReglement(), conc2);
-
-		//si on ne change pas de db pas de pb
-		if(db1.equals(db2)) {
-			return true;
-		}
-
-		//si il reste de la place dans la nouvelle categorie pas de pb
-		place = getOccupationCibles(concurrent.getDepart()).get(db1);
-		if(place.getPlaceLibre() > 0 || getNbCiblesLibre(concurrent.getDepart()) > 0) {
-			return true;
-		}
-
-		//si le retrait du concurrent libere une cible ok
-		place = getOccupationCibles(concurrent.getDepart()).get(db2);
-		if(place.getPlaceOccupe() % parametre.getNbTireur() == 1) {
-			return true;
-		}
-
-		//sinon changement impossible
-		return false;
-	}
-
+	
 	/**
 	 * Ajoute un concurrent au concours
 	 * 
 	 * @param concurrent - le concurrent à ajouter au concours
 	 * @return true si ajout avec succès, false sinon
 	 */
-	public boolean addConcurrent(Concurrent concurrent) {
-		//TODO interdire seulement sur le même départ
+	public boolean addConcurrent(Concurrent concurrent, int depart) {
+		concurrent.setDepart(depart);
+
 		if(concurrentList.contains(concurrent))
 			return false;
 
-		if(!havePlaceForConcurrent(concurrent))
+		if(!pasDeTir.get(depart).havePlaceForConcurrent(concurrent))
 			return false;
 
 		concurrentList.add(concurrent);
@@ -215,7 +174,8 @@ public class FicheConcours {
 	public void removeConcurrent(Concurrent removedConcurrent) {
 		//retire le concurrent du pas de tir si present
 		if(removedConcurrent.getCible() > 0)
-			pasDeTir.get(removedConcurrent.getDepart()).get(removedConcurrent.getCible()-1).removeConcurrent(removedConcurrent);
+			pasDeTir.get(removedConcurrent.getDepart())
+				.getTargets().get(removedConcurrent.getCible()-1).removeConcurrent(removedConcurrent);
 		//suppression dans la liste
 		//suppression dans l'equipe si presence dans equipe
 		equipes.removeConcurrent(removedConcurrent);
@@ -246,171 +206,9 @@ public class FicheConcours {
 	}
 
 	/**
-	 * Place les archers sur le pas de tir
-	 *
-	 * @param depart - le numero du depart pour lequel placer les archers
-	 */
-	public void placementConcurrents(int depart) {
-		int curCible = 1;
-
-		//pour chaque distance/blason
-		for(DistancesEtBlason distancesEtBlason : concurrentList.listDistancesEtBlason(parametre.getReglement(), true, depart)) {
-			//liste les archers pour le distance/blason
-			Concurrent[] concurrents = ConcurrentList.sort(concurrentList.list(parametre.getReglement(), distancesEtBlason, depart), ConcurrentList.SORT_BY_CLUBS);
-
-			//defini le nombre de tireur par cible en fonction du nombre de tireurs
-			//max acceptés et du nombre de tireur présent
-			//FIXME calculer le taux d'occupation des cibles en fonction de chaque d/b afin d'eviter les effets de bord
-			int nbTireurParCible = parametre.getNbTireur();
-			for(int i = 2; i <= parametre.getNbTireur(); i+=2) {
-				if(concurrentList.countArcher(depart) <= parametre.getNbCible() * i) {
-					nbTireurParCible = i;
-				}
-			}
-
-			int startCible = curCible;
-			int endCible = curCible + (concurrents.length / nbTireurParCible) 
-			+ (((concurrents.length % nbTireurParCible) > 0) ? 0 : -1);
-
-			for(int j = 0; j < concurrents.length; j++) {
-				if(concurrents[j].getCible() > 0)
-					pasDeTir.get(concurrents[j].getDepart()).get(concurrents[j].getCible()-1).removeConcurrent(concurrents[j]);
-				pasDeTir.get(depart).get(curCible - 1).insertConcurrent(concurrents[j]);
-
-				if(curCible < endCible)
-					curCible++;
-				else {
-					curCible = startCible;
-				}
-			}
-
-			curCible = endCible + 1;
-		}
-
-		save();
-	}
-
-	/**
-	 * Place un concurrent sur une cible donné à une place donnée
-	 * 
-	 * @param concurrent - le concurrent à placer
-	 * @param cible - la cible sur laquelle placer le concurrent
-	 * @param position - la position du concurrent sur la cible
-	 * @return true si placé avec succé, false sinon
-	 */
-	public boolean placementConcurrent(Concurrent concurrent, Cible cible, int position) {
-
-		//si le concurrent était déjà placé sur le pas de tir aupparavant le retirer
-		if(concurrent.getCible() > 0)
-			pasDeTir.get(concurrent.getDepart()).get(concurrent.getCible()-1).removeConcurrent(concurrent);
-
-		//tenter le placement
-		boolean success = cible.setConcurrentAt(concurrent, position);
-
-		save();
-
-		return success;
-	}
-
-	/**
-	 * Retourne le nombre de cible libre sur un depart donné
-	 * 
-	 * @param depart - le depart pour lequelle retourné le nombre de cible libre
-	 * @return le nombre de cible libre
-	 */
-	public int getNbCiblesLibre(int depart) {
-		int nbCibleOccupe = 0;
-		//deduit le nombre de cible libre de la table d'ocupation des cibles
-		Hashtable<DistancesEtBlason, OccupationCibles> occupationCibles = getOccupationCibles(depart);
-		//decompte les cibles occupés
-		Enumeration<OccupationCibles> ocEnum = occupationCibles.elements();
-		while(ocEnum.hasMoreElements()) {
-			OccupationCibles oc = ocEnum.nextElement();
-
-			nbCibleOccupe += (oc.getPlaceOccupe() + oc.getPlaceLibre()) / parametre.getNbTireur();
-		}
-		//nb cible total - nb cible occupe = nb cible libre
-		return parametre.getNbCible() - nbCibleOccupe;
-	}
-
-	/**
-	 * Retourne la table d'occupation des cibles pour un départ donné
-	 * 
-	 * @param depart - le depart concerné
-	 * @return la table d'occupation des cibles
-	 */
-	public Hashtable<DistancesEtBlason, OccupationCibles> getOccupationCibles(int depart) {
-		return calculatePlaceDisponible(depart);
-	}
-
-	/**
-	 * calcul la place occupé et disponible sur le concours
-	 *
-	 * @param depart - le départ pour lequelle tester la place dispo
-	 * @return la table d'occupation pour le depart
-	 */
-	private Hashtable<DistancesEtBlason, OccupationCibles> calculatePlaceDisponible(int depart) {
-		Hashtable<DistancesEtBlason, OccupationCibles> occupationCibles = new Hashtable<DistancesEtBlason, OccupationCibles>();
-
-		//recupere le nombre d'archer total possible
-		int placeLibreSurCible = 0;
-		int[] nbParDistanceBlason;
-
-		//recupere dans la configuration la correspondance Critères de distinction/Distance-Blason
-		Hashtable<CriteriaSet, DistancesEtBlason> correspSCNA_DB = parametre.getReglement().getCorrespondanceCriteriaSet_DB();
-
-		//recuper les clés de placement
-		Enumeration<DistancesEtBlason> dbEnum = correspSCNA_DB.elements();
-		ArrayList<DistancesEtBlason> distancesEtBlasons = new ArrayList<DistancesEtBlason>();
-		for(int i = 0; dbEnum.hasMoreElements(); i++) {
-			DistancesEtBlason db = dbEnum.nextElement();
-			if(!distancesEtBlasons.contains(db))
-				distancesEtBlasons.add(db);
-		}
-
-		//liste le nombre d'acher par distances/blason différents
-		//pour chaque distance/blason
-		nbParDistanceBlason = new int[distancesEtBlasons.size()];
-		int i = 0;
-		for(DistancesEtBlason distblas : distancesEtBlasons) {
-
-			nbParDistanceBlason[i] = concurrentList.countArcher(parametre.getReglement(), distblas, depart);
-
-			placeLibreSurCible = (parametre.getNbTireur() - nbParDistanceBlason[i] % parametre.getNbTireur()) 
-			% parametre.getNbTireur();
-
-			occupationCibles.put(distblas, new OccupationCibles(placeLibreSurCible, nbParDistanceBlason[i]));
-
-			i++;
-		}
-
-		return occupationCibles;
-	}
-
-	/**
-	 * Construit le pas de tir en fonction du nombre de depart et du nombre de cible<br>
-	 * Sert à la regeneration d'une fiche après deserialisation
-	 *
-	 */
-	private void makePasDeTir() {
-		for(int i = 0; i < parametre.getNbDepart(); i++) {
-			ArrayList<Cible> departCibles = new ArrayList<Cible>();
-			for(int j = 0; j < parametre.getNbCible(); j++) {
-				Cible cible = new Cible(j+1, this);
-				if(concurrentList.countArcher(i) > 0) {
-					for(Concurrent concurrent : concurrentList.list(j + 1, i))
-						cible.setConcurrentAt(concurrent, concurrent.getPosition());
-				}
-				departCibles.add(cible);
-			}
-			pasDeTir.put(i, departCibles);
-		}
-	}
-
-	/**
 	 * @return pasDeTir
 	 */
-	public ArrayList<Cible> getPasDeTir(int depart) {
+	public PasDeTir getPasDeTir(int depart) {
 		return pasDeTir.get(depart);
 	}
 
@@ -447,7 +245,6 @@ public class FicheConcours {
 				parametre.getIntituleConcours(),
 				parametre.getSaveName());
 	}
-
 	/**
 	 * sauvegarde "silencieuse" en arriere plan de la fiche concours
 	 *
@@ -467,6 +264,12 @@ public class FicheConcours {
 		}*/
 	}
 
+	private void makePasDeTir() {
+		for(int i = 0; i < parametre.getNbDepart(); i++) {
+			pasDeTir.put(i, new PasDeTir(this, i));
+		}
+	}
+	
 	/**
 	 * methode pour le classement des candidats
 	 * 

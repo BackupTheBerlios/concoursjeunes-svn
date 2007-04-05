@@ -4,7 +4,9 @@
 package org.concoursjeunes.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.Point;
@@ -25,6 +27,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -115,6 +118,7 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 	 */
 	private void init() {
 		JPanel northpaneGestion = new JPanel();
+		JPanel northpanePrintButton = new JPanel();
 		JPanel ficheG = new JPanel();
 
 		//enregistre les auditeurs d'évenement
@@ -123,9 +127,15 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 		jbPrintPasDeTir.addActionListener(this);
 
 		//option d'affichage du classement
-		northpaneGestion.add(jbPrintListConc);
-		northpaneGestion.add(jbPrintEtiquettes);
-		northpaneGestion.add(jbPrintPasDeTir);
+		northpaneGestion.setLayout(new BorderLayout());
+		northpanePrintButton.add(jbPrintListConc);
+		northpanePrintButton.add(jbPrintEtiquettes);
+		northpanePrintButton.add(jbPrintPasDeTir);
+		northpaneGestion.add(northpanePrintButton, BorderLayout.NORTH);
+		JLabel jl = new JLabel("Faites glisser un concurrent sur une cible ou une position pour l'affecter à celle ci");
+		jl.setBackground(Color.ORANGE);
+		jl.setOpaque(true);
+		northpaneGestion.add(jl, BorderLayout.CENTER);
 
 		ficheG.setLayout(new BorderLayout());
 		ficheG.add(northpaneGestion,BorderLayout.NORTH);
@@ -321,7 +331,7 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 	 * 
 	 */
 	private void createListeParCible() {
-		treeModel.setTargetChilds(ficheConcoursPane.ficheConcours.getPasDeTir(depart));
+		treeModel.setTargetChilds(ficheConcoursPane.ficheConcours.getPasDeTir(depart).getTargets());
 	}
 	
 	/**
@@ -331,11 +341,11 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 	private void showAddConcurrentDialog() {
 		int codeRetour = 0;
 		do {
-			codeRetour = ficheConcoursPane.concDialog.showNewConcurrentDialog(depart);
+			codeRetour = ficheConcoursPane.concDialog.showNewConcurrentDialog();
 			if(codeRetour != ConcurrentDialog.CANCEL 
 					&& !ficheConcoursPane.concDialog.getConcurrent().getNomArcher().equals("")) { //$NON-NLS-1$
 				
-				ficheConcoursPane.ficheConcours.addConcurrent(ficheConcoursPane.concDialog.getConcurrent());
+				ficheConcoursPane.ficheConcours.addConcurrent(ficheConcoursPane.concDialog.getConcurrent(), depart);
 			}
 		} while(codeRetour == ConcurrentDialog.CONFIRM_AND_NEXT);
 	}
@@ -365,7 +375,7 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 				ConcoursJeunes.ajrLibelle.getResourceString("confirmation.placement.titre"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.NO_OPTION) //$NON-NLS-1$
 			return;
 
-		ficheConcoursPane.ficheConcours.placementConcurrents(depart);
+		ficheConcoursPane.ficheConcours.getPasDeTir(depart).placementConcurrents();
 		
 		if(jcbSortCible.isSelected()) {
 			ajlConcurrent.setListData(
@@ -401,7 +411,7 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 			return;
 		}
 		
-		if(cible == null || !ficheConcoursPane.ficheConcours.placementConcurrent(concurrent, cible, position)) {
+		if(cible == null || !ficheConcoursPane.ficheConcours.getPasDeTir(depart).placementConcurrent(concurrent, cible, position)) {
 			JOptionPane.showMessageDialog(new JDialog(),
 					ConcoursJeunes.ajrLibelle.getResourceString("erreur.noplacement"), //$NON-NLS-1$
 					ConcoursJeunes.ajrLibelle.getResourceString("erreur.noplacement.titre"),JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
