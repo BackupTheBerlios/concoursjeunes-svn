@@ -71,7 +71,8 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		this.ficheConcours = ficheConcours;
 		
 		paramDialog = new ParametreDialog(this);
-
+		if(!ficheConcours.getParametre().isReglementLock())
+			paramDialog.showParametreDialog();
 		init();
 
 		concDialog = new ConcurrentDialog(parentframe, ficheConcours);

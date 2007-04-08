@@ -10,8 +10,6 @@ package org.concoursjeunes;
 public class DefaultParameters {
 	private Entite club = new Entite();
 	private String intituleConcours = "Concours Jeunes"; //$NON-NLS-1$
-
-	private Reglement reglement = new Reglement();
 	
 	private int nbCible             = 10;
 	private int nbTireur            = 4;
@@ -35,20 +33,6 @@ public class DefaultParameters {
 	 */
 	public void setIntituleConcours(String intituleConcours) {
 		this.intituleConcours = intituleConcours;
-	}
-
-	/**
-	 * @return reglement
-	 */
-	public Reglement getReglement() {
-		return reglement;
-	}
-
-	/**
-	 * @param reglement reglement à définir
-	 */
-	public void setReglement(Reglement reglement) {
-		this.reglement = reglement;
 	}
 	
 	/**

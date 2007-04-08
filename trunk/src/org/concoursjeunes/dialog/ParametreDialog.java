@@ -55,13 +55,13 @@ public class ParametreDialog extends JDialog implements ActionListener {
 		
 		this.ficheConcours = ficheConcoursFrame.ficheConcours;
 		
-		initialize();
+		init();
 	}
     
 	/**
 	 * This method initializes this
 	 */
-	private void initialize() {
+	private void init() {
 		this.setTitle(ConcoursJeunes.ajrLibelle.getResourceString("parametre.titre")); //$NON-NLS-1$
 		this.setContentPane(getJContentPane());
         this.getRootPane().setDefaultButton(jbValider);
@@ -69,6 +69,9 @@ public class ParametreDialog extends JDialog implements ActionListener {
 		this.pack();
         this.setResizable(false);
 		this.setLocationRelativeTo(null);
+	}
+	
+	public void showParametreDialog() {
 		this.setVisible(true);
 	}
     
@@ -203,6 +206,7 @@ public class ParametreDialog extends JDialog implements ActionListener {
 				jcbReglement.addItem(name);
 			}
 			jcbReglement.setSelectedItem(ficheConcours.getParametre().getReglement().getName());
+			jcbReglement.setEnabled(!ficheConcours.getParametre().isReglementLock());
 		}
 		return jcbReglement;
 	}
@@ -230,7 +234,6 @@ public class ParametreDialog extends JDialog implements ActionListener {
 	}
     
 	/**
-	 * @return
 	 * @uml.property  name="jtfNombreDepart"
 	 */
 	private JTextField getJtfNombreDepart() {
@@ -241,7 +244,6 @@ public class ParametreDialog extends JDialog implements ActionListener {
 	}
     
 	/**
-	 * @return
 	 * @uml.property  name="jtfArbitres"
 	 */
 	private JTextField getJtfArbitres() {
@@ -254,7 +256,6 @@ public class ParametreDialog extends JDialog implements ActionListener {
 	}
     
 	/**
-	 * @return
 	 * @uml.property  name="jlArbitres"
 	 */
 	private JList getJlArbitres() {
@@ -265,7 +266,6 @@ public class ParametreDialog extends JDialog implements ActionListener {
 	}
 
 	/**
-	 * @return
 	 * @uml.property  name="jbAjouterArbitre"
 	 */
 	private JButton getJbAjouterArbitre() {
@@ -277,7 +277,6 @@ public class ParametreDialog extends JDialog implements ActionListener {
 	}
     
 	/**
-	 * @return
 	 * @uml.property  name="jbSupprimerArbitre"
 	 */
 	private JButton getJbSupprimerArbitre() {
@@ -289,7 +288,6 @@ public class ParametreDialog extends JDialog implements ActionListener {
 	}
     
 	/**
-	 * @return
 	 * @uml.property  name="jbArbitreResponsable"
 	 */
 	private JButton getJbArbitreResponsable() {
@@ -359,8 +357,8 @@ public class ParametreDialog extends JDialog implements ActionListener {
 			ficheConcours.getParametre().setNbCible(Integer.parseInt(jtfNombreCible.getText()));
 			ficheConcours.getParametre().setNbTireur((Integer)jcbNombreTireurParCible.getSelectedItem());
 			ficheConcours.getParametre().setNbDepart(Integer.parseInt(jtfNombreDepart.getText()));
-			
-			//ficheConcours.setReglement(reglement)
+			ficheConcours.getParametre().setReglement(ReglementFactory.getReglement((String)jcbReglement.getSelectedItem()));
+			ficheConcours.getParametre().setReglementLock(true);
 			
 			//sauvegarde en tache de fond
 			ficheConcours.save();

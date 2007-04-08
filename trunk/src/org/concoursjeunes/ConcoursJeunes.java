@@ -137,7 +137,7 @@ public class ConcoursJeunes {
 	}
 	
 	/**
-	 * @return
+	 * @return les metadonnées de concours pour le profile courrant
 	 * @uml.property  name="metaDataFichesConcours"
 	 */
 	public MetaDataFichesConcours getMetaDataFichesConcours() {
@@ -147,7 +147,6 @@ public class ConcoursJeunes {
 	/**
 	 * Création d'une nouvelle fiche concours
 	 * 
-	 * @return FicheConcours la fiche du concours créé
 	 */
 	public void createFicheConcours() {
 		assert configuration != null : "la configuration ne peut être à null";
@@ -183,10 +182,10 @@ public class ConcoursJeunes {
 	 * Referme une fiche de concours
 	 * 
 	 * @param ficheConcours
-	 * @return true si la fiche à été fermé et false sinon
 	 */
 	public void closeFicheConcours(FicheConcours ficheConcours) {
 		ficheConcours.save();
+		metaDataFichesConcours.save();
 		if(fichesConcours.remove(ficheConcours)) {
 			fireFicheConcoursClosed(ficheConcours);
 		}
@@ -196,26 +195,29 @@ public class ConcoursJeunes {
 	 * Restaure le coucours fournit en parametre
 	 * 
 	 * @param concoursFile - le chemin du concours à restaurer
-	 * 
-	 * @return FicheConcours la fiche du concours restauré
 	 */
-	public void restoreFicheConcours(File concoursFile) {
+	public void restoreFicheConcours(MetaDataFicheConcours metaDataFicheConcours) {
 		System.out.println("chargement d'un concours");
 		FicheConcours ficheConcours = null;
 		
-		Object[] savedStructure = (Object[])AJToolKit.loadXMLStructure(concoursFile, true);
+		File fFiche = new File(userRessources.getConcoursPathForProfile(
+				configuration.getCurProfil()) + File.separator + 
+				metaDataFicheConcours.getFilenameConcours());
+		Object[] savedStructure = (Object[])AJToolKit.loadXMLStructure(fFiche, true);
 		
 		if(savedStructure != null) {
 			//lecture du fichier
 			ficheConcours = new FicheConcours();
-			ficheConcours.setFiche((Object[])AJToolKit.loadXMLStructure(concoursFile, true));
+			ficheConcours.setFiche((Object[])AJToolKit.loadXMLStructure(fFiche, true), metaDataFicheConcours);
 
 			fichesConcours.add(ficheConcours);
+			
+			fireFicheConcoursRestored(ficheConcours);
+			
+			System.out.println("Fin chargement du concours " + metaDataFicheConcours.getIntituleConcours());
+		} else {
+			System.err.println("Echec de chargement du concours " + metaDataFicheConcours.getIntituleConcours());
 		}
-		
-		fireFicheConcoursRestored(ficheConcours);
-
-		System.out.println("Fin chargement du concours " + ficheConcours.getParametre().getIntituleConcours());
 	}
 
 	/**
@@ -226,6 +228,7 @@ public class ConcoursJeunes {
 		for(FicheConcours fiche : fichesConcours) {
 			fiche.save();
 		}
+		metaDataFichesConcours.save();
 	}
 
 	/**

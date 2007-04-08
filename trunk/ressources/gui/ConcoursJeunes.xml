@@ -7,8 +7,6 @@
 			<menu id="file">
 				<label>menubar.fichier</label>
 				<menuitems>
-					<menuitem keycode="C" modifier="CTRL">menubar.fichier.crearesto</menuitem>
-					<separator />
 					<menuitem>menubar.fichier.exporter</menuitem>
 					<menuitem>menubar.fichier.importer</menuitem>
 					<separator />
@@ -55,7 +53,7 @@
 			</menu>
 		</menubar>
 		<contentpane>
-			<panel class="javax.swing.JTabbedPane" name="tabbedpane">
+			<panel class="ajinteractive.standard.ui.AJTabbedPane" name="tabbedpane">
 				<method name="setUI">
 					<param paramclass="javax.swing.plaf.TabbedPaneUI" class="ajinteractive.standard.java2.AJTabbedPaneUI">
 						<param paramclass="javax.swing.ImageIcon" class="javax.swing.ImageIcon">

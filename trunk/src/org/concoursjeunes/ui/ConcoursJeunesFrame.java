@@ -1,7 +1,7 @@
 package org.concoursjeunes.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Insets;
+import static org.concoursjeunes.ConcoursJeunes.ajrParametreAppli;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -9,13 +9,16 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.text.DateFormat;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JEditorPane;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
+import javax.swing.text.DefaultCaret;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 
 import org.concoursjeunes.ConcoursJeunes;
 import org.concoursjeunes.ConcoursJeunesEvent;
@@ -23,25 +26,31 @@ import org.concoursjeunes.ConcoursJeunesListener;
 import org.concoursjeunes.FicheConcours;
 import org.concoursjeunes.MetaDataFicheConcours;
 import org.concoursjeunes.MetaDataFichesConcours;
+import org.concoursjeunes.ParametreEvent;
+import org.concoursjeunes.ParametreListener;
 import org.concoursjeunes.Reglement;
 import org.concoursjeunes.dialog.ConfigurationDialog;
 import org.concoursjeunes.dialog.EntiteListDialog;
-import org.concoursjeunes.dialog.FicheLoaderDialog;
 import org.concoursjeunes.dialog.ImportDialog;
 import org.concoursjeunes.dialog.ReglementDialog;
 import org.concoursjeunes.plugins.ImportPlugin;
 
+import ajinteractive.standard.java2.AJTemplate;
 import ajinteractive.standard.java2.GhostGlassPane;
+import ajinteractive.standard.ui.AJTabbedPane;
 import ajinteractive.standard.ui.FrameCreator;
 
 /**
  * @author  aurelien
  */
-public class ConcoursJeunesFrame extends JFrame implements ActionListener, ConcoursJeunesListener {
+public class ConcoursJeunesFrame extends JFrame implements ActionListener, HyperlinkListener, ConcoursJeunesListener, ParametreListener {
 
-	private JTabbedPane tabbedpane;
+	private AJTabbedPane tabbedpane;
+	private JEditorPane jepHome = new JEditorPane();
 
 	private ConcoursJeunes concoursJeunes;
+	
+	private AJTemplate ajtHome = new AJTemplate();
 
 	/**
 	 * Construction de l'interface graphique
@@ -64,8 +73,8 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Conco
 	
 	private ConcoursJeunesFrame(String[] args) {
 		this();
-		if(args.length > 0)
-			concoursJeunes.restoreFicheConcours(new File(args[0]));
+		//if(args.length > 0)
+		//	concoursJeunes.restoreFicheConcours(new File(args[0]));
 	}
 
 	/**
@@ -89,36 +98,21 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Conco
 		frameCreator.createFrame(new File(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources")
 				+ "/gui/ConcoursJeunes.xml"));
 		
-		tabbedpane = (JTabbedPane)frameCreator.getContentPane("tabbedpane");
+		jepHome.setEditorKit(new HTMLEditorKit());
+		jepHome.setEditable(false);
+		jepHome.addHyperlinkListener(this);
+		((DefaultCaret)jepHome.getCaret()).setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
+		ajtHome.loadTemplate(ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
+				+ File.separator 
+				+ ajrParametreAppli.getResourceString("template.accueil.html"));
+		
+		tabbedpane = (AJTabbedPane)frameCreator.getContentPane("tabbedpane");
+		
+		tabbedpane.addTab("Accueil", jepHome);
+		tabbedpane.hideIconAt(tabbedpane.indexOfComponent(jepHome));
 		
 		GhostGlassPane glassPane = new GhostGlassPane();
 		setGlassPane(glassPane);
-	}
-
-	/**
-	 * 
-	 * @param title
-	 * @param tabnum
-	 * @return
-	 */
-	private JPanel getTabComponent(String title, int tabnum) {
-		JPanel panel = new JPanel();
-
-		JLabel label = new JLabel(title);
-
-		JButton bClose = new JButton("");
-		bClose.setIcon(new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources")
-				+ File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.base.close")));
-		bClose.setMargin(new Insets(0,0,0,0));
-		bClose.addActionListener(this);
-		bClose.setName("closeTab");
-		bClose.setActionCommand("" + tabnum);
-
-		panel.setLayout(new BorderLayout());
-		panel.setOpaque(false);
-		panel.add(label, BorderLayout.CENTER);
-		panel.add(bClose, BorderLayout.EAST);
-		return panel;
 	}
 
 	/**
@@ -127,32 +121,30 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Conco
 	 * 
 	 */
 	private void enumFicheConcours() {
+		ajtHome.reset();
+		ajtHome.parse("LOGO_CLUB_URI", ConcoursJeunes.configuration.getLogoPath().replaceAll("\\\\", "\\\\\\\\"));
+		ajtHome.parse("INTITULE_CLUB", ConcoursJeunes.configuration.getClub().getNom());
+		ajtHome.parse("PROFILE_NAME", ConcoursJeunes.configuration.getCurProfil());
+		
+		
 		MetaDataFichesConcours metaDataFichesConcours = concoursJeunes.getMetaDataFichesConcours();
-		String[] strConcList = new String[metaDataFichesConcours.getFiches().size()];
-		int i = 0;
-		for(MetaDataFicheConcours metaDataFicheConcours : metaDataFichesConcours.getFiches()) {
-			DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM);
-			strConcList[i] = df.format(metaDataFicheConcours.getDateConcours())
-					+ " - " + metaDataFicheConcours.getIntituleConcours();
-			i++;
+		if(metaDataFichesConcours.getFiches().size() > 0) {
+			int i = 0;
+			for(MetaDataFicheConcours metaDataFicheConcours : metaDataFichesConcours.getFiches()) {
+				DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM);
+				ajtHome.parse("listconcours.STATE", "");
+				ajtHome.parse("listconcours.ID_CONCOURS", i+"");
+				ajtHome.parse("listconcours.LIBELLE_CONCOURS", df.format(metaDataFicheConcours.getDateConcours())
+						+ " - " + metaDataFicheConcours.getIntituleConcours());
+				
+				ajtHome.loopBloc("listconcours");	
+				i++;
+			}
+		} else {
+			ajtHome.parseBloc("listconcours", "");
 		}
-
-		//affiche les concours diponible
-		//FicheLoaderDialog fld = new FicheLoaderDialog(this, strConcList, mostRecentIndex);
-		FicheLoaderDialog fld = new FicheLoaderDialog(this, strConcList, 0);
-
-		//si 1 concours est selectionné
-		if(fld.getAction() == FicheLoaderDialog.OUVRIR && fld.getSelectedFiche() != -1) {
-			concoursJeunes.restoreFicheConcours(new File(ConcoursJeunes.userRessources.getConcoursPathForProfile(
-					ConcoursJeunes.configuration.getCurProfil()) + File.separator + 
-					metaDataFichesConcours.getMetaDataFicheConcours(fld.getSelectedFiche()).getFilenameConcours()));
-		} else if(fld.getAction() == FicheLoaderDialog.NOUVEAU) {
-			concoursJeunes.createFicheConcours();
-		} else if(fld.getAction() == FicheLoaderDialog.SUPPRIMER && fld.getSelectedFiche() != -1) {
-			concoursJeunes.deleteFicheConcours(
-					metaDataFichesConcours.getMetaDataFicheConcours(fld.getSelectedFiche()));
-			enumFicheConcours();
-		}
+		
+		jepHome.setText(ajtHome.output());
 	}
 
 	/**
@@ -166,9 +158,9 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Conco
 		//ajoute la fiche à l'espace de travail et l'affiche
 		tabbedpane.addTab(ficheConcours.getParametre().getIntituleConcours() 
 				+ " - " + df.format(ficheConcours.getParametre().getDate()), jif); //$NON-NLS-1$
-		tabbedpane.setTabComponentAt(tabbedpane.getTabCount() - 1, getTabComponent(ficheConcours.getParametre().getIntituleConcours() + 
-				" - " + df.format(ficheConcours.getParametre().getDate()), tabbedpane.getTabCount() - 1));
 		tabbedpane.setSelectedComponent(jif);
+		
+		enumFicheConcours();
 	}
 
 	/**
@@ -239,15 +231,11 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Conco
 		//determine la fenetre active
 		try {
 			//jif = (FicheConcoursFrame)this.desktop.getSelectedFrame();
-			jif = (FicheConcoursPane)tabbedpane.getSelectedComponent();
+			if(tabbedpane.getSelectedIndex() > 0)
+				jif = (FicheConcoursPane)tabbedpane.getSelectedComponent();
 		} catch(NullPointerException npe) { }
 
-		//ouvre le menu de restauration d'un concours
-		if (cmd.equals("menubar.fichier.crearesto")) { //$NON-NLS-1$
-			enumFicheConcours();
-
-			//ouvre la boite de dialogue d'esportation d'un concours
-		} else if (cmd.equals("menubar.fichier.exporter")) { //$NON-NLS-1$
+		if (cmd.equals("menubar.fichier.exporter")) { //$NON-NLS-1$
 			//TODO Revoir l'export
 			//if(jif != null) jif.exportConcours(jif.ficheConcours.getExport());
 
@@ -341,21 +329,22 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Conco
 	 */
 	public void ficheConcoursCreated(ConcoursJeunesEvent concoursJeunesEvent) {
 		addFicheConcours(concoursJeunesEvent.getFicheConcours());
+		concoursJeunesEvent.getFicheConcours().getParametre().addParametreListener(this);
+		enumFicheConcours();
 	}
 
 	/* (non-Javadoc)
 	 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursDeleted(org.concoursjeunes.ConcoursJeunesEvent)
 	 */
 	public void ficheConcoursDeleted(ConcoursJeunesEvent concoursJeunesEvent) {
-		
+		enumFicheConcours();
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursClosed(org.concoursjeunes.ConcoursJeunesEvent)
 	 */
 	public void ficheConcoursClosed(ConcoursJeunesEvent concoursJeunesEvent) {
-		// TODO Raccord de méthode auto-généré
-		
+		enumFicheConcours();
 	}
 
 	/* (non-Javadoc)
@@ -363,6 +352,41 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Conco
 	 */
 	public void ficheConcoursRestored(ConcoursJeunesEvent concoursJeunesEvent) {
 		addFicheConcours(concoursJeunesEvent.getFicheConcours());
+		concoursJeunesEvent.getFicheConcours().getParametre().addParametreListener(this);
+		enumFicheConcours();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.concoursjeunes.ParametreListener#metaDataChanged(org.concoursjeunes.ParametreEvent)
+	 */
+	public void metaDataChanged(ParametreEvent parametreEvent) {
+		enumFicheConcours();
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.event.HyperlinkListener#hyperlinkUpdate(javax.swing.event.HyperlinkEvent)
+	 */
+	public void hyperlinkUpdate(HyperlinkEvent e) {
+		if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) { 
+			if (e instanceof HTMLFrameHyperlinkEvent) { 
+				((HTMLDocument)jepHome.getDocument()).processHTMLFrameHyperlinkEvent( 
+						(HTMLFrameHyperlinkEvent)e); 
+			} else {
+				if(e.getURL().getHost().equals("open_concours")) {
+					concoursJeunes.restoreFicheConcours(concoursJeunes.getMetaDataFichesConcours().getMetaDataFicheConcours(
+									Integer.parseInt(e.getURL().getRef())));
+				} else if(e.getURL().getHost().equals("delete_concours")) {
+					if(JOptionPane.showConfirmDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("confirmation.suppression.concours"), //$NON-NLS-1$
+							ConcoursJeunes.ajrLibelle.getResourceString("confirmation.suppression.concours.titre"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) { //$NON-NLS-1$
+						concoursJeunes.deleteFicheConcours(
+								concoursJeunes.getMetaDataFichesConcours().getMetaDataFicheConcours(
+										Integer.parseInt(e.getURL().getRef())));
+					}
+				} else if(e.getURL().getHost().equals("new_concours")) {
+					concoursJeunes.createFicheConcours();
+				}
+			}
+		}
 	}
 
 	public static void main(String[] args) {

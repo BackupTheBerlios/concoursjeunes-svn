@@ -169,7 +169,6 @@ public class FicheConcours {
 	 * TODO controler le depart
 	 * 
 	 * @param removedConcurrent - Le concurrent à supprimer
-	 * @return true si suppression avec succès, false sinon
 	 */
 	public void removeConcurrent(Concurrent removedConcurrent) {
 		//retire le concurrent du pas de tir si present
@@ -231,19 +230,24 @@ public class FicheConcours {
 	 * 
 	 * @param fiche - la fiche à restaurer
 	 */
-	public void setFiche(Object[] fiche) {
+	public void setFiche(Object[] fiche, MetaDataFicheConcours metaDataFicheConcours) {
 		parametre = (Parametre)fiche[0];
 		concurrentList = (ConcurrentList)fiche[1];
 		equipes = (EquipeList)fiche[2];
+		
+		parametre.addParametreListener(metaDataFicheConcours);
 
 		makePasDeTir();
 	}
 	
 	public MetaDataFicheConcours getMetaDataFicheConcours() {
-		return new MetaDataFicheConcours(
+		MetaDataFicheConcours metaDataFicheConcours = new MetaDataFicheConcours(
 				parametre.getDate(), 
 				parametre.getIntituleConcours(),
 				parametre.getSaveName());
+		parametre.addParametreListener(metaDataFicheConcours);
+		
+		return metaDataFicheConcours;
 	}
 	/**
 	 * sauvegarde "silencieuse" en arriere plan de la fiche concours

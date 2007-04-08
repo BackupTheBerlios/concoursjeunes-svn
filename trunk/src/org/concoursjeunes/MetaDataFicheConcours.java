@@ -8,7 +8,7 @@ import java.util.Date;
 /**
  * @author  aurelien
  */
-public class MetaDataFicheConcours {
+public class MetaDataFicheConcours implements ParametreListener {
 	private Date dateConcours;
 	private String intituleConcours;
 	private String filenameConcours;
@@ -71,5 +71,14 @@ public class MetaDataFicheConcours {
 	 */
 	public void setFilenameConcours(String filenameConcours) {
 		this.filenameConcours = filenameConcours;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.concoursjeunes.ParametreListener#metaDataChanged(org.concoursjeunes.ParametreEvent)
+	 */
+	public void metaDataChanged(ParametreEvent parametreEvent) {
+		setDateConcours(parametreEvent.getDateConcours());
+		setIntituleConcours(parametreEvent.getIntituleConcours());
+		setFilenameConcours(parametreEvent.getFilenameConcours());
 	}
 }

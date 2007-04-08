@@ -402,7 +402,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener {
 	/**
 	 * 
 	 * @param configuration
-	 * @return
+	 * @return les chemins d'accès à l'executable PDF
 	 */
 	private ArrayList<String> getPdfPath(Configuration configuration) {
 		ArrayList<String> pdfPath  = new ArrayList<String>();
@@ -563,7 +563,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener {
 			for(String reglementName : availableReglements)
 				jcbReglement.addItem(reglementName);
 		}
-		jcbReglement.setSelectedItem(configuration.getReglement().getName());
+		jcbReglement.setSelectedItem(configuration.getReglementName());
 		jtfNbCible.setText("" + configuration.getNbCible()); //$NON-NLS-1$
 		jtfNbTireur.setText("" + configuration.getNbTireur()); //$NON-NLS-1$
 		jtfNbDepart.setText("" + configuration.getNbDepart()); //$NON-NLS-1$
@@ -708,7 +708,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener {
 		workConfiguration.setExportURL(jtfURLExport.getText());
 		workConfiguration.setImportURL(jtfURLImport.getText());
 
-		workConfiguration.setReglement(ReglementFactory.getReglement(jcbReglement.getSelectedItem().toString()));
+		workConfiguration.setReglementName(jcbReglement.getSelectedItem().toString());
 		workConfiguration.setNbCible(Integer.parseInt(jtfNbCible.getText()));
 		workConfiguration.setNbTireur(Integer.parseInt(jtfNbTireur.getText()));
 		workConfiguration.setNbDepart(Integer.parseInt(jtfNbDepart.getText()));

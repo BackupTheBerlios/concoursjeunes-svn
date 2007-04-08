@@ -9,6 +9,8 @@ package org.concoursjeunes;
 
 import java.util.*;
 
+import javax.swing.event.EventListenerList;
+
 import static org.concoursjeunes.ConcoursJeunes.ajrParametreAppli;
 import static org.concoursjeunes.ConcoursJeunes.configuration;
 
@@ -18,9 +20,14 @@ import static org.concoursjeunes.ConcoursJeunes.configuration;
 public class Parametre extends DefaultParameters {
 	private Date dDateConcours		= new Date(); //$NON-NLS-1$
 	private ArrayList<String> vArbitres = new ArrayList<String>();
+	private Reglement reglement		= new Reglement();
 
 	private String saveName         = System.currentTimeMillis()
 			+ ajrParametreAppli.getResourceString("extention.concours"); //$NON-NLS-1$
+	
+	private boolean reglementLock = false;
+	
+	private EventListenerList listeners = new EventListenerList();
 
 	public Parametre() {
 		setClub(configuration.getClub());
@@ -28,8 +35,17 @@ public class Parametre extends DefaultParameters {
 		setNbCible(configuration.getNbCible());
 		setNbTireur(configuration.getNbTireur());
 		setNbDepart(configuration.getNbDepart());
-		setReglement(configuration.getReglement());
+		setReglement(ReglementFactory.getReglement(configuration.getReglementName()));
 	}
+	
+	public void addParametreListener(ParametreListener parametreListener) {
+		listeners.add(ParametreListener.class, parametreListener);
+	}
+	
+	public void removeParametreListener(ParametreListener parametreListener) {
+		listeners.add(ParametreListener.class, parametreListener);
+	}
+	
 	/**
 	 * Donne la date du concours
 	 * 
@@ -64,6 +80,7 @@ public class Parametre extends DefaultParameters {
 	 */
 	public void setDate(Date dDateConcours) {
 		this.dDateConcours = dDateConcours;
+		fireMetaDataChanged();
 	}
 
 	/**
@@ -74,6 +91,12 @@ public class Parametre extends DefaultParameters {
 	public void setArbitres(ArrayList<String> vArbitres) {
 		this.vArbitres = vArbitres;
 	}
+	
+	@Override
+	public void setIntituleConcours(String intituleConcours) {
+		super.setIntituleConcours(intituleConcours);
+		fireMetaDataChanged();
+	}
 
 	/**
 	 * specifie le nom de sauvegarde des infos du concours
@@ -82,5 +105,40 @@ public class Parametre extends DefaultParameters {
 	 */
 	public void setSaveName(String saveName) {
 		this.saveName = saveName;
+		fireMetaDataChanged();
+	}
+	
+	/**
+	 * @return the reglement
+	 */
+	public Reglement getReglement() {
+		return reglement;
+	}
+
+	/**
+	 * @param reglement the reglement to set
+	 */
+	public void setReglement(Reglement reglement) {
+		this.reglement = reglement;
+	}
+
+	/**
+	 * @return the reglementLock
+	 */
+	public boolean isReglementLock() {
+		return reglementLock;
+	}
+
+	/**
+	 * @param reglementLock the reglementLock to set
+	 */
+	public void setReglementLock(boolean reglementLock) {
+		this.reglementLock = reglementLock;
+	}
+
+	private void fireMetaDataChanged() {
+		for(ParametreListener pl : listeners.getListeners(ParametreListener.class)) {
+			pl.metaDataChanged(new ParametreEvent(dDateConcours, getIntituleConcours(), saveName));
+		}
 	}
 }

@@ -26,6 +26,8 @@ public class Configuration extends DefaultParameters {
 
 	private String langue           = "";               //$NON-NLS-1$
 	private String logoPath         = "ressources/logo_ffta.gif";   //$NON-NLS-1$
+	
+	private String reglementName	= "";
 
 	private String pdfReaderPath    = "";               //$NON-NLS-1$
 	private String importURL        = "http://";        //$NON-NLS-1$
@@ -74,6 +76,20 @@ public class Configuration extends DefaultParameters {
 	 */
 	public void setLangue(String langue) {
 		this.langue = langue;
+	}
+
+	/**
+	 * @return the reglementName
+	 */
+	public String getReglementName() {
+		return reglementName;
+	}
+
+	/**
+	 * @param reglementName the reglementName to set
+	 */
+	public void setReglementName(String reglementName) {
+		this.reglementName = reglementName;
 	}
 
 	/**

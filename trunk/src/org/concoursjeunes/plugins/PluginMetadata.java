@@ -52,7 +52,8 @@ public class PluginMetadata {
 	}
 
 	/**
-	 * @return
+	 * @return le type de plugin
+	 * 
 	 * @uml.property  name="pluginType"
 	 */
 	public int getPluginType() {

@@ -1,3 +1,15 @@
+Modification depuis la 1.11.00:
+-Intégration d'une base de donnée permettant une gestion des archers plus rapide
+-Ajout séléction des archers par auto-complément
+-Ajout gestion multi-départ
+-Modification de la gestion des réglements
+-Placement des archers plus fluide
+-Ajout d'un page d'accueil pour la selection des concours
+-Ouverture des fiches concours sous forme d'onglet
+-Fonctionnalité d'import/export sous forme de Plugin permettant de faire
+évoluer ces fonction indépendament de ConcoursJeunes
+-Réécriture de l'API pour plus de fiablilité
+
 Modification depuis la 1.00.00:
 Changement trop nombreux pour être énuméré
 -Refonte complete du code
