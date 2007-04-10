@@ -30,6 +30,10 @@ public class Parametre extends DefaultParameters {
 	private EventListenerList listeners = new EventListenerList();
 
 	public Parametre() {
+		
+	}
+	
+	public Parametre(Configuration configuration) {
 		setClub(configuration.getClub());
 		setIntituleConcours(configuration.getIntituleConcours());
 		setNbCible(configuration.getNbCible());

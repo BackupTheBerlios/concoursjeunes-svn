@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
+import javax.xml.bind.annotation.XmlAttachmentRef;
+
 /**
  * @author Aurélien JEOFFRAY - Fiducial Informatique
  *

@@ -95,9 +95,6 @@ public class ReglementDialog extends JDialog implements ActionListener, ItemList
 		
 		init();
 		affectLibelle();
-		completePanel();
-		
-		pack();
 	}
 	
 	private void init() {
@@ -388,6 +385,8 @@ public class ReglementDialog extends JDialog implements ActionListener, ItemList
 	}
 	
 	public Reglement showReglementDialog() {
+		completePanel();
+		pack();
 		setVisible(true);
 		return reglement;
 	}

@@ -208,7 +208,7 @@ public class ConcoursJeunes {
 		if(savedStructure != null) {
 			//lecture du fichier
 			ficheConcours = new FicheConcours();
-			ficheConcours.setFiche((Object[])AJToolKit.loadXMLStructure(fFiche, true), metaDataFicheConcours);
+			ficheConcours.setFiche(savedStructure, metaDataFicheConcours);
 
 			fichesConcours.add(ficheConcours);
 			

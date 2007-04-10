@@ -6,6 +6,7 @@ package org.concoursjeunes;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Map;
 
 import ajinteractive.standard.java2.AJToolKit;
 
@@ -59,7 +60,7 @@ public class Reglement {
 	
 	/**
 	 * @param criteriaSet
-	 * @return
+	 * @return l'objet DistancesEtBlason correspondant au criteres en parametre
 	 */
 	public DistancesEtBlason getCorrespondanceCriteriaSet_DB(CriteriaSet criteriaSet) {
 		for(CriteriaSet criteriaSet2 : correspondanceCriteriaSet_DB.keySet()) {
@@ -92,14 +93,16 @@ public class Reglement {
 	public ArrayList<Criterion> getListCriteria() {
 		return listCriteria;
 	}
-
+	
+	
+	
 	/**
-	 * @param listCriteria listCriteria à définir
+	 * @param listCriteria the listCriteria to set
 	 */
 	public void setListCriteria(ArrayList<Criterion> listCriteria) {
 		this.listCriteria = listCriteria;
 	}
-	
+
 	/**
 	 * Renvoi la politique de placement
 	 * 

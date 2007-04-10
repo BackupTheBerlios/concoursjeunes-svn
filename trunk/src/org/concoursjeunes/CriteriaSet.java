@@ -204,7 +204,7 @@ public class CriteriaSet {
 	 * test l'equivalence de deux jeux de critères
 	 * 
 	 * @param criteriaSet le jeux de critère avec lequel comparer
-	 * @return
+	 * @return true si equivalent, false sinon
 	 */
 	public boolean equals(CriteriaSet criteriaSet) {
 		boolean isEquals = true;

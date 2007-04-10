@@ -11,6 +11,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 
 import javax.swing.event.EventListenerList;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
@@ -24,6 +25,7 @@ import static org.concoursjeunes.ConcoursJeunes.ajrParametreAppli;
  * 
  * @author  Aurélien Jeoffray
  */
+@XmlRootElement
 public class FicheConcours {
 
 	public static final int ALPHA		= 0;    //par ordre alphabetique
@@ -32,7 +34,7 @@ public class FicheConcours {
 	public static final int OUT_XML		= 0;    //Sortie XML
 	public static final int OUT_HTML	= 1;    //Sortie HTML
 
-	private Parametre parametre			= new Parametre();
+	private Parametre parametre			= new Parametre(ConcoursJeunes.configuration);
 	private ConcurrentList concurrentList   = new ConcurrentList(parametre);
 	private EquipeList equipes			= new EquipeList(this);
 	private Hashtable<Integer, PasDeTir> pasDeTir = new Hashtable<Integer, PasDeTir>();
@@ -257,6 +259,7 @@ public class FicheConcours {
 		File f = new File(ConcoursJeunes.userRessources.getConcoursPathForProfile(ConcoursJeunes.configuration.getCurProfil())
 				+ File.separator + parametre.getSaveName());
 		AJToolKit.saveXMLStructure(f, getFiche(), true);
+		//AJToolKit.saveMarshallStructure(f, this, true);
 
 		/*for(MetaDataFicheConcours metaDataFicheConcours : metaDataFichesConcours.getFiches()) {
 			String filenameConcours = metaDataFicheConcours.getFilenameConcours();

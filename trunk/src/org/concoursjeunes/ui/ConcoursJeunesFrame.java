@@ -2,6 +2,7 @@ package org.concoursjeunes.ui;
 
 import static org.concoursjeunes.ConcoursJeunes.ajrParametreAppli;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -9,7 +10,6 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.text.DateFormat;
 
-import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -38,12 +38,14 @@ import org.concoursjeunes.plugins.ImportPlugin;
 import ajinteractive.standard.java2.AJTemplate;
 import ajinteractive.standard.java2.GhostGlassPane;
 import ajinteractive.standard.ui.AJTabbedPane;
+import ajinteractive.standard.ui.AJTabbedPaneListener;
 import ajinteractive.standard.ui.FrameCreator;
 
 /**
  * @author  aurelien
  */
-public class ConcoursJeunesFrame extends JFrame implements ActionListener, HyperlinkListener, ConcoursJeunesListener, ParametreListener {
+public class ConcoursJeunesFrame extends JFrame implements ActionListener, HyperlinkListener, 
+		ConcoursJeunesListener, ParametreListener, AJTabbedPaneListener {
 
 	private AJTabbedPane tabbedpane;
 	private JEditorPane jepHome = new JEditorPane();
@@ -108,6 +110,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 		
 		tabbedpane = (AJTabbedPane)frameCreator.getContentPane("tabbedpane");
 		
+		tabbedpane.addAJTabbedPaneListener(this);
 		tabbedpane.addTab("Accueil", jepHome);
 		tabbedpane.hideIconAt(tabbedpane.indexOfComponent(jepHome));
 		
@@ -159,6 +162,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 		tabbedpane.addTab(ficheConcours.getParametre().getIntituleConcours() 
 				+ " - " + df.format(ficheConcours.getParametre().getDate()), jif); //$NON-NLS-1$
 		tabbedpane.setSelectedComponent(jif);
+		//tabbedpane.add
 		
 		enumFicheConcours();
 	}
@@ -167,9 +171,8 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	 * 
 	 * @param tab
 	 */
-	private void removeFicheConcours(int tab) {
-		FicheConcoursPane jif = (FicheConcoursPane)tabbedpane.getComponentAt(tab);
-		tabbedpane.removeTabAt(tab);
+	private void removeFicheConcours(Component tabComponent) {
+		FicheConcoursPane jif = (FicheConcoursPane)tabComponent;
 		concoursJeunes.closeFicheConcours(jif.ficheConcours);
 	}
 
@@ -301,10 +304,6 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 					ConcoursJeunes.COPYR + " " + ConcoursJeunes.AUTEURS + "<br><br>" + //$NON-NLS-1$ //$NON-NLS-2$
 					ConcoursJeunes.ajrLibelle.getResourceString("apropos.liens") + "<br></html>", //$NON-NLS-1$ //$NON-NLS-2$
 					ConcoursJeunes.ajrLibelle.getResourceString("apropos.titre"),JOptionPane.INFORMATION_MESSAGE); //$NON-NLS-1$
-		} else if (e.getSource() instanceof JButton && 
-				((JButton)e.getSource()).getName().equals("closeTab")) {
-			removeFicheConcours(Integer.parseInt(cmd));
-			//debugage -> Generation rapide d'une liste de concurrent
 		} else if(cmd.equals("menubar.debug.generateconcurrent")) { //$NON-NLS-1$
 			if(jif != null) org.concoursjeunes.debug.Debug.generateConcurrent(jif, 0);
 
@@ -361,6 +360,13 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	 */
 	public void metaDataChanged(ParametreEvent parametreEvent) {
 		enumFicheConcours();
+	}
+	
+	public void tabAdded(Component tabComponent) {
+		
+	}
+	public void tabClosed(Component tabComponent) {
+		removeFicheConcours(tabComponent);
 	}
 
 	/* (non-Javadoc)
