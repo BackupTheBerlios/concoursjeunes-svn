@@ -6,7 +6,6 @@ package org.concoursjeunes.ui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.Point;
@@ -53,6 +52,7 @@ import org.concoursjeunes.Equipe;
 import org.concoursjeunes.FicheConcours;
 import org.concoursjeunes.FicheConcoursEvent;
 import org.concoursjeunes.FicheConcoursListener;
+import org.concoursjeunes.PasDeTir;
 import org.concoursjeunes.dialog.ConcurrentDialog;
 import org.concoursjeunes.dialog.EquipeDialog;
 import org.concoursjeunes.dialog.TypeListingDialog;
@@ -133,7 +133,7 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 		northpanePrintButton.add(jbPrintPasDeTir);
 		northpaneGestion.add(northpanePrintButton, BorderLayout.NORTH);
 		JLabel jl = new JLabel("Faites glisser un concurrent sur une cible ou une position pour l'affecter à celle ci");
-		jl.setBackground(new Color(255, 255, 80));
+		jl.setBackground(new Color(255, 255, 225));
 		jl.setOpaque(true);
 		northpaneGestion.add(jl, BorderLayout.CENTER);
 
@@ -427,13 +427,7 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 	 * @param concurrent - le concurrent à retirer
 	 */
 	private void retraitPlacementConcurrent(Concurrent concurrent) {
-		//FIXME à réécrire
-		//recherche sa position dans l'arbre
-		/*TreePath childPath = getTreePathForConcurrent(concurrent);
-		DefaultMutableTreeNode concurrentTreeNode = (DefaultMutableTreeNode)childPath.getLastPathComponent();
-		Cible curCible = (Cible)((DefaultMutableTreeNode)concurrentTreeNode.getParent()).getUserObject();
-		//retire le concurrent de la cible
-		curCible.removeConcurrent(concurrent);*/
+		ficheConcoursPane.ficheConcours.getPasDeTir(depart).retraitConcurrent(concurrent);
 	}
 
 	/**
@@ -503,9 +497,10 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 			placementConcurrents();
 		} else if(source == jbPrintListConc) {
 			TypeListingDialog tld = new TypeListingDialog(ficheConcoursPane.getParentframe());
-			if(tld.returnType == TypeListingDialog.ALPHA)
+			int returnType = tld.showTypeListingDialog();
+			if(returnType == TypeListingDialog.ALPHA)
 				ficheConcoursPane.ficheConcours.printArcherList(FicheConcours.ALPHA);
-			else if(tld.returnType == TypeListingDialog.GREFFE)
+			else if(returnType == TypeListingDialog.GREFFE)
 				ficheConcoursPane.ficheConcours.printArcherList(FicheConcours.GREFFE);
 		} else if(source == jbPrintEtiquettes) {
 			ficheConcoursPane.ficheConcours.printEtiquettes();

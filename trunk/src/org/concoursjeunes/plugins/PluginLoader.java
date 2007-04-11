@@ -4,6 +4,7 @@
 package org.concoursjeunes.plugins;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import ajinteractive.standard.java2.AjResourcesReader;
 
@@ -14,6 +15,8 @@ import ajinteractive.standard.java2.AjResourcesReader;
  *
  */
 public class PluginLoader {
+	
+	private ArrayList<PluginMetadata> listPlugins = new ArrayList<PluginMetadata>();
 	
 	public PluginLoader() {
 		File pluginPath = new File("./plugins");
@@ -31,9 +34,19 @@ public class PluginLoader {
 				pluginMetadata.setOptionLabel(pluginLocalInfo.getResourceString("plugin.optionlabel"));
 				pluginMetadata.setPluginType(pluginProperties.getResourceInteger("plugin.type"));
 				pluginMetadata.setClassName(pluginProperties.getResourceString("plugin.class"));
+				
+				listPlugins.add(pluginMetadata);
 			}
 		}
 	}
 	
-	
+	public ArrayList<PluginMetadata> getPlugins(int type) {
+		ArrayList<PluginMetadata> currentList = new ArrayList<PluginMetadata>();
+		for(PluginMetadata pm : listPlugins) {
+			if(pm.getPluginType() == type)
+				currentList.add(pm);
+		}
+		
+		return currentList;
+	}
 }

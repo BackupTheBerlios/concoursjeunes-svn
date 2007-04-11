@@ -1,7 +1,8 @@
 package org.concoursjeunes.ui;
 
-import static org.concoursjeunes.ConcoursJeunes.ajrParametreAppli;
-
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -41,6 +42,7 @@ import ajinteractive.standard.ui.AJTabbedPane;
 import ajinteractive.standard.ui.AJTabbedPaneListener;
 import ajinteractive.standard.ui.FrameCreator;
 
+import static org.concoursjeunes.ConcoursJeunes.ajrParametreAppli;
 /**
  * @author  aurelien
  */
@@ -69,10 +71,15 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			new ConfigurationDialog(null);
 
 		init();
+		setMinimumSize(new Dimension(720, 580));
 
 		enumFicheConcours();
 	}
 	
+	/**
+	 * 
+	 * @param args
+	 */
 	private ConcoursJeunesFrame(String[] args) {
 		this();
 		//if(args.length > 0)
@@ -185,8 +192,9 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 
 		try {
 			Class<?> cla = null;
-			if(importDialog.importClass != null) {
-				cla = Class.forName("org.concoursjeunes.plugins." + importDialog.importClass); //$NON-NLS-1$
+			String importClass = importDialog.showImportDialog();
+			if(importClass != null) {
+				cla = Class.forName(importClass); //$NON-NLS-1$
 			}
 
 			if(cla != null) {

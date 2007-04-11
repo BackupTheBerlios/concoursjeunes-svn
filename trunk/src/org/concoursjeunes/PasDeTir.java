@@ -211,6 +211,11 @@ public class PasDeTir {
 
 		return success;
 	}
+	
+	public void retraitConcurrent(Concurrent concurrent) {
+		if(concurrent.getCible() > 0)
+			targets.get(concurrent.getCible()-1).removeConcurrent(concurrent);
+	}
 
 	/**
 	 * @return targets

@@ -41,6 +41,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 
 	private JEditorPane jepClassIndiv  = new JEditorPane();					//panneau de classement
 	private JEditorPane jepClassTeam   = new JEditorPane();
+	private JEditorPane jepClassClub   = new JEditorPane();
 	//bouton d'enregistrement
 	private JButton jbResultat         = new JButton();
 	private JLabel jlCritClassement    = new JLabel();
@@ -48,11 +49,8 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	private Hashtable<String, JCheckBox> classmentCriteriaCB = new Hashtable<String, JCheckBox>();
 
 	private JButton printClassementIndiv = new JButton();
-	//critere par equipe
-	//private JCheckBox sexeCaseEqu;
-	//private JCheckBox armeCaseEqu;
-
 	private JButton printClassementEquipe = new JButton();
+	private JButton printClassementClub = new JButton();
 
 	public ParametreDialog paramDialog;
 	public ConcurrentDialog concDialog;
@@ -85,6 +83,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	private void init() {
 		JPanel northpane = new JPanel();
 		JPanel northpaneEqu = new JPanel();
+		JPanel northpaneClub = new JPanel();
 
 		//met la fiche de classement au format html
 		jepClassIndiv.setEditorKit(new HTMLEditorKit());
@@ -97,11 +96,17 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		jepClassTeam.setEditable(false);
 		//empeche le retour automatique au début de la page à chaque update
 		((DefaultCaret)jepClassTeam.getCaret()).setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
+		
+		jepClassClub.setEditorKit(new HTMLEditorKit());
+		jepClassClub.setEditable(false);
+		//empeche le retour automatique au début de la page à chaque update
+		((DefaultCaret)jepClassClub.getCaret()).setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
 
 		jbResultat.addActionListener(this);
 
 		printClassementIndiv.addActionListener(this);
 		printClassementEquipe.addActionListener(this);
+		printClassementClub.addActionListener(this);
 
 		//classement individuel
 		northpane.add(jbResultat);
@@ -121,6 +126,9 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 
 		//classement par equipe
 		northpaneEqu.add(printClassementEquipe);
+		
+		//classement par equipe
+		northpaneClub.add(printClassementClub);
 
 		fichesDepart.setLayout(cl);
 		
@@ -142,6 +150,12 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		ficheE.setLayout(new BorderLayout());
 		ficheE.add(northpaneEqu,BorderLayout.NORTH);
 		ficheE.add(new JScrollPane(jepClassTeam),BorderLayout.CENTER);
+		
+		//paneau du classement par club
+		JPanel ficheC = new JPanel();
+		ficheC.setLayout(new BorderLayout());
+		ficheC.add(northpaneClub, BorderLayout.NORTH);
+		ficheC.add(new JScrollPane(jepClassClub),BorderLayout.CENTER);
 
 		//panneau global
 		tabbedpane.addChangeListener(this);
@@ -153,7 +167,10 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 						ficheI);
 		tabbedpane.addTab("onglet.classementequipe",new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$ //$NON-NLS-2$ 
 				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.team")), //$NON-NLS-1$
-				ficheE); 
+				ficheE);
+		tabbedpane.addTab("onglet.classementclub",new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$ //$NON-NLS-2$ 
+				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.team")), //$NON-NLS-1$
+				ficheC); 
 
 		//integration
 		setLayout(new BorderLayout());
@@ -187,6 +204,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		jbResultat.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.saisieresultats")); //$NON-NLS-1$
 		printClassementIndiv.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.impressionresultats")); //$NON-NLS-1$
 		printClassementEquipe.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.impressionresultats")); //$NON-NLS-1$
+		printClassementClub.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.impressionresultats")); //$NON-NLS-1$
 		jlCritClassement.setText(ConcoursJeunes.ajrLibelle.getResourceString("interface.critereclassement")); //$NON-NLS-1$
 		tabbedpane.setTitleAt(0, ConcoursJeunes.ajrLibelle.getResourceString("onglet.gestionarcher")); //$NON-NLS-1$
 		tabbedpane.setTabComponentAt(0, getGestArchersTabComponent());
@@ -394,10 +412,16 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 						break;
 					}
 				}
-				if(i == 1)
-					jepClassIndiv.setText(ficheConcours.getClassement(FicheConcours.OUT_HTML, ficheConcours.getCurrentDepart()));
-				else if(i == 2)
-					jepClassTeam.setText(ficheConcours.getClassementEquipe(FicheConcours.OUT_HTML));
+				switch(i) {
+					case 1:
+						jepClassIndiv.setText(ficheConcours.getClassement(FicheConcours.OUT_HTML, ficheConcours.getCurrentDepart()));
+						break;
+					case 2:
+						jepClassTeam.setText(ficheConcours.getClassementEquipe(FicheConcours.OUT_HTML));
+						break;
+					case 3:
+						jepClassClub.setText("Non implémenté");
+				}
 			}
 		}
 	}

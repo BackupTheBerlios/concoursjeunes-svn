@@ -29,7 +29,7 @@ public class TypeListingDialog extends JDialog implements ActionListener {
     
     private ButtonGroup jrbTypeExport;
     
-    public int returnType = ALPHA;
+    private int returnType = ALPHA;
 
     public TypeListingDialog(JFrame parentframe) {
         super(parentframe);
@@ -40,7 +40,7 @@ public class TypeListingDialog extends JDialog implements ActionListener {
         init();
     }
     
-    public void init() {
+    private void init() {
         //Layout Manager
         GridBagConstraints c = new GridBagConstraints();
         
@@ -77,10 +77,15 @@ public class TypeListingDialog extends JDialog implements ActionListener {
         gridbagComposer.addComponentIntoGrid(boutonPane, c);
         
         getContentPane().add(exportPane);
-        pack();
+    }
+    
+    public int showTypeListingDialog() {
+    	pack();
         setResizable(false);
         setLocationRelativeTo(null);
         setVisible(true);
+        
+        return returnType;
     }
     
     public void actionPerformed(ActionEvent ae) {
