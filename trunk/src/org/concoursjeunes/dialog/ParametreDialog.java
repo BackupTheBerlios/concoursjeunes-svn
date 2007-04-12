@@ -65,13 +65,19 @@ public class ParametreDialog extends JDialog implements ActionListener {
 		init();
 		affectLibelle();
 		completePanel();
+		
+		getRootPane().setDefaultButton(jbValider);
+		setModal(true);
+		pack();
+		setLocationRelativeTo(null);
+		//this.setResizable(false);
 	}
     
 	/**
 	 * This method initializes this
 	 */
 	private void init() {
-		JPanel jContentPane = new JPanel();
+		//JPanel jContentPane = new JPanel();
 		JPanel jpParametre = new JPanel();
 		JPanel jpValidation = new JPanel();
 		
@@ -92,86 +98,84 @@ public class ParametreDialog extends JDialog implements ActionListener {
 		jbValider.addActionListener(this);
 		jbAnnuler.addActionListener(this);
 		
-		jpValidation.add(jbValider, null);
-		jpValidation.add(jbAnnuler, null);
+		jpValidation.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		jpValidation.add(jbValider);
+		jpValidation.add(jbAnnuler);
 		
 		gridbagComposer.setParentPanel(jpParametre);
 		c.gridy = 0; c.gridheight = 1; c.anchor = GridBagConstraints.WEST; c.ipadx = 2;
-		c.gridx = 1; //c.anchor = GridBagConstraints.EAST;
 		gridbagComposer.addComponentIntoGrid(jlIntituleConcours, c);
-		c.gridx = 2; //c.anchor = GridBagConstraints.WEST;
+		c.gridwidth = 2;
 		gridbagComposer.addComponentIntoGrid(jtfIntituleConcours, c);
 		
 		c.gridy++;
-		c.gridx = 1; //c.anchor = GridBagConstraints.EAST;
+		c.gridwidth = 1;
 		gridbagComposer.addComponentIntoGrid(jlDateConcours, c);
-		c.gridx = 2; //c.anchor = GridBagConstraints.WEST;
+		c.gridwidth = 2;
 		gridbagComposer.addComponentIntoGrid(jtfDateConcours, c);
 		
 		c.gridy++;
-		c.gridx = 1; //c.anchor = GridBagConstraints.EAST;
+		c.gridwidth = 1;
 		gridbagComposer.addComponentIntoGrid(jlReglement, c);
-		c.gridx = 2; //c.anchor = GridBagConstraints.WEST;
 		gridbagComposer.addComponentIntoGrid(jcbReglement, c);
-		c.gridx = 3;
 		gridbagComposer.addComponentIntoGrid(jbDetail, c);
 		
 		c.gridy++;
-		c.gridx = 1; //c.anchor = GridBagConstraints.EAST;
+		c.gridwidth = 1;
 		gridbagComposer.addComponentIntoGrid(jlNombreCible, c);
-		c.gridx = 2; //c.anchor = GridBagConstraints.WEST;
+		c.gridwidth = 2;
 		gridbagComposer.addComponentIntoGrid(jtfNombreCible, c);
 		
 		c.gridy++;
-		c.gridx = 1; //c.anchor = GridBagConstraints.EAST;
+		c.gridwidth = 1;
 		gridbagComposer.addComponentIntoGrid(jlNombreTireurParCible, c);
-		c.gridx = 2; //c.anchor = GridBagConstraints.WEST;
+		c.gridwidth = 2;
 		gridbagComposer.addComponentIntoGrid(jcbNombreTireurParCible, c);
 		
 		c.gridy++;
-		c.gridx = 1; //c.anchor = GridBagConstraints.EAST;
+		c.gridwidth = 1;
 		gridbagComposer.addComponentIntoGrid(jlNombreDepart, c);
-		c.gridx = 2; //c.anchor = GridBagConstraints.WEST;
+		c.gridwidth = 2;
 		gridbagComposer.addComponentIntoGrid(jtfNombreDepart, c);
 		
 		c.gridy++;
-		c.gridx = 1; //c.anchor = GridBagConstraints.EAST;
+		c.gridwidth = 1;
 		gridbagComposer.addComponentIntoGrid(jlbArbitres, c);
-		c.gridx = 2; //c.anchor = GridBagConstraints.WEST;
+		c.gridwidth = 2;
 		gridbagComposer.addComponentIntoGrid(jtfArbitres, c);
-		c.gridx = 3; c.fill = GridBagConstraints.HORIZONTAL;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridwidth =1;
 		gridbagComposer.addComponentIntoGrid(jbAjouterArbitre, c);
 		
 		c.gridy++;
-		c.gridx = 2; c.gridheight = 3; c.fill = GridBagConstraints.BOTH;
+		c.gridx = 1; c.gridwidth = 2; c.gridheight = 3; c.fill = GridBagConstraints.BOTH;
 		gridbagComposer.addComponentIntoGrid(new JScrollPane(jlArbitres), c);
-		c.gridx = 3; c.gridheight = 1;
+		c.gridx = 3; c.gridheight = 1; c.gridwidth = 1;
 		gridbagComposer.addComponentIntoGrid(jbSupprimerArbitre, c);
 		
 		c.gridy++; c.anchor = GridBagConstraints.NORTH;
 		gridbagComposer.addComponentIntoGrid(jbArbitreResponsable, c);
-		
-		c.gridy+=2; c.gridwidth = 2;
-		c.gridx = 2; c.anchor = GridBagConstraints.EAST; c.fill = GridBagConstraints.NONE; //c.anchor = GridBagConstraints.EAST;
-		gridbagComposer.addComponentIntoGrid(jpValidation, c);
-		
-		jContentPane.setLayout(new BorderLayout());
-		jContentPane.add(jpParametre, BorderLayout.CENTER);
-		
-		this.setTitle(ConcoursJeunes.ajrLibelle.getResourceString("parametre.titre")); //$NON-NLS-1$
-		this.setContentPane(jContentPane);
-        this.getRootPane().setDefaultButton(jbValider);
-		this.setModal(true);
-		this.pack();
-        this.setResizable(false);
-		this.setLocationRelativeTo(null);
+
+		getContentPane().setLayout(new BorderLayout());
+		getContentPane().add(jpParametre, BorderLayout.CENTER);
+		getContentPane().add(jpValidation, BorderLayout.SOUTH);
 	}
 	
+	/**
+	 * 
+	 *
+	 */
 	public void showParametreDialog() {
-		this.setVisible(true);
+		setVisible(true);
 	}
 	
+	/**
+	 * 
+	 *
+	 */
 	public void affectLibelle() {
+		setTitle(ConcoursJeunes.ajrLibelle.getResourceString("parametre.titre")); //$NON-NLS-1$
+		
 		jlIntituleConcours.setText(ConcoursJeunes.ajrLibelle.getResourceString("parametre.intituleconcours")); //$NON-NLS-1$
 		jlDateConcours.setText(ConcoursJeunes.ajrLibelle.getResourceString("parametre.dateconcours")); //$NON-NLS-1$
 		jlReglement.setText(ConcoursJeunes.ajrLibelle.getResourceString("parametre.reglement")); //$NON-NLS-1$
@@ -255,7 +259,9 @@ public class ParametreDialog extends JDialog implements ActionListener {
 			}
 		} else if(ae.getSource() == jbDetail) {
 			reglementDialog.setReglement(ficheConcours.getParametre().getReglement());
-			ficheConcours.getParametre().setReglement(reglementDialog.showReglementDialog());
+			Reglement reglement = reglementDialog.showReglementDialog();
+			if(reglement != null)
+				ficheConcours.getParametre().setReglement(reglement);
 		}
 	}
 }

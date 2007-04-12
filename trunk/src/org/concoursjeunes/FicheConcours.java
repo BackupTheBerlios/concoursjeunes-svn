@@ -26,7 +26,7 @@ import static org.concoursjeunes.ConcoursJeunes.ajrParametreAppli;
  * @author  Aurélien Jeoffray
  */
 @XmlRootElement
-public class FicheConcours {
+public class FicheConcours implements ParametreListener {
 
 	public static final int ALPHA		= 0;    //par ordre alphabetique
 	public static final int GREFFE		= 1;    //pour le greffe
@@ -271,7 +271,7 @@ public class FicheConcours {
 		}*/
 	}
 
-	private void makePasDeTir() {
+	public void makePasDeTir() {
 		for(int i = 0; i < parametre.getNbDepart(); i++) {
 			pasDeTir.put(i, new PasDeTir(this, i));
 		}
@@ -592,6 +592,89 @@ public class FicheConcours {
 
 		return strClassementEquipe;
 	}
+	
+	public String getClassementClub(int outType) {
+		System.out.println("Sortie Club"); //$NON-NLS-1$
+
+		String strClassementEquipe = ""; //$NON-NLS-1$
+		
+		EquipeList clubList = EquipeListFactory.getClubEquipeList(concurrentList, this);
+
+		if(clubList != null && clubList.countEquipes() > 0) {
+			AJTemplate tplClassementEquipe = null;
+			switch(outType) {
+				case OUT_XML:
+					tplClassementEquipe = templateClassementEquipeXML;
+					break;
+				case OUT_HTML:
+					tplClassementEquipe = templateClassementEquipeHTML;
+					break;
+				default:
+					return null;
+			}
+
+			tplClassementEquipe.reset();
+
+			//classement sortie XML
+			tplClassementEquipe.parse("CURRENT_TIME", DateFormat.getDateInstance(DateFormat.FULL).format(new Date())); //$NON-NLS-1$
+			tplClassementEquipe.parse("LOGO_CLUB_URI", ConcoursJeunes.configuration.getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			tplClassementEquipe.parse("INTITULE_CLUB", parametre.getClub().getNom()); //$NON-NLS-1$
+			tplClassementEquipe.parse("INTITULE_CONCOURS", parametre.getIntituleConcours()); //$NON-NLS-1$
+			tplClassementEquipe.parse("VILLE_CLUB", parametre.getClub().getVille()); //$NON-NLS-1$
+			tplClassementEquipe.parse("DATE_CONCOURS", parametre.getDate().toString()); //$NON-NLS-1$
+
+			String strArbitreResp = ""; //$NON-NLS-1$
+			String strArbitresAss = ""; //$NON-NLS-1$
+
+			for(String arbitre : parametre.getArbitres()) {
+				if(arbitre.startsWith("*")) //$NON-NLS-1$
+					strArbitreResp = arbitre.substring(1);
+				else {
+					if(!strArbitresAss.equals("")) //$NON-NLS-1$
+						strArbitresAss += ", "; //$NON-NLS-1$
+					strArbitresAss += arbitre;
+				}
+			}
+
+			tplClassementEquipe.parse("ARBITRE_RESPONSABLE", strArbitreResp); //$NON-NLS-1$
+			tplClassementEquipe.parse("ARBITRES_ASSISTANT", strArbitresAss); //$NON-NLS-1$
+			tplClassementEquipe.parse("NB_CLUB", "" + concurrentList.countCompagnie()); //$NON-NLS-1$ //$NON-NLS-2$
+			tplClassementEquipe.parse("NB_TIREURS", "" + concurrentList.countArcher()); //$NON-NLS-1$ //$NON-NLS-2$
+			tplClassementEquipe.parse("TYPE_CLASSEMENT", ConcoursJeunes.ajrLibelle.getResourceString("classement.club")); //$NON-NLS-1$ //$NON-NLS-2$
+
+			tplClassementEquipe.parse("categories.CATEGORIE", ConcoursJeunes.ajrLibelle.getResourceString("equipe.composition")); //$NON-NLS-1$ //$NON-NLS-2$
+			tplClassementEquipe.parse("categories.NB_EQUIPES", "" + equipes.countEquipes()); //$NON-NLS-1$ //$NON-NLS-2$
+
+
+			Equipe[] sortEquipes = EquipeList.sort(clubList.list());
+
+			for(int i = 0; i < sortEquipes.length; i++) {
+
+				tplClassementEquipe.parse("categories.classement.PLACE", "" + (i + 1)); //$NON-NLS-1$ //$NON-NLS-2$
+
+				String idsXML = ""; //$NON-NLS-1$
+				String ptsXML = ""; //$NON-NLS-1$
+				for(Concurrent concurrent : sortEquipes[i].getMembresEquipe()) {
+					if(outType == OUT_XML) {
+						idsXML += concurrent.getID() + "<newline/>"; //$NON-NLS-1$
+						ptsXML += concurrent.getTotalScore() + "<newline/>"; //$NON-NLS-1$
+					} else {
+						idsXML += concurrent.getID() + "<br>"; //$NON-NLS-1$
+						ptsXML += concurrent.getTotalScore() + "<br>"; //$NON-NLS-1$
+					}
+				}
+				tplClassementEquipe.parse("categories.classement.IDENTITEES", idsXML); //$NON-NLS-1$
+				tplClassementEquipe.parse("categories.classement.NOM_EQUIPE", sortEquipes[i].getNomEquipe()); //$NON-NLS-1$
+				tplClassementEquipe.parse("categories.classement.TOTAL_INDIVIDUEL", ptsXML); //$NON-NLS-1$
+				tplClassementEquipe.parse("categories.classement.TOTAL_GENERAL", "" + sortEquipes[i].getTotalScore()); //$NON-NLS-1$ //$NON-NLS-2$
+
+				tplClassementEquipe.loopBloc("categories.classement"); //$NON-NLS-1$
+			}
+			strClassementEquipe = tplClassementEquipe.output();
+		}
+
+		return strClassementEquipe;
+	}
 
 	/**
 	 * Donne le XML de l'etat "Liste des archer"
@@ -835,6 +918,17 @@ public class FicheConcours {
 	public boolean printPasDeTir() {
 		Document document = new Document(PageSize.A4.rotate(), 5, 5, 5, 5);
 		return ConcoursJeunes.printDocument(document, getXMLPasDeTir(currentDepart));
+	}
+
+	/* (non-Javadoc)
+	 * @see org.concoursjeunes.ParametreListener#metaDataChanged(org.concoursjeunes.ParametreEvent)
+	 */
+	public void metaDataChanged(ParametreEvent parametreEvent) {
+		
+	}
+	
+	public void parametreChanged(ParametreEvent parametreEvent) {
+		
 	}
 
 	private void fireConcurrentAdded(Concurrent concurrent) {

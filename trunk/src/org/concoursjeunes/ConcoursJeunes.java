@@ -75,10 +75,12 @@ public class ConcoursJeunes {
 	
 	private EventListenerList listeners = new EventListenerList();
 	
+	private static ConcoursJeunes instance;
+	
 	/**	
 	 * constructeur, création de la fenetre principale
 	 */
-	public ConcoursJeunes() {
+	private ConcoursJeunes() {
 		//tente de recuperer la configuration générale du programme
 		configuration = ConfigurationFactory.getCurrentConfiguration();
 		metaDataFichesConcours = MetaDataFichesConcoursFactory.getMetaDataFichesConcours();
@@ -126,6 +128,13 @@ public class ConcoursJeunes {
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}        
+	}
+	
+	public synchronized static ConcoursJeunes getInstance() {
+		if (null == instance) { // Premier appel
+			instance = new ConcoursJeunes();
+        }
+        return instance;
 	}
 	
 	public void addConcoursJeunesListener(ConcoursJeunesListener concoursJeunesListener) {

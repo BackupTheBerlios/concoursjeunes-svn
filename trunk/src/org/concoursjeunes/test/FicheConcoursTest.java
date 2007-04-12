@@ -26,7 +26,7 @@ public class FicheConcoursTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		concoursJeunes = new ConcoursJeunes();
+		concoursJeunes = ConcoursJeunes.getInstance();
 		//concoursJeunes.createFicheConcours();
 	}
 

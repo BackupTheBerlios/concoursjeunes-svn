@@ -52,7 +52,6 @@ import org.concoursjeunes.Equipe;
 import org.concoursjeunes.FicheConcours;
 import org.concoursjeunes.FicheConcoursEvent;
 import org.concoursjeunes.FicheConcoursListener;
-import org.concoursjeunes.PasDeTir;
 import org.concoursjeunes.dialog.ConcurrentDialog;
 import org.concoursjeunes.dialog.EquipeDialog;
 import org.concoursjeunes.dialog.TypeListingDialog;
@@ -135,6 +134,7 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 		JLabel jl = new JLabel("Faites glisser un concurrent sur une cible ou une position pour l'affecter à celle ci");
 		jl.setBackground(new Color(255, 255, 225));
 		jl.setOpaque(true);
+		jl.setHorizontalTextPosition(JLabel.CENTER);
 		northpaneGestion.add(jl, BorderLayout.CENTER);
 
 		ficheG.setLayout(new BorderLayout());
@@ -374,8 +374,8 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 	 */
 	private void placementConcurrents() {
 
-		if(JOptionPane.showConfirmDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("confirmation.placement"), //$NON-NLS-1$
-				ConcoursJeunes.ajrLibelle.getResourceString("confirmation.placement.titre"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.NO_OPTION) //$NON-NLS-1$
+		if(JOptionPane.showConfirmDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("confirmation.replacement"), //$NON-NLS-1$
+				ConcoursJeunes.ajrLibelle.getResourceString("confirmation.replacement.titre"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.NO_OPTION) //$NON-NLS-1$
 			return;
 
 		ficheConcoursPane.ficheConcours.getPasDeTir(depart).placementConcurrents();
@@ -465,10 +465,12 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 	public void listConcurrentChanged(FicheConcoursEvent e) {
 		switch(e.getEvent()) {
 			case FicheConcoursEvent.ADD_CONCURRENT:
-				ajlConcurrent.add(e.getConcurrent());
+				if(e.getConcurrent().getDepart() == depart)
+					ajlConcurrent.add(e.getConcurrent());
 				break;
 			case FicheConcoursEvent.REMOVE_CONCURRENT:
-				ajlConcurrent.remove(e.getConcurrent());
+				if(e.getConcurrent().getDepart() == depart)
+					ajlConcurrent.remove(e.getConcurrent());
 				break;
 		}
 	}

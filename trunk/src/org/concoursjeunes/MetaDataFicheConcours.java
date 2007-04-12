@@ -77,8 +77,12 @@ public class MetaDataFicheConcours implements ParametreListener {
 	 * @see org.concoursjeunes.ParametreListener#metaDataChanged(org.concoursjeunes.ParametreEvent)
 	 */
 	public void metaDataChanged(ParametreEvent parametreEvent) {
-		setDateConcours(parametreEvent.getDateConcours());
-		setIntituleConcours(parametreEvent.getIntituleConcours());
-		setFilenameConcours(parametreEvent.getFilenameConcours());
+		setDateConcours(parametreEvent.getParametre().getDate());
+		setIntituleConcours(parametreEvent.getParametre().getIntituleConcours());
+		setFilenameConcours(parametreEvent.getParametre().getSaveName());
+	}
+	
+	public void parametreChanged(ParametreEvent parametreEvent) {
+		
 	}
 }

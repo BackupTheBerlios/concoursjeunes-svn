@@ -69,8 +69,10 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		this.ficheConcours = ficheConcours;
 		
 		paramDialog = new ParametreDialog(this);
-		if(!ficheConcours.getParametre().isReglementLock())
+		if(!ficheConcours.getParametre().isReglementLock()) {
 			paramDialog.showParametreDialog();
+			ficheConcours.makePasDeTir();
+		}
 		init();
 
 		concDialog = new ConcurrentDialog(parentframe, ficheConcours);
@@ -210,13 +212,14 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		tabbedpane.setTabComponentAt(0, getGestArchersTabComponent());
 		tabbedpane.setTitleAt(1, ConcoursJeunes.ajrLibelle.getResourceString("onglet.classementindividuel")); //$NON-NLS-1$
 		tabbedpane.setTitleAt(2, ConcoursJeunes.ajrLibelle.getResourceString("onglet.classementequipe")); //$NON-NLS-1$
+		tabbedpane.setTitleAt(3, ConcoursJeunes.ajrLibelle.getResourceString("onglet.classementclub")); //$NON-NLS-1$
 	}
 
 	/**
 	 * Affiche la boite de dialogue des parametre du concours
 	 */
 	public void openParametreDialog() {
-		//l'ouvre si elle existe et la cré dans le cas contraire
+		//l'ouvre si elle existe et la crée dans le cas contraire
 		if(paramDialog != null) {
 			paramDialog.setVisible(true);   
 		} else
@@ -420,7 +423,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 						jepClassTeam.setText(ficheConcours.getClassementEquipe(FicheConcours.OUT_HTML));
 						break;
 					case 3:
-						jepClassClub.setText("Non implémenté");
+						jepClassClub.setText(ficheConcours.getClassementClub(FicheConcours.OUT_HTML));
 				}
 			}
 		}

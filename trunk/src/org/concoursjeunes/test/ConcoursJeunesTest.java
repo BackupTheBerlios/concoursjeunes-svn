@@ -18,7 +18,7 @@ public class ConcoursJeunesTest {
 
 	@Before
 	public void setUp() throws Exception {
-		concoursJeunes = new ConcoursJeunes();
+		concoursJeunes = ConcoursJeunes.getInstance();
 	}
 
 	@Test

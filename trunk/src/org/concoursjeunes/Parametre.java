@@ -94,6 +94,7 @@ public class Parametre extends DefaultParameters {
 	 */
 	public void setArbitres(ArrayList<String> vArbitres) {
 		this.vArbitres = vArbitres;
+		fireParametreChanged();
 	}
 	
 	@Override
@@ -124,6 +125,7 @@ public class Parametre extends DefaultParameters {
 	 */
 	public void setReglement(Reglement reglement) {
 		this.reglement = reglement;
+		fireParametreChanged();
 	}
 
 	/**
@@ -142,7 +144,13 @@ public class Parametre extends DefaultParameters {
 
 	private void fireMetaDataChanged() {
 		for(ParametreListener pl : listeners.getListeners(ParametreListener.class)) {
-			pl.metaDataChanged(new ParametreEvent(dDateConcours, getIntituleConcours(), saveName));
+			pl.metaDataChanged(new ParametreEvent(this));
+		}
+	}
+	
+	private void fireParametreChanged() {
+		for(ParametreListener pl : listeners.getListeners(ParametreListener.class)) {
+			pl.parametreChanged(new ParametreEvent(this));
 		}
 	}
 }

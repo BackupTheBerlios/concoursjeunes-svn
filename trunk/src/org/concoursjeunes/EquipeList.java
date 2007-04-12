@@ -136,7 +136,7 @@ public class EquipeList {
      * @param no_sort_list - La liste des équipes à trier
      * @return Equipe[] - la liste des équipe fournit en parametre mais trié
      */
-    public Equipe[] sort(Equipe[] no_sort_list) {
+    public static Equipe[] sort(Equipe[] no_sort_list) {
         if(no_sort_list != null && no_sort_list.length > 0) {
             for(int i = 0; i < no_sort_list.length - 1; i++) {
                 for(int j = i+1; j < no_sort_list.length; j++) {

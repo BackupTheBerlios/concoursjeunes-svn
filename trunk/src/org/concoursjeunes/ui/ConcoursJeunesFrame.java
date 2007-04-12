@@ -1,8 +1,6 @@
 package org.concoursjeunes.ui;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Insets;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -62,7 +60,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	 * @param concoursJeunes
 	 */
 	public ConcoursJeunesFrame() {
-		concoursJeunes = new ConcoursJeunes();
+		concoursJeunes = ConcoursJeunes.getInstance();
 		concoursJeunes.addConcoursJeunesListener(this);
 		
 		//affiche la boite de dialogue si le fichier de configuration n'existe pas ou si il est
@@ -368,6 +366,10 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	 */
 	public void metaDataChanged(ParametreEvent parametreEvent) {
 		enumFicheConcours();
+	}
+	
+	public void parametreChanged(ParametreEvent parametreEvent) {
+		
 	}
 	
 	public void tabAdded(Component tabComponent) {

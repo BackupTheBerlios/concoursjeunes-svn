@@ -3,6 +3,8 @@
  */
 package org.concoursjeunes;
 
+import java.util.ArrayList;
+
 import javax.swing.JTextField;
 import javax.swing.event.EventListenerList;
 import javax.swing.text.AttributeSet;
@@ -332,7 +334,11 @@ public class AutoCompleteDocument extends PlainDocument {
 		Entite searchEntite = new Entite();
 		searchEntite.setAgrement(searchString.toUpperCase() + "%");
 		if(getLength() > 0) {
-			entite = Entite.getEntitesInDatabase(searchEntite, "AGREMENTENTITE").get(0);
+			ArrayList<Entite> entites = Entite.getEntitesInDatabase(searchEntite, "AGREMENTENTITE");
+			if(entites.size() > 0)
+				entite = Entite.getEntitesInDatabase(searchEntite, "AGREMENTENTITE").get(0);
+			else
+				entite = null;
 		} else {
 			entite = null;
 		}

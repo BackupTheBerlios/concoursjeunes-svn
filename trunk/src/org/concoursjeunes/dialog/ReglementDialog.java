@@ -12,6 +12,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -33,6 +35,7 @@ import javax.swing.JTree;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import org.concoursjeunes.ConcoursJeunes;
@@ -53,7 +56,7 @@ import static org.concoursjeunes.ConcoursJeunes.userRessources;
  * @author aurelien
  *
  */
-public class ReglementDialog extends JDialog implements ActionListener, ItemListener {
+public class ReglementDialog extends JDialog implements ActionListener, ItemListener, MouseListener {
 	
 	private Reglement reglement;
 	
@@ -161,6 +164,8 @@ public class ReglementDialog extends JDialog implements ActionListener, ItemList
 		JPanel jpOperations = new JPanel();
 		JScrollPane jspCriteres = new JScrollPane();
 		
+		treeCriteria.addMouseListener(this);
+		
 		jpDifCriteria.setLayout(new BorderLayout());
 		
 		jbAddCriteria.setMargin(new Insets(0, 0, 0, 0));
@@ -243,6 +248,7 @@ public class ReglementDialog extends JDialog implements ActionListener, ItemList
 	}
 	
 	private void completeGeneral() {
+		jcbReglementName.removeItemListener(this);
 		jcbReglementName.removeAllItems();
 		
 		String[] availableReglements = userRessources.listAvailableReglements();
@@ -260,8 +266,10 @@ public class ReglementDialog extends JDialog implements ActionListener, ItemList
 			return;
 		}
 		
-		//jcbReglementName.setSelectedItem(reglement.getName());
-
+		jcbReglementName.setSelectedItem(reglement.getName());
+		
+		jcbReglementName.addItemListener(this);
+		
 		jtfNbSerie.setText(reglement.getNbSerie() + "");
 		jtfNbVoleeParSerie.setText(reglement.getNbVoleeParSerie() + "");
 		jtfNbFlecheParVolee.setText(reglement.getNbFlecheParVolee() + "");
@@ -569,14 +577,76 @@ public class ReglementDialog extends JDialog implements ActionListener, ItemList
 	 * @see java.awt.event.ItemListener#itemStateChanged(java.awt.event.ItemEvent)
 	 */
 	public void itemStateChanged(ItemEvent e) {
-		if(jcbReglementName.getSelectedIndex() < jcbReglementName.getItemCount() - 2) {
-			reglement = ReglementFactory.getReglement((String)e.getItem());
-			completePanel();
-		} else if(jcbReglementName.getItemCount() > 1 && jcbReglementName.getSelectedIndex() == jcbReglementName.getItemCount() - 1) {
-			String reglementName = JOptionPane.showInputDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("reglement.general.addreglement")); //$NON-NLS-1$
-			reglement = new Reglement(reglementName);
-			reglement.save();
-			completePanel();
+		if(e.getStateChange() == ItemEvent.SELECTED) {
+			if(jcbReglementName.getSelectedIndex() < jcbReglementName.getItemCount() - 2) {
+				reglement = ReglementFactory.getReglement((String)e.getItem());
+				completePanel();
+			} else if(jcbReglementName.getItemCount() > 1 && jcbReglementName.getSelectedIndex() == jcbReglementName.getItemCount() - 1) {
+				String reglementName = JOptionPane.showInputDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("reglement.general.addreglement")); //$NON-NLS-1$
+				reglement = new Reglement(reglementName);
+				reglement.save();
+				completePanel();
+			}
 		}
+	}
+	
+	public void mouseClicked(MouseEvent e) {
+		if(e.getClickCount() == 2) {
+			DefaultMutableTreeNode dmtn = (DefaultMutableTreeNode)treeCriteria.getLastSelectedPathComponent();
+
+			Object dmtnObj = dmtn.getUserObject();
+			if(dmtnObj instanceof Criterion) {
+				TreePath selectedPath = treeCriteria.getSelectionPath();
+				new CriterionDialog(this, (Criterion)dmtnObj);
+
+				treeModel.reload((TreeNode)treeCriteria.getSelectionPath().getLastPathComponent());
+				treeCriteria.setSelectionPath(selectedPath);
+
+				generateSCNA_DBRow();
+			} else if(dmtnObj instanceof CriterionElement) {
+				TreePath selectedPath = treeCriteria.getSelectionPath();
+				DefaultMutableTreeNode dmtnParent = (DefaultMutableTreeNode)
+				selectedPath.getParentPath().getLastPathComponent();
+				new CriterionElementDialog(this, (Criterion)dmtnParent.getUserObject(), 
+						(CriterionElement)dmtnObj);
+
+				treeModel.reload((TreeNode)treeCriteria.getSelectionPath().getLastPathComponent());
+				treeCriteria.setSelectionPath(selectedPath);
+
+				generateSCNA_DBRow();
+			}
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
+	 */
+	public void mouseEntered(MouseEvent e) {
+		// TODO Raccord de méthode auto-généré
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
+	 */
+	public void mouseExited(MouseEvent e) {
+		// TODO Raccord de méthode auto-généré
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
+	 */
+	public void mousePressed(MouseEvent e) {
+		// TODO Raccord de méthode auto-généré
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
+	 */
+	public void mouseReleased(MouseEvent e) {
+		// TODO Raccord de méthode auto-généré
+		
 	}
 }

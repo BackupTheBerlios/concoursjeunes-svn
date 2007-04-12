@@ -27,7 +27,7 @@ import ajinteractive.standard.java2.*;
  * @author  Aurelien Jeoffray
  * @version  2.1
  */
-public class ConfigurationDialog extends JDialog implements ActionListener {
+public class ConfigurationDialog extends JDialog implements ActionListener, AutoCompleteDocumentListener {
 
 	private static String CONFIG_PROFILE = "configuration_"; //$NON-NLS-1$
 	private static String EXT_XML = ".xml"; //$NON-NLS-1$
@@ -176,6 +176,10 @@ public class ConfigurationDialog extends JDialog implements ActionListener {
 		jcbProfil.addActionListener(this);
 
 		jbDetail.addActionListener(this);
+		
+		AutoCompleteDocument acdAgrement = new AutoCompleteDocument(jtfAgrClub, AutoCompleteDocument.AGREMENT_SEARCH, null);
+		acdAgrement.addAutoCompleteDocumentListener(this);
+		jtfAgrClub.setDocument(acdAgrement);
 
 		jcbLangue.addActionListener(this);
 
@@ -198,14 +202,14 @@ public class ConfigurationDialog extends JDialog implements ActionListener {
 
 		gridbagComposer.setParentPanel(jpParamGeneral);
 		c.gridy = 0; c.anchor = GridBagConstraints.WEST;     //Défaut,Haut
+		gridbagComposer.addComponentIntoGrid(jlAgremClub, c);
+		gridbagComposer.addComponentIntoGrid(jtfAgrClub, c);
+		gridbagComposer.addComponentIntoGrid(jbDetail, c);
+		c.gridy++; 
 		gridbagComposer.addComponentIntoGrid(jlNomClub, c);
 		c.gridwidth = 2;
 		gridbagComposer.addComponentIntoGrid(jtfNomClub, c);
 		c.gridy++; c.gridwidth = 1;
-		gridbagComposer.addComponentIntoGrid(jlAgremClub, c);
-		gridbagComposer.addComponentIntoGrid(jtfAgrClub, c);
-		gridbagComposer.addComponentIntoGrid(jbDetail, c);
-		c.gridy++;
 		gridbagComposer.addComponentIntoGrid(new JPanel(), c);
 		c.gridy++;
 		gridbagComposer.addComponentIntoGrid(jlIntituleConcours, c);
@@ -534,10 +538,12 @@ public class ConfigurationDialog extends JDialog implements ActionListener {
 		String[] libelleLangues = getPossibleLanguages();
 
 		jtfNomClub.setText(configuration.getClub().getNom());
-		jtfAgrClub.setText(configuration.getClub().getAgrement());
+		((AutoCompleteDocument)jtfAgrClub.getDocument()).setText(configuration.getClub().getAgrement());
 		jtfIntConc.setText(configuration.getIntituleConcours());
 
+		jcbProfil.removeActionListener(this);
 		jcbProfil.setSelectedItem(configuration.getCurProfil());
+		jcbProfil.addActionListener(this);
 
 		jcbLangue.removeAllItems();
 		for(int i = 0; i < libelleLangues.length; i++) {
@@ -786,5 +792,49 @@ public class ConfigurationDialog extends JDialog implements ActionListener {
 			jtfURLExport.setEnabled(this.jcbExpert.isSelected());
 			jtfURLImport.setEnabled(this.jcbExpert.isSelected());
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.concoursjeunes.AutoCompleteDocumentListener#concurrentFinded(org.concoursjeunes.AutoCompleteDocumentEvent)
+	 */
+	public void concurrentFinded(AutoCompleteDocumentEvent e) {
+		// TODO Raccord de méthode auto-généré
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.concoursjeunes.AutoCompleteDocumentListener#concurrentNotFound(org.concoursjeunes.AutoCompleteDocumentEvent)
+	 */
+	public void concurrentNotFound(AutoCompleteDocumentEvent e) {
+		// TODO Raccord de méthode auto-généré
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.concoursjeunes.AutoCompleteDocumentListener#entiteFinded(org.concoursjeunes.AutoCompleteDocumentEvent)
+	 */
+	public void entiteFinded(AutoCompleteDocumentEvent e) {
+		Entite findEntite = e.getEntite();
+		if(!findEntite.equals(workConfiguration.getClub())) {
+			workConfiguration.setClub(findEntite);
+			jtfNomClub.setEditable(false);
+			completeGeneralPanel(workConfiguration);
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.concoursjeunes.AutoCompleteDocumentListener#entiteNotFound(org.concoursjeunes.AutoCompleteDocumentEvent)
+	 */
+	public void entiteNotFound(AutoCompleteDocumentEvent e) {
+		Entite newEntite = new Entite();
+		if(e.getSource() == jtfAgrClub) {
+			newEntite.setVille(jtfNomClub.getText());
+			newEntite.setAgrement(jtfAgrClub.getText());
+			
+			jtfNomClub.setEditable(true);
+		}
+		
+		workConfiguration.setClub(newEntite);
+		completeGeneralPanel(workConfiguration);
 	}
 }
