@@ -18,6 +18,9 @@ import ajinteractive.standard.java2.GridbagComposer;
  * @author  Aurelien
  */
 public class CriterionDialog extends JDialog implements ActionListener {
+	
+	public static final int NO_LOCK = 0;
+	public static final int PLACEMENT_LOCK = 1;
     
     private ReglementDialog parent;
     
@@ -37,6 +40,8 @@ public class CriterionDialog extends JDialog implements ActionListener {
     
     private JButton jbValider = new JButton();
     private JButton jbAnnuler = new JButton();
+    
+    private int lock = NO_LOCK;
     
     /**
      * 
@@ -60,11 +65,6 @@ public class CriterionDialog extends JDialog implements ActionListener {
         init();
         affectLibelle();
         completePanel();
-        
-        pack();
-        setResizable(false);
-        setLocationRelativeTo(null);
-        setVisible(true);
     }
     
     /**
@@ -160,6 +160,21 @@ public class CriterionDialog extends JDialog implements ActionListener {
             jcbClassementCriterion.setEnabled(!parent.getReglement().isOfficialReglement());
             jcbWinFFTACode.setEnabled(!parent.getReglement().isOfficialReglement());
         }
+        
+        if(lock == PLACEMENT_LOCK) {
+        	jcbPlacementCriterion.setEnabled(false);
+        }
+    }
+    
+    public Criterion showCriterionDialog() {
+    	completePanel();
+    	
+    	pack();
+        setResizable(false);
+        setLocationRelativeTo(null);
+        setVisible(true);
+    	
+    	return criterion;
     }
 
     /**
@@ -177,6 +192,20 @@ public class CriterionDialog extends JDialog implements ActionListener {
     public void setCriterion(Criterion criterion) {
         this.criterion = criterion;
     }
+    
+    /**
+	 * @return lock
+	 */
+	public int getLock() {
+		return lock;
+	}
+
+	/**
+	 * @param lock lock à définir
+	 */
+	public void setLock(int lock) {
+		this.lock = lock;
+	}
 
     /**
      * 
@@ -189,6 +218,7 @@ public class CriterionDialog extends JDialog implements ActionListener {
 
                 parent.getReglement().getListCriteria().add(criterion);
             }
+            
             criterion.setSortOrder((jcbSortOrder.getSelectedIndex() == 1) ? Criterion.SORT_DESC : Criterion.SORT_ASC);
             criterion.setLibelle(jtfLibelle.getText());
             criterion.setPlacement(jcbPlacementCriterion.isSelected());
@@ -197,8 +227,9 @@ public class CriterionDialog extends JDialog implements ActionListener {
             
             setVisible(false);
         } else if(e.getSource() == jbAnnuler) {
+        	criterion = null;
+        	
             setVisible(false);
         }
     }
-
 }

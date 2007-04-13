@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.sql.SQLException;
 import java.text.DateFormat;
 
 import javax.swing.JEditorPane;
@@ -36,6 +37,7 @@ import org.concoursjeunes.plugins.ImportPlugin;
 
 import ajinteractive.standard.java2.AJTemplate;
 import ajinteractive.standard.java2.GhostGlassPane;
+import ajinteractive.standard.java2.SplashScreen;
 import ajinteractive.standard.ui.AJTabbedPane;
 import ajinteractive.standard.ui.AJTabbedPaneListener;
 import ajinteractive.standard.ui.FrameCreator;
@@ -69,7 +71,19 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			new ConfigurationDialog(null);
 
 		init();
-		setMinimumSize(new Dimension(720, 580));
+		setMinimumSize(new Dimension(750, 580));
+		
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				try {
+					//permet de s'assurer que la base de données est correctement fermé
+					ConcoursJeunes.dbConnection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		});
 
 		enumFicheConcours();
 	}

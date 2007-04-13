@@ -49,7 +49,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		if(filter == null && ConcoursJeunes.configuration.getClub().getAgrement().length() > 0) {
 			filter = new Archer();
 			Entite entite = new Entite();
-			entite.setAgrement(ConcoursJeunes.configuration.getClub().getAgrement().substring(0, 2) + "%'");
+			entite.setAgrement(ConcoursJeunes.configuration.getClub().getAgrement().substring(0, 2) + "%");
 			filter.setClub(entite);
 		}
 		dtm = new ArchersTableModel(filter);

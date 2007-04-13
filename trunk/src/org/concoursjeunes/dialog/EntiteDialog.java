@@ -119,18 +119,18 @@ public class EntiteDialog extends JDialog implements ActionListener {
     }
 
     public void showEntite(Entite curEntite) {
-	if(curEntite != null) {
-	    this.entite = curEntite;
-
-	    jtfNom.setText(curEntite.getNom());
-	    jtfAdresse.setText(curEntite.getAdresse());
-	    jtfVille.setText(curEntite.getVille());
-	    jcbType.setSelectedIndex(curEntite.getType());
-	    jtaNote.setText(curEntite.getNote());
-	    jftfAgrement.setValue(curEntite.getAgrement());
-	    jftfCodePostal.setValue(curEntite.getCodePostal());
-	    setVisible(true);
-	}
+		if(curEntite != null) {
+		    this.entite = curEntite;
+	
+		    jtfNom.setText(curEntite.getNom());
+		    jtfAdresse.setText(curEntite.getAdresse());
+		    jtfVille.setText(curEntite.getVille());
+		    jcbType.setSelectedIndex(curEntite.getType());
+		    jtaNote.setText(curEntite.getNote());
+		    jftfAgrement.setValue(curEntite.getAgrement());
+		    jftfCodePostal.setValue(curEntite.getCodePostal());
+		    setVisible(true);
+		}
     }
 
     public void actionPerformed(ActionEvent ae) {

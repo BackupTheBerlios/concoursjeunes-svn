@@ -6,7 +6,6 @@ package org.concoursjeunes;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Map;
 
 import ajinteractive.standard.java2.AJToolKit;
 

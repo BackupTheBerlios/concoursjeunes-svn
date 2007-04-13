@@ -276,7 +276,10 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 								+ Integer.parseInt(pointsCum2V[concurrent.getPosition()][i].getText())
 								+ ""); //$NON-NLS-1$
 					
-					concPoints.set(i, Integer.parseInt(points[concurrent.getPosition()][i].getText()));
+					if(concPoints.size() > i)
+						concPoints.set(i, Integer.parseInt(points[concurrent.getPosition()][i].getText()));
+					else
+						concPoints.add(i, Integer.parseInt(points[concurrent.getPosition()][i].getText()));
 				}
 				
 				if(!parametres.getReglement().isValidScore(concPoints)) {

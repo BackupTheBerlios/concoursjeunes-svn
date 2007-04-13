@@ -259,6 +259,10 @@ public class ParametreDialog extends JDialog implements ActionListener {
 			}
 		} else if(ae.getSource() == jbDetail) {
 			reglementDialog.setReglement(ficheConcours.getParametre().getReglement());
+			if(ficheConcours.getParametre().isReglementLock())
+				reglementDialog.setVerrou(ReglementDialog.LOCK_CHANGE_L1);
+			else
+				reglementDialog.setVerrou(ReglementDialog.NO_LOCK);
 			Reglement reglement = reglementDialog.showReglementDialog();
 			if(reglement != null)
 				ficheConcours.getParametre().setReglement(reglement);

@@ -58,6 +58,9 @@ import static org.concoursjeunes.ConcoursJeunes.userRessources;
  */
 public class ReglementDialog extends JDialog implements ActionListener, ItemListener, MouseListener {
 	
+	public static final int NO_LOCK = 0;
+	public static final int LOCK_CHANGE_L1 = 1;
+	
 	private Reglement reglement;
 	
 	private JLabel jlReglementName = new JLabel();
@@ -92,6 +95,8 @@ public class ReglementDialog extends JDialog implements ActionListener, ItemList
 	private JButton jbAnnuler				= new JButton();
 	
 	private CriteriaSet[] differentiationCriteria;
+	
+	private int verrou = NO_LOCK;
 	
 	public ReglementDialog(JFrame parentframe) {
 		super(parentframe, true);
@@ -165,6 +170,7 @@ public class ReglementDialog extends JDialog implements ActionListener, ItemList
 		JScrollPane jspCriteres = new JScrollPane();
 		
 		treeCriteria.addMouseListener(this);
+		treeCriteria.setToggleClickCount(3);
 		
 		jpDifCriteria.setLayout(new BorderLayout());
 		
@@ -214,6 +220,8 @@ public class ReglementDialog extends JDialog implements ActionListener, ItemList
 	}
 	
 	private void affectLibelle() {
+		setTitle(ConcoursJeunes.ajrLibelle.getResourceString("reglement.titre"));
+		
 		jbValider.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.valider"));
 		jbAnnuler.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.annuler"));
 		
@@ -229,7 +237,7 @@ public class ReglementDialog extends JDialog implements ActionListener, ItemList
 		jbAddCriteria.setToolTipText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.addcriteria")); //$NON-NLS-1$
 		jbAddCriteriaMember.setIcon(new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
 				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.addcriteriamember"))); //$NON-NLS-1$
-		jbAddCriteriaMember.setToolTipText(ConcoursJeunes.ajrLibelle.getResourceString("creglement.addcriteriamember")); //$NON-NLS-1$
+		jbAddCriteriaMember.setToolTipText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.addcriteriamember")); //$NON-NLS-1$
 		jbUpElement.setIcon(new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
 				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.upelement"))); //$NON-NLS-1$
 		jbUpElement.setToolTipText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.upelement")); //$NON-NLS-1$
@@ -248,6 +256,11 @@ public class ReglementDialog extends JDialog implements ActionListener, ItemList
 	}
 	
 	private void completeGeneral() {
+		
+		if(verrou != NO_LOCK) {
+			jcbReglementName.setEnabled(false);
+			jtfNbSerie.setEditable(false);
+		}
 		jcbReglementName.removeItemListener(this);
 		jcbReglementName.removeAllItems();
 		
@@ -299,6 +312,10 @@ public class ReglementDialog extends JDialog implements ActionListener, ItemList
 	private void completeCategories() {
 		if(reglement != null)
 			jtDistanceBlason.setModel(createTableModel());
+		
+		if(verrou != NO_LOCK) {
+			jtDistanceBlason.setEnabled(false);
+		}
 	}
 	
 	private DefaultTableModel createTableModel() {
@@ -392,9 +409,24 @@ public class ReglementDialog extends JDialog implements ActionListener, ItemList
 		this.reglement = reglement;
 	}
 	
+	/**
+	 * @return verrou
+	 */
+	public int getVerrou() {
+		return verrou;
+	}
+
+	/**
+	 * @param verrou verrou à définir
+	 */
+	public void setVerrou(int verrou) {
+		this.verrou = verrou;
+	}
+
 	public Reglement showReglementDialog() {
 		completePanel();
 		pack();
+		setLocationRelativeTo(null);
 		setVisible(true);
 		return reglement;
 	}
@@ -435,8 +467,8 @@ public class ReglementDialog extends JDialog implements ActionListener, ItemList
 			DefaultMutableTreeNode dmtn = (DefaultMutableTreeNode)treeCriteria.getPathForRow(0).getLastPathComponent();
 			if(dmtn != null) {
 				CriterionDialog cd = new CriterionDialog(this);
-
-				if(cd.getCriterion() != null) {
+				cd.setLock(verrou);
+				if(cd.showCriterionDialog() != null) {
 					DefaultMutableTreeNode dmtnCrit = new DefaultMutableTreeNode(cd.getCriterion());
 
 					dmtn.add(dmtnCrit);
@@ -449,19 +481,29 @@ public class ReglementDialog extends JDialog implements ActionListener, ItemList
 			if(dmtn != null) {
 				Object dmtnObj = dmtn.getUserObject();
 				if(dmtnObj instanceof Criterion) {
-					TreePath selectedPath = treeCriteria.getSelectionPath();
-					CriterionElementDialog cpd = new CriterionElementDialog(this, (Criterion)dmtnObj);
-
-					if(cpd.getCriterionIndividu() != null) {
-						DefaultMutableTreeNode dmtnIndiv = new DefaultMutableTreeNode(cpd.getCriterionIndividu());
-
-						dmtn.add(dmtnIndiv);
-
-						treeModel.reload();
-						treeCriteria.setSelectionPath(selectedPath);
-						//treeCriteria.expandPath(selectedPath);
-
-						generateSCNA_DBRow();
+					Criterion criterion = (Criterion)dmtnObj;
+					
+					if(!(criterion.isPlacement() && verrou != NO_LOCK)) {
+						TreePath selectedPath = treeCriteria.getSelectionPath();
+						CriterionElementDialog cpd = new CriterionElementDialog(this, criterion);
+	
+						if(cpd.getCriterionIndividu() != null) {
+							DefaultMutableTreeNode dmtnIndiv = new DefaultMutableTreeNode(cpd.getCriterionIndividu());
+	
+							dmtn.add(dmtnIndiv);
+	
+							treeModel.reload(dmtn);
+							treeCriteria.expandPath(selectedPath);
+							treeCriteria.setSelectionPath(selectedPath);
+							//treeCriteria.expandPath(selectedPath);
+	
+							generateSCNA_DBRow();
+						}
+					} else {
+						JOptionPane.showMessageDialog(this, 
+								ConcoursJeunes.ajrLibelle.getResourceString("reglement.message.criteria.noelement"),
+								ConcoursJeunes.ajrLibelle.getResourceString("reglement.message.criteria.noelement.title"),
+								JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
 			}
@@ -597,7 +639,9 @@ public class ReglementDialog extends JDialog implements ActionListener, ItemList
 			Object dmtnObj = dmtn.getUserObject();
 			if(dmtnObj instanceof Criterion) {
 				TreePath selectedPath = treeCriteria.getSelectionPath();
-				new CriterionDialog(this, (Criterion)dmtnObj);
+				CriterionDialog criterionDialog = new CriterionDialog(this, (Criterion)dmtnObj);
+				criterionDialog.setLock(verrou);
+				criterionDialog.showCriterionDialog();
 
 				treeModel.reload((TreeNode)treeCriteria.getSelectionPath().getLastPathComponent());
 				treeCriteria.setSelectionPath(selectedPath);

@@ -779,6 +779,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		} else if(source == this.jbDetail) {
 			EntiteDialog ed = new EntiteDialog(this);
 			ed.showEntite(workConfiguration.getClub());
+			jtfNomClub.setText(workConfiguration.getClub().getNom());
 		} else if(source == jcbProfil) {
 			if(!runInitDialog && jcbProfil.getSelectedIndex() > -1)
 				loadProfile();

@@ -127,7 +127,7 @@ public class ConcoursJeunes {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
-		}        
+		}
 	}
 	
 	public synchronized static ConcoursJeunes getInstance() {
