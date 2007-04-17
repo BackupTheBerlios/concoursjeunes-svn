@@ -12,5 +12,6 @@
 	<classpathentry kind="lib" path="lib/itext-1.4.8.jar"/>
 	<classpathentry kind="lib" path="config"/>
 	<classpathentry kind="lib" path="lib/aide.jar"/>
+	<classpathentry kind="lib" path="lib/h2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
