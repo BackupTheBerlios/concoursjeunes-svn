@@ -4,7 +4,10 @@
 package org.concoursjeunes;
 
 /**
- * @author  Aurelien
+ * L'événement de réponse à l'action de l'AutoCompleteDocument
+ * 
+ * @author Aurélien JEOFFRAY
+ * @version 1.0
  */
 public class AutoCompleteDocumentEvent {
 	private Object source;
@@ -14,21 +17,31 @@ public class AutoCompleteDocumentEvent {
 	private Entite genericEntite;
 	
 	/**
-	 * @param source
-	 * @param concurrent
+	 * Crée un événement retournant un concurrent
+	 * 
+	 * @param source - l'objet swing à l'origine de l'événement
+	 * @param concurrent - le concurrent retourné par l'autocomplement
 	 */
 	public AutoCompleteDocumentEvent(Object source, Concurrent concurrent) {
 		this.source = source;
 		this.concurrent = concurrent;
 	}
 	
+	/**
+	 * Crée un événement retournant une entite
+	 * 
+	 * @param source - l'objet swing à l'origine de l'événement
+	 * @param entite - l'entite retourné par l'autocomplement
+	 */
 	public AutoCompleteDocumentEvent(Object source, Entite entite) {
 		this.source = source;
 		this.entite = entite;
 	}
 
 	/**
-	 * @return  the concurrent
+	 * Retourne l'objet concurrent répondant à l'événement
+	 * 
+	 * @return le concurrent renvoyé par l'autocomplement
 	 * @uml.property  name="concurrent"
 	 */
 	public Concurrent getConcurrent() {
@@ -36,6 +49,8 @@ public class AutoCompleteDocumentEvent {
 	}
 
 	/**
+	 * Définit le concurrent repondant à l'événement
+	 * 
 	 * @param concurrent  the concurrent to set
 	 * @uml.property  name="concurrent"
 	 */

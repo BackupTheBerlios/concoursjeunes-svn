@@ -9,6 +9,7 @@ import javax.swing.*;
 import org.concoursjeunes.ConcoursJeunes;
 
 import ajinteractive.standard.java2.*;
+import ajinteractive.standard.utilities.sql.SqlParser;
 /**
  * Plugin d'import d'une base WinFFTA 2 (Format Windev HF) vers ConcoursJeunes (Format Java XML) 
  * @author  aurelien
@@ -96,35 +97,11 @@ public class FFTAImportPlugin extends Thread implements ImportPlugin {
             	ConcoursJeunes.dbConnection.setAutoCommit(true);
             	
 				Statement stmt = ConcoursJeunes.dbConnection.createStatement();
-
-				//monte les fichiers FFTA pour recuperation des données
-				//stmt.executeUpdate("SET TABLE EntiteFFTA SOURCE \"FICLUB.TXT;fs=\\semi\"");
-				//stmt.executeUpdate("SET TABLE ArchersFFTA SOURCE \"Licence.TXT;fs=\\semi\"");
-				stmt.executeUpdate("TRUNCATE TABLE EntiteFFTA");
-				stmt.executeUpdate("TRUNCATE TABLE ArchersFFTA");
-				stmt.executeUpdate("INSERT INTO EntiteFFTA SELECT distinct * from CSVREAD('base/FICLUB.TXT',null,null,';');");
-				stmt.executeUpdate("INSERT INTO ArchersFFTA (NOMARCHER,NUMLICENCEARCHER,PRENOMARCHER," +
-						"ALIASARCHER,CLUBARCHER,ARCARCHER,CATEGORIEARCHER,GENREARCHER,NIVEAUARCHER,LIBELLENIVEAU," +
-						"LIBELLECATEGORIE,AGREMENTCLUBARCHER,DATENAISS,CERTIFMEDICAL,INC2) SELECT distinct * from CSVREAD('base/Licence.TXT',null,null,';');");
-				//supprime le contenu de la table et le remplace par le contenu du fichier FFTA
-				//stmt.executeUpdate("DELETE FROM Entite");
-				stmt.executeUpdate("TRUNCATE TABLE Entite");
-				stmt.executeUpdate("INSERT INTO Entite (AGREMENTENTITE, NOMENTITE, VILLEENTITE) " +
-						"SELECT AGREMENTENTITE, NOMENTITE, VILLEENTITE FROM EntiteFFTA where NomEntite <> 'DEPARTEMENT FEDERATION'");
 				
-				//stmt.executeUpdate("DELETE FROM Archers");
-				stmt.executeUpdate("TRUNCATE TABLE Archers");
-				stmt.executeUpdate("INSERT INTO Archers (NUMLICENCEARCHER, NOMARCHER, " +
-						"PRENOMARCHER, CERTIFMEDICAL, AGREMENTENTITE, GENREFFTA, CATEGORIEFFTA, NIVEAUFFTA," +
-						"ARCFFTA) SELECT NUMLICENCEARCHER, NOMARCHER, " +
-						"PRENOMARCHER, CERTIFMEDICAL, AGREMENTCLUBARCHER, GENREARCHER-1, CATEGORIEARCHER-1," +
-						"NIVEAUARCHER, ARCARCHER-1 FROM ArchersFFTA");
-				
-				//demonte les fichiers FFTA (reduit le temps de lancement de la base)
-				//stmt.executeUpdate("SET TABLE EntiteFFTA SOURCE \"\"");
-				//stmt.executeUpdate("SET TABLE ArchersFFTA SOURCE \"\"");
-				
-				stmt.executeUpdate("COMMIT");
+				SqlParser.createBatch(
+						new File(pluginRessources.getResourceString("sql.importffta")), stmt);
+				//stmt.a
+				stmt.executeBatch();
 				
 				stmt.close();
 				

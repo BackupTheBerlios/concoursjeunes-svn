@@ -12,8 +12,12 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 
 /**
- * Réalise la saisi semi automatique d'un concurrent en fonction de la chaine saisi manuellement et des informations présente en base de données
+ * Réalise la saisi semi automatique d'un concurrent en fonction de
+ * la chaine saisi manuellement et des informations présente en base
+ * de données
+ * 
  * @author  Aurélien JEOFFRAY
+ * @version 1.0
  */
 public class AutoCompleteDocument extends PlainDocument {
 	
@@ -52,10 +56,12 @@ public class AutoCompleteDocument extends PlainDocument {
 	private int typeSearch = NAME_SEARCH;
 	
 	/**
-	 * Cré un document de saisi semi automatique de concurrent
+	 * Crée un document de saisi semi automatique de concurrent
 	 * 
-	 * @param textField - le champs de reference pour la saisi semi automatique
-	 * @param typeSearch - le type de recherche à effectuer (represente la nature de la saisi)
+	 * @param textField - le champs de reference pour la saisi
+	 * semi automatique
+	 * @param typeSearch - le type de recherche à effectuer (represente
+	 * la nature de la saisi)
 	 */
 	public AutoCompleteDocument(JTextField textField, int typeSearch, Reglement reglement) {
 		this.textField = textField;
@@ -169,8 +175,10 @@ public class AutoCompleteDocument extends PlainDocument {
 	}
 	
 	/**
+	 * Remplace le texte du document sans passer par le système
+	 * d'autocomplement
 	 * 
-	 * @param text
+	 * @param text - le texte de remplacement du document
 	 */
 	public void setText(String text) {
 		try {
@@ -186,10 +194,14 @@ public class AutoCompleteDocument extends PlainDocument {
 	
 	/**
 	 * Recherche le concurrent à afficher en fonction de la chaine actuellement
-	 * dans le modéle et des informations en base
+	 * dans le modéle et des informations en base. La chaine du modèle doit
+	 * représenter le nom du concurrent
 	 * 
-	 * @param caretpos
-	 * @param strict
+	 * @param caretpos - la position du curseur d'insertion
+	 * @param strict - si true ne renvoyé que les résultats correspondant
+	 * exactement au contenue du document, si false, renvoyé la première
+	 * réponse approchante (usage de % dans le filtre de recherche)
+	 * 
 	 * @throws BadLocationException
 	 */
 	private void insertConcurrentWithName(int caretpos, boolean strict) throws BadLocationException {
@@ -225,6 +237,18 @@ public class AutoCompleteDocument extends PlainDocument {
 		}
 	}
 	
+	/**
+	 * Recherche le concurrent à afficher en fonction de la chaine actuellement
+	 * dans le modéle et des informations en base. La chaine du modèle doit
+	 * représenter le prenom du concurrent
+	 * 
+	 * @param caretpos - la position du curseur d'insertion
+	 * @param strict - si true ne renvoyé que les résultats correspondant
+	 * exactement au contenue du document, si false, renvoyé la première
+	 * réponse approchante (usage de % dans le filtre de recherche)
+	 * 
+	 * @throws BadLocationException
+	 */
 	private void insertConcurrentWithFirstName(int caretpos, boolean strict) throws BadLocationException {
 		if(!autocompleteNom)
 			return;
@@ -260,6 +284,18 @@ public class AutoCompleteDocument extends PlainDocument {
 		}
 	}
 	
+	/**
+	 * Recherche le concurrent à afficher en fonction de la chaine actuellement
+	 * dans le modéle et des informations en base. La chaine du modèle doit
+	 * représenter le numero de licence du concurrent
+	 * 
+	 * @param caretpos - la position du curseur d'insertion
+	 * @param strict - si true ne renvoyé que les résultats correspondant
+	 * exactement au contenue du document, si false, renvoyé la première
+	 * réponse approchante (usage de % dans le filtre de recherche)
+	 * 
+	 * @throws BadLocationException
+	 */
 	private void insertConcurrentWithNumLicence(int caretpos, boolean strict) throws BadLocationException {
 		if(!strict)
 			strict = !autocompleteLicence;
@@ -294,6 +330,18 @@ public class AutoCompleteDocument extends PlainDocument {
 		}
 	}
 	
+	/**
+	 * Recherche le club (Entite) à afficher en fonction de la chaine actuellement
+	 * dans le modéle et des informations en base. La chaine du modèle doit
+	 * représenter le nom de l'Entite recherché
+	 * 
+	 * @param caretpos - la position du curseur d'insertion
+	 * @param strict - si true ne renvoyé que les résultats correspondant
+	 * exactement au contenue du document, si false, renvoyé la première
+	 * réponse approchante (usage de % dans le filtre de recherche)
+	 * 
+	 * @throws BadLocationException
+	 */
 	private void insertEntiteWithClubName(int caretpos, boolean strict) throws BadLocationException {
 		if(!autocompleteClub)
 			return;
@@ -326,6 +374,18 @@ public class AutoCompleteDocument extends PlainDocument {
 		}
 	}
 	
+	/**
+	 * Recherche le club (Entite) à afficher en fonction de la chaine actuellement
+	 * dans le modéle et des informations en base. La chaine du modèle doit
+	 * représenter le numéron d'agrément de l'Entite recherché
+	 * 
+	 * @param caretpos - la position du curseur d'insertion
+	 * @param strict - si true ne renvoyé que les résultats correspondant
+	 * exactement au contenue du document, si false, renvoyé la première
+	 * réponse approchante (usage de % dans le filtre de recherche)
+	 * 
+	 * @throws BadLocationException
+	 */
 	private void insertEntiteWithAgrement(int caretpos, boolean strict) throws BadLocationException {
 		if(!strict)
 			strict = !autocompleteAgrement;
@@ -364,6 +424,12 @@ public class AutoCompleteDocument extends PlainDocument {
 		}
 	}
 
+	/**
+	 * Envoi aux auditeurs l'information comme quoi un concurrent a été trouvé
+	 * 
+	 * @param concurrent - le concurrent trouvé
+	 * @param searchArcher - l'objet générique correspondant à la requéte de recherche produite
+	 */
 	private void fireConcurrendFinded(Concurrent concurrent, Archer searchArcher) {
 		for(AutoCompleteDocumentListener acdl : listeners.getListeners(AutoCompleteDocumentListener.class)) {
 			AutoCompleteDocumentEvent autoCompleteDocumentEvent = new AutoCompleteDocumentEvent(textField, concurrent);
@@ -372,12 +438,22 @@ public class AutoCompleteDocument extends PlainDocument {
 		}
 	}
 	
+	/**
+	 * Envoi aux auditeurs l'information comme quoi aucun concurrent n'a été trouvé
+	 *
+	 */
 	private void fireConcurrentNotFound() {
 		for(AutoCompleteDocumentListener acdl : listeners.getListeners(AutoCompleteDocumentListener.class)) {
 			acdl.concurrentNotFound(new AutoCompleteDocumentEvent(textField, (Concurrent)null));
 		}
 	}
 	
+	/**
+	 * Envoi aux auditeurs l'information comme quoi une entite a été trouvé
+	 * 
+	 * @param entite - l'entite trouvé
+	 * @param searchEntite - l'objet générique correspondant à la requéte de recherche produite
+	 */
 	private void fireEntiteFinded(Entite entite, Entite searchEntite) {
 		for(AutoCompleteDocumentListener acdl : listeners.getListeners(AutoCompleteDocumentListener.class)) {
 			AutoCompleteDocumentEvent autoCompleteDocumentEvent = new AutoCompleteDocumentEvent(textField, entite);
@@ -386,6 +462,10 @@ public class AutoCompleteDocument extends PlainDocument {
 		}
 	}
 	
+	/**
+	 * Envoi aux auditeurs l'information comme quoi aucune entite n'a été trouvé
+	 *
+	 */
 	private void fireEntiteNotFound() {
 		for(AutoCompleteDocumentListener acdl : listeners.getListeners(AutoCompleteDocumentListener.class)) {
 			acdl.entiteNotFound(new AutoCompleteDocumentEvent(textField, (Entite)null));

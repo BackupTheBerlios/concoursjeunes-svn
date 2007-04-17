@@ -6,8 +6,10 @@ package org.concoursjeunes;
 import java.util.EventListener;
 
 /**
- * @author Aurelien
- *
+ * 
+ * 
+ * @author Aurélien JEOFFRAY
+ * @version 1.0
  */
 public interface AutoCompleteDocumentListener extends EventListener {
 	public void concurrentFinded(AutoCompleteDocumentEvent e);

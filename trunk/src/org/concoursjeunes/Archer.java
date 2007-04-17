@@ -17,6 +17,11 @@ public class Archer {
 	private Entite club             = new Entite();
 	private boolean certificat      = false;
 
+	/**
+	 * Constructeur vide nécessaire à l'initialisation correct de l'objet
+	 * dans le cas d'une deserialisation XML
+	 *
+	 */
 	public Archer() { }
 
 	/**

@@ -24,6 +24,7 @@ import ajinteractive.standard.java2.*;
 
 /**
  * Ecran de configuration de ConcoursJeunes
+ * 
  * @author  Aurelien Jeoffray
  * @version  2.1
  */

@@ -6,7 +6,7 @@ package org.concoursjeunes;
 import java.util.EventListener;
 
 /**
- * @author Aurélien JEOFFRAY - Fiducial Informatique
+ * @author Aurélien JEOFFRAY
  *
  */
 public interface ConcoursJeunesListener extends EventListener {

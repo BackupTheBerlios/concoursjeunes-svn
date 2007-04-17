@@ -7,7 +7,9 @@ import java.awt.Desktop;
 import java.io.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.*;
 
 import javax.swing.event.EventListenerList;
@@ -20,6 +22,7 @@ import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfWriter;
 
 import ajinteractive.standard.java2.*;
+import ajinteractive.standard.utilities.sql.SqlParser;
 
 /**
  * Class principal de ConcoursJeunes, gére l'ensemble des ressources commune de l'application
@@ -119,6 +122,18 @@ public class ConcoursJeunes {
 					ajrParametreAppli.getResourceString("database.url"),
 					ajrParametreAppli.getResourceString("database.user"),
 					ajrParametreAppli.getResourceString("database.password"));
+			
+			//test si la base à été généré et la génére dans le cas contraire
+			Statement stmt = dbConnection.createStatement();
+			
+			ResultSet rs = stmt.executeQuery("SELECT * FROM INFORMATION_SCHEMA.TABLES where TABLE_NAME='ARCHERS'");
+			if(!rs.first()) {
+				SqlParser.createBatch(
+						new File(ajrParametreAppli.getResourceString("path.ressources")
+								+ File.separator
+								+ ajrParametreAppli.getResourceString("sql.createdb")), stmt);
+				stmt.executeBatch();
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {

@@ -3,8 +3,6 @@
  */
 package org.concoursjeunes;
 
-import java.util.Date;
-
 /**
  * @author aurelien
  *

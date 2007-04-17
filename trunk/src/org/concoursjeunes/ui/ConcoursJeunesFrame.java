@@ -37,7 +37,6 @@ import org.concoursjeunes.plugins.ImportPlugin;
 
 import ajinteractive.standard.java2.AJTemplate;
 import ajinteractive.standard.java2.GhostGlassPane;
-import ajinteractive.standard.java2.SplashScreen;
 import ajinteractive.standard.ui.AJTabbedPane;
 import ajinteractive.standard.ui.AJTabbedPaneListener;
 import ajinteractive.standard.ui.FrameCreator;
