@@ -791,29 +791,4 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 	 */
 	public void keyTyped(KeyEvent e) {
 	}
-
-	/**
-	 * @see ajinteractive.standard.java2.DragOutListener#ExitDragNDrop(java.awt.Point)
-	 */
-	/*public void ExitDragNDrop(Point loc) {
-		if(treeTarget.getSelectedNode().getUserObject() instanceof Concurrent) {
-			//recupere le concurrent à déplacer
-			tmpconc = (Concurrent)treeTarget.getSelectedNode().getUserObject();
-
-			//recupere le chemin de la destination
-			placementManuelConcurrent(treeTarget.getPathForLocation(loc.x, loc.y));
-		} else if(treeTarget.getSelectedNode().getUserObject() instanceof Cible) {
-			DefaultMutableTreeNode dmtn = treeTarget.getSelectedNode();
-
-			Cible tmpcbl = (Cible)dmtn.getUserObject();
-
-			for(int i = 0; i < ficheConcoursPane.ficheConcours.getParametre().getNbTireur(); i++) {
-				if(tmpcbl.getConcurrentAt(i) != null) {
-					tmpconc = tmpcbl.getConcurrentAt(i);
-
-					placementManuelConcurrent(treeTarget.getPathForLocation(loc.x, loc.y));
-				}
-			}
-		}
-	}*/
 }

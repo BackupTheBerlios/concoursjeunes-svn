@@ -4,6 +4,9 @@
 package org.concoursjeunes;
 
 import java.io.File;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -14,6 +17,8 @@ import ajinteractive.standard.java2.AJToolKit;
  *
  */
 public class Reglement {
+	
+	private int idReglement			= 0;
 	
 	private String name				= "default";
 	
@@ -213,7 +218,21 @@ public class Reglement {
 	public void setOfficialReglement(boolean officialReglement) {
 		this.officialReglement = officialReglement;
 	}
-	
+
+	/**
+	 * @return idReglement
+	 */
+	public int getIdReglement() {
+		return idReglement;
+	}
+
+	/**
+	 * @param idReglement idReglement à définir
+	 */
+	public void setIdReglement(int idReglement) {
+		this.idReglement = idReglement;
+	}
+
 	public boolean isValidScore(ArrayList<Integer> scores) {
 		boolean valid = true;
 		for(int score : scores) {
@@ -226,18 +245,87 @@ public class Reglement {
 	}
 	
 	public void save() {
-		File fUserReglement = new File(ConcoursJeunes.userRessources.getReglementPathForUser()
+		try {
+			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+			
+			if(idReglement != 0) {
+				stmt.executeUpdate("update Reglement set NOMREGLEMENT='" + name + "',"
+						+ "NBSERIE=" + nbSerie + ",NBVOLEEPARSERIE=" + nbVoleeParSerie + ","
+						+ "NBFLECHEPARVOLEE=" + nbFlecheParVolee + ", NBMEMBRESEQUIPE=" + nbMembresEquipe + ","
+						+ "NBMEMBRESRETENU=" + nbMembresRetenu + ", ISOFFICIAL=" + ((officialReglement)?"TRUE":"FALSE")
+						+ " WHERE NUMREGLEMENT=" + idReglement);
+				stmt.executeQuery("delete from CRITERE where NUMREGLEMENT=" + idReglement);
+				for(Criterion criterion : listCriteria) {
+					stmt.executeQuery("insert into CRITERE (CODECRITERE,NUMREGLEMENT,LIBELLECRITERE,SORTORDERCRITERE," +
+							"CLASSEMENT,PLACEMENT,CODEFFTA) VALUES ('" + criterion.getCode() + "'," + 
+							idReglement + ",'" + criterion.getLibelle() + "'," + 
+							criterion.getSortOrder() + "," +
+							((criterion.isClassement())?"TRUE":"FALSE") + "," +
+							((criterion.isPlacement())?"TRUE":"FALSE") + ",'" +
+							criterion.getCodeffta() + "')");
+					for(CriterionElement criterionElement : criterion.getCriterionElements()) {
+						stmt.executeQuery("insert into CRITEREELEMENT (CODECRITEREELEMENT," +
+								"CODECRITERE,NUMREGLEMENT,LIBELLECRITEREELEMENT,ACTIF) values (" +
+								"'" + criterionElement.getCode() + "', '" + criterion.getCode() + "'," +
+								"" + idReglement + ", '" + criterionElement.getLibelle() + "'," +
+								((criterionElement.isActive())?"TRUE":"FALSE") + ")");
+					}
+				}
+			} else {
+				stmt.executeUpdate("insert into Reglement (NOMREGLEMENT, NBSERIE, NBVOLEEPARSERIE," +
+						"NBFLECHEPARVOLEE, NBMEMBRESEQUIPE, NBMEMBRESRETENU, ISOFFICIAL) " +
+						"VALUES ('" + name + "'," + nbSerie + "," + nbVoleeParSerie + "," +
+						nbFlecheParVolee + "," + nbMembresEquipe + "," +
+						nbMembresRetenu + "," + ((officialReglement)?"TRUE":"FALSE") + ")", Statement.RETURN_GENERATED_KEYS);
+				ResultSet clefs = stmt.getGeneratedKeys();
+				if(clefs.first()){
+				    idReglement = (Integer)clefs.getObject(1);  
+				}
+				
+				for(Criterion criterion : listCriteria) {
+					stmt.executeUpdate("insert into CRITERE (CODECRITERE,NUMREGLEMENT,LIBELLECRITERE,SORTORDERCRITERE," +
+							"CLASSEMENT,PLACEMENT,CODEFFTA) VALUES ('" + criterion.getCode() + "'," + 
+							idReglement + ",'" + criterion.getLibelle() + "'," + 
+							criterion.getSortOrder() + "," +
+							((criterion.isClassement())?"TRUE":"FALSE") + "," +
+							((criterion.isPlacement())?"TRUE":"FALSE") + ",'" +
+							criterion.getCodeffta() + "')");
+					for(CriterionElement criterionElement : criterion.getCriterionElements()) {
+						stmt.executeUpdate("insert into CRITEREELEMENT (CODECRITEREELEMENT," +
+								"CODECRITERE,NUMREGLEMENT,LIBELLECRITEREELEMENT,ACTIF) values (" +
+								"'" + criterionElement.getCode() + "', '" + criterion.getCode() + "'," +
+								"" + idReglement + ", '" + criterionElement.getLibelle() + "'," +
+								((criterionElement.isActive())?"TRUE":"FALSE") + ")");
+					}
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Bloc catch auto-généré
+			e.printStackTrace();
+		}
+		
+		/*File fUserReglement = new File(ConcoursJeunes.userRessources.getReglementPathForUser()
 				+ File.separator + "reglement_" + name + ".xml");
-		AJToolKit.saveXMLStructure(fUserReglement, this, false);
+		AJToolKit.saveXMLStructure(fUserReglement, this, false);*/
 	}
 	
 	public boolean delete() {
-		boolean success = false;
-		if(!officialReglement) {
+		boolean success = true;
+		/*if(!officialReglement) {
 			File fUserReglement = new File(ConcoursJeunes.userRessources.getReglementPathForUser() 
 					+ File.separator + "reglement_" + name + ".xml");
 			success = fUserReglement.delete();
+		}*/
+		try {
+			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+			
+			stmt.executeQuery("delete from REGLEMENT where NUMREGLEMENT=" + idReglement);
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
+		
 		return success;
 	}
+	
+	
 }
