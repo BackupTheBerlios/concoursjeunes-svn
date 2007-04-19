@@ -17,7 +17,7 @@ import javax.swing.table.*;
 import org.concoursjeunes.*;
 
 /**
- * @author  Aurelien
+ * @author Aurélien JEOFFRAY
  */
 public class EntiteListDialog extends JDialog implements ActionListener, MouseListener, CaretListener {
 

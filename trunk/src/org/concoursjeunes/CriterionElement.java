@@ -4,7 +4,7 @@
 package org.concoursjeunes;
 
 /**
- * @author  Aurelien
+ * @author Aurélien JEOFFRAY
  */
 public class CriterionElement {
     private String code = ""; //$NON-NLS-1$

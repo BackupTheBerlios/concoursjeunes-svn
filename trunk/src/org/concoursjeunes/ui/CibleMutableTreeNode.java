@@ -16,7 +16,7 @@ import org.concoursjeunes.CibleListener;
 import org.concoursjeunes.Concurrent;
 
 /**
- * @author aurelien
+ * @author Aurélien JEOFFRAY
  *
  */
 public class CibleMutableTreeNode implements MutableTreeNode, CibleListener {

@@ -13,7 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * @author aurelien
+ * @author Aurélien JEOFFRAY
  * TODO revoir les test avec creation de concours
  */
 public class FicheConcoursTest {

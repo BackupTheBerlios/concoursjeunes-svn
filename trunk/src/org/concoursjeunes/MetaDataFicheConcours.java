@@ -6,7 +6,7 @@ package org.concoursjeunes;
 import java.util.Date;
 
 /**
- * @author  aurelien
+ * @author Aurélien JEOFFRAY
  */
 public class MetaDataFicheConcours implements ParametreListener {
 	private Date dateConcours;

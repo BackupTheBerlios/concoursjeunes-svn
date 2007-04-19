@@ -16,6 +16,9 @@ import org.concoursjeunes.ConcoursJeunes;
 
 import ajinteractive.standard.java2.AJFileFilter;
 
+/**
+ * @author Aurélien JEOFFRAY
+ */
 public class FileImportPlugin extends Thread implements ImportPlugin {
 
     private boolean state = false;

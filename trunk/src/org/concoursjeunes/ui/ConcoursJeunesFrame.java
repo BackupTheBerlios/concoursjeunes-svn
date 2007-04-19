@@ -43,7 +43,7 @@ import ajinteractive.standard.ui.FrameCreator;
 
 import static org.concoursjeunes.ConcoursJeunes.ajrParametreAppli;
 /**
- * @author  aurelien
+ * @author Aurélien JEOFFRAY
  */
 public class ConcoursJeunesFrame extends JFrame implements ActionListener, HyperlinkListener, 
 		ConcoursJeunesListener, ParametreListener, AJTabbedPaneListener {

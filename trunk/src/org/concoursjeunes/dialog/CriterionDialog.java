@@ -15,7 +15,7 @@ import ajinteractive.standard.java2.GridbagComposer;
 
 /**
  * Boite de dialogue de gestion des critère de distinction des archers
- * @author  Aurelien
+ * @author Aurélien JEOFFRAY
  */
 public class CriterionDialog extends JDialog implements ActionListener {
 	

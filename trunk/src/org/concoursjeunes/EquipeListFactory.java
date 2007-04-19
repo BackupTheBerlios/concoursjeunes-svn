@@ -4,7 +4,7 @@
 package org.concoursjeunes;
 
 /**
- * @author Aurélien JEOFFRAY - Fiducial Informatique
+ * @author Aurélien JEOFFRAY
  *
  */
 public class EquipeListFactory {

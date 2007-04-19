@@ -12,8 +12,9 @@ import ajinteractive.standard.java2.*;
 import ajinteractive.standard.utilities.sql.SqlParser;
 /**
  * Plugin d'import d'une base WinFFTA 2 (Format Windev HF) vers ConcoursJeunes (Format Java XML) 
- * @author  aurelien
+ * @author Aurélien JEOFFRAY
  */
+
 public class FFTAImportPlugin extends Thread implements ImportPlugin {
 
     private boolean state = false;

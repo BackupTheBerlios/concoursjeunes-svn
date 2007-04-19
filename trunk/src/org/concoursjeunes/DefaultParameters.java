@@ -5,7 +5,7 @@
 package org.concoursjeunes;
 
 /**
- * @author  aurelien
+ * @author Aurélien JEOFFRAY
  */
 public class DefaultParameters {
 	private Entite club = new Entite();

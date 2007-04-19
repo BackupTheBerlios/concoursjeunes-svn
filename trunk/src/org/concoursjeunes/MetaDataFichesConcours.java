@@ -13,7 +13,7 @@ import static org.concoursjeunes.ConcoursJeunes.userRessources;
 import static org.concoursjeunes.ConcoursJeunes.configuration;
 
 /**
- * @author  aurelien
+ * @author Aurélien JEOFFRAY
  */
 public class MetaDataFichesConcours {
 	

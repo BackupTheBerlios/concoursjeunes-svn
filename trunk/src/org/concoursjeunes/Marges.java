@@ -4,7 +4,7 @@
 package org.concoursjeunes;
 
 /**
- * @author aurelien
+ * @author Aurélien JEOFFRAY
  *
  */
 public class Marges {

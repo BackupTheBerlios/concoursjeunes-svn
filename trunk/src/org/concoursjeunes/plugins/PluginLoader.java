@@ -11,7 +11,7 @@ import ajinteractive.standard.java2.AjResourcesReader;
 /**
  * Permet de lister et charger les plugins installer en mémoire
  * 
- * @author aurelien
+ * @author Aurélien JEOFFRAY
  *
  */
 public class PluginLoader {

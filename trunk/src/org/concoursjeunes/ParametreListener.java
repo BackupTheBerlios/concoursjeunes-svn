@@ -6,7 +6,7 @@ package org.concoursjeunes;
 import java.util.EventListener;
 
 /**
- * @author aurelien
+ * @author Aurélien JEOFFRAY
  *
  */
 public interface ParametreListener extends EventListener {

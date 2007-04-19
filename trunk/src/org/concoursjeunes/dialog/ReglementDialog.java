@@ -53,7 +53,7 @@ import ajinteractive.standard.java2.NumberDocument;
 import static org.concoursjeunes.ConcoursJeunes.userRessources;
 
 /**
- * @author aurelien
+ * @author Aurélien JEOFFRAY
  *
  */
 public class ReglementDialog extends JDialog implements ActionListener, ItemListener, MouseListener {

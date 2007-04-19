@@ -9,11 +9,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Map.Entry;
 
 import ajinteractive.standard.java2.AJToolKit;
 
 /**
- * @author aurelien
+ * @author Aurélien JEOFFRAY
  *
  */
 public class Reglement {
@@ -255,22 +256,7 @@ public class Reglement {
 						+ "NBMEMBRESRETENU=" + nbMembresRetenu + ", ISOFFICIAL=" + ((officialReglement)?"TRUE":"FALSE")
 						+ " WHERE NUMREGLEMENT=" + idReglement);
 				stmt.executeQuery("delete from CRITERE where NUMREGLEMENT=" + idReglement);
-				for(Criterion criterion : listCriteria) {
-					stmt.executeQuery("insert into CRITERE (CODECRITERE,NUMREGLEMENT,LIBELLECRITERE,SORTORDERCRITERE," +
-							"CLASSEMENT,PLACEMENT,CODEFFTA) VALUES ('" + criterion.getCode() + "'," + 
-							idReglement + ",'" + criterion.getLibelle() + "'," + 
-							criterion.getSortOrder() + "," +
-							((criterion.isClassement())?"TRUE":"FALSE") + "," +
-							((criterion.isPlacement())?"TRUE":"FALSE") + ",'" +
-							criterion.getCodeffta() + "')");
-					for(CriterionElement criterionElement : criterion.getCriterionElements()) {
-						stmt.executeQuery("insert into CRITEREELEMENT (CODECRITEREELEMENT," +
-								"CODECRITERE,NUMREGLEMENT,LIBELLECRITEREELEMENT,ACTIF) values (" +
-								"'" + criterionElement.getCode() + "', '" + criterion.getCode() + "'," +
-								"" + idReglement + ", '" + criterionElement.getLibelle() + "'," +
-								((criterionElement.isActive())?"TRUE":"FALSE") + ")");
-					}
-				}
+				stmt.executeQuery("delete from DISTANCESBLASONS where NUMREGLEMENT=" + idReglement);
 			} else {
 				stmt.executeUpdate("insert into Reglement (NOMREGLEMENT, NBSERIE, NBVOLEEPARSERIE," +
 						"NBFLECHEPARVOLEE, NBMEMBRESEQUIPE, NBMEMBRESRETENU, ISOFFICIAL) " +
@@ -281,24 +267,9 @@ public class Reglement {
 				if(clefs.first()){
 				    idReglement = (Integer)clefs.getObject(1);  
 				}
-				
-				for(Criterion criterion : listCriteria) {
-					stmt.executeUpdate("insert into CRITERE (CODECRITERE,NUMREGLEMENT,LIBELLECRITERE,SORTORDERCRITERE," +
-							"CLASSEMENT,PLACEMENT,CODEFFTA) VALUES ('" + criterion.getCode() + "'," + 
-							idReglement + ",'" + criterion.getLibelle() + "'," + 
-							criterion.getSortOrder() + "," +
-							((criterion.isClassement())?"TRUE":"FALSE") + "," +
-							((criterion.isPlacement())?"TRUE":"FALSE") + ",'" +
-							criterion.getCodeffta() + "')");
-					for(CriterionElement criterionElement : criterion.getCriterionElements()) {
-						stmt.executeUpdate("insert into CRITEREELEMENT (CODECRITEREELEMENT," +
-								"CODECRITERE,NUMREGLEMENT,LIBELLECRITEREELEMENT,ACTIF) values (" +
-								"'" + criterionElement.getCode() + "', '" + criterion.getCode() + "'," +
-								"" + idReglement + ", '" + criterionElement.getLibelle() + "'," +
-								((criterionElement.isActive())?"TRUE":"FALSE") + ")");
-					}
-				}
 			}
+			saveCriteria(stmt);
+			saveDistancesAndBlasons(stmt);
 		} catch (SQLException e) {
 			// TODO Bloc catch auto-généré
 			e.printStackTrace();
@@ -307,6 +278,54 @@ public class Reglement {
 		/*File fUserReglement = new File(ConcoursJeunes.userRessources.getReglementPathForUser()
 				+ File.separator + "reglement_" + name + ".xml");
 		AJToolKit.saveXMLStructure(fUserReglement, this, false);*/
+	}
+	
+	private void saveCriteria(Statement stmt) throws SQLException {
+		for(Criterion criterion : listCriteria) {
+			stmt.executeUpdate("insert into CRITERE (CODECRITERE,NUMREGLEMENT,LIBELLECRITERE,SORTORDERCRITERE," +
+					"CLASSEMENT,PLACEMENT,CODEFFTA) VALUES ('" + criterion.getCode() + "'," + 
+					idReglement + ",'" + criterion.getLibelle() + "'," + 
+					criterion.getSortOrder() + "," +
+					((criterion.isClassement())?"TRUE":"FALSE") + "," +
+					((criterion.isPlacement())?"TRUE":"FALSE") + ",'" +
+					criterion.getCodeffta() + "')");
+			for(CriterionElement criterionElement : criterion.getCriterionElements()) {
+				stmt.executeUpdate("insert into CRITEREELEMENT (CODECRITEREELEMENT," +
+						"CODECRITERE,NUMREGLEMENT,LIBELLECRITEREELEMENT,ACTIF) values (" +
+						"'" + criterionElement.getCode() + "', '" + criterion.getCode() + "'," +
+						"" + idReglement + ", '" + criterionElement.getLibelle() + "'," +
+						((criterionElement.isActive())?"TRUE":"FALSE") + ")");
+			}
+		}
+	}
+	
+	private void saveDistancesAndBlasons(Statement stmt) throws SQLException {
+		
+		for(Entry<CriteriaSet, DistancesEtBlason> entry : correspondanceCriteriaSet_DB.entrySet()) {
+			CriteriaSet criteriaSet = entry.getKey();
+			DistancesEtBlason distancesEtBlason = entry.getValue();
+			int numdb = 0;
+			
+			stmt.executeUpdate("insert into DISTANCESBLASONS (NUMREGLEMENT, BLASONS) VALUES (" +
+					idReglement + ", " + distancesEtBlason.getBlason() + ")", Statement.RETURN_GENERATED_KEYS);
+			ResultSet clefs = stmt.getGeneratedKeys();
+			if(clefs.first()){
+				numdb = (Integer)clefs.getObject(1);  
+			}
+			
+			for(Criterion criterion : criteriaSet.getCriteria().keySet()) {
+				CriterionElement criterionElement = criteriaSet.getCriteria().get(criterion);
+				stmt.executeUpdate("insert into CRITERIASET (NUMDISTANCESBLASONS, NUMREGLEMENT1, CODECRITEREELEMENT," +
+						"CODECRITERE, NUMREGLEMENT2) VALUES (" +
+						numdb + ", " + idReglement + ", '" + criterionElement.getCode() + "'," +
+						"'" + criterion.getCode() + "', " + idReglement + ")");
+			}
+
+			for(int distance : distancesEtBlason.getDistance()) {
+				stmt.executeUpdate("insert into DISTANCES (NUMDISTANCESBLASONS, NUMREGLEMENT," +
+						"DISTANCE) VALUES (" + numdb + ", " + idReglement + ", " + distance + ")");
+			}
+		}
 	}
 	
 	public boolean delete() {

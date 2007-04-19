@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 /**
  * Entite organisationnelle
- * @author  Aurelien
+ * @author Aurélien JEOFFRAY
  */
 public class Entite {
     

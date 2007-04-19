@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * @author  aurelien
+ * @author  Aurélien JEOFFRAY
  */
 public class ConcoursJeunesTest {
 	

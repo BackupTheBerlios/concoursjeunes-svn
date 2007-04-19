@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Map.Entry;
 
 /**
  * Objet de Base de stockage des Information sur un concurrent:
@@ -253,6 +254,26 @@ public class Concurrent extends Archer {
 		ArrayList<Concurrent> homonyme = getArchersInDatabase(aComparant, null, "");
 
 		return (homonyme.size() > 1);
+	}
+	
+	public void saveCriteriaSet(Reglement reglement) {
+		try {
+			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+			
+			stmt.executeUpdate("delete from distinguer where NUMLICENCEARCHER=" + getNumLicenceArcher() +
+					" and NUMREGLEMENT=" + reglement.getIdReglement());
+			for(Entry<Criterion, CriterionElement> entry : criteriaSet.getCriteria().entrySet()) {
+				Criterion criterion = entry.getKey();
+				CriterionElement criterionElement = entry.getValue();
+				
+				stmt.executeUpdate("insert into distinguer (NUMLICENCEARCHER, CODECRITEREELEMENT, CODECRITERE, NUMREGLEMENT) " +
+						"values ('" + getNumLicenceArcher() + "', '" + criterionElement.getCode() + "', '" +
+						criterion.getCode() + "', " + reglement.getIdReglement() + ")");
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**

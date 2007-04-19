@@ -10,7 +10,7 @@ import org.concoursjeunes.ui.FicheConcoursPane;
 
 
 /**
- * @author Aurelien
+ * @author Aurélien JEOFFRAY
  *
  */
 public class Debug {

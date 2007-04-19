@@ -8,7 +8,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 
 /**
- * @author Aurélien JEOFFRAY - Fiducial Informatique
+ * @author Aurélien JEOFFRAY
  *
  */
 public class PasDeTir {

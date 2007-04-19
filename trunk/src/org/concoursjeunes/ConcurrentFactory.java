@@ -2,6 +2,7 @@ package org.concoursjeunes;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 /**
@@ -23,29 +24,53 @@ public class ConcurrentFactory {
 		Concurrent concurrent = new Concurrent();
 
 		try {
+			concurrent.setNumLicenceArcher(rs.getString("NUMLICENCEARCHER"));
+			concurrent.setNomArcher(rs.getString("NOMARCHER"));
+			concurrent.setPrenomArcher(rs.getString("PRENOMARCHER"));
 			concurrent.setCertificat(rs.getBoolean("CERTIFMEDICAL"));
 			concurrent.setClub(EntiteFactory.getEntite(rs.getString("AGREMENTENTITE")));
 
 			if(reglement != null) {
 				CriteriaSet differentiationCriteria = new CriteriaSet();
 
-				for(Criterion key : reglement.getListCriteria()) {
-					if(!key.getCodeffta().equals("")) {
-						ArrayList<CriterionElement> arrayList = key.getCriterionElements();
-						int valindex = rs.getInt(key.getCodeffta() + "FFTA");
-						if(valindex >= arrayList.size())
-							valindex = arrayList.size() - 1;
-						if(valindex < 0)
-							valindex = 0;
-						differentiationCriteria.getCriteria().put(key, key.getCriterionElements().get(valindex));
+				Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+				ResultSet rsCriteriaSet = stmt.executeQuery("select * from distinguer where " +
+						"NUMLICENCEARCHER='" + concurrent.getNumLicenceArcher() + "' and " +
+						"NUMREGLEMENT=" + reglement.getIdReglement());
+				if(rsCriteriaSet.getFetchSize() > 0) {
+					while(rsCriteriaSet.next()) {
+						String codeCritere = rsCriteriaSet.getString("CODECRITEREELEMENT");
+						String codeElement = rsCriteriaSet.getString("CODECRITERE");
+						
+						for(Criterion key : reglement.getListCriteria()) {
+							if(key.getCode().equals(codeCritere)) {
+								for(CriterionElement criterionElement : key.getCriterionElements()) {
+									if(criterionElement.getCode().equals(codeElement)) {
+										differentiationCriteria.getCriteria().put(key, criterionElement);
+										break;
+									}
+								}
+								break;
+							}
+						}
+					}
+				} else {
+					for(Criterion key : reglement.getListCriteria()) {
+						if(!key.getCodeffta().equals("")) {
+							ArrayList<CriterionElement> arrayList = key.getCriterionElements();
+							int valindex = rs.getInt(key.getCodeffta() + "FFTA");
+							if(valindex >= arrayList.size())
+								valindex = arrayList.size() - 1;
+							if(valindex < 0)
+								valindex = 0;
+							differentiationCriteria.getCriteria().put(key, key.getCriterionElements().get(valindex));
+						}
 					}
 				}
 
 				concurrent.setCriteriaSet(differentiationCriteria);
 			}
-			concurrent.setNumLicenceArcher(rs.getString("NUMLICENCEARCHER"));
-			concurrent.setNomArcher(rs.getString("NOMARCHER"));
-			concurrent.setPrenomArcher(rs.getString("PRENOMARCHER"));
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

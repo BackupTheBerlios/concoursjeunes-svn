@@ -12,7 +12,7 @@ import org.concoursjeunes.*;
 import ajinteractive.standard.java2.GridbagComposer;
 
 /**
- * @author  Aurelien
+ * @author Aurélien JEOFFRAY
  */
 public class EntiteDialog extends JDialog implements ActionListener {
     //private ConcoursJeunes concoursJeunes;

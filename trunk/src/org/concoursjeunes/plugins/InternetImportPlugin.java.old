@@ -22,6 +22,9 @@ import org.concoursjeunes.dialog.LigueLoaderDialog;
 
 import ajinteractive.standard.java2.AjResourcesReader;
 
+/**
+ * @author  Aurélien JEOFFRAY
+ */
 public class InternetImportPlugin extends Thread implements ImportPlugin {
 
     private boolean state = false;

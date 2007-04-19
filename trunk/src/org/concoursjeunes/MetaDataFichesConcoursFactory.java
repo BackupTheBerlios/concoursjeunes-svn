@@ -11,7 +11,7 @@ import static org.concoursjeunes.ConcoursJeunes.userRessources;
 import static org.concoursjeunes.ConcoursJeunes.configuration;
 
 /**
- * @author Aurélien JEOFFRAY - Fiducial Informatique
+ * @author Aurélien JEOFFRAY
  *
  */
 public class MetaDataFichesConcoursFactory {

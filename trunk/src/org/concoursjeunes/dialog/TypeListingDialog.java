@@ -13,7 +13,7 @@ import org.concoursjeunes.*;
 import ajinteractive.standard.java2.*;
 
 /**
- * @author Aurelien
+ * @author Aurélien JEOFFRAY
  *
  */
 public class TypeListingDialog extends JDialog implements ActionListener {

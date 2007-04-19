@@ -10,7 +10,7 @@ import static org.concoursjeunes.ConcoursJeunes.ajrParametreAppli;
 import static org.concoursjeunes.ConcoursJeunes.userRessources;
 
 /**
- * @author Aurélien JEOFFRAY - Fiducial Informatique
+ * @author Aurélien JEOFFRAY
  *
  */
 public class ConfigurationFactory {

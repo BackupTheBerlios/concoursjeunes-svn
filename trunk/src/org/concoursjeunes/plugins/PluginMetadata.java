@@ -4,7 +4,7 @@
 package org.concoursjeunes.plugins;
 
 /**
- * @author  aurelien
+ * @author  Aurélien JEOFFRAY
  */
 public class PluginMetadata {
 	public static final int IMPORT_PLUGIN = 1;

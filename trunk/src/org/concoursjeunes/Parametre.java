@@ -15,7 +15,7 @@ import static org.concoursjeunes.ConcoursJeunes.ajrParametreAppli;
 import static org.concoursjeunes.ConcoursJeunes.configuration;
 
 /**
- * @author  aurelien
+ * @author Aurélien JEOFFRAY
  */
 public class Parametre extends DefaultParameters {
 	private Date dDateConcours		= new Date(); //$NON-NLS-1$

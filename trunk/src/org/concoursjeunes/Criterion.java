@@ -7,7 +7,7 @@ package org.concoursjeunes;
 import java.util.ArrayList;
 
 /**
- * @author  aurelien
+ * @author Aurélien JEOFFRAY
  */
 public class Criterion {
     public static final int SORT_ASC = 1;

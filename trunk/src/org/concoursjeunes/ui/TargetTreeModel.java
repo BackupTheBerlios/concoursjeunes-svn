@@ -17,7 +17,7 @@ import org.concoursjeunes.CibleListener;
 import org.concoursjeunes.Concurrent;
 
 /**
- * @author aurelien
+ * @author Aurélien JEOFFRAY
  *
  */
 public class TargetTreeModel implements TreeModel, CibleListener {
