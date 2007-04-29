@@ -50,8 +50,6 @@ import org.concoursjeunes.ReglementFactory;
 import ajinteractive.standard.java2.GridbagComposer;
 import ajinteractive.standard.java2.NumberDocument;
 
-import static org.concoursjeunes.ConcoursJeunes.userRessources;
-
 /**
  * @author Aurélien JEOFFRAY
  *
@@ -264,7 +262,7 @@ public class ReglementDialog extends JDialog implements ActionListener, ItemList
 		jcbReglementName.removeItemListener(this);
 		jcbReglementName.removeAllItems();
 		
-		String[] availableReglements = userRessources.listAvailableReglements();
+		String[] availableReglements = Reglement.listAvailableReglements();
 		if(availableReglements != null) {
 			for(String reglementName : availableReglements)
 				jcbReglementName.addItem(reglementName);

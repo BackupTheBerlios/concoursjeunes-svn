@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
 
+import javax.swing.JOptionPane;
 import javax.swing.event.EventListenerList;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -26,6 +27,7 @@ import ajinteractive.standard.utilities.sql.SqlParser;
 
 /**
  * Class principal de ConcoursJeunes, gére l'ensemble des ressources commune de l'application
+ * 
  * @author  Aurelien Jeoffray
  * @version  @version.numero@ - @version.date@
  */
@@ -119,7 +121,7 @@ public class ConcoursJeunes {
 			Class.forName(ajrParametreAppli.getResourceString("database.driver")).newInstance();
 
 			dbConnection = DriverManager.getConnection(
-					ajrParametreAppli.getResourceString("database.url"),
+					ajrParametreAppli.getResourceString("database.url", userRessources.getBasePathForUser()),
 					ajrParametreAppli.getResourceString("database.user"),
 					ajrParametreAppli.getResourceString("database.password"));
 			
@@ -136,6 +138,8 @@ public class ConcoursJeunes {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, e.getLocalizedMessage(), "SQL Error", JOptionPane.ERROR_MESSAGE);
+			System.exit(1);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (InstantiationException e) {
@@ -267,7 +271,7 @@ public class ConcoursJeunes {
 		boolean printOK = true;
 		try {
 			//cré un document pdf temporaire
-			File tmpFile = File.createTempFile("cjta", ajrParametreAppli.getResourceString("extention.pdf")); //$NON-NLS-1$ //$NON-NLS-2$
+			File tmpFile = File.createTempFile("cta", ajrParametreAppli.getResourceString("extention.pdf")); //$NON-NLS-1$ //$NON-NLS-2$
 			String filePath = tmpFile.getCanonicalPath();
 			tmpFile.deleteOnExit();
 

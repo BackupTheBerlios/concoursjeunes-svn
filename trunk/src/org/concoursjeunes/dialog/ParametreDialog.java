@@ -86,7 +86,7 @@ public class ParametreDialog extends JDialog implements ActionListener {
 		
 		jbDetail.addActionListener(this);
 		jtfDateConcours.setFormats(new DateFormat[] {DateFormat.getDateInstance(DateFormat.SHORT)});
-		for(String name : ConcoursJeunes.userRessources.listAvailableReglements()) {
+		for(String name : Reglement.listAvailableReglements()) {
 			jcbReglement.addItem(name);
 		}
 		for(int i = 2; i <= 6; i+=2)

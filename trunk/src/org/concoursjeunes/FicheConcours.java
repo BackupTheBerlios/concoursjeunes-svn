@@ -563,7 +563,7 @@ public class FicheConcours implements ParametreListener {
 			tplClassementEquipe.parse("categories.NB_EQUIPES", "" + equipes.countEquipes()); //$NON-NLS-1$ //$NON-NLS-2$
 
 
-			Equipe[] sortEquipes = equipes.sort(equipes.list());
+			Equipe[] sortEquipes = EquipeList.sort(equipes.list());
 
 			for(int i = 0; i < sortEquipes.length; i++) {
 

@@ -4,6 +4,7 @@
 package org.concoursjeunes;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map.Entry;
 
-import ajinteractive.standard.java2.AJToolKit;
+import ajinteractive.standard.utilities.sql.SqlParser;
 
 /**
  * @author Aurélien JEOFFRAY
@@ -271,7 +272,6 @@ public class Reglement {
 			saveCriteria(stmt);
 			saveDistancesAndBlasons(stmt);
 		} catch (SQLException e) {
-			// TODO Bloc catch auto-généré
 			e.printStackTrace();
 		}
 		
@@ -329,22 +329,61 @@ public class Reglement {
 	}
 	
 	public boolean delete() {
-		boolean success = true;
+		boolean success = false;
 		/*if(!officialReglement) {
 			File fUserReglement = new File(ConcoursJeunes.userRessources.getReglementPathForUser() 
 					+ File.separator + "reglement_" + name + ".xml");
 			success = fUserReglement.delete();
 		}*/
-		try {
-			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
-			
-			stmt.executeQuery("delete from REGLEMENT where NUMREGLEMENT=" + idReglement);
-		} catch (SQLException e) {
-			e.printStackTrace();
+		if(!officialReglement) {
+			try {
+				Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+				
+				stmt.executeUpdate("delete from REGLEMENT where NUMREGLEMENT=" + idReglement);
+				
+				success = true;
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		return success;
 	}
 	
-	
+	public static String[] listAvailableReglements() {
+		ArrayList<String> availableReglements = new ArrayList<String>();
+		try {
+			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+			
+			ResultSet rs = stmt.executeQuery("select NOMREGLEMENT from REGLEMENT");
+
+			while(rs.next()) {
+				availableReglements.add(rs.getString("NOMREGLEMENT"));
+			}
+			rs.close();
+			
+			String[] newReglements = new File("config/reglements").list(new FilenameFilter() {
+				public boolean accept(File dir, String name) {
+					if(name.endsWith(".sql"))
+						return true;
+					return false;
+				}
+			});
+			for(String reglementName : newReglements) {
+				String name = new File(reglementName).getName();
+				name = name.substring(0, name.length() - 4);
+				
+				if(!availableReglements.contains(name)) {
+					SqlParser.createBatch(new File("config/reglements" + File.separator + reglementName), stmt);
+					
+					stmt.executeBatch();
+					availableReglements.add(name);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return availableReglements.toArray(new String[availableReglements.size()]);
+	}
 }

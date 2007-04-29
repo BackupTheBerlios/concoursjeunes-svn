@@ -7,7 +7,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.sql.SQLException;
 import java.text.DateFormat;
 
 import javax.swing.JEditorPane;
@@ -17,7 +16,6 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 
 import org.concoursjeunes.ConcoursJeunes;
@@ -49,7 +47,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 		ConcoursJeunesListener, ParametreListener, AJTabbedPaneListener {
 
 	private AJTabbedPane tabbedpane;
-	private JEditorPane jepHome = new JEditorPane();
+	private JEditorPane jepHome;
 
 	private ConcoursJeunes concoursJeunes;
 	
@@ -60,8 +58,9 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	 * 
 	 * @param concoursJeunes
 	 */
-	public ConcoursJeunesFrame() {
-		concoursJeunes = ConcoursJeunes.getInstance();
+	public ConcoursJeunesFrame(ConcoursJeunes concoursJeunes) {
+		this.concoursJeunes = concoursJeunes;
+		
 		concoursJeunes.addConcoursJeunesListener(this);
 		
 		//affiche la boite de dialogue si le fichier de configuration n'existe pas ou si il est
@@ -71,30 +70,8 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 
 		init();
 		setMinimumSize(new Dimension(750, 580));
-		
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			@Override
-			public void run() {
-				try {
-					//permet de s'assurer que la base de données est correctement fermé
-					ConcoursJeunes.dbConnection.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-		});
 
 		enumFicheConcours();
-	}
-	
-	/**
-	 * 
-	 * @param args
-	 */
-	private ConcoursJeunesFrame(String[] args) {
-		this();
-		//if(args.length > 0)
-		//	concoursJeunes.restoreFicheConcours(new File(args[0]));
 	}
 
 	/**
@@ -108,7 +85,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 		frameCreator.formatTitle(ConcoursJeunes.NOM, ConcoursJeunes.VERSION);
 		frameCreator.setLibelleAjResourcesReader(ConcoursJeunes.ajrLibelle);
 		frameCreator.addActionListener(this);
-		frameCreator.addWindowListener(new WindowAdapter() {
+		frameCreator.getFrame().addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				closeApp();
@@ -118,19 +95,16 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 		frameCreator.createFrame(new File(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources")
 				+ "/gui/ConcoursJeunes.xml"));
 		
-		jepHome.setEditorKit(new HTMLEditorKit());
-		jepHome.setEditable(false);
-		jepHome.addHyperlinkListener(this);
-		((DefaultCaret)jepHome.getCaret()).setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
 		ajtHome.loadTemplate(ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
 				+ File.separator 
 				+ ajrParametreAppli.getResourceString("template.accueil.html"));
 		
-		tabbedpane = (AJTabbedPane)frameCreator.getContentPane("tabbedpane");
+		jepHome = (JEditorPane)frameCreator.getNamedComponent("jepHome");
+		jepHome.addHyperlinkListener(this);
+		((DefaultCaret)jepHome.getCaret()).setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
 		
+		tabbedpane = (AJTabbedPane)frameCreator.getNamedComponent("tabbedpane");
 		tabbedpane.addAJTabbedPaneListener(this);
-		tabbedpane.addTab("Accueil", jepHome);
-		tabbedpane.hideIconAt(tabbedpane.indexOfComponent(jepHome));
 		
 		GhostGlassPane glassPane = new GhostGlassPane();
 		setGlassPane(glassPane);
@@ -417,8 +391,4 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			}
 		}
 	}
-
-	public static void main(String[] args) {
-        new ConcoursJeunesFrame(args);
-    }
 }

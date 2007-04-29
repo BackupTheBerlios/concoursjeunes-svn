@@ -8,7 +8,6 @@ import java.io.*;
  */
 public class UserRessources {
 	private static String CONFIG_PROFILE = "configuration_"; //$NON-NLS-1$
-	private static String REGLEMENT_PROFILE = "reglement_"; //$NON-NLS-1$
 	private static String EXT_XML = ".xml"; //$NON-NLS-1$
 	
     public String userPath;
@@ -111,24 +110,6 @@ public class UserRessources {
     }
     
     /**
-     * Copie la base des archers du repertoire de base vers le repertoire utilisateur
-     *
-     */
-    private void copyDefaultBaseForUser() {
-        File[] fileForCopy = new File("base").listFiles(new java.io.FileFilter() { //$NON-NLS-1$
-            public boolean accept(File pathname) {
-                return pathname.isFile() && pathname.getName().endsWith(".xml.gz"); //$NON-NLS-1$
-            }
-        });
-        
-        createPathIfNotExist(userPath + File.separator + "base"); //$NON-NLS-1$
-        
-        for(int i = 0; i < fileForCopy.length; i++) {
-            copyFile(fileForCopy[i], userPath + File.separator + "base"); //$NON-NLS-1$
-        }
-    }
-    
-    /**
      * Donne le chemin des fichiers de configuration
      * 
      * @return String - le chemin des fichiers de configuration
@@ -140,7 +121,7 @@ public class UserRessources {
     }
     
     public String getBasePathForUser() {
-        copyDefaultBaseForUser();
+    	 createPathIfNotExist(userPath + File.separator + "base"); //$NON-NLS-1$
         
         return userPath + File.separator + "base"; //$NON-NLS-1$
     }
@@ -154,10 +135,10 @@ public class UserRessources {
     }
     
     /**
+     * Retourne le chemin des logs en fonction du profil
      * 
-     * 
-     * @param profile
-     * @return
+     * @param profile - le profil pour lequelle renvouyé le chemin des logs
+     * @return le chemin des logs du profil
      */
     public String getLogPathForProfile(String profile) {
         String concoursPath = getProfilePath(profile) + File.separator + "log"; //$NON-NLS-1$
@@ -168,41 +149,9 @@ public class UserRessources {
     }
     
     /**
+     * Retourne la liste des configuration disponaible
      * 
-     * 
-     * @return
-     */
-    public String getReglementPathForUser() {
-    	String reglementPath = userPath + File.separator + "reglements"; //$NON-NLS-1$
-        
-        createPathIfNotExist(reglementPath);
-    	
-    	return reglementPath;
-    }
-    
-    /**
-     * 
-     * @return
-     */
-    public String[] listAvailableReglements() {
-    	String[] strReglement = new File(getReglementPathForUser()).list(new FilenameFilter() {
-			public boolean accept(File dir, String name) {
-				if(name.startsWith(REGLEMENT_PROFILE) && name.endsWith(EXT_XML))
-					return true;
-				return false;
-			}
-		});
-    	if(strReglement != null) {
-			for(int i = 0; i < strReglement.length; i++)
-				strReglement[i] = strReglement[i].substring(REGLEMENT_PROFILE.length(), strReglement[i].length() - EXT_XML.length());
-    	}
-		return strReglement;
-    }
-    
-    /**
-     * 
-     * 
-     * @return
+     * @return la liste des configurations disponibles
      */
     public String[] listAvailableConfigurations() {
     	String[] strConfig = new File(getConfigPathForUser()).list(new FilenameFilter() {

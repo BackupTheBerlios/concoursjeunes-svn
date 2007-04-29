@@ -69,7 +69,7 @@ public class PluginMetadata {
 	}
 
 	/**
-	 * @return
+	 * @return le nom de la class principal constituant le plug-in
 	 * @uml.property  name="className"
 	 */
 	public String getClassName() {

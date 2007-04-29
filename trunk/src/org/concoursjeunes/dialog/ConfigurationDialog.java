@@ -4,8 +4,6 @@
  */
 package org.concoursjeunes.dialog;
 
-import static org.concoursjeunes.ConcoursJeunes.userRessources;
-
 import java.util.*;
 import java.io.*;
 import java.lang.reflect.*;
@@ -565,7 +563,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	}
 
 	private void completeConcoursPanel(Configuration configuration) {
-		String[] availableReglements = userRessources.listAvailableReglements();
+		String[] availableReglements = Reglement.listAvailableReglements();
 		if(availableReglements != null) {
 			for(String reglementName : availableReglements)
 				jcbReglement.addItem(reglementName);
