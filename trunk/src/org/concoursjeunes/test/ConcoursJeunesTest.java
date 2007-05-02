@@ -2,10 +2,10 @@ package org.concoursjeunes.test;
 
 import static org.junit.Assert.*;
 
-import java.io.File;
+//import java.io.File;
 
 import org.concoursjeunes.ConcoursJeunes;
-import org.concoursjeunes.FicheConcours;
+//import org.concoursjeunes.FicheConcours;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,7 +31,7 @@ public class ConcoursJeunesTest {
 
 	@Test
 	public void testGetMetaDataFichesConcours() {
-		assertNotNull(concoursJeunes.getMetaDataFichesConcours());
+		assertNotNull(ConcoursJeunes.configuration.getMetaDataFichesConcours());
 	}
 
 	@Test

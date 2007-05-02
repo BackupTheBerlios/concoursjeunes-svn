@@ -1,4 +1,77 @@
 /*
+ * Créer le 02/03/2007 à 17:36 pour ConcoursJeunes
+ *
+ * Copyright 2002-2007 - Aurélien JEOFFRAY
+ *
+ * http://www.concoursjeunes.org
+ *
+ * *** CeCILL Terms *** 
+ *
+ * FRANCAIS:
+ *
+ * Ce logiciel est un programme informatique servant à gérer les compétions de type
+ * spécial jeunes de tir à l'Arc. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français et
+ * respectant les principes de diffusion des logiciels libres. Vous pouvez
+ * utiliser, modifier et/ou redistribuer ce programme sous les conditions
+ * de la licence CeCILL telle que diffusée par le CEA, le CNRS et l'INRIA 
+ * sur le site "http://www.cecill.info".
+ *
+ * En contrepartie de l'accessibilité au code source et des droits de copie,
+ * de modification et de redistribution accordés par cette licence, il n'est
+ * offert aux utilisateurs qu'une garantie limitée.  Pour les mêmes raisons,
+ * seule une responsabilité restreinte pèse sur l'auteur du programme,  le
+ * titulaire des droits patrimoniaux et les concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les risques
+ * associés au chargement,  à l'utilisation,  à la modification et/ou au
+ * développement et à la reproduction du logiciel par l'utilisateur étant 
+ * donné sa spécificité de logiciel libre, qui peut le rendre complexe à 
+ * manipuler et qui le réserve donc à des développeurs et des professionnels
+ * avertis possédant  des  connaissances  informatiques approfondies.  Les
+ * utilisateurs sont donc invités à charger  et  tester  l'adéquation  du
+ * logiciel à leurs besoins dans des conditions permettant d'assurer la
+ * sécurité de leurs systèmes et ou de leurs données et, plus généralement, 
+ * à l'utiliser et l'exploiter dans les mêmes conditions de sécurité. 
+ * 
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous avez 
+ * pri connaissance de la licence CeCILL, et que vous en avez accepté les
+ * termes.
+ *
+ * ENGLISH:
+ * 
+ * This software is a computer program whose purpose is to manage the young special archery
+ * tournament.
+ *
+ * This software is governed by the CeCILL license under French law and
+ * abiding by the rules of distribution of free software.  You can  use, 
+ * modify and/ or redistribute the software under the terms of the CeCILL
+ * license as circulated by CEA, CNRS and INRIA at the following URL
+ * "http://www.cecill.info". 
+ *
+ * As a counterpart to the access to the source code and  rights to copy,
+ * modify and redistribute granted by the license, users are provided only
+ * with a limited warranty  and the software's author,  the holder of the
+ * economic rights,  and the successive licensors  have only  limited
+ * liability. 
+ * 
+ * In this respect, the user's attention is drawn to the risks associated
+ * with loading,  using,  modifying and/or developing or reproducing the
+ * software by the user in light of its specific status of free software,
+ * that may mean  that it is complicated to manipulate,  and  that  also
+ * therefore means  that it is reserved for developers  and  experienced
+ * professionals having in-depth computer knowledge. Users are therefore
+ * encouraged to load and test the software's suitability as regards their
+ * requirements in conditions enabling the security of their systems and/or 
+ * data to be ensured and,  more generally, to use and operate it in the 
+ * same conditions as regards security. 
+ * 
+ * The fact that you are presently reading this means that you have had
+ * knowledge of the CeCILL license and that you accept its terms.
+ *
+ *  *** GNU GPL Terms *** 
+ * 
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -27,6 +100,25 @@ import java.util.Map.Entry;
 import ajinteractive.standard.utilities.sql.SqlParser;
 
 /**
+ * <p>
+ * Représentation d'un réglement de concours. Un réglement fixe les régles arbitral
+ * appliqué à un concours. Un seur réglement peut être appliqué sur un concours, et
+ * à plus forte raison à tous les archers du concours.
+ * </p>
+ * <p>
+ * On retrouve dans un réglement les éléments essentiel afin de compter les points
+ * ainsi que l'ensemble des critères de classement et de placement qui doivent être
+ * appliqué sur un concours.
+ * </p>
+ * <p>
+ * Un réglement peut être qualifié d'"officiel" ou non. Si il est qualifié d'officiel,
+ * celui ci ne devrait pas être altéré par les vue/controlleur. La methode
+ * <i>isOfficialReglement()</i> est utilisé pour déterminé si le réglement doit être
+ * considéré ou non comme officiel. Cette qualification doit permettre d'effectuer des
+ * classement inter-club, inter-concours avec l'assurance que les cirtères d'évaluation
+ * sont en tout point identique.
+ * </p>
+ * 
  * @author Aurélien JEOFFRAY
  *
  */
@@ -47,37 +139,59 @@ public class Reglement {
 	
 	private boolean officialReglement = false;
 	
-	public Reglement() {
-		
-	}
+	/**
+	 * Constructeur java-beans. Initialise un réglement par défaut
+	 *
+	 */
+	public Reglement() { }
 	
+	/**
+	 * Initialise un réglement par défaut en le nommant
+	 * @param name
+	 */
 	public Reglement(String name) {
 		this.name = name;
 	}
 	
 	/**
-	 * @return name
+	 * Retourne le nom du réglement
+	 * 
+	 * @return name le nom du réglement
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * @param name name à définir
+	 * Donne ou change le nom du réglement
+	 * 
+	 * @param name le nom à donner au réglement
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
 	/**
-	 * @return correspondanceCriteriaSet_DB
+	 * <p>
+	 * Retourne la table de correspondance entre un jeux de critères detreminant dans
+	 * le placement (CriteriaSet) et le Placement associé.
+	 * </p>
+	 * <p>
+	 * Un jeux de critères determinant pour le placement contient la liste des critères
+	 * qualifiant l'archer qui, ensemble, détermine un placement particulier sur le pas
+	 * de tir.
+	 * </p>
+	 * 
+	 * @return la table de correspondance de placement
 	 */
 	public Hashtable<CriteriaSet, DistancesEtBlason> getCorrespondanceCriteriaSet_DB() {
 		return correspondanceCriteriaSet_DB;
 	}
 	
 	/**
-	 * @param criteriaSet
+	 * Retourne le Placement associé à un jeux de critères de placement donné
+	 * 
+	 * @param criteriaSet le jeux de critères de placement.
 	 * @return l'objet DistancesEtBlason correspondant au criteres en parametre
 	 */
 	public DistancesEtBlason getCorrespondanceCriteriaSet_DB(CriteriaSet criteriaSet) {
@@ -89,7 +203,12 @@ public class Reglement {
 	}
 
 	/**
-	 * @param correspondanceCriteriaSet_DB correspondanceCriteriaSet_DB à définir
+	 * Définit la table de correspondance critères de placement <-> placement
+	 * <br>
+	 * <i>Methode essentielement utile à la déserialisation. Ne devrait pas
+	 * être utilisé directement.</i>
+	 * 
+	 * @param correspondanceCriteriaSet_DB la table de correspondance
 	 */
 	public void setCorrespondanceCriteriaSet_DB(
 			Hashtable<CriteriaSet, DistancesEtBlason> correspondanceDifferentiationCriteria_DB) {
@@ -97,16 +216,29 @@ public class Reglement {
 	}
 	
 	/**
+	 * Ajoute une entrée à la table de correspondance de placement.<br>
+	 * Le jeux de critères ne doit posseder que les critères définit par
+	 * la methode <i>getListCriteria()</i> du réglement.
 	 * 
-	 * @param criteriaSet
-	 * @param distancesEtBlason
+	 * @param criteriaSet le jeux de critères de placement
+	 * @param distancesEtBlason le placement associé
 	 */
 	public void putCorrespondanceCriteriaSet_DB(CriteriaSet criteriaSet, DistancesEtBlason distancesEtBlason) {
 		this.correspondanceCriteriaSet_DB.put(criteriaSet, distancesEtBlason);
 	}
 
 	/**
-	 * @return listCriteria
+	 * <p>
+	 * Retourne la liste des critères de distinction des archers pouvant être
+	 * utilisé sur les concours exploitant ce réglement.
+	 * </p>
+	 * <p>
+	 * Les critères retournés peuvent être soit determinant pour le classement,
+	 * le placement, les deux ou simplement informatif.
+	 * </p>
+	 * 
+	 * @return la liste des critéres de distinction utilisé pour
+	 * le réglement
 	 */
 	public ArrayList<Criterion> getListCriteria() {
 		return listCriteria;
@@ -115,6 +247,11 @@ public class Reglement {
 	
 	
 	/**
+	 * Définit la liste des critères de distinction du réglement.
+	 * 
+	 * <i>Methode essentielement utile à la déserialisation. Ne devrait pas
+	 * être utilisé directement.</i>
+	 * 
 	 * @param listCriteria the listCriteria to set
 	 */
 	public void setListCriteria(ArrayList<Criterion> listCriteria) {
@@ -122,7 +259,7 @@ public class Reglement {
 	}
 
 	/**
-	 * Renvoi la politique de placement
+	 * Renvoi la politique de placement.
 	 * 
 	 * @return Hashtable<String, Boolean> Renvoi le filtre de critere en place pour le placement des archers
 	 */
@@ -220,33 +357,57 @@ public class Reglement {
 	}
 
 	/**
-	 * @return officialReglement
+	 * Permet d'identifié le réglement comme officiel ou non.<br>
+	 * Un réglement officiel ne devrait pas être altéré au cours de sa vie.
+	 * 
+	 * @return true si le réglement est qualifié d'officiel, false dans le
+	 * cas contraire.
 	 */
 	public boolean isOfficialReglement() {
 		return officialReglement;
 	}
 
 	/**
-	 * @param officialReglement officialReglement à définir
+	 * <p>
+	 * Définit si le réglement est ou non officiel
+	 * </p>
+	 * <p>
+	 * <i>Methode essentielement utile à la déserialisation et aux outils de débugage.
+	 * Ne devrait pas être utilisé directement.</i>
+	 * </p>
+	 * 
+	 * @param officialReglement true pour un réglement officiel, false sinon
 	 */
 	public void setOfficialReglement(boolean officialReglement) {
 		this.officialReglement = officialReglement;
 	}
 
 	/**
-	 * @return idReglement
+	 * Représente l'identifiant unique du réglement cet identifiant est utilisé
+	 * exclusivement pour la procédure de sérialisation/deserialisation de l'objet
+	 * 
+	 * @return l'identifiant du réglement
 	 */
 	public int getIdReglement() {
 		return idReglement;
 	}
 
 	/**
-	 * @param idReglement idReglement à définir
+	 * Définit l'identifiant unique du réglement cet identifiant est utilisé
+	 * exclusivement pour la procédure de sérialisation/deserialisation de l'objet
+	 * 
+	 * @param idReglement l'identifiant à affecter au réglement
 	 */
 	public void setIdReglement(int idReglement) {
 		this.idReglement = idReglement;
 	}
 
+	/**
+	 * Détermine si un tableau de score donnée est ou non valide su le réglement
+	 * 
+	 * @param scores le tableau de score à validé
+	 * @return true si le score est valide, false dans le cas contraire
+	 */
 	public boolean isValidScore(ArrayList<Integer> scores) {
 		boolean valid = true;
 		for(int score : scores) {
@@ -258,38 +419,47 @@ public class Reglement {
 		return valid;
 	}
 	
+	/**
+	 * Rend l'objet persistant. Sauvegarde l'ensemble des données de l'objet
+	 * dans la base de donnée de ConcoursJeunes.
+	 *
+	 */
 	public void save() {
 		try {
 			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 			
+			//si l'objet possede un identifiant différent de 0 c'est qu'il posséde déjà son image
+			//dans la base. Dans ce cas mettre son entrée à jour
 			if(idReglement != 0) {
 				stmt.executeUpdate("update Reglement set NOMREGLEMENT='" + name + "',"
 						+ "NBSERIE=" + nbSerie + ",NBVOLEEPARSERIE=" + nbVoleeParSerie + ","
 						+ "NBFLECHEPARVOLEE=" + nbFlecheParVolee + ", NBMEMBRESEQUIPE=" + nbMembresEquipe + ","
 						+ "NBMEMBRESRETENU=" + nbMembresRetenu + ", ISOFFICIAL=" + ((officialReglement)?"TRUE":"FALSE")
 						+ " WHERE NUMREGLEMENT=" + idReglement);
+				//les tableaux de critères et correspondance son détruit pour pouvoir être plus facilement recréer 
 				stmt.executeQuery("delete from CRITERE where NUMREGLEMENT=" + idReglement);
 				stmt.executeQuery("delete from DISTANCESBLASONS where NUMREGLEMENT=" + idReglement);
+			
+			//dans le cas contraire il faut créer son entrée dans la base
 			} else {
 				stmt.executeUpdate("insert into Reglement (NOMREGLEMENT, NBSERIE, NBVOLEEPARSERIE," +
 						"NBFLECHEPARVOLEE, NBMEMBRESEQUIPE, NBMEMBRESRETENU, ISOFFICIAL) " +
 						"VALUES ('" + name + "'," + nbSerie + "," + nbVoleeParSerie + "," +
 						nbFlecheParVolee + "," + nbMembresEquipe + "," +
 						nbMembresRetenu + "," + ((officialReglement)?"TRUE":"FALSE") + ")", Statement.RETURN_GENERATED_KEYS);
+				//on récupere l'identifiant de réglement généré et l'affecte à l'objet
 				ResultSet clefs = stmt.getGeneratedKeys();
 				if(clefs.first()){
 				    idReglement = (Integer)clefs.getObject(1);  
 				}
 			}
+			
+			//sauvegarde les tableaux de crières et correspondance
 			saveCriteria(stmt);
 			saveDistancesAndBlasons(stmt);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		/*File fUserReglement = new File(ConcoursJeunes.userRessources.getReglementPathForUser()
-				+ File.separator + "reglement_" + name + ".xml");
-		AJToolKit.saveXMLStructure(fUserReglement, this, false);*/
 	}
 	
 	private void saveCriteria(Statement stmt) throws SQLException {
@@ -339,14 +509,16 @@ public class Reglement {
 			}
 		}
 	}
-	
+
+	/**
+	 * Supprime la persistance du réglement. Cette persistance ne peut être
+	 * supprimé qu'à la condition que le réglement ne soit pas officiel 
+	 * 
+	 * @return true si suppression effective, false sinon.
+	 */
 	public boolean delete() {
 		boolean success = false;
-		/*if(!officialReglement) {
-			File fUserReglement = new File(ConcoursJeunes.userRessources.getReglementPathForUser() 
-					+ File.separator + "reglement_" + name + ".xml");
-			success = fUserReglement.delete();
-		}*/
+
 		if(!officialReglement) {
 			try {
 				Statement stmt = ConcoursJeunes.dbConnection.createStatement();
@@ -362,6 +534,19 @@ public class Reglement {
 		return success;
 	}
 	
+	/**
+	 * <p>
+	 * Retourne la liste des réglement disponible en base de donnée.<br>
+	 * intégre au passage les réglement disponible sous forme de script sql
+	 * dans le répertoire config/reglements n'ayant pas encore intégré.
+	 * </p>
+	 * <p>
+	 * Des mises à jour du programme peuvent apporter de nouveau réglement
+	 * sous forme de script sql
+	 * </p>
+	 * 
+	 * @return la liste des réglement disponible
+	 */
 	public static String[] listAvailableReglements() {
 		ArrayList<String> availableReglements = new ArrayList<String>();
 		try {

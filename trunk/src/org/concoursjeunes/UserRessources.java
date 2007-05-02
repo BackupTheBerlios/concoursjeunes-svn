@@ -1,4 +1,77 @@
 /*
+ * Créer le 21/02/2006 à 14:01 pour ConcoursJeunes
+ *
+ * Copyright 2002-2007 - Aurélien JEOFFRAY
+ *
+ * http://www.concoursjeunes.org
+ *
+ * *** CeCILL Terms *** 
+ *
+ * FRANCAIS:
+ *
+ * Ce logiciel est un programme informatique servant à gérer les compétions de type
+ * spécial jeunes de tir à l'Arc. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français et
+ * respectant les principes de diffusion des logiciels libres. Vous pouvez
+ * utiliser, modifier et/ou redistribuer ce programme sous les conditions
+ * de la licence CeCILL telle que diffusée par le CEA, le CNRS et l'INRIA 
+ * sur le site "http://www.cecill.info".
+ *
+ * En contrepartie de l'accessibilité au code source et des droits de copie,
+ * de modification et de redistribution accordés par cette licence, il n'est
+ * offert aux utilisateurs qu'une garantie limitée.  Pour les mêmes raisons,
+ * seule une responsabilité restreinte pèse sur l'auteur du programme,  le
+ * titulaire des droits patrimoniaux et les concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les risques
+ * associés au chargement,  à l'utilisation,  à la modification et/ou au
+ * développement et à la reproduction du logiciel par l'utilisateur étant 
+ * donné sa spécificité de logiciel libre, qui peut le rendre complexe à 
+ * manipuler et qui le réserve donc à des développeurs et des professionnels
+ * avertis possédant  des  connaissances  informatiques approfondies.  Les
+ * utilisateurs sont donc invités à charger  et  tester  l'adéquation  du
+ * logiciel à leurs besoins dans des conditions permettant d'assurer la
+ * sécurité de leurs systèmes et ou de leurs données et, plus généralement, 
+ * à l'utiliser et l'exploiter dans les mêmes conditions de sécurité. 
+ * 
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous avez 
+ * pri connaissance de la licence CeCILL, et que vous en avez accepté les
+ * termes.
+ *
+ * ENGLISH:
+ * 
+ * This software is a computer program whose purpose is to manage the young special archery
+ * tournament.
+ *
+ * This software is governed by the CeCILL license under French law and
+ * abiding by the rules of distribution of free software.  You can  use, 
+ * modify and/ or redistribute the software under the terms of the CeCILL
+ * license as circulated by CEA, CNRS and INRIA at the following URL
+ * "http://www.cecill.info". 
+ *
+ * As a counterpart to the access to the source code and  rights to copy,
+ * modify and redistribute granted by the license, users are provided only
+ * with a limited warranty  and the software's author,  the holder of the
+ * economic rights,  and the successive licensors  have only  limited
+ * liability. 
+ * 
+ * In this respect, the user's attention is drawn to the risks associated
+ * with loading,  using,  modifying and/or developing or reproducing the
+ * software by the user in light of its specific status of free software,
+ * that may mean  that it is complicated to manipulate,  and  that  also
+ * therefore means  that it is reserved for developers  and  experienced
+ * professionals having in-depth computer knowledge. Users are therefore
+ * encouraged to load and test the software's suitability as regards their
+ * requirements in conditions enabling the security of their systems and/or 
+ * data to be ensured and,  more generally, to use and operate it in the 
+ * same conditions as regards security. 
+ * 
+ * The fact that you are presently reading this means that you have had
+ * knowledge of the CeCILL license and that you accept its terms.
+ *
+ *  *** GNU GPL Terms *** 
+ * 
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -19,13 +92,15 @@ import java.io.*;
 
 /**
  * Crée et donne le chemin des ressources utilisateur pour le programme
+ * 
  * @author  Aurélien Jeoffray
  */
 public class UserRessources {
 	private static String CONFIG_PROFILE = "configuration_"; //$NON-NLS-1$
 	private static String EXT_XML = ".xml"; //$NON-NLS-1$
 	
-    public String userPath;
+    private String userPath;
+    private String allusersDataPath; 
     
     /**
      * Construit le répertoire utilisateur selon le systeme
@@ -36,10 +111,17 @@ public class UserRessources {
         if(System.getProperty("os.name").startsWith("Windows")) { //$NON-NLS-1$ //$NON-NLS-2$
             userPath = System.getenv("APPDATA") + File.separator //$NON-NLS-1$
                     + progname; //$NON-NLS-1$
-            //TODO pour vista copier les données multi utilisateur dans ALLUSERSPROFILE
+            allusersDataPath = System.getenv("ALLUSERSPROFILE") + File.separator + progname;
         } else {
             userPath = System.getProperty("user.home") + File.separator //$NON-NLS-1$ 
-            + "." + progname; //$NON-NLS-1$
+            	+ "." + progname; //$NON-NLS-1$
+            if(System.getProperty("os.name").startsWith("Linux")) {
+            	allusersDataPath = "/var/lib/" + progname; //$NON-NLS-1$
+            	File f = new File(allusersDataPath);
+            	if(!f.exists() || !f.canExecute())
+            		allusersDataPath = userPath;
+            } else
+            	allusersDataPath = userPath;
         }
         
         createPathIfNotExist(userPath);
@@ -135,12 +217,24 @@ public class UserRessources {
         return userPath;
     }
     
-    public String getBasePathForUser() {
-    	 createPathIfNotExist(userPath + File.separator + "base"); //$NON-NLS-1$
+    /**
+     * Donne le chemin de la base de donnée
+     * 
+     * @return le chemin du répertoire contenant la base de donnée
+     */
+    public String getBasePath() {
+    	 createPathIfNotExist(allusersDataPath + File.separator + "base"); //$NON-NLS-1$
         
-        return userPath + File.separator + "base"; //$NON-NLS-1$
+        return allusersDataPath + File.separator + "base"; //$NON-NLS-1$
     }
     
+    /**
+     * Donne le répertoire ou sont stocké les concours pour le profil
+     * donné en parametre
+     *  
+     * @param profile le nom du profile pour lequel récuperer le chemin des concours
+     * @return le chemin des concours
+     */
     public String getConcoursPathForProfile(String profile) {
         String concoursPath = getProfilePath(profile) + File.separator + "concours"; //$NON-NLS-1$
         
@@ -183,7 +277,9 @@ public class UserRessources {
     }
 
     /**
-	 * @return  Renvoie userPath.
+     * Retourne le répertoire de base de l'utilisateur
+     * 
+	 * @return  Renvoie le repertoire de base de l'utilisateur
 	 * @uml.property  name="userPath"
 	 */
     public String getUserPath() {
@@ -191,7 +287,9 @@ public class UserRessources {
     }
 
     /**
-	 * @param userPath  userPath à définir.
+     * Définit le répertoire de base de l'utilisateur
+     * 
+	 * @param userPath le repertoire de base de l'utilisateur
 	 * @uml.property  name="userPath"
 	 */
     public void setUserPath(String userPath) {

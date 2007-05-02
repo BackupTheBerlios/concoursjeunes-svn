@@ -225,8 +225,15 @@ public class AutoCompleteDocument extends PlainDocument {
 		searchArcher.setNomArcher(searchString.toUpperCase() + "%");
 		
 		if(getLength() > 0) {
-			concurrent = Concurrent.getArchersInDatabase(searchArcher, reglement, "NOMARCHER").get(0);
-			autocompleteLicence = false;
+			ArrayList<Concurrent> concurrents = Concurrent.getArchersInDatabase(searchArcher, reglement, "NOMARCHER");
+			if(concurrents.size() > 0) {
+				concurrent = concurrents.get(0);
+				autocompleteLicence = false;
+			} else {
+				concurrent = null;
+				autocompleteLicence = true;
+			}
+			
 		} else {
 			concurrent = null;
 			autocompleteLicence = true;

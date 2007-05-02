@@ -291,7 +291,7 @@ public class Cible {
 			strCibleLibelle += ", " + db.getBlason() + "cm"; //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
-		strCibleLibelle += ") (" + this.nbArcher + ")</font></html>"; //$NON-NLS-1$ //$NON-NLS-2$
+		strCibleLibelle += ") (" + this.nbArcher + "/" + concours.getParametre().getNbTireur() + ")</font></html>"; //$NON-NLS-1$ //$NON-NLS-2$
 
 		return strCibleLibelle;
 	}

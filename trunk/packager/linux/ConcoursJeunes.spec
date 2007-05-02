@@ -30,6 +30,8 @@ BuildArch: noarch
 
 %install
 %__cp -a . "${RPM_BUILD_ROOT-/}"
+mkdir /var/lib/ConcoursJeunes
+chmod 755 /var/lib/ConcoursJeunes
 
 %clean
 [ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"

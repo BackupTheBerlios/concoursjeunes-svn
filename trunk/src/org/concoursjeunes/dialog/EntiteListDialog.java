@@ -129,7 +129,8 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 	}
 
 	/**
-	 * @return
+	 * @return l'action réalisé sur la boite de dialogue
+	 * 
 	 * @uml.property  name="action"
 	 */
 	public int getAction() {

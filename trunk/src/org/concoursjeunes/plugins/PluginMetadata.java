@@ -36,7 +36,7 @@ public class PluginMetadata {
 	}
 
 	/**
-	 * @return
+	 * @return le libelle de l'option
 	 * @uml.property  name="optionLabel"
 	 */
 	public String getOptionLabel() {

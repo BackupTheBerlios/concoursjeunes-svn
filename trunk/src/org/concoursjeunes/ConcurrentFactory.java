@@ -52,10 +52,10 @@ public class ConcurrentFactory {
 				ResultSet rsCriteriaSet = stmt.executeQuery("select * from distinguer where " +
 						"NUMLICENCEARCHER='" + concurrent.getNumLicenceArcher() + "' and " +
 						"NUMREGLEMENT=" + reglement.getIdReglement());
-				if(rsCriteriaSet.getFetchSize() > 0) {
-					while(rsCriteriaSet.next()) {
-						String codeCritere = rsCriteriaSet.getString("CODECRITEREELEMENT");
-						String codeElement = rsCriteriaSet.getString("CODECRITERE");
+				if(rsCriteriaSet.next()) {
+					do {
+						String codeCritere = rsCriteriaSet.getString("CODECRITERE");;
+						String codeElement = rsCriteriaSet.getString("CODECRITEREELEMENT");
 						
 						for(Criterion key : reglement.getListCriteria()) {
 							if(key.getCode().equals(codeCritere)) {
@@ -68,7 +68,7 @@ public class ConcurrentFactory {
 								break;
 							}
 						}
-					}
+					} while(rsCriteriaSet.next());
 				} else {
 					for(Criterion key : reglement.getListCriteria()) {
 						if(!key.getCodeffta().equals("")) {

@@ -89,7 +89,6 @@ public class ConcoursJeunes {
 	
 	public static Connection dbConnection;
 
-	private MetaDataFichesConcours metaDataFichesConcours;
 	private ArrayList<FicheConcours> fichesConcours    = new ArrayList<FicheConcours>();
 	
 	private EventListenerList listeners = new EventListenerList();
@@ -102,7 +101,7 @@ public class ConcoursJeunes {
 	private ConcoursJeunes() {
 		//tente de recuperer la configuration générale du programme
 		configuration = ConfigurationFactory.getCurrentConfiguration();
-		metaDataFichesConcours = MetaDataFichesConcoursFactory.getMetaDataFichesConcours();
+		//metaDataFichesConcours = MetaDataFichesConcoursFactory.getMetaDataFichesConcours();
 
 		//fige la langue de ressource de l'appli sur la locale du fichier de config
 		AjResourcesReader.setLocale(new Locale(configuration.getLangue()));
@@ -135,7 +134,7 @@ public class ConcoursJeunes {
 			Class.forName(ajrParametreAppli.getResourceString("database.driver")).newInstance();
 
 			dbConnection = DriverManager.getConnection(
-					ajrParametreAppli.getResourceString("database.url", userRessources.getBasePathForUser()),
+					ajrParametreAppli.getResourceString("database.url", userRessources.getBasePath()),
 					ajrParametreAppli.getResourceString("database.user"),
 					ajrParametreAppli.getResourceString("database.password"));
 			
@@ -177,14 +176,6 @@ public class ConcoursJeunes {
 	public void removeConcoursJeunesListener(ConcoursJeunesListener concoursJeunesListener) {
 		listeners.remove(ConcoursJeunesListener.class, concoursJeunesListener);
 	}
-	
-	/**
-	 * @return les metadonnées de concours pour le profile courrant
-	 * @uml.property  name="metaDataFichesConcours"
-	 */
-	public MetaDataFichesConcours getMetaDataFichesConcours() {
-		return metaDataFichesConcours;
-	}
 
 	/**
 	 * Création d'une nouvelle fiche concours
@@ -195,9 +186,9 @@ public class ConcoursJeunes {
 		
 		FicheConcours ficheConcours = new FicheConcours();
 		fichesConcours.add(ficheConcours);
-		metaDataFichesConcours.addMetaDataFicheConcours(ficheConcours.getMetaDataFicheConcours());
+		configuration.getMetaDataFichesConcours().add(ficheConcours.getMetaDataFicheConcours());
 		
-		metaDataFichesConcours.save();
+		configuration.saveAsDefault();
 		ficheConcours.save();
 		
 		fireFicheConcoursCreated(ficheConcours);
@@ -210,11 +201,11 @@ public class ConcoursJeunes {
 	public void deleteFicheConcours(MetaDataFicheConcours metaDataFicheConcours) {
 		assert configuration != null : "la configuration ne peut être à null";
 
-		metaDataFichesConcours.removeMetaDataFicheConcours(metaDataFicheConcours);
+		configuration.getMetaDataFichesConcours().remove(metaDataFicheConcours);
 
 		if(new File(userRessources.getConcoursPathForProfile(configuration.getCurProfil()) + File.separator + 
 				metaDataFicheConcours.getFilenameConcours()).delete()) {
-			metaDataFichesConcours.save();
+			configuration.saveAsDefault();
 			
 			fireFicheConcoursDeleted(null);
 		}
@@ -227,10 +218,22 @@ public class ConcoursJeunes {
 	 */
 	public void closeFicheConcours(FicheConcours ficheConcours) {
 		ficheConcours.save();
-		metaDataFichesConcours.save();
+		configuration.saveAsDefault();
 		if(fichesConcours.remove(ficheConcours)) {
 			fireFicheConcoursClosed(ficheConcours);
 		}
+	}
+	
+	public void closeAllFichesConcours() {
+		saveAllFichesConcours();
+		
+		ArrayList<FicheConcours> tmpList = new ArrayList<FicheConcours>();
+		tmpList.addAll(fichesConcours);
+		fichesConcours.clear();
+		for(FicheConcours fiche : tmpList) {
+			fireFicheConcoursClosed(fiche);
+		}
+		tmpList.clear();
 	}
 
 	/**
@@ -270,7 +273,7 @@ public class ConcoursJeunes {
 		for(FicheConcours fiche : fichesConcours) {
 			fiche.save();
 		}
-		metaDataFichesConcours.save();
+		configuration.saveAsDefault();
 	}
 
 	/**

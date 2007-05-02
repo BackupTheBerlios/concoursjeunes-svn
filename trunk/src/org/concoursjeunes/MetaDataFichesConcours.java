@@ -15,14 +15,7 @@
  */
 package org.concoursjeunes;
 
-import java.io.File;
 import java.util.ArrayList;
-
-import ajinteractive.standard.java2.AJToolKit;
-
-import static org.concoursjeunes.ConcoursJeunes.ajrParametreAppli;
-import static org.concoursjeunes.ConcoursJeunes.userRessources;
-import static org.concoursjeunes.ConcoursJeunes.configuration;
 
 /**
  * @author Aurélien JEOFFRAY
@@ -31,11 +24,7 @@ public class MetaDataFichesConcours {
 	
 	private ArrayList<MetaDataFicheConcours> fiches = new ArrayList<MetaDataFicheConcours>();
 	
-	private static MetaDataFichesConcours instance = new MetaDataFichesConcours();
-	
 	public MetaDataFichesConcours() { }
-	
-	public static MetaDataFichesConcours getInstance() { return instance; }
 
 	/**
 	 * @return  fiches
@@ -57,7 +46,7 @@ public class MetaDataFichesConcours {
 	 * 
 	 * @param metaDataFicheConcours
 	 */
-	public void addMetaDataFicheConcours(MetaDataFicheConcours metaDataFicheConcours) {
+	public void add(MetaDataFicheConcours metaDataFicheConcours) {
 		fiches.add(metaDataFicheConcours);
 	}
 	
@@ -65,8 +54,12 @@ public class MetaDataFichesConcours {
 	 * 
 	 * @param metaDataFicheConcours
 	 */
-	public void removeMetaDataFicheConcours(MetaDataFicheConcours metaDataFicheConcours) {
+	public void remove(MetaDataFicheConcours metaDataFicheConcours) {
 		fiches.remove(metaDataFicheConcours);
+	}
+	
+	public void removeAll() {
+		fiches.clear();
 	}
 	
 	/**
@@ -75,13 +68,7 @@ public class MetaDataFichesConcours {
 	 * @param index - l'index de la fiche pour laquelle récuperer les metadonnées
 	 * @return les metadonnées de la fiche idiqué en parametre
 	 */
-	public MetaDataFicheConcours getMetaDataFicheConcours(int index) {
+	public MetaDataFicheConcours get(int index) {
 		return fiches.get(index);
-	}
-	
-	public void save() {
-		AJToolKit.saveXMLStructure(
-				new File(userRessources.getConcoursPathForProfile(configuration.getCurProfil()) + File.separator + 
-						ajrParametreAppli.getResourceString("file.metadatafichesconcours")), this, false);
 	}
 }

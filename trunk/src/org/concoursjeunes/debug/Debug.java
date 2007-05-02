@@ -3,7 +3,7 @@
  */
 package org.concoursjeunes.debug;
 
-import java.util.*;
+//import java.util.*;
 
 import org.concoursjeunes.*;
 import org.concoursjeunes.ui.FicheConcoursPane;
@@ -17,7 +17,7 @@ public class Debug {
     public static void generateConcurrent(FicheConcoursPane ficheConcoursFrame, int depart) {
        /* for(int i = 0; i < ficheConcoursFrame.ficheConcours.getParametre().getNbCible()*ficheConcoursFrame.ficheConcours.getParametre().getNbTireur()-9; i++) {
             ArrayList<Concurrent> listeTireur = new ArrayList<Concurrent>();
-            //FIXME
+
             //listeTireur.addAll(ConcoursJeunes.listeTireur.values());
             
             Concurrent toinsert;
@@ -69,9 +69,9 @@ public class Debug {
     }
     
     public static void attributeLevel(ConcurrentList archerList, int depart) {
-        for(Concurrent concurrent : archerList.list(depart)) {
+        /*for(Concurrent concurrent : archerList.list(depart)) {
         	
             //concurrent.getDifferentiationCriteria().setCriterion(new Criterion("niveau"), (int)Math.round(Math.random() * 3)); //$NON-NLS-1$
-        }
+        }*/
     }
 }

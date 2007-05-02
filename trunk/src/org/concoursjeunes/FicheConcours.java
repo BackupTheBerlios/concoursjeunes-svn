@@ -164,7 +164,7 @@ public class FicheConcours implements ParametreListener {
 	public boolean addConcurrent(Concurrent concurrent, int depart) {
 		concurrent.setDepart(depart);
 
-		if(concurrentList.contains(concurrent))
+		if(concurrentList.contains(concurrent, depart))
 			return false;
 
 		if(!pasDeTir.get(depart).havePlaceForConcurrent(concurrent))
@@ -180,7 +180,6 @@ public class FicheConcours implements ParametreListener {
 
 	/**
 	 * retire un concurrent du concours
-	 * TODO controler le depart
 	 * 
 	 * @param removedConcurrent - Le concurrent à supprimer
 	 */
@@ -404,9 +403,8 @@ public class FicheConcours implements ParametreListener {
 
 			tplClassement.parse("ARBITRE_RESPONSABLE", strArbitreResp); //$NON-NLS-1$
 			tplClassement.parse("ARBITRES_ASSISTANT", strArbitresAss); //$NON-NLS-1$
-			//TODO compter le nombre d'incrit selon la règle nb depart 0 à curdepart 
-			tplClassement.parse("NB_CLUB", "" + concurrentList.countCompagnie(depart)); //$NON-NLS-1$ //$NON-NLS-2$
-			tplClassement.parse("NB_TIREURS", "" + concurrentList.countArcher(depart)); //$NON-NLS-1$ //$NON-NLS-2$
+			tplClassement.parse("NB_CLUB", "" + concurrentList.countCompagnie()); //$NON-NLS-1$ //$NON-NLS-2$
+			tplClassement.parse("NB_TIREURS", "" + concurrentList.countArcher()); //$NON-NLS-1$ //$NON-NLS-2$
 			tplClassement.parse("TYPE_CLASSEMENT", ConcoursJeunes.ajrLibelle.getResourceString("classement.individuel")); //$NON-NLS-1$ //$NON-NLS-2$
 
 			//Entete de categorie

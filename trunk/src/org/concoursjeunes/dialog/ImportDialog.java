@@ -19,7 +19,6 @@ import ajinteractive.standard.java2.GridbagComposer;
  * @author Aurelien Jeoffray
  * @version 1.0
  * 
- * TODO Lister dans la boite de dialogue les plugins d'import disponible
  */
 public class ImportDialog extends JDialog implements ActionListener {   
     private AJList jlPlugins = new AJList();

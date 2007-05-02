@@ -23,7 +23,9 @@ import ajinteractive.standard.java2.*;
 /**
  * fiche concours. cette fiche correspond à la table d'inscrit et de résultats
  * @author  Aurélien Jeoffray
- * @version  1.0  TODO passage de niveau
+ * @version  1.0
+ * 
+ * TODO passage de niveau
  */
 public class FicheConcoursPane extends JPanel implements ActionListener, ChangeListener, HyperlinkListener {
 

@@ -1,4 +1,77 @@
 /*
+ * Créer le 02/03/2007 à 17:36 pour ConcoursJeunes
+ *
+ * Copyright 2002-2007 - Aurélien JEOFFRAY
+ *
+ * http://www.concoursjeunes.org
+ *
+ * *** CeCILL Terms *** 
+ *
+ * FRANCAIS:
+ *
+ * Ce logiciel est un programme informatique servant à gérer les compétions de type
+ * spécial jeunes de tir à l'Arc. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français et
+ * respectant les principes de diffusion des logiciels libres. Vous pouvez
+ * utiliser, modifier et/ou redistribuer ce programme sous les conditions
+ * de la licence CeCILL telle que diffusée par le CEA, le CNRS et l'INRIA 
+ * sur le site "http://www.cecill.info".
+ *
+ * En contrepartie de l'accessibilité au code source et des droits de copie,
+ * de modification et de redistribution accordés par cette licence, il n'est
+ * offert aux utilisateurs qu'une garantie limitée.  Pour les mêmes raisons,
+ * seule une responsabilité restreinte pèse sur l'auteur du programme,  le
+ * titulaire des droits patrimoniaux et les concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les risques
+ * associés au chargement,  à l'utilisation,  à la modification et/ou au
+ * développement et à la reproduction du logiciel par l'utilisateur étant 
+ * donné sa spécificité de logiciel libre, qui peut le rendre complexe à 
+ * manipuler et qui le réserve donc à des développeurs et des professionnels
+ * avertis possédant  des  connaissances  informatiques approfondies.  Les
+ * utilisateurs sont donc invités à charger  et  tester  l'adéquation  du
+ * logiciel à leurs besoins dans des conditions permettant d'assurer la
+ * sécurité de leurs systèmes et ou de leurs données et, plus généralement, 
+ * à l'utiliser et l'exploiter dans les mêmes conditions de sécurité. 
+ * 
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous avez 
+ * pri connaissance de la licence CeCILL, et que vous en avez accepté les
+ * termes.
+ *
+ * ENGLISH:
+ * 
+ * This software is a computer program whose purpose is to manage the young special archery
+ * tournament.
+ *
+ * This software is governed by the CeCILL license under French law and
+ * abiding by the rules of distribution of free software.  You can  use, 
+ * modify and/ or redistribute the software under the terms of the CeCILL
+ * license as circulated by CEA, CNRS and INRIA at the following URL
+ * "http://www.cecill.info". 
+ *
+ * As a counterpart to the access to the source code and  rights to copy,
+ * modify and redistribute granted by the license, users are provided only
+ * with a limited warranty  and the software's author,  the holder of the
+ * economic rights,  and the successive licensors  have only  limited
+ * liability. 
+ * 
+ * In this respect, the user's attention is drawn to the risks associated
+ * with loading,  using,  modifying and/or developing or reproducing the
+ * software by the user in light of its specific status of free software,
+ * that may mean  that it is complicated to manipulate,  and  that  also
+ * therefore means  that it is reserved for developers  and  experienced
+ * professionals having in-depth computer knowledge. Users are therefore
+ * encouraged to load and test the software's suitability as regards their
+ * requirements in conditions enabling the security of their systems and/or 
+ * data to be ensured and,  more generally, to use and operate it in the 
+ * same conditions as regards security. 
+ * 
+ * The fact that you are presently reading this means that you have had
+ * knowledge of the CeCILL license and that you accept its terms.
+ *
+ *  *** GNU GPL Terms *** 
+ * 
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -20,20 +93,42 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 
 /**
+ * <p>
+ * Réprésente le pas de tir d'un départ de concours. Un pas de tir est associé à un concours
+ * et à un départ donné. Il liste l'ensemble des cibles (et leurs archers associé) présentes
+ * sur celui-ci.
+ * </p>
+ * <p>
+ * La class <i>PasDeTir</i> va fournir des methodes permettant de placer un archer sur le pas
+ * de tir du concours ainsi que des methodes permettant de calculer l'occupation de celui-ci et
+ * bloquer l'insertion en cas de dépassement.
+ * </p>
+ * 
  * @author Aurélien JEOFFRAY
+ * @version 1.0
  *
  */
 public class PasDeTir {
 	private ArrayList<Cible> targets = new ArrayList<Cible>();
+	//private ArrayList<Concurrent> archersWithNoTarget = new ArrayList<Concurrent>();
 	private FicheConcours ficheConcours;
 	private int depart = 0;
 	
+	/**
+	 * Construit un nouveau pas de tir pour le concours et le dépar donné
+	 * 
+	 * @param ficheConcours le concours associé au pas de tir
+	 * @param depart le depart associé au pas de tir
+	 */
 	public PasDeTir(FicheConcours ficheConcours, int depart) {
 		this.ficheConcours = ficheConcours;
 		this.depart = depart;
 		
+		//construit l'arbre de cible lié au pas de tir
 		for(int j = 0; j < ficheConcours.getParametre().getNbCible(); j++) {
 			Cible cible = new Cible(j+1, ficheConcours);
+			//dans le cas d'une ouverture de concours existant, place les rachers réferencé
+			//sur leurs cible
 			if(ficheConcours.getConcurrentList().countArcher(depart) > 0) {
 				for(Concurrent concurrent : ficheConcours.getConcurrentList().list(j + 1, depart))
 					cible.setConcurrentAt(concurrent, concurrent.getPosition());
@@ -58,7 +153,7 @@ public class PasDeTir {
 		//recupere dans la configuration la correspondance Critères de distinction/Distance-Blason
 		Hashtable<CriteriaSet, DistancesEtBlason> correspSCNA_DB = ficheConcours.getParametre().getReglement().getCorrespondanceCriteriaSet_DB();
 
-		//recuper les clés de placement
+		//recupere les clés de placement
 		Enumeration<DistancesEtBlason> dbEnum = correspSCNA_DB.elements();
 		ArrayList<DistancesEtBlason> distancesEtBlasons = new ArrayList<DistancesEtBlason>();
 		for(int i = 0; dbEnum.hasMoreElements(); i++) {
@@ -125,7 +220,7 @@ public class PasDeTir {
 	 */
 	public boolean havePlaceForConcurrent(Concurrent concurrent) {
 		OccupationCibles place = null;
-		if(!ficheConcours.getConcurrentList().contains(concurrent)) {
+		if(!ficheConcours.getConcurrentList().contains(concurrent, concurrent.getDepart())) {
 			place = getOccupationCibles().get(
 					DistancesEtBlason.getDistancesEtBlasonForConcurrent(ficheConcours.getParametre().getReglement(), concurrent));
 
@@ -166,21 +261,26 @@ public class PasDeTir {
 	 */
 	public void placementConcurrents() {
 		int curCible = 1;
-
-		//pour chaque distance/blason
-		for(DistancesEtBlason distancesEtBlason : ficheConcours.getConcurrentList().listDistancesEtBlason(ficheConcours.getParametre().getReglement(), true, depart)) {
+		ArrayList<DistancesEtBlason> lDB = ficheConcours.getConcurrentList().listDistancesEtBlason(ficheConcours.getParametre().getReglement(), true, depart);
+		
+		//defini le nombre de tireur par cible en fonction du nombre de tireurs
+		//max acceptés et du nombre de tireur présent
+		int nbArcherModule = 0;
+		int nbTireurParCible = 0;
+		for(int i = 2; i <= ficheConcours.getParametre().getNbTireur(); i+=2) {
+			for(DistancesEtBlason distancesEtBlason : lDB) {
+				OccupationCibles occupationCibles = getOccupationCibles().get(distancesEtBlason);
+				nbArcherModule += occupationCibles.getPlaceOccupe() % i + occupationCibles.getPlaceOccupe();
+			}
+			if(nbArcherModule <= ficheConcours.getParametre().getNbCible() * i) {
+				nbTireurParCible = i;
+			}
+		}
+		
+		//pour chaque distance/blason 
+		for(DistancesEtBlason distancesEtBlason : lDB) {
 			//liste les archers pour le distance/blason
 			Concurrent[] concurrents = ConcurrentList.sort( ficheConcours.getConcurrentList().list(ficheConcours.getParametre().getReglement(), distancesEtBlason, depart), ConcurrentList.SORT_BY_CLUBS);
-
-			//defini le nombre de tireur par cible en fonction du nombre de tireurs
-			//max acceptés et du nombre de tireur présent
-			//FIXME calculer le taux d'occupation des cibles en fonction de chaque d/b afin d'eviter les effets de bord
-			int nbTireurParCible = ficheConcours.getParametre().getNbTireur();
-			for(int i = 2; i <= ficheConcours.getParametre().getNbTireur(); i+=2) {
-				if( ficheConcours.getConcurrentList().countArcher(depart) <= ficheConcours.getParametre().getNbCible() * i) {
-					nbTireurParCible = i;
-				}
-			}
 
 			int startCible = curCible;
 			int endCible = curCible + (concurrents.length / nbTireurParCible) 
@@ -222,19 +322,45 @@ public class PasDeTir {
 		return success;
 	}
 	
+	/*public void addConcurrent(Concurrent concurrent) {
+		if(havePlaceForConcurrent(concurrent) && concurrent.getCible() == 0) {
+			archersWithNoTarget.add(concurrent);
+		}
+	}*/
+	
+	/*public boolean containsConcurrent(Concurrent concurrent) {
+		boolean contains = false;
+		
+		if(archersWithNoTarget.contains(concurrent))
+			return true;
+		
+		for()
+		
+		return contains;
+	}*/
+	
+	/**
+	 * Recherche et retire un concurrent du pas de tir
+	 * 
+	 * @param concurrent le concurrent à retirer
+	 */
 	public void retraitConcurrent(Concurrent concurrent) {
 		if(concurrent.getCible() > 0)
 			targets.get(concurrent.getCible()-1).removeConcurrent(concurrent);
 	}
 
 	/**
-	 * @return targets
+	 * Retourne la liste des cibles lié au pas de tir
+	 * 
+	 * @return la liste des cibles lié au pas de tir
 	 */
 	public ArrayList<Cible> getTargets() {
 		return targets;
 	}
 
 	/**
+	 * Définit la liste des cibles lié au pas de tir
+	 * 
 	 * @param targets targets à définir
 	 */
 	public void setTargets(ArrayList<Cible> targets) {

@@ -141,6 +141,8 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		jbListeClub.addActionListener(this);
 		jbListeClub.setMargin(new Insets(0, 0, 0, 0));
 		jbListeClub.setText("..."); //$NON-NLS-1$
+		jtfNom.addFocusListener(this);
+		jtfPrenom.addFocusListener(this);
 
 		//Panneau de champs
 		jlDescription.setOpaque(true);

@@ -87,7 +87,7 @@ public class FileImportPlugin extends Thread implements ImportPlugin {
                   InputStream is = zipRessources.getInputStream(ze);
                   
                   if(!ze.getName().startsWith("META-INF")) { //$NON-NLS-1$
-                      destination = new File(ConcoursJeunes.userRessources.getBasePathForUser() + File.separator + ze.getName());
+                      destination = new File(ConcoursJeunes.userRessources.getBasePath() + File.separator + ze.getName());
                       destination.createNewFile();
 
                       destinationFile = new java.io.FileOutputStream(destination);

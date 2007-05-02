@@ -74,7 +74,7 @@ public class FFTAImportPlugin extends Thread implements ImportPlugin {
         	try {
         		//HACK problème retour caractère \r dans la table hyperfile FICLUB.FIC
                 //charge tous le fichier en mémoire
-                FileReader frficlub = new FileReader(ConcoursJeunes.userRessources.getBasePathForUser()
+                FileReader frficlub = new FileReader("base"
                 		+ File.separator + pluginRessources.getResourceString("winffta.ficlub.fichier"));
                 StringBuffer sbuffer = new StringBuffer();
                 char[] buffer = new char[128];
@@ -91,7 +91,7 @@ public class FFTAImportPlugin extends Thread implements ImportPlugin {
                 sFiclub = sFiclub.replaceAll("\\r;", ";");
                 
                 //réimprime le fichier
-                PrintStream psficlub = new PrintStream(ConcoursJeunes.userRessources.getBasePathForUser()
+                PrintStream psficlub = new PrintStream("base"
                 		+ File.separator + pluginRessources.getResourceString("winffta.ficlub.fichier"));
                 psficlub.print(sFiclub);
                 psficlub.close();

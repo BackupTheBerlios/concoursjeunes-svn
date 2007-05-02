@@ -122,7 +122,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 		ajtHome.parse("PROFILE_NAME", ConcoursJeunes.configuration.getCurProfil());
 		
 		
-		MetaDataFichesConcours metaDataFichesConcours = concoursJeunes.getMetaDataFichesConcours();
+		MetaDataFichesConcours metaDataFichesConcours = ConcoursJeunes.configuration.getMetaDataFichesConcours();
 		if(metaDataFichesConcours.getFiches().size() > 0) {
 			int i = 0;
 			for(MetaDataFicheConcours metaDataFicheConcours : metaDataFichesConcours.getFiches()) {
@@ -170,7 +170,6 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 
 	/**
 	 * Importe un base de données mise à jour des archers
-	 * TODO a generaliser
 	 */
 	private void importArchers() {
 		ImportDialog importDialog = new ImportDialog(this);     
@@ -235,60 +234,65 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			//TODO Revoir l'export
 			//if(jif != null) jif.exportConcours(jif.ficheConcours.getExport());
 
-			//ouvre la boite de dialogue d'importation d'un concours
+		//ouvre la boite de dialogue d'importation d'un concours
 		} else if (cmd.equals("menubar.fichier.importer")) { //$NON-NLS-1$
 			importArchers();
 
-			//enregistre l'ensemble des fiche et quitte l'application
+		//enregistre l'ensemble des fiche et quitte l'application
 		} else if (cmd.equals("menubar.fichier.quitter")) { //$NON-NLS-1$
 			closeApp();
 
-			//affiche la liste des entites (Fédération, CD, Club)
+		//affiche la liste des entites (Fédération, CD, Club)
 		} else if(cmd.equals("menubar.edition.entite")) { //$NON-NLS-1$
 			new EntiteListDialog(this);
 
-			//affiche la boite de dialogue des parametres
+		//affiche la boite de dialogue des parametres
 		} else if (cmd.equals("menubar.edition.parametre")) { //$NON-NLS-1$
 			if(jif != null) jif.openParametreDialog();
 
-			//affiche la boite de dialogue des reglements de concours
+		//affiche la boite de dialogue des reglements de concours
 		} else if (cmd.equals("menubar.edition.reglement")) { //$NON-NLS-1$
 			ReglementDialog reglementDialog = new ReglementDialog(this);
 			Reglement reglement = reglementDialog.showReglementDialog();
 			if(reglement != null) {
 				reglement.save();
-				
-				ConcoursJeunes.configuration.saveConfig();
 			}
-			//affiche la boite de dialogue de configuartion
+		//affiche la boite de dialogue de configuartion
 		} else if (cmd.equals("menubar.edition.configuration")) { //$NON-NLS-1$
-			new ConfigurationDialog(this);
-
-			//imprime la liste des concurrents par ordre alphabetique
+			ConfigurationDialog configurationDialog = new ConfigurationDialog(this);
+			configurationDialog.showConfigurationDialog();
+			
+			if(!configurationDialog.getWorkConfiguration().getCurProfil().equals(ConcoursJeunes.configuration.getCurProfil())) {
+				concoursJeunes.closeAllFichesConcours();
+			}
+			
+			ConcoursJeunes.configuration = configurationDialog.getWorkConfiguration();
+			enumFicheConcours();
+		//imprime la liste des concurrents par ordre alphabetique
 		} else if (cmd.equals("menubar.impression.listeconcurrent.ordrealpha")) { //$NON-NLS-1$
 			if(jif != null) jif.ficheConcours.printArcherList(FicheConcours.ALPHA);
 
-			//imprime la liste des concurrents par ordre alphabetique avec information greffe
+		//imprime la liste des concurrents par ordre alphabetique avec information greffe
 		} else if (cmd.equals("menubar.impression.listeconcurrent.greffe")) { //$NON-NLS-1$
 			if(jif != null) jif.ficheConcours.printArcherList(FicheConcours.GREFFE);
 
-			//imprime les etiquettes concurrent
+		//imprime les etiquettes concurrent
 		} else if (cmd.equals("menubar.impression.listeconcurrent.etiquette")) { //$NON-NLS-1$
 			if(jif != null) jif.ficheConcours.printEtiquettes();
 
-			//imprime la vu du pas de tir
+		//imprime la vu du pas de tir
 		} else if (cmd.equals("menubar.impression.pasdetir")) { //$NON-NLS-1$
 			if(jif != null) jif.ficheConcours.printPasDeTir();
 
-			//imprime le classement individuel
+		//imprime le classement individuel
 		} else if (cmd.equals("menubar.impression.classement.individuel")) { //$NON-NLS-1$
 			if(jif != null) jif.ficheConcours.printClassement();
 
-			//imprime le classement par equipe
+		//imprime le classement par equipe
 		} else if (cmd.equals("menubar.impression.classement.equipe")) { //$NON-NLS-1$
 			if(jif != null) jif.ficheConcours.printClassementEquipe();
 
-			//affiche la boite de dialogie "A propos"
+		//affiche la boite de dialogie "A propos"
 		} else if (cmd.equals("menubar.aide.apropos")) { //$NON-NLS-1$
 			JOptionPane.showMessageDialog(this,
 					"<html>ConcoursJeunes<br>" + //$NON-NLS-1$
@@ -300,17 +304,17 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 		} else if(cmd.equals("menubar.debug.generateconcurrent")) { //$NON-NLS-1$
 			if(jif != null) org.concoursjeunes.debug.Debug.generateConcurrent(jif, 0);
 
-			//debugage -> Attribution rapide de points au concurrents
+		//debugage -> Attribution rapide de points au concurrents
 		} else if(cmd.equals("menubar.debug.addpoints")) { //$NON-NLS-1$
 			if(jif != null) {
 				org.concoursjeunes.debug.Debug.attributePoints(jif.ficheConcours.getConcurrentList(), 0);
 			}
 
-			//debugage -> RAZ des points
+		//debugage -> RAZ des points
 		} else if(cmd.equals("menubar.debug.resetpoints")) { //$NON-NLS-1$
 			if(jif != null) org.concoursjeunes.debug.Debug.resetPoints(jif.ficheConcours.getConcurrentList(), 0);
 
-			//debugage -> attribution de niveau aléatoire au archers
+		//debugage -> attribution de niveau aléatoire au archers
 		} else if(cmd.equals("menubar.debug.atriblevel")) { //$NON-NLS-1$
 			if(jif != null) org.concoursjeunes.debug.Debug.attributeLevel(jif.ficheConcours.getConcurrentList(), 0);
 		}
@@ -336,6 +340,15 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursClosed(org.concoursjeunes.ConcoursJeunesEvent)
 	 */
 	public void ficheConcoursClosed(ConcoursJeunesEvent concoursJeunesEvent) {
+		//
+		for(int i = 1; i < tabbedpane.getTabCount(); i++) {
+			FicheConcoursPane jif = (FicheConcoursPane)tabbedpane.getComponentAt(i);
+			if(jif.ficheConcours == concoursJeunesEvent.getFicheConcours()) {
+				tabbedpane.removeTabAt(i);
+				
+				break;
+			}
+		}
 		enumFicheConcours();
 	}
 
@@ -376,17 +389,27 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 						(HTMLFrameHyperlinkEvent)e); 
 			} else {
 				if(e.getURL().getHost().equals("open_concours")) {
-					concoursJeunes.restoreFicheConcours(concoursJeunes.getMetaDataFichesConcours().getMetaDataFicheConcours(
+					concoursJeunes.restoreFicheConcours(ConcoursJeunes.configuration.getMetaDataFichesConcours().get(
 									Integer.parseInt(e.getURL().getRef())));
 				} else if(e.getURL().getHost().equals("delete_concours")) {
 					if(JOptionPane.showConfirmDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("confirmation.suppression.concours"), //$NON-NLS-1$
 							ConcoursJeunes.ajrLibelle.getResourceString("confirmation.suppression.concours.titre"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) { //$NON-NLS-1$
 						concoursJeunes.deleteFicheConcours(
-								concoursJeunes.getMetaDataFichesConcours().getMetaDataFicheConcours(
+								ConcoursJeunes.configuration.getMetaDataFichesConcours().get(
 										Integer.parseInt(e.getURL().getRef())));
 					}
 				} else if(e.getURL().getHost().equals("new_concours")) {
 					concoursJeunes.createFicheConcours();
+				} else if(e.getURL().getHost().equals("change_profile")) {
+					ConfigurationDialog configurationDialog = new ConfigurationDialog(this);
+					configurationDialog.showConfigurationDialog();
+					
+					if(!configurationDialog.getWorkConfiguration().getCurProfil().equals(ConcoursJeunes.configuration.getCurProfil())) {
+						concoursJeunes.closeAllFichesConcours();
+					}
+					
+					ConcoursJeunes.configuration = configurationDialog.getWorkConfiguration();
+					enumFicheConcours();
 				}
 			}
 		}

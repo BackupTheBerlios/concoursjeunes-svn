@@ -39,8 +39,8 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 
 	private TitledBorder tbProfil       = new TitledBorder(""); //$NON-NLS-1$
 	private JLabel jlNomProfil          = new JLabel();
-	private JComboBox  jcbProfil        = new JComboBox(ConcoursJeunes.userRessources.listAvailableConfigurations());
-	private JButton jbAjouterProfil     = new JButton();
+	private JComboBox  jcbProfil        = new JComboBox();
+	private JButton jbRenameProfile     = new JButton();
 
 	//Ecran general personnalisation
 	private TitledBorder tbParamGeneral = new TitledBorder(""); //$NON-NLS-1$
@@ -107,7 +107,6 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	private JTextField jtfURLExport         = new JTextField(20);
 	private JTextField jtfURLImport         = new JTextField(20);
 	//Ecran avancé option debug
-	private JCheckBox jcbOfficialProfile    = new JCheckBox();
 	private JCheckBox jcbFirstBoot    = new JCheckBox();
 
 	private JButton jbValider = new JButton();
@@ -136,11 +135,10 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		tabbedpane.addTab("configuration.onglet.etiquettes", null, initEcranEtiquette()); //$NON-NLS-1$
 		tabbedpane.addTab("configuration.onglet.interface", null, initEcranInterface()); //$NON-NLS-1$
 
-		workConfiguration = ConcoursJeunes.configuration;
+		workConfiguration = ConcoursJeunes.configuration.clone();
 
 		if(workConfiguration == null) {
 			workConfiguration = new Configuration();
-			ConcoursJeunes.configuration = workConfiguration;
 		}
 
 		affectLibelle();
@@ -153,7 +151,6 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 
 		pack();
 		setLocationRelativeTo(null);
-		setVisible(true);
 	}
 
 	/**
@@ -171,7 +168,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		JPanel jpProfil         = new JPanel();
 		JPanel jpParamGeneral   = new JPanel();
 
-		jbAjouterProfil.addActionListener(this);
+		jbRenameProfile.addActionListener(this);
 		jcbProfil.addActionListener(this);
 
 		jbDetail.addActionListener(this);
@@ -197,7 +194,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 
 		jpProfil.add(jlNomProfil);
 		jpProfil.add(jcbProfil);
-		jpProfil.add(jbAjouterProfil);
+		jpProfil.add(jbRenameProfile);
 
 		gridbagComposer.setParentPanel(jpParamGeneral);
 		c.gridy = 0; c.anchor = GridBagConstraints.WEST;     //Défaut,Haut
@@ -389,8 +386,6 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		gridbagComposer.addComponentIntoGrid(jpPathGeneral, c);
 		if(ConcoursJeunes.ajrParametreAppli.getResourceInteger("debug.mode") == 1) { //$NON-NLS-1$
 			c.gridy++;
-			gridbagComposer.addComponentIntoGrid(jcbOfficialProfile, c);
-			c.gridy++;
 			gridbagComposer.addComponentIntoGrid(jcbFirstBoot, c);
 		}
 
@@ -400,58 +395,6 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		jpEcranInterface2.add(jpEcranInterface, BorderLayout.NORTH);
 
 		return jpEcranInterface2;
-	}
-
-	/**
-	 * 
-	 * @param configuration
-	 * @return les chemins d'accès à l'executable PDF
-	 */
-	private ArrayList<String> getPdfPath(Configuration configuration) {
-		ArrayList<String> pdfPath  = new ArrayList<String>();
-
-		if(!configuration.getPdfReaderPath().equals("")) { //$NON-NLS-1$
-			pdfPath.add(configuration.getPdfReaderPath());
-		}
-		//Recherche d'un lecteur pdf en fonction du syteme
-		if(System.getProperty("os.name").startsWith("Windows")) { //$NON-NLS-1$ //$NON-NLS-2$
-
-			String base_pdfPath = ConcoursJeunes.ajrParametreAppli.getResourceString("path.windows.acrobat"); //$NON-NLS-1$
-			//tente l'ouverture de acrobat reader
-			File f = new File(base_pdfPath);
-
-			String[] fList = f.list();
-			if(fList != null) {
-				String reader = ""; //$NON-NLS-1$
-				for(int i = 0; i < fList.length; i++) {
-					if(fList[i].startsWith("Acrobat")) { //$NON-NLS-1$
-						reader = base_pdfPath + File.separator + fList[i] + "\\Reader\\AcroRd32.exe"; //$NON-NLS-1$
-						pdfPath.add(reader);
-					}
-				}
-			}
-
-		} else if(System.getProperty("os.name").contains("Linux")) { //$NON-NLS-1$ //$NON-NLS-2$
-
-			String[] pdfReader = AJToolKit.tokenize(ConcoursJeunes.ajrParametreAppli.getResourceString("path.unix.pdf"), ","); //$NON-NLS-1$ //$NON-NLS-2$
-			for(String reader : pdfReader)
-				pdfPath.add(reader);
-		}
-
-		return pdfPath;
-	}
-
-	private String[] getPossibleLanguages() {
-		//liste les langues disponible
-		String[] langues = listLangue();
-		Locale[] locales = new Locale[langues.length];
-		String[] libelleLangues = new String[langues.length];
-		for(int i = 0; i < langues.length; i++) {
-			locales[i] = new Locale(langues[i]);
-			libelleLangues[i] = locales[i].getDisplayLanguage(locales[i]);
-		}
-
-		return libelleLangues;
 	}
 
 	private void affectLibelle() {
@@ -483,7 +426,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		tbProfil.setTitle(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.general.titre0")); //$NON-NLS-1$
 		tbParamGeneral.setTitle(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.general.titre1")); //$NON-NLS-1$
 
-		jbAjouterProfil.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.general.addprofile")); //$NON-NLS-1$
+		jbRenameProfile.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.general.renameprofile")); //$NON-NLS-1$
 		jbDetail.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.detail")); //$NON-NLS-1$
 		if(jbLogoPath.getText().equals("")) //$NON-NLS-1$
 			jbLogoPath.setText(ConcoursJeunes.ajrLibelle.getResourceString("parametre.logo")); //$NON-NLS-1$
@@ -514,7 +457,6 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		jlAffResultats.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.interface.affresultat")); //$NON-NLS-1$
 		jlURLImport.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.interface.urlimport")); //$NON-NLS-1$
 		jlURLExport.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.interface.urlexport")); //$NON-NLS-1$
-		jcbOfficialProfile.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.interface.officialprofile")); //$NON-NLS-1$
 		jcbFirstBoot.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.interface.firstboot")); //$NON-NLS-1$
 
 		tbPath.setTitle(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.interface.titre1")); //$NON-NLS-1$
@@ -541,6 +483,12 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		jtfIntConc.setText(configuration.getIntituleConcours());
 
 		jcbProfil.removeActionListener(this);
+		jcbProfil.removeAllItems();
+		for(String profile : ConcoursJeunes.userRessources.listAvailableConfigurations())
+			jcbProfil.addItem(profile);
+		jcbProfil.addItem("---");
+		jcbProfil.addItem(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.general.addprofile"));
+		
 		jcbProfil.setSelectedItem(configuration.getCurProfil());
 		jcbProfil.addActionListener(this);
 
@@ -603,6 +551,58 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		jtfURLExport.setText(configuration.getExportURL());
 		jtfURLImport.setText(configuration.getImportURL());
 	}
+	
+	/**
+	 * 
+	 * @param configuration
+	 * @return les chemins d'accès à l'executable PDF
+	 */
+	private ArrayList<String> getPdfPath(Configuration configuration) {
+		ArrayList<String> pdfPath  = new ArrayList<String>();
+
+		if(!configuration.getPdfReaderPath().equals("")) { //$NON-NLS-1$
+			pdfPath.add(configuration.getPdfReaderPath());
+		}
+		//Recherche d'un lecteur pdf en fonction du syteme
+		if(System.getProperty("os.name").startsWith("Windows")) { //$NON-NLS-1$ //$NON-NLS-2$
+
+			String base_pdfPath = ConcoursJeunes.ajrParametreAppli.getResourceString("path.windows.acrobat"); //$NON-NLS-1$
+			//tente l'ouverture de acrobat reader
+			File f = new File(base_pdfPath);
+
+			String[] fList = f.list();
+			if(fList != null) {
+				String reader = ""; //$NON-NLS-1$
+				for(int i = 0; i < fList.length; i++) {
+					if(fList[i].startsWith("Acrobat")) { //$NON-NLS-1$
+						reader = base_pdfPath + File.separator + fList[i] + "\\Reader\\AcroRd32.exe"; //$NON-NLS-1$
+						pdfPath.add(reader);
+					}
+				}
+			}
+
+		} else if(System.getProperty("os.name").contains("Linux")) { //$NON-NLS-1$ //$NON-NLS-2$
+
+			String[] pdfReader = AJToolKit.tokenize(ConcoursJeunes.ajrParametreAppli.getResourceString("path.unix.pdf"), ","); //$NON-NLS-1$ //$NON-NLS-2$
+			for(String reader : pdfReader)
+				pdfPath.add(reader);
+		}
+
+		return pdfPath;
+	}
+
+	private String[] getPossibleLanguages() {
+		//liste les langues disponible
+		String[] langues = listLangue();
+		Locale[] locales = new Locale[langues.length];
+		String[] libelleLangues = new String[langues.length];
+		for(int i = 0; i < langues.length; i++) {
+			locales[i] = new Locale(langues[i]);
+			libelleLangues[i] = locales[i].getDisplayLanguage(locales[i]);
+		}
+
+		return libelleLangues;
+	}
 
 	/**
 	 * Recherche du logo club
@@ -621,6 +621,10 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		}
 		jbLogoPath.setText("<html><img src=\"file:" + f.getPath() + "\" width=90 height=100></html>"); //$NON-NLS-1$ //$NON-NLS-2$
 		workConfiguration.setLogoPath(f.getPath());
+	}
+	
+	public void showConfigurationDialog() {
+		setVisible(true);
 	}
 
 	/**
@@ -663,39 +667,22 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	}
 
 	private void loadProfile() {
-		try {
-			File f = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + File.separator + CONFIG_PROFILE + (String)jcbProfil.getSelectedItem() + EXT_XML);
+		workConfiguration.save();
+		workConfiguration = ConfigurationFactory.getConfiguration((String)jcbProfil.getSelectedItem());
+		completePanel(workConfiguration);
 
-			if(f.exists()) {
-				java.beans.XMLDecoder d = new java.beans.XMLDecoder(
-						new BufferedInputStream(
-								new FileInputStream(f)));
-				Configuration configuration = (Configuration)d.readObject();
-
-				workConfiguration = configuration;
-
-				completePanel(configuration);
-
-				workConfiguration.setCurProfil((String)jcbProfil.getSelectedItem());
-
-				d.close();
-			}
-		} catch (IOException io) {
-			JOptionPane.showMessageDialog(this,
-					"<html>" + io.getMessage() + "</html>", //$NON-NLS-1$ //$NON-NLS-2$
-					"IOException",JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
-			io.printStackTrace();
-		} catch(NullPointerException npe) {
-			JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur.restore.config"), //$NON-NLS-1$
-					ConcoursJeunes.ajrLibelle.getResourceString("erreur"),JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
-			npe.printStackTrace();
-		}
+		workConfiguration.setCurProfil((String)jcbProfil.getSelectedItem());
 	}
-
-	private void saveProfile() {
+	
+	private void renameProfile(String newName) {
 		try {
-			File f = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + File.separator + CONFIG_PROFILE + (String)jcbProfil.getSelectedItem() + EXT_XML);
-			AJToolKit.saveXMLStructure(f, workConfiguration, false);
+			File f = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + File.separator + CONFIG_PROFILE + workConfiguration.getCurProfil() + EXT_XML);
+			File fNew = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + File.separator + CONFIG_PROFILE + newName + EXT_XML);
+			f.renameTo(fNew);
+			
+			f = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + File.separator + "Profile" + File.separator + workConfiguration.getCurProfil());
+			fNew = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + File.separator + "Profile" + File.separator + newName);
+			f.renameTo(fNew);
 		} catch(NullPointerException npe) {
 			JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur.save.config"), //$NON-NLS-1$
 					ConcoursJeunes.ajrLibelle.getResourceString("erreur"),JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
@@ -704,7 +691,6 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	}
 
 	private void registerConfig() {
-		//TODO revoir saisi club
 		workConfiguration.getClub().setNom(jtfNomClub.getText());
 		workConfiguration.getClub().setAgrement(jtfAgrClub.getText());
 		workConfiguration.setIntituleConcours(jtfIntConc.getText());
@@ -742,10 +728,8 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 
 			registerConfig();
 
-			saveProfile();
-			workConfiguration.saveConfig();
-
-			ConcoursJeunes.configuration = workConfiguration;
+			workConfiguration.save();
+			workConfiguration.saveAsDefault();
 
 			setVisible(false);
 		} else if(source == jbAnnuler) {
@@ -766,22 +750,39 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 			} catch(NullPointerException npe) {
 				System.err.println("Aucune sauvegarde possible. Action annulé");
 			}
-		} else if(source == this.jbAjouterProfil) {
-			String strP = JOptionPane.showInputDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.general.newprofile")); //$NON-NLS-1$
-			if(strP != null && !strP.equals("")) { //$NON-NLS-1$
-				jcbProfil.addItem(strP);
-				workConfiguration.setCurProfil(strP);
-				jcbOfficialProfile.setSelected(false);
-
-				completePanel(workConfiguration);
-			}
 		} else if(source == this.jbDetail) {
 			EntiteDialog ed = new EntiteDialog(this);
 			ed.showEntite(workConfiguration.getClub());
 			jtfNomClub.setText(workConfiguration.getClub().getNom());
 		} else if(source == jcbProfil) {
-			if(!runInitDialog && jcbProfil.getSelectedIndex() > -1)
+			if(!runInitDialog && jcbProfil.getSelectedIndex() > -1 
+					&& jcbProfil.getSelectedIndex() < jcbProfil.getItemCount() - 2) {
 				loadProfile();
+			} else if(!runInitDialog && jcbProfil.getSelectedIndex() == jcbProfil.getItemCount() - 1) {
+				String strP = JOptionPane.showInputDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.general.newprofile")); //$NON-NLS-1$
+				if(strP != null && !strP.equals("")) { //$NON-NLS-1$
+					jcbProfil.addItem(strP);
+					workConfiguration.setCurProfil(strP);
+					workConfiguration.getMetaDataFichesConcours().removeAll();
+
+					completePanel(workConfiguration);
+				}
+			}
+		} else if(source == jbRenameProfile) {
+			String strP = JOptionPane.showInputDialog(this, 
+					ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.general.newprofile"), 
+					workConfiguration.getCurProfil()); //$NON-NLS-1$
+			if(strP != null && !strP.equals("")) { //$NON-NLS-1$
+				int insIndex = jcbProfil.getSelectedIndex();
+				renameProfile(strP);
+				jcbProfil.removeItem(workConfiguration.getCurProfil());
+				
+				workConfiguration.setCurProfil(strP);
+				workConfiguration.save();
+
+				jcbProfil.insertItemAt(strP, insIndex);
+				jcbProfil.setSelectedIndex(insIndex);
+			}
 		} else if(source == jcbLangue) {
 			if(!runInitDialog && jcbLangue.getSelectedIndex() > -1) {
 				AjResourcesReader.setLocale(new Locale(listLangue()[jcbLangue.getSelectedIndex()]));
@@ -798,7 +799,6 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	 * @see org.concoursjeunes.AutoCompleteDocumentListener#concurrentFinded(org.concoursjeunes.AutoCompleteDocumentEvent)
 	 */
 	public void concurrentFinded(AutoCompleteDocumentEvent e) {
-		// TODO Raccord de méthode auto-généré
 		
 	}
 
@@ -806,8 +806,6 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	 * @see org.concoursjeunes.AutoCompleteDocumentListener#concurrentNotFound(org.concoursjeunes.AutoCompleteDocumentEvent)
 	 */
 	public void concurrentNotFound(AutoCompleteDocumentEvent e) {
-		// TODO Raccord de méthode auto-généré
-		
 	}
 
 	/* (non-Javadoc)

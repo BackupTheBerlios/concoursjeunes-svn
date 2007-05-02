@@ -90,8 +90,15 @@ public class ConcurrentList {
 	 * @return boolean - true si la suppression à réussi, false sinon
 	 */
 	public boolean remove(Concurrent concurrent) {
-		if(concurrent != null)
-			return archList.remove(concurrent);
+		if(concurrent != null) {
+			
+			for(int i = 0; i < archList.size(); i++) {
+				if(archList.get(i).equals(concurrent) && archList.get(i).getDepart() == concurrent.getDepart()) {
+					archList.remove(i);
+					return true;
+				}
+			}
+		}
 		return false;
 	}
 
@@ -405,6 +412,7 @@ public class ConcurrentList {
 	/**
 	 * Donne la liste des distance blason utilise trie ou non par db pour un départ donné
 	 * 
+	 * @param reglement le reglement determinant les D/B
 	 * @param depart - le départ concerné
 	 * @param sort - est ce que la liste doit être trié?
 	 * 
@@ -460,9 +468,21 @@ public class ConcurrentList {
 	 * @return boolean - true si concurrent est présent
 	 */
 	public boolean contains(Concurrent concurrent) {
-		assert concurrent != null;
-
-		return this.archList.contains(concurrent);
+		if(concurrent != null)
+			return this.archList.contains(concurrent);
+		return false;
+	}
+	
+	public boolean contains(Concurrent concurrent, int depart) {
+		if(concurrent != null) {
+			ArrayList<Concurrent> conc = new ArrayList<Concurrent>();
+			for(Concurrent aConc : archList) {
+				if(aConc.getDepart() == depart)
+					conc.add(aConc);
+			}
+			return conc.contains(concurrent);
+		}
+		return false;
 	}
 
 	/**
