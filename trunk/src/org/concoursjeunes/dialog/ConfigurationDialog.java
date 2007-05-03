@@ -24,14 +24,14 @@ import ajinteractive.standard.java2.*;
  * Ecran de configuration de ConcoursJeunes
  * 
  * @author  Aurelien Jeoffray
- * @version  2.1
+ * @version  2.2
  */
 public class ConfigurationDialog extends JDialog implements ActionListener, AutoCompleteDocumentListener {
 
 	private static String CONFIG_PROFILE = "configuration_"; //$NON-NLS-1$
 	private static String EXT_XML = ".xml"; //$NON-NLS-1$
 
-	private boolean runInitDialog = true;
+	//private boolean runInitDialog = true;
 
 	private Configuration workConfiguration;
 
@@ -135,16 +135,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		tabbedpane.addTab("configuration.onglet.etiquettes", null, initEcranEtiquette()); //$NON-NLS-1$
 		tabbedpane.addTab("configuration.onglet.interface", null, initEcranInterface()); //$NON-NLS-1$
 
-		workConfiguration = ConcoursJeunes.configuration.clone();
-
-		if(workConfiguration == null) {
-			workConfiguration = new Configuration();
-		}
-
 		affectLibelle();
-		completePanel(workConfiguration);
-
-		runInitDialog = false;
 
 		getContentPane().add(tabbedpane, BorderLayout.CENTER);
 		getRootPane().setDefaultButton(this.jbValider);
@@ -237,6 +228,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		return jpEcranGeneral;
 	}
 
+	
 	/**
 	 * Genere l'onglet concours
 	 * 
@@ -276,6 +268,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		return jpEcranConcours;
 	}
 
+	
 	/**
 	 * Genere l'onglet des etiquettes
 	 * 
@@ -623,8 +616,14 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		workConfiguration.setLogoPath(f.getPath());
 	}
 	
-	public void showConfigurationDialog() {
+	public Configuration showConfigurationDialog(Configuration configuration) {
+		this.workConfiguration = configuration;
+		
+		completePanel(workConfiguration);
+		pack();
 		setVisible(true);
+		
+		return workConfiguration;
 	}
 
 	/**
@@ -725,14 +724,11 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
 		if(source == this.jbValider) {
-
 			registerConfig();
-
-			workConfiguration.save();
-			workConfiguration.saveAsDefault();
-
 			setVisible(false);
 		} else if(source == jbAnnuler) {
+			workConfiguration = null;
+			
 			setVisible(false);
 		} else if(source == jbLogoPath) {
 			changeLogoPath();
@@ -753,12 +749,13 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		} else if(source == this.jbDetail) {
 			EntiteDialog ed = new EntiteDialog(this);
 			ed.showEntite(workConfiguration.getClub());
+			
 			jtfNomClub.setText(workConfiguration.getClub().getNom());
 		} else if(source == jcbProfil) {
-			if(!runInitDialog && jcbProfil.getSelectedIndex() > -1 
+			if(jcbProfil.getSelectedIndex() > -1 
 					&& jcbProfil.getSelectedIndex() < jcbProfil.getItemCount() - 2) {
 				loadProfile();
-			} else if(!runInitDialog && jcbProfil.getSelectedIndex() == jcbProfil.getItemCount() - 1) {
+			} else if(jcbProfil.getSelectedIndex() == jcbProfil.getItemCount() - 1) {
 				String strP = JOptionPane.showInputDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.general.newprofile")); //$NON-NLS-1$
 				if(strP != null && !strP.equals("")) { //$NON-NLS-1$
 					jcbProfil.addItem(strP);
@@ -782,12 +779,6 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 
 				jcbProfil.insertItemAt(strP, insIndex);
 				jcbProfil.setSelectedIndex(insIndex);
-			}
-		} else if(source == jcbLangue) {
-			if(!runInitDialog && jcbLangue.getSelectedIndex() > -1) {
-				AjResourcesReader.setLocale(new Locale(listLangue()[jcbLangue.getSelectedIndex()]));
-				ConcoursJeunes.ajrLibelle = new AjResourcesReader("libelle"); //$NON-NLS-1$
-				affectLibelle();
 			}
 		} else if(source == this.jcbExpert) {
 			jtfURLExport.setEnabled(this.jcbExpert.isSelected());

@@ -97,4 +97,47 @@ public class MetaDataFicheConcours implements ParametreListener {
 	public void parametreChanged(ParametreEvent parametreEvent) {
 		
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int PRIME = 31;
+		int result = 1;
+		result = PRIME * result + ((dateConcours == null) ? 0 : dateConcours.hashCode());
+		result = PRIME * result + ((filenameConcours == null) ? 0 : filenameConcours.hashCode());
+		result = PRIME * result + ((intituleConcours == null) ? 0 : intituleConcours.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final MetaDataFicheConcours other = (MetaDataFicheConcours) obj;
+		if (dateConcours == null) {
+			if (other.dateConcours != null)
+				return false;
+		} else if (!dateConcours.equals(other.dateConcours))
+			return false;
+		if (filenameConcours == null) {
+			if (other.filenameConcours != null)
+				return false;
+		} else if (!filenameConcours.equals(other.filenameConcours))
+			return false;
+		if (intituleConcours == null) {
+			if (other.intituleConcours != null)
+				return false;
+		} else if (!intituleConcours.equals(other.intituleConcours))
+			return false;
+		return true;
+	}
 }
