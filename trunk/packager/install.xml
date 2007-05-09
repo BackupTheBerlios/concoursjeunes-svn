@@ -106,6 +106,8 @@
 			<fileset dir="../pack" targetdir="$INSTALL_PATH">
 				<include name="*.txt" />
 				<include name="*.jar" />
+				<include name="*.exe" />
+				<include name="*.DLL" />
 				<include name="start.sh" />
 				<include name="bin/native/**/*" />				<include name="base/**/*" />
 				<include name="config/**/*" />
