@@ -77,6 +77,10 @@ public class Cible {
 	public int getNbArcher() {
 		return nbArcher;
 	}
+	
+	public int getNbMaxArchers() {
+		return concurrents.length;
+	}
 
 	/**
 	 * @return reglement

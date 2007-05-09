@@ -1,4 +1,6 @@
 /*
+ * Créer le 4 mai 07 à 18:38:27 pour ConcoursJeunes
+ *
  * Copyright 2002-2007 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
@@ -84,189 +86,33 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
 package org.concoursjeunes;
 
-import java.util.*;
+import java.io.File;
 
-import javax.swing.event.EventListenerList;
-
-import static org.concoursjeunes.ConcoursJeunes.ajrParametreAppli;
+import ajinteractive.standard.java2.AJToolKit;
 
 /**
- * Parametre d'un concours
- * 
- * @author Aurelien Jeoffray
- * @version 3.0
+ * @author Aurélien JEOFFRAY
+ *
  */
-public class Parametre extends DefaultParameters {
-	private Date dDateConcours		= new Date(); //$NON-NLS-1$
-	private ArrayList<String> vArbitres = new ArrayList<String>();
-	private Reglement reglement		= new Reglement();
-
-	private String saveName         = System.currentTimeMillis()
-			+ ajrParametreAppli.getResourceString("extention.concours"); //$NON-NLS-1$
-	
-	private boolean reglementLock = false;
-	
-	private EventListenerList listeners = new EventListenerList();
-
-	/**
-	 * 
-	 *
-	 */
-	public Parametre() {
+public class FicheConcoursFactory {
+	public static FicheConcours getFicheConcours(MetaDataFicheConcours metaDataFicheConcours) {
+		File fFiche = new File(ConcoursJeunes.userRessources.getConcoursPathForProfile(
+				ConcoursJeunes.configuration.getCurProfil()) + File.separator + 
+				metaDataFicheConcours.getFilenameConcours());
+		Object[] savedStructure = (Object[])AJToolKit.loadXMLStructure(fFiche, true);
 		
-	}
-	
-	/**
-	 * Construit un nouvel objet parametre en initialisant ses valeurs par defaut
-	 * à partir d'une configuration.
-	 * 
-	 * @param configuration la configuration servant de référence pour l'attribution des
-	 * valeurs de l'objet
-	 */
-	public Parametre(Configuration configuration) {
-		setClub(configuration.getClub());
-		setIntituleConcours(configuration.getIntituleConcours());
-		setNbCible(configuration.getNbCible());
-		setNbTireur(configuration.getNbTireur());
-		setNbDepart(configuration.getNbDepart());
-		setReglement(ReglementFactory.getReglement(configuration.getReglementName()));
-	}
-	
-	/**
-	 * Ajoute un auditeur aux evenements de l'objet
-	 * 
-	 * @param parametreListener l'auditeur à ajouter
-	 */
-	public void addParametreListener(ParametreListener parametreListener) {
-		listeners.add(ParametreListener.class, parametreListener);
-	}
-	
-	/**
-	 * Revoque un auditeurs pour l'objet
-	 * 
-	 * @param parametreListener l'auditeur à supprimer
-	 */
-	public void removeParametreListener(ParametreListener parametreListener) {
-		listeners.add(ParametreListener.class, parametreListener);
-	}
-	
-	/**
-	 * Donne la date du concours
-	 * 
-	 * @return Date - la date du concours;
-	 */
-	public Date getDate() {
-		return dDateConcours;
-	}
+		if(savedStructure != null) {
+			//lecture du fichier
+			FicheConcours ficheConcours = new FicheConcours();
+			ficheConcours.setFiche(savedStructure, metaDataFicheConcours);
 
-	/**
-	 * Donne la liste des arbitres
-	 * 
-	 * @return la liste des arbitres
-	 */
-	public ArrayList<String> getArbitres() {
-		return vArbitres;
-	}
-
-	/**
-	 * Donne le chemin du fichier de sauvegarde du concours
-	 * 
-	 * @return  String
-	 * @uml.property  name="saveName"
-	 */
-	public String getSaveName() {
-		return saveName;
-	}
-
-	/**
-	 * specifie la date du concours
-	 * 
-	 * @param sDateConcours
-	 */
-	public void setDate(Date dDateConcours) {
-		this.dDateConcours = dDateConcours;
-		fireMetaDataChanged();
-	}
-
-	/**
-	 * specifie la liste des arbitres
-	 * 
-	 * @param vArbitres
-	 */
-	public void setArbitres(ArrayList<String> vArbitres) {
-		this.vArbitres = vArbitres;
-		fireParametreChanged();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.concoursjeunes.DefaultParameters#setIntituleConcours(java.lang.String)
-	 */
-	@Override
-	public void setIntituleConcours(String intituleConcours) {
-		super.setIntituleConcours(intituleConcours);
-		fireMetaDataChanged();
-	}
-
-	/**
-	 * specifie le nom de sauvegarde des infos du concours
-	 * 
-	 * @param  saveName
-	 * @uml.property  name="saveName"
-	 */
-	public void setSaveName(String saveName) {
-		this.saveName = saveName;
-		fireMetaDataChanged();
-	}
-	
-	/**
-	 * Retourne le reglement appliqué au concours
-	 * 
-	 * @return le reglement appliqué 
-	 */
-	public Reglement getReglement() {
-		return reglement;
-	}
-
-	/**
-	 * Définit le réglement à appliqué au concours
-	 * 
-	 * @param reglement le réglement à appliquer
-	 */
-	public void setReglement(Reglement reglement) {
-		this.reglement = reglement;
-		fireParametreChanged();
-	}
-
-	/**
-	 * Indique si le reglement du concours peut ou non être changé
-	 * 
-	 * @return true si le reglement peut être choisi, false sinon
-	 */
-	public boolean isReglementLock() {
-		return reglementLock;
-	}
-
-	/**
-	 * Definit le statut de changement du reglement
-	 * 
-	 * @param reglementLock true le reglement peut être changé, false il ne peut pas
-	 */
-	public void setReglementLock(boolean reglementLock) {
-		this.reglementLock = reglementLock;
-	}
-
-	private void fireMetaDataChanged() {
-		for(ParametreListener pl : listeners.getListeners(ParametreListener.class)) {
-			pl.metaDataChanged(new ParametreEvent(this));
+			System.out.println("Fin chargement du concours " + metaDataFicheConcours.getIntituleConcours());
+			return ficheConcours;
 		}
-	}
-	
-	private void fireParametreChanged() {
-		for(ParametreListener pl : listeners.getListeners(ParametreListener.class)) {
-			pl.parametreChanged(new ParametreEvent(this));
-		}
+		
+		System.err.println("Echec de chargement du concours " + metaDataFicheConcours.getIntituleConcours());
+		return null;
 	}
 }

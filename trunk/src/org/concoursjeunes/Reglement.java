@@ -1,5 +1,5 @@
 /*
- * Créer le 02/03/2007 à 17:36 pour ConcoursJeunes
+ * Créé le 02/03/2007 à 17:36 pour ConcoursJeunes
  *
  * Copyright 2002-2007 - Aurélien JEOFFRAY
  *
@@ -437,8 +437,8 @@ public class Reglement {
 						+ "NBMEMBRESRETENU=" + nbMembresRetenu + ", ISOFFICIAL=" + ((officialReglement)?"TRUE":"FALSE")
 						+ " WHERE NUMREGLEMENT=" + idReglement);
 				//les tableaux de critères et correspondance son détruit pour pouvoir être plus facilement recréer 
-				stmt.executeQuery("delete from CRITERE where NUMREGLEMENT=" + idReglement);
-				stmt.executeQuery("delete from DISTANCESBLASONS where NUMREGLEMENT=" + idReglement);
+				stmt.executeUpdate("delete from CRITERE where NUMREGLEMENT=" + idReglement);
+				stmt.executeUpdate("delete from DISTANCESBLASONS where NUMREGLEMENT=" + idReglement);
 			
 			//dans le cas contraire il faut créer son entrée dans la base
 			} else {

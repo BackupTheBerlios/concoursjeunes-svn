@@ -273,22 +273,24 @@ public class Concurrent extends Archer {
 	}
 	
 	public void saveCriteriaSet(Reglement reglement) {
-		try {
-			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
-			
-			stmt.executeUpdate("delete from distinguer where NUMLICENCEARCHER='" + getNumLicenceArcher() +
-					"' and NUMREGLEMENT=" + reglement.getIdReglement());
-			for(Entry<Criterion, CriterionElement> entry : criteriaSet.getCriteria().entrySet()) {
-				Criterion criterion = entry.getKey();
-				CriterionElement criterionElement = entry.getValue();
+		if(!getNumLicenceArcher().equals("")) {
+			try {
+				Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 				
-				stmt.executeUpdate("insert into distinguer (NUMLICENCEARCHER, CODECRITEREELEMENT, CODECRITERE, NUMREGLEMENT) " +
-						"values ('" + getNumLicenceArcher() + "', '" + criterionElement.getCode() + "', '" +
-						criterion.getCode() + "', " + reglement.getIdReglement() + ")");
+				stmt.executeUpdate("delete from distinguer where NUMLICENCEARCHER='" + getNumLicenceArcher() +
+						"' and NUMREGLEMENT=" + reglement.getIdReglement());
+				for(Entry<Criterion, CriterionElement> entry : criteriaSet.getCriteria().entrySet()) {
+					Criterion criterion = entry.getKey();
+					CriterionElement criterionElement = entry.getValue();
+					
+					stmt.executeUpdate("insert into distinguer (NUMLICENCEARCHER, CODECRITEREELEMENT, CODECRITERE, NUMREGLEMENT) " +
+							"values ('" + getNumLicenceArcher() + "', '" + criterionElement.getCode() + "', '" +
+							criterion.getCode() + "', " + reglement.getIdReglement() + ")");
+				}
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
 	}
 
@@ -320,10 +322,10 @@ public class Concurrent extends Archer {
 					filters.add("NUMLICENCEARCHER like '" + aGeneric.getNumLicenceArcher() + "'");
 				}
 				if(aGeneric.getNomArcher().length() > 0) {
-					filters.add("NOMARCHER like '" + aGeneric.getNomArcher() + "'");
+					filters.add("NOMARCHER like '" + aGeneric.getNomArcher().replaceAll("'", "''") + "'");
 				}
 				if(aGeneric.getPrenomArcher().length() > 0) {
-					filters.add("UPPER(PRENOMARCHER) like '" + aGeneric.getPrenomArcher().toUpperCase() + "'");
+					filters.add("UPPER(PRENOMARCHER) like '" + aGeneric.getPrenomArcher().toUpperCase().replaceAll("'", "''") + "'");
 				}
 				if(aGeneric.getClub().getAgrement().length() > 0) {
 					filters.add("AGREMENTENTITE like '" + aGeneric.getClub().getAgrement() + "'");

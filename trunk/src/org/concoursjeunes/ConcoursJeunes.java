@@ -98,11 +98,11 @@ import java.sql.Statement;
 import java.util.*;
 
 import javax.naming.ConfigurationException;
-import javax.swing.JOptionPane;
 import javax.swing.event.EventListenerList;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.jdesktop.swingx.JXErrorDialog;
 import org.xml.sax.*;
 
 import com.lowagie.text.*;
@@ -224,7 +224,9 @@ public class ConcoursJeunes {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, e.getLocalizedMessage(), "SQL Error", JOptionPane.ERROR_MESSAGE);
+			JXErrorDialog.showDialog(null, "SQL Error", e.getLocalizedMessage(),
+					e.fillInStackTrace());
+			System.exit(1);
 		}
 	}
 	
@@ -336,25 +338,11 @@ public class ConcoursJeunes {
 		if(configuration == null)
 			throw new ConfigurationException("la configuration est null");
 		
-		FicheConcours ficheConcours = null;
+		FicheConcours ficheConcours = FicheConcoursFactory.getFicheConcours(metaDataFicheConcours);
 		
-		File fFiche = new File(userRessources.getConcoursPathForProfile(
-				configuration.getCurProfil()) + File.separator + 
-				metaDataFicheConcours.getFilenameConcours());
-		Object[] savedStructure = (Object[])AJToolKit.loadXMLStructure(fFiche, true);
-		
-		if(savedStructure != null) {
-			//lecture du fichier
-			ficheConcours = new FicheConcours();
-			ficheConcours.setFiche(savedStructure, metaDataFicheConcours);
-
+		if(ficheConcours != null) {
 			fichesConcours.add(ficheConcours);
-			
 			fireFicheConcoursRestored(ficheConcours);
-			
-			System.out.println("Fin chargement du concours " + metaDataFicheConcours.getIntituleConcours());
-		} else {
-			System.err.println("Echec de chargement du concours " + metaDataFicheConcours.getIntituleConcours());
 		}
 	}
 

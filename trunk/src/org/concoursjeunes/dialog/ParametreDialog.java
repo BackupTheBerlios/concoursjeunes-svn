@@ -12,7 +12,7 @@ import java.awt.event.*;
 import javax.swing.*;
 
 import org.concoursjeunes.*;
-import org.concoursjeunes.ui.FicheConcoursPane;
+import org.concoursjeunes.ui.ConcoursJeunesFrame;
 import org.jdesktop.swingx.JXDatePicker;
 
 import ajinteractive.standard.java2.*;
@@ -24,7 +24,9 @@ import ajinteractive.standard.java2.*;
  */
 public class ParametreDialog extends JDialog implements ActionListener {
 	
-//private:
+	private Parametre parametre;
+	private Reglement tempReglement;
+	
 	private FicheConcours ficheConcours;
 	
 	//private JButton jbLogo;
@@ -40,7 +42,7 @@ public class ParametreDialog extends JDialog implements ActionListener {
 	private JButton jbAjouterArbitre = new JButton();
 	private JButton jbSupprimerArbitre = new JButton();
 	private JButton jbArbitreResponsable = new JButton();
-	private JList jlArbitres = new JList();
+	private AJList jlArbitres = new AJList();
 	
 	private JLabel jlIntituleConcours = new JLabel();
 	private JLabel jlDateConcours = new JLabel(); //$NON-NLS-1$
@@ -55,21 +57,19 @@ public class ParametreDialog extends JDialog implements ActionListener {
 	private JButton jbValider = new JButton();
 	private JButton jbAnnuler = new JButton();
 	
-	public ParametreDialog(FicheConcoursPane ficheConcoursFrame) {
-		super(ficheConcoursFrame.getParentframe());
+	public ParametreDialog(ConcoursJeunesFrame concoursJeunesFrame, FicheConcours ficheConcours) {
+		super(concoursJeunesFrame);
 		
-		reglementDialog = new ReglementDialog(ficheConcoursFrame.getParentframe());
+		this.ficheConcours = ficheConcours;
 		
-		this.ficheConcours = ficheConcoursFrame.ficheConcours;
+		reglementDialog = new ReglementDialog(concoursJeunesFrame, null);
 		
 		init();
 		affectLibelle();
-		completePanel();
 		
 		getRootPane().setDefaultButton(jbValider);
 		setModal(true);
-		pack();
-		setLocationRelativeTo(null);
+		
 		//this.setResizable(false);
 	}
     
@@ -165,7 +165,12 @@ public class ParametreDialog extends JDialog implements ActionListener {
 	 * 
 	 *
 	 */
-	public void showParametreDialog() {
+	public void showParametreDialog(Parametre parametre) {
+		this.parametre = parametre;
+		completePanel();
+		
+		pack();
+		setLocationRelativeTo(null);
 		setVisible(true);
 	}
 	
@@ -194,57 +199,103 @@ public class ParametreDialog extends JDialog implements ActionListener {
 	}
 	
 	public void completePanel() {
-		jtfIntituleConcours.setText(ficheConcours.getParametre().getIntituleConcours());
-		jtfDateConcours.setDate(ficheConcours.getParametre().getDate());
-		jcbReglement.setSelectedItem(ficheConcours.getParametre().getReglement().getName());
-		jcbReglement.setEnabled(!ficheConcours.getParametre().isReglementLock());
-		jtfNombreCible.setText(""+ficheConcours.getParametre().getNbCible());
-		jcbNombreTireurParCible.setSelectedIndex((ficheConcours.getParametre().getNbTireur() / 2) - 1);
-		jtfNombreDepart.setText(""+ficheConcours.getParametre().getNbDepart());
-		jlArbitres.setListData(ficheConcours.getParametre().getArbitres().toArray());
+		jtfIntituleConcours.setText(parametre.getIntituleConcours());
+		jtfDateConcours.setDate(parametre.getDate());
+		jcbReglement.setSelectedItem(parametre.getReglement().getName());
+		jcbReglement.setEnabled(!parametre.isReglementLock());
+		jtfNombreCible.setText(""+parametre.getNbCible());
+		jcbNombreTireurParCible.setSelectedIndex((parametre.getNbTireur() / 2) - 1);
+		jtfNombreDepart.setText(""+parametre.getNbDepart());
+		jlArbitres.setListData(parametre.getArbitres().toArray());
+		
+		tempReglement = parametre.getReglement();
 	}
 
 	public void actionPerformed(ActionEvent ae) {
 		if(ae.getSource() == jbValider) {
-			ficheConcours.getParametre().setIntituleConcours(jtfIntituleConcours.getText());
-			ficheConcours.getParametre().setDate(jtfDateConcours.getDate());
-			ficheConcours.getParametre().setNbCible(Integer.parseInt(jtfNombreCible.getText()));
-			ficheConcours.getParametre().setNbTireur((Integer)jcbNombreTireurParCible.getSelectedItem());
-			ficheConcours.getParametre().setNbDepart(Integer.parseInt(jtfNombreDepart.getText()));
-			ficheConcours.getParametre().setReglement(ReglementFactory.getReglement((String)jcbReglement.getSelectedItem()));
-			ficheConcours.getParametre().setReglementLock(true);
 			
-			//sauvegarde en tache de fond
-			ficheConcours.save();
+			int placelibre = parametre.getNbCible();
+			for(int i = 0; i < parametre.getNbDepart(); i++) {
+				//ficheConcours.getPasDeTir(i).getOccupationCibles();
+				int placelibre_tmp = ficheConcours.getPasDeTir(i).getNbCiblesLibre((Integer)jcbNombreTireurParCible.getSelectedItem());
+				if(placelibre_tmp < placelibre)
+					placelibre = placelibre_tmp;
+			}
+			
+			if(placelibre < 0 || parametre.getNbCible() - placelibre > Integer.parseInt(jtfNombreCible.getText())) {
+				JOptionPane.showMessageDialog(this,
+						"Le nombre de cible avec le rythme de tir est trop faible " +
+						"pour le nombre courrant de concurrent inscrit", //$NON-NLS-1$
+						"Nombre de cible impossible",JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
+				return;
+			}
+			
+			if(Integer.parseInt(jtfNombreDepart.getText()) < parametre.getNbDepart()) {
+				for(int i = Integer.parseInt(jtfNombreDepart.getText()); i < parametre.getNbDepart(); i++) {
+					if(ficheConcours.getConcurrentList().countArcher(i) > 0) {
+						JOptionPane.showMessageDialog(this,
+								"Vous ne pouvez pas réduire le nombre de départ en raison de la présence d'archers sur ceux ci", //$NON-NLS-1$
+								"Nombre de départ impossible",JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
+						return;
+					}
+				}
+			}
+			
+			/*for(int i = 0; i < Integer.parseInt(jtfNombreDepart.getText()); i++) {
+				ArrayList<DistancesEtBlason> lDB = ficheConcours.getConcurrentList().listDistancesEtBlason(
+						parametre.getReglement(), true, i);
+				if(ficheConcours.getPasDeTir(i).getOptimalRythme(lDB) > (Integer)jcbNombreTireurParCible.getSelectedItem()) {
+					JOptionPane.showMessageDialog(this,
+							"Il y a trop d'archers pour pouvoir réduire le nombre de départ", //$NON-NLS-1$
+							"Rythme de tir impossible",JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
+					return;
+				}
+			}*/
+				
+			
+			parametre.setIntituleConcours(jtfIntituleConcours.getText());
+			parametre.setDate(jtfDateConcours.getDate());
+			parametre.getArbitres().clear();
+			for(Object arbitre : jlArbitres.getAllList()) {
+				parametre.getArbitres().add((String)arbitre);
+			}
+			
+			parametre.setNbCible(Integer.parseInt(jtfNombreCible.getText()));
+			parametre.setNbTireur((Integer)jcbNombreTireurParCible.getSelectedItem());
+			parametre.setNbDepart(Integer.parseInt(jtfNombreDepart.getText()));
+			if(parametre.isReglementLock())
+				parametre.setReglement(tempReglement);
+			else
+				parametre.setReglement(ReglementFactory.getReglement((String)jcbReglement.getSelectedItem()));
+			parametre.setReglementLock(true);
 			
 			setVisible(false);
 		} else if(ae.getSource() == jbAnnuler) {
 			setVisible(false);
 		} else if(ae.getSource() == jbAjouterArbitre || ae.getSource() == jtfArbitres) {
-			ficheConcours.getParametre().getArbitres().add(jtfArbitres.getText());
+
+			jlArbitres.add(jtfArbitres.getText());
 			jtfArbitres.setText(""); //$NON-NLS-1$
-			jlArbitres.setListData(ficheConcours.getParametre().getArbitres().toArray());
 		} else if(ae.getSource() == jbSupprimerArbitre) {
-			ficheConcours.getParametre().getArbitres().remove(jlArbitres.getSelectedIndex());
-			jlArbitres.setListData(ficheConcours.getParametre().getArbitres().toArray());
+			jlArbitres.remove(jlArbitres.getSelectedIndex());
 		} else if(ae.getSource() == jbArbitreResponsable && jlArbitres.getSelectedIndex() > -1) {
 			//cherche si il existe un arbitre responsable
 			boolean resp = false;
-			for(int i = 0; i < ficheConcours.getParametre().getArbitres().size(); i++) {
-				if(ficheConcours.getParametre().getArbitres().get(i).startsWith("*")) { //$NON-NLS-1$
+			for(int i = 0; i < parametre.getArbitres().size(); i++) {
+				if(parametre.getArbitres().get(i).startsWith("*")) { //$NON-NLS-1$
 					resp = true;
 					
 					//si il en existe 1 et qu'il est different de celui que l'on veut
 					if(i != jlArbitres.getSelectedIndex()) {
 						//affecter à ce statut alors retirer l'* de la selection precedente
-						String strArbitreResponsable = ficheConcours.getParametre().getArbitres().get(i);
-						ficheConcours.getParametre().getArbitres().set(i, strArbitreResponsable.substring(1));
+						String strArbitreResponsable = parametre.getArbitres().get(i);
+						parametre.getArbitres().set(i, strArbitreResponsable.substring(1));
 						
 						//et l'ajouter sur la nouvelle selection
-						strArbitreResponsable = ficheConcours.getParametre().getArbitres().get(jlArbitres.getSelectedIndex());
-						ficheConcours.getParametre().getArbitres().set(jlArbitres.getSelectedIndex(), "*" + strArbitreResponsable); //$NON-NLS-1$
+						strArbitreResponsable = parametre.getArbitres().get(jlArbitres.getSelectedIndex());
+						parametre.getArbitres().set(jlArbitres.getSelectedIndex(), "*" + strArbitreResponsable); //$NON-NLS-1$
 						
-						jlArbitres.setListData(ficheConcours.getParametre().getArbitres().toArray());
+						jlArbitres.setListData(parametre.getArbitres().toArray());
 					}
 					
 					break;
@@ -252,20 +303,20 @@ public class ParametreDialog extends JDialog implements ActionListener {
 			}
 			
 			if(!resp) {
-				String strArbitreResponsable = ficheConcours.getParametre().getArbitres().get(jlArbitres.getSelectedIndex());
-				ficheConcours.getParametre().getArbitres().set(jlArbitres.getSelectedIndex(), "*" + strArbitreResponsable); //$NON-NLS-1$
+				String strArbitreResponsable = parametre.getArbitres().get(jlArbitres.getSelectedIndex());
+				parametre.getArbitres().set(jlArbitres.getSelectedIndex(), "*" + strArbitreResponsable); //$NON-NLS-1$
 				
-				jlArbitres.setListData(ficheConcours.getParametre().getArbitres().toArray());
+				jlArbitres.setListData(parametre.getArbitres().toArray());
 			}
 		} else if(ae.getSource() == jbDetail) {
-			reglementDialog.setReglement(ficheConcours.getParametre().getReglement());
-			if(ficheConcours.getParametre().isReglementLock())
+			reglementDialog.setReglement(tempReglement);
+			if(parametre.isReglementLock())
 				reglementDialog.setVerrou(ReglementDialog.LOCK_CHANGE_L1);
 			else
 				reglementDialog.setVerrou(ReglementDialog.NO_LOCK);
 			Reglement reglement = reglementDialog.showReglementDialog();
 			if(reglement != null)
-				ficheConcours.getParametre().setReglement(reglement);
+				tempReglement = reglement;
 		}
 	}
 }

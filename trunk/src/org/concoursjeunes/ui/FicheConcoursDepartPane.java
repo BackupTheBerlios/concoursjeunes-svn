@@ -40,8 +40,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-//import javax.swing.tree.DefaultMutableTreeNode;
-//import javax.swing.tree.DefaultTreeModel;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
 import org.concoursjeunes.ConcurrentList;
@@ -65,7 +65,7 @@ import ajinteractive.standard.java2.GhostGlassPane;
  * @version  1.0
  */
 public class FicheConcoursDepartPane extends JPanel implements ActionListener, MouseListener, MouseMotionListener,
-		ListSelectionListener, KeyListener, FicheConcoursListener {
+		ListSelectionListener, KeyListener, FicheConcoursListener, TreeSelectionListener {
 
 	private JButton jbAjouterArcher    = new JButton();
 	private JButton jbSupprimerArcher  = new JButton();
@@ -81,18 +81,18 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 	private JButton jbPrintPasDeTir    = new JButton();
 
 	private AJList ajlConcurrent		= new AJList();
-	//private DnDJTree treeTarget        = new DnDJTree();
 	private JTree treeTarget			= new JTree();
-	//private DefaultTreeModel treeModel	= new DefaultTreeModel(new DefaultMutableTreeNode());
 	private TargetTreeModel treeModel	= new TargetTreeModel();
 	private JPopupMenu popup;
 
 	private FicheConcoursPane ficheConcoursPane = null;
-	//private Concurrent tmpconc			= null;
+
 	private Object dragObject			= null;
 	private int depart					= 0;
 
 	private boolean onDrag				= false;
+	
+	private FicheConcours ficheConcours;
 
 	/**
 	 * Construction du panneau
@@ -103,10 +103,11 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 	public FicheConcoursDepartPane(FicheConcoursPane ficheConcoursPane, int depart) {
 		this.ficheConcoursPane = ficheConcoursPane;
 		this.depart = depart;
+		this.ficheConcours = ficheConcoursPane.getFicheConcours();
 		
 		//s'enregistre comme auditeur des changement de la fiche concours
-		ficheConcoursPane.ficheConcours.addFicheConcoursListener(this);
-
+		ficheConcours.addFicheConcoursListener(this);
+		
 		init();
 		affectLibelle();
 		initContent();
@@ -251,6 +252,7 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 		treeTarget.addMouseListener(this);
 		treeTarget.addMouseMotionListener(this);
 		treeTarget.addKeyListener(this);
+		treeTarget.addTreeSelectionListener(this);
 		//treeTarget.addOut(this);
 		treeTarget.setCellRenderer(new CibleRenderer(
 				new ImageIcon(
@@ -325,7 +327,7 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 	 */
 	private void createListeParNom() {
 		ajlConcurrent.setListData(
-				ConcurrentList.sort(ficheConcoursPane.ficheConcours.getConcurrentList().list(depart), 
+				ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), 
 						ConcurrentList.SORT_BY_CIBLES));
 	}
 
@@ -334,7 +336,7 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 	 * 
 	 */
 	private void createListeParCible() {
-		treeModel.setTargetChilds(ficheConcoursPane.ficheConcours.getPasDeTir(depart).getTargets());
+		treeModel.setTargetChilds(ficheConcours.getPasDeTir(depart).getTargets());
 	}
 	
 	/**
@@ -348,7 +350,7 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 			if(codeRetour != ConcurrentDialog.CANCEL 
 					&& !ficheConcoursPane.concDialog.getConcurrent().getNomArcher().equals("")) { //$NON-NLS-1$
 				
-				ficheConcoursPane.ficheConcours.addConcurrent(ficheConcoursPane.concDialog.getConcurrent(), depart);
+				ficheConcours.addConcurrent(ficheConcoursPane.concDialog.getConcurrent(), depart);
 			}
 		} while(codeRetour == ConcurrentDialog.CONFIRM_AND_NEXT);
 	}
@@ -364,7 +366,7 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 				ConcoursJeunes.ajrLibelle.getResourceString("confirmation.suppression.titre"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.NO_OPTION) //$NON-NLS-1$
 			return;
 
-		ficheConcoursPane.ficheConcours.removeConcurrent(removedConcurrent);
+		ficheConcours.removeConcurrent(removedConcurrent);
 	}
 
 	/**
@@ -378,11 +380,11 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 				ConcoursJeunes.ajrLibelle.getResourceString("confirmation.replacement.titre"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.NO_OPTION) //$NON-NLS-1$
 			return;
 
-		ficheConcoursPane.ficheConcours.getPasDeTir(depart).placementConcurrents();
+		ficheConcours.getPasDeTir(depart).placementConcurrents();
 		
 		if(jcbSortCible.isSelected()) {
 			ajlConcurrent.setListData(
-					ConcurrentList.sort(ficheConcoursPane.ficheConcours.getConcurrentList().list(depart), 
+					ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), 
 							ConcurrentList.SORT_BY_CIBLES));
 		}
 		treeTarget.repaint();
@@ -414,7 +416,7 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 			return;
 		}
 		
-		if(cible == null || !ficheConcoursPane.ficheConcours.getPasDeTir(depart).placementConcurrent(concurrent, cible, position)) {
+		if(cible == null || !ficheConcours.getPasDeTir(depart).placementConcurrent(concurrent, cible, position)) {
 			JOptionPane.showMessageDialog(new JDialog(),
 					ConcoursJeunes.ajrLibelle.getResourceString("erreur.noplacement"), //$NON-NLS-1$
 					ConcoursJeunes.ajrLibelle.getResourceString("erreur.noplacement.titre"),JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
@@ -427,7 +429,7 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 	 * @param concurrent - le concurrent à retirer
 	 */
 	private void retraitPlacementConcurrent(Concurrent concurrent) {
-		ficheConcoursPane.ficheConcours.getPasDeTir(depart).retraitConcurrent(concurrent);
+		ficheConcours.getPasDeTir(depart).retraitConcurrent(concurrent);
 	}
 
 	/**
@@ -475,6 +477,13 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.concoursjeunes.FicheConcoursListener#pasDeTirChanged(org.concoursjeunes.FicheConcoursEvent)
+	 */
+	public void pasDeTirChanged(FicheConcoursEvent e) {
+		createListeParCible();
+	}
+
 	/**
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
@@ -489,11 +498,11 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 			removeSelectedConcurrent();
 		} else if(source == jbEquipe) {
 			//Creer les equipes
-			EquipeDialog ed = new EquipeDialog(ficheConcoursPane.getParentframe(), ficheConcoursPane.ficheConcours);
+			EquipeDialog ed = new EquipeDialog(ficheConcoursPane.getParentframe(), ficheConcours);
 			if(ed.isValider()) {
-				ficheConcoursPane.ficheConcours.getEquipes().removeAll();
+				ficheConcours.getEquipes().removeAll();
 				for(Equipe equipe : ed.getEquipes())
-					ficheConcoursPane.ficheConcours.getEquipes().add(equipe);
+					ficheConcours.getEquipes().add(equipe);
 			}
 		} else if(source == jbPlacementArcher) {
 			placementConcurrents();
@@ -501,22 +510,22 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 			TypeListingDialog tld = new TypeListingDialog(ficheConcoursPane.getParentframe());
 			int returnType = tld.showTypeListingDialog();
 			if(returnType == TypeListingDialog.ALPHA)
-				ficheConcoursPane.ficheConcours.printArcherList(FicheConcours.ALPHA);
+				ficheConcours.printArcherList(FicheConcours.ALPHA);
 			else if(returnType == TypeListingDialog.GREFFE)
-				ficheConcoursPane.ficheConcours.printArcherList(FicheConcours.GREFFE);
+				ficheConcours.printArcherList(FicheConcours.GREFFE);
 		} else if(source == jbPrintEtiquettes) {
-			ficheConcoursPane.ficheConcours.printEtiquettes();
+			ficheConcours.printEtiquettes();
 		} else if(source == jbPrintPasDeTir) {
-			ficheConcoursPane.ficheConcours.printPasDeTir();
+			ficheConcours.printPasDeTir();
 		} else if(source instanceof JRadioButton) {
 			if(source == jcbSortCible)
-				ajlConcurrent.setListData(ConcurrentList.sort(ficheConcoursPane.ficheConcours.getConcurrentList().list(depart), 
+				ajlConcurrent.setListData(ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), 
 						ConcurrentList.SORT_BY_CIBLES));
 			else if(source == jcbSortNom)
-				ajlConcurrent.setListData(ConcurrentList.sort(ficheConcoursPane.ficheConcours.getConcurrentList().list(depart), 
+				ajlConcurrent.setListData(ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), 
 						ConcurrentList.SORT_BY_NAME));
 			else if(source == jcbSortClub)
-				ajlConcurrent.setListData(ConcurrentList.sort(ficheConcoursPane.ficheConcours.getConcurrentList().list(depart), 
+				ajlConcurrent.setListData(ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), 
 						ConcurrentList.SORT_BY_CLUBS));
 			ajlConcurrent.repaint();
 		} else if(cmd.equals("popup.edition")) { //$NON-NLS-1$
@@ -549,28 +558,17 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 				}
 			} else {
 				int selRow = treeTarget.getRowForLocation(e.getX(), e.getY());
-				if(selRow != -1) {
-					if(e.getClickCount() == 2) {
-						Object selectedTreeNode = treeTarget.getSelectionPath().getLastPathComponent();
-	
-						if(selectedTreeNode instanceof Concurrent) {
-							ficheConcoursPane.openConcurrentDialog((Concurrent)selectedTreeNode);
-						} else if(selectedTreeNode instanceof Cible) {
-							ficheConcoursPane.index = ((Cible)selectedTreeNode).getNumCible();
-							ficheConcoursPane.openResultatDialog();
-						} else {
-							ficheConcoursPane.index = 1;
-							ficheConcoursPane.openResultatDialog();
-						}
+				if(selRow != -1 && e.getClickCount() == 2) {
+					Object selectedTreeNode = treeTarget.getSelectionPath().getLastPathComponent();
+
+					if(selectedTreeNode instanceof Concurrent) {
+						ficheConcoursPane.openConcurrentDialog((Concurrent)selectedTreeNode);
+					} else if(selectedTreeNode instanceof Cible) {
+						ficheConcoursPane.index = ((Cible)selectedTreeNode).getNumCible();
+						ficheConcoursPane.openResultatDialog();
 					} else {
-						Point coord = e.getPoint();
-						TreePath destinationPath = treeTarget.getPathForLocation(coord.x, coord.y);
-	
-						//recupere le noeud destination et son parent
-						Object node = destinationPath.getLastPathComponent();
-						if(node instanceof Concurrent) {
-							ajlConcurrent.setSelectedValue(node, true);
-						}
+						ficheConcoursPane.index = 1;
+						ficheConcoursPane.openResultatDialog();
 					}
 				}
 			}
@@ -645,7 +643,7 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 					if(dragObject instanceof Cible) {
 						Cible tmpcbl = (Cible)dragObject;
 	
-						for(int i = 0; i < ficheConcoursPane.ficheConcours.getParametre().getNbTireur(); i++) {
+						for(int i = 0; i < ficheConcours.getParametre().getNbTireur(); i++) {
 							if(tmpcbl.getConcurrentAt(i) != null) {
 								Concurrent concurrent = tmpcbl.getConcurrentAt(i);
 	
@@ -749,6 +747,19 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 			Concurrent tmpConcurrent = (Concurrent)ajlConcurrent.getSelectedValue();
 
 			selectConcurrentInTree(tmpConcurrent);
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
+	 */
+	public void valueChanged(TreeSelectionEvent e) {
+		TreePath destinationPath = e.getPath();
+
+		//recupere le noeud destination et son parent
+		Object node = destinationPath.getLastPathComponent();
+		if(node instanceof Concurrent) {
+			ajlConcurrent.setSelectedValue(node, true);
 		}
 	}
 

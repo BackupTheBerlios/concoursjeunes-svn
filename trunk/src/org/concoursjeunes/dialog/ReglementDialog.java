@@ -10,17 +10,16 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
+import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -45,7 +44,6 @@ import org.concoursjeunes.Criterion;
 import org.concoursjeunes.CriterionElement;
 import org.concoursjeunes.DistancesEtBlason;
 import org.concoursjeunes.Reglement;
-import org.concoursjeunes.ReglementFactory;
 
 import ajinteractive.standard.java2.GridbagComposer;
 import ajinteractive.standard.java2.NumberDocument;
@@ -54,21 +52,22 @@ import ajinteractive.standard.java2.NumberDocument;
  * @author Aurélien JEOFFRAY
  *
  */
-public class ReglementDialog extends JDialog implements ActionListener, ItemListener, MouseListener {
+public class ReglementDialog extends JDialog implements ActionListener, MouseListener {
 	
 	public static final int NO_LOCK = 0;
 	public static final int LOCK_CHANGE_L1 = 1;
+	public static final int LOCK_CHANGE_L2 = 2;
 	
 	private Reglement reglement;
 	
 	private JLabel jlReglementName = new JLabel();
-	private JComboBox jcbReglementName = new JComboBox();
 	
 	private JLabel jlNbSerie            = new JLabel();
 	private JLabel jlNbVoleeParSerie    = new JLabel();
 	private JLabel jlNbFlecheParVolee   = new JLabel();
 	private JLabel jlNbMembresEquipe    = new JLabel();
 	private JLabel jlNbMembresRetenu    = new JLabel();
+	private JCheckBox jcbOfficialReglement = new JCheckBox();
 	
 	private JLabel jlNbDB               = new JLabel();
 	private JButton jbAddCriteria       = new JButton();
@@ -96,8 +95,10 @@ public class ReglementDialog extends JDialog implements ActionListener, ItemList
 	
 	private int verrou = NO_LOCK;
 	
-	public ReglementDialog(JFrame parentframe) {
+	public ReglementDialog(JFrame parentframe, Reglement reglement) {
 		super(parentframe, true);
+		
+		this.reglement = reglement;
 		
 		init();
 		affectLibelle();
@@ -134,13 +135,15 @@ public class ReglementDialog extends JDialog implements ActionListener, ItemList
 		
 		JPanel panel = new JPanel();
 		
-		jcbReglementName.addItemListener(this);
-		
 		gridbagComposer.setParentPanel(panel);
-		c.gridy = 0; c.anchor = GridBagConstraints.WEST;
+		c.weightx = 1.0;
+		//c.weighty = 0.0;
+		
+		c.gridy = 0; c.gridwidth = 2; c.anchor = GridBagConstraints.WEST;
 		gridbagComposer.addComponentIntoGrid(jlReglementName, c);
-		gridbagComposer.addComponentIntoGrid(jcbReglementName, c);
-		c.gridy++; c.gridwidth = 2; c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridy++; 
+		gridbagComposer.addComponentIntoGrid(Box.createVerticalStrut(30), c);
+		c.gridy++; c.fill = GridBagConstraints.HORIZONTAL;
 		gridbagComposer.addComponentIntoGrid(new JSeparator(), c);
 		c.gridy++; c.gridwidth = 1; c.fill = GridBagConstraints.NONE;
 		gridbagComposer.addComponentIntoGrid(jlNbSerie, c);
@@ -157,6 +160,10 @@ public class ReglementDialog extends JDialog implements ActionListener, ItemList
 		c.gridy++;
 		gridbagComposer.addComponentIntoGrid(jlNbMembresRetenu, c);
 		gridbagComposer.addComponentIntoGrid(jtfNbMembresRetenu, c);
+		c.gridy++;
+		gridbagComposer.addComponentIntoGrid(jcbOfficialReglement, c);
+		c.gridy++; c.weighty = 1.0; c.fill = GridBagConstraints.BOTH;
+		gridbagComposer.addComponentIntoGrid(Box.createGlue(), c);
 		
 		return panel;
 	}
@@ -229,6 +236,7 @@ public class ReglementDialog extends JDialog implements ActionListener, ItemList
 		jlNbFlecheParVolee.setText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.flecheparvolee"));
 		jlNbMembresEquipe.setText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.membresmax"));
 		jlNbMembresRetenu.setText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.selectionmax"));
+		jcbOfficialReglement.setText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.official"));
 		
 		jbAddCriteria.setIcon(new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$ 
 				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.addcriteria"))); //$NON-NLS-1$
@@ -254,38 +262,37 @@ public class ReglementDialog extends JDialog implements ActionListener, ItemList
 	}
 	
 	private void completeGeneral() {
+		if(reglement.isOfficialReglement())
+			verrou = LOCK_CHANGE_L2;
 		
-		if(verrou != NO_LOCK) {
-			jcbReglementName.setEnabled(false);
-			jtfNbSerie.setEditable(false);
-		}
-		jcbReglementName.removeItemListener(this);
-		jcbReglementName.removeAllItems();
-		
-		String[] availableReglements = Reglement.listAvailableReglements();
-		if(availableReglements != null) {
-			for(String reglementName : availableReglements)
-				jcbReglementName.addItem(reglementName);
-		}
-		jcbReglementName.addItem("---");
-		jcbReglementName.addItem("Nouveau Réglement");
-		
-		if(reglement == null) {
-			reglement = ReglementFactory.getReglement((String)jcbReglementName.getItemAt(0));
-			if(reglement != null)
-				completePanel();
-			return;
+		switch(verrou) {
+			case LOCK_CHANGE_L2:
+				jtfNbMembresEquipe.setEditable(false);
+				jtfNbMembresRetenu.setEditable(false);
+				
+				jbAddCriteria.setEnabled(false);
+				jbAddCriteriaMember.setEnabled(false);
+				jbDownElement.setEnabled(false);
+				jbUpElement.setEnabled(false);
+				jbRemoveElement.setEnabled(false);
+			case LOCK_CHANGE_L1:
+				jtfNbSerie.setEditable(false);	
+				jtfNbVoleeParSerie.setEditable(false);
+				jtfNbFlecheParVolee.setEditable(false);
 		}
 		
-		jcbReglementName.setSelectedItem(reglement.getName());
-		
-		jcbReglementName.addItemListener(this);
+		jlReglementName.setText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.name") + " " + reglement.getName());
 		
 		jtfNbSerie.setText(reglement.getNbSerie() + "");
 		jtfNbVoleeParSerie.setText(reglement.getNbVoleeParSerie() + "");
 		jtfNbFlecheParVolee.setText(reglement.getNbFlecheParVolee() + "");
 		jtfNbMembresEquipe.setText(reglement.getNbMembresEquipe() + "");
 		jtfNbMembresRetenu.setText(reglement.getNbMembresRetenu() + "");
+		
+		jcbOfficialReglement.setSelected(reglement.isOfficialReglement());
+		if(ConcoursJeunes.ajrParametreAppli.getResourceInteger("debug.mode") == 0) {
+			jcbOfficialReglement.setEnabled(false);
+		}
 	}
 	
 	private void completeCriteria() {
@@ -457,6 +464,8 @@ public class ReglementDialog extends JDialog implements ActionListener, ItemList
 								Integer.parseInt((String)this.jtDistanceBlason.getModel().getValueAt(i, jtDistanceBlason.getModel().getColumnCount() - 1))));
 			}
 			
+			reglement.setOfficialReglement(jcbOfficialReglement.isSelected());
+			
 			setVisible(false);
 		} else if(source == jbAnnuler) {
 			reglement = null;
@@ -609,23 +618,6 @@ public class ReglementDialog extends JDialog implements ActionListener, ItemList
 
 					generateSCNA_DBRow();
 				}
-			}
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see java.awt.event.ItemListener#itemStateChanged(java.awt.event.ItemEvent)
-	 */
-	public void itemStateChanged(ItemEvent e) {
-		if(e.getStateChange() == ItemEvent.SELECTED) {
-			if(jcbReglementName.getSelectedIndex() < jcbReglementName.getItemCount() - 2) {
-				reglement = ReglementFactory.getReglement((String)e.getItem());
-				completePanel();
-			} else if(jcbReglementName.getItemCount() > 1 && jcbReglementName.getSelectedIndex() == jcbReglementName.getItemCount() - 1) {
-				String reglementName = JOptionPane.showInputDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("reglement.general.addreglement")); //$NON-NLS-1$
-				reglement = new Reglement(reglementName);
-				reglement.save();
-				completePanel();
 			}
 		}
 	}

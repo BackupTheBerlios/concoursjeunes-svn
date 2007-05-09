@@ -34,8 +34,8 @@ public class ConfigurationFactory {
 	 * @return l'objet de configuration courant
 	 */
 	public static Configuration getCurrentConfiguration() {
-		Configuration configuration = (Configuration)AJToolKit.loadXMLStructure(new File(userRessources.getConfigPathForUser() + File.separator + 
-				ajrParametreAppli.getResourceString("file.configuration")), false);
+		Configuration configuration = (Configuration)AJToolKit.loadMarshallStructure(new File(userRessources.getConfigPathForUser() + File.separator + 
+				ajrParametreAppli.getResourceString("file.configuration")), Configuration.class, false);
 		if(configuration == null) {
 			configuration = new Configuration();
 		}

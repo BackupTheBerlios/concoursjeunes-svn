@@ -188,6 +188,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		jpProfil.add(jbRenameProfile);
 
 		gridbagComposer.setParentPanel(jpParamGeneral);
+		c.weightx = 1.0;
 		c.gridy = 0; c.anchor = GridBagConstraints.WEST;     //Défaut,Haut
 		gridbagComposer.addComponentIntoGrid(jlAgremClub, c);
 		gridbagComposer.addComponentIntoGrid(jtfAgrClub, c);
@@ -248,6 +249,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		jpDifCriteria.setLayout(new BorderLayout());
 
 		gridbagComposer.setParentPanel(jpPasDeTir);
+		c.weightx = 1.0;
 		c.gridy = 0; c.anchor = GridBagConstraints.WEST;     //Défaut,Haut
 		gridbagComposer.addComponentIntoGrid(jlReglement, c);
 		gridbagComposer.addComponentIntoGrid(jcbReglement, c);
@@ -262,6 +264,8 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		c.gridy ++;
 		gridbagComposer.addComponentIntoGrid(jlNbTireur, c);
 		gridbagComposer.addComponentIntoGrid(jtfNbTireur, c);
+		c.gridy ++; c.weighty = 1.0;
+		gridbagComposer.addComponentIntoGrid(Box.createGlue(), c);
 
 		jpEcranConcours.add(jpPasDeTir, BorderLayout.CENTER);
 
@@ -276,6 +280,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	 */
 	private JPanel initEcranEtiquette() {
 		JPanel jpEcranEtiquette = new JPanel();
+		jpEcranEtiquette.setBorder(new TitledBorder("Etiquettes"));
 
 		GridBagConstraints c = new GridBagConstraints();
 
@@ -304,36 +309,31 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		espacement.add(jtfEspacementsV);
 
 		gridbagComposer.setParentPanel(jpEcranEtiquette);
+		c.weightx = 1.0;
 		c.gridy = 0; c.gridwidth = 2; c.anchor = GridBagConstraints.WEST;
 		gridbagComposer.addComponentIntoGrid(jlFormatPapier, c);
-		c.gridwidth = 2;
+		c.gridwidth = 3;
 		gridbagComposer.addComponentIntoGrid(this.jcbFormatPapier, c);
 		c.gridwidth = 1; c.anchor = GridBagConstraints.WEST;
 		gridbagComposer.addComponentIntoGrid(this.jcbOrientation, c);
 		c.gridy++; c.gridwidth = 2;
 		gridbagComposer.addComponentIntoGrid(jlNbEtiquettes, c);
 		c.gridwidth = 1;
-		gridbagComposer.addComponentIntoGrid(this.jtfLignes, c);
-		c.anchor = GridBagConstraints.CENTER;
+		gridbagComposer.addComponentIntoGrid(jtfLignes, c);
 		gridbagComposer.addComponentIntoGrid(jlColonnes, c);
-		c.anchor = GridBagConstraints.WEST;
-		gridbagComposer.addComponentIntoGrid(this.jtfColonnes, c);
+		gridbagComposer.addComponentIntoGrid(jtfColonnes, c);
 		c.gridy++; c.gridwidth = 2;
 		gridbagComposer.addComponentIntoGrid(jlMarges, c);
-		c.gridy++; c.gridwidth = 1;
-		gridbagComposer.addComponentIntoGrid(new JPanel(), c);
-		c.gridwidth = 4;
+		c.gridy++; c.gridwidth = 6; c.anchor = GridBagConstraints.CENTER;
 		gridbagComposer.addComponentIntoGrid(margeHB, c);
-		c.gridy++; c.gridwidth = 1;
-		gridbagComposer.addComponentIntoGrid(new JPanel(), c);
-		c.gridwidth = 4;
+		c.gridy++;
 		gridbagComposer.addComponentIntoGrid(margeGD, c);
-		c.gridy++; c.gridwidth = 2;
+		c.gridy++; c.gridwidth = 2; c.anchor = GridBagConstraints.WEST;
 		gridbagComposer.addComponentIntoGrid(jlEspacements, c);
-		c.gridy++; c.gridwidth = 1;
-		gridbagComposer.addComponentIntoGrid(new JPanel(), c);
-		c.gridwidth = 4;
+		c.gridy++; c.gridwidth = 6; c.anchor = GridBagConstraints.CENTER;
 		gridbagComposer.addComponentIntoGrid(espacement, c);
+		c.gridy++; c.weighty = 1.0;
+		gridbagComposer.addComponentIntoGrid(Box.createGlue(), c);
 
 		return jpEcranEtiquette;
 	}
@@ -355,6 +355,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		jtfURLImport.setEnabled(false);
 
 		gridbagComposer.setParentPanel(jpPathGeneral);
+		c.weightx = 1.0;
 		c.gridy = 0; c.gridwidth = 3; c.anchor = GridBagConstraints.WEST;
 		gridbagComposer.addComponentIntoGrid(jcbExpert, c);
 		c.gridy++;

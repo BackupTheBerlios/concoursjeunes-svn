@@ -98,7 +98,8 @@ public class CriterionElementDialog extends JDialog implements ActionListener {
                        
             jcbActive.setSelected(criterionIndividu.isActive());
             
-            jtfCode.setEditable(!parent.getReglement().isOfficialReglement());
+            jtfCode.setEditable(!parent.getReglement().isOfficialReglement()
+            		&& parent.getVerrou() == ReglementDialog.NO_LOCK);
             jcbActive.setEnabled(!parent.getReglement().isOfficialReglement());
         }
     }

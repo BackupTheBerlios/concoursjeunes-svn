@@ -17,12 +17,15 @@ package org.concoursjeunes;
 
 import java.util.ArrayList;
 
+import javax.xml.bind.annotation.XmlTransient;
+
 /**
  * @author  Aurelien Jeoffray
  */
 public class EquipeList {
    
     private ArrayList<Equipe> equipeList  = new ArrayList<Equipe>();
+    @XmlTransient
     private FicheConcours ficheConcours;
     
     public EquipeList() {
@@ -32,6 +35,7 @@ public class EquipeList {
     	this.ficheConcours = ficheConcours;
     }
     
+    @XmlTransient
     public FicheConcours getFicheConcours() {
 		return ficheConcours;
 	}

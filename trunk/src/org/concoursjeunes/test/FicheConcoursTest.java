@@ -6,6 +6,8 @@ package org.concoursjeunes.test;
 import static org.junit.Assert.*;
 
 import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.ConcoursJeunesEvent;
+import org.concoursjeunes.ConcoursJeunesListener;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.FicheConcours;
 import org.junit.After;
@@ -18,8 +20,8 @@ import org.junit.Test;
  */
 public class FicheConcoursTest {
 	
-	ConcoursJeunes concoursJeunes;
-	FicheConcours ficheConcours;
+	private ConcoursJeunes concoursJeunes;
+	private FicheConcours ficheConcours;
 
 	/**
 	 * @throws java.lang.Exception
@@ -27,15 +29,27 @@ public class FicheConcoursTest {
 	@Before
 	public void setUp() throws Exception {
 		concoursJeunes = ConcoursJeunes.getInstance();
-		//concoursJeunes.createFicheConcours();
-	}
+		
+		concoursJeunes.addConcoursJeunesListener(new ConcoursJeunesListener() {
 
-	/**
-	 * Méthode de test pour {@link org.concoursjeunes.FicheConcours#havePlaceForConcurrent(org.concoursjeunes.Concurrent)}.
-	 */
+			public void ficheConcoursClosed(ConcoursJeunesEvent concoursJeunesEvent) {}
+			/* (non-Javadoc)
+			 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursCreated(org.concoursjeunes.ConcoursJeunesEvent)
+			 */
+			public void ficheConcoursCreated(ConcoursJeunesEvent concoursJeunesEvent) {
+				ficheConcours = concoursJeunesEvent.getFicheConcours();
+			}
+			public void ficheConcoursDeleted(ConcoursJeunesEvent concoursJeunesEvent) {}
+			public void ficheConcoursRestored(ConcoursJeunesEvent concoursJeunesEvent) {}
+			
+		});
+		
+		concoursJeunes.createFicheConcours();
+	}
+	
 	@Test
-	public void testHavePlaceForConcurrent() {
-		fail("Non implémenté actuellement");
+	public void testFicheConcours() {
+		
 	}
 
 	/**

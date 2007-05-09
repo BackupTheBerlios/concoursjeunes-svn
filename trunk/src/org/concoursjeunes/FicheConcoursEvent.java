@@ -22,10 +22,12 @@ public class FicheConcoursEvent {
 	public static final int ADD_CONCURRENT		= 1;
 	public static final int REMOVE_CONCURRENT	= 2;
 	
-	public static final int PLACEMENT_CHANGED	= 3;
+	public static final int PASDETIR_CHANGED	= 3;
+	
+	public static final int ALL_START			= -1;
 	
 	private Concurrent concurrent;
-	private int depart = -1;
+	private int depart = ALL_START;
 	private int event = 0;
 	
 	public FicheConcoursEvent(int event, Concurrent concurrent) {

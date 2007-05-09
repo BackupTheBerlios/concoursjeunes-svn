@@ -279,9 +279,15 @@ public class AutoCompleteDocument extends PlainDocument {
 			searchArcher.setNomArcher(concurrent.getNomArcher());
 			searchArcher.setPrenomArcher(searchString + "%");
 			
-			tempConcurrent = Concurrent.getArchersInDatabase(searchArcher, reglement, "PRENOMARCHER").get(0);
 			
-			autocompleteLicence = false;
+			ArrayList<Concurrent> concurrents = Concurrent.getArchersInDatabase(searchArcher, reglement, "PRENOMARCHER");
+			if(concurrents.size() > 0) {
+				tempConcurrent = concurrents.get(0);
+				autocompleteLicence = false;
+			} else {
+				concurrent = null;
+				autocompleteLicence = true;
+			}
 		} else {
 			autocompleteLicence = (concurrent != null);
 		}

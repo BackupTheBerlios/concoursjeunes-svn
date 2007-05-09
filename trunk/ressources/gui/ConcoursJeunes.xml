@@ -7,10 +7,10 @@
 			<menu id="file">
 				<label>menubar.fichier</label>
 				<menuitems>
-					<menuitem>menubar.fichier.exporter</menuitem>
-					<menuitem>menubar.fichier.importer</menuitem>
+					<menu name="mi.import">menubar.fichier.importer</menu>
+					<menu name="mi.export">menubar.fichier.exporter</menu>
 					<separator />
-					<menuitem keycode="F4" modifier="ALT">menubar.fichier.quitter</menuitem>
+					<menuitem keycode="VK_F4" modifier="ALT_DOWN_MASK">menubar.fichier.quitter</menuitem>
 				</menuitems>
 			</menu>
 			<menu id="edit">
@@ -18,12 +18,12 @@
 				<menuitems>
 					<menuitem>menubar.edition.entite</menuitem>
 					<separator />
-					<menuitem>menubar.edition.parametre</menuitem>
-					<menuitem>menubar.edition.reglement</menuitem>
+					<menuitem name="mi.parametres" enable="false">menubar.edition.parametre</menuitem>
+					<menu name="mi.reglements">menubar.edition.reglement</menu>
 					<menuitem>menubar.edition.configuration</menuitem>
 				</menuitems>
 			</menu>
-			<menu id="print">
+			<menu id="print" name="mi.print" visible="false">
 				<label>menubar.impression</label>
 				<menuitems>
 					<menuitem>menubar.impression.listeconcurrent.ordrealpha</menuitem>
@@ -42,13 +42,11 @@
 					<menuitem>menubar.aide.apropos</menuitem>
 				</menuitems>
 			</menu>
-			<menu id="debug" visible="false">
+			<menu id="debug" name="mi.debug" visible="false">
 				<label>menubar.debug</label>
 				<menuitems>
-					<menuitem>menubar.debug.generateconcurrent</menuitem>
 					<menuitem>menubar.debug.addpoints</menuitem>
 					<menuitem>menubar.debug.resetpoints</menuitem>
-					<menuitem>menubar.debug.atriblevel</menuitem>
 				</menuitems>
 			</menu>
 		</menubar>

@@ -6,7 +6,6 @@
 	<classpathentry kind="lib" path="lib"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ClassAJ"/>
 	<classpathentry kind="lib" path="plugins"/>
-	<classpathentry kind="lib" path="lib/hsqldb.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="lib/itext-1.4.8.jar"/>
 	<classpathentry kind="lib" path="config"/>

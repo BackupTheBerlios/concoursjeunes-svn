@@ -1,5 +1,5 @@
 /*
- * Créer le 21/02/2006 à 14:01 pour ConcoursJeunes
+ * Créé le 21/02/2006 à 14:01 pour ConcoursJeunes
  *
  * Copyright 2002-2007 - Aurélien JEOFFRAY
  *
@@ -111,7 +111,15 @@ public class UserRessources {
         if(System.getProperty("os.name").startsWith("Windows")) { //$NON-NLS-1$ //$NON-NLS-2$
             userPath = System.getenv("APPDATA") + File.separator //$NON-NLS-1$
                     + progname; //$NON-NLS-1$
-            allusersDataPath = System.getenv("ALLUSERSPROFILE") + File.separator + progname;
+            if(Integer.parseInt(System.getProperty("os.version").substring(0,1)) >= 6)
+            	allusersDataPath = System.getenv("ALLUSERSPROFILE") + File.separator + progname;
+            else
+            	allusersDataPath = System.getenv("ALLUSERSPROFILE") + File.separator 
+            			+ "Application Data" + File.separator + progname;
+        } else if(System.getProperty("os.name").toLowerCase().startsWith("mac os x")) {
+        	userPath = System.getProperty("user.home") + File.separator //$NON-NLS-1$ 
+        			+ "Library/Application Support/" + progname; //$NON-NLS-1$
+        	allusersDataPath = userPath;
         } else {
             userPath = System.getProperty("user.home") + File.separator //$NON-NLS-1$ 
             	+ "." + progname; //$NON-NLS-1$
@@ -123,7 +131,7 @@ public class UserRessources {
             } else
             	allusersDataPath = userPath;
         }
-        
+       // /Library/Application Support/
         createPathIfNotExist(userPath);
     }
     

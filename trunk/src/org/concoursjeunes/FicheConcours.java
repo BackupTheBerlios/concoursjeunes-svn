@@ -24,6 +24,7 @@ import java.util.Hashtable;
 
 import javax.swing.event.EventListenerList;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
@@ -47,10 +48,14 @@ public class FicheConcours implements ParametreListener {
 	public static final int OUT_HTML	= 1;    //Sortie HTML
 
 	private Parametre parametre			= new Parametre(ConcoursJeunes.configuration);
+
 	private ConcurrentList concurrentList   = new ConcurrentList(parametre);
 	private EquipeList equipes			= new EquipeList(this);
+
+	@XmlTransient
 	private Hashtable<Integer, PasDeTir> pasDeTir = new Hashtable<Integer, PasDeTir>();
 
+	@XmlTransient
 	private EventListenerList ficheConcoursListeners = new EventListenerList();
 
 	private int currentDepart		= 0;
@@ -64,8 +69,6 @@ public class FicheConcours implements ParametreListener {
 	private static AJTemplate templateEtiquettesXML        = new AJTemplate();
 	private static AJTemplate templatePasDeTirXML          = new AJTemplate();
 
-	private Hashtable<CriteriaSet, Concurrent[]> concurrentsClasse;
-	
 	static {
 		loadTemplates();
 	}
@@ -74,6 +77,7 @@ public class FicheConcours implements ParametreListener {
 	 * 
 	 */
 	public FicheConcours() {
+		parametre.addParametreListener(this);
 		makePasDeTir();
 	}
 
@@ -106,16 +110,6 @@ public class FicheConcours implements ParametreListener {
 	}
 
 	/**
-	 * Definit la liste des archers inscrit sur le concours
-	 * 
-	 * @param archerlist - la liste des archers inscrit sur le concours
-	 * @uml.property  name="archerlist"
-	 */
-	public void setConcurrentlist(ConcurrentList concurrentList) {
-		this.concurrentList = concurrentList;
-	}
-
-	/**
 	 * Donne la liste des equipes enrezgistré sur le concours
 	 * 
 	 * @return  equipes - la liste des équipes
@@ -123,16 +117,6 @@ public class FicheConcours implements ParametreListener {
 	 */
 	public EquipeList getEquipes() {
 		return equipes;
-	}
-
-	/**
-	 * Définit la liste des équipes enregistré sur le concours
-	 * 
-	 * @param equipes - la liste des équipes
-	 * @uml.property  name="equipes"
-	 */
-	public void setEquipes(EquipeList equipes) {
-		this.equipes = equipes;
 	}
 
 	/**
@@ -145,16 +129,6 @@ public class FicheConcours implements ParametreListener {
 		return parametre;
 	}
 
-	/**
-	 * Definit les parametres d'un concours
-	 * 
-	 * @param parametre - les parametres du concours
-	 * @uml.property  name="parametre"
-	 */
-	public void setParametre(Parametre parametre) {
-		this.parametre = parametre;
-	}
-	
 	/**
 	 * Ajoute un concurrent au concours
 	 * 
@@ -187,7 +161,7 @@ public class FicheConcours implements ParametreListener {
 		//retire le concurrent du pas de tir si present
 		if(removedConcurrent.getCible() > 0)
 			pasDeTir.get(removedConcurrent.getDepart())
-				.getTargets().get(removedConcurrent.getCible()-1).removeConcurrent(removedConcurrent);
+			.getTargets().get(removedConcurrent.getCible()-1).removeConcurrent(removedConcurrent);
 		//suppression dans la liste
 		//suppression dans l'equipe si presence dans equipe
 		equipes.removeConcurrent(removedConcurrent);
@@ -247,19 +221,20 @@ public class FicheConcours implements ParametreListener {
 		parametre = (Parametre)fiche[0];
 		concurrentList = (ConcurrentList)fiche[1];
 		equipes = (EquipeList)fiche[2];
-		
+
 		parametre.addParametreListener(metaDataFicheConcours);
+		parametre.addParametreListener(this);
 
 		makePasDeTir();
 	}
-	
+
 	public MetaDataFicheConcours getMetaDataFicheConcours() {
 		MetaDataFicheConcours metaDataFicheConcours = new MetaDataFicheConcours(
 				parametre.getDate(), 
 				parametre.getIntituleConcours(),
 				parametre.getSaveName());
 		parametre.addParametreListener(metaDataFicheConcours);
-		
+
 		return metaDataFicheConcours;
 	}
 	/**
@@ -270,32 +245,24 @@ public class FicheConcours implements ParametreListener {
 		File f = new File(ConcoursJeunes.userRessources.getConcoursPathForProfile(ConcoursJeunes.configuration.getCurProfil())
 				+ File.separator + parametre.getSaveName());
 		AJToolKit.saveXMLStructure(f, getFiche(), true);
-		//AJToolKit.saveMarshallStructure(f, this, true);
-
-		/*for(MetaDataFicheConcours metaDataFicheConcours : metaDataFichesConcours.getFiches()) {
-			String filenameConcours = metaDataFicheConcours.getFilenameConcours();
-			if(filenameConcours.equals(parametre.getSaveName())) {
-				metaDataFicheConcours.setDateConcours(parametre.getDate());
-				metaDataFicheConcours.setIntituleConcours(parametre.getIntituleConcours());
-				break;
-			}
-		}*/
 	}
 
-	public void makePasDeTir() {
+	private void makePasDeTir() {
 		for(int i = 0; i < parametre.getNbDepart(); i++) {
 			pasDeTir.put(i, new PasDeTir(this, i));
 		}
+
+		firePasDeTirChanged();
 	}
-	
+
 	/**
 	 * methode pour le classement des candidats
 	 * 
 	 * @param depart
 	 */ 
-	private void classement(int depart) {
+	private Hashtable<CriteriaSet, Concurrent[]> classement(int depart) {
 
-		concurrentsClasse = new Hashtable<CriteriaSet, Concurrent[]>();
+		Hashtable<CriteriaSet, Concurrent[]> concurrentsClasse = new Hashtable<CriteriaSet, Concurrent[]>();
 
 		//Etablit le classement des concurrents en fonction du nombre de points obtenue.
 		CriteriaSet[] catList = CriteriaSet.listCriteriaSet(parametre.getReglement(), 
@@ -305,14 +272,14 @@ public class FicheConcours implements ParametreListener {
 		for(int i = 0; i < catList.length; i++) {
 			//sort la liste des concurrents correspondant aux critéres de recherche
 			ArrayList<Concurrent> unsortList = new ArrayList<Concurrent>();
-			for(int j = 0; j <= depart; j++) {
-				for(Concurrent concurrent : concurrentList.list(catList[i], j))
-					unsortList.add(concurrent);
-			}
+			for(Concurrent concurrent : concurrentList.list(catList[i], -1))
+				unsortList.add(concurrent);
 			Concurrent[] sortList = ConcurrentList.sort(unsortList.toArray(new Concurrent[unsortList.size()]), ConcurrentList.SORT_BY_POINTS);
 			if(sortList.length > 0)
 				concurrentsClasse.put(catList[i], sortList);
 		}
+
+		return concurrentsClasse;
 	}
 
 	/**
@@ -364,21 +331,21 @@ public class FicheConcours implements ParametreListener {
 	public String getClassement(int outType, int depart) {
 		String strClassement = ""; //$NON-NLS-1$
 		if(concurrentList != null && concurrentList.countArcher() > 0) {
-			classement(depart);
+			Hashtable<CriteriaSet, Concurrent[]> concurrentsClasse = classement(depart);
 
 			AJTemplate tplClassement = null;
 			String strArbitreResp = ""; //$NON-NLS-1$
 			String strArbitresAss = ""; //$NON-NLS-1$
 
 			switch(outType) {
-				case OUT_XML:
-					tplClassement = templateClassementXML;
-					break;
-				case OUT_HTML:
-					tplClassement = templateClassementHTML;
-					break;
-				default:
-					return null;
+			case OUT_XML:
+				tplClassement = templateClassementXML;
+				break;
+			case OUT_HTML:
+				tplClassement = templateClassementHTML;
+				break;
+			default:
+				return null;
 			}
 
 			tplClassement.reset();
@@ -444,65 +411,67 @@ public class FicheConcours implements ParametreListener {
 								parametre.getReglement().getCorrespondanceCriteriaSet_DB(scna).getDistance()[j] + "m"); //$NON-NLS-1$
 						tplClassement.loopBloc("categories.distances"); //$NON-NLS-1$
 					}
-
-					for(int j = 0; j < sortList.length; j++) {
-						//test d'ex-Eaquo
-						if ((j < sortList.length - 1
-								&& sortList[j].getTotalScore() > 0
-								&& sortList[j].getTotalScore() == sortList[j + 1].getTotalScore()
-								&& ConcoursJeunes.configuration.isInterfaceAffResultatExEquo())
-								|| (j > 0
-										&& sortList[j].getTotalScore() > 0
-										&& sortList[j].getTotalScore() == sortList[j - 1]
-										                                           .getTotalScore() && ConcoursJeunes.configuration
-										                                           .isInterfaceAffResultatExEquo())) {
-
-							if ((sortList[j].getManque() == 0
-									&& sortList[j].getDix() == 0 && sortList[j]
-									                                         .getNeuf() == 0)
-									                                         || (j < sortList.length - 2 && sortList[j].getManque() == sortList[j + 1]
-									                                                                                                            .getManque()
-									                                                                                                            && sortList[j].getDix() == sortList[j + 1]
-									                                                                                                                                                .getDix() && sortList[j]
-									                                                                                                                                                                      .getNeuf() == sortList[j + 1].getNeuf())
-									                                                                                                                                                                      || (j > 0 && sortList[j].getManque() == sortList[j - 1]
-									                                                                                                                                                                                                                       .getManque()
-									                                                                                                                                                                                                                       && sortList[j].getDix() == sortList[j - 1]
-									                                                                                                                                                                                                                                                           .getDix() && sortList[j]
-									                                                                                                                                                                                                                                                                                 .getNeuf() == sortList[j - 1].getNeuf())) {
-
-								tplClassement.parse(
-										"categories.classement.COULEUR", //$NON-NLS-1$
-								"bgcolor=\"#ff0000\""); //$NON-NLS-1$
+					
+					if(sortList.length > 0) {
+						boolean row_exist = false;
+						for(int j = 0; j < sortList.length; j++) {
+							if(sortList[j].getTotalScore() > 0) {
+								row_exist = true;
+								//test d'ex-Eaquo
+								if ((j < sortList.length - 1
+										&& sortList[j].getTotalScore() == sortList[j + 1].getTotalScore()
+										&& ConcoursJeunes.configuration.isInterfaceAffResultatExEquo())
+										|| (j > 0
+												&& sortList[j].getTotalScore() == sortList[j - 1].getTotalScore()
+												&& ConcoursJeunes.configuration.isInterfaceAffResultatExEquo())) {
+	
+									if ((sortList[j].getManque() == 0
+											&& sortList[j].getDix() == 0 && sortList[j].getNeuf() == 0)
+											|| (j < sortList.length - 2 && sortList[j].getManque() == sortList[j + 1].getManque()
+											&& sortList[j].getDix() == sortList[j + 1].getDix()
+											&& sortList[j].getNeuf() == sortList[j + 1].getNeuf())
+											|| (j > 0 && sortList[j].getManque() == sortList[j - 1].getManque()
+											&& sortList[j].getDix() == sortList[j - 1].getDix()
+											&& sortList[j].getNeuf() == sortList[j - 1].getNeuf())) {
+	
+										tplClassement.parse(
+												"categories.classement.COULEUR", //$NON-NLS-1$
+										"bgcolor=\"#ff0000\""); //$NON-NLS-1$
+									}
+								} else {
+									tplClassement.parse("categories.classement.COULEUR", "bgcolor=\"#ffffff\""); //$NON-NLS-1$ //$NON-NLS-2$
+								}
+	
+								tplClassement.parse("categories.classement.PLACE", "" + (j + 1)); //$NON-NLS-1$ //$NON-NLS-2$
+								tplClassement.parse("categories.classement.POSITION", "" + sortList[j].getPosition() + sortList[j].getCible()); //$NON-NLS-1$ //$NON-NLS-2$
+								tplClassement.parse("categories.classement.IDENTITEE", sortList[j].getID()); //$NON-NLS-1$
+								tplClassement.parse("categories.classement.CLUB", sortList[j].getClub().getNom()); //$NON-NLS-1$
+								tplClassement.parse("categories.classement.NUM_LICENCE", sortList[j].getNumLicenceArcher()); //$NON-NLS-1$
+	
+								for(Criterion key : parametre.getReglement().getListCriteria())
+									tplClassement.parse("categories.classement." //$NON-NLS-1$
+											+ key.getCode(), sortList[j].getCriteriaSet().getCriterionElement(
+													key).getCode());
+	
+								for(int k = 0; k < parametre.getReglement().getNbSerie(); k++) {
+									if(sortList[j].getScore() != null)
+										tplClassement.parse("categories.classement.scores.PT_DISTANCE", "" + sortList[j].getScore().get(k)); //$NON-NLS-1$ //$NON-NLS-2$
+									else
+										tplClassement.parse("categories.classement.scores.PT_DISTANCE", "0"); //$NON-NLS-1$ //$NON-NLS-2$
+	
+									tplClassement.loopBloc("categories.classement.scores"); //$NON-NLS-1$
+								}
+								tplClassement.parse("categories.classement.TOTAL", ""+sortList[j].getTotalScore()); //$NON-NLS-1$ //$NON-NLS-2$
+								tplClassement.parse("categories.classement.0_10_9", sortList[j].getManque() //$NON-NLS-1$
+										+ "-" + sortList[j].getDix() + "-" + sortList[j].getNeuf()); //$NON-NLS-1$ //$NON-NLS-2$
+	
+								tplClassement.loopBloc("categories.classement"); //$NON-NLS-1$
 							}
-						} else {
-							tplClassement.parse("categories.classement.COULEUR", "bgcolor=\"#ffffff\""); //$NON-NLS-1$ //$NON-NLS-2$
+							if(!row_exist)
+								tplClassement.parseBloc("categories.classement", "");
 						}
-
-						tplClassement.parse("categories.classement.PLACE", "" + (j + 1)); //$NON-NLS-1$ //$NON-NLS-2$
-						tplClassement.parse("categories.classement.POSITION", "" + sortList[j].getPosition() + sortList[j].getCible()); //$NON-NLS-1$ //$NON-NLS-2$
-						tplClassement.parse("categories.classement.IDENTITEE", sortList[j].getID()); //$NON-NLS-1$
-						tplClassement.parse("categories.classement.CLUB", sortList[j].getClub().getNom()); //$NON-NLS-1$
-						tplClassement.parse("categories.classement.NUM_LICENCE", sortList[j].getNumLicenceArcher()); //$NON-NLS-1$
-
-						for(Criterion key : parametre.getReglement().getListCriteria())
-							tplClassement.parse("categories.classement." //$NON-NLS-1$
-									+ key.getCode(), sortList[j].getCriteriaSet().getCriterionElement(
-											key).getCode());
-
-						for(int k = 0; k < parametre.getReglement().getNbSerie(); k++) {
-							if(sortList[j].getScore() != null)
-								tplClassement.parse("categories.classement.scores.PT_DISTANCE", "" + sortList[j].getScore().get(k)); //$NON-NLS-1$ //$NON-NLS-2$
-							else
-								tplClassement.parse("categories.classement.scores.PT_DISTANCE", "0"); //$NON-NLS-1$ //$NON-NLS-2$
-
-							tplClassement.loopBloc("categories.classement.scores"); //$NON-NLS-1$
-						}
-						tplClassement.parse("categories.classement.TOTAL", ""+sortList[j].getTotalScore()); //$NON-NLS-1$ //$NON-NLS-2$
-						tplClassement.parse("categories.classement.0_10_9", sortList[j].getManque() //$NON-NLS-1$
-								+ "-" + sortList[j].getDix() + "-" + sortList[j].getNeuf()); //$NON-NLS-1$ //$NON-NLS-2$
-
-						tplClassement.loopBloc("categories.classement"); //$NON-NLS-1$
+					} else {
+						tplClassement.parseBloc("categories.classement", "");
 					}
 
 					tplClassement.loopBloc("categories"); //$NON-NLS-1$
@@ -530,14 +499,14 @@ public class FicheConcours implements ParametreListener {
 		if(equipes != null && equipes.countEquipes() > 0) {
 			AJTemplate tplClassementEquipe = null;
 			switch(outType) {
-				case OUT_XML:
-					tplClassementEquipe = templateClassementEquipeXML;
-					break;
-				case OUT_HTML:
-					tplClassementEquipe = templateClassementEquipeHTML;
-					break;
-				default:
-					return null;
+			case OUT_XML:
+				tplClassementEquipe = templateClassementEquipeXML;
+				break;
+			case OUT_HTML:
+				tplClassementEquipe = templateClassementEquipeHTML;
+				break;
+			default:
+				return null;
 			}
 
 			tplClassementEquipe.reset();
@@ -602,25 +571,25 @@ public class FicheConcours implements ParametreListener {
 
 		return strClassementEquipe;
 	}
-	
+
 	public String getClassementClub(int outType) {
 		System.out.println("Sortie Club"); //$NON-NLS-1$
 
 		String strClassementEquipe = ""; //$NON-NLS-1$
-		
+
 		EquipeList clubList = EquipeListFactory.getClubEquipeList(concurrentList, this);
 
 		if(clubList != null && clubList.countEquipes() > 0) {
 			AJTemplate tplClassementEquipe = null;
 			switch(outType) {
-				case OUT_XML:
-					tplClassementEquipe = templateClassementEquipeXML;
-					break;
-				case OUT_HTML:
-					tplClassementEquipe = templateClassementEquipeHTML;
-					break;
-				default:
-					return null;
+			case OUT_XML:
+				tplClassementEquipe = templateClassementEquipeXML;
+				break;
+			case OUT_HTML:
+				tplClassementEquipe = templateClassementEquipeHTML;
+				break;
+			default:
+				return null;
 			}
 
 			tplClassementEquipe.reset();
@@ -934,11 +903,15 @@ public class FicheConcours implements ParametreListener {
 	 * @see org.concoursjeunes.ParametreListener#metaDataChanged(org.concoursjeunes.ParametreEvent)
 	 */
 	public void metaDataChanged(ParametreEvent parametreEvent) {
-		
+
 	}
-	
+
 	public void parametreChanged(ParametreEvent parametreEvent) {
-		
+		assert pasDeTir.size() > 0 : "Il doit exister au moins un pas de tir";
+
+		if(parametreEvent.getParametre().getNbCible() != pasDeTir.get(0).getTargets().size()
+				|| parametreEvent.getParametre().getNbTireur() != pasDeTir.get(0).getTargets().get(0).getNbMaxArchers())
+			makePasDeTir();
 	}
 
 	private void fireConcurrentAdded(Concurrent concurrent) {
@@ -957,5 +930,11 @@ public class FicheConcours implements ParametreListener {
 		}
 	}
 
+	private void firePasDeTirChanged() {
+		for(FicheConcoursListener ficheConcoursListener : ficheConcoursListeners.getListeners(FicheConcoursListener.class)) {
 
+			ficheConcoursListener.pasDeTirChanged(
+					new FicheConcoursEvent(FicheConcoursEvent.PASDETIR_CHANGED, FicheConcoursEvent.ALL_START));
+		}
+	}
 }

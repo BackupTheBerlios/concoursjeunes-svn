@@ -89,12 +89,6 @@
 package org.concoursjeunes;
 
 import java.io.File;
-/*import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;*/
 import javax.xml.bind.annotation.XmlRootElement;
 
 import ajinteractive.standard.java2.AJToolKit;
@@ -444,38 +438,10 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	 *
 	 */
 	public void save() {
-		/*try {
-			File f = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + 
-					File.separator + "test_" + 
-					ConcoursJeunes.ajrParametreAppli.getResourceString("file.configuration")); //$NON-NLS-1$
-			
-			//on crée un contexte JAXB pour la classe Person
-			JAXBContext context = JAXBContext.newInstance(Configuration.class);
-
-			//on crée un marshaller à partir du contexte
-			Marshaller m = context.createMarshaller();
-
-			//on veut un affichage formatté
-			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
-			// on demande au marshaller de générer le XML de la personne "serge"
-			// et de l'afficher dans la console
-			
-			m.marshal(this, new FileOutputStream(f));
-
-		} catch (JAXBException ex) {
-			ex.printStackTrace();
-		} catch(FileNotFoundException e) {
-			e.printStackTrace();
-		}*/
-		try {
-			File f = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + 
-					File.separator + 
-					CONFIG_PROFILE + curProfil + EXT_XML); //$NON-NLS-1$
-			AJToolKit.saveXMLStructure(f, this, false);
-		} catch(NullPointerException npe) {
-			npe.printStackTrace();
-		}
+		File f = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + 
+				File.separator + 
+				CONFIG_PROFILE + curProfil + EXT_XML); //$NON-NLS-1$
+		AJToolKit.saveMarshallStructure(f, this, false);
 	}
 	
 	public void saveAsDefault() {
@@ -483,7 +449,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 			File f = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + 
 					File.separator + 
 					ConcoursJeunes.ajrParametreAppli.getResourceString("file.configuration")); //$NON-NLS-1$
-			AJToolKit.saveXMLStructure(f, this, false);
+			AJToolKit.saveMarshallStructure(f, this, false);
 		} catch(NullPointerException npe) {
 			npe.printStackTrace();
 		}

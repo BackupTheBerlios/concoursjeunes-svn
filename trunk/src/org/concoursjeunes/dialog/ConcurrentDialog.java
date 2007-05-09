@@ -367,7 +367,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		jlValCible.setText(concurrent.getCible() + "" + (char)('A' + concurrent.getPosition())); //$NON-NLS-1$
 
 		ArrayList<Integer> score = concurrent.getScore();
-		if(score != null) {
+		if(score.size() > 0) {
 			for(int i = 0; i < score.size(); i++) {
 				tfpd[i].setText(score.get(i) + ""); //$NON-NLS-1$
 			}
@@ -489,7 +489,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 
 		//recupere la table d'occupation des cibles
 		Hashtable<DistancesEtBlason, OccupationCibles> occupationCibles = 
-			ficheConcours.getPasDeTir(concurrent.getDepart()).getOccupationCibles();
+			ficheConcours.getPasDeTir(concurrent.getDepart()).getOccupationCibles(ficheConcours.getParametre().getNbTireur());
 
 		Hashtable<CriteriaSet, DistancesEtBlason> tableCorresp = 
 			ficheConcours.getParametre().getReglement().getCorrespondanceCriteriaSet_DB();
@@ -519,14 +519,14 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 					distAndBlas.getBlason() + "cm)</i><br>\n"; //$NON-NLS-1$
 			strPlaceLibre += "&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\">" + //$NON-NLS-1$
 					ConcoursJeunes.ajrLibelle.getResourceString("concurrent.placelibre.occupee") + //$NON-NLS-1$
-					" " + occupationCibles.get(distAndBlas).getPlaceLibre() + "</font>"; //$NON-NLS-1$ //$NON-NLS-2$
+					" " + occupationCibles.get(distAndBlas).getPlaceOccupe() + "</font>"; //$NON-NLS-1$ //$NON-NLS-2$
 			strPlaceLibre += ", <font color=\"green\">" + //$NON-NLS-1$
 					ConcoursJeunes.ajrLibelle.getResourceString("concurrent.placelibre.libre") + //$NON-NLS-1$
-					" " + occupationCibles.get(distAndBlas).getPlaceOccupe() + "</font><br>"; //$NON-NLS-1$ //$NON-NLS-2$
+					" " + occupationCibles.get(distAndBlas).getPlaceLibre() + "</font><br>"; //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
 		strPlaceLibre += "<br>" + ConcoursJeunes.ajrLibelle.getResourceString("concurrent.placelibre.ciblelibre") + //$NON-NLS-1$ //$NON-NLS-2$
-				" " + ficheConcours.getPasDeTir(concurrent.getDepart()).getNbCiblesLibre() + "</html>"; //$NON-NLS-1$ //$NON-NLS-2$
+				" " + ficheConcours.getPasDeTir(concurrent.getDepart()).getNbCiblesLibre(ficheConcours.getParametre().getNbTireur()) + "</html>"; //$NON-NLS-1$ //$NON-NLS-2$
 		
 		return strPlaceLibre;
 	}
@@ -667,7 +667,8 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 				returnVal = CANCEL;
 				
 			} else {
-				
+				if(concurrent == null)
+					concurrent = new Concurrent();
 				//fixe le jeux de critères definissant le concurrent
 				CriteriaSet differentiationCriteria = readCriteriaSet();
 				concurrent.setCriteriaSet(differentiationCriteria);
@@ -713,6 +714,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 				concurrent.getClub().setNom(jtfClub.getText());
 				concurrent.getClub().setAgrement(jtfAgrement.getText());
 				concurrent.setInscription(jcbInscription.getSelectedIndex());
+				
 				
 				concurrent.saveCriteriaSet(ficheConcours.getParametre().getReglement());
 

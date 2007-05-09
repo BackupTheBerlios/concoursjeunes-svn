@@ -14,13 +14,13 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 package org.concoursjeunes;
-
 /**
  * Class représentant un archer independament d'un concours
  * 
  * @author Aurélien JEOFFRAY
  * @version 1.0
  */
+
 public class Archer {
 
 	private String nomArcher        = ""; //$NON-NLS-1$

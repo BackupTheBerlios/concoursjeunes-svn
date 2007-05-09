@@ -31,10 +31,6 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 
 	private ConcoursJeunesFrame parentframe;
 
-	//public
-	public FicheConcours ficheConcours = new FicheConcours();
-
-	//private
 	private JTabbedPane tabbedpane     = new JTabbedPane();
 
 	private JPanel fichesDepart = new JPanel();
@@ -57,6 +53,8 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	public ParametreDialog paramDialog;
 	public ConcurrentDialog concDialog;
 	public int index = 1;
+	
+	private FicheConcours ficheConcours;
 
 	/**
 	 * Création d'une fiche concours
@@ -70,10 +68,10 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		this.parentframe = parentframe;
 		this.ficheConcours = ficheConcours;
 		
-		paramDialog = new ParametreDialog(this);
+		paramDialog = new ParametreDialog(parentframe, ficheConcours);
+		
 		if(!ficheConcours.getParametre().isReglementLock()) {
-			paramDialog.showParametreDialog();
-			ficheConcours.makePasDeTir();
+			paramDialog.showParametreDialog(ficheConcours.getParametre());
 		}
 		init();
 
@@ -221,12 +219,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	 * Affiche la boite de dialogue des parametre du concours
 	 */
 	public void openParametreDialog() {
-		//l'ouvre si elle existe et la crée dans le cas contraire
-		if(paramDialog != null) {
-			paramDialog.setVisible(true);   
-		} else
-			paramDialog = new ParametreDialog(this);
-
+		paramDialog.showParametreDialog(ficheConcours.getParametre());
 	}
 
 	/**
@@ -375,6 +368,20 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		this.parentframe = parentframe;
 	}
 
+	/**
+	 * @return ficheConcours
+	 */
+	public FicheConcours getFicheConcours() {
+		return ficheConcours;
+	}
+
+	/**
+	 * @param ficheConcours ficheConcours à définir
+	 */
+	public void setFicheConcours(FicheConcours ficheConcours) {
+		this.ficheConcours = ficheConcours;
+	}
+
 	///////////////////////////////////////
 	// Auditeur d'événement
 	//////////////////////////////////////
@@ -394,7 +401,6 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 				criterion.setClassement(classmentCriteriaCB.get(criterion.getCode()).isSelected());
 			}
 
-			//ficheConcours.getParametre().setListCriteria()
 			jepClassIndiv.setText(ficheConcours.getClassement(FicheConcours.OUT_HTML, ficheConcours.getCurrentDepart()));
 		} else if(source instanceof JComboBox) {
 			ficheConcours.setCurrentDepart(((JComboBox)source).getSelectedIndex());
