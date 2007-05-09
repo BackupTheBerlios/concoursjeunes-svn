@@ -291,8 +291,22 @@ public class Cible {
 			strCibleLibelle += ", " + db.getBlason() + "cm"; //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
-		strCibleLibelle += ") (" + this.nbArcher + "/" + concours.getParametre().getNbTireur() + ")</font></html>"; //$NON-NLS-1$ //$NON-NLS-2$
-
+		strCibleLibelle += ") (" + this.nbArcher + "/" + concours.getParametre().getNbTireur() + ")</font>"; //$NON-NLS-1$ //$NON-NLS-2$
+		
+		Concurrent precConcurrent = null;
+		boolean valid = false;
+		for(Concurrent concurrent : concurrents) {
+			if(precConcurrent != null && !precConcurrent.getClub().equals(concurrent.getClub())) {
+				valid = true;
+				break;
+			}
+			precConcurrent = concurrent;
+		}
+		if(!valid && getNbArcher() > 1)
+			strCibleLibelle += "<br>Attention tous les archers de cette cible sont du même club!";
+		
+		strCibleLibelle += "</html>";
+		
 		return strCibleLibelle;
 	}
 
