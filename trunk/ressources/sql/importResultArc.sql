@@ -1,13 +1,14 @@
 -- @author Aurélien JEOFFRAY
 -- Code HSQLDB A décommenter si utilisation de HSQLDB à la place de H2
 -- SET TABLE EntiteFFTA SOURCE "FICLUB.TXT;fs=\semi";
--- SET TABLE ArchersFFTA SOURCE "Licence.TXT;fs=\semi";
--- fin code HSQLDB
+-- SET TABLE ArchersFFTA SOURCE "Licence.TXT;fs=\semi";-- fin code HSQLDB
 
 DELETE FROM Entite;
 DELETE FROM Archers;
 
 -- Code H2 A commenter si utilisation de HSQLDB
+
+
 INSERT INTO EntiteFFTA SELECT distinct NUM,AGR,NOM,
 	VILLE,LIGUE,CD from CSVREAD('base/FICLUB.TXT','NUM;AGR;NOM;VILLE;LIGUE;CD;INC1;INC2;INC3;INC4',null,';');
 INSERT INTO ArchersFFTA (NOMARCHER,NUMLICENCEARCHER,PRENOMARCHER,

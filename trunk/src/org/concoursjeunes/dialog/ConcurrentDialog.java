@@ -347,16 +347,19 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			((AutoCompleteDocument)jtfNom.getDocument()).setText(concurrent.getNomArcher());
 			((AutoCompleteDocument)jtfPrenom.getDocument()).setText(concurrent.getPrenomArcher());
 			((AutoCompleteDocument)jtfLicence.getDocument()).setText(concurrent.getNumLicenceArcher());
-			((AutoCompleteDocument)jtfClub.getDocument()).setText(concurrent.getClub().getVille());
-			((AutoCompleteDocument)jtfAgrement.getDocument()).setText(concurrent.getClub().getAgrement());
+			
 		} else {
 			jtfNom.setText(concurrent.getNomArcher());
 			jtfPrenom.setText(concurrent.getPrenomArcher());
 			jtfLicence.setText(concurrent.getNumLicenceArcher());
+		}
+		if(jtfClub.getDocument() instanceof AutoCompleteDocument) {
+			((AutoCompleteDocument)jtfClub.getDocument()).setText(concurrent.getClub().getVille());
+			((AutoCompleteDocument)jtfAgrement.getDocument()).setText(concurrent.getClub().getAgrement());
+		} else {
 			jtfClub.setText(concurrent.getClub().getVille());
 			jtfAgrement.setText(concurrent.getClub().getAgrement());
 		}
-
 		if(concurrent.getCriteriaSet() != null) {
 			for(Criterion key : ficheConcours.getParametre().getReglement().getListCriteria()) {
 				CriterionElement element = concurrent.getCriteriaSet().getCriterionElement(key);
