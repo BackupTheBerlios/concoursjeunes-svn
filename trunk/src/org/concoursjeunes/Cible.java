@@ -300,14 +300,14 @@ public class Cible {
 		Concurrent precConcurrent = null;
 		boolean valid = false;
 		for(Concurrent concurrent : concurrents) {
-			if(precConcurrent != null && !precConcurrent.getClub().equals(concurrent.getClub())) {
+			if(precConcurrent != null && concurrent != null && !precConcurrent.getClub().equals(concurrent.getClub())) {
 				valid = true;
 				break;
 			}
 			precConcurrent = concurrent;
 		}
 		if(!valid && getNbArcher() > 1)
-			strCibleLibelle += "<br>Attention tous les archers de cette cible sont du même club!";
+			strCibleLibelle += "<br><font color=\"orange\">Attention tous les archers de cette cible sont du même club!</font>";
 		
 		strCibleLibelle += "</html>";
 		

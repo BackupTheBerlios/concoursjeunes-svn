@@ -7,6 +7,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.DateFormat;
 
 import javax.naming.ConfigurationException;
@@ -37,7 +40,7 @@ import org.concoursjeunes.ReglementFactory;
 import org.concoursjeunes.dialog.ConfigurationDialog;
 import org.concoursjeunes.dialog.EntiteListDialog;
 import org.concoursjeunes.dialog.ReglementDialog;
-import org.concoursjeunes.plugins.ImportPlugin;
+import org.concoursjeunes.plugins.PluginEntry;
 import org.concoursjeunes.plugins.PluginLoader;
 import org.concoursjeunes.plugins.PluginMetadata;
 import org.jdesktop.swingx.JXErrorDialog;
@@ -164,17 +167,40 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 		    			}
 
 		    			if(cla != null) {
-		    				ImportPlugin lt = (ImportPlugin)cla.newInstance();
-		    				lt.setParentFrame(ConcoursJeunesFrame.this);
-		    				lt.start();
+							Constructor c = cla.getConstructor(JFrame.class);
+							Object plugin = c.newInstance(ConcoursJeunesFrame.this);
+							for(Method m : cla.getMethods()) {
+								if(m.isAnnotationPresent(PluginEntry.class)) {
+									m.invoke(plugin, (Object[])null);
+									break;
+								}
+							}
 		    			}
 		    		} catch (InstantiationException e1) {
+		    			JXErrorDialog.showDialog(ConcoursJeunesFrame.this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(),
+								e1.fillInStackTrace());
 		    			e1.printStackTrace();
 		    		} catch (IllegalAccessException e1) {
+		    			JXErrorDialog.showDialog(ConcoursJeunesFrame.this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(),
+								e1.fillInStackTrace());
 		    			e1.printStackTrace();
 		    		} catch (ClassNotFoundException e1) {
+		    			JXErrorDialog.showDialog(ConcoursJeunesFrame.this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(),
+								e1.fillInStackTrace());
 		    			e1.printStackTrace();
-		    		}
+		    		} catch (SecurityException e1) {
+		    			JXErrorDialog.showDialog(ConcoursJeunesFrame.this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(),
+								e1.fillInStackTrace());
+						e1.printStackTrace();
+					} catch (NoSuchMethodException e1) {
+						JXErrorDialog.showDialog(ConcoursJeunesFrame.this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(),
+								e1.fillInStackTrace());
+						e1.printStackTrace();
+					} catch (InvocationTargetException e1) {
+						JXErrorDialog.showDialog(ConcoursJeunesFrame.this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(),
+								e1.fillInStackTrace());
+						e1.printStackTrace();
+					}
 				}
     			
     		});

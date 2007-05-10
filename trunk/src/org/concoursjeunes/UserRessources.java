@@ -233,7 +233,7 @@ public class UserRessources {
     public String getBasePath() {
     	 createPathIfNotExist(allusersDataPath + File.separator + "base"); //$NON-NLS-1$
         
-        return allusersDataPath + File.separator + "base"; //$NON-NLS-1$
+        return allusersDataPath; //$NON-NLS-1$
     }
     
     /**

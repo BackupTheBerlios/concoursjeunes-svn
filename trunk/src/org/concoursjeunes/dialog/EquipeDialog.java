@@ -265,12 +265,13 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 		//integrer le noeud à l'arbre
 		treeRoot.add(dmtnCategorie);  
 
-
+		
 		//recharger l'arbre
 		treeModel.reload(treeRoot);
 
 		//selectionner le 1er élément
-		treeEquipes.setSelectionRow(0);
+		//treeEquipes.setSelectionRow(0);
+		treeEquipes.expandPath(new TreePath(dmtnCategorie.getPath()));
 	}
 
 	/**
@@ -619,8 +620,10 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
 	 */
 	public void mousePressed(MouseEvent e) {
-		if(e.getSource() == treeConcurrents)
-			dragObject = treeConcurrents.getLastSelectedPathComponent();
+		if(e.getSource() == treeConcurrents && treeConcurrents.getLastSelectedPathComponent() != null) {
+			if(((DefaultMutableTreeNode)treeConcurrents.getLastSelectedPathComponent()).getUserObject() instanceof Concurrent)
+				dragObject = treeConcurrents.getLastSelectedPathComponent();
+		}
 	}
 
 	/**
@@ -646,7 +649,7 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 	 * @see java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent)
 	 */
 	public void mouseDragged(MouseEvent e) {
-		if(e.getSource() == treeConcurrents) {
+		if(e.getSource() == treeConcurrents && dragObject != null) {
 			GhostGlassPane glassPane = (GhostGlassPane)this.getGlassPane();
 			if(!onDrag) {
 				Rectangle rect = treeConcurrents.getPathBounds(new TreePath(((DefaultMutableTreeNode)dragObject).getPath()));
@@ -718,6 +721,13 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 							
 							categoriesEquipes(critere.getCriteriaSet(), club);
 						}
+					} else if(dmtnObj instanceof Entite) {
+						Entite club = (Entite) dmtnObj;
+						
+						DefaultMutableTreeNode dmtnParent = (DefaultMutableTreeNode)dmtn.getParent();
+						CriteriaSetLibelle critere = (CriteriaSetLibelle) dmtnParent.getUserObject();
+						
+						categoriesEquipes(critere.getCriteriaSet(), club);
 					}
 				}
 				
