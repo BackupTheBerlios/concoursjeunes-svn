@@ -391,7 +391,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		if(source == jbResultat) {
 			index = 1;
 			openResultatDialog();
-			jepClassIndiv.setText(ficheConcours.getClassement(FicheConcours.OUT_HTML, ficheConcours.getCurrentDepart()));
+			jepClassIndiv.setText(ficheConcours.getClassement(FicheConcours.OUT_HTML));
 		} else if(source == printClassementIndiv) {
 			ficheConcours.printClassement();
 		} else if(source == printClassementEquipe) {
@@ -401,7 +401,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 				criterion.setClassement(classmentCriteriaCB.get(criterion.getCode()).isSelected());
 			}
 
-			jepClassIndiv.setText(ficheConcours.getClassement(FicheConcours.OUT_HTML, ficheConcours.getCurrentDepart()));
+			jepClassIndiv.setText(ficheConcours.getClassement(FicheConcours.OUT_HTML));
 		} else if(source instanceof JComboBox) {
 			ficheConcours.setCurrentDepart(((JComboBox)source).getSelectedIndex());
 			cl.show(fichesDepart, "depart." + ficheConcours.getCurrentDepart());
@@ -425,7 +425,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 				}
 				switch(i) {
 					case 1:
-						jepClassIndiv.setText(ficheConcours.getClassement(FicheConcours.OUT_HTML, ficheConcours.getCurrentDepart()));
+						jepClassIndiv.setText(ficheConcours.getClassement(FicheConcours.OUT_HTML));
 						break;
 					case 2:
 						jepClassTeam.setText(ficheConcours.getClassementEquipe(FicheConcours.OUT_HTML));
@@ -446,7 +446,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 				openConcurrentDialog(ficheConcours.getConcurrentList().getConcurrentAt(ficheConcours.getCurrentDepart(), Integer.parseInt(e.getURL().getRef().substring(1)), 
 						Integer.parseInt(e.getURL().getRef().substring(0,1))));
 
-				jepClassIndiv.setText(ficheConcours.getClassement(FicheConcours.OUT_HTML, ficheConcours.getCurrentDepart()));
+				jepClassIndiv.setText(ficheConcours.getClassement(FicheConcours.OUT_HTML));
 			} 
 		} 
 	}

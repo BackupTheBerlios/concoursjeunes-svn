@@ -134,34 +134,20 @@ public class EntiteDialog extends JDialog implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent ae) {
-	if(ae.getSource() == jbAnnuler) {
-	    setVisible(false);
-	} else {
-	    entite.setNom(jtfNom.getText());
-	    entite.setAdresse(jtfAdresse.getText());
-	    entite.setVille(jtfVille.getText());
-	    entite.setType(jcbType.getSelectedIndex());
-	    entite.setNote(jtaNote.getText());
-	    entite.setAgrement((String)jftfAgrement.getValue());
-	    entite.setCodePostal((String)jftfCodePostal.getValue());
-
-	    //TODO Remplacer par une structure en db
-	    /*new Thread(new Runnable() {
-				public void run() {
-					try {
-						File f = new File(ConcoursJeunes.userRessources.getBasePathForUser() + File.separator + "organisations.xml.gz"); //$NON-NLS-1$
-                        AJToolKit.saveXMLStructure(f, ConcoursJeunes.listeEntite, true);
-					} catch(NullPointerException npe) {
-						JOptionPane.showMessageDialog(EntiteDialog.this,
-                                ConcoursJeunes.ajrLibelle.getResourceString("erreur.save.entite"), //$NON-NLS-1$
-                                ConcoursJeunes.ajrLibelle.getResourceString("erreur"),JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
-			            npe.printStackTrace();
-					}
-				}
-			}).start();*/
-
-
-	    setVisible(false);
-	}
+		if(ae.getSource() == jbAnnuler) {
+		    setVisible(false);
+		} else {
+		    entite.setNom(jtfNom.getText());
+		    entite.setAdresse(jtfAdresse.getText());
+		    entite.setVille(jtfVille.getText());
+		    entite.setType(jcbType.getSelectedIndex());
+		    entite.setNote(jtaNote.getText());
+		    entite.setAgrement((String)jftfAgrement.getValue());
+		    entite.setCodePostal((String)jftfCodePostal.getValue());
+	
+		    entite.save();
+	
+		    setVisible(false);
+		}
     }
 }

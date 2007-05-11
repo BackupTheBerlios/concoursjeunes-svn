@@ -177,6 +177,24 @@ public class Entite {
 		this.note = note;
 	}
 	
+	public void save() {
+		try {
+			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+			
+			stmt.executeUpdate("MERGE INTO Entite (AGREMENTENTITE, NOMENTITE, " +
+					"ADRESSEENTITE, CODEPOSTALENTITE, VILLEENTITE, NOTEENTITE, TYPEENTITE) " +
+					"VALUES ('" + agrement + "', '" 
+					+ nom.replaceAll("'", "''") + "', '" 
+					+ adresse.replaceAll("'", "''") + "', '"
+					+ codePostal + "', '" 
+					+ ville.replaceAll("'", "''") + "', '" 
+					+ note.replaceAll("'", "''") + "', " 
+					+ type + ")");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public static ArrayList<Entite> getEntitesInDatabase(Entite eGeneric, String orderfield) {
 		ArrayList<Entite> entites = new ArrayList<Entite>();
 		Statement stmt = null;

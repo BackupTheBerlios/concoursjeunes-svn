@@ -468,15 +468,15 @@ public class Reglement {
 					"CLASSEMENT,PLACEMENT,CODEFFTA) VALUES ('" + criterion.getCode() + "'," + 
 					idReglement + ",'" + criterion.getLibelle() + "'," + 
 					criterion.getSortOrder() + "," +
-					((criterion.isClassement())?"TRUE":"FALSE") + "," +
-					((criterion.isPlacement())?"TRUE":"FALSE") + ",'" +
+					Boolean.toString(criterion.isClassement()).toUpperCase() + "," +
+					Boolean.toString(criterion.isPlacement()).toUpperCase() + ",'" +
 					criterion.getCodeffta() + "')");
 			for(CriterionElement criterionElement : criterion.getCriterionElements()) {
 				stmt.executeUpdate("insert into CRITEREELEMENT (CODECRITEREELEMENT," +
 						"CODECRITERE,NUMREGLEMENT,LIBELLECRITEREELEMENT,ACTIF) values (" +
 						"'" + criterionElement.getCode() + "', '" + criterion.getCode() + "'," +
 						"" + idReglement + ", '" + criterionElement.getLibelle() + "'," +
-						((criterionElement.isActive())?"TRUE":"FALSE") + ")");
+						Boolean.toString(criterionElement.isActive()).toUpperCase() + ")");
 			}
 		}
 	}

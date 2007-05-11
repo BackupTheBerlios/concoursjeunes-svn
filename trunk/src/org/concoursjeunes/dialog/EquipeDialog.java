@@ -34,16 +34,13 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 
 	private JCheckBox cbEquipeClub = new JCheckBox();
 
-	private PopupMenu popup;
-
-	private Object[] selectionConc;
+	private JPopupMenu popup;
 
 	private JButton jbValider = new JButton();
 	private JButton jbAnnuler = new JButton();
 
 	private boolean validation = false;
 
-	private Hashtable<CriteriaSet, ArrayList<Concurrent>> hConcurrents = new Hashtable<CriteriaSet, ArrayList<Concurrent>>();
 	private Hashtable<CriteriaSet, Hashtable<String, Equipe>> hEquipes = new Hashtable<CriteriaSet, Hashtable<String, Equipe>>();
 	
 	private boolean onDrag = false;
@@ -274,77 +271,15 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 		treeEquipes.expandPath(new TreePath(dmtnCategorie.getPath()));
 	}
 
-	/**
-	 * 
-	 * 
-	 * @param criteriaSet
-	 * @param typeSort
-	 */
-	private void listConcurrents(CriteriaSet criteriaSet, int typeSort) {
-		listConcurrents(null, criteriaSet, typeSort);
-	}
-
-	/**
-	 * 
-	 * 
-	 * @param forclub
-	 * @param criteriaSet
-	 * @param typeSort
-	 */
-	private void listConcurrents(Entite forclub, CriteriaSet criteriaSet, int typeSort) {
-		Concurrent[] unsortList;
-		Entite[] compagnies;
-
-		//determine l'étendu de la séléction
-		if(forclub == null) { //$NON-NLS-1$
-
-			//liste l'ensemble des compagnies présente sur le concours
-			compagnies = ficheConcours.getConcurrentList().listCompagnie();
-		} else {
-			compagnies = new Entite[] { forclub };
-		}
-
-		//genere l'entrée dans la table de hashage si elle n'existe pas
-		hConcurrents.put(criteriaSet, new ArrayList<Concurrent>());
-
-		//parcours les compagnies
-		for(Entite compagnie : compagnies) {
-			//liste les archers pour chaque compagnie
-			Concurrent[] concurrents = ficheConcours.getConcurrentList().list(compagnie, criteriaSet);
-			//regarde si leurs nombre est suffisant pour créer une équipe
-			if(!cbEquipeClub.isSelected() || concurrents.length >= ficheConcours.getParametre().getReglement().getNbMembresRetenu()) {
-                                                     
-
-				//ajoute les concurrents à la table de hashage
-				for(Concurrent concurrent : concurrents) {
-					boolean add = true;
-					for(Equipe equipe : hEquipes.get(criteriaSet).values()) {
-						if(equipe.contains(concurrent)) {
-							add = false;
-
-							break;
-						}
-					}
-					if(add)
-						hConcurrents.get(criteriaSet).add(concurrent);
-				}
-			}
-		}
-
-		unsortList =  hConcurrents.get(criteriaSet).toArray(new Concurrent[hConcurrents.get(criteriaSet).size()]);
-
-		//ajlConcurrents.setListData(ConcurrentList.sort(unsortList, typeSort));
-	}
-
 	public void popup() {
-		popup = new PopupMenu("Edit"); //$NON-NLS-1$
+		popup = new JPopupMenu("Edit"); //$NON-NLS-1$
 
-		MenuItem mi1 = new MenuItem(ConcoursJeunes.ajrLibelle.getResourceString("popup.suppression")); //$NON-NLS-1$
+		JMenuItem mi1 = new JMenuItem(ConcoursJeunes.ajrLibelle.getResourceString("popup.suppression")); //$NON-NLS-1$
 		mi1.setActionCommand("popup.suppression"); //$NON-NLS-1$
 		mi1.addActionListener(this);
 		popup.add(mi1);
 
-		add(popup);
+		treeEquipes.add(popup);
 	}
 
 	/**
@@ -381,67 +316,70 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 	}
 
 	private void createEquipe(TreePath destPath) {
-
 		if(destPath == null)
 			return;
 
 		DefaultMutableTreeNode equipesTreeNode;
+		TreePath[] selectedPaths = treeConcurrents.getSelectionPaths();
 
 		//selectionne la destination
 		treeEquipes.setSelectionPath(destPath);
 
 		//recupere le noeud destination
-		equipesTreeNode = (DefaultMutableTreeNode)destPath.getLastPathComponent();
-
+		equipesTreeNode = (DefaultMutableTreeNode)destPath.getPathComponent(1);
+		
 		//detecte la categorie du point d'arborescence
 		CriteriaSet scna = ((CriteriaSetLibelle)equipesTreeNode.getUserObject()).getCriteriaSet();
 
-		//si le concurrent courrant appartient bien à la categorie
-		if(scna.equals(((Concurrent)selectionConc[0]).getCriteriaSet())) {
-
-			//donner à l'équipe le nom du club du premier concourrent
-			String strEquipeName = ((Concurrent)selectionConc[0]).getClub().getNom();
-
-			if(hEquipes.get(scna).containsKey(strEquipeName)) {
-				int i = 2;
-				while(hEquipes.get(scna).containsKey(strEquipeName + i)) {
-					i++;
-				}
-				strEquipeName += "" + i; //$NON-NLS-1$
-			}
-
-			do {
-				strEquipeName = JOptionPane.showInputDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("equipe.saisinom"), strEquipeName); //$NON-NLS-1$
-			} while(strEquipeName == null || strEquipeName.equals("") || hEquipes.get(scna).containsKey(strEquipeName)); //$NON-NLS-1$
-
-			//on cré l'équipe
-			Equipe equipe = new Equipe(strEquipeName);
-
-			//on met l'équipe dans la table des équipes
-			hEquipes.get(scna).put(strEquipeName, equipe);
-
-			//on cré le point d'arborescence dans l'arbre
-			DefaultMutableTreeNode equipeTreeNode = new DefaultMutableTreeNode(equipe);
-
-			//on ajoute les memebres à l'équipe
-			addMembresToEquipe(scna, strEquipeName, equipeTreeNode);
-
-			//on cré le point d'arborescence dans l'arbre
-			equipesTreeNode.add(equipeTreeNode);
-
-			treeModel.reload();
-			TreePath treePath = new TreePath(equipeTreeNode.getPath());
-			treeEquipes.expandPath(treePath);
-		} else {
-			JOptionPane.showMessageDialog(this,
-					ConcoursJeunes.ajrLibelle.getResourceString("equipe.error.badcategorie"), //$NON-NLS-1$
-					ConcoursJeunes.ajrLibelle.getResourceString("equipe.warning"),JOptionPane.WARNING_MESSAGE); //$NON-NLS-1$
+		//donner à l'équipe le nom du club du premier concourrent
+		Concurrent firstConcurrent = (Concurrent)((DefaultMutableTreeNode)selectedPaths[0].getLastPathComponent()).getUserObject();
+		String strEquipeName = firstConcurrent.getClub().getNom();
+		
+		int i = 2;
+		while(ficheConcours.getEquipes().contains(strEquipeName)) {
+			strEquipeName += "" + i;
+			i++;
 		}
-	}
+		
+		do {
+			strEquipeName = JOptionPane.showInputDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("equipe.saisinom"), strEquipeName); //$NON-NLS-1$
+		} while(strEquipeName == null || strEquipeName.equals("") || ficheConcours.getEquipes().contains(strEquipeName)); //$NON-NLS-1$
+		
+		//on crée l'équipe
+		Equipe equipe = new Equipe(strEquipeName);
+		equipe.setNbRetenu(ficheConcours.getParametre().getReglement().getNbMembresRetenu());
+		equipe.setDifferentiationCriteria(scna);
+		
+		ficheConcours.getEquipes().add(equipe);
+		
+		//on crée le point d'arborescence dans l'arbre
+		DefaultMutableTreeNode equipeTreeNode = new DefaultMutableTreeNode(equipe);
+		
+		//on ajoute les membres à l'équipe
+		addMembresToEquipe(equipe, equipeTreeNode);
+		
+		//on crée le point d'arborescence dans l'arbre
+		if(cbEquipeClub.isSelected()) {
+			((DefaultMutableTreeNode)destPath.getLastPathComponent()).add(equipeTreeNode);
+		} else {
+			equipesTreeNode.add(equipeTreeNode);
+		}
 
-	private void addMembresToEquipe(CriteriaSet scna, String nomEquipe, DefaultMutableTreeNode dmtn) {
+		treeModel.reload();
+		TreePath treePath = new TreePath(equipeTreeNode.getPath());
+		treeEquipes.expandPath(treePath);
+	}
+	
+
+	private void addMembresToEquipe(Equipe equipe, DefaultMutableTreeNode dmtn) {
+		TreePath[] selectedPaths = treeConcurrents.getSelectionPaths();
+		Concurrent[] selectionConc = new Concurrent[selectedPaths.length];
+		for(int i = 0; i < selectedPaths.length; i++) {
+			selectionConc[i] = (Concurrent)((DefaultMutableTreeNode)selectedPaths[i].getLastPathComponent()).getUserObject();
+		}
+		
 		//test si le nombre de concurrent n'est pas trop important pour l'équipe
-		if(hEquipes.get(scna).get(nomEquipe).getMembresEquipe().size() 
+		if(equipe.getMembresEquipe().size() 
 				+ selectionConc.length > ficheConcours.getParametre().getReglement().getNbMembresEquipe()) {
 			JOptionPane.showMessageDialog(this,
 					ConcoursJeunes.ajrLibelle.getResourceString("equipe.taille.max"), //$NON-NLS-1$
@@ -450,16 +388,15 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 			for(Object concurrent : selectionConc) {
 				if(concurrent != null) {
 					//ajoute le concurrent à l'equipe
-					hEquipes.get(scna).get(nomEquipe).addConcurrent((Concurrent)concurrent);
+					equipe.addConcurrent((Concurrent)concurrent);
 					//ajoute le concurrent à l'arborescence.
 					DefaultMutableTreeNode membreTreeNode = new DefaultMutableTreeNode(concurrent);
 					dmtn.add(membreTreeNode);
-					//le supprime de la liste des non affecté
-					//ajlConcurrents.remove(concurrent);
 				}
 			}
 		}
 	}
+	
 	
 	@SuppressWarnings("unchecked")
 	private void removeMembreForEquipe(CriteriaSet scna, Equipe equipe, Concurrent concurrent) {
@@ -599,7 +536,9 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 	 * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
 	 */
 	public void mouseClicked(MouseEvent e) {
-		
+		if(e.getModifiers() == InputEvent.BUTTON3_MASK) {
+			popup.show(e.getComponent(), e.getX(), e.getY());
+		}
 	}
 
 	/* (non-Javadoc)
@@ -636,8 +575,14 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 	        SwingUtilities.convertPointFromScreen(p, treeEquipes);
 	
 			//test si le drop correspond bien à la bonne action
-			if(p.x > 0 & p.y > 0) {
-				
+			if(p.x > 0 && p.y > 0 
+					&& p.x < treeEquipes.getWidth() && p.y < treeEquipes.getHeight()) {
+				createEquipe(treeEquipes.getPathForLocation(p.x, p.y));
+				((DefaultMutableTreeNode)treeConcurrents.getSelectionPath()
+						.getParentPath().getLastPathComponent()).remove(
+								(DefaultMutableTreeNode)treeConcurrents.getSelectionPath()
+								.getLastPathComponent());
+				treeModelConcurrents.reload((DefaultMutableTreeNode)treeConcurrents.getSelectionPath().getParentPath().getLastPathComponent());
 			}
 		}
 		this.getGlassPane().setVisible(false);

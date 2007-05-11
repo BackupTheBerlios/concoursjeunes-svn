@@ -62,6 +62,13 @@ public class EquipeList {
         return equipeList.get(index);
     }
     
+    public boolean contains(String teamName) {
+    	for(Equipe equipe : equipeList) {
+    		if(equipe.getNomEquipe().equals(teamName))
+    			return true;
+    	}
+    	return false;
+    }
     /**
      * Retourne l'équipe contenant le concourrent donné ou null si inexistant
      * 

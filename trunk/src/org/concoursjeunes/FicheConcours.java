@@ -260,7 +260,7 @@ public class FicheConcours implements ParametreListener {
 	 * 
 	 * @param depart
 	 */ 
-	private Hashtable<CriteriaSet, Concurrent[]> classement(int depart) {
+	private Hashtable<CriteriaSet, Concurrent[]> classement() {
 
 		Hashtable<CriteriaSet, Concurrent[]> concurrentsClasse = new Hashtable<CriteriaSet, Concurrent[]>();
 
@@ -328,10 +328,10 @@ public class FicheConcours implements ParametreListener {
 	 * 
 	 * @return String - le XML iText à retourner
 	 */
-	public String getClassement(int outType, int depart) {
+	public String getClassement(int outType) {
 		String strClassement = ""; //$NON-NLS-1$
 		if(concurrentList != null && concurrentList.countArcher() > 0) {
-			Hashtable<CriteriaSet, Concurrent[]> concurrentsClasse = classement(depart);
+			Hashtable<CriteriaSet, Concurrent[]> concurrentsClasse = classement();
 
 			AJTemplate tplClassement = null;
 			String strArbitreResp = ""; //$NON-NLS-1$
@@ -843,7 +843,7 @@ public class FicheConcours implements ParametreListener {
 	public boolean printClassement() {
 		//parametrage d'une page au format A4 avec marges 1cm/1cm/1cm/6.5cm
 		Document document = new Document(PageSize.A4, 10, 10, 10, 65);
-		String classement = getClassement(OUT_XML, currentDepart);
+		String classement = getClassement(OUT_XML);
 
 		if(!classement.equals("")) { //$NON-NLS-1$
 			return ConcoursJeunes.printDocument(document, classement);
