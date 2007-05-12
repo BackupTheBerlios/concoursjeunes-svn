@@ -167,7 +167,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 		    			}
 
 		    			if(cla != null) {
-							Constructor c = cla.getConstructor(JFrame.class);
+							Constructor<?> c = cla.getConstructor(JFrame.class);
 							Object plugin = c.newInstance(ConcoursJeunesFrame.this);
 							for(Method m : cla.getMethods()) {
 								if(m.isAnnotationPresent(PluginEntry.class)) {

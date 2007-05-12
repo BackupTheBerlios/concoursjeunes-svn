@@ -215,6 +215,7 @@ public class CriterionDialog extends JDialog implements ActionListener {
         if(e.getSource() == jbValider) {
             if(criterion == null) {
                 criterion = new Criterion(jtfCode.getText());
+                criterion.setReglementParent(parent.getReglement());
 
                 parent.getReglement().getListCriteria().add(criterion);
             }

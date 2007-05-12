@@ -127,6 +127,7 @@ public class CriterionElementDialog extends JDialog implements ActionListener {
         if(e.getSource() == jbValider) {
             if(criterionIndividu == null) {
                 criterionIndividu = new CriterionElement();
+                criterionIndividu.setCriterionParent(criterion);
                 
                 criterion.getCriterionElements().add(criterionIndividu);
             }

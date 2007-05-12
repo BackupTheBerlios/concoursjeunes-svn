@@ -372,6 +372,7 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 	
 
 	private void addMembresToEquipe(Equipe equipe, DefaultMutableTreeNode dmtn) {
+		
 		TreePath[] selectedPaths = treeConcurrents.getSelectionPaths();
 		Concurrent[] selectionConc = new Concurrent[selectedPaths.length];
 		for(int i = 0; i < selectedPaths.length; i++) {
@@ -577,12 +578,25 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 			//test si le drop correspond bien à la bonne action
 			if(p.x > 0 && p.y > 0 
 					&& p.x < treeEquipes.getWidth() && p.y < treeEquipes.getHeight()) {
-				createEquipe(treeEquipes.getPathForLocation(p.x, p.y));
-				((DefaultMutableTreeNode)treeConcurrents.getSelectionPath()
-						.getParentPath().getLastPathComponent()).remove(
-								(DefaultMutableTreeNode)treeConcurrents.getSelectionPath()
-								.getLastPathComponent());
-				treeModelConcurrents.reload((DefaultMutableTreeNode)treeConcurrents.getSelectionPath().getParentPath().getLastPathComponent());
+				
+				DefaultMutableTreeNode teamNode = (DefaultMutableTreeNode)treeEquipes.getPathForLocation(p.x, p.y).getLastPathComponent(); 
+				Object destObj = teamNode.getUserObject();
+				
+				if(destObj instanceof Equipe) {
+					
+					Equipe equipe = (Equipe) destObj;
+					
+					addMembresToEquipe(equipe, teamNode);
+				} else {
+					createEquipe(treeEquipes.getPathForLocation(p.x, p.y));
+					
+					((DefaultMutableTreeNode)treeConcurrents.getSelectionPath()
+							.getParentPath().getLastPathComponent()).remove(
+									(DefaultMutableTreeNode)treeConcurrents.getSelectionPath()
+									.getLastPathComponent());
+					
+					treeModelConcurrents.reload((DefaultMutableTreeNode)treeConcurrents.getSelectionPath().getParentPath().getLastPathComponent());
+				}
 			}
 		}
 		this.getGlassPane().setVisible(false);

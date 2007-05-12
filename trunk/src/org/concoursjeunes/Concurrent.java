@@ -277,13 +277,11 @@ public class Concurrent extends Archer {
 			try {
 				Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 				
-				stmt.executeUpdate("delete from distinguer where NUMLICENCEARCHER='" + getNumLicenceArcher() +
-						"' and NUMREGLEMENT=" + reglement.getIdReglement());
 				for(Entry<Criterion, CriterionElement> entry : criteriaSet.getCriteria().entrySet()) {
 					Criterion criterion = entry.getKey();
 					CriterionElement criterionElement = entry.getValue();
 					
-					stmt.executeUpdate("insert into distinguer (NUMLICENCEARCHER, CODECRITEREELEMENT, CODECRITERE, NUMREGLEMENT) " +
+					stmt.executeUpdate("merge into distinguer (NUMLICENCEARCHER, CODECRITEREELEMENT, CODECRITERE, NUMREGLEMENT) " +
 							"values ('" + getNumLicenceArcher() + "', '" + criterionElement.getCode() + "', '" +
 							criterion.getCode() + "', " + reglement.getIdReglement() + ")");
 				}

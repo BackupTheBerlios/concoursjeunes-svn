@@ -16,6 +16,8 @@
 
 package org.concoursjeunes;
 
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 /**
@@ -36,6 +38,8 @@ public class Criterion {
     private String codeffta = ""; //$NON-NLS-1$
     
     private ArrayList<CriterionElement> criterionElements = new ArrayList<CriterionElement>();
+    
+    private Reglement reglementParent = new Reglement();
     
     public Criterion() {
         
@@ -208,5 +212,43 @@ public class Criterion {
 	 */
 	public void setCriterionElements(ArrayList<CriterionElement> criterionElements) {
 		this.criterionElements = criterionElements;
+	}
+
+	public Reglement getReglementParent() {
+		return reglementParent;
+	}
+
+	public void setReglementParent(Reglement reglementParent) {
+		this.reglementParent = reglementParent;
+	}
+	
+	public void save() {
+		try {
+			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+			
+			stmt.executeUpdate("merge into CRITERE (CODECRITERE,NUMREGLEMENT,LIBELLECRITERE,SORTORDERCRITERE," +
+					"CLASSEMENT,PLACEMENT,CODEFFTA) VALUES ('" + code + "'," + 
+					reglementParent.getIdReglement() + ",'" + libelle + "'," + 
+					sortOrder + "," +
+					Boolean.toString(classement).toUpperCase() + "," +
+					Boolean.toString(placement).toUpperCase() + ",'" +
+					codeffta + "')");
+			for(CriterionElement criterionElement : criterionElements) {
+				criterionElement.save();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void delete() {
+		try {
+			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+			
+			stmt.executeUpdate("delete from CRITERE where CODECRITERE='" + code + "' and " +
+					"NUMREGLEMENT=" + reglementParent.getIdReglement());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 }

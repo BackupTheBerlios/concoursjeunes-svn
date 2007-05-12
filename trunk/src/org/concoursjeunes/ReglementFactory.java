@@ -157,6 +157,7 @@ public class ReglementFactory {
 				while(rs.next()) {
 					Criterion criterion = new Criterion();
 					
+					criterion.setReglementParent(reglement);
 					criterion.setCode(rs.getString("CODECRITERE"));
 					criterion.setLibelle(rs.getString("LIBELLECRITERE"));
 					criterion.setSortOrder(rs.getInt("SORTORDERCRITERE"));
@@ -171,6 +172,7 @@ public class ReglementFactory {
 					while(rs2.next()) {
 						CriterionElement criterionElement = new CriterionElement();
 						
+						criterionElement.setCriterionParent(criterion);
 						criterionElement.setCode(rs2.getString("CODECRITEREELEMENT"));
 						criterionElement.setLibelle(rs2.getString("LIBELLECRITEREELEMENT"));
 						criterionElement.setActive(rs2.getBoolean("ACTIF"));

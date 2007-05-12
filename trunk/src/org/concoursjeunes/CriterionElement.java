@@ -15,6 +15,9 @@
  */
 package org.concoursjeunes;
 
+import java.sql.SQLException;
+import java.sql.Statement;
+
 /**
  * Element de critère
  * 
@@ -24,6 +27,8 @@ public class CriterionElement {
     private String code = ""; //$NON-NLS-1$
     private String libelle = ""; //$NON-NLS-1$
     private boolean active = true;
+    
+    private Criterion criterionParent = new Criterion();
     
     public CriterionElement() {
         
@@ -65,7 +70,10 @@ public class CriterionElement {
         this.active = active;
     }
 
-    /**
+    /** +  values (" +
+					"'" + code + "', '" + criterionParent.getCode() + "'," +
+					"" +  + ", '" + libelle + "'," +
+					Boolean.toString(active).toUpperCase() + ")
 	 * Renvoi le libellé de l'élément
 	 * @return  Renvoie libelle.
 	 * @uml.property  name="libelle"
@@ -83,7 +91,41 @@ public class CriterionElement {
         this.libelle = libelle;
     }
 
-    /**
+    public Criterion getCriterionParent() {
+		return criterionParent;
+	}
+
+	public void setCriterionParent(Criterion criterionParent) {
+		this.criterionParent = criterionParent;
+	}
+	
+	public void save() {
+		try {
+			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+			
+			stmt.executeUpdate("merge into CRITEREELEMENT (CODECRITEREELEMENT," +
+					"CODECRITERE,NUMREGLEMENT,LIBELLECRITEREELEMENT,ACTIF) values (" +
+					"'" + code + "', '" + criterionParent.getCode() + "'," +
+					"" + criterionParent.getReglementParent().getIdReglement() + ", '" + libelle + "'," +
+					Boolean.toString(active).toUpperCase() + ")");
+		} catch(SQLException e) {
+			
+		}
+	}
+	
+	public void delete() {
+		try {
+			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+			
+			stmt.executeUpdate("delete from CRITEREELEMENT where CODECRITEREELEMENT='" + code +
+					"' and CODECRITERE='" + criterionParent.getCode() + "' and " +
+					"NUMREGLEMENT=" + criterionParent.getReglementParent().getIdReglement());
+		} catch(SQLException e) {
+			
+		}
+	}
+
+	/**
      * retourne le libelle de l'élément
      */
     @Override

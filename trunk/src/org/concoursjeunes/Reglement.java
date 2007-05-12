@@ -436,10 +436,6 @@ public class Reglement {
 						+ "NBFLECHEPARVOLEE=" + nbFlecheParVolee + ", NBMEMBRESEQUIPE=" + nbMembresEquipe + ","
 						+ "NBMEMBRESRETENU=" + nbMembresRetenu + ", ISOFFICIAL=" + ((officialReglement)?"TRUE":"FALSE")
 						+ " WHERE NUMREGLEMENT=" + idReglement);
-				//les tableaux de critères et correspondance son détruit pour pouvoir être plus facilement recréer 
-				stmt.executeUpdate("delete from CRITERE where NUMREGLEMENT=" + idReglement);
-				stmt.executeUpdate("delete from DISTANCESBLASONS where NUMREGLEMENT=" + idReglement);
-			
 			//dans le cas contraire il faut créer son entrée dans la base
 			} else {
 				stmt.executeUpdate("insert into Reglement (NOMREGLEMENT, NBSERIE, NBVOLEEPARSERIE," +
@@ -464,20 +460,7 @@ public class Reglement {
 	
 	private void saveCriteria(Statement stmt) throws SQLException {
 		for(Criterion criterion : listCriteria) {
-			stmt.executeUpdate("insert into CRITERE (CODECRITERE,NUMREGLEMENT,LIBELLECRITERE,SORTORDERCRITERE," +
-					"CLASSEMENT,PLACEMENT,CODEFFTA) VALUES ('" + criterion.getCode() + "'," + 
-					idReglement + ",'" + criterion.getLibelle() + "'," + 
-					criterion.getSortOrder() + "," +
-					Boolean.toString(criterion.isClassement()).toUpperCase() + "," +
-					Boolean.toString(criterion.isPlacement()).toUpperCase() + ",'" +
-					criterion.getCodeffta() + "')");
-			for(CriterionElement criterionElement : criterion.getCriterionElements()) {
-				stmt.executeUpdate("insert into CRITEREELEMENT (CODECRITEREELEMENT," +
-						"CODECRITERE,NUMREGLEMENT,LIBELLECRITEREELEMENT,ACTIF) values (" +
-						"'" + criterionElement.getCode() + "', '" + criterion.getCode() + "'," +
-						"" + idReglement + ", '" + criterionElement.getLibelle() + "'," +
-						Boolean.toString(criterionElement.isActive()).toUpperCase() + ")");
-			}
+			criterion.save();
 		}
 	}
 	
