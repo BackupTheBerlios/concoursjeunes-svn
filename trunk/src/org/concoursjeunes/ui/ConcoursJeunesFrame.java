@@ -1,5 +1,6 @@
 package org.concoursjeunes.ui;
 
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -7,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -446,6 +448,20 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 					ConcoursJeunes.COPYR + " " + ConcoursJeunes.AUTEURS + "<br><br>" + //$NON-NLS-1$ //$NON-NLS-2$
 					ConcoursJeunes.ajrLibelle.getResourceString("apropos.liens") + "<br></html>", //$NON-NLS-1$ //$NON-NLS-2$
 					ConcoursJeunes.ajrLibelle.getResourceString("apropos.titre"),JOptionPane.INFORMATION_MESSAGE); //$NON-NLS-1$
+		} else if (cmd.equals("menubar.aide.aide")) { //$NON-NLS-1$
+//			affiche le pdf avec le reader pdf standard du systeme
+			try {
+				if(Desktop.isDesktopSupported()) {
+					Desktop.getDesktop().open(new File("Documentation ConcoursJeunes.pdf"));
+				} else {
+					String NAV =  ConcoursJeunes.configuration.getPdfReaderPath();
+
+					System.out.println(NAV + " \"Documentation ConcoursJeunes.pdf\""); //$NON-NLS-1$ //$NON-NLS-2$
+					Runtime.getRuntime().exec(NAV + " \"Documentation ConcoursJeunes.pdf\""); //$NON-NLS-1$ //$NON-NLS-2$
+				}
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		} else if(cmd.equals("menubar.debug.addpoints")) { //$NON-NLS-1$
 			if(jif != null) {
 				org.concoursjeunes.debug.Debug.attributePoints(jif.getFicheConcours().getConcurrentList(), 0);

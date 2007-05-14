@@ -2,6 +2,10 @@ package org.concoursjeunes.dialog;
 
 import java.awt.*;
 import java.awt.event.*;
+//import java.lang.ref.SoftReference;
+//import java.sql.ResultSet;
+//import java.sql.SQLException;
+//import java.sql.Statement;
 import java.util.*;
 
 import javax.swing.*;
@@ -325,8 +329,12 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		private ArrayList<TableModelListener> tmListeners = new ArrayList<TableModelListener>();
 		private ArrayList<String> columnsName = new ArrayList<String>();
 		private ArrayList<Concurrent> rows = new ArrayList<Concurrent>();
+		//private ArrayList<SoftReference<Concurrent>> softRows = new ArrayList<SoftReference<Concurrent>>();
+		
+		//private ResultSet archersRS; 
 
 		private Concurrent curConcurrent = null;
+		//private int rowCount = 0; 
 
 		public ArchersTableModel() {
 			this(null);
@@ -334,7 +342,29 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		
 		public ArchersTableModel(Archer filter) {
 			
+			//try {
+				//String sql = "select * from archers order by NOMARCHER";
+				//Statement stmt = ConcoursJeunes.dbConnection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+				
+				//archersRS = stmt.executeQuery(sql);
+				//int nbrow = getRowCount();
+				//for(int i = 0; i < nbrow; i++) {
+				//	SoftReference<Concurrent> softConcurrent = new SoftReference<Concurrent>(null);
+				//	softRows.add(softConcurrent);
+				//}
+				/*while(archersRS.next()) {
+					Concurrent concurrent = ConcurrentFactory.getConcurrent(archersRS, reglement);
+					SoftReference<Concurrent> softConcurrent = new SoftReference<Concurrent>(concurrent);
+					softRows.add(softConcurrent);
+				}*/
+			//} catch (SQLException e) {
+			//	e.printStackTrace();
+			//}
 			rows = Concurrent.getArchersInDatabase(filter, reglement, "NOMARCHER");
+			//for(Concurrent concurrent : rows) {
+			//	softRows.add(new SoftReference<Concurrent>(concurrent));
+			//}
+			//rows = null;
 
 			columnsName.add(ConcoursJeunes.ajrLibelle.getResourceString("listeconcurrent.numlicence")); //$NON-NLS-1$
 			columnsName.add(ConcoursJeunes.ajrLibelle.getResourceString("listeconcurrent.nom")); //$NON-NLS-1$
@@ -375,6 +405,19 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		 * @see javax.swing.table.TableModel#getRowCount()
 		 */
 		public int getRowCount() {
+			/*if(rowCount == 0) {
+				try {
+					archersRS.last();
+					rowCount = archersRS.getRow();
+					archersRS.first();
+					return rowCount;
+				} catch (SQLException e) {
+					e.printStackTrace();
+					rowCount = 0;
+					return 0;
+				}
+			}
+			return rowCount;*/
 			return rows.size();
 		}
 
@@ -382,37 +425,37 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		 * @see javax.swing.table.TableModel#getValueAt(int, int)
 		 */
 		public Object getValueAt(int rowIndex, int columnIndex) {
-			curConcurrent = rows.get(rowIndex);
+			curConcurrent = getConcurrentAtRow(rowIndex);
 
 			switch(columnIndex) {
-			case 0:
-				return curConcurrent.getNumLicenceArcher();
-			case 1:
-				return curConcurrent.getNomArcher();
-			case 2:
-				return curConcurrent.getPrenomArcher();
-			case 3:
-				return curConcurrent.getClub().getNom();
-			case 4:
-				String noplacementcritere = "";
-				for(Criterion key : reglement.getListCriteria()) {
-					if(!key.isPlacement()) {
-						CriterionElement criterionElement = curConcurrent.getCriteriaSet().getCriterionElement(key);
-						if(criterionElement != null)
-							noplacementcritere += criterionElement.getCode();
+				case 0:
+					return curConcurrent.getNumLicenceArcher();
+				case 1:
+					return curConcurrent.getNomArcher();
+				case 2:
+					return curConcurrent.getPrenomArcher();
+				case 3:
+					return curConcurrent.getClub().getNom();
+				case 4:
+					String noplacementcritere = "";
+					for(Criterion key : reglement.getListCriteria()) {
+						if(!key.isPlacement()) {
+							CriterionElement criterionElement = curConcurrent.getCriteriaSet().getCriterionElement(key);
+							if(criterionElement != null)
+								noplacementcritere += criterionElement.getCode();
+						}
 					}
-				}
-				return noplacementcritere;
-			case 5:
-				String placementcritere = "";
-				for(Criterion key : reglement.getListCriteria()) {
-					if(key.isPlacement()) {
-						placementcritere += curConcurrent.getCriteriaSet().getCriterionElement(key).getCode();
+					return noplacementcritere;
+				case 5:
+					String placementcritere = "";
+					for(Criterion key : reglement.getListCriteria()) {
+						if(key.isPlacement()) {
+							placementcritere += curConcurrent.getCriteriaSet().getCriterionElement(key).getCode();
+						}
 					}
-				}
-				return placementcritere;
-			default:
-				return null;
+					return placementcritere;
+				default:
+					return null;
 			}
 
 		}
@@ -438,6 +481,26 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		}
 
 		public Concurrent getConcurrentAtRow(int rowIndex) {
+			//SoftReference<Concurrent> softConcurrent = softRows.get(rowIndex);
+			//Concurrent concurrent;
+			//if ( row == null ) then its never been read from the database...
+			//if (softConcurrent.get() == null ) {
+				//then its been read but its been GC'd
+			//	try {
+			//		archersRS.absolute(rowIndex + 1);
+			//		concurrent = ConcurrentFactory.getConcurrent(archersRS, reglement);
+			//		softRows.set(rowIndex, new SoftReference<Concurrent>(concurrent));
+					//System.out.println("regen:" + concurrent);
+			//	} catch (SQLException e) {
+			//		concurrent = ConcurrentFactory.getConcurrent(reglement);
+			//		e.printStackTrace();
+			//	}
+			//} else {
+			//	concurrent = softConcurrent.get();
+				//System.out.println("recup:" + rowIndex + ":" + concurrent);
+			//}
+			//return concurrent;
+			
 			return rows.get(rowIndex);
 		}
 	}

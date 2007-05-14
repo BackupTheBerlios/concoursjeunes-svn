@@ -6,7 +6,7 @@ SetCompressor lzma
 
 # Defines
 !define REGKEY "SOFTWARE\concoursjeunes.org\$(^Name)"
-!define VERSION 1.1
+!define VERSION 2.0
 !define COMPANY ConcoursJeunes.org
 !define URL http://www.concoursjeunes.org
 
@@ -35,7 +35,7 @@ Var StartMenuGroup
 
 # Installer pages
 !insertmacro MUI_PAGE_WELCOME
-!insertmacro MUI_PAGE_LICENSE pack\Licence.txt
+!insertmacro MUI_PAGE_LICENSE pack\Licence_win.txt
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_STARTMENU Application $StartMenuGroup
@@ -54,7 +54,7 @@ InstallDir $PROGRAMFILES\ConcoursJeunes
 CRCCheck on
 XPStyle on
 ShowInstDetails show
-VIProductVersion 1.1.0.0
+VIProductVersion 2.0.0.0
 VIAddVersionKey /LANG=${LANG_FRENCH} ProductName ConcoursJeunes
 VIAddVersionKey ProductVersion "${VERSION}"
 VIAddVersionKey /LANG=${LANG_FRENCH} CompanyName "${COMPANY}"
@@ -72,36 +72,34 @@ InstType "normal"
 Section "Base" SEC0000
     SectionIn RO 1 2
     SetOverwrite on
-    SetOutPath $INSTDIR\base
-    File /r pack\base\*
-    SetOutPath $INSTDIR\bin
-    File /r pack\bin\*
+    # SetOutPath $INSTDIR\base
+    # File
     SetOutPath $INSTDIR\config
     File /r pack\config\*
     SetOutPath $INSTDIR\lang
     File /r pack\lang\*
     SetOutPath $INSTDIR\lib
     File /r pack\lib\*
+    SetOutPath $INSTDIR\plugins
+    File /r pack\plugins\*
     SetOutPath $INSTDIR\ressources
     File /r pack\ressources\*
     SetOutPath $INSTDIR
     File pack\ConcoursJeunes.jar
+    File pack\ExportWinFFTA.exe
+    File pack\*.DLL
+    File pack\*.txt
+    File pack\*.pdf
     WriteRegStr HKLM "${REGKEY}\Components" Main 1
 SectionEnd
 
-Section "Sources" SEC0001
-    SectionIn 1
-    SetOverwrite on
-    SetOutPath $INSTDIR\src
-    File /r pack\src\*
-SectionEnd
-
-Section -post SEC0002
+Section -post SEC0001
     WriteRegStr HKLM "${REGKEY}" Path $INSTDIR
     WriteUninstaller $INSTDIR\uninstall.exe
     !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
     SetOutPath $SMPROGRAMS\$StartMenuGroup
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\$(^UninstallLink).lnk" $INSTDIR\uninstall.exe
+    SetOutPath $INSTDIR
     CreateShortCut "$SMPROGRAMS\$StartMenuGroup\ConcoursJeunes.lnk" "$SYSDIR\javaw.exe" '-Xmx128m -jar "$INSTDIR\ConcoursJeunes.jar"' "$INSTDIR\ressources\iconCJ.ico"
     !insertmacro MUI_STARTMENU_WRITE_END
     WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayName "$(^Name)"

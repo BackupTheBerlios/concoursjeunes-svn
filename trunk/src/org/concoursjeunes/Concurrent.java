@@ -15,6 +15,7 @@
  */
 package org.concoursjeunes;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -275,17 +276,21 @@ public class Concurrent extends Archer {
 	public void saveCriteriaSet(Reglement reglement) {
 		if(!getNumLicenceArcher().equals("")) {
 			try {
-				Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+				String sql = "merge into distinguer (NUMLICENCEARCHER, CODECRITEREELEMENT, CODECRITERE, NUMREGLEMENT) " +
+						"values (?, ?, ?, ?)";
+				PreparedStatement pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
 				
 				for(Entry<Criterion, CriterionElement> entry : criteriaSet.getCriteria().entrySet()) {
 					Criterion criterion = entry.getKey();
 					CriterionElement criterionElement = entry.getValue();
 					
-					stmt.executeUpdate("merge into distinguer (NUMLICENCEARCHER, CODECRITEREELEMENT, CODECRITERE, NUMREGLEMENT) " +
-							"values ('" + getNumLicenceArcher() + "', '" + criterionElement.getCode() + "', '" +
-							criterion.getCode() + "', " + reglement.getIdReglement() + ")");
+					pstmt.setString(0, getNumLicenceArcher());
+					pstmt.setString(1, criterionElement.getCode());
+					pstmt.setString(2, criterion.getCode());
+					pstmt.setInt(4, reglement.getIdReglement());
+					pstmt.executeUpdate();
 				}
-				
+				pstmt.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}

@@ -54,7 +54,7 @@ public class ConcurrentFactory {
 						"NUMREGLEMENT=" + reglement.getIdReglement());
 				if(rsCriteriaSet.next()) {
 					do {
-						String codeCritere = rsCriteriaSet.getString("CODECRITERE");;
+						String codeCritere = rsCriteriaSet.getString("CODECRITERE");
 						String codeElement = rsCriteriaSet.getString("CODECRITEREELEMENT");
 						
 						for(Criterion key : reglement.getListCriteria()) {

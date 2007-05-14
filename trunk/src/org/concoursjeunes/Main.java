@@ -1,3 +1,4 @@
+package org.concoursjeunes;
 /*
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,7 +16,6 @@
  */
 import java.sql.SQLException;
 
-import org.concoursjeunes.ConcoursJeunes;
 import org.concoursjeunes.ui.ConcoursJeunesFrame;
 
 /**

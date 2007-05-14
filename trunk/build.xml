@@ -19,12 +19,7 @@
 		<echo message="Fin de la generation de la doc..."/>
 	</target>
 	
-	<!--genere la documentation utilisateur-->
-	<target name="user_doc">
-		<jar jarfile="lib/aide.jar" basedir="Aide" />
-	</target>
-	
-	<target name="pack_stage1" depends="user_doc">
+	<target name="pack_stage1">
 		<mkdir dir="${projet.pack.dir}" />
 				
 		<delete includeemptydirs="true">
@@ -36,9 +31,8 @@
 		<!--Copie des ressources du projet-->
 		<copy todir="${projet.pack.dir}" >
 			<fileset dir="." >
-		    	<include name="base/**"/>
+		    	<include name="base"/>
 				<include name="config/**"/>
-				<include name="docs/**"/>
 				<include name="lang/**"/>
 				<include name="lib/**"/>
 				<include name="plugins/**"/>
@@ -46,12 +40,6 @@
 				<include name="src/**"/>
 				<exclude name="**/.svn*" />
 				<exclude name="src/org/concoursjeunes/test/**" />
-				<exclude name="base/concoursjeunesdb.backup" />
-				<exclude name="base/concoursjeunesdb.data" />
-				<exclude name="config/*Plugin*" />
-				<exclude name="lang/*Plugin*" />
-				<exclude name="ressources/BASE.TXT" />
-				<exclude name="ressources/FICLUB.TXT" />
 			</fileset>
 	    </copy>
 		
@@ -115,7 +103,7 @@
 		</replace>
 		
 		<javac srcdir="${projet.pack.dir}/src/" destdir="${projet.pack.dir}/bin"
-			optimize="on"
+			optimize="off"
 			encoding="UTF-8"
 			nowarn="on"
 			classpath="${compilclasspath}">
@@ -135,10 +123,11 @@
 	</target>
 	
 
-    <target name="exportWinFFTA" depends="pack_stage1" description="ajoute au pack l'exe d'export WinFFTA">
+    <target name="exportWinFFTA" description="ajoute au pack l'exe d'export WinFFTA">
     	<copy todir="${projet.pack.dir}">
 			<fileset dir="." >
 				<include name="ExportWinFFTA.exe" />
+				<include name="*.DLL" />
 			</fileset>
 		</copy>
     </target>
@@ -147,7 +136,6 @@
 		<copy todir="${projet.pack.dir}/plugins">
 			<fileset dir="${projet.pack.dir}/bin" >
 				<include name="org/concoursjeunes/plugins/**" />
-				<exclude name="org/concoursjeunes/plugins/FFTA*" />
 			</fileset>
 		</copy>
     </target>
@@ -204,10 +192,10 @@
 		
 		<echo message="Makes the installer using IzPack" />
 		<!--Crée l'installeur-->
-		<izpack input="${projet.pack.dir}/install.xml"
+		<!--<izpack input="${projet.pack.dir}/install.xml"
 			output="${projet.pack.dir}/install.jar"
 			installerType="standard"
-			basedir="packager" />
+			basedir="packager" />-->
 	</target>
 	
 	<target name="makerpm" depends="jar, plugins_all" description="construction du package rpm pour fedora">
