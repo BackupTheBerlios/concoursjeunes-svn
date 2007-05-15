@@ -307,7 +307,7 @@ public class Cible {
 			precConcurrent = concurrent;
 		}
 		if(!valid && getNbArcher() > 1)
-			strCibleLibelle += "<br><font color=\"orange\">Attention tous les archers de cette cible sont du même club!</font>";
+			strCibleLibelle += "<br><font color=\"#FF8800\">Attention tous les archers de cette cible sont du même club!</font>";
 		
 		strCibleLibelle += "</html>";
 		

@@ -33,7 +33,13 @@
         <right>0.0</right>
         <top>0.0</top>
     </marges>
-    <metaDataFichesConcours />
+    <metaDataFichesConcours>
+        <fiches>
+            <dateConcours>2007-05-04T00:00:00+02:00</dateConcours>
+            <filenameConcours>1178312775963.cta</filenameConcours>
+            <intituleConcours>Simulation Aix</intituleConcours>
+        </fiches>
+    </metaDataFichesConcours>
     <orientation>portrait</orientation>
     <pdfReaderPath>evince</pdfReaderPath>
     <reglementName>test</reglementName>

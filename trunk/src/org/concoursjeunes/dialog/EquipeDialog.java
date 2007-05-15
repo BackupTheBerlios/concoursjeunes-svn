@@ -91,7 +91,7 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 		}
 
 		treeModel   = new DefaultTreeModel(treeRoot);
-		treeEquipes = new DnDJTree(treeModel);
+		treeEquipes = new JTree(treeModel);
 
 		cbEquipeClub.setSelected(true);
 
@@ -268,7 +268,16 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 
 		//selectionner le 1er élément
 		//treeEquipes.setSelectionRow(0);
-		treeEquipes.expandPath(new TreePath(dmtnCategorie.getPath()));
+		expandPath(treeEquipes, new TreePath(dmtnCategorie.getPath()));
+	}
+	
+	private void expandPath(JTree tree, TreePath treePath) {
+		tree.expandPath(treePath);
+		
+		DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode)treePath.getLastPathComponent();
+		for(int i = 0; i < treeNode.getChildCount(); i++) {
+			expandPath(tree, new TreePath(((DefaultMutableTreeNode)treeNode.getChildAt(i)).getPath()));
+		}
 	}
 
 	public void popup() {
@@ -563,6 +572,9 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 		if(e.getSource() == treeConcurrents && treeConcurrents.getLastSelectedPathComponent() != null) {
 			if(((DefaultMutableTreeNode)treeConcurrents.getLastSelectedPathComponent()).getUserObject() instanceof Concurrent)
 				dragObject = treeConcurrents.getLastSelectedPathComponent();
+		} else if(e.getSource() == treeEquipes && treeEquipes.getLastSelectedPathComponent() != null) {
+			if(((DefaultMutableTreeNode)treeEquipes.getLastSelectedPathComponent()).getUserObject() instanceof Concurrent)
+				dragObject = treeEquipes.getLastSelectedPathComponent();
 		}
 	}
 
@@ -587,6 +599,14 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 					Equipe equipe = (Equipe) destObj;
 					
 					addMembresToEquipe(equipe, teamNode);
+					
+					treeModel.reload(teamNode);
+					
+					DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode)treeConcurrents.getSelectionPath()
+							.getParentPath().getLastPathComponent(); 
+					parentNode.remove((DefaultMutableTreeNode)treeConcurrents.getSelectionPath()
+									.getLastPathComponent());
+					treeModelConcurrents.reload(parentNode);
 				} else {
 					createEquipe(treeEquipes.getPathForLocation(p.x, p.y));
 					
@@ -598,6 +618,24 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 					treeModelConcurrents.reload((DefaultMutableTreeNode)treeConcurrents.getSelectionPath().getParentPath().getLastPathComponent());
 				}
 			}
+		} else if(e.getSource() == treeEquipes) {
+			Point p = (Point)e.getPoint().clone();
+			SwingUtilities.convertPointToScreen(p, treeEquipes);
+	        SwingUtilities.convertPointFromScreen(p, treeConcurrents);
+	        if(p.x > 0 && p.y > 0 
+					&& p.x < treeConcurrents.getWidth() && p.y < treeConcurrents.getHeight()) {
+	        	DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode)treeEquipes.getSelectionPath().getLastPathComponent();
+	        	DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode)treeEquipes.getSelectionPath()
+						.getParentPath().getLastPathComponent(); 
+	        	
+	        	Equipe equipe = (Equipe)parentNode.getUserObject();
+	        	equipe.removeConcurrent((Concurrent)selectedNode.getUserObject());
+	        	
+	        	parentNode.remove(selectedNode);
+	        	treeModel.reload(parentNode);
+	        	
+	        	completePanel();
+	        }
 		}
 		this.getGlassPane().setVisible(false);
 		dragObject = null;
@@ -629,6 +667,31 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 
             Point p = (Point) e.getPoint().clone();
             SwingUtilities.convertPointToScreen(p, treeConcurrents);
+            SwingUtilities.convertPointFromScreen(p, glassPane);
+            
+            glassPane.setPoint(p);
+            glassPane.repaint();
+		} else if(e.getSource() == treeEquipes && dragObject != null) {
+			GhostGlassPane glassPane = (GhostGlassPane)this.getGlassPane();
+			if(!onDrag) {
+				Rectangle rect = treeEquipes.getPathBounds(new TreePath(((DefaultMutableTreeNode)dragObject).getPath()));
+				
+				BufferedImage image = new BufferedImage(treeEquipes.getWidth(), treeEquipes.getHeight(), BufferedImage.TYPE_INT_ARGB);
+	            Graphics g = image.getGraphics();
+	            treeEquipes.paint(g);
+	            image = image.getSubimage(rect.x, rect.y, rect.width, rect.height);
+	            
+	            glassPane.setVisible(true);
+	            
+	            glassPane.setImage(image);
+	            
+	            //ajlConcurrent.set
+	            
+	            onDrag = true;
+			}
+
+            Point p = (Point) e.getPoint().clone();
+            SwingUtilities.convertPointToScreen(p, treeEquipes);
             SwingUtilities.convertPointFromScreen(p, glassPane);
             
             glassPane.setPoint(p);

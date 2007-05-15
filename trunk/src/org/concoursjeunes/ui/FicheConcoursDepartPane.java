@@ -3,13 +3,7 @@
  */
 package org.concoursjeunes.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Graphics;
-import java.awt.Insets;
-import java.awt.Point;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -133,10 +127,13 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 		northpanePrintButton.add(jbPrintPasDeTir);
 		northpaneGestion.add(northpanePrintButton, BorderLayout.NORTH);
 		JLabel jl = new JLabel("Faites glisser un concurrent sur une cible ou une position pour l'affecter à celle ci");
-		jl.setBackground(new Color(255, 255, 225));
-		jl.setOpaque(true);
 		jl.setHorizontalTextPosition(JLabel.CENTER);
-		northpaneGestion.add(jl, BorderLayout.CENTER);
+		JPanel pos = new JPanel();
+		pos.setLayout(new FlowLayout(FlowLayout.CENTER));
+		pos.add(jl);
+		pos.setBackground(new Color(255, 255, 225));
+		pos.setOpaque(true);
+		northpaneGestion.add(pos, BorderLayout.CENTER);
 
 		ficheG.setLayout(new BorderLayout());
 		ficheG.add(northpaneGestion,BorderLayout.NORTH);
@@ -654,11 +651,18 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 						placementManuelConcurrent((Concurrent)dragObject, tp);
 					}
 				}
+			} else {
+				SwingUtilities.convertPointToScreen(p, treeTarget);
+	            SwingUtilities.convertPointFromScreen(p, ajlConcurrent);
+	            if(p.x > 0 && p.y > 0 && p.x < ajlConcurrent.getWidth() && p.y < ajlConcurrent.getHeight()
+	            		&& dragObject instanceof Concurrent) {
+	            	retraitPlacementConcurrent((Concurrent)dragObject);
+	            }
 			}
 		}
 		//dans tous les cas remettre le curseur par defaut à la fin du drag
 		ajlConcurrent.setSelectable(true);
-		setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+
 		ficheConcoursPane.getParentframe().getGlassPane().setVisible(false);
 		dragObject = null;
 		onDrag = false;
