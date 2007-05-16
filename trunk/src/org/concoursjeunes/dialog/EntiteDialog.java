@@ -19,7 +19,7 @@ public class EntiteDialog extends JDialog implements ActionListener {
     private Entite entite;
 
     private JTextField jtfNom;
-    private JFormattedTextField jftfAgrement;
+    private JTextField jftfAgrement;
     private JTextField jtfAdresse;
     private JFormattedTextField jftfCodePostal;
     private JTextField jtfVille;
@@ -58,17 +58,17 @@ public class EntiteDialog extends JDialog implements ActionListener {
 	JLabel jlNote = new JLabel(ConcoursJeunes.ajrLibelle.getResourceString("entite.note")); //$NON-NLS-1$
 
 	jtfNom = new JTextField("", 30); //$NON-NLS-1$
+	jtfNom.setEditable(false);
+	jftfAgrement = new JTextField("", 6);
+    jftfAgrement.setEditable(false);
 	jtfAdresse = new JTextField("", 30); //$NON-NLS-1$
 	jtfVille = new JTextField("", 10); //$NON-NLS-1$
+	jtfVille.setEditable(false);
 	jcbType = new JComboBox(new String[] {"Fédération", "Ligue", "Comité Départemental", "Compagnie"});
 	jtaNote = new JTextArea(5,30);
 
 	MaskFormatter formatter;
 	try {
-	    formatter = new MaskFormatter("#######"); //$NON-NLS-1$
-	    formatter.setPlaceholderCharacter('_');
-	    jftfAgrement = new JFormattedTextField(formatter);
-	    jftfAgrement.setColumns(6);
 	    formatter = new MaskFormatter("#####"); //$NON-NLS-1$
 	    formatter.setPlaceholderCharacter('_');
 	    jftfCodePostal = new JFormattedTextField(formatter);
@@ -127,7 +127,7 @@ public class EntiteDialog extends JDialog implements ActionListener {
 		    jtfVille.setText(curEntite.getVille());
 		    jcbType.setSelectedIndex(curEntite.getType());
 		    jtaNote.setText(curEntite.getNote());
-		    jftfAgrement.setValue(curEntite.getAgrement());
+		    jftfAgrement.setText(curEntite.getAgrement());
 		    jftfCodePostal.setValue(curEntite.getCodePostal());
 		    setVisible(true);
 		}
@@ -142,7 +142,7 @@ public class EntiteDialog extends JDialog implements ActionListener {
 		    entite.setVille(jtfVille.getText());
 		    entite.setType(jcbType.getSelectedIndex());
 		    entite.setNote(jtaNote.getText());
-		    entite.setAgrement((String)jftfAgrement.getValue());
+		    entite.setAgrement(jftfAgrement.getText());
 		    entite.setCodePostal((String)jftfCodePostal.getValue());
 	
 		    entite.save();

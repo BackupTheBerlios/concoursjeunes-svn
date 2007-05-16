@@ -102,10 +102,6 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	private JCheckBox jcbAvanceResultatCumul= new JCheckBox();
 	private JCheckBox jcbAvanceResultatSupl = new JCheckBox();
 	private JCheckBox jcbAvanceAffResultatExEquo = new JCheckBox();
-	//Ecran avancé chemin d'accès
-	private JCheckBox jcbExpert             = new JCheckBox("", false); //$NON-NLS-1$
-	private JTextField jtfURLExport         = new JTextField(20);
-	private JTextField jtfURLImport         = new JTextField(20);
 	//Ecran avancé option debug
 	private JCheckBox jcbFirstBoot    = new JCheckBox();
 
@@ -345,28 +341,8 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 
 		GridbagComposer gridbagComposer = new GridbagComposer();
 
-		//Chemin
-		JPanel jpPathGeneral    = new JPanel();
-
-		jpPathGeneral.setBorder(tbPath);
-
-		jcbExpert.addActionListener(this);
-		jtfURLExport.setEnabled(false);
-		jtfURLImport.setEnabled(false);
-
-		gridbagComposer.setParentPanel(jpPathGeneral);
-		c.weightx = 1.0;
-		c.gridy = 0; c.gridwidth = 3; c.anchor = GridBagConstraints.WEST;
-		gridbagComposer.addComponentIntoGrid(jcbExpert, c);
-		c.gridy++;
-		gridbagComposer.addComponentIntoGrid(jlURLImport, c);
-		gridbagComposer.addComponentIntoGrid(jtfURLImport, c);
-		c.gridy++;
-		gridbagComposer.addComponentIntoGrid(jlURLExport, c);
-		gridbagComposer.addComponentIntoGrid(jtfURLExport, c);
-
 		gridbagComposer.setParentPanel(jpEcranInterface);
-		c.gridy = 0; 
+		c.gridy = 0; c.anchor = GridBagConstraints.WEST; c.weightx = 1.0;
 		gridbagComposer.addComponentIntoGrid(jlResultats, c);
 		c.gridy++;
 		gridbagComposer.addComponentIntoGrid(jcbAvanceResultatCumul, c);
@@ -376,8 +352,6 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		gridbagComposer.addComponentIntoGrid(jlAffResultats, c);
 		c.gridy++;
 		gridbagComposer.addComponentIntoGrid(jcbAvanceAffResultatExEquo, c);
-		c.gridy++; c.fill = GridBagConstraints.BOTH;
-		gridbagComposer.addComponentIntoGrid(jpPathGeneral, c);
 		if(ConcoursJeunes.ajrParametreAppli.getResourceInteger("debug.mode") == 1) { //$NON-NLS-1$
 			c.gridy++;
 			gridbagComposer.addComponentIntoGrid(jcbFirstBoot, c);
@@ -458,8 +432,6 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		jcbAvanceResultatCumul.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.interface.resultatcumul")); //$NON-NLS-1$
 		jcbAvanceResultatSupl.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.interface.resultatdnm")); //$NON-NLS-1$
 		jcbAvanceAffResultatExEquo.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.interface.resultataffexequo")); //$NON-NLS-1$
-
-		jcbExpert.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.interface.expert")); //$NON-NLS-1$
 	}
 
 	private void completePanel(Configuration configuration) {
@@ -541,9 +513,6 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		jcbAvanceResultatCumul.setSelected(configuration.isInterfaceResultatCumul());
 		jcbAvanceResultatSupl.setSelected(configuration.isInterfaceResultatSupl());
 		jcbAvanceAffResultatExEquo.setSelected(configuration.isInterfaceAffResultatExEquo());
-
-		jtfURLExport.setText(configuration.getExportURL());
-		jtfURLImport.setText(configuration.getImportURL());
 	}
 	
 	/**
@@ -696,8 +665,6 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		workConfiguration.setIntituleConcours(jtfIntConc.getText());
 		workConfiguration.setLangue(listLangue()[jcbLangue.getSelectedIndex()]);
 		workConfiguration.setPdfReaderPath(jcbPathPdf.getSelectedItem().toString());
-		workConfiguration.setExportURL(jtfURLExport.getText());
-		workConfiguration.setImportURL(jtfURLImport.getText());
 
 		workConfiguration.setReglementName(jcbReglement.getSelectedItem().toString());
 		workConfiguration.setNbCible(Integer.parseInt(jtfNbCible.getText()));
@@ -781,9 +748,6 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 				jcbProfil.insertItemAt(strP, insIndex);
 				jcbProfil.setSelectedIndex(insIndex);
 			}
-		} else if(source == this.jcbExpert) {
-			jtfURLExport.setEnabled(this.jcbExpert.isSelected());
-			jtfURLImport.setEnabled(this.jcbExpert.isSelected());
 		}
 	}
 
@@ -807,7 +771,6 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		Entite findEntite = e.getEntite();
 		if(!findEntite.equals(workConfiguration.getClub())) {
 			workConfiguration.setClub(findEntite);
-			jtfNomClub.setEditable(false);
 			completeGeneralPanel(workConfiguration);
 		}
 	}

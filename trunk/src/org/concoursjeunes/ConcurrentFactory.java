@@ -61,8 +61,11 @@ public class ConcurrentFactory {
 							if(key.getCode().equals(codeCritere)) {
 								for(CriterionElement criterionElement : key.getCriterionElements()) {
 									if(criterionElement.getCode().equals(codeElement)) {
-										differentiationCriteria.getCriteria().put(key, criterionElement);
-										break;
+										if(criterionElement.isActive()) {
+											differentiationCriteria.getCriteria().put(key, criterionElement);
+											break;
+										}
+										return null;
 									}
 								}
 								break;
@@ -78,7 +81,10 @@ public class ConcurrentFactory {
 								valindex = arrayList.size() - 1;
 							if(valindex < 0)
 								valindex = 0;
-							differentiationCriteria.getCriteria().put(key, key.getCriterionElements().get(valindex));
+							if(key.getCriterionElements().get(valindex).isActive())
+								differentiationCriteria.getCriteria().put(key, key.getCriterionElements().get(valindex));
+							else
+								return null;
 						}
 					}
 				}

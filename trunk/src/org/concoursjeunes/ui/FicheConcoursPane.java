@@ -1,10 +1,6 @@
 package org.concoursjeunes.ui;
 
 import java.io.*;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
-import java.net.UnknownHostException;
 import java.util.*;
 
 import java.awt.*;
@@ -17,8 +13,6 @@ import javax.swing.text.html.*;
 
 import org.concoursjeunes.*;
 import org.concoursjeunes.dialog.*;
-
-import ajinteractive.standard.java2.*;
 
 /**
  * fiche concours. cette fiche correspond à la table d'inscrit et de résultats
@@ -277,80 +271,6 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		}
 	}
 
-	/**
-	 * Exporte les résultats d'un concours pour un traitement ultérieur
-	 * sur le site internet (mise en commun et diffusion)
-	 * 
-	 * @param export - la chaine XML des réultats à exporter
-	 * 
-	 * TODO Reprendre l'export
-	 */
-	public void exportConcours(String export) {
-		ExportDialog exportDialog = new ExportDialog(parentframe);
-		try {
-			File f = new File(System.getProperty("java.io.tmpdir") + File.separator + "concours" + ConcoursJeunes.ajrParametreAppli.getResourceString("extention.export")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			if(exportDialog.exportType == ExportDialog.EXPORT_FILE) {
-				JFileChooser chooser = new JFileChooser();
-				chooser.setFileFilter(new AJFileFilter(ConcoursJeunes.ajrParametreAppli.getResourceString("extention.export").substring(1), ConcoursJeunes.ajrLibelle.getResourceString("message.export.fichier"))); //$NON-NLS-1$ //$NON-NLS-2$
-				int returnVal = chooser.showSaveDialog(this);
-				if(returnVal == JFileChooser.APPROVE_OPTION) {
-					if(chooser.getSelectedFile().getAbsolutePath().endsWith(ConcoursJeunes.ajrParametreAppli.getResourceString("extention.export"))) { //$NON-NLS-1$
-						f = chooser.getSelectedFile();
-					} else {
-						f = new File(chooser.getSelectedFile().getAbsolutePath() + ConcoursJeunes.ajrParametreAppli.getResourceString("extention.export")); //$NON-NLS-1$
-					}
-					FileWriter fw = new FileWriter(f);
-					fw.write(export, 0, export.length());
-					fw.close();
-
-					JOptionPane.showMessageDialog(this,
-							ConcoursJeunes.ajrLibelle.getResourceString("message.export.fin"), //$NON-NLS-1$
-							ConcoursJeunes.ajrLibelle.getResourceString("message.export"),JOptionPane.INFORMATION_MESSAGE); //$NON-NLS-1$
-				}
-			} else if(exportDialog.exportType == ExportDialog.EXPORT_INTERNET) {
-				OutputStreamWriter writer = null;
-				BufferedReader reader = null;
-
-				//création de la connection
-				URL url = new URL(ConcoursJeunes.configuration.getExportURL());
-				URLConnection conn = url.openConnection();
-				conn.setDoOutput(true);
-
-				writer = new OutputStreamWriter(conn.getOutputStream());
-				writer.write(URLEncoder.encode("concours", "UTF-8")+ //$NON-NLS-1$ //$NON-NLS-2$
-						"="+URLEncoder.encode(export, "UTF-8")); //$NON-NLS-1$ //$NON-NLS-2$
-				writer.flush();
-				writer.close();
-
-				//lecture de la réponse
-				reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-				String ligne;
-				while ((ligne = reader.readLine()) != null) {
-					if(ligne.equals("OK")) //$NON-NLS-1$
-						JOptionPane.showMessageDialog(this,
-								ConcoursJeunes.ajrLibelle.getResourceString("message.export.fin"), //$NON-NLS-1$
-								ConcoursJeunes.ajrLibelle.getResourceString("message.export"),JOptionPane.INFORMATION_MESSAGE); //$NON-NLS-1$
-				}
-
-
-			}
-		} catch (UnknownHostException uhe) {
-			JOptionPane.showMessageDialog(this,
-					"<html>" + ConcoursJeunes.ajrLibelle.getResourceString("erreur.connection") + " " + uhe.getLocalizedMessage() + "</html>", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-					ConcoursJeunes.ajrLibelle.getResourceString("erreur.unknownhost"),JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
-			uhe.printStackTrace();
-		} catch (IOException io) {
-			JOptionPane.showMessageDialog(this,
-					"<html>" + io.getLocalizedMessage() + "</html>", //$NON-NLS-1$ //$NON-NLS-2$
-					"IOException",JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
-			io.printStackTrace();
-		} catch(NullPointerException npe) {
-			JOptionPane.showMessageDialog(this,
-					ConcoursJeunes.ajrLibelle.getResourceString("erreur.save.export"), //$NON-NLS-1$
-					ConcoursJeunes.ajrLibelle.getResourceString("erreur"),JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
-			npe.printStackTrace();
-		}
-	}
 
 	/**
 	 * @return  parentframe

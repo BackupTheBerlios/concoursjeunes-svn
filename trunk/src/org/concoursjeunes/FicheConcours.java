@@ -355,7 +355,7 @@ public class FicheConcours implements ParametreListener {
 			tplClassement.parse("INTITULE_CLUB", parametre.getClub().getNom()); //$NON-NLS-1$
 			tplClassement.parse("INTITULE_CONCOURS", parametre.getIntituleConcours()); //$NON-NLS-1$
 			tplClassement.parse("VILLE_CLUB", parametre.getClub().getVille()); //$NON-NLS-1$
-			tplClassement.parse("DATE_CONCOURS", parametre.getDate().toString()); //$NON-NLS-1$
+			tplClassement.parse("DATE_CONCOURS", DateFormat.getDateInstance(DateFormat.LONG).format(new Date())); //$NON-NLS-1$
 			tplClassement.parse("author", parametre.getClub().getNom()); //$NON-NLS-1$
 
 			for(String arbitre : parametre.getArbitres()) {
@@ -512,7 +512,7 @@ public class FicheConcours implements ParametreListener {
 			tplClassementEquipe.reset();
 
 			//classement sortie XML
-			tplClassementEquipe.parse("CURRENT_TIME", DateFormat.getDateInstance(DateFormat.FULL).format(new Date())); //$NON-NLS-1$
+			tplClassementEquipe.parse("CURRENT_TIME", DateFormat.getDateInstance(DateFormat.MEDIUM).format(new Date())); //$NON-NLS-1$
 			tplClassementEquipe.parse("LOGO_CLUB_URI", ConcoursJeunes.configuration.getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			tplClassementEquipe.parse("INTITULE_CLUB", parametre.getClub().getNom()); //$NON-NLS-1$
 			tplClassementEquipe.parse("INTITULE_CONCOURS", parametre.getIntituleConcours()); //$NON-NLS-1$

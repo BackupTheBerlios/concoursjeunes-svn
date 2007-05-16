@@ -329,7 +329,11 @@ public class AutoCompleteDocument extends PlainDocument {
 		Archer searchArcher = new Archer();
 		searchArcher.setNumLicenceArcher(searchString + "%");
 		if(getLength() > 0) {
-			concurrent = Concurrent.getArchersInDatabase(searchArcher, reglement, "NUMLICENCEARCHER").get(0);
+			ArrayList<Concurrent> concurrents = Concurrent.getArchersInDatabase(searchArcher, reglement, "NUMLICENCEARCHER");
+			if(concurrents.size() > 0)
+				concurrent = concurrents.get(0);
+			else
+				concurrent = null;
 		} else {
 			concurrent = null;
 		}

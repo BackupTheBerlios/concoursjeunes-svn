@@ -451,14 +451,14 @@ public class Reglement {
 			}
 			
 			//sauvegarde les tableaux de crières et correspondance
-			saveCriteria(stmt);
+			saveCriteria();
 			saveDistancesAndBlasons(stmt);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	private void saveCriteria(Statement stmt) throws SQLException {
+	private void saveCriteria() {
 		for(Criterion criterion : listCriteria) {
 			criterion.save();
 		}

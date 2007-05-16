@@ -284,9 +284,9 @@ public class Concurrent extends Archer {
 					Criterion criterion = entry.getKey();
 					CriterionElement criterionElement = entry.getValue();
 					
-					pstmt.setString(0, getNumLicenceArcher());
-					pstmt.setString(1, criterionElement.getCode());
-					pstmt.setString(2, criterion.getCode());
+					pstmt.setString(1, getNumLicenceArcher());
+					pstmt.setString(2, criterionElement.getCode());
+					pstmt.setString(3, criterion.getCode());
 					pstmt.setInt(4, reglement.getIdReglement());
 					pstmt.executeUpdate();
 				}
@@ -321,9 +321,11 @@ public class Concurrent extends Archer {
 			stmt = ConcoursJeunes.dbConnection.createStatement();
 
 			String sql = "select * from archers ";
+
 			if(aGeneric != null) {
 				sql += "where ";
 				ArrayList<String> filters = new ArrayList<String>();
+
 				if(aGeneric.getNumLicenceArcher().length() > 0) {
 					filters.add("NUMLICENCEARCHER like '" + aGeneric.getNumLicenceArcher() + "'");
 				}
@@ -351,9 +353,10 @@ public class Concurrent extends Archer {
 			while(rs.next() && (nbmaxenreg == -1 || iEnreg < nbmaxenreg)) {
 				
 				Concurrent concurrent = ConcurrentFactory.getConcurrent(rs, reglement);
-				
-				concurrents.add(concurrent);
-				iEnreg++;
+				if(concurrent != null) {
+					concurrents.add(concurrent);
+					iEnreg++;
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

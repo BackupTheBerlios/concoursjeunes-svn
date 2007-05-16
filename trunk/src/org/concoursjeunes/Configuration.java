@@ -111,8 +111,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	private String reglementName	= "";
 
 	private String pdfReaderPath    = "";               //$NON-NLS-1$
-	private String importURL        = "http://";        //$NON-NLS-1$
-	private String exportURL        = "http://";        //$NON-NLS-1$
 
 	private String formatPapier     = "A4";             //$NON-NLS-1$
 	private String orientation      = "portrait";       //$NON-NLS-1$
@@ -201,14 +199,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 		return this.espacements;
 	}
 
-	/**
-	 * URL pour l'exportation des données
-	 * @return  Returns the exportURL.
-	 * @uml.property  name="exportURL"
-	 */
-	public String getExportURL() {
-		return this.exportURL;
-	}
 
 	/**
 	 * Format du papier étiquettes
@@ -226,15 +216,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	 */
 	public String getOrientation() {
 		return this.orientation;
-	}
-
-	/**
-	 * URL d'importation des données
-	 * @return  Returns the importURL.
-	 * @uml.property  name="importURL"
-	 */
-	public String getImportURL() {
-		return this.importURL;
 	}
 
 	/**
@@ -265,15 +246,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	}
 
 	/**
-	 * Définit l'URL d'export de donnée
-	 * @param exportURL  The exportURL to set.
-	 * @uml.property  name="exportURL"
-	 */
-	public void setExportURL(String exportURL) {
-		this.exportURL = exportURL;
-	}
-
-	/**
 	 * Définit le format du papier étiquettes utilisé
 	 * @param formatPapier  The formatPapier to set.
 	 * @uml.property  name="formatPapier"
@@ -289,15 +261,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	 */
 	public void setOrientation(String orientation) {
 		this.orientation = orientation;
-	}
-
-	/**
-	 * Définit l'URL d'import des données de concours
-	 * @param importURL  The importURL to set.
-	 * @uml.property  name="importURL"
-	 */
-	public void setImportURL(String importURL) {
-		this.importURL = importURL;
 	}
 
 	/**

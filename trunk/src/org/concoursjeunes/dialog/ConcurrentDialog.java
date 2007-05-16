@@ -296,8 +296,10 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		for(Criterion key : ficheConcours.getParametre().getReglement().getListCriteria()) {
 			jlCategrieTable.get(key).setText(key.getLibelle());
 			jcbCategorieTable.get(key).removeAllItems();
-			for(CriterionElement element : key.getCriterionElements())
-				jcbCategorieTable.get(key).addItem(element.getLibelle());
+			for(CriterionElement element : key.getCriterionElements()) {
+				if(element.isActive())
+					jcbCategorieTable.get(key).addItem(element.getLibelle());
+			}
 		}
 		
 		String[] lInscription = AJToolKit.tokenize(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.inscription"), ",");
