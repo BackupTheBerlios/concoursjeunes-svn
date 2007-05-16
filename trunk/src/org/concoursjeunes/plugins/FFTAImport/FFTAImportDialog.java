@@ -128,7 +128,7 @@ public class FFTAImportDialog extends JDialog implements ActionListener, FFTAImp
 	
 	private JButton jbAnnuler = new JButton();
 	
-	 private AjResourcesReader pluginLocalisation = new AjResourcesReader("FFTAImportPlugin_libelle");
+	 private AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.FFTAImport.FFTAImportPlugin_libelle");
 	
 	public FFTAImportDialog(JFrame parentframe) {
 		super(parentframe);

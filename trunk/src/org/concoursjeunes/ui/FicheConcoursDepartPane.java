@@ -117,11 +117,15 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 
 		//enregistre les auditeurs d'évenement
 		jbPrintListConc.addActionListener(this);
+		jbPrintListConc.setMargin(new Insets(0,0,0,0));
 		jbPrintEtiquettes.addActionListener(this);
+		jbPrintEtiquettes.setMargin(new Insets(0,0,0,0));
 		jbPrintPasDeTir.addActionListener(this);
+		jbPrintPasDeTir.setMargin(new Insets(0,0,0,0));
 
 		//option d'affichage du classement
 		northpaneGestion.setLayout(new BorderLayout());
+		northpanePrintButton.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
 		northpanePrintButton.add(jbPrintListConc);
 		northpanePrintButton.add(jbPrintEtiquettes);
 		northpanePrintButton.add(jbPrintPasDeTir);
@@ -200,6 +204,7 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 		buttonPane.add(jbPlacementArcher);
 
 		JPanel sortPane = new JPanel();
+		sortPane.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
 		sortPane.add(jcbSortCible);
 		sortPane.add(jcbSortNom);
 		sortPane.add(jcbSortClub);

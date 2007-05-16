@@ -225,7 +225,7 @@ public class AutoCompleteDocument extends PlainDocument {
 		searchArcher.setNomArcher(searchString.toUpperCase() + "%");
 		
 		if(getLength() > 0) {
-			ArrayList<Concurrent> concurrents = Concurrent.getArchersInDatabase(searchArcher, reglement, "NOMARCHER");
+			ArrayList<Concurrent> concurrents = Concurrent.getArchersInDatabase(searchArcher, reglement, "NOMARCHER", 1);
 			if(concurrents.size() > 0) {
 				concurrent = concurrents.get(0);
 				autocompleteLicence = false;
@@ -375,7 +375,11 @@ public class AutoCompleteDocument extends PlainDocument {
 		Entite searchEntite = new Entite();
 		searchEntite.setVille(searchString.toUpperCase() + "%");
 		if(getLength() > 0) {
-			entite = Entite.getEntitesInDatabase(searchEntite, "VILLEENTITE").get(0);
+			ArrayList<Entite> entites = Entite.getEntitesInDatabase(searchEntite, "VILLEENTITE");
+			if(entites.size() > 0)
+				entite = entites.get(0);
+			else
+				entite = null;
 			autocompleteAgrement = false;
 		} else {
 			entite = null;

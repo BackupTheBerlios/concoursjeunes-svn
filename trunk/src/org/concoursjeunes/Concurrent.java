@@ -297,6 +297,9 @@ public class Concurrent extends Archer {
 		}
 	}
 
+	public static ArrayList<Concurrent> getArchersInDatabase(Archer aGeneric, Reglement reglement, String orderfield) {
+		return getArchersInDatabase(aGeneric, reglement, orderfield, -1);
+	}
 	/**
 	 * Retourne une liste d'archer en provenance de la base de données en fonction
 	 * des critères de recherche fournit en parametres
@@ -311,7 +314,7 @@ public class Concurrent extends Archer {
 	 * 
 	 * @return la liste des archers correspondant aux critères de recherche
 	 */
-	public static ArrayList<Concurrent> getArchersInDatabase(Archer aGeneric, Reglement reglement, String orderfield) {
+	public static ArrayList<Concurrent> getArchersInDatabase(Archer aGeneric, Reglement reglement, String orderfield, int nbmaxenreg) {
 		ArrayList<Concurrent> concurrents = new ArrayList<Concurrent>();
 		Statement stmt = null;
 		try {
@@ -344,11 +347,13 @@ public class Concurrent extends Archer {
 
 			ResultSet rs = stmt.executeQuery(sql);
 
-			while(rs.next()) {
+			int iEnreg = 0;
+			while(rs.next() && (nbmaxenreg == -1 || iEnreg < nbmaxenreg)) {
 				
 				Concurrent concurrent = ConcurrentFactory.getConcurrent(rs, reglement);
 				
 				concurrents.add(concurrent);
+				iEnreg++;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

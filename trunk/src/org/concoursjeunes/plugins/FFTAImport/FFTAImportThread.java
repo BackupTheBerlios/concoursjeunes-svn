@@ -23,7 +23,7 @@ public class FFTAImportThread extends Thread {
     
     private JDialog parentframe;
     
-    private AjResourcesReader pluginRessources = new AjResourcesReader("FFTAImportPlugin");
+    private AjResourcesReader pluginRessources = new AjResourcesReader("properties.FFTAImportPlugin");
     private EventListenerList listeners = new EventListenerList();
     
     private String fftalogpath = "";

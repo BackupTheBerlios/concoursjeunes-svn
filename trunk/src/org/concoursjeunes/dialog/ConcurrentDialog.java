@@ -278,6 +278,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 				ConcoursJeunes.ajrLibelle.getResourceString("concurrent.placelibre.titre")); //$NON-NLS-1$
 		
 		jlDescription.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.description"));	//Description //$NON-NLS-1$
+		jlDescription.setBackground(new Color(255,255,225));
 		jlNom.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.identite"));		//Nom et prénom du Tireur //$NON-NLS-1$
 		jlLicence.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.numlicence"));		//N° de Licence //$NON-NLS-1$
 		jlClub.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.nomclub"));			//nom du club //$NON-NLS-1$
@@ -435,7 +436,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	public int showConcurrentDialog(Concurrent concurrent) {
 		
 		jlDescription.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.description"));
-		jlDescription.setBackground(null);
+		jlDescription.setBackground(new Color(255,255,225));
 		
 		AutoCompleteDocument acdClub = new AutoCompleteDocument(jtfClub, AutoCompleteDocument.CLUB_SEARCH, ficheConcours.getParametre().getReglement());
 		acdClub.addAutoCompleteDocumentListener(this);
@@ -602,7 +603,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			jlDescription.setBackground(Color.ORANGE);
 		} else {
 			jlDescription.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.description"));
-			jlDescription.setBackground(null);
+			jlDescription.setBackground(new Color(255,255,225));
 		}
 		
 		filter = e.getGenericArcher();

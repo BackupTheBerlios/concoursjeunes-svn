@@ -19,15 +19,14 @@ public class PluginLoader {
 	private ArrayList<PluginMetadata> listPlugins = new ArrayList<PluginMetadata>();
 	
 	public PluginLoader() {
-		File pluginPath = new File("./plugins");
+		File pluginPath = new File("./plugins/properties");
 		File[] pluginsFiles = pluginPath.listFiles();
 		
 		for(File pluginFile : pluginsFiles) {
-			if(pluginFile.getName().endsWith("_libelle.properties")) {
-				AjResourcesReader pluginLocalInfo = new AjResourcesReader(
+			if(pluginFile.getName().endsWith(".properties")) {
+				AjResourcesReader pluginProperties = new AjResourcesReader("properties." + 
 						pluginFile.getName().substring(0, pluginFile.getName().length() - ".properties".length()));
-				AjResourcesReader pluginProperties = new AjResourcesReader(
-						pluginFile.getName().substring(0, pluginFile.getName().length() - "_libelle.properties".length()));
+				AjResourcesReader pluginLocalInfo = new AjResourcesReader(pluginProperties.getResourceString("plugin.libelle.file"));
 				
 				PluginMetadata pluginMetadata = new PluginMetadata();
 				pluginMetadata.setInfo(pluginLocalInfo.getResourceString("plugin.libelle"));
