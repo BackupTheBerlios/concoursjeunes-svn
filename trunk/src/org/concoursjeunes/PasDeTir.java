@@ -151,16 +151,7 @@ public class PasDeTir {
 		int[] nbParDistanceBlason;
 
 		//recupere dans la configuration la correspondance Critères de distinction/Distance-Blason
-		Hashtable<CriteriaSet, DistancesEtBlason> correspSCNA_DB = ficheConcours.getParametre().getReglement().getCorrespondanceCriteriaSet_DB();
-
-		//recupere les clés de placement
-		Enumeration<DistancesEtBlason> dbEnum = correspSCNA_DB.elements();
-		ArrayList<DistancesEtBlason> distancesEtBlasons = new ArrayList<DistancesEtBlason>();
-		for(int i = 0; dbEnum.hasMoreElements(); i++) {
-			DistancesEtBlason db = dbEnum.nextElement();
-			if(!distancesEtBlasons.contains(db))
-				distancesEtBlasons.add(db);
-		}
+		ArrayList<DistancesEtBlason> distancesEtBlasons = ficheConcours.getParametre().getReglement().getListDistancesEtBlason();
 
 		//liste le nombre d'acher par distances/blason différents
 		//pour chaque distance/blason

@@ -14,7 +14,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Hashtable;
 
 import javax.swing.Box;
 import javax.swing.ImageIcon;
@@ -348,13 +347,13 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 			row[0] = scnaLib.toString();
 
 			for(int j = 1; j < reglement.getNbSerie() + 1; j++) {
-				if(reglement.getCorrespondanceCriteriaSet_DB(differentiationCriteria[i]) != null)
-					row[j] = "" + reglement.getCorrespondanceCriteriaSet_DB(differentiationCriteria[i]).getDistance()[j-1]; //$NON-NLS-1$
+				if(reglement.getDistancesEtBlasonFor(differentiationCriteria[i]) != null)
+					row[j] = "" + reglement.getDistancesEtBlasonFor(differentiationCriteria[i]).getDistance()[j-1]; //$NON-NLS-1$
 				else
 					row[j] = "0"; //$NON-NLS-1$
 			}
-			if(reglement.getCorrespondanceCriteriaSet_DB(differentiationCriteria[i]) != null)
-				row[reglement.getNbSerie() + 1] = "" + reglement.getCorrespondanceCriteriaSet_DB(differentiationCriteria[i]).getBlason(); //$NON-NLS-1$
+			if(reglement.getDistancesEtBlasonFor(differentiationCriteria[i]) != null)
+				row[reglement.getNbSerie() + 1] = "" + reglement.getDistancesEtBlasonFor(differentiationCriteria[i]).getBlason(); //$NON-NLS-1$
 			else
 				row[reglement.getNbSerie() + 1] = "0"; //$NON-NLS-1$
 			dtm.addRow(row);
@@ -387,13 +386,13 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 			CriteriaSetLibelle libelle = new CriteriaSetLibelle(differentiationCriteria[i]);
 			row[0] = libelle.toString();
 			for(int j = 1; j < reglement.getNbSerie() + 1; j++) {
-				if(reglement.getCorrespondanceCriteriaSet_DB(differentiationCriteria[i]) != null)
-					row[j] = "" + reglement.getCorrespondanceCriteriaSet_DB(differentiationCriteria[i]).getDistance()[j-1]; //$NON-NLS-1$
+				if(reglement.getDistancesEtBlasonFor(differentiationCriteria[i]) != null)
+					row[j] = "" + reglement.getDistancesEtBlasonFor(differentiationCriteria[i]).getDistance()[j-1]; //$NON-NLS-1$
 				else
 					row[j] = "0"; //$NON-NLS-1$
 			}
-			if(reglement.getCorrespondanceCriteriaSet_DB(differentiationCriteria[i]) != null)
-				row[reglement.getNbSerie() + 1] = "" + reglement.getCorrespondanceCriteriaSet_DB(differentiationCriteria[i]).getBlason(); //$NON-NLS-1$
+			if(reglement.getDistancesEtBlasonFor(differentiationCriteria[i]) != null)
+				row[reglement.getNbSerie() + 1] = "" + reglement.getDistancesEtBlasonFor(differentiationCriteria[i]).getBlason(); //$NON-NLS-1$
 			else
 				row[reglement.getNbSerie() + 1] = "0"; //$NON-NLS-1$
 			dtm.addRow(row);
@@ -450,7 +449,6 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 			reglement.setNbMembresEquipe(Integer.parseInt(jtfNbMembresEquipe.getText()));
 			reglement.setNbMembresRetenu(Integer.parseInt(jtfNbMembresRetenu.getText()));
 			
-			reglement.setCorrespondanceCriteriaSet_DB(new Hashtable<CriteriaSet, DistancesEtBlason>());
 			for(int i = 0; i < jtDistanceBlason.getRowCount(); i++) {
 				int[] distances = new int[reglement.getNbSerie()];
 				for(int j = 0; j < distances.length; j++) {
@@ -459,9 +457,11 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 					else
 						distances[j] = 0;
 				}
-				reglement.putCorrespondanceCriteriaSet_DB(differentiationCriteria[i],
-						new DistancesEtBlason(distances, 
-								Integer.parseInt((String)this.jtDistanceBlason.getModel().getValueAt(i, jtDistanceBlason.getModel().getColumnCount() - 1))));
+				DistancesEtBlason db = new DistancesEtBlason(distances, 
+						Integer.parseInt((String)this.jtDistanceBlason.getModel().getValueAt(i, jtDistanceBlason.getModel().getColumnCount() - 1)));
+				db.setCriteriaSet(differentiationCriteria[i]);
+				
+				reglement.addDistancesEtBlason(db);
 			}
 			
 			reglement.setOfficialReglement(jcbOfficialReglement.isSelected());

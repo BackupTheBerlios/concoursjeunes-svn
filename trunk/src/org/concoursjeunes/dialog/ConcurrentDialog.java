@@ -17,6 +17,7 @@ import ajinteractive.standard.java2.*;
 
 /**
  * Boite de dialogue de gestion d'un concurrent
+ * 
  * @author  Aurelien Jeoffray
  * @version  5.0
  */
@@ -497,14 +498,13 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		Hashtable<DistancesEtBlason, OccupationCibles> occupationCibles = 
 			ficheConcours.getPasDeTir(concurrent.getDepart()).getOccupationCibles(ficheConcours.getParametre().getNbTireur());
 
-		Hashtable<CriteriaSet, DistancesEtBlason> tableCorresp = 
-			ficheConcours.getParametre().getReglement().getCorrespondanceCriteriaSet_DB();
+		ArrayList<DistancesEtBlason> tableCorresp = 
+			ficheConcours.getParametre().getReglement().getListDistancesEtBlason();
 		
 		//en extrait les jeux de critères de placement
 		CriteriaSet[] criteriaSetPlacement = new CriteriaSet[tableCorresp.size()];
-		Enumeration<CriteriaSet> critEnum = tableCorresp.keys();
-		for(int i = 0; critEnum.hasMoreElements(); i++) {
-			criteriaSetPlacement[i] = critEnum.nextElement();
+		for(int i = 0; i < tableCorresp.size(); i++) {
+			criteriaSetPlacement[i] = tableCorresp.get(i).getCriteriaSet();
 		}
 
 		//ordonne ces critères selon l'ordre définit dans la configuration
@@ -513,7 +513,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		//boucle sur chacun des jeux de placement
 		for(CriteriaSet differentiationCriteria : criteriaSetPlacement) {
 			//etablit la correspondance entre un jeux de placement et son d/b
-			DistancesEtBlason distAndBlas = ficheConcours.getParametre().getReglement().getCorrespondanceCriteriaSet_DB(differentiationCriteria);
+			DistancesEtBlason distAndBlas = ficheConcours.getParametre().getReglement().getDistancesEtBlasonFor(differentiationCriteria);
 
 			//genere le libellé complet du jeux de critère
 			CriteriaSetLibelle libelle = new CriteriaSetLibelle(differentiationCriteria);

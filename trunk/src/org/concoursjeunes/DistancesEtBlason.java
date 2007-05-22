@@ -15,6 +15,9 @@
  */
 package org.concoursjeunes;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Arrays;
 /**
  * parametre de distances et blason pour une cible et un concurrent
@@ -25,6 +28,11 @@ import java.util.Arrays;
 public class DistancesEtBlason {
 	private int[] distances = new int[] {18, 18};
 	private int blason = 80;
+	
+	private CriteriaSet criteriaSet = new CriteriaSet();
+	
+	private Reglement reglement = new Reglement();
+	private int numdistancesblason = 0; 
 
 	/**
 	 * cree un d&b avec les options par défaut (pour sérialisation XML)
@@ -78,13 +86,82 @@ public class DistancesEtBlason {
 	}
 
 	/**
+	 * @return criteriaSet
+	 */
+	public CriteriaSet getCriteriaSet() {
+		return criteriaSet;
+	}
+
+	/**
+	 * @param criteriaSet criteriaSet à définir
+	 */
+	public void setCriteriaSet(CriteriaSet criteriaSet) {
+		this.criteriaSet = criteriaSet;
+	}
+
+	/**
+	 * @return numdistancesblason
+	 */
+	public int getNumdistancesblason() {
+		return numdistancesblason;
+	}
+
+	/**
+	 * @param numdistancesblason numdistancesblason à définir
+	 */
+	public void setNumdistancesblason(int numdistancesblason) {
+		this.numdistancesblason = numdistancesblason;
+	}
+	
+	/**
+	 * @return reglement
+	 */
+	public Reglement getReglement() {
+		return reglement;
+	}
+
+	/**
+	 * @param reglement reglement à définir
+	 */
+	public void setReglement(Reglement reglement) {
+		this.reglement = reglement;
+	}
+
+	public void save() {
+		try {
+			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+			
+			if(numdistancesblason == 0) {
+				stmt.executeUpdate("insert into DISTANCESBLASONS (NUMREGLEMENT, BLASONS) VALUES (" +
+						reglement.getIdReglement() + ", " + blason + ")", Statement.RETURN_GENERATED_KEYS);
+				ResultSet clefs = stmt.getGeneratedKeys();
+				if(clefs.first()){
+					numdistancesblason = (Integer)clefs.getObject(1);  
+				}
+			} else {
+				stmt.executeUpdate("update DISTANCESBLASONS set BLASONS=" +
+						blason + " where NUMREGLEMENT=" + reglement.getIdReglement());
+			}
+			
+			criteriaSet.save();
+			
+			stmt.executeUpdate("merge into ASSOCIER (NUMDISTANCESBLASONS, " +
+					"NUMCRITERIASET) VALUES (" + numdistancesblason + ", " + criteriaSet.getNumCriteriaSet() + ")");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		
+	}
+
+	/**
 	 * Retourne l'objet DistancesEtBlason associé à un concurrent
 	 * 
 	 * @param concurrent - le concurrent pour lequel retourné l'objet
 	 * @return l'objet DistancesEtBlason correspondant au concurrent
 	 */
 	public static DistancesEtBlason getDistancesEtBlasonForConcurrent(Reglement reglement, Concurrent concurrent) {
-		return reglement.getCorrespondanceCriteriaSet_DB(concurrent.getCriteriaSet());
+		return reglement.getDistancesEtBlasonFor(concurrent.getCriteriaSet());
 	}
 
 	/**

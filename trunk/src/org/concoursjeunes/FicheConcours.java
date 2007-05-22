@@ -408,7 +408,7 @@ public class FicheConcours implements ParametreListener {
 					//FIXME gerer les cas ou plus d'une distance par critères de classement
 					for(int j = 0; j < parametre.getReglement().getNbSerie(); j++) {
 						tplClassement.parse("categories.distances.DISTANCE", //$NON-NLS-1$
-								parametre.getReglement().getCorrespondanceCriteriaSet_DB(scna).getDistance()[j] + "m"); //$NON-NLS-1$
+								parametre.getReglement().getDistancesEtBlasonFor(scna).getDistance()[j] + "m"); //$NON-NLS-1$
 						tplClassement.loopBloc("categories.distances"); //$NON-NLS-1$
 					}
 					
@@ -801,7 +801,7 @@ public class FicheConcours implements ParametreListener {
 			Concurrent[] concurrents = concurrentList.list(i, depart);
 			if(concurrents != null && concurrents.length > 0) {
 				CriteriaSet dci = concurrents[0].getCriteriaSet();
-				DistancesEtBlason db = parametre.getReglement().getCorrespondanceCriteriaSet_DB(dci);
+				DistancesEtBlason db = parametre.getReglement().getDistancesEtBlasonFor(dci);
 
 				templatePasDeTirXML.parse("ligne.numcible.nc.numcible", "" + i); //$NON-NLS-1$ //$NON-NLS-2$
 				templatePasDeTirXML.parse("ligne.imgcible.ic.url_img_blason",  //$NON-NLS-1$

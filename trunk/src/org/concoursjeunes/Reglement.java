@@ -95,7 +95,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Map.Entry;
 
 import ajinteractive.standard.utilities.sql.SqlParser;
 
@@ -135,7 +134,8 @@ public class Reglement {
 	private int nbMembresRetenu     = 3;
 
 	private ArrayList<Criterion> listCriteria = new ArrayList<Criterion>();
-	private Hashtable<CriteriaSet, DistancesEtBlason> correspondanceCriteriaSet_DB = new Hashtable<CriteriaSet, DistancesEtBlason>();
+	//private Hashtable<CriteriaSet, DistancesEtBlason> correspondanceCriteriaSet_DB = new Hashtable<CriteriaSet, DistancesEtBlason>();
+	private ArrayList<DistancesEtBlason> listDistancesEtBlason = new ArrayList<DistancesEtBlason>();
 	
 	private boolean officialReglement = false;
 	
@@ -184,9 +184,9 @@ public class Reglement {
 	 * 
 	 * @return la table de correspondance de placement
 	 */
-	public Hashtable<CriteriaSet, DistancesEtBlason> getCorrespondanceCriteriaSet_DB() {
+	/*public Hashtable<CriteriaSet, DistancesEtBlason> getCorrespondanceCriteriaSet_DB() {
 		return correspondanceCriteriaSet_DB;
-	}
+	}*/
 	
 	/**
 	 * Retourne le Placement associé à un jeux de critères de placement donné
@@ -194,13 +194,13 @@ public class Reglement {
 	 * @param criteriaSet le jeux de critères de placement.
 	 * @return l'objet DistancesEtBlason correspondant au criteres en parametre
 	 */
-	public DistancesEtBlason getCorrespondanceCriteriaSet_DB(CriteriaSet criteriaSet) {
+	/*public DistancesEtBlason getCorrespondanceCriteriaSet_DB(CriteriaSet criteriaSet) {
 		for(CriteriaSet criteriaSet2 : correspondanceCriteriaSet_DB.keySet()) {
 			if(criteriaSet.equals(criteriaSet2))
 				return correspondanceCriteriaSet_DB.get(criteriaSet2);
 		}
 		return null;
-	}
+	}*/
 
 	/**
 	 * Définit la table de correspondance critères de placement <-> placement
@@ -210,10 +210,10 @@ public class Reglement {
 	 * 
 	 * @param correspondanceCriteriaSet_DB la table de correspondance
 	 */
-	public void setCorrespondanceCriteriaSet_DB(
+	/*public void setCorrespondanceCriteriaSet_DB(
 			Hashtable<CriteriaSet, DistancesEtBlason> correspondanceDifferentiationCriteria_DB) {
 		this.correspondanceCriteriaSet_DB = correspondanceDifferentiationCriteria_DB;
-	}
+	}*/
 	
 	/**
 	 * Ajoute une entrée à la table de correspondance de placement.<br>
@@ -223,9 +223,9 @@ public class Reglement {
 	 * @param criteriaSet le jeux de critères de placement
 	 * @param distancesEtBlason le placement associé
 	 */
-	public void putCorrespondanceCriteriaSet_DB(CriteriaSet criteriaSet, DistancesEtBlason distancesEtBlason) {
+	/*public void putCorrespondanceCriteriaSet_DB(CriteriaSet criteriaSet, DistancesEtBlason distancesEtBlason) {
 		this.correspondanceCriteriaSet_DB.put(criteriaSet, distancesEtBlason);
-	}
+	}*/
 
 	/**
 	 * <p>
@@ -256,6 +256,34 @@ public class Reglement {
 	 */
 	public void setListCriteria(ArrayList<Criterion> listCriteria) {
 		this.listCriteria = listCriteria;
+	}
+
+	/**
+	 * @return listDistancesEtBlason
+	 */
+	public ArrayList<DistancesEtBlason> getListDistancesEtBlason() {
+		return listDistancesEtBlason;
+	}
+
+	/**
+	 * @param listDistancesEtBlason listDistancesEtBlason à définir
+	 */
+	public void setListDistancesEtBlason(
+			ArrayList<DistancesEtBlason> listDistancesEtBlason) {
+		this.listDistancesEtBlason = listDistancesEtBlason;
+	}
+	
+	public DistancesEtBlason getDistancesEtBlasonFor(CriteriaSet criteriaSet) {
+		for(DistancesEtBlason db : listDistancesEtBlason) {
+			if(db.getCriteriaSet().equals(criteriaSet)) {
+				return db;
+			}
+		}
+		return null;
+	}
+	
+	public void addDistancesEtBlason(DistancesEtBlason distancesEtBlason) {
+		listDistancesEtBlason.add(distancesEtBlason);
 	}
 
 	/**
@@ -452,7 +480,7 @@ public class Reglement {
 			
 			//sauvegarde les tableaux de crières et correspondance
 			saveCriteria();
-			saveDistancesAndBlasons(stmt);
+			saveDistancesAndBlasons();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -464,32 +492,9 @@ public class Reglement {
 		}
 	}
 	
-	private void saveDistancesAndBlasons(Statement stmt) throws SQLException {
-		
-		for(Entry<CriteriaSet, DistancesEtBlason> entry : correspondanceCriteriaSet_DB.entrySet()) {
-			CriteriaSet criteriaSet = entry.getKey();
-			DistancesEtBlason distancesEtBlason = entry.getValue();
-			int numdb = 0;
-			
-			stmt.executeUpdate("insert into DISTANCESBLASONS (NUMREGLEMENT, BLASONS) VALUES (" +
-					idReglement + ", " + distancesEtBlason.getBlason() + ")", Statement.RETURN_GENERATED_KEYS);
-			ResultSet clefs = stmt.getGeneratedKeys();
-			if(clefs.first()){
-				numdb = (Integer)clefs.getObject(1);  
-			}
-			
-			for(Criterion criterion : criteriaSet.getCriteria().keySet()) {
-				CriterionElement criterionElement = criteriaSet.getCriteria().get(criterion);
-				stmt.executeUpdate("insert into CRITERIASET (NUMDISTANCESBLASONS, NUMREGLEMENT1, CODECRITEREELEMENT," +
-						"CODECRITERE, NUMREGLEMENT2) VALUES (" +
-						numdb + ", " + idReglement + ", '" + criterionElement.getCode() + "'," +
-						"'" + criterion.getCode() + "', " + idReglement + ")");
-			}
-
-			for(int distance : distancesEtBlason.getDistance()) {
-				stmt.executeUpdate("insert into DISTANCES (NUMDISTANCESBLASONS, NUMREGLEMENT," +
-						"DISTANCE) VALUES (" + numdb + ", " + idReglement + ", " + distance + ")");
-			}
+	private void saveDistancesAndBlasons() {
+		for(DistancesEtBlason distancesEtBlason : listDistancesEtBlason) {
+			distancesEtBlason.save();
 		}
 	}
 

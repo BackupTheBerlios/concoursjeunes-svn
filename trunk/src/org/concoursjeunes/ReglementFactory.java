@@ -93,7 +93,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Hashtable;
 
 /**
  * <p>
@@ -131,13 +130,27 @@ public class ReglementFactory {
 	 * @return - le reglement retourné
 	 */
 	public static Reglement getReglement(String reglementName) {
+		return getReglement(-1, reglementName);
+	}
+	
+	public static Reglement getReglement(int numreglement) {
+		return getReglement(numreglement, null);
+	}
+	
+	private static Reglement getReglement(int numreglement, String reglementName) {
 
 		Reglement reglement = new Reglement();
 		
 		try {
 			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("select * from REGLEMENT where NOMREGLEMENT='" + reglementName + "'");
+			String sql = "";
+			if(numreglement > -1)
+				sql = "select * from REGLEMENT where NUMREGLEMENT=" + numreglement;
+			else
+				sql = "select * from REGLEMENT where NOMREGLEMENT='" + reglementName + "'";
+			
+			ResultSet rs = stmt.executeQuery(sql);
 			if(rs.first()) {
 				int numreglment = rs.getInt("NUMREGLEMENT");
 				
@@ -153,95 +166,22 @@ public class ReglementFactory {
 				rs.close();
 				
 				ArrayList<Criterion> criteria = new ArrayList<Criterion>();
-				rs = stmt.executeQuery("select * from CRITERE where NUMREGLEMENT=" + numreglment);
+				rs = stmt.executeQuery("select CODECRITERE from CRITERE where NUMREGLEMENT=" + numreglment);
 				while(rs.next()) {
-					Criterion criterion = new Criterion();
-					
-					criterion.setReglementParent(reglement);
-					criterion.setCode(rs.getString("CODECRITERE"));
-					criterion.setLibelle(rs.getString("LIBELLECRITERE"));
-					criterion.setSortOrder(rs.getInt("SORTORDERCRITERE"));
-					criterion.setClassement(rs.getBoolean("CLASSEMENT"));
-					criterion.setPlacement(rs.getBoolean("PLACEMENT"));
-					criterion.setCodeffta(rs.getString("CODEFFTA"));
-					
-					ArrayList<CriterionElement> criterionElements = new ArrayList<CriterionElement>();
-					Statement stmt2 = ConcoursJeunes.dbConnection.createStatement();
-					ResultSet rs2 = stmt2.executeQuery("select * from CRITEREELEMENT where " +
-							"CODECRITERE='" + criterion.getCode() + "' and NUMREGLEMENT=" + numreglment);
-					while(rs2.next()) {
-						CriterionElement criterionElement = new CriterionElement();
-						
-						criterionElement.setCriterionParent(criterion);
-						criterionElement.setCode(rs2.getString("CODECRITEREELEMENT"));
-						criterionElement.setLibelle(rs2.getString("LIBELLECRITEREELEMENT"));
-						criterionElement.setActive(rs2.getBoolean("ACTIF"));
-						
-						criterionElements.add(criterionElement);
-					}
-					stmt2.close();
-					criterion.setCriterionElements(criterionElements);
-					
-					criteria.add(criterion);
+					criteria.add(CriterionFactory.getCriterion(rs.getString("CODECRITERE"), reglement));
 				}
 				rs.close();
 				reglement.setListCriteria(criteria);
 				
-				Hashtable<CriteriaSet, DistancesEtBlason> correspondanceDifferentiationCriteria_DB = new Hashtable<CriteriaSet, DistancesEtBlason>();
+				ArrayList<DistancesEtBlason> listDistancesEtBlason = new ArrayList<DistancesEtBlason>();
 				rs = stmt.executeQuery("select * from DISTANCESBLASONS where NUMREGLEMENT=" + numreglment);
 				while(rs.next()) {
-					Statement stmt2 = ConcoursJeunes.dbConnection.createStatement();
-					
 					int numdb = rs.getInt("NUMDISTANCESBLASONS");
 					
-					DistancesEtBlason distancesEtBlason = new DistancesEtBlason();
-					ArrayList<Integer> distances = new ArrayList<Integer>();
-					ResultSet rs2 = stmt2.executeQuery("select * from DISTANCES " +
-							"where NUMDISTANCESBLASONS=" + numdb + " and NUMREGLEMENT=" + numreglment);
-					while(rs2.next()) {
-						distances.add(rs2.getInt("DISTANCE"));
-					}
-					rs2.close();
-					int[] iDistances = new int[distances.size()];
-					for(int i = 0; i < distances.size(); i++) {
-						iDistances[i] = distances.get(i);
-					}
-					distancesEtBlason.setDistance(iDistances);
-					distancesEtBlason.setBlason(rs.getInt("BLASONS"));
-					
-					CriteriaSet criteriaSet = new CriteriaSet();
-					rs2 = stmt2.executeQuery("select critere.codecritere, LIBELLECRITERE, SORTORDERCRITERE, CLASSEMENT, PLACEMENT, CODEFFTA, " +
-							"critereelement.codecritereelement, LIBELLECRITEREELEMENT, ACTIF " +
-							"from CRITERIASET, CRITERE, CRITEREELEMENT where " +
-							"criteriaset.codecritere = critere.codecritere and criteriaset.numreglement2 = critere.numreglement and " +
-							"criteriaset.codecritere = critereelement.codecritere and criteriaset.codecritereelement = critereelement.codecritereelement and criteriaset.numreglement2 = critereelement.numreglement and " +
-							"NUMDISTANCESBLASONS=" + numdb + 
-							"and NUMREGLEMENT1=" + numreglment);
-					while(rs2.next()) {
-						Criterion criterion = new Criterion();
-						
-						criterion.setCode(rs2.getString("CODECRITERE"));
-						criterion.setLibelle(rs2.getString("LIBELLECRITERE"));
-						criterion.setSortOrder(rs2.getInt("SORTORDERCRITERE"));
-						criterion.setClassement(rs2.getBoolean("CLASSEMENT"));
-						criterion.setPlacement(rs2.getBoolean("PLACEMENT"));
-						criterion.setCodeffta(rs2.getString("CODEFFTA"));
-						
-						CriterionElement criterionElement = new CriterionElement();
-						
-						criterionElement.setCode(rs2.getString("codecritereelement"));
-						criterionElement.setLibelle(rs2.getString("LIBELLECRITEREELEMENT"));
-						criterionElement.setActive(rs2.getBoolean("ACTIF"));
-						
-						criteriaSet.getCriteria().put(criterion, criterionElement);
-					}
-					rs2.close();
-					correspondanceDifferentiationCriteria_DB.put(criteriaSet, distancesEtBlason);
-					
-					stmt2.close();
+					listDistancesEtBlason.add(DistancesEtBlasonFactory.getDistancesEtBlason(numdb, reglement));
 				}
 				rs.close();
-				reglement.setCorrespondanceCriteriaSet_DB(correspondanceDifferentiationCriteria_DB);
+				reglement.setListDistancesEtBlason(listDistancesEtBlason);
 			}
 			
 			stmt.close();

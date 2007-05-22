@@ -15,8 +15,10 @@
  */
 package org.concoursjeunes;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 /**
  * Element de critère
@@ -162,5 +164,26 @@ public class CriterionElement {
     @Override
     public int hashCode() {
         return code.hashCode();
+    }
+    
+    public static ArrayList<CriterionElement> getAllCriterionElementsFor(Criterion criterion) {
+    	ArrayList<CriterionElement> elements = new ArrayList<CriterionElement>();
+    	
+    	try {
+			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+			
+			String sql = "select CODECRITEREELEMENT from critereelement where " +
+					"codecritere='" + criterion.getCode() + "' " +
+					"and numreglement=" + criterion.getReglementParent().getIdReglement();
+			
+			ResultSet rs = stmt.executeQuery(sql);
+			
+			while(rs.next()) {
+				elements.add(CriterionElementFactory.getCriterionElement(rs.getString("CODECRITEREELEMENT"), criterion));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+    	return elements;
     }
 }
