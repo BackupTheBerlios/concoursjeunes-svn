@@ -15,9 +15,9 @@
  */
 package org.concoursjeunes;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 /**
@@ -46,33 +46,21 @@ public class ConcurrentFactory {
 			concurrent.setClub(EntiteFactory.getEntite(rs.getString("AGREMENTENTITE")));
 
 			if(reglement != null) {
-				CriteriaSet differentiationCriteria = new CriteriaSet();
+				CriteriaSet differentiationCriteria = null;
+				String sql = "select * from distinguer where NUMLICENCEARCHER=? and NUMREGLEMENT=?";
+				
+				PreparedStatement pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
+				
+				pstmt.setString(1, concurrent.getNumLicenceArcher());
+				pstmt.setInt(2, reglement.hashCode());
+				
+				ResultSet rsCriteriaSet = pstmt.executeQuery();
 
-				Statement stmt = ConcoursJeunes.dbConnection.createStatement();
-				ResultSet rsCriteriaSet = stmt.executeQuery("select * from distinguer where " +
-						"NUMLICENCEARCHER='" + concurrent.getNumLicenceArcher() + "' and " +
-						"NUMREGLEMENT=" + reglement.getIdReglement());
-				if(rsCriteriaSet.next()) {
-					do {
-						String codeCritere = rsCriteriaSet.getString("CODECRITERE");
-						String codeElement = rsCriteriaSet.getString("CODECRITEREELEMENT");
-						
-						for(Criterion key : reglement.getListCriteria()) {
-							if(key.getCode().equals(codeCritere)) {
-								for(CriterionElement criterionElement : key.getCriterionElements()) {
-									if(criterionElement.getCode().equals(codeElement)) {
-										if(criterionElement.isActive()) {
-											differentiationCriteria.getCriteria().put(key, criterionElement);
-											break;
-										}
-										return null;
-									}
-								}
-								break;
-							}
-						}
-					} while(rsCriteriaSet.next());
+				if(rsCriteriaSet.first()) {
+					differentiationCriteria = CriteriaSetFactory
+							.getCriteriaSet(rsCriteriaSet.getInt("NUMCRITERIASET"), reglement, reglement.hashCode());
 				} else {
+					differentiationCriteria = new CriteriaSet();
 					for(Criterion key : reglement.getListCriteria()) {
 						if(!key.getCodeffta().equals("")) {
 							ArrayList<CriterionElement> arrayList = key.getCriterionElements();

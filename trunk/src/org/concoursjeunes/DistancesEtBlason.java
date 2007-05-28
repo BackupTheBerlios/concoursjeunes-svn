@@ -133,20 +133,23 @@ public class DistancesEtBlason {
 			
 			if(numdistancesblason == 0) {
 				stmt.executeUpdate("insert into DISTANCESBLASONS (NUMREGLEMENT, BLASONS) VALUES (" +
-						reglement.getIdReglement() + ", " + blason + ")", Statement.RETURN_GENERATED_KEYS);
+						reglement.hashCode() + ", " + blason + ")", Statement.RETURN_GENERATED_KEYS);
 				ResultSet clefs = stmt.getGeneratedKeys();
 				if(clefs.first()){
 					numdistancesblason = (Integer)clefs.getObject(1);  
 				}
 			} else {
 				stmt.executeUpdate("update DISTANCESBLASONS set BLASONS=" +
-						blason + " where NUMREGLEMENT=" + reglement.getIdReglement());
+						blason + " where NUMREGLEMENT=" + reglement.hashCode());
 			}
 			
 			criteriaSet.save();
 			
 			stmt.executeUpdate("merge into ASSOCIER (NUMDISTANCESBLASONS, " +
-					"NUMCRITERIASET) VALUES (" + numdistancesblason + ", " + criteriaSet.getNumCriteriaSet() + ")");
+					"NUMREGLEMENT, NUMCRITERIASET) " +
+					"VALUES (" + numdistancesblason + ", " +
+					reglement.hashCode() + "," +
+					criteriaSet.hashCode() + ")");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

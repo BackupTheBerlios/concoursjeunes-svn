@@ -20,7 +20,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Map.Entry;
 
 /**
  * Objet de Base de stockage des Information sur un concurrent:
@@ -275,21 +274,19 @@ public class Concurrent extends Archer {
 	
 	public void saveCriteriaSet(Reglement reglement) {
 		if(!getNumLicenceArcher().equals("")) {
+			criteriaSet.save();
 			try {
-				String sql = "merge into distinguer (NUMLICENCEARCHER, CODECRITEREELEMENT, CODECRITERE, NUMREGLEMENT) " +
-						"values (?, ?, ?, ?)";
+				String sql = "merge into distinguer (NUMLICENCEARCHER, NUMREGLEMENT, " +
+						"NUMCRITERIASET) KEY (NUMLICENCEARCHER, NUMREGLEMENT)" +
+						"VALUES (?, ?, ?)";
+				//NUMREGLEMENT
 				PreparedStatement pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
 				
-				for(Entry<Criterion, CriterionElement> entry : criteriaSet.getCriteria().entrySet()) {
-					Criterion criterion = entry.getKey();
-					CriterionElement criterionElement = entry.getValue();
-					
-					pstmt.setString(1, getNumLicenceArcher());
-					pstmt.setString(2, criterionElement.getCode());
-					pstmt.setString(3, criterion.getCode());
-					pstmt.setInt(4, reglement.getIdReglement());
-					pstmt.executeUpdate();
-				}
+				pstmt.setString(1, getNumLicenceArcher());
+				pstmt.setInt(2, reglement.hashCode());
+				pstmt.setInt(3, criteriaSet.hashCode());
+
+				pstmt.executeUpdate();
 				pstmt.close();
 			} catch (SQLException e) {
 				e.printStackTrace();

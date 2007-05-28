@@ -98,22 +98,23 @@ import java.util.Hashtable;
  *
  */
 public class CriteriaSetFactory {
-	public static CriteriaSet getCriteriaSet(int numCriteriaSet, Reglement reglement) {
+	public static CriteriaSet getCriteriaSet(int numCriteriaSet, Reglement reglement, int hashReglement) {
 		try {
 			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("select * from CriteriaSet where NUMCRITERIASET=" + numCriteriaSet);
+			ResultSet rs = stmt.executeQuery("select * from POSSEDE where NUMCRITERIASET=" + numCriteriaSet);
 			
 			Hashtable<Criterion, CriterionElement> criteria = new Hashtable<Criterion, CriterionElement>();
-			if(rs.next()) {
-				Criterion criterion = CriterionFactory.getCriterion(rs.getString("CODECRITERE"), reglement);
+			while(rs.next()) {
+				Criterion criterion = CriterionFactory.getCriterion(rs.getString("CODECRITERE"), reglement, hashReglement);
 				criteria.put(
 						criterion,
-						CriterionElementFactory.getCriterionElement(rs.getString("CODECRITEREELEMENT"), criterion));
+						CriterionElementFactory.getCriterionElement(rs.getString("CODECRITEREELEMENT"), criterion, hashReglement));
 			}
 			CriteriaSet criteriaSet = new CriteriaSet();
 			criteriaSet.setCriteria(criteria);
-			criteriaSet.setNumCriteriaSet(numCriteriaSet);
+			
+			return criteriaSet;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

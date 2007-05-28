@@ -228,7 +228,7 @@ public class Criterion {
 			
 			stmt.executeUpdate("merge into CRITERE (CODECRITERE,NUMREGLEMENT,LIBELLECRITERE,SORTORDERCRITERE," +
 					"CLASSEMENT,PLACEMENT,CODEFFTA) VALUES ('" + code + "'," + 
-					reglementParent.getIdReglement() + ",'" + libelle + "'," + 
+					reglementParent.hashCode() + ",'" + libelle + "'," + 
 					sortOrder + "," +
 					Boolean.toString(classement).toUpperCase() + "," +
 					Boolean.toString(placement).toUpperCase() + ",'" +
@@ -246,7 +246,7 @@ public class Criterion {
 			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 			
 			stmt.executeUpdate("delete from CRITERE where CODECRITERE='" + code + "' and " +
-					"NUMREGLEMENT=" + reglementParent.getIdReglement());
+					"NUMREGLEMENT=" + reglementParent.hashCode());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

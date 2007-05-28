@@ -98,13 +98,13 @@ import java.util.ArrayList;
  *
  */
 public class DistancesEtBlasonFactory {
-	public static DistancesEtBlason getDistancesEtBlason(int numdistancesblason, Reglement reglement) {
+	public static DistancesEtBlason getDistancesEtBlason(int numdistancesblason, Reglement reglement, int hashReglement) {
 		try {
 			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 			
 			String sql = "select * from DISTANCESBLASONS where " +
 					"NUMDISTANCESBLASONS=" + numdistancesblason + " and " +
-					"NUMREGLEMENT=" + reglement.getIdReglement();
+					"NUMREGLEMENT=" + hashReglement;
 			
 			ResultSet rs = stmt.executeQuery(sql);
 			
@@ -115,17 +115,18 @@ public class DistancesEtBlasonFactory {
 				distancesEtBlason.setBlason(rs.getInt("BLASONS"));
 				
 				sql = "select * from associer where " +
-						"NUMDISTANCESBLASONS=" + numdistancesblason;
+						"NUMDISTANCESBLASONS=" + numdistancesblason +
+						" and NUMREGLEMENT=" + hashReglement;
 				rs = stmt.executeQuery(sql);
 				
 				if(rs.first()) {
-					distancesEtBlason.setCriteriaSet(CriteriaSetFactory.getCriteriaSet(rs.getInt("NUMCRITERIASET"), reglement));
+					distancesEtBlason.setCriteriaSet(CriteriaSetFactory.getCriteriaSet(rs.getInt("NUMCRITERIASET"), reglement, hashReglement));
 				} else {
 					return null;
 				}
 				sql = "select * from distances where " +
 						"NUMDISTANCESBLASONS=" + numdistancesblason + " and " +
-						"NUMREGLEMENT=" + reglement.getIdReglement();
+						"NUMREGLEMENT=" + hashReglement;
 				rs = stmt.executeQuery(sql);
 				ArrayList<Integer> distances = new ArrayList<Integer>();
 				while(rs.next()) {

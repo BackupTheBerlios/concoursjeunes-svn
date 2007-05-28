@@ -97,13 +97,13 @@ import java.sql.Statement;
  *
  */
 public class CriterionElementFactory {
-	public static CriterionElement getCriterionElement(String codeElement, Criterion criterion) {
+	public static CriterionElement getCriterionElement(String codeElement, Criterion criterion, int hashReglement) {
 		try {
 			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 			
 			String sql = "select * from CRITEREELEMENT where CODECRITEREELEMENT='" +
 					codeElement + "' and CODECRITERE='" +
-					criterion.getCode() + "' and NUMREGLEMENT=" + criterion.getReglementParent().getIdReglement();
+					criterion.getCode() + "' and NUMREGLEMENT=" + hashReglement;
 	
 			ResultSet rs = stmt.executeQuery(sql);
 			if(rs.first()) {

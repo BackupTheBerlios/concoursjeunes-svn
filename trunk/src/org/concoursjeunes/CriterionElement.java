@@ -108,7 +108,7 @@ public class CriterionElement {
 			stmt.executeUpdate("merge into CRITEREELEMENT (CODECRITEREELEMENT," +
 					"CODECRITERE,NUMREGLEMENT,LIBELLECRITEREELEMENT,ACTIF) values (" +
 					"'" + code + "', '" + criterionParent.getCode() + "'," +
-					"" + criterionParent.getReglementParent().getIdReglement() + ", '" + libelle + "'," +
+					"" + criterionParent.getReglementParent().hashCode() + ", '" + libelle + "'," +
 					Boolean.toString(active).toUpperCase() + ")");
 		} catch(SQLException e) {
 			
@@ -121,7 +121,7 @@ public class CriterionElement {
 			
 			stmt.executeUpdate("delete from CRITEREELEMENT where CODECRITEREELEMENT='" + code +
 					"' and CODECRITERE='" + criterionParent.getCode() + "' and " +
-					"NUMREGLEMENT=" + criterionParent.getReglementParent().getIdReglement());
+					"NUMREGLEMENT=" + criterionParent.getReglementParent().hashCode());
 		} catch(SQLException e) {
 			
 		}
@@ -166,7 +166,11 @@ public class CriterionElement {
         return code.hashCode();
     }
     
-    public static ArrayList<CriterionElement> getAllCriterionElementsFor(Criterion criterion) {
+    /*public static ArrayList<CriterionElement> getAllCriterionElementsFor(Criterion criterion) {
+    	return getAllCriterionElementsFor(criterion, criterion.getReglementParent().hashCode());
+    }*/
+    
+    public static ArrayList<CriterionElement> getAllCriterionElementsFor(Criterion criterion, int hashReglement) {
     	ArrayList<CriterionElement> elements = new ArrayList<CriterionElement>();
     	
     	try {
@@ -174,12 +178,12 @@ public class CriterionElement {
 			
 			String sql = "select CODECRITEREELEMENT from critereelement where " +
 					"codecritere='" + criterion.getCode() + "' " +
-					"and numreglement=" + criterion.getReglementParent().getIdReglement();
+					"and numreglement=" + hashReglement;
 			
 			ResultSet rs = stmt.executeQuery(sql);
 			
 			while(rs.next()) {
-				elements.add(CriterionElementFactory.getCriterionElement(rs.getString("CODECRITEREELEMENT"), criterion));
+				elements.add(CriterionElementFactory.getCriterionElement(rs.getString("CODECRITEREELEMENT"), criterion, hashReglement));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

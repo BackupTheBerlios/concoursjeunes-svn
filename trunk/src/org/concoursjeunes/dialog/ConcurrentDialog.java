@@ -721,7 +721,6 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 				concurrent.getClub().setAgrement(jtfAgrement.getText());
 				concurrent.setInscription(jcbInscription.getSelectedIndex());
 				
-				
 				concurrent.saveCriteriaSet(ficheConcours.getParametre().getReglement());
 
 				if(ae.getSource() == jbQuitter) {

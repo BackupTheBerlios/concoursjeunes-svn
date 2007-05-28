@@ -460,6 +460,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 				DistancesEtBlason db = new DistancesEtBlason(distances, 
 						Integer.parseInt((String)this.jtDistanceBlason.getModel().getValueAt(i, jtDistanceBlason.getModel().getColumnCount() - 1)));
 				db.setCriteriaSet(differentiationCriteria[i]);
+				db.setReglement(reglement);
 				
 				reglement.addDistancesEtBlason(db);
 			}

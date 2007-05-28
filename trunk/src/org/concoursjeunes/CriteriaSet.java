@@ -15,7 +15,6 @@
  */
 package org.concoursjeunes;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
@@ -30,8 +29,6 @@ import java.util.Map.Entry;
 public class CriteriaSet {
 
 	private Hashtable<Criterion, CriterionElement> criteria = new Hashtable<Criterion, CriterionElement>();
-	
-	private int numCriteriaSet = 0;
 
 	public CriteriaSet() {
 
@@ -96,51 +93,25 @@ public class CriteriaSet {
 		return criteriaSet;
 	}
 
-	/**
-	 * @return numCriteriaSet
-	 */
-	public int getNumCriteriaSet() {
-		return numCriteriaSet;
-	}
-
-	/**
-	 * @param numCriteriaSet numCriteriaSet à définir
-	 */
-	public void setNumCriteriaSet(int numCriteriaSet) {
-		this.numCriteriaSet = numCriteriaSet;
-	}
-
 	public void save() {
 		try {
 			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 			
+			stmt.executeUpdate("merge into CRITERIASET VALUES (" + hashCode() + ")");
+
+			
 			for(Entry<Criterion, CriterionElement> entry : criteria.entrySet()) {
 				Criterion criterion = entry.getKey();
 				CriterionElement criterionElement = entry.getValue();
-				
-				if(numCriteriaSet == 0) {
-					String sql = "insert into CRITERIASET (CODECRITEREELEMENT, " +
-							"CODECRITERE, NUMREGLEMENT) VALUES ('" +
-							criterionElement.getCode() + "', '" + 
-							criterion.getCode() + "', " + 
-							criterion.getReglementParent() + ")";
-					
-					stmt.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
-					ResultSet clefs = stmt.getGeneratedKeys();
-					if(clefs.first()){
-						numCriteriaSet = (Integer)clefs.getObject(1);  
-					}
-				} else {
-					String sql =  "merge into CRITERIASET (NUMCRITERIASET, CODECRITEREELEMENT, " +
-							"CODECRITERE, NUMREGLEMENT) VALUES (" +
-							numCriteriaSet + ", '" + 
-							criterionElement.getCode() + "', '" + 
-							criterion.getCode() + "', " + 
-							criterion.getReglementParent() + ")";
-					
-					stmt.executeUpdate(sql);
-				}
-				
+
+				String sql =  "merge into POSSEDE (NUMCRITERIASET, CODECRITEREELEMENT, " +
+						"CODECRITERE, NUMREGLEMENT) KEY (NUMCRITERIASET, CODECRITERE, NUMREGLEMENT) VALUES (" +
+						hashCode() + ", '" + 
+						criterionElement.getCode() + "', '" + 
+						criterion.getCode() + "', " + 
+						criterion.getReglementParent().hashCode() + ")";
+				//System.out.println(sql);
+				stmt.executeUpdate(sql);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

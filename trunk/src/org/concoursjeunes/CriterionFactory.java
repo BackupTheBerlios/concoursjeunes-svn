@@ -97,12 +97,12 @@ import java.sql.Statement;
  *
  */
 public class CriterionFactory {
-	public static Criterion getCriterion(String codeCritere, Reglement reglement) {
+	public static Criterion getCriterion(String codeCritere, Reglement reglement, int hashReglement) {
 		try {
 			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 			
 			String sql = "select * from critere where CODECRITERE='" +
-					codeCritere + "' and NUMREGLEMENT=" + reglement.getIdReglement();
+					codeCritere + "' and NUMREGLEMENT=" + hashReglement;
 			
 			ResultSet rs = stmt.executeQuery(sql);
 			if(rs.first()) {
@@ -115,7 +115,7 @@ public class CriterionFactory {
 				criterion.setPlacement(rs.getBoolean("PLACEMENT"));
 				criterion.setReglementParent(reglement);
 
-				criterion.setCriterionElements(CriterionElement.getAllCriterionElementsFor(criterion));
+				criterion.setCriterionElements(CriterionElement.getAllCriterionElementsFor(criterion, hashReglement));
 				
 				return criterion;
 			}

@@ -154,7 +154,6 @@ public class ReglementFactory {
 			if(rs.first()) {
 				int numreglment = rs.getInt("NUMREGLEMENT");
 				
-				reglement.setIdReglement(numreglment);
 				reglement.setName(rs.getString("NOMREGLEMENT"));
 				reglement.setNbSerie(rs.getInt("NBSERIE"));
 				reglement.setNbVoleeParSerie(rs.getInt("NBVOLEEPARSERIE"));
@@ -168,7 +167,7 @@ public class ReglementFactory {
 				ArrayList<Criterion> criteria = new ArrayList<Criterion>();
 				rs = stmt.executeQuery("select CODECRITERE from CRITERE where NUMREGLEMENT=" + numreglment);
 				while(rs.next()) {
-					criteria.add(CriterionFactory.getCriterion(rs.getString("CODECRITERE"), reglement));
+					criteria.add(CriterionFactory.getCriterion(rs.getString("CODECRITERE"), reglement, numreglment));
 				}
 				rs.close();
 				reglement.setListCriteria(criteria);
@@ -178,7 +177,7 @@ public class ReglementFactory {
 				while(rs.next()) {
 					int numdb = rs.getInt("NUMDISTANCESBLASONS");
 					
-					listDistancesEtBlason.add(DistancesEtBlasonFactory.getDistancesEtBlason(numdb, reglement));
+					listDistancesEtBlason.add(DistancesEtBlasonFactory.getDistancesEtBlason(numdb, reglement, numreglment));
 				}
 				rs.close();
 				reglement.setListDistancesEtBlason(listDistancesEtBlason);

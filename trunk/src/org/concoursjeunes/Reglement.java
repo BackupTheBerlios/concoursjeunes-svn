@@ -122,9 +122,6 @@ import ajinteractive.standard.utilities.sql.SqlParser;
  *
  */
 public class Reglement {
-	
-	private int idReglement			= 0;
-	
 	private String name				= "default";
 	
 	private int nbSerie             = 2;
@@ -411,26 +408,6 @@ public class Reglement {
 	}
 
 	/**
-	 * Représente l'identifiant unique du réglement cet identifiant est utilisé
-	 * exclusivement pour la procédure de sérialisation/deserialisation de l'objet
-	 * 
-	 * @return l'identifiant du réglement
-	 */
-	public int getIdReglement() {
-		return idReglement;
-	}
-
-	/**
-	 * Définit l'identifiant unique du réglement cet identifiant est utilisé
-	 * exclusivement pour la procédure de sérialisation/deserialisation de l'objet
-	 * 
-	 * @param idReglement l'identifiant à affecter au réglement
-	 */
-	public void setIdReglement(int idReglement) {
-		this.idReglement = idReglement;
-	}
-
-	/**
 	 * Détermine si un tableau de score donnée est ou non valide su le réglement
 	 * 
 	 * @param scores le tableau de score à validé
@@ -456,27 +433,13 @@ public class Reglement {
 		try {
 			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 			
-			//si l'objet possede un identifiant différent de 0 c'est qu'il posséde déjà son image
-			//dans la base. Dans ce cas mettre son entrée à jour
-			if(idReglement != 0) {
-				stmt.executeUpdate("update Reglement set NOMREGLEMENT='" + name + "',"
-						+ "NBSERIE=" + nbSerie + ",NBVOLEEPARSERIE=" + nbVoleeParSerie + ","
-						+ "NBFLECHEPARVOLEE=" + nbFlecheParVolee + ", NBMEMBRESEQUIPE=" + nbMembresEquipe + ","
-						+ "NBMEMBRESRETENU=" + nbMembresRetenu + ", ISOFFICIAL=" + ((officialReglement)?"TRUE":"FALSE")
-						+ " WHERE NUMREGLEMENT=" + idReglement);
-			//dans le cas contraire il faut créer son entrée dans la base
-			} else {
-				stmt.executeUpdate("insert into Reglement (NOMREGLEMENT, NBSERIE, NBVOLEEPARSERIE," +
-						"NBFLECHEPARVOLEE, NBMEMBRESEQUIPE, NBMEMBRESRETENU, ISOFFICIAL) " +
-						"VALUES ('" + name + "'," + nbSerie + "," + nbVoleeParSerie + "," +
-						nbFlecheParVolee + "," + nbMembresEquipe + "," +
-						nbMembresRetenu + "," + ((officialReglement)?"TRUE":"FALSE") + ")", Statement.RETURN_GENERATED_KEYS);
-				//on récupere l'identifiant de réglement généré et l'affecte à l'objet
-				ResultSet clefs = stmt.getGeneratedKeys();
-				if(clefs.first()){
-				    idReglement = (Integer)clefs.getObject(1);  
-				}
-			}
+
+			stmt.executeUpdate("merge into Reglement (NUMREGLEMENT, NOMREGLEMENT, NBSERIE, NBVOLEEPARSERIE," +
+					"NBFLECHEPARVOLEE, NBMEMBRESEQUIPE, NBMEMBRESRETENU, ISOFFICIAL) " +
+					"VALUES (" + hashCode() + ", '" + name + "'," + nbSerie + "," + nbVoleeParSerie + "," +
+					nbFlecheParVolee + "," + nbMembresEquipe + "," +
+					nbMembresRetenu + "," + ((officialReglement)?"TRUE":"FALSE") + ")");
+
 			
 			//sauvegarde les tableaux de crières et correspondance
 			saveCriteria();
@@ -511,7 +474,7 @@ public class Reglement {
 			try {
 				Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 				
-				stmt.executeUpdate("delete from REGLEMENT where NUMREGLEMENT=" + idReglement);
+				stmt.executeUpdate("delete from REGLEMENT where NUMREGLEMENT=" + hashCode());
 				
 				success = true;
 			} catch (SQLException e) {
@@ -570,5 +533,17 @@ public class Reglement {
 		}
 		
 		return availableReglements.toArray(new String[availableReglements.size()]);
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int PRIME = 31;
+		int result = 1;
+		result = PRIME * result + ((name == null) ? 0 : name.hashCode());
+		
+		return result;
 	}
 }
