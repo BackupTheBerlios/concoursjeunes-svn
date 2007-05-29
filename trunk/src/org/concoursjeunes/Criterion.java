@@ -20,18 +20,22 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import ajinteractive.standard.utilities.persistance.Entity;
+import ajinteractive.standard.utilities.persistance.Field;
+
 /**
  * Caractéristique d'un critère de distinction
  * 
  * @author Aurélien JEOFFRAY
  */
+@Entity("CRITERE")
 public class Criterion {
     public static final int SORT_ASC = 1;
     public static final int SORT_DESC = -1;
     
-    private int sortOrder = 1;
+    @Field("SORTORDERCRITERE") private int sortOrder = 1;
     
-    private String code = ""; //$NON-NLS-1$
+    @Field("CODECRITERE") private String code = ""; //$NON-NLS-1$
     private String libelle = ""; //$NON-NLS-1$
     private boolean classement = false;
     private boolean placement = false;

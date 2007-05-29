@@ -90,12 +90,17 @@ package org.concoursjeunes;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
+import ajinteractive.standard.utilities.persistance.Entity;
+import ajinteractive.standard.utilities.persistance.Field;
+import ajinteractive.standard.utilities.persistance.Id;
+import ajinteractive.standard.utilities.persistance.ManyToOne;
 import ajinteractive.standard.utilities.sql.SqlParser;
 
 /**
@@ -121,20 +126,21 @@ import ajinteractive.standard.utilities.sql.SqlParser;
  * @author Aurélien JEOFFRAY
  *
  */
+@Entity("REGLEMENT")
 public class Reglement {
-	private String name				= "default";
-	
-	private int nbSerie             = 2;
-	private int nbVoleeParSerie     = 6;
-	private int nbFlecheParVolee    = 3;
-	private int nbMembresEquipe     = 4;
-	private int nbMembresRetenu     = 3;
 
-	private ArrayList<Criterion> listCriteria = new ArrayList<Criterion>();
-	//private Hashtable<CriteriaSet, DistancesEtBlason> correspondanceCriteriaSet_DB = new Hashtable<CriteriaSet, DistancesEtBlason>();
-	private ArrayList<DistancesEtBlason> listDistancesEtBlason = new ArrayList<DistancesEtBlason>();
+	@Field("NOMREGLEMENT") private String name				= "default";
 	
-	private boolean officialReglement = false;
+	@Field("NBSERIE") private int nbSerie             = 2;
+	@Field("NBVOLEEPARSERIE") private int nbVoleeParSerie     = 6;
+	@Field("NBFLECHEPARVOLEE") private int nbFlecheParVolee    = 3;
+	@Field("NBMEMBRESEQUIPE") private int nbMembresEquipe     = 4;
+	@Field("NBMEMBRESRETENU") private int nbMembresRetenu     = 3;
+
+	@ManyToOne("CRITERE") private ArrayList<Criterion> listCriteria = new ArrayList<Criterion>();
+	@ManyToOne("DISTANCESBLASONS") private ArrayList<DistancesEtBlason> listDistancesEtBlason = new ArrayList<DistancesEtBlason>();
+	
+	@Field("ISOFFICIAL") private boolean officialReglement = false;
 	
 	/**
 	 * Constructeur java-beans. Initialise un réglement par défaut
@@ -167,62 +173,6 @@ public class Reglement {
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	/**
-	 * <p>
-	 * Retourne la table de correspondance entre un jeux de critères detreminant dans
-	 * le placement (CriteriaSet) et le Placement associé.
-	 * </p>
-	 * <p>
-	 * Un jeux de critères determinant pour le placement contient la liste des critères
-	 * qualifiant l'archer qui, ensemble, détermine un placement particulier sur le pas
-	 * de tir.
-	 * </p>
-	 * 
-	 * @return la table de correspondance de placement
-	 */
-	/*public Hashtable<CriteriaSet, DistancesEtBlason> getCorrespondanceCriteriaSet_DB() {
-		return correspondanceCriteriaSet_DB;
-	}*/
-	
-	/**
-	 * Retourne le Placement associé à un jeux de critères de placement donné
-	 * 
-	 * @param criteriaSet le jeux de critères de placement.
-	 * @return l'objet DistancesEtBlason correspondant au criteres en parametre
-	 */
-	/*public DistancesEtBlason getCorrespondanceCriteriaSet_DB(CriteriaSet criteriaSet) {
-		for(CriteriaSet criteriaSet2 : correspondanceCriteriaSet_DB.keySet()) {
-			if(criteriaSet.equals(criteriaSet2))
-				return correspondanceCriteriaSet_DB.get(criteriaSet2);
-		}
-		return null;
-	}*/
-
-	/**
-	 * Définit la table de correspondance critères de placement <-> placement
-	 * <br>
-	 * <i>Methode essentielement utile à la déserialisation. Ne devrait pas
-	 * être utilisé directement.</i>
-	 * 
-	 * @param correspondanceCriteriaSet_DB la table de correspondance
-	 */
-	/*public void setCorrespondanceCriteriaSet_DB(
-			Hashtable<CriteriaSet, DistancesEtBlason> correspondanceDifferentiationCriteria_DB) {
-		this.correspondanceCriteriaSet_DB = correspondanceDifferentiationCriteria_DB;
-	}*/
-	
-	/**
-	 * Ajoute une entrée à la table de correspondance de placement.<br>
-	 * Le jeux de critères ne doit posseder que les critères définit par
-	 * la methode <i>getListCriteria()</i> du réglement.
-	 * 
-	 * @param criteriaSet le jeux de critères de placement
-	 * @param distancesEtBlason le placement associé
-	 */
-	/*public void putCorrespondanceCriteriaSet_DB(CriteriaSet criteriaSet, DistancesEtBlason distancesEtBlason) {
-		this.correspondanceCriteriaSet_DB.put(criteriaSet, distancesEtBlason);
-	}*/
 
 	/**
 	 * <p>
@@ -431,16 +381,21 @@ public class Reglement {
 	 */
 	public void save() {
 		try {
-			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
-			
-
-			stmt.executeUpdate("merge into Reglement (NUMREGLEMENT, NOMREGLEMENT, NBSERIE, NBVOLEEPARSERIE," +
+			String sql = "merge into REGLEMENT (NUMREGLEMENT, NOMREGLEMENT, NBSERIE, NBVOLEEPARSERIE," +
 					"NBFLECHEPARVOLEE, NBMEMBRESEQUIPE, NBMEMBRESRETENU, ISOFFICIAL) " +
-					"VALUES (" + hashCode() + ", '" + name + "'," + nbSerie + "," + nbVoleeParSerie + "," +
-					nbFlecheParVolee + "," + nbMembresEquipe + "," +
-					nbMembresRetenu + "," + ((officialReglement)?"TRUE":"FALSE") + ")");
-
+					"VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 			
+			//Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+			PreparedStatement pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
+			pstmt.setInt(1, hashCode());
+			pstmt.setString(2, name);
+			pstmt.setInt(3, nbSerie);
+			pstmt.setInt(4, nbVoleeParSerie);
+			pstmt.setInt(5, nbFlecheParVolee);
+			pstmt.setInt(6, nbMembresEquipe);
+			pstmt.setInt(7, nbMembresRetenu);
+			pstmt.setBoolean(8, officialReglement);
+
 			//sauvegarde les tableaux de crières et correspondance
 			saveCriteria();
 			saveDistancesAndBlasons();
@@ -539,10 +494,11 @@ public class Reglement {
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
+	@Id("NUMREGLEMENT")
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
-		result = PRIME * result + ((name == null) ? 0 : name.hashCode());
+		result = PRIME * result + name.hashCode();
 		
 		return result;
 	}
