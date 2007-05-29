@@ -395,6 +395,8 @@ public class Reglement {
 			pstmt.setInt(6, nbMembresEquipe);
 			pstmt.setInt(7, nbMembresRetenu);
 			pstmt.setBoolean(8, officialReglement);
+			
+			pstmt.executeUpdate();
 
 			//sauvegarde les tableaux de crières et correspondance
 			saveCriteria();

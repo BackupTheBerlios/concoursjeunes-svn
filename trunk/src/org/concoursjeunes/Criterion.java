@@ -22,6 +22,7 @@ import java.util.ArrayList;
 
 import ajinteractive.standard.utilities.persistance.Entity;
 import ajinteractive.standard.utilities.persistance.Field;
+import ajinteractive.standard.utilities.persistance.Id;
 
 /**
  * Caractéristique d'un critère de distinction
@@ -35,11 +36,11 @@ public class Criterion {
     
     @Field("SORTORDERCRITERE") private int sortOrder = 1;
     
-    @Field("CODECRITERE") private String code = ""; //$NON-NLS-1$
-    private String libelle = ""; //$NON-NLS-1$
-    private boolean classement = false;
-    private boolean placement = false;
-    private String codeffta = ""; //$NON-NLS-1$
+    @Id("CODECRITERE") private String code = ""; //$NON-NLS-1$
+    @Field("LIBELLERITERE") private String libelle = ""; //$NON-NLS-1$
+    @Field("CLASSEMENT") private boolean classement = false;
+    @Field("PLACEMENT") private boolean placement = false;
+    @Field("CODEFFTA") private String codeffta = ""; //$NON-NLS-1$
     
     private ArrayList<CriterionElement> criterionElements = new ArrayList<CriterionElement>();
     
