@@ -59,6 +59,9 @@
 						</param>
 					</param>
 				</method>
+				<method name="setTabLayoutPolicy">
+					<param paramclass="int" value="1" />
+				</method>
 				<tab closebutton="false">
 					<label>onglet.accueil</label>
 					<content class="javax.swing.JEditorPane" name="jepHome">

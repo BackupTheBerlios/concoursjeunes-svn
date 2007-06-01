@@ -1,18 +1,39 @@
 package org.concoursjeunes.ui;
 
-import java.io.*;
-import java.util.*;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Hashtable;
 
-import java.awt.*;
-import java.awt.event.*;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JEditorPane;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
+import javax.swing.text.DefaultCaret;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.text.*;
-import javax.swing.text.html.*;
-
-import org.concoursjeunes.*;
-import org.concoursjeunes.dialog.*;
+import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.Concurrent;
+import org.concoursjeunes.Criterion;
+import org.concoursjeunes.FicheConcours;
+import org.concoursjeunes.dialog.ConcurrentDialog;
+import org.concoursjeunes.dialog.ParametreDialog;
+import org.concoursjeunes.dialog.ResultatDialog;
 
 /**
  * fiche concours. cette fiche correspond à la table d'inscrit et de résultats
@@ -155,6 +176,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 
 		//panneau global
 		tabbedpane.addChangeListener(this);
+		tabbedpane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		tabbedpane.addTab("onglet.gestionarcher", null, fichesDepart); //$NON-NLS-1$
 		tabbedpane.setTabComponentAt(0, getGestArchersTabComponent());
 		tabbedpane.addTab("onglet.classementindividuel", //$NON-NLS-1$
