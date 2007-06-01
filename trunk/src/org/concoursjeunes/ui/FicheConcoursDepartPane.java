@@ -3,7 +3,13 @@
  */
 package org.concoursjeunes.ui;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.Graphics;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -38,10 +44,10 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
-import org.concoursjeunes.ConcurrentList;
 import org.concoursjeunes.Cible;
 import org.concoursjeunes.ConcoursJeunes;
 import org.concoursjeunes.Concurrent;
+import org.concoursjeunes.ConcurrentList;
 import org.concoursjeunes.Equipe;
 import org.concoursjeunes.FicheConcours;
 import org.concoursjeunes.FicheConcoursEvent;
@@ -255,7 +261,6 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 		treeTarget.addMouseMotionListener(this);
 		treeTarget.addKeyListener(this);
 		treeTarget.addTreeSelectionListener(this);
-		//treeTarget.addOut(this);
 		treeTarget.setCellRenderer(new CibleRenderer(
 				new ImageIcon(
 						ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
@@ -515,6 +520,8 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 				ficheConcours.printArcherList(FicheConcours.ALPHA);
 			else if(returnType == TypeListingDialog.GREFFE)
 				ficheConcours.printArcherList(FicheConcours.GREFFE);
+			else if(returnType == TypeListingDialog.TARGET)
+				ficheConcours.printArcherList(FicheConcours.TARGET);
 		} else if(source == jbPrintEtiquettes) {
 			ficheConcours.printEtiquettes();
 		} else if(source == jbPrintPasDeTir) {

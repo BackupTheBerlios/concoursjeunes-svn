@@ -4,21 +4,51 @@
  */
 package org.concoursjeunes.dialog;
 
-import java.util.*;
-import java.io.*;
-import java.lang.reflect.*;
+import java.awt.BorderLayout;
+import java.awt.Desktop;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Locale;
 
-import java.awt.*;
-import java.awt.event.*;
-
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
-import org.concoursjeunes.*;
+import org.concoursjeunes.AutoCompleteDocument;
+import org.concoursjeunes.AutoCompleteDocumentEvent;
+import org.concoursjeunes.AutoCompleteDocumentListener;
+import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.Configuration;
+import org.concoursjeunes.ConfigurationFactory;
+import org.concoursjeunes.Entite;
+import org.concoursjeunes.Marges;
+import org.concoursjeunes.Reglement;
 
-import com.lowagie.text.*;
+import ajinteractive.standard.java2.AJFileFilter;
+import ajinteractive.standard.java2.AJToolKit;
+import ajinteractive.standard.java2.GridbagComposer;
+import ajinteractive.standard.java2.NumberDocument;
 
-import ajinteractive.standard.java2.*;
+import com.lowagie.text.PageSize;
 
 /**
  * Ecran de configuration de ConcoursJeunes
@@ -373,7 +403,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 			tabbedpane.setTitleAt(0, ConcoursJeunes.ajrLibelle.getResourceString("configuration.onglet.genral")); //$NON-NLS-1$
 			tabbedpane.setTitleAt(1, ConcoursJeunes.ajrLibelle.getResourceString("configuration.onglet.concours")); //$NON-NLS-1$
 			tabbedpane.setTitleAt(2, ConcoursJeunes.ajrLibelle.getResourceString("configuration.onglet.etiquettes")); //$NON-NLS-1$
-			tabbedpane.setTitleAt(3, ConcoursJeunes.ajrLibelle.getResourceString("configuration.onglet.interface")); //$NON-NLS-1$
+			tabbedpane.setTitleAt(3, ConcoursJeunes.ajrLibelle.getResourceString("configuration.onglet.avance")); //$NON-NLS-1$
 		}
 
 		affectLibelleGeneral();

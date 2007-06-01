@@ -15,6 +15,8 @@
  */
 package org.concoursjeunes;
 
+import static org.concoursjeunes.ConcoursJeunes.ajrParametreAppli;
+
 import java.io.File;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -26,12 +28,11 @@ import javax.swing.event.EventListenerList;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import ajinteractive.standard.java2.AJTemplate;
+import ajinteractive.standard.java2.AJToolKit;
+
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
-
-import ajinteractive.standard.java2.*;
-
-import static org.concoursjeunes.ConcoursJeunes.ajrParametreAppli;
 
 /**
  * Represente la fiche concours, regroupe l'ensemble des informations commune à un concours donné
@@ -43,6 +44,7 @@ public class FicheConcours implements ParametreListener {
 
 	public static final int ALPHA		= 0;    //par ordre alphabetique
 	public static final int GREFFE		= 1;    //pour le greffe
+	public static final int TARGET		= 3;    //par ordre sur le pas de tir
 
 	public static final int OUT_XML		= 0;    //Sortie XML
 	public static final int OUT_HTML	= 1;    //Sortie HTML
@@ -665,7 +667,7 @@ public class FicheConcours implements ParametreListener {
 		AJTemplate listeArcherXML;
 		String strArcherListeXML = ""; //$NON-NLS-1$
 
-		if(mode == ALPHA)
+		if(mode == ALPHA || mode == TARGET)
 			listeArcherXML = templateListeArcherXML;
 		else
 			listeArcherXML = templateListeGreffeXML;
@@ -676,8 +678,14 @@ public class FicheConcours implements ParametreListener {
 		listeArcherXML.parse("CURRENT_TIME", DateFormat.getDateInstance(DateFormat.FULL).format(new Date())); //$NON-NLS-1$
 
 		listeArcherXML.parse("LISTE", strArcherListeXML); //$NON-NLS-1$
+		
+		Concurrent[] concurrents = null;
+		if(mode == ALPHA || mode == GREFFE)
+			concurrents = ConcurrentList.sort(concurrentList.list(depart), ConcurrentList.SORT_BY_NAME);
+		else
+			concurrents = ConcurrentList.sort(concurrentList.list(depart), ConcurrentList.SORT_BY_CIBLES);
 
-		for(Concurrent concurrent : ConcurrentList.sort(concurrentList.list(depart), ConcurrentList.SORT_BY_NAME)) {
+		for(Concurrent concurrent : concurrents) {
 			listeArcherXML.parse("lignes.IDENTITEE", concurrent.getID()); //$NON-NLS-1$
 			listeArcherXML.parse("lignes.CLUB", concurrent.getClub().getNom()); //$NON-NLS-1$
 			listeArcherXML.parse("lignes.NUM_LICENCE", concurrent.getNumLicenceArcher()); //$NON-NLS-1$

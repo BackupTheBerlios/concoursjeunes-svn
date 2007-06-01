@@ -309,7 +309,8 @@ public class Cible {
 		}
 		if(!valid && getNbArcher() > 1)
 			strCibleLibelle += "<br><font color=\"#FF8800\">Attention tous les archers de cette cible sont du même club!</font>";
-		
+		else if(getNbArcher() == 1)
+			strCibleLibelle += "<br><font color=\"#FF8800\">Attention l'archer est seul sur la cible, présence d'un arbitre indispensable!</font>";
 		strCibleLibelle += "</html>";
 		
 		return strCibleLibelle;
