@@ -1,16 +1,20 @@
 package org.concoursjeunes.plugins.FFTAImport;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Hashtable;
 
-import javax.swing.*;
+import javax.swing.JDialog;
 import javax.swing.event.EventListenerList;
 
 import org.concoursjeunes.ConcoursJeunes;
 import org.jdesktop.swingx.JXErrorDialog;
 
-import ajinteractive.standard.java2.*;
+import ajinteractive.standard.java2.AjResourcesReader;
 import ajinteractive.standard.utilities.sql.SqlParser;
 /**
  * Plugin d'import d'une base WinFFTA 2 (Format Windev HF)
@@ -88,7 +92,7 @@ public class FFTAImportThread extends Thread {
         		fireProgressionInfo("Exportation de Result'Arc...");
 				Process proc = Runtime.getRuntime().exec(System.getProperty("user.dir") //$NON-NLS-1$
 				        + File.separator
-				        + pluginRessources.getResourceString("winffta.export.cmd", fftalogpath)); //$NON-NLS-1$
+				        + pluginRessources.getResourceString("winffta.export.cmd", fftalogpath, System.getProperty("java.io.tmpdir"))); //$NON-NLS-1$
 				proc.waitFor();
         	}
 
@@ -122,8 +126,12 @@ public class FFTAImportThread extends Thread {
         	
 			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 			
+			Hashtable<String, String> ht = new Hashtable<String, String>();
+			
+			ht.put("temp", System.getProperty("java.io.tmpdir"));
+			
 			SqlParser.createBatch(
-					new File(pluginRessources.getResourceString("sql.importffta")), stmt);
+					new File(pluginRessources.getResourceString("sql.importffta")), stmt, ht);
 			
 			fireProgressionInfo("Integration à la base...");
 			stmt.executeBatch();

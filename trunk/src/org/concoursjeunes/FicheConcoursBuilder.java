@@ -1,5 +1,5 @@
 /*
- * Créé le 17/03/2007 à 11:10 pour ConcoursJeunes
+ * Créer le 4 mai 07 à 18:38:27 pour ConcoursJeunes
  *
  * Copyright 2002-2007 - Aurélien JEOFFRAY
  *
@@ -86,108 +86,33 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
 package org.concoursjeunes;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
+import java.io.File;
+
+import ajinteractive.standard.java2.AJToolKit;
 
 /**
- * <p>
- * Les réglements son stoqué dans la base de donnée. La présente fabrique
- * permet soit de créer un nouveau réglement, soit d'extraire un réglement
- * de la base en se basant sur son nom.
- * </p>
- * 
  * @author Aurélien JEOFFRAY
- * @version 1.0
  *
  */
-public class ReglementFactory {
-	/**
-	 * Crée un nouveau reglement de concours
-	 * 
-	 * @return le reglement créer
-	 */
-	public static Reglement createReglement() {
-		return new Reglement();
-	}
-	
-	/**
-	 * <p>
-	 * Retourne le reglement qualifié par son nom en recherchant l'entrée
-	 * dans la base de donnée. Si aucun réglement, celui ci est initialisé par défaut
-	 * (équivalent à createReglement()).
-	 * </p>
-	 * <p>
-	 * Pour fonctionner correctement, "ConcoursJeunes.dbConnection" dooit auparavent être
-	 * correctement instancié.
-	 * </p>
-	 * 
-	 * @param reglementName - le nom du reglement à retourner
-	 * @return - le reglement retourné
-	 */
-	public static Reglement getReglement(String reglementName) {
-		return getReglement(-1, reglementName);
-	}
-	
-	public static Reglement getReglement(int numreglement) {
-		return getReglement(numreglement, null);
-	}
-	
-	private static Reglement getReglement(int numreglement, String reglementName) {
-
-		Reglement reglement = new Reglement();
+public class FicheConcoursBuilder {
+	public static FicheConcours getFicheConcours(MetaDataFicheConcours metaDataFicheConcours) {
+		File fFiche = new File(ConcoursJeunes.userRessources.getConcoursPathForProfile(
+				ConcoursJeunes.configuration.getCurProfil()) + File.separator + 
+				metaDataFicheConcours.getFilenameConcours());
+		Object[] savedStructure = (Object[])AJToolKit.loadXMLStructure(fFiche, true);
 		
-		try {
-			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
-			
-			String sql = "";
-			if(numreglement > -1)
-				sql = "select * from REGLEMENT where NUMREGLEMENT=" + numreglement;
-			else
-				sql = "select * from REGLEMENT where NOMREGLEMENT='" + reglementName + "'";
-			
-			ResultSet rs = stmt.executeQuery(sql);
-			if(rs.first()) {
-				int numreglment = rs.getInt("NUMREGLEMENT");
-				
-				reglement.setName(rs.getString("NOMREGLEMENT"));
-				reglement.setNbSerie(rs.getInt("NBSERIE"));
-				reglement.setNbVoleeParSerie(rs.getInt("NBVOLEEPARSERIE"));
-				reglement.setNbFlecheParVolee(rs.getInt("NBFLECHEPARVOLEE"));
-				reglement.setNbMembresEquipe(rs.getInt("NBMEMBRESEQUIPE"));
-				reglement.setNbMembresRetenu(rs.getInt("NBMEMBRESRETENU"));
-				reglement.setOfficialReglement(rs.getBoolean("ISOFFICIAL"));
-				
-				rs.close();
-				
-				ArrayList<Criterion> criteria = new ArrayList<Criterion>();
-				rs = stmt.executeQuery("select CODECRITERE from CRITERE where NUMREGLEMENT=" + numreglment);
-				while(rs.next()) {
-					criteria.add(CriterionFactory.getCriterion(rs.getString("CODECRITERE"), reglement, numreglment));
-				}
-				rs.close();
-				reglement.setListCriteria(criteria);
-				
-				ArrayList<DistancesEtBlason> listDistancesEtBlason = new ArrayList<DistancesEtBlason>();
-				rs = stmt.executeQuery("select * from DISTANCESBLASONS where NUMREGLEMENT=" + numreglment);
-				while(rs.next()) {
-					int numdb = rs.getInt("NUMDISTANCESBLASONS");
-					
-					listDistancesEtBlason.add(DistancesEtBlasonFactory.getDistancesEtBlason(numdb, reglement, numreglment));
-				}
-				rs.close();
-				reglement.setListDistancesEtBlason(listDistancesEtBlason);
-			}
-			
-			stmt.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		if(savedStructure != null) {
+			//lecture du fichier
+			FicheConcours ficheConcours = new FicheConcours();
+			ficheConcours.setFiche(savedStructure, metaDataFicheConcours);
+
+			System.out.println("Fin chargement du concours " + metaDataFicheConcours.getIntituleConcours());
+			return ficheConcours;
 		}
 		
-		return reglement;
+		System.err.println("Echec de chargement du concours " + metaDataFicheConcours.getIntituleConcours());
+		return null;
 	}
 }

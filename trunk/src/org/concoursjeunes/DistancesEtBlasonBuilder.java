@@ -1,5 +1,5 @@
 /*
- * Créer le 22 mai 07 à 15:14:26 pour ConcoursJeunes
+ * Créer le 22 mai 07 à 15:43:45 pour ConcoursJeunes
  *
  * Copyright 2002-2007 - Aurélien JEOFFRAY
  *
@@ -88,36 +88,81 @@
  */
 package org.concoursjeunes;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.ArrayList;
 
 /**
  * @author Aurélien JEOFFRAY
  *
  */
-public class CriterionElementFactory {
-	public static CriterionElement getCriterionElement(String codeElement, Criterion criterion, int hashReglement) {
+public class DistancesEtBlasonBuilder {
+	public static DistancesEtBlason getDistancesEtBlason(int numdistancesblason, Reglement reglement, int hashReglement) {
+		PreparedStatement pstmt = null;
+		DistancesEtBlason distancesEtBlason = null;
+		
 		try {
-			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+			String sql = "select * from DISTANCESBLASONS where " +
+					"NUMDISTANCESBLASONS=? and NUMREGLEMENT=?";
 			
-			String sql = "select * from CRITEREELEMENT where CODECRITEREELEMENT='" +
-					codeElement + "' and CODECRITERE='" +
-					criterion.getCode() + "' and NUMREGLEMENT=" + hashReglement;
-	
-			ResultSet rs = stmt.executeQuery(sql);
+			pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
+			
+			pstmt.setInt(1, numdistancesblason);
+			pstmt.setInt(2, hashReglement);
+			
+			ResultSet rs = pstmt.executeQuery();
+			
 			if(rs.first()) {
-				CriterionElement criterionElement = new CriterionElement();
-				criterionElement.setCode(codeElement);
-				criterionElement.setLibelle(rs.getString("LIBELLECRITEREELEMENT"));
-				criterionElement.setActive(rs.getBoolean("ACTIF"));
-				criterionElement.setCriterionParent(criterion);
+				distancesEtBlason = new DistancesEtBlason();
+				distancesEtBlason.setNumdistancesblason(numdistancesblason);
+				distancesEtBlason.setReglement(reglement);
+				distancesEtBlason.setBlason(rs.getInt("BLASONS"));
 				
-				return criterionElement;
+				pstmt.close();
+				
+				sql = "select * from associer where " +
+						"NUMDISTANCESBLASONS=? and NUMREGLEMENT=?";
+				pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
+				
+				pstmt.setInt(1, numdistancesblason);
+				pstmt.setInt(2, hashReglement);
+				
+				rs = pstmt.executeQuery();
+				
+				if(rs.first()) {
+					distancesEtBlason.setCriteriaSet(CriteriaSetBuilder.getCriteriaSet(rs.getInt("NUMCRITERIASET"), reglement, hashReglement));
+				} else {
+					return null;
+				}
+				
+				pstmt.close();
+				
+				sql = "select * from distances where " +
+						"NUMDISTANCESBLASONS=? and NUMREGLEMENT=?";
+				pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
+				
+				pstmt.setInt(1, numdistancesblason);
+				pstmt.setInt(2, hashReglement);
+				
+				rs = pstmt.executeQuery();
+				ArrayList<Integer> distances = new ArrayList<Integer>();
+				while(rs.next()) {
+					distances.add(rs.getInt("DISTANCE"));
+				}
+				int[] iDist = new int[distances.size()];
+				for(int i = 0; i < iDist.length; i++)
+					iDist[i] = distances.get(i);
+				distancesEtBlason.setDistance(iDist);
+				
+				pstmt.close();
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			try { if(pstmt != null && !pstmt.isClosed()) pstmt.close(); } catch (SQLException e) { }
 		}
-		return null;
+		
+		return distancesEtBlason;
 	}
 }

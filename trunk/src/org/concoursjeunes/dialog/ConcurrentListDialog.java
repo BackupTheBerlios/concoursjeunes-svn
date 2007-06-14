@@ -353,7 +353,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 				//	softRows.add(softConcurrent);
 				//}
 				/*while(archersRS.next()) {
-					Concurrent concurrent = ConcurrentFactory.getConcurrent(archersRS, reglement);
+					Concurrent concurrent = ConcurrentBuilder.getConcurrent(archersRS, reglement);
 					SoftReference<Concurrent> softConcurrent = new SoftReference<Concurrent>(concurrent);
 					softRows.add(softConcurrent);
 				}*/
@@ -488,11 +488,11 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 				//then its been read but its been GC'd
 			//	try {
 			//		archersRS.absolute(rowIndex + 1);
-			//		concurrent = ConcurrentFactory.getConcurrent(archersRS, reglement);
+			//		concurrent = ConcurrentBuilder.getConcurrent(archersRS, reglement);
 			//		softRows.set(rowIndex, new SoftReference<Concurrent>(concurrent));
 					//System.out.println("regen:" + concurrent);
 			//	} catch (SQLException e) {
-			//		concurrent = ConcurrentFactory.getConcurrent(reglement);
+			//		concurrent = ConcurrentBuilder.getConcurrent(reglement);
 			//		e.printStackTrace();
 			//	}
 			//} else {

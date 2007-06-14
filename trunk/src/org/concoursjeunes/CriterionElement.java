@@ -183,7 +183,7 @@ public class CriterionElement {
 			ResultSet rs = stmt.executeQuery(sql);
 			
 			while(rs.next()) {
-				elements.add(CriterionElementFactory.getCriterionElement(rs.getString("CODECRITEREELEMENT"), criterion, hashReglement));
+				elements.add(CriterionElementBuilder.getCriterionElement(rs.getString("CODECRITEREELEMENT"), criterion, hashReglement));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

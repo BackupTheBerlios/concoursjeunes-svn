@@ -1,19 +1,53 @@
 package org.concoursjeunes.dialog;
 
-import java.util.*;
-
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Hashtable;
 
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.PlainDocument;
 
-import org.concoursjeunes.*;
+import org.concoursjeunes.Archer;
+import org.concoursjeunes.AutoCompleteDocument;
+import org.concoursjeunes.AutoCompleteDocumentEvent;
+import org.concoursjeunes.AutoCompleteDocumentListener;
+import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.Concurrent;
+import org.concoursjeunes.CriteriaSet;
+import org.concoursjeunes.CriteriaSetLibelle;
+import org.concoursjeunes.Criterion;
+import org.concoursjeunes.CriterionElement;
+import org.concoursjeunes.DistancesEtBlason;
+import org.concoursjeunes.Entite;
+import org.concoursjeunes.FicheConcours;
+import org.concoursjeunes.OccupationCibles;
 import org.concoursjeunes.ui.ConcoursJeunesFrame;
 
-import ajinteractive.standard.java2.*;
+import ajinteractive.standard.java2.AJToolKit;
+import ajinteractive.standard.java2.GridbagComposer;
+import ajinteractive.standard.java2.NumberDocument;
 
 /**
  * Boite de dialogue de gestion d'un concurrent
@@ -403,15 +437,15 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		
 		Concurrent concurrent = new Concurrent();
 		
-		AutoCompleteDocument acdNom = new AutoCompleteDocument(jtfNom, AutoCompleteDocument.NAME_SEARCH, ficheConcours.getParametre().getReglement());
+		AutoCompleteDocument acdNom = new AutoCompleteDocument(jtfNom, AutoCompleteDocument.SearchType.NAME_SEARCH, ficheConcours.getParametre().getReglement());
 		acdNom.addAutoCompleteDocumentListener(this);
-		AutoCompleteDocument acdPrenom = new AutoCompleteDocument(jtfPrenom, AutoCompleteDocument.FIRSTNAME_SEARCH, ficheConcours.getParametre().getReglement());
+		AutoCompleteDocument acdPrenom = new AutoCompleteDocument(jtfPrenom, AutoCompleteDocument.SearchType.FIRSTNAME_SEARCH, ficheConcours.getParametre().getReglement());
 		acdPrenom.addAutoCompleteDocumentListener(this);
-		AutoCompleteDocument acdLicence = new AutoCompleteDocument(jtfLicence, AutoCompleteDocument.NUMLICENCE_SEARCH, ficheConcours.getParametre().getReglement());
+		AutoCompleteDocument acdLicence = new AutoCompleteDocument(jtfLicence, AutoCompleteDocument.SearchType.NUMLICENCE_SEARCH, ficheConcours.getParametre().getReglement());
 		acdLicence.addAutoCompleteDocumentListener(this);
-		AutoCompleteDocument acdClub = new AutoCompleteDocument(jtfClub, AutoCompleteDocument.CLUB_SEARCH, ficheConcours.getParametre().getReglement());
+		AutoCompleteDocument acdClub = new AutoCompleteDocument(jtfClub, AutoCompleteDocument.SearchType.CLUB_SEARCH, ficheConcours.getParametre().getReglement());
 		acdClub.addAutoCompleteDocumentListener(this);
-		AutoCompleteDocument acdAgrement = new AutoCompleteDocument(jtfAgrement, AutoCompleteDocument.AGREMENT_SEARCH, ficheConcours.getParametre().getReglement());
+		AutoCompleteDocument acdAgrement = new AutoCompleteDocument(jtfAgrement, AutoCompleteDocument.SearchType.AGREMENT_SEARCH, ficheConcours.getParametre().getReglement());
 		acdAgrement.addAutoCompleteDocumentListener(this);
 		
 		jtfNom.setDocument(acdNom);
@@ -441,9 +475,9 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		jlDescription.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.description"));
 		jlDescription.setBackground(new Color(255,255,225));
 		
-		AutoCompleteDocument acdClub = new AutoCompleteDocument(jtfClub, AutoCompleteDocument.CLUB_SEARCH, ficheConcours.getParametre().getReglement());
+		AutoCompleteDocument acdClub = new AutoCompleteDocument(jtfClub, AutoCompleteDocument.SearchType.CLUB_SEARCH, ficheConcours.getParametre().getReglement());
 		acdClub.addAutoCompleteDocumentListener(this);
-		AutoCompleteDocument acdAgrement = new AutoCompleteDocument(jtfAgrement, AutoCompleteDocument.AGREMENT_SEARCH, ficheConcours.getParametre().getReglement());
+		AutoCompleteDocument acdAgrement = new AutoCompleteDocument(jtfAgrement, AutoCompleteDocument.SearchType.AGREMENT_SEARCH, ficheConcours.getParametre().getReglement());
 		acdAgrement.addAutoCompleteDocumentListener(this);
 		
 		jtfNom.setDocument(new PlainDocument());

@@ -349,7 +349,7 @@ public class Concurrent extends Archer {
 			int iEnreg = 0;
 			while(rs.next() && (nbmaxenreg == -1 || iEnreg < nbmaxenreg)) {
 				
-				Concurrent concurrent = ConcurrentFactory.getConcurrent(rs, reglement);
+				Concurrent concurrent = ConcurrentBuilder.getConcurrent(rs, reglement);
 				if(concurrent != null) {
 					concurrents.add(concurrent);
 					iEnreg++;

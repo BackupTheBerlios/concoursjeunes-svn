@@ -26,7 +26,7 @@ import static org.concoursjeunes.ConcoursJeunes.userRessources;
  * 
  * @author Aurélien JEOFFRAY
  */
-public class ConfigurationFactory {
+public class ConfigurationBuilder {
 	
 	/**
 	 * Retourne la configuration courrante

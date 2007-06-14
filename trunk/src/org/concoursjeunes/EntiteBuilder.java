@@ -23,7 +23,7 @@ import java.sql.Statement;
  * @author Aurélien JEOFFRAY
  *
  */
-public class EntiteFactory {
+public class EntiteBuilder {
 	public static Entite getEntite(String numAgrement) {
 		Entite entite = new Entite();
 		try {

@@ -89,13 +89,18 @@
 package org.concoursjeunes;
 
 import java.awt.Desktop;
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Locale;
 
 import javax.naming.ConfigurationException;
 import javax.swing.event.EventListenerList;
@@ -103,13 +108,13 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.jdesktop.swingx.JXErrorDialog;
-import org.xml.sax.*;
+import org.xml.sax.InputSource;
 
-import com.lowagie.text.*;
-import com.lowagie.text.pdf.PdfWriter;
-
-import ajinteractive.standard.java2.*;
+import ajinteractive.standard.java2.AjResourcesReader;
 import ajinteractive.standard.utilities.sql.SqlParser;
+
+import com.lowagie.text.Document;
+import com.lowagie.text.pdf.PdfWriter;
 
 /**
  * Class principal de ConcoursJeunes, gére l'ensemble des ressources
@@ -181,7 +186,7 @@ public class ConcoursJeunes {
 	 */
 	private ConcoursJeunes() {
 		//tente de recuperer la configuration générale du programme
-		configuration = ConfigurationFactory.getCurrentConfiguration();
+		configuration = ConfigurationBuilder.getCurrentConfiguration();
 
 		reloadLibelle(new Locale(configuration.getLangue()));
 
@@ -216,10 +221,12 @@ public class ConcoursJeunes {
 			
 			ResultSet rs = stmt.executeQuery("SELECT * FROM INFORMATION_SCHEMA.TABLES where TABLE_NAME='ARCHERS'");
 			if(!rs.first()) {
+				
 				SqlParser.createBatch(
 						new File(ajrParametreAppli.getResourceString("path.ressources")
 								+ File.separator
-								+ ajrParametreAppli.getResourceString("sql.createdb")), stmt);
+								+ ajrParametreAppli.getResourceString("sql.createdb")), stmt,
+						null);
 				stmt.executeBatch();
 			}
 		} catch (SQLException e) {
@@ -338,7 +345,7 @@ public class ConcoursJeunes {
 		if(configuration == null)
 			throw new ConfigurationException("la configuration est null");
 		
-		FicheConcours ficheConcours = FicheConcoursFactory.getFicheConcours(metaDataFicheConcours);
+		FicheConcours ficheConcours = FicheConcoursBuilder.getFicheConcours(metaDataFicheConcours);
 		
 		if(ficheConcours != null) {
 			fichesConcours.add(ficheConcours);

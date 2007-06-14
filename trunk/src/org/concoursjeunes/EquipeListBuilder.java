@@ -19,7 +19,7 @@ package org.concoursjeunes;
  * @author Aurélien JEOFFRAY
  *
  */
-public class EquipeListFactory {
+public class EquipeListBuilder {
 	
 	public static EquipeList getClubEquipeList(ConcurrentList concurrentList, FicheConcours ficheConcours) {
 		EquipeList equipeList = new EquipeList(ficheConcours);

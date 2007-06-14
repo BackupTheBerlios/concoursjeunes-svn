@@ -38,7 +38,7 @@ import org.concoursjeunes.AutoCompleteDocumentEvent;
 import org.concoursjeunes.AutoCompleteDocumentListener;
 import org.concoursjeunes.ConcoursJeunes;
 import org.concoursjeunes.Configuration;
-import org.concoursjeunes.ConfigurationFactory;
+import org.concoursjeunes.ConfigurationBuilder;
 import org.concoursjeunes.Entite;
 import org.concoursjeunes.Marges;
 import org.concoursjeunes.Reglement;
@@ -190,7 +190,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 
 		jbDetail.addActionListener(this);
 		
-		AutoCompleteDocument acdAgrement = new AutoCompleteDocument(jtfAgrClub, AutoCompleteDocument.AGREMENT_SEARCH, null);
+		AutoCompleteDocument acdAgrement = new AutoCompleteDocument(jtfAgrClub, AutoCompleteDocument.SearchType.AGREMENT_SEARCH, null);
 		acdAgrement.addAutoCompleteDocumentListener(this);
 		jtfAgrClub.setDocument(acdAgrement);
 
@@ -667,7 +667,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 
 	private void loadProfile() {
 		workConfiguration.save();
-		workConfiguration = ConfigurationFactory.getConfiguration((String)jcbProfil.getSelectedItem());
+		workConfiguration = ConfigurationBuilder.getConfiguration((String)jcbProfil.getSelectedItem());
 		completePanel(workConfiguration);
 
 		workConfiguration.setCurProfil((String)jcbProfil.getSelectedItem());

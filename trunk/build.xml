@@ -26,8 +26,6 @@
 			<fileset dir="${projet.pack.dir}" includes="**/*"/>
 		</delete>
 		
-		<copy file="src/start.sh" todir="pack" />
-		
 		<!--Copie des ressources du projet-->
 		<copy todir="${projet.pack.dir}" >
 			<fileset dir="." >

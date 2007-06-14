@@ -15,7 +15,7 @@
  */
 package org.concoursjeunes;
 
-import java.util.*;
+import java.util.Hashtable;
 
 /**
  * @author Aurelien JEOFFRAY
@@ -25,11 +25,6 @@ public class CriteriaSetLibelle {
     
     private CriteriaSet criteriaSet;
     private String libelle = ""; //$NON-NLS-1$
-    
-    public CriteriaSetLibelle(CriteriaSet differentiationCriteria, String libelle) {
-        this.criteriaSet = differentiationCriteria;
-        this.libelle = libelle;
-    }
     
     public CriteriaSetLibelle(CriteriaSet criteriaSet) {
         this.criteriaSet = criteriaSet;

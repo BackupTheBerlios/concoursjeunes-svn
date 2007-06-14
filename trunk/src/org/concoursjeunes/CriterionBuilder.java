@@ -1,5 +1,5 @@
 /*
- * Créer le 22 mai 07 à 12:50:28 pour ConcoursJeunes
+ * Créer le 22 mai 07 à 14:13:58 pour ConcoursJeunes
  *
  * Copyright 2002-2007 - Aurélien JEOFFRAY
  *
@@ -88,37 +88,43 @@
  */
 package org.concoursjeunes;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Hashtable;
 
 /**
  * @author Aurélien JEOFFRAY
  *
  */
-public class CriteriaSetFactory {
-	public static CriteriaSet getCriteriaSet(int numCriteriaSet, Reglement reglement, int hashReglement) {
+public class CriterionBuilder {
+	public static Criterion getCriterion(String codeCritere, Reglement reglement, int hashReglement) {
 		try {
-			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+			String sql = "select * from critere where CODECRITERE=? and NUMREGLEMENT=?";
 			
-			ResultSet rs = stmt.executeQuery("select * from POSSEDE where NUMCRITERIASET=" + numCriteriaSet);
+			PreparedStatement pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
 			
-			Hashtable<Criterion, CriterionElement> criteria = new Hashtable<Criterion, CriterionElement>();
-			while(rs.next()) {
-				Criterion criterion = CriterionFactory.getCriterion(rs.getString("CODECRITERE"), reglement, hashReglement);
-				criteria.put(
-						criterion,
-						CriterionElementFactory.getCriterionElement(rs.getString("CODECRITEREELEMENT"), criterion, hashReglement));
+			pstmt.setString(1, codeCritere);
+			pstmt.setInt(2, hashReglement);
+			
+			ResultSet rs = pstmt.executeQuery(sql);
+			if(rs.first()) {
+				Criterion criterion = new Criterion();
+				criterion.setCode(codeCritere);
+				criterion.setLibelle(rs.getString("LIBELLECRITERE"));
+				criterion.setCodeffta(rs.getString("CODEFFTA"));
+				criterion.setSortOrder(rs.getInt("SORTORDERCRITERE"));
+				criterion.setClassement(rs.getBoolean("CLASSEMENT"));
+				criterion.setPlacement(rs.getBoolean("PLACEMENT"));
+				criterion.setReglementParent(reglement);
+
+				criterion.setCriterionElements(CriterionElement.getAllCriterionElementsFor(criterion, hashReglement));
+				
+				return criterion;
 			}
-			CriteriaSet criteriaSet = new CriteriaSet();
-			criteriaSet.setCriteria(criteria);
-			
-			return criteriaSet;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		return null;
 	}
 }

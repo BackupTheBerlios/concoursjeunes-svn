@@ -266,7 +266,7 @@ public class ParametreDialog extends JDialog implements ActionListener {
 			if(parametre.isReglementLock())
 				parametre.setReglement(tempReglement);
 			else
-				parametre.setReglement(ReglementFactory.getReglement((String)jcbReglement.getSelectedItem()));
+				parametre.setReglement(ReglementBuilder.createReglement((String)jcbReglement.getSelectedItem()));
 			parametre.setReglementLock(true);
 			
 			setVisible(false);

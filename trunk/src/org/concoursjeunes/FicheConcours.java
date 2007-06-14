@@ -579,7 +579,7 @@ public class FicheConcours implements ParametreListener {
 
 		String strClassementEquipe = ""; //$NON-NLS-1$
 
-		EquipeList clubList = EquipeListFactory.getClubEquipeList(concurrentList, this);
+		EquipeList clubList = EquipeListBuilder.getClubEquipeList(concurrentList, this);
 
 		if(clubList != null && clubList.countEquipes() > 0) {
 			AJTemplate tplClassementEquipe = null;

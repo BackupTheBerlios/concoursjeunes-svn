@@ -97,10 +97,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
-import ajinteractive.standard.utilities.persistance.Entity;
-import ajinteractive.standard.utilities.persistance.Field;
-import ajinteractive.standard.utilities.persistance.Id;
-import ajinteractive.standard.utilities.persistance.ManyToOne;
 import ajinteractive.standard.utilities.sql.SqlParser;
 
 /**
@@ -126,21 +122,20 @@ import ajinteractive.standard.utilities.sql.SqlParser;
  * @author Aurélien JEOFFRAY
  *
  */
-@Entity("REGLEMENT")
 public class Reglement {
 
-	@Field("NOMREGLEMENT") private String name				= "default";
+	private String name				= "default";
 	
-	@Field("NBSERIE") private int nbSerie             = 2;
-	@Field("NBVOLEEPARSERIE") private int nbVoleeParSerie     = 6;
-	@Field("NBFLECHEPARVOLEE") private int nbFlecheParVolee    = 3;
-	@Field("NBMEMBRESEQUIPE") private int nbMembresEquipe     = 4;
-	@Field("NBMEMBRESRETENU") private int nbMembresRetenu     = 3;
+	private int nbSerie             = 2;
+	private int nbVoleeParSerie     = 6;
+	private int nbFlecheParVolee    = 3;
+	private int nbMembresEquipe     = 4;
+	private int nbMembresRetenu     = 3;
 
-	@ManyToOne("CRITERE") private ArrayList<Criterion> listCriteria = new ArrayList<Criterion>();
-	@ManyToOne("DISTANCESBLASONS") private ArrayList<DistancesEtBlason> listDistancesEtBlason = new ArrayList<DistancesEtBlason>();
+	private ArrayList<Criterion> listCriteria = new ArrayList<Criterion>();
+	private ArrayList<DistancesEtBlason> listDistancesEtBlason = new ArrayList<DistancesEtBlason>();
 	
-	@Field("ISOFFICIAL") private boolean officialReglement = false;
+	private boolean officialReglement = false;
 	
 	/**
 	 * Constructeur java-beans. Initialise un réglement par défaut
@@ -479,7 +474,7 @@ public class Reglement {
 				name = name.substring(0, name.length() - 4);
 				
 				if(!availableReglements.contains(name)) {
-					SqlParser.createBatch(new File("config/reglements" + File.separator + reglementName), stmt);
+					SqlParser.createBatch(new File("config/reglements" + File.separator + reglementName), stmt, null);
 					
 					stmt.executeBatch();
 					availableReglements.add(name);
@@ -496,7 +491,6 @@ public class Reglement {
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
-	@Id("NUMREGLEMENT")
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;

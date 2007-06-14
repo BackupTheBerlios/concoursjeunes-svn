@@ -26,7 +26,7 @@ import java.util.ArrayList;
  * @author Aurélien JEOFFRAY
  * @version 1.0
  */
-public class ConcurrentFactory {
+public class ConcurrentBuilder {
 
 	/**
 	 * Construit un archer à partir d'un jeux de resultat sgbd et un reglement donnée
@@ -43,7 +43,7 @@ public class ConcurrentFactory {
 			concurrent.setNomArcher(rs.getString("NOMARCHER"));
 			concurrent.setPrenomArcher(rs.getString("PRENOMARCHER"));
 			concurrent.setCertificat(rs.getBoolean("CERTIFMEDICAL"));
-			concurrent.setClub(EntiteFactory.getEntite(rs.getString("AGREMENTENTITE")));
+			concurrent.setClub(EntiteBuilder.getEntite(rs.getString("AGREMENTENTITE")));
 
 			if(reglement != null) {
 				CriteriaSet differentiationCriteria = null;
@@ -57,7 +57,7 @@ public class ConcurrentFactory {
 				ResultSet rsCriteriaSet = pstmt.executeQuery();
 
 				if(rsCriteriaSet.first()) {
-					differentiationCriteria = CriteriaSetFactory
+					differentiationCriteria = CriteriaSetBuilder
 							.getCriteriaSet(rsCriteriaSet.getInt("NUMCRITERIASET"), reglement, reglement.hashCode());
 				} else {
 					differentiationCriteria = new CriteriaSet();

@@ -38,7 +38,7 @@ import org.concoursjeunes.MetaDataFichesConcours;
 import org.concoursjeunes.ParametreEvent;
 import org.concoursjeunes.ParametreListener;
 import org.concoursjeunes.Reglement;
-import org.concoursjeunes.ReglementFactory;
+import org.concoursjeunes.ReglementBuilder;
 import org.concoursjeunes.dialog.ConfigurationDialog;
 import org.concoursjeunes.dialog.EntiteListDialog;
 import org.concoursjeunes.dialog.ReglementDialog;
@@ -222,7 +222,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 				jmiReglement.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						ReglementDialog reglementDialog = new ReglementDialog(ConcoursJeunesFrame.this,
-								ReglementFactory.getReglement(e.getActionCommand()));
+								ReglementBuilder.createReglement(e.getActionCommand()));
 						Reglement reglement = reglementDialog.showReglementDialog();
 						if(reglement != null) {
 							reglement.save();
