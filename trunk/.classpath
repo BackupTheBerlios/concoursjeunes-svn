@@ -11,7 +11,5 @@
 	<classpathentry kind="lib" path="lib/h2.jar"/>
 	<classpathentry kind="lib" path="lib/swingx-2006_10_27.jar"/>
 	<classpathentry kind="lib" path="lib/AJPackage.jar"/>
-	<classpathentry kind="lib" path="lib/toplink-essentials.jar"/>
-	<classpathentry kind="lib" path="lib/toplink-essentials-agent.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
