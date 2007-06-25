@@ -106,7 +106,7 @@ public class CriterionBuilder {
 			pstmt.setString(1, codeCritere);
 			pstmt.setInt(2, hashReglement);
 			
-			ResultSet rs = pstmt.executeQuery(sql);
+			ResultSet rs = pstmt.executeQuery();
 			if(rs.first()) {
 				Criterion criterion = new Criterion();
 				criterion.setCode(codeCritere);

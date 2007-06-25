@@ -168,7 +168,7 @@ public class ConcoursJeunes {
 	/**
 	 * ressources utilisateurs
 	 */
-	public static UserRessources userRessources        = new UserRessources(NOM);
+	public static CJAppRessources userRessources        = new CJAppRessources(NOM);
 	
 	/**
 	 * Connection à la base de données du logiciel
@@ -219,7 +219,7 @@ public class ConcoursJeunes {
 			//test si la base à été généré et la génére dans le cas contraire
 			Statement stmt = dbConnection.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("SELECT * FROM INFORMATION_SCHEMA.TABLES where TABLE_NAME='ARCHERS'");
+			ResultSet rs = stmt.executeQuery("SELECT * FROM INFORMATION_SCHEMA.TABLES where TABLE_NAME='DBPARAM'");
 			if(!rs.first()) {
 				
 				SqlParser.createBatch(
@@ -228,6 +228,8 @@ public class ConcoursJeunes {
 								+ ajrParametreAppli.getResourceString("sql.createdb")), stmt,
 						null);
 				stmt.executeBatch();
+			} else {
+				int dbversion = rs.getInt("VERSION");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

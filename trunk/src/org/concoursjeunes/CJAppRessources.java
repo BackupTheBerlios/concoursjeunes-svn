@@ -88,51 +88,27 @@
  */
 package org.concoursjeunes;
 
-import java.io.*;
+import java.io.File;
+import java.io.FilenameFilter;
+
+import ajinteractive.standard.utilities.app.AppRessources;
 
 /**
  * Crée et donne le chemin des ressources utilisateur pour le programme
  * 
  * @author  Aurélien Jeoffray
  */
-public class UserRessources {
+public class CJAppRessources extends AppRessources {
 	private static String CONFIG_PROFILE = "configuration_"; //$NON-NLS-1$
 	private static String EXT_XML = ".xml"; //$NON-NLS-1$
-	
-    private String userPath;
-    private String allusersDataPath; 
     
     /**
      * Construit le répertoire utilisateur selon le systeme
      * 
      * @param progname nom du programme
      */
-    public UserRessources(String progname) {
-        if(System.getProperty("os.name").startsWith("Windows")) { //$NON-NLS-1$ //$NON-NLS-2$
-            userPath = System.getenv("APPDATA") + File.separator //$NON-NLS-1$
-                    + progname; //$NON-NLS-1$
-            if(Integer.parseInt(System.getProperty("os.version").substring(0,1)) >= 6)
-            	allusersDataPath = System.getenv("ALLUSERSPROFILE") + File.separator + progname;
-            else
-            	allusersDataPath = System.getenv("ALLUSERSPROFILE") + File.separator 
-            			+ "Application Data" + File.separator + progname;
-        } else if(System.getProperty("os.name").toLowerCase().startsWith("mac os x")) {
-        	userPath = System.getProperty("user.home") + File.separator //$NON-NLS-1$ 
-        			+ "Library/Application Support/" + progname; //$NON-NLS-1$
-        	allusersDataPath = userPath;
-        } else {
-            userPath = System.getProperty("user.home") + File.separator //$NON-NLS-1$ 
-            	+ "." + progname; //$NON-NLS-1$
-            if(System.getProperty("os.name").startsWith("Linux")) {
-            	allusersDataPath = "/var/lib/" + progname; //$NON-NLS-1$
-            	File f = new File(allusersDataPath);
-            	if(!f.exists() || !f.canExecute())
-            		allusersDataPath = userPath;
-            } else
-            	allusersDataPath = userPath;
-        }
-       // /Library/Application Support/
-        createPathIfNotExist(userPath);
+    public CJAppRessources(String progname) {
+    	super(progname);
     }
     
     /**
@@ -142,7 +118,7 @@ public class UserRessources {
      * @return String - le chemin absolu du profile
      */
     private String getProfilePath(String profile) {
-        String profilePath = userPath + File.separator + "Profile" + //$NON-NLS-1$
+        String profilePath = getUserPath() + File.separator + "Profile" + //$NON-NLS-1$
                 File.separator + profile;
         
         return profilePath;
@@ -161,44 +137,6 @@ public class UserRessources {
     }
     
     /**
-     * Copie le fichier srcPath dans le repertoire desPath
-     * 
-     * @param srcPath - le fichier à copier
-     * @param destPath - l'emplacement de destination
-     */
-    private void copyFile(File srcPath, String destPath) {
-        if(!(new File(destPath + File.separator + srcPath.getName()).exists())) {
-            System.out.println(srcPath.getAbsolutePath());
-            FileInputStream fis = null;
-            FileOutputStream fos = null;
-            try {
-                fis = new FileInputStream(srcPath);
-                
-                fos = new FileOutputStream(
-                        new File(destPath + File.separator + 
-                                srcPath.getName()));
-                
-                byte[] buffer = new byte[512*1024];
-                int nbLecture;
-                while((nbLecture = fis.read(buffer)) != -1 ) {
-                    fos.write(buffer, 0, nbLecture);
-                }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                	if(fis != null) fis.close();
-                    if(fos != null) fos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-    
-    /**
      * Copie les fichiers de configuration du repertoire de base vers le repertoire utilisateur
      *
      */
@@ -210,7 +148,7 @@ public class UserRessources {
         });
         
         for(int i = 0; i < fileForCopy.length; i++) {
-            copyFile(fileForCopy[i], userPath);
+            copyFile(fileForCopy[i], getUserPath());
         }
     }
     
@@ -222,7 +160,7 @@ public class UserRessources {
     public String getConfigPathForUser() {
         copyDefaultConfigForUser();
         
-        return userPath;
+        return getUserPath();
     }
     
     /**
@@ -231,9 +169,11 @@ public class UserRessources {
      * @return le chemin du répertoire contenant la base de donnée
      */
     public String getBasePath() {
-    	 createPathIfNotExist(allusersDataPath + File.separator + "base"); //$NON-NLS-1$
+    	String basePath = getAllusersDataPath() + File.separator + "base";
+    	
+    	createPathIfNotExist(basePath); //$NON-NLS-1$
         
-        return allusersDataPath; //$NON-NLS-1$
+    	return basePath; //$NON-NLS-1$
     }
     
     /**
@@ -282,25 +222,5 @@ public class UserRessources {
 		for(int i = 0; i < strConfig.length; i++)
 			strConfig[i] = strConfig[i].substring(CONFIG_PROFILE.length(), strConfig[i].length() - EXT_XML.length());
 		return strConfig;
-    }
-
-    /**
-     * Retourne le répertoire de base de l'utilisateur
-     * 
-	 * @return  Renvoie le repertoire de base de l'utilisateur
-	 * @uml.property  name="userPath"
-	 */
-    public String getUserPath() {
-        return userPath;
-    }
-
-    /**
-     * Définit le répertoire de base de l'utilisateur
-     * 
-	 * @param userPath le repertoire de base de l'utilisateur
-	 * @uml.property  name="userPath"
-	 */
-    public void setUserPath(String userPath) {
-        this.userPath = userPath;
     }
 }
