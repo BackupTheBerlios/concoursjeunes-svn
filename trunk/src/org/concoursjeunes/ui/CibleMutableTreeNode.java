@@ -182,6 +182,6 @@ public class CibleMutableTreeNode implements MutableTreeNode, CibleListener {
 	public String toString() {
 		if(cible != null)
 			return cible.toString();
-		return "";
+		return ""; //$NON-NLS-1$
 	}
 }

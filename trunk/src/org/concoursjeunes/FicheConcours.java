@@ -470,10 +470,10 @@ public class FicheConcours implements ParametreListener {
 								tplClassement.loopBloc("categories.classement"); //$NON-NLS-1$
 							}
 							if(!row_exist)
-								tplClassement.parseBloc("categories.classement", "");
+								tplClassement.parseBloc("categories.classement", ""); //$NON-NLS-1$ //$NON-NLS-2$
 						}
 					} else {
-						tplClassement.parseBloc("categories.classement", "");
+						tplClassement.parseBloc("categories.classement", ""); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 
 					tplClassement.loopBloc("categories"); //$NON-NLS-1$

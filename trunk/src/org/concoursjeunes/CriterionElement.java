@@ -105,11 +105,11 @@ public class CriterionElement {
 		try {
 			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 			
-			stmt.executeUpdate("merge into CRITEREELEMENT (CODECRITEREELEMENT," +
-					"CODECRITERE,NUMREGLEMENT,LIBELLECRITEREELEMENT,ACTIF) values (" +
-					"'" + code + "', '" + criterionParent.getCode() + "'," +
-					"" + criterionParent.getReglementParent().hashCode() + ", '" + libelle + "'," +
-					Boolean.toString(active).toUpperCase() + ")");
+			stmt.executeUpdate("merge into CRITEREELEMENT (CODECRITEREELEMENT," + //$NON-NLS-1$
+					"CODECRITERE,NUMREGLEMENT,LIBELLECRITEREELEMENT,ACTIF) values (" + //$NON-NLS-1$
+					"'" + code + "', '" + criterionParent.getCode() + "'," + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+					"" + criterionParent.getReglementParent().hashCode() + ", '" + libelle + "'," + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+					Boolean.toString(active).toUpperCase() + ")"); //$NON-NLS-1$
 		} catch(SQLException e) {
 			
 		}
@@ -119,9 +119,9 @@ public class CriterionElement {
 		try {
 			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 			
-			stmt.executeUpdate("delete from CRITEREELEMENT where CODECRITEREELEMENT='" + code +
-					"' and CODECRITERE='" + criterionParent.getCode() + "' and " +
-					"NUMREGLEMENT=" + criterionParent.getReglementParent().hashCode());
+			stmt.executeUpdate("delete from CRITEREELEMENT where CODECRITEREELEMENT='" + code + //$NON-NLS-1$
+					"' and CODECRITERE='" + criterionParent.getCode() + "' and " + //$NON-NLS-1$ //$NON-NLS-2$
+					"NUMREGLEMENT=" + criterionParent.getReglementParent().hashCode()); //$NON-NLS-1$
 		} catch(SQLException e) {
 			
 		}
@@ -176,14 +176,14 @@ public class CriterionElement {
     	try {
 			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 			
-			String sql = "select CODECRITEREELEMENT from critereelement where " +
-					"codecritere='" + criterion.getCode() + "' " +
-					"and numreglement=" + hashReglement;
+			String sql = "select CODECRITEREELEMENT from critereelement where " + //$NON-NLS-1$
+					"codecritere='" + criterion.getCode() + "' " + //$NON-NLS-1$ //$NON-NLS-2$
+					"and numreglement=" + hashReglement; //$NON-NLS-1$
 			
 			ResultSet rs = stmt.executeQuery(sql);
 			
 			while(rs.next()) {
-				elements.add(CriterionElementBuilder.getCriterionElement(rs.getString("CODECRITEREELEMENT"), criterion, hashReglement));
+				elements.add(CriterionElementBuilder.getCriterionElement(rs.getString("CODECRITEREELEMENT"), criterion, hashReglement)); //$NON-NLS-1$
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

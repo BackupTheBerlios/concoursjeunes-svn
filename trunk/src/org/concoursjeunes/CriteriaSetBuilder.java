@@ -100,7 +100,7 @@ import java.util.Hashtable;
 public class CriteriaSetBuilder {
 	public static CriteriaSet getCriteriaSet(int numCriteriaSet, Reglement reglement, int hashReglement) {
 		try {
-			String sql = "select * from POSSEDE where NUMCRITERIASET=?";
+			String sql = "select * from POSSEDE where NUMCRITERIASET=?"; //$NON-NLS-1$
 			
 			PreparedStatement pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
 			
@@ -110,10 +110,10 @@ public class CriteriaSetBuilder {
 			
 			Hashtable<Criterion, CriterionElement> criteria = new Hashtable<Criterion, CriterionElement>();
 			while(rs.next()) {
-				Criterion criterion = CriterionBuilder.getCriterion(rs.getString("CODECRITERE"), reglement, hashReglement);
+				Criterion criterion = CriterionBuilder.getCriterion(rs.getString("CODECRITERE"), reglement, hashReglement); //$NON-NLS-1$
 				criteria.put(
 						criterion,
-						CriterionElementBuilder.getCriterionElement(rs.getString("CODECRITEREELEMENT"), criterion, hashReglement));
+						CriterionElementBuilder.getCriterionElement(rs.getString("CODECRITEREELEMENT"), criterion, hashReglement));//$NON-NLS-1$
 			}
 			CriteriaSet criteriaSet = new CriteriaSet();
 			criteriaSet.setCriteria(criteria);

@@ -152,7 +152,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		for(int i = 0; i < ficheConcours.getParametre().getNbDepart(); i++) {
 			FicheConcoursDepartPane ficheConcoursDepartPane = new FicheConcoursDepartPane(this, i);
 			departPanels.add(ficheConcoursDepartPane);
-			fichesDepart.add(ficheConcoursDepartPane, "depart." + i);
+			fichesDepart.add(ficheConcoursDepartPane, "depart." + i); //$NON-NLS-1$
 		}
 		cl.first(fichesDepart);
 
@@ -205,7 +205,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 
 		for(int i = 1; i <= ficheConcours.getParametre().getNbDepart(); i++)
 			comboBox.addItem(
-					ConcoursJeunes.ajrLibelle.getResourceString("onglet.gestionarcher.depart") + i);
+					ConcoursJeunes.ajrLibelle.getResourceString("onglet.gestionarcher.depart") + i); //$NON-NLS-1$
 
 		panel.setLayout(new BorderLayout());
 		panel.setOpaque(false);
@@ -346,7 +346,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 			jepClassIndiv.setText(ficheConcours.getClassement(FicheConcours.OUT_HTML));
 		} else if(source instanceof JComboBox) {
 			ficheConcours.setCurrentDepart(((JComboBox)source).getSelectedIndex());
-			cl.show(fichesDepart, "depart." + ficheConcours.getCurrentDepart());
+			cl.show(fichesDepart, "depart." + ficheConcours.getCurrentDepart()); //$NON-NLS-1$
 		}
 	}
 	/**

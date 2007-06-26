@@ -27,10 +27,10 @@ public class FFTAImportThread extends Thread {
     
     private JDialog parentframe;
     
-    private AjResourcesReader pluginRessources = new AjResourcesReader("properties.FFTAImportPlugin");
+    private AjResourcesReader pluginRessources = new AjResourcesReader("properties.FFTAImportPlugin"); //$NON-NLS-1$
     private EventListenerList listeners = new EventListenerList();
     
-    private String fftalogpath = "";
+    private String fftalogpath = ""; //$NON-NLS-1$
     
     /**
      * 
@@ -84,7 +84,6 @@ public class FFTAImportThread extends Thread {
     /**
      * Chargement à partir des exports FFTA
      * 
-     * @return boolean - true si la requette à été executé avec succé, false sinon
      */
     private void fftaLoader() {
         try {
@@ -92,15 +91,15 @@ public class FFTAImportThread extends Thread {
         		fireProgressionInfo("Exportation de Result'Arc...");
 				Process proc = Runtime.getRuntime().exec(System.getProperty("user.dir") //$NON-NLS-1$
 				        + File.separator
-				        + pluginRessources.getResourceString("winffta.export.cmd", fftalogpath, System.getProperty("java.io.tmpdir"))); //$NON-NLS-1$
+				        + pluginRessources.getResourceString("winffta.export.cmd", fftalogpath, System.getProperty("java.io.tmpdir"))); //$NON-NLS-1$ //$NON-NLS-2$
 				proc.waitFor();
         	}
 
     		fireProgressionInfo("Nettoyage du fichier...");
     		//HACK problème retour caractère \r dans la table hyperfile FICLUB.FIC
             //charge tous le fichier en mémoire
-            FileReader frficlub = new FileReader("base"
-            		+ File.separator + pluginRessources.getResourceString("winffta.ficlub.fichier"));
+            FileReader frficlub = new FileReader(System.getProperty("java.io.tmpdir") //$NON-NLS-1$
+            		+ File.separator + pluginRessources.getResourceString("winffta.ficlub.fichier")); //$NON-NLS-1$
             StringBuffer sbuffer = new StringBuffer();
             char[] buffer = new char[128];
             int dataSize = 0;
@@ -108,18 +107,20 @@ public class FFTAImportThread extends Thread {
             	sbuffer.append(buffer, 0, dataSize);
             }
             frficlub.close();
+            buffer = null;
             
             String sFiclub = sbuffer.toString();
             sbuffer = null;
             
             //supprime le caractère foireux
-            sFiclub = sFiclub.replaceAll("\\r;", ";");
+            sFiclub = sFiclub.replaceAll("\\r;", ";"); //$NON-NLS-1$ //$NON-NLS-2$
             
             //réimprime le fichier
-            PrintStream psficlub = new PrintStream("base"
-            		+ File.separator + pluginRessources.getResourceString("winffta.ficlub.fichier"));
+            PrintStream psficlub = new PrintStream(System.getProperty("java.io.tmpdir") //$NON-NLS-1$
+            		+ File.separator + pluginRessources.getResourceString("winffta.ficlub.fichier")); //$NON-NLS-1$
             psficlub.print(sFiclub);
             psficlub.close();
+            sFiclub = null;
             //FIN HACK
             
         	ConcoursJeunes.dbConnection.setAutoCommit(true);
@@ -128,10 +129,10 @@ public class FFTAImportThread extends Thread {
 			
 			Hashtable<String, String> ht = new Hashtable<String, String>();
 			
-			ht.put("temp", System.getProperty("java.io.tmpdir"));
+			ht.put("temp", System.getProperty("java.io.tmpdir")); //$NON-NLS-1$ //$NON-NLS-2$
 			
 			SqlParser.createBatch(
-					new File(pluginRessources.getResourceString("sql.importffta")), stmt, ht);
+					new File(pluginRessources.getResourceString("sql.importffta")), stmt, ht); //$NON-NLS-1$
 			
 			fireProgressionInfo("Integration à la base...");
 			stmt.executeBatch();
@@ -139,25 +140,25 @@ public class FFTAImportThread extends Thread {
 			stmt.close();
 
         } catch (InterruptedException e1) {
-        	JXErrorDialog.showDialog(parentframe, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(),
+        	JXErrorDialog.showDialog(parentframe, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
 					e1.fillInStackTrace());
 			e1.printStackTrace();
 
 		} catch (IOException io) {
-			JXErrorDialog.showDialog(parentframe, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), io.getLocalizedMessage(),
+			JXErrorDialog.showDialog(parentframe, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), io.getLocalizedMessage(), //$NON-NLS-1$
 					io.fillInStackTrace());
             io.printStackTrace();
 
         } catch(NullPointerException npe) {
-        	JXErrorDialog.showDialog(parentframe, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), npe.getLocalizedMessage(),
+        	JXErrorDialog.showDialog(parentframe, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), npe.getLocalizedMessage(), //$NON-NLS-1$
 					npe.fillInStackTrace());
             npe.printStackTrace();
         } catch(OutOfMemoryError oome) {
-        	JXErrorDialog.showDialog(parentframe, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), oome.getLocalizedMessage(),
+        	JXErrorDialog.showDialog(parentframe, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), oome.getLocalizedMessage(), //$NON-NLS-1$
         			oome.fillInStackTrace());
         	oome.printStackTrace();
         } catch (SQLException e) {
-        	JXErrorDialog.showDialog(parentframe, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.getLocalizedMessage(),
+        	JXErrorDialog.showDialog(parentframe, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
         			e.fillInStackTrace());
 			e.printStackTrace();
 		}

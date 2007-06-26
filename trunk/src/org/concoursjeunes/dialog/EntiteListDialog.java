@@ -157,13 +157,13 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 
 	public void caretUpdate(CaretEvent e) {
 		if(e.getSource() == this.jtfNom) {
-			sorter.setRowFilter(RowFilter.regexFilter(".*" + jtfNom.getText().toUpperCase() + ".*", 0));
+			sorter.setRowFilter(RowFilter.regexFilter(".*" + jtfNom.getText().toUpperCase() + ".*", 0)); //$NON-NLS-1$ //$NON-NLS-2$
 			jTable.setRowSorter(sorter);
 		} else if(e.getSource() == this.jtfAgrement) {
-			sorter.setRowFilter(RowFilter.regexFilter(jtfAgrement.getText().toUpperCase() + ".*", 1));
+			sorter.setRowFilter(RowFilter.regexFilter(jtfAgrement.getText().toUpperCase() + ".*", 1)); //$NON-NLS-1$
 			jTable.setRowSorter(sorter);
 		} else if(e.getSource() == this.jtfVille) {
-			sorter.setRowFilter(RowFilter.regexFilter(jtfVille.getText().toUpperCase() + ".*", 3));
+			sorter.setRowFilter(RowFilter.regexFilter(jtfVille.getText().toUpperCase() + ".*", 3)); //$NON-NLS-1$
 			jTable.setRowSorter(sorter);
 		}
 	}
@@ -219,7 +219,7 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 				
 				Statement stmt = ConcoursJeunes.dbConnection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
-				rs = stmt.executeQuery("select * from Entite order by VilleEntite");
+				rs = stmt.executeQuery("select * from Entite order by VilleEntite"); //$NON-NLS-1$
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -265,10 +265,10 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 			try {
 				Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 
-				ResultSet rs = stmt.executeQuery("SELECT COUNT(*) as NbRows from Entite");
+				ResultSet rs = stmt.executeQuery("SELECT COUNT(*) as NbRows from Entite"); //$NON-NLS-1$
 
 				if(rs.next()) {
-					int nb = rs.getInt("NbRows");
+					int nb = rs.getInt("NbRows"); //$NON-NLS-1$
 					return nb;
 				}
 			} catch (SQLException e) {
@@ -332,13 +332,13 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 			Entite entite = new Entite();
 			try {
 				if(rs.absolute(index + 1)) {
-					entite.setAgrement(rs.getString("AgrementEntite"));
-					entite.setNom(rs.getString("NomEntite"));
-					entite.setAdresse(rs.getString("AdresseEntite"));
-					entite.setCodePostal(rs.getString("CodePostalEntite"));
-					entite.setVille(rs.getString("VilleEntite"));
-					entite.setNote(rs.getString("NoteEntite"));
-					entite.setType(rs.getInt("TypeEntite"));
+					entite.setAgrement(rs.getString("AgrementEntite")); //$NON-NLS-1$
+					entite.setNom(rs.getString("NomEntite")); //$NON-NLS-1$
+					entite.setAdresse(rs.getString("AdresseEntite")); //$NON-NLS-1$
+					entite.setCodePostal(rs.getString("CodePostalEntite")); //$NON-NLS-1$
+					entite.setVille(rs.getString("VilleEntite")); //$NON-NLS-1$
+					entite.setNote(rs.getString("NoteEntite")); //$NON-NLS-1$
+					entite.setType(rs.getInt("TypeEntite")); //$NON-NLS-1$
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();

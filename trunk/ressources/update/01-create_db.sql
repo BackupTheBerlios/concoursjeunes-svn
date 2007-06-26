@@ -1,6 +1,6 @@
 -- Création de la base de données de ConcoursJeunes
 -- @author Aurélien JEOFFRAY
--- @revision 1
+-- @release 1
 CREATE TABLE DBPARAM (
 		VERSION INTEGER NOT NULL
 	);

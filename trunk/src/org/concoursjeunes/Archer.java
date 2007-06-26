@@ -203,7 +203,7 @@ public class Archer {
 	 * @return l'identifiant de l'archer
 	 */
 	public String getID() {
-		return nomArcher + " " + prenomArcher;
+		return nomArcher + " " + prenomArcher; //$NON-NLS-1$
 	}
 
 	/* (non-Javadoc)

@@ -39,15 +39,15 @@ public class ConcurrentBuilder {
 		Concurrent concurrent = new Concurrent();
 
 		try {
-			concurrent.setNumLicenceArcher(rs.getString("NUMLICENCEARCHER"));
-			concurrent.setNomArcher(rs.getString("NOMARCHER"));
-			concurrent.setPrenomArcher(rs.getString("PRENOMARCHER"));
-			concurrent.setCertificat(rs.getBoolean("CERTIFMEDICAL"));
-			concurrent.setClub(EntiteBuilder.getEntite(rs.getString("AGREMENTENTITE")));
+			concurrent.setNumLicenceArcher(rs.getString("NUMLICENCEARCHER")); //$NON-NLS-1$
+			concurrent.setNomArcher(rs.getString("NOMARCHER")); //$NON-NLS-1$
+			concurrent.setPrenomArcher(rs.getString("PRENOMARCHER")); //$NON-NLS-1$
+			concurrent.setCertificat(rs.getBoolean("CERTIFMEDICAL")); //$NON-NLS-1$
+			concurrent.setClub(EntiteBuilder.getEntite(rs.getString("AGREMENTENTITE"))); //$NON-NLS-1$
 
 			if(reglement != null) {
 				CriteriaSet differentiationCriteria = null;
-				String sql = "select * from distinguer where NUMLICENCEARCHER=? and NUMREGLEMENT=?";
+				String sql = "select * from distinguer where NUMLICENCEARCHER=? and NUMREGLEMENT=?"; //$NON-NLS-1$
 				
 				PreparedStatement pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
 				
@@ -58,13 +58,13 @@ public class ConcurrentBuilder {
 
 				if(rsCriteriaSet.first()) {
 					differentiationCriteria = CriteriaSetBuilder
-							.getCriteriaSet(rsCriteriaSet.getInt("NUMCRITERIASET"), reglement, reglement.hashCode());
+							.getCriteriaSet(rsCriteriaSet.getInt("NUMCRITERIASET"), reglement, reglement.hashCode()); //$NON-NLS-1$
 				} else {
 					differentiationCriteria = new CriteriaSet();
 					for(Criterion key : reglement.getListCriteria()) {
-						if(!key.getCodeffta().equals("")) {
+						if(!key.getCodeffta().equals("")) { //$NON-NLS-1$
 							ArrayList<CriterionElement> arrayList = key.getCriterionElements();
-							int valindex = rs.getInt(key.getCodeffta() + "FFTA");
+							int valindex = rs.getInt(key.getCodeffta() + "FFTA"); //$NON-NLS-1$
 							if(valindex >= arrayList.size())
 								valindex = arrayList.size() - 1;
 							if(valindex < 0)

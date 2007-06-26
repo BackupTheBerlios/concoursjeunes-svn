@@ -124,7 +124,7 @@ import ajinteractive.standard.utilities.sql.SqlParser;
  */
 public class Reglement {
 
-	private String name				= "default";
+	private String name				= "default"; //$NON-NLS-1$
 	
 	private int nbSerie             = 2;
 	private int nbVoleeParSerie     = 6;
@@ -376,9 +376,9 @@ public class Reglement {
 	 */
 	public void save() {
 		try {
-			String sql = "merge into REGLEMENT (NUMREGLEMENT, NOMREGLEMENT, NBSERIE, NBVOLEEPARSERIE," +
-					"NBFLECHEPARVOLEE, NBMEMBRESEQUIPE, NBMEMBRESRETENU, ISOFFICIAL) " +
-					"VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+			String sql = "merge into REGLEMENT (NUMREGLEMENT, NOMREGLEMENT, NBSERIE, NBVOLEEPARSERIE," + //$NON-NLS-1$
+					"NBFLECHEPARVOLEE, NBMEMBRESEQUIPE, NBMEMBRESRETENU, ISOFFICIAL) " + //$NON-NLS-1$
+					"VALUES (?, ?, ?, ?, ?, ?, ?, ?)"; //$NON-NLS-1$
 			
 			//Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 			PreparedStatement pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
@@ -426,7 +426,7 @@ public class Reglement {
 			try {
 				Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 				
-				stmt.executeUpdate("delete from REGLEMENT where NUMREGLEMENT=" + hashCode());
+				stmt.executeUpdate("delete from REGLEMENT where NUMREGLEMENT=" + hashCode()); //$NON-NLS-1$
 				
 				success = true;
 			} catch (SQLException e) {
@@ -455,16 +455,16 @@ public class Reglement {
 		try {
 			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("select NOMREGLEMENT from REGLEMENT");
+			ResultSet rs = stmt.executeQuery("select NOMREGLEMENT from REGLEMENT"); //$NON-NLS-1$
 
 			while(rs.next()) {
-				availableReglements.add(rs.getString("NOMREGLEMENT"));
+				availableReglements.add(rs.getString("NOMREGLEMENT")); //$NON-NLS-1$
 			}
 			rs.close();
 			
-			String[] newReglements = new File("config/reglements").list(new FilenameFilter() {
+			String[] newReglements = new File("config/reglements").list(new FilenameFilter() { //$NON-NLS-1$
 				public boolean accept(File dir, String name) {
-					if(name.endsWith(".sql"))
+					if(name.endsWith(".sql")) //$NON-NLS-1$
 						return true;
 					return false;
 				}
@@ -474,7 +474,7 @@ public class Reglement {
 				name = name.substring(0, name.length() - 4);
 				
 				if(!availableReglements.contains(name)) {
-					SqlParser.createBatch(new File("config/reglements" + File.separator + reglementName), stmt, null);
+					SqlParser.createBatch(new File("config/reglements" + File.separator + reglementName), stmt, null); //$NON-NLS-1$
 					
 					stmt.executeBatch();
 					availableReglements.add(name);

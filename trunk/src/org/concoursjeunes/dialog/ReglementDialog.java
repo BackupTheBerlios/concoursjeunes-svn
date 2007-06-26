@@ -114,9 +114,9 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		jbAnnuler.addActionListener(this);
 		
 		JTabbedPane tabbedPane = new JTabbedPane();
-		tabbedPane.addTab(ConcoursJeunes.ajrLibelle.getResourceString("reglement.general.title"), initGeneral());
-		tabbedPane.addTab(ConcoursJeunes.ajrLibelle.getResourceString("reglement.criteres.title"), initCriteria());
-		tabbedPane.addTab(ConcoursJeunes.ajrLibelle.getResourceString("reglement.categories.title"), initCategories());
+		tabbedPane.addTab(ConcoursJeunes.ajrLibelle.getResourceString("reglement.general.title"), initGeneral()); //$NON-NLS-1$
+		tabbedPane.addTab(ConcoursJeunes.ajrLibelle.getResourceString("reglement.criteres.title"), initCriteria()); //$NON-NLS-1$
+		tabbedPane.addTab(ConcoursJeunes.ajrLibelle.getResourceString("reglement.categories.title"), initCategories()); //$NON-NLS-1$
 		
 		jpAction.add(jbValider);
 		jpAction.add(jbAnnuler);
@@ -224,18 +224,18 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	}
 	
 	private void affectLibelle() {
-		setTitle(ConcoursJeunes.ajrLibelle.getResourceString("reglement.titre"));
+		setTitle(ConcoursJeunes.ajrLibelle.getResourceString("reglement.titre")); //$NON-NLS-1$
 		
-		jbValider.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.valider"));
-		jbAnnuler.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.annuler"));
+		jbValider.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
+		jbAnnuler.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
 		
-		jlReglementName.setText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.name"));
-		jlNbSerie.setText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.serie"));
-		jlNbVoleeParSerie.setText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.voleeparserie"));
-		jlNbFlecheParVolee.setText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.flecheparvolee"));
-		jlNbMembresEquipe.setText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.membresmax"));
-		jlNbMembresRetenu.setText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.selectionmax"));
-		jcbOfficialReglement.setText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.official"));
+		jlReglementName.setText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.name")); //$NON-NLS-1$
+		jlNbSerie.setText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.serie")); //$NON-NLS-1$
+		jlNbVoleeParSerie.setText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.voleeparserie")); //$NON-NLS-1$
+		jlNbFlecheParVolee.setText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.flecheparvolee")); //$NON-NLS-1$
+		jlNbMembresEquipe.setText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.membresmax")); //$NON-NLS-1$
+		jlNbMembresRetenu.setText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.selectionmax")); //$NON-NLS-1$
+		jcbOfficialReglement.setText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.official")); //$NON-NLS-1$
 		
 		jbAddCriteria.setIcon(new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$ 
 				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.addcriteria"))); //$NON-NLS-1$
@@ -280,16 +280,16 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 				jtfNbFlecheParVolee.setEditable(false);
 		}
 		
-		jlReglementName.setText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.name") + " " + reglement.getName());
+		jlReglementName.setText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.name") + " " + reglement.getName()); //$NON-NLS-1$ //$NON-NLS-2$
 		
-		jtfNbSerie.setText(reglement.getNbSerie() + "");
-		jtfNbVoleeParSerie.setText(reglement.getNbVoleeParSerie() + "");
-		jtfNbFlecheParVolee.setText(reglement.getNbFlecheParVolee() + "");
-		jtfNbMembresEquipe.setText(reglement.getNbMembresEquipe() + "");
-		jtfNbMembresRetenu.setText(reglement.getNbMembresRetenu() + "");
+		jtfNbSerie.setText(reglement.getNbSerie() + ""); //$NON-NLS-1$
+		jtfNbVoleeParSerie.setText(reglement.getNbVoleeParSerie() + ""); //$NON-NLS-1$
+		jtfNbFlecheParVolee.setText(reglement.getNbFlecheParVolee() + ""); //$NON-NLS-1$
+		jtfNbMembresEquipe.setText(reglement.getNbMembresEquipe() + ""); //$NON-NLS-1$
+		jtfNbMembresRetenu.setText(reglement.getNbMembresRetenu() + ""); //$NON-NLS-1$
 		
 		jcbOfficialReglement.setSelected(reglement.isOfficialReglement());
-		if(ConcoursJeunes.ajrParametreAppli.getResourceInteger("debug.mode") == 0) {
+		if(ConcoursJeunes.ajrParametreAppli.getResourceInteger("debug.mode") == 0) { //$NON-NLS-1$
 			jcbOfficialReglement.setEnabled(false);
 		}
 	}
@@ -509,8 +509,8 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 						}
 					} else {
 						JOptionPane.showMessageDialog(this, 
-								ConcoursJeunes.ajrLibelle.getResourceString("reglement.message.criteria.noelement"),
-								ConcoursJeunes.ajrLibelle.getResourceString("reglement.message.criteria.noelement.title"),
+								ConcoursJeunes.ajrLibelle.getResourceString("reglement.message.criteria.noelement"), //$NON-NLS-1$
+								ConcoursJeunes.ajrLibelle.getResourceString("reglement.message.criteria.noelement.title"), //$NON-NLS-1$
 								JOptionPane.INFORMATION_MESSAGE);
 					}
 				}

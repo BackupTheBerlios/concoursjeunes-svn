@@ -29,16 +29,16 @@ public class EntiteBuilder {
 		try {
 			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 
-			ResultSet rs = stmt.executeQuery("select * from Entite where AgrementEntite = '" + numAgrement + "'");
+			ResultSet rs = stmt.executeQuery("select * from Entite where AgrementEntite = '" + numAgrement + "'"); //$NON-NLS-1$ //$NON-NLS-2$
 
 			if(rs.next()) {
-				entite.setAgrement(rs.getString("AgrementEntite"));
-				entite.setNom(rs.getString("NomEntite"));
-				entite.setAdresse(rs.getString("AdresseEntite"));
-				entite.setCodePostal(rs.getString("CodePostalEntite"));
-				entite.setVille(rs.getString("VilleEntite"));
-				entite.setNote(rs.getString("NoteEntite"));
-				entite.setType(rs.getInt("TypeEntite"));
+				entite.setAgrement(rs.getString("AgrementEntite")); //$NON-NLS-1$
+				entite.setNom(rs.getString("NomEntite")); //$NON-NLS-1$
+				entite.setAdresse(rs.getString("AdresseEntite")); //$NON-NLS-1$
+				entite.setCodePostal(rs.getString("CodePostalEntite")); //$NON-NLS-1$
+				entite.setVille(rs.getString("VilleEntite")); //$NON-NLS-1$
+				entite.setNote(rs.getString("NoteEntite")); //$NON-NLS-1$
+				entite.setType(rs.getInt("TypeEntite")); //$NON-NLS-1$
 			}
 
 			stmt.close();

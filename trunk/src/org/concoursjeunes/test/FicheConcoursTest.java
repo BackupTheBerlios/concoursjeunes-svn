@@ -67,7 +67,7 @@ public class FicheConcoursTest {
 	 */
 	@Test
 	public void testRemoveConcurrent() {
-		fail("Non implémenté actuellement");
+		fail("Non implémenté actuellement"); //$NON-NLS-1$
 	}
 
 	/**
@@ -75,7 +75,7 @@ public class FicheConcoursTest {
 	 */
 	@Test
 	public void testRemoveConcurrentInTeam() {
-		fail("Non implémenté actuellement");
+		fail("Non implémenté actuellement"); //$NON-NLS-1$
 	}
 
 	/**
@@ -83,7 +83,7 @@ public class FicheConcoursTest {
 	 */
 	@Test
 	public void testPlacementConcurrents() {
-		fail("Non implémenté actuellement");
+		fail("Non implémenté actuellement"); //$NON-NLS-1$
 	}
 
 	/**
@@ -91,7 +91,7 @@ public class FicheConcoursTest {
 	 */
 	@Test
 	public void testPlacementConcurrent() {
-		fail("Non implémenté actuellement");
+		fail("Non implémenté actuellement"); //$NON-NLS-1$
 	}
 
 	/**
@@ -99,7 +99,7 @@ public class FicheConcoursTest {
 	 */
 	@Test
 	public void testNextConcurrent() {
-		fail("Non implémenté actuellement");
+		fail("Non implémenté actuellement"); //$NON-NLS-1$
 	}
 
 	/**
@@ -107,7 +107,7 @@ public class FicheConcoursTest {
 	 */
 	@Test
 	public void testPreviousConcurrent() {
-		fail("Non implémenté actuellement");
+		fail("Non implémenté actuellement"); //$NON-NLS-1$
 	}
 
 	/**
@@ -115,7 +115,7 @@ public class FicheConcoursTest {
 	 */
 	@Test
 	public void testGetNbCiblesLibre() {
-		fail("Non implémenté actuellement");
+		fail("Non implémenté actuellement"); //$NON-NLS-1$
 	}
 
 	/**
@@ -123,7 +123,7 @@ public class FicheConcoursTest {
 	 */
 	@Test
 	public void testGetOccupationCibles() {
-		fail("Non implémenté actuellement");
+		fail("Non implémenté actuellement"); //$NON-NLS-1$
 	}
 
 	/**
@@ -131,7 +131,7 @@ public class FicheConcoursTest {
 	 */
 	@Test
 	public void testGetPasDeTir() {
-		fail("Non implémenté actuellement");
+		fail("Non implémenté actuellement"); //$NON-NLS-1$
 	}
 
 	/**
@@ -139,7 +139,7 @@ public class FicheConcoursTest {
 	 */
 	@Test
 	public void testSilentSave() {
-		fail("Non implémenté actuellement");
+		fail("Non implémenté actuellement"); //$NON-NLS-1$
 	}
 
 	/**
@@ -147,7 +147,7 @@ public class FicheConcoursTest {
 	 */
 	@Test
 	public void testGetClassement() {
-		fail("Non implémenté actuellement");
+		fail("Non implémenté actuellement"); //$NON-NLS-1$
 	}
 
 	/**
@@ -155,7 +155,7 @@ public class FicheConcoursTest {
 	 */
 	@Test
 	public void testGetClassementEquipe() {
-		fail("Non implémenté actuellement");
+		fail("Non implémenté actuellement"); //$NON-NLS-1$
 	}
 
 	@After

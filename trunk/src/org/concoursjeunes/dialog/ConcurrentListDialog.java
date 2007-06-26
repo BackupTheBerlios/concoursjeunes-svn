@@ -32,7 +32,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	private JTextField jtfFilterNom= null;
 	private JLabel jlFilterClub     = null;
 	private JTextField jtfFilterClub= null;
-	private JButton moreResult		= new JButton("+");
+	private JButton moreResult		= new JButton("+"); //$NON-NLS-1$
 	private JTable jTable          = null;
 	private JScrollPane jScrollPane= null;
 	private JPanel jPanel          = null;
@@ -47,13 +47,13 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	 * @param parentframe - la fenetre principal de l'application (pour le point modal)
 	 */
 	public ConcurrentListDialog(Window parentframe, Reglement reglement, Archer filter) {
-		super(parentframe, ConcoursJeunes.ajrLibelle.getResourceString("concurrent.nouveau.titre"), ModalityType.APPLICATION_MODAL);
+		super(parentframe, ConcoursJeunes.ajrLibelle.getResourceString("concurrent.nouveau.titre"), ModalityType.APPLICATION_MODAL); //$NON-NLS-1$
 		this.reglement = reglement;
 		
 		if(filter == null && ConcoursJeunes.configuration.getClub().getAgrement().length() > 0) {
 			filter = new Archer();
 			Entite entite = new Entite();
-			entite.setAgrement(ConcoursJeunes.configuration.getClub().getAgrement().substring(0, 2) + "%");
+			entite.setAgrement(ConcoursJeunes.configuration.getClub().getAgrement().substring(0, 2) + "%"); //$NON-NLS-1$
 			filter.setClub(entite);
 		}
 		dtm = new ArchersTableModel(filter);
@@ -280,9 +280,9 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 					Thread.yield();
 					
 					if(jtfFilterLicence.getText().length() > 0)
-						sorter.setRowFilter(RowFilter.regexFilter("^" + jtfFilterLicence.getText().toUpperCase(), 0));
+						sorter.setRowFilter(RowFilter.regexFilter("^" + jtfFilterLicence.getText().toUpperCase(), 0)); //$NON-NLS-1$
 					else if(jtfFilterNom.getText().length() > 0)
-						sorter.setRowFilter(RowFilter.regexFilter("^" + jtfFilterNom.getText().toUpperCase(), 1));
+						sorter.setRowFilter(RowFilter.regexFilter("^" + jtfFilterNom.getText().toUpperCase(), 1)); //$NON-NLS-1$
 					else if(jtfFilterClub.getText().length() > 0)
 						sorter.setRowFilter(RowFilter.regexFilter(jtfFilterClub.getText().toUpperCase(), 3));
 					jTable.setRowSorter(sorter);
@@ -292,20 +292,20 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	}
 	public void caretUpdate(CaretEvent e) {
 		if(e.getSource() == jtfFilterLicence) {
-			sorter.setRowFilter(RowFilter.regexFilter("^" + jtfFilterLicence.getText().toUpperCase(), 0));
+			sorter.setRowFilter(RowFilter.regexFilter("^" + jtfFilterLicence.getText().toUpperCase(), 0)); //$NON-NLS-1$
 			jTable.setRowSorter(sorter);
-			jtfFilterNom.setText("");
-			jtfFilterClub.setText("");
+			jtfFilterNom.setText(""); //$NON-NLS-1$
+			jtfFilterClub.setText(""); //$NON-NLS-1$
 		} else if(e.getSource() == jtfFilterNom) {
-			sorter.setRowFilter(RowFilter.regexFilter("^" + jtfFilterNom.getText().toUpperCase(), 1));
+			sorter.setRowFilter(RowFilter.regexFilter("^" + jtfFilterNom.getText().toUpperCase(), 1)); //$NON-NLS-1$
 			jTable.setRowSorter(sorter);
-			jtfFilterLicence.setText("");
-			jtfFilterClub.setText("");
+			jtfFilterLicence.setText(""); //$NON-NLS-1$
+			jtfFilterClub.setText(""); //$NON-NLS-1$
 		} else if(e.getSource() == jtfFilterClub) {
 			sorter.setRowFilter(RowFilter.regexFilter(jtfFilterClub.getText().toUpperCase(), 3));
 			jTable.setRowSorter(sorter);
-			jtfFilterNom.setText("");
-			jtfFilterLicence.setText("");
+			jtfFilterNom.setText(""); //$NON-NLS-1$
+			jtfFilterLicence.setText(""); //$NON-NLS-1$
 		}
 	}
 
@@ -360,7 +360,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 			//} catch (SQLException e) {
 			//	e.printStackTrace();
 			//}
-			rows = Concurrent.getArchersInDatabase(filter, reglement, "NOMARCHER");
+			rows = Concurrent.getArchersInDatabase(filter, reglement, "NOMARCHER"); //$NON-NLS-1$
 			//for(Concurrent concurrent : rows) {
 			//	softRows.add(new SoftReference<Concurrent>(concurrent));
 			//}
@@ -437,7 +437,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 				case 3:
 					return curConcurrent.getClub().getNom();
 				case 4:
-					String noplacementcritere = "";
+					String noplacementcritere = ""; //$NON-NLS-1$
 					for(Criterion key : reglement.getListCriteria()) {
 						if(!key.isPlacement()) {
 							CriterionElement criterionElement = curConcurrent.getCriteriaSet().getCriterionElement(key);
@@ -447,7 +447,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 					}
 					return noplacementcritere;
 				case 5:
-					String placementcritere = "";
+					String placementcritere = ""; //$NON-NLS-1$
 					for(Criterion key : reglement.getListCriteria()) {
 						if(key.isPlacement()) {
 							placementcritere += curConcurrent.getCriteriaSet().getCriterionElement(key).getCode();

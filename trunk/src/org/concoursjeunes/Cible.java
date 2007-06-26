@@ -385,7 +385,7 @@ public class Cible {
 			strCibleLibelle += ", " + db.getBlason() + "cm"; //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
-		strCibleLibelle += ") (" + this.nbArcher + "/" + concours.getParametre().getNbTireur() + ")</font>"; //$NON-NLS-1$ //$NON-NLS-2$
+		strCibleLibelle += ") (" + this.nbArcher + "/" + concours.getParametre().getNbTireur() + ")</font>"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		
 		Concurrent precConcurrent = null;
 		boolean valid = false;
@@ -401,7 +401,7 @@ public class Cible {
 			strCibleLibelle += "<br><font color=\"#FF8800\">Attention tous les archers de cette cible sont du même club!</font>";
 		else if(getNbArcher() == 1)
 			strCibleLibelle += "<br><font color=\"#FF8800\">Attention l'archer est seul sur la cible, présence d'un arbitre indispensable!</font>";
-		strCibleLibelle += "</html>";
+		strCibleLibelle += "</html>"; //$NON-NLS-1$
 		
 		return strCibleLibelle;
 	}

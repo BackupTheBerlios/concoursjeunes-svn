@@ -89,17 +89,13 @@
 package org.concoursjeunes;
 
 import java.awt.Desktop;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
-import java.io.StringReader;
+import java.io.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 
 import javax.naming.ConfigurationException;
@@ -212,28 +208,34 @@ public class ConcoursJeunes {
 		
 		try {
 			dbConnection = DriverManager.getConnection(
-					ajrParametreAppli.getResourceString("database.url", userRessources.getBasePath()),
-					ajrParametreAppli.getResourceString("database.user"),
-					ajrParametreAppli.getResourceString("database.password"));
+					ajrParametreAppli.getResourceString("database.url", userRessources.getBasePath()), //$NON-NLS-1$
+					ajrParametreAppli.getResourceString("database.user"), //$NON-NLS-1$
+					ajrParametreAppli.getResourceString("database.password")); //$NON-NLS-1$
+			
+			String[] updateScripts = new File(userRessources.getAllusersDataPath() + File.separator + "update").list(new FilenameFilter() { //$NON-NLS-1$
+				public boolean accept(File dir, String name) {
+					if(name.endsWith(".sql")) { //$NON-NLS-1$
+						return true;
+					}
+					return false;
+				}
+			});
+			Arrays.sort(updateScripts);
 			
 			//test si la base à été généré et la génére dans le cas contraire
 			Statement stmt = dbConnection.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("SELECT * FROM INFORMATION_SCHEMA.TABLES where TABLE_NAME='DBPARAM'");
-			if(!rs.first()) {
-				
-				SqlParser.createBatch(
-						new File(ajrParametreAppli.getResourceString("path.ressources")
-								+ File.separator
-								+ ajrParametreAppli.getResourceString("sql.createdb")), stmt,
-						null);
-				stmt.executeBatch();
-			} else {
-				int dbversion = rs.getInt("VERSION");
+			for(String scriptPath : updateScripts) {
+				SqlParser.createBatch(new File(userRessources.getAllusersDataPath() + File.separator +
+						"update" + File.separator + scriptPath), stmt, null); //$NON-NLS-1$
+				new File(userRessources.getAllusersDataPath() + File.separator +
+						"update" + File.separator + scriptPath).delete(); //$NON-NLS-1$
 			}
+			stmt.executeBatch();
+			stmt.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JXErrorDialog.showDialog(null, "SQL Error", e.getLocalizedMessage(),
+			JXErrorDialog.showDialog(null, "SQL Error", e.getLocalizedMessage(), //$NON-NLS-1$
 					e.fillInStackTrace());
 			System.exit(1);
 		}
@@ -253,7 +255,7 @@ public class ConcoursJeunes {
 	
 	public static void reloadLibelle(Locale locale) {
 		AjResourcesReader.setLocale(locale);
-		ajrLibelle = new AjResourcesReader(RES_LIBELLE); //$NON-NLS-1$
+		ajrLibelle = new AjResourcesReader(RES_LIBELLE);
 	}
 	
 	public void addConcoursJeunesListener(ConcoursJeunesListener concoursJeunesListener) {

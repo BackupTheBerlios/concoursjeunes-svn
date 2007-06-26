@@ -12,7 +12,7 @@ public class PluginMetadata {
 	
 	private String info = ""; //$NON-NLS-1$
 	private String optionLabel = ""; //$NON-NLS-1$
-	private int pluginType = 0; //$NON-NLS-1$
+	private int pluginType = 0;
 	private String className = ""; //$NON-NLS-1$
 	
 	public PluginMetadata() {

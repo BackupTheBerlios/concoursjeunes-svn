@@ -103,8 +103,8 @@ public class DistancesEtBlasonBuilder {
 		DistancesEtBlason distancesEtBlason = null;
 		
 		try {
-			String sql = "select * from DISTANCESBLASONS where " +
-					"NUMDISTANCESBLASONS=? and NUMREGLEMENT=?";
+			String sql = "select * from DISTANCESBLASONS where " + //$NON-NLS-1$
+					"NUMDISTANCESBLASONS=? and NUMREGLEMENT=?"; //$NON-NLS-1$
 			
 			pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
 			
@@ -117,12 +117,12 @@ public class DistancesEtBlasonBuilder {
 				distancesEtBlason = new DistancesEtBlason();
 				distancesEtBlason.setNumdistancesblason(numdistancesblason);
 				distancesEtBlason.setReglement(reglement);
-				distancesEtBlason.setBlason(rs.getInt("BLASONS"));
+				distancesEtBlason.setBlason(rs.getInt("BLASONS")); //$NON-NLS-1$
 				
 				pstmt.close();
 				
-				sql = "select * from associer where " +
-						"NUMDISTANCESBLASONS=? and NUMREGLEMENT=?";
+				sql = "select * from associer where " + //$NON-NLS-1$
+						"NUMDISTANCESBLASONS=? and NUMREGLEMENT=?"; //$NON-NLS-1$
 				pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
 				
 				pstmt.setInt(1, numdistancesblason);
@@ -131,15 +131,15 @@ public class DistancesEtBlasonBuilder {
 				rs = pstmt.executeQuery();
 				
 				if(rs.first()) {
-					distancesEtBlason.setCriteriaSet(CriteriaSetBuilder.getCriteriaSet(rs.getInt("NUMCRITERIASET"), reglement, hashReglement));
+					distancesEtBlason.setCriteriaSet(CriteriaSetBuilder.getCriteriaSet(rs.getInt("NUMCRITERIASET"), reglement, hashReglement)); //$NON-NLS-1$
 				} else {
 					return null;
 				}
 				
 				pstmt.close();
 				
-				sql = "select * from distances where " +
-						"NUMDISTANCESBLASONS=? and NUMREGLEMENT=?";
+				sql = "select * from distances where " + //$NON-NLS-1$
+						"NUMDISTANCESBLASONS=? and NUMREGLEMENT=?"; //$NON-NLS-1$
 				pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
 				
 				pstmt.setInt(1, numdistancesblason);
@@ -148,7 +148,7 @@ public class DistancesEtBlasonBuilder {
 				rs = pstmt.executeQuery();
 				ArrayList<Integer> distances = new ArrayList<Integer>();
 				while(rs.next()) {
-					distances.add(rs.getInt("DISTANCE"));
+					distances.add(rs.getInt("DISTANCE")); //$NON-NLS-1$
 				}
 				int[] iDist = new int[distances.size()];
 				for(int i = 0; i < iDist.length; i++)

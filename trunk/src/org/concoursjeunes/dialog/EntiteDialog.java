@@ -30,13 +30,13 @@ public class EntiteDialog extends JDialog implements ActionListener {
     private JButton jbAnnuler;
 
     public EntiteDialog(JFrame parent) {
-	super(parent, "", true);
+	super(parent, "", true); //$NON-NLS-1$
 
 	initialize();
     }
 
     public EntiteDialog(JDialog parent) {
-	super(parent, "", true);
+	super(parent, "", true); //$NON-NLS-1$
 
 	initialize();
     }
@@ -59,7 +59,7 @@ public class EntiteDialog extends JDialog implements ActionListener {
 
 	jtfNom = new JTextField("", 30); //$NON-NLS-1$
 	jtfNom.setEditable(false);
-	jftfAgrement = new JTextField("", 6);
+	jftfAgrement = new JTextField("", 6); //$NON-NLS-1$
     jftfAgrement.setEditable(false);
 	jtfAdresse = new JTextField("", 30); //$NON-NLS-1$
 	jtfVille = new JTextField("", 10); //$NON-NLS-1$

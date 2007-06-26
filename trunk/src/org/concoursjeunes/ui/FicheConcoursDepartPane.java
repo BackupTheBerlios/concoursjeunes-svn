@@ -174,13 +174,13 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 		scrollarcher.setViewportView(ajlConcurrent);
 
 		jbAjouterArcher.setIcon(new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.addarcher")
+				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.addarcher") //$NON-NLS-1$
 		));
 		jbAjouterArcher.setMargin(new Insets(0,0,0,0));
 		jbAjouterArcher.addActionListener(this);
 
 		jbSupprimerArcher.setIcon(new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.removearcher")
+				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.removearcher") //$NON-NLS-1$
 		));
 		jbSupprimerArcher.setMargin(new Insets(0,0,0,0));
 		jbSupprimerArcher.setEnabled(false);
@@ -317,7 +317,7 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 		jcbSortNom.setText(ConcoursJeunes.ajrLibelle.getResourceString("radiobutton.nom")); //$NON-NLS-1$
 		jcbSortClub.setText(ConcoursJeunes.ajrLibelle.getResourceString("radiobutton.club")); //$NON-NLS-1$
 
-		treeModel.setRootLabel(ConcoursJeunes.ajrLibelle.getResourceString("treenode.racine"));
+		treeModel.setRootLabel(ConcoursJeunes.ajrLibelle.getResourceString("treenode.racine")); //$NON-NLS-1$
 	}
 
 	/**

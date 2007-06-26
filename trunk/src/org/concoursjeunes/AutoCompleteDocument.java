@@ -296,10 +296,10 @@ public class AutoCompleteDocument extends PlainDocument {
 		
 		String searchString = getText(0, getLength());
 		Archer searchArcher = new Archer();
-		searchArcher.setNomArcher(searchString.toUpperCase() + "%");
+		searchArcher.setNomArcher(searchString.toUpperCase() + "%"); //$NON-NLS-1$
 		
 		if(getLength() > 0) {
-			ArrayList<Concurrent> concurrents = Concurrent.getArchersInDatabase(searchArcher, reglement, "NOMARCHER", 1);
+			ArrayList<Concurrent> concurrents = Concurrent.getArchersInDatabase(searchArcher, reglement, "NOMARCHER", 1); //$NON-NLS-1$
 			if(concurrents.size() > 0) {
 				concurrent = concurrents.get(0);
 				autocompleteLicence = false;
@@ -351,10 +351,10 @@ public class AutoCompleteDocument extends PlainDocument {
 		Concurrent tempConcurrent = null;
 		if(getLength() > 0 && concurrent != null) {
 			searchArcher.setNomArcher(concurrent.getNomArcher());
-			searchArcher.setPrenomArcher(searchString + "%");
+			searchArcher.setPrenomArcher(searchString + "%"); //$NON-NLS-1$
 			
 			
-			ArrayList<Concurrent> concurrents = Concurrent.getArchersInDatabase(searchArcher, reglement, "PRENOMARCHER");
+			ArrayList<Concurrent> concurrents = Concurrent.getArchersInDatabase(searchArcher, reglement, "PRENOMARCHER"); //$NON-NLS-1$
 			if(concurrents.size() > 0) {
 				tempConcurrent = concurrents.get(0);
 				autocompleteLicence = false;
@@ -401,9 +401,9 @@ public class AutoCompleteDocument extends PlainDocument {
 		
 		String searchString = getText(0, getLength());
 		Archer searchArcher = new Archer();
-		searchArcher.setNumLicenceArcher(searchString + "%");
+		searchArcher.setNumLicenceArcher(searchString + "%"); //$NON-NLS-1$
 		if(getLength() > 0) {
-			ArrayList<Concurrent> concurrents = Concurrent.getArchersInDatabase(searchArcher, reglement, "NUMLICENCEARCHER");
+			ArrayList<Concurrent> concurrents = Concurrent.getArchersInDatabase(searchArcher, reglement, "NUMLICENCEARCHER"); //$NON-NLS-1$
 			if(concurrents.size() > 0)
 				concurrent = concurrents.get(0);
 			else
@@ -451,9 +451,9 @@ public class AutoCompleteDocument extends PlainDocument {
 		
 		String searchString = getText(0, getLength());
 		Entite searchEntite = new Entite();
-		searchEntite.setVille(searchString.toUpperCase() + "%");
+		searchEntite.setVille(searchString.toUpperCase() + "%"); //$NON-NLS-1$
 		if(getLength() > 0) {
-			ArrayList<Entite> entites = Entite.getEntitesInDatabase(searchEntite, "VILLEENTITE");
+			ArrayList<Entite> entites = Entite.getEntitesInDatabase(searchEntite, "VILLEENTITE"); //$NON-NLS-1$
 			if(entites.size() > 0)
 				entite = entites.get(0);
 			else
@@ -499,11 +499,11 @@ public class AutoCompleteDocument extends PlainDocument {
 		
 		String searchString = getText(0, getLength());
 		Entite searchEntite = new Entite();
-		searchEntite.setAgrement(searchString.toUpperCase() + "%");
+		searchEntite.setAgrement(searchString.toUpperCase() + "%"); //$NON-NLS-1$
 		if(getLength() > 0) {
-			ArrayList<Entite> entites = Entite.getEntitesInDatabase(searchEntite, "AGREMENTENTITE");
+			ArrayList<Entite> entites = Entite.getEntitesInDatabase(searchEntite, "AGREMENTENTITE"); //$NON-NLS-1$
 			if(entites.size() > 0)
-				entite = Entite.getEntitesInDatabase(searchEntite, "AGREMENTENTITE").get(0);
+				entite = Entite.getEntitesInDatabase(searchEntite, "AGREMENTENTITE").get(0); //$NON-NLS-1$
 			else
 				entite = null;
 		} else {

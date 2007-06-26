@@ -35,9 +35,9 @@ public class ParametreDialog extends JDialog implements ActionListener {
 	private JXDatePicker jtfDateConcours = new JXDatePicker();
 	private JComboBox jcbReglement = new JComboBox();
 	private JButton jbDetail = new JButton();
-	private JTextField jtfNombreCible = new JTextField(new NumberDocument(false, false), "", 3);
+	private JTextField jtfNombreCible = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
 	private JComboBox jcbNombreTireurParCible = new JComboBox();
-	private JTextField jtfNombreDepart = new JTextField(new NumberDocument(false, false), "", 3);
+	private JTextField jtfNombreDepart = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
 	private JTextField jtfArbitres = new JTextField(20);
 	private JButton jbAjouterArbitre = new JButton();
 	private JButton jbSupprimerArbitre = new JButton();
@@ -45,12 +45,12 @@ public class ParametreDialog extends JDialog implements ActionListener {
 	private AJList jlArbitres = new AJList();
 	
 	private JLabel jlIntituleConcours = new JLabel();
-	private JLabel jlDateConcours = new JLabel(); //$NON-NLS-1$
-	private JLabel jlReglement = new JLabel(); //$NON-NLS-1$
-	private JLabel jlNombreCible = new JLabel(); //$NON-NLS-1$
-	private JLabel jlNombreTireurParCible = new JLabel(); //$NON-NLS-1$
-	private JLabel jlNombreDepart = new JLabel(); //$NON-NLS-1$
-	private JLabel jlbArbitres = new JLabel(); //$NON-NLS-1$
+	private JLabel jlDateConcours = new JLabel();
+	private JLabel jlReglement = new JLabel();
+	private JLabel jlNombreCible = new JLabel();
+	private JLabel jlNombreTireurParCible = new JLabel();
+	private JLabel jlNombreDepart = new JLabel();
+	private JLabel jlbArbitres = new JLabel();
 	
 	ReglementDialog reglementDialog;
 	
@@ -189,11 +189,11 @@ public class ParametreDialog extends JDialog implements ActionListener {
 		jlNombreDepart.setText(ConcoursJeunes.ajrLibelle.getResourceString("parametre.nombredepart")); //$NON-NLS-1$
 		jlbArbitres.setText(ConcoursJeunes.ajrLibelle.getResourceString("parametre.arbitres")); //$NON-NLS-1$
 		
-		jbDetail.setText("+");
+		jbDetail.setText("+"); //$NON-NLS-1$
 		
-		jbAjouterArbitre.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.ajouter"));
-		jbSupprimerArbitre.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.supprimer"));
-		jbArbitreResponsable.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.arbitreresponsable"));
+		jbAjouterArbitre.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.ajouter")); //$NON-NLS-1$
+		jbSupprimerArbitre.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.supprimer")); //$NON-NLS-1$
+		jbArbitreResponsable.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.arbitreresponsable")); //$NON-NLS-1$
 		jbValider.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
 		jbAnnuler.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
 	}
@@ -203,9 +203,9 @@ public class ParametreDialog extends JDialog implements ActionListener {
 		jtfDateConcours.setDate(parametre.getDate());
 		jcbReglement.setSelectedItem(parametre.getReglement().getName());
 		jcbReglement.setEnabled(!parametre.isReglementLock());
-		jtfNombreCible.setText(""+parametre.getNbCible());
+		jtfNombreCible.setText(""+parametre.getNbCible()); //$NON-NLS-1$
 		jcbNombreTireurParCible.setSelectedIndex((parametre.getNbTireur() / 2) - 1);
-		jtfNombreDepart.setText(""+parametre.getNbDepart());
+		jtfNombreDepart.setText(""+parametre.getNbDepart()); //$NON-NLS-1$
 		jlArbitres.setListData(parametre.getArbitres().toArray());
 		
 		tempReglement = parametre.getReglement();

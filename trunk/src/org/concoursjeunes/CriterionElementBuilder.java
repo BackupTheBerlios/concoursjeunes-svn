@@ -99,8 +99,8 @@ import java.sql.SQLException;
 public class CriterionElementBuilder {
 	public static CriterionElement getCriterionElement(String codeElement, Criterion criterion, int hashReglement) {
 		try {
-			String sql = "select * from CRITEREELEMENT where CODECRITEREELEMENT=?" +
-					" and CODECRITERE=? and NUMREGLEMENT=?";
+			String sql = "select * from CRITEREELEMENT where CODECRITEREELEMENT=?" + //$NON-NLS-1$
+					" and CODECRITERE=? and NUMREGLEMENT=?"; //$NON-NLS-1$
 			
 			PreparedStatement pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
 
@@ -113,8 +113,8 @@ public class CriterionElementBuilder {
 			if(rs.first()) {
 				CriterionElement criterionElement = new CriterionElement();
 				criterionElement.setCode(codeElement);
-				criterionElement.setLibelle(rs.getString("LIBELLECRITEREELEMENT"));
-				criterionElement.setActive(rs.getBoolean("ACTIF"));
+				criterionElement.setLibelle(rs.getString("LIBELLECRITEREELEMENT")); //$NON-NLS-1$
+				criterionElement.setActive(rs.getBoolean("ACTIF")); //$NON-NLS-1$
 				criterionElement.setCriterionParent(criterion);
 				
 				return criterionElement;

@@ -100,7 +100,7 @@ import static org.concoursjeunes.ConcoursJeunes.ajrParametreAppli;
  * @version 3.0
  */
 public class Parametre extends DefaultParameters {
-	private Date dDateConcours		= new Date(); //$NON-NLS-1$
+	private Date dDateConcours		= new Date();
 	private ArrayList<String> vArbitres = new ArrayList<String>();
 	private Reglement reglement		= new Reglement();
 

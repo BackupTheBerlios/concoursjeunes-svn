@@ -97,19 +97,19 @@ public class CriteriaSet {
 		try {
 			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 			
-			stmt.executeUpdate("merge into CRITERIASET VALUES (" + hashCode() + ")");
+			stmt.executeUpdate("merge into CRITERIASET VALUES (" + hashCode() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
 
 			
 			for(Entry<Criterion, CriterionElement> entry : criteria.entrySet()) {
 				Criterion criterion = entry.getKey();
 				CriterionElement criterionElement = entry.getValue();
 
-				String sql =  "merge into POSSEDE (NUMCRITERIASET, CODECRITEREELEMENT, " +
-						"CODECRITERE, NUMREGLEMENT) KEY (NUMCRITERIASET, CODECRITERE, NUMREGLEMENT) VALUES (" +
-						hashCode() + ", '" + 
-						criterionElement.getCode() + "', '" + 
-						criterion.getCode() + "', " + 
-						criterion.getReglementParent().hashCode() + ")";
+				String sql =  "merge into POSSEDE (NUMCRITERIASET, CODECRITEREELEMENT, " + //$NON-NLS-1$
+						"CODECRITERE, NUMREGLEMENT) KEY (NUMCRITERIASET, CODECRITERE, NUMREGLEMENT) VALUES (" + //$NON-NLS-1$
+						hashCode() + ", '" +  //$NON-NLS-1$
+						criterionElement.getCode() + "', '" + //$NON-NLS-1$ 
+						criterion.getCode() + "', " +  //$NON-NLS-1$
+						criterion.getReglementParent().hashCode() + ")"; //$NON-NLS-1$
 				//System.out.println(sql);
 				stmt.executeUpdate(sql);
 			}

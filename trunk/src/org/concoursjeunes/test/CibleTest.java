@@ -119,7 +119,7 @@ public class CibleTest {
 	 */
 	@Test
 	public void testCible() {
-		fail("Not yet implemented");
+		fail("Not yet implemented"); //$NON-NLS-1$
 	}
 
 	/**
@@ -127,7 +127,7 @@ public class CibleTest {
 	 */
 	@Test
 	public void testSetFicheConcours() {
-		fail("Not yet implemented");
+		fail("Not yet implemented"); //$NON-NLS-1$
 	}
 
 	/**
@@ -135,7 +135,7 @@ public class CibleTest {
 	 */
 	@Test
 	public void testInsertConcurrent() {
-		fail("Not yet implemented");
+		fail("Not yet implemented"); //$NON-NLS-1$
 	}
 
 	/**
@@ -143,7 +143,7 @@ public class CibleTest {
 	 */
 	@Test
 	public void testGetConcurrentAt() {
-		fail("Not yet implemented");
+		fail("Not yet implemented"); //$NON-NLS-1$
 	}
 
 	/**
@@ -151,7 +151,7 @@ public class CibleTest {
 	 */
 	@Test
 	public void testGetAllConcurrents() {
-		fail("Not yet implemented");
+		fail("Not yet implemented"); //$NON-NLS-1$
 	}
 
 	/**
@@ -159,7 +159,7 @@ public class CibleTest {
 	 */
 	@Test
 	public void testIndexOf() {
-		fail("Not yet implemented");
+		fail("Not yet implemented"); //$NON-NLS-1$
 	}
 
 	/**
@@ -167,7 +167,7 @@ public class CibleTest {
 	 */
 	@Test
 	public void testContains() {
-		fail("Not yet implemented");
+		fail("Not yet implemented"); //$NON-NLS-1$
 	}
 
 	/**
@@ -175,7 +175,7 @@ public class CibleTest {
 	 */
 	@Test
 	public void testSetConcurrentAt() {
-		fail("Not yet implemented");
+		fail("Not yet implemented"); //$NON-NLS-1$
 	}
 
 	/**
@@ -183,7 +183,7 @@ public class CibleTest {
 	 */
 	@Test
 	public void testRemoveConcurrentAt() {
-		fail("Not yet implemented");
+		fail("Not yet implemented"); //$NON-NLS-1$
 	}
 
 	/**
@@ -191,7 +191,7 @@ public class CibleTest {
 	 */
 	@Test
 	public void testRemoveConcurrent() {
-		fail("Not yet implemented");
+		fail("Not yet implemented"); //$NON-NLS-1$
 	}
 
 	/**
@@ -199,7 +199,7 @@ public class CibleTest {
 	 */
 	@Test
 	public void testRemoveAll() {
-		fail("Not yet implemented");
+		fail("Not yet implemented"); //$NON-NLS-1$
 	}
 
 	/**
@@ -207,7 +207,7 @@ public class CibleTest {
 	 */
 	@Test
 	public void testGetDistancesEtBlason() {
-		fail("Not yet implemented");
+		fail("Not yet implemented"); //$NON-NLS-1$
 	}
 
 	/**
@@ -215,7 +215,7 @@ public class CibleTest {
 	 */
 	@Test
 	public void testToString() {
-		fail("Not yet implemented");
+		fail("Not yet implemented"); //$NON-NLS-1$
 	}
 
 	/**
@@ -223,7 +223,7 @@ public class CibleTest {
 	 */
 	@Test
 	public void testGetCibleLibelle() {
-		fail("Not yet implemented");
+		fail("Not yet implemented"); //$NON-NLS-1$
 	}
 
 }

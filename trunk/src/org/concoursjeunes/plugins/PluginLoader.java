@@ -19,20 +19,20 @@ public class PluginLoader {
 	private ArrayList<PluginMetadata> listPlugins = new ArrayList<PluginMetadata>();
 	
 	public PluginLoader() {
-		File pluginPath = new File("./plugins/properties");
+		File pluginPath = new File("./plugins/properties"); //$NON-NLS-1$
 		File[] pluginsFiles = pluginPath.listFiles();
 		
 		for(File pluginFile : pluginsFiles) {
-			if(pluginFile.getName().endsWith(".properties")) {
-				AjResourcesReader pluginProperties = new AjResourcesReader("properties." + 
-						pluginFile.getName().substring(0, pluginFile.getName().length() - ".properties".length()));
-				AjResourcesReader pluginLocalInfo = new AjResourcesReader(pluginProperties.getResourceString("plugin.libelle.file"));
+			if(pluginFile.getName().endsWith(".properties")) { //$NON-NLS-1$
+				AjResourcesReader pluginProperties = new AjResourcesReader("properties." +  //$NON-NLS-1$
+						pluginFile.getName().substring(0, pluginFile.getName().length() - ".properties".length())); //$NON-NLS-1$
+				AjResourcesReader pluginLocalInfo = new AjResourcesReader(pluginProperties.getResourceString("plugin.libelle.file")); //$NON-NLS-1$
 				
 				PluginMetadata pluginMetadata = new PluginMetadata();
-				pluginMetadata.setInfo(pluginLocalInfo.getResourceString("plugin.libelle"));
-				pluginMetadata.setOptionLabel(pluginLocalInfo.getResourceString("plugin.optionlabel"));
-				pluginMetadata.setPluginType(pluginProperties.getResourceInteger("plugin.type"));
-				pluginMetadata.setClassName(pluginProperties.getResourceString("plugin.class"));
+				pluginMetadata.setInfo(pluginLocalInfo.getResourceString("plugin.libelle")); //$NON-NLS-1$
+				pluginMetadata.setOptionLabel(pluginLocalInfo.getResourceString("plugin.optionlabel")); //$NON-NLS-1$
+				pluginMetadata.setPluginType(pluginProperties.getResourceInteger("plugin.type")); //$NON-NLS-1$
+				pluginMetadata.setClassName(pluginProperties.getResourceString("plugin.class")); //$NON-NLS-1$
 				
 				listPlugins.add(pluginMetadata);
 			}

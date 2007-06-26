@@ -267,18 +267,18 @@ public class Concurrent extends Archer {
 		aComparant.setNomArcher(getNomArcher());
 		aComparant.setPrenomArcher(getPrenomArcher());
 
-		ArrayList<Concurrent> homonyme = getArchersInDatabase(aComparant, null, "");
+		ArrayList<Concurrent> homonyme = getArchersInDatabase(aComparant, null, ""); //$NON-NLS-1$
 
 		return (homonyme.size() > 1);
 	}
 	
 	public void saveCriteriaSet(Reglement reglement) {
-		if(!getNumLicenceArcher().equals("")) {
+		if(!getNumLicenceArcher().equals("")) { //$NON-NLS-1$
 			criteriaSet.save();
 			try {
-				String sql = "merge into distinguer (NUMLICENCEARCHER, NUMREGLEMENT, " +
-						"NUMCRITERIASET) KEY (NUMLICENCEARCHER, NUMREGLEMENT)" +
-						"VALUES (?, ?, ?)";
+				String sql = "merge into distinguer (NUMLICENCEARCHER, NUMREGLEMENT, " + //$NON-NLS-1$
+						"NUMCRITERIASET) KEY (NUMLICENCEARCHER, NUMREGLEMENT)" + //$NON-NLS-1$
+						"VALUES (?, ?, ?)"; //$NON-NLS-1$
 				//NUMREGLEMENT
 				PreparedStatement pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
 				
@@ -317,32 +317,32 @@ public class Concurrent extends Archer {
 		try {
 			stmt = ConcoursJeunes.dbConnection.createStatement();
 
-			String sql = "select * from archers ";
+			String sql = "select * from archers "; //$NON-NLS-1$
 
 			if(aGeneric != null) {
-				sql += "where ";
+				sql += "where "; //$NON-NLS-1$
 				ArrayList<String> filters = new ArrayList<String>();
 
 				if(aGeneric.getNumLicenceArcher().length() > 0) {
-					filters.add("NUMLICENCEARCHER like '" + aGeneric.getNumLicenceArcher() + "'");
+					filters.add("NUMLICENCEARCHER like '" + aGeneric.getNumLicenceArcher() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				if(aGeneric.getNomArcher().length() > 0) {
-					filters.add("NOMARCHER like '" + aGeneric.getNomArcher().replaceAll("'", "''") + "'");
+					filters.add("NOMARCHER like '" + aGeneric.getNomArcher().replaceAll("'", "''") + "'"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 				}
 				if(aGeneric.getPrenomArcher().length() > 0) {
-					filters.add("UPPER(PRENOMARCHER) like '" + aGeneric.getPrenomArcher().toUpperCase().replaceAll("'", "''") + "'");
+					filters.add("UPPER(PRENOMARCHER) like '" + aGeneric.getPrenomArcher().toUpperCase().replaceAll("'", "''") + "'"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 				}
 				if(aGeneric.getClub().getAgrement().length() > 0) {
-					filters.add("AGREMENTENTITE like '" + aGeneric.getClub().getAgrement() + "'");
+					filters.add("AGREMENTENTITE like '" + aGeneric.getClub().getAgrement() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 
 				for(String filter : filters) {
-					sql += " and " + filter;
+					sql += " and " + filter; //$NON-NLS-1$
 				}
 			}
-			sql = sql.replaceFirst(" and ", "");
+			sql = sql.replaceFirst(" and ", ""); //$NON-NLS-1$ //$NON-NLS-2$
 			if(orderfield.length() > 0)
-				sql += " order by " + orderfield;
+				sql += " order by " + orderfield; //$NON-NLS-1$
 
 			ResultSet rs = stmt.executeQuery(sql);
 

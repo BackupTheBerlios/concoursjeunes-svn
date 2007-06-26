@@ -35,7 +35,7 @@ public class ConfigurationBuilder {
 	 */
 	public static Configuration getCurrentConfiguration() {
 		Configuration configuration = (Configuration)AJToolKit.loadMarshallStructure(new File(userRessources.getConfigPathForUser() + File.separator + 
-				ajrParametreAppli.getResourceString("file.configuration")), Configuration.class, false);
+				ajrParametreAppli.getResourceString("file.configuration")), Configuration.class, false); //$NON-NLS-1$
 		if(configuration == null) {
 			configuration = new Configuration();
 		}
@@ -59,9 +59,9 @@ public class ConfigurationBuilder {
 	 * @return la configuration nommé
 	 */
 	public static Configuration getConfiguration(String profilename) {
-		Configuration configuration = (Configuration)AJToolKit.loadXMLStructure(
+		Configuration configuration = (Configuration)AJToolKit.loadMarshallStructure(
 				new File(ConcoursJeunes.userRessources.getConfigPathForUser() 
-						+ File.separator + "configuration_" + profilename + ".xml"), false);
+						+ File.separator + "configuration_" + profilename + ".xml"), Configuration.class, false); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		if(configuration == null) {
 			configuration = new Configuration();

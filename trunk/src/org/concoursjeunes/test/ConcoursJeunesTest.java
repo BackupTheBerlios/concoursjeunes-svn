@@ -33,18 +33,18 @@ public class ConcoursJeunesTest {
 		//test que ConcoursJeunes accédent correctement aux fichiers
 		//ressources
 		assertNotNull(ConcoursJeunes.ajrLibelle);
-		assertEquals(ConcoursJeunes.ajrLibelle.getResourceString("onglet.gestionarcher"), "Gestion des archers");
+		assertEquals(ConcoursJeunes.ajrLibelle.getResourceString("onglet.gestionarcher"), "Gestion des archers"); //$NON-NLS-1$ //$NON-NLS-2$
 		assertNotNull(ConcoursJeunes.ajrParametreAppli);
-		assertEquals(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources"), "./ressources");
+		assertEquals(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources"), "./ressources"); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		//test l'accès au fichier de config
 		assertNotNull(ConcoursJeunes.configuration);
 		//test l'accès aux ressources utilisateur
 		assertNotNull(ConcoursJeunes.userRessources);
-		if(System.getProperty("os.name").startsWith("Windows"))
-			assertEquals(ConcoursJeunes.userRessources.getUserPath(), System.getenv("APPDATA") + File.separator + ConcoursJeunes.NOM);
+		if(System.getProperty("os.name").startsWith("Windows")) //$NON-NLS-1$ //$NON-NLS-2$
+			assertEquals(ConcoursJeunes.userRessources.getUserPath(), System.getenv("APPDATA") + File.separator + ConcoursJeunes.NOM); //$NON-NLS-1$
 		else
-			assertEquals(ConcoursJeunes.userRessources.getUserPath(), System.getProperty("user.home") + File.separator + "." + ConcoursJeunes.NOM);
+			assertEquals(ConcoursJeunes.userRessources.getUserPath(), System.getProperty("user.home") + File.separator + "." + ConcoursJeunes.NOM); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		//test la base de donnée
 		assertNotNull(ConcoursJeunes.dbConnection);
@@ -93,7 +93,7 @@ public class ConcoursJeunesTest {
 			e1.printStackTrace();
 		}
 		//marche à condition que la gestion evenementiel soit synchrone
-		assertTrue("Aucun evenements de création reçue", eventReceived);
+		assertTrue("Aucun evenements de création reçue", eventReceived); //$NON-NLS-1$
 		concoursJeunes.removeConcoursJeunesListener(auditeur);
 		
 		concoursJeunes = null;
@@ -125,7 +125,7 @@ public class ConcoursJeunesTest {
 
 				String concourspath = ConcoursJeunes.userRessources.getConcoursPathForProfile(ConcoursJeunes.configuration.getCurProfil());
 				
-				assertFalse("Le fichier du concours ne devrait plus exister", 
+				assertFalse("Le fichier du concours ne devrait plus exister",  //$NON-NLS-1$
 						new File(concourspath + File.separator + testConcours.getParametre().getSaveName()).exists());
 			}
 		};
@@ -139,7 +139,7 @@ public class ConcoursJeunesTest {
 			e1.printStackTrace();
 		}
 		
-		assertTrue("Aucun evenements de suppression reçue", eventReceived);
+		assertTrue("Aucun evenements de suppression reçue", eventReceived); //$NON-NLS-1$
 		
 		concoursJeunes.removeConcoursJeunesListener(auditeur);
 		
@@ -177,7 +177,7 @@ public class ConcoursJeunesTest {
 			e1.printStackTrace();
 		}
 		
-		assertTrue("Aucun evenements de fermeture reçue", eventReceived);
+		assertTrue("Aucun evenements de fermeture reçue", eventReceived); //$NON-NLS-1$
 		
 		concoursJeunes.removeConcoursJeunesListener(auditeur);
 		
@@ -205,7 +205,7 @@ public class ConcoursJeunesTest {
 			public void ficheConcoursRestored(ConcoursJeunesEvent e) {
 				eventReceived = true;
 				
-				assertNotNull("la fiche concours n'est pas chargé correctement", e.getFicheConcours());
+				assertNotNull("la fiche concours n'est pas chargé correctement", e.getFicheConcours()); //$NON-NLS-1$
 			}
 			public void ficheConcoursDeleted(ConcoursJeunesEvent e) { }
 		};
@@ -219,7 +219,7 @@ public class ConcoursJeunesTest {
 			e1.printStackTrace();
 		}
 		
-		assertTrue("Aucun evenements de restauration reçue", eventReceived);
+		assertTrue("Aucun evenements de restauration reçue", eventReceived); //$NON-NLS-1$
 		
 		concoursJeunes.removeConcoursJeunesListener(auditeur);
 		

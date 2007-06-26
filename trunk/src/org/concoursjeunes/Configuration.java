@@ -108,7 +108,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	private String langue           = "";               //$NON-NLS-1$
 	private String logoPath         = "ressources/logo_ffta.gif";   //$NON-NLS-1$
 	
-	private String reglementName	= "";
+	private String reglementName	= ""; //$NON-NLS-1$
 
 	private String pdfReaderPath    = "";               //$NON-NLS-1$
 
@@ -403,7 +403,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	public void save() {
 		File f = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + 
 				File.separator + 
-				CONFIG_PROFILE + curProfil + EXT_XML); //$NON-NLS-1$
+				CONFIG_PROFILE + curProfil + EXT_XML);
 		AJToolKit.saveMarshallStructure(f, this, false);
 	}
 	

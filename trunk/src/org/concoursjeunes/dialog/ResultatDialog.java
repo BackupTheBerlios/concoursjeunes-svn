@@ -56,7 +56,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 	 * @param indexCible - numero de la cible à saisir
 	 */
 	public ResultatDialog(JFrame parentframe, Concurrent[] concurrents, Parametre parametres) {
-		super(parentframe, "", true);
+		super(parentframe, "", true); //$NON-NLS-1$
 
 		this.concurrents = concurrents;
 		this.parametres = parametres;
@@ -244,8 +244,8 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 	private void affectLibelle() {
 		setTitle(ConcoursJeunes.ajrLibelle.getResourceString("resultats.titre")); //$NON-NLS-1$
 		
-		jlCible.setText(ConcoursJeunes.ajrLibelle.getResourceString("resultats.cible"));
-		jlDistance.setText(ConcoursJeunes.ajrLibelle.getResourceString("resultats.distances"));
+		jlCible.setText(ConcoursJeunes.ajrLibelle.getResourceString("resultats.cible")); //$NON-NLS-1$
+		jlDistance.setText(ConcoursJeunes.ajrLibelle.getResourceString("resultats.distances")); //$NON-NLS-1$
 		for(int i = 0; i < jlDistances.length; i++) {
 			jlDistances[i].setText((i==0) ?
 					ConcoursJeunes.ajrLibelle.getResourceString("resultats.distance1") + " " //$NON-NLS-1$ //$NON-NLS-2$

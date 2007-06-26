@@ -121,14 +121,14 @@ import ajinteractive.standard.java2.GridbagComposer;
 public class FFTAImportDialog extends JDialog implements ActionListener, FFTAImportThreadListener {
 	
 	private JLabel jlEmplacementLFFTA = new JLabel();
-	private JTextField jtfEmplacementLFFTA = new JTextField("C:\\ResultArc", 30);
+	private JTextField jtfEmplacementLFFTA = new JTextField("C:\\ResultArc", 30); //$NON-NLS-1$
 	private JButton jbParcourir = new JButton();
 	private JButton jbSart = new JButton();
 	private JProgressBar jpbProgression = new JProgressBar();
 	
 	private JButton jbAnnuler = new JButton();
 	
-	 private AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.FFTAImport.FFTAImportPlugin_libelle");
+	 private AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.FFTAImport.FFTAImportPlugin_libelle"); //$NON-NLS-1$
 	
 	public FFTAImportDialog(JFrame parentframe) {
 		super(parentframe);
@@ -171,11 +171,11 @@ public class FFTAImportDialog extends JDialog implements ActionListener, FFTAImp
 	}
 	
 	private void affectLibelle() {
-		jlEmplacementLFFTA.setText(pluginLocalisation.getResourceString("emplacement.lffta"));
-		jbParcourir.setText(pluginLocalisation.getResourceString("button.parcourir"));
-		jbSart.setText(pluginLocalisation.getResourceString("button.start"));
+		jlEmplacementLFFTA.setText(pluginLocalisation.getResourceString("emplacement.lffta")); //$NON-NLS-1$
+		jbParcourir.setText(pluginLocalisation.getResourceString("button.parcourir")); //$NON-NLS-1$
+		jbSart.setText(pluginLocalisation.getResourceString("button.start")); //$NON-NLS-1$
 		
-		jbAnnuler.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.annuler"));
+		jbAnnuler.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
 	}
 	
 	private void completePane() {

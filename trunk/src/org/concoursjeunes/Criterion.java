@@ -226,13 +226,13 @@ public class Criterion {
 		try {
 			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 			
-			stmt.executeUpdate("merge into CRITERE (CODECRITERE,NUMREGLEMENT,LIBELLECRITERE,SORTORDERCRITERE," +
-					"CLASSEMENT,PLACEMENT,CODEFFTA) VALUES ('" + code + "'," + 
-					reglementParent.hashCode() + ",'" + libelle + "'," + 
-					sortOrder + "," +
-					Boolean.toString(classement).toUpperCase() + "," +
-					Boolean.toString(placement).toUpperCase() + ",'" +
-					codeffta + "')");
+			stmt.executeUpdate("merge into CRITERE (CODECRITERE,NUMREGLEMENT,LIBELLECRITERE,SORTORDERCRITERE," + //$NON-NLS-1$
+					"CLASSEMENT,PLACEMENT,CODEFFTA) VALUES ('" + code + "'," +  //$NON-NLS-1$ //$NON-NLS-2$
+					reglementParent.hashCode() + ",'" + libelle + "'," +  //$NON-NLS-1$ //$NON-NLS-2$
+					sortOrder + "," + //$NON-NLS-1$
+					Boolean.toString(classement).toUpperCase() + "," + //$NON-NLS-1$
+					Boolean.toString(placement).toUpperCase() + ",'" + //$NON-NLS-1$
+					codeffta + "')"); //$NON-NLS-1$
 			for(CriterionElement criterionElement : criterionElements) {
 				criterionElement.save();
 			}
@@ -245,8 +245,8 @@ public class Criterion {
 		try {
 			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 			
-			stmt.executeUpdate("delete from CRITERE where CODECRITERE='" + code + "' and " +
-					"NUMREGLEMENT=" + reglementParent.hashCode());
+			stmt.executeUpdate("delete from CRITERE where CODECRITERE='" + code + "' and " + //$NON-NLS-1$ //$NON-NLS-2$
+					"NUMREGLEMENT=" + reglementParent.hashCode()); //$NON-NLS-1$
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

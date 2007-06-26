@@ -144,38 +144,38 @@ public class ReglementBuilder {
 		try {
 			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 			
-			String sql = "";
+			String sql = ""; //$NON-NLS-1$
 			if(numreglement > -1)
-				sql = "select * from REGLEMENT where NUMREGLEMENT=" + numreglement;
+				sql = "select * from REGLEMENT where NUMREGLEMENT=" + numreglement; //$NON-NLS-1$
 			else
-				sql = "select * from REGLEMENT where NOMREGLEMENT='" + reglementName + "'";
+				sql = "select * from REGLEMENT where NOMREGLEMENT='" + reglementName + "'"; //$NON-NLS-1$ //$NON-NLS-2$
 			
 			ResultSet rs = stmt.executeQuery(sql);
 			if(rs.first()) {
-				int numreglment = rs.getInt("NUMREGLEMENT");
+				int numreglment = rs.getInt("NUMREGLEMENT"); //$NON-NLS-1$
 				
-				reglement.setName(rs.getString("NOMREGLEMENT"));
-				reglement.setNbSerie(rs.getInt("NBSERIE"));
-				reglement.setNbVoleeParSerie(rs.getInt("NBVOLEEPARSERIE"));
-				reglement.setNbFlecheParVolee(rs.getInt("NBFLECHEPARVOLEE"));
-				reglement.setNbMembresEquipe(rs.getInt("NBMEMBRESEQUIPE"));
-				reglement.setNbMembresRetenu(rs.getInt("NBMEMBRESRETENU"));
-				reglement.setOfficialReglement(rs.getBoolean("ISOFFICIAL"));
+				reglement.setName(rs.getString("NOMREGLEMENT")); //$NON-NLS-1$
+				reglement.setNbSerie(rs.getInt("NBSERIE")); //$NON-NLS-1$
+				reglement.setNbVoleeParSerie(rs.getInt("NBVOLEEPARSERIE")); //$NON-NLS-1$
+				reglement.setNbFlecheParVolee(rs.getInt("NBFLECHEPARVOLEE")); //$NON-NLS-1$
+				reglement.setNbMembresEquipe(rs.getInt("NBMEMBRESEQUIPE")); //$NON-NLS-1$
+				reglement.setNbMembresRetenu(rs.getInt("NBMEMBRESRETENU")); //$NON-NLS-1$
+				reglement.setOfficialReglement(rs.getBoolean("ISOFFICIAL")); //$NON-NLS-1$
 				
 				rs.close();
 				
 				ArrayList<Criterion> criteria = new ArrayList<Criterion>();
-				rs = stmt.executeQuery("select CODECRITERE from CRITERE where NUMREGLEMENT=" + numreglment);
+				rs = stmt.executeQuery("select CODECRITERE from CRITERE where NUMREGLEMENT=" + numreglment); //$NON-NLS-1$
 				while(rs.next()) {
-					criteria.add(CriterionBuilder.getCriterion(rs.getString("CODECRITERE"), reglement, numreglment));
+					criteria.add(CriterionBuilder.getCriterion(rs.getString("CODECRITERE"), reglement, numreglment)); //$NON-NLS-1$
 				}
 				rs.close();
 				reglement.setListCriteria(criteria);
 				
 				ArrayList<DistancesEtBlason> listDistancesEtBlason = new ArrayList<DistancesEtBlason>();
-				rs = stmt.executeQuery("select * from DISTANCESBLASONS where NUMREGLEMENT=" + numreglment);
+				rs = stmt.executeQuery("select * from DISTANCESBLASONS where NUMREGLEMENT=" + numreglment); //$NON-NLS-1$
 				while(rs.next()) {
-					int numdb = rs.getInt("NUMDISTANCESBLASONS");
+					int numdb = rs.getInt("NUMDISTANCESBLASONS"); //$NON-NLS-1$
 					
 					listDistancesEtBlason.add(DistancesEtBlasonBuilder.getDistancesEtBlason(numdb, reglement, numreglment));
 				}

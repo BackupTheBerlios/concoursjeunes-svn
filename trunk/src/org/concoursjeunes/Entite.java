@@ -181,15 +181,15 @@ public class Entite {
 		try {
 			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 			
-			stmt.executeUpdate("MERGE INTO Entite (AGREMENTENTITE, NOMENTITE, " +
-					"ADRESSEENTITE, CODEPOSTALENTITE, VILLEENTITE, NOTEENTITE, TYPEENTITE) " +
-					"VALUES ('" + agrement + "', '" 
-					+ nom.replaceAll("'", "''") + "', '" 
-					+ adresse.replaceAll("'", "''") + "', '"
-					+ codePostal + "', '" 
-					+ ville.replaceAll("'", "''") + "', '" 
-					+ note.replaceAll("'", "''") + "', " 
-					+ type + ")");
+			stmt.executeUpdate("MERGE INTO Entite (AGREMENTENTITE, NOMENTITE, " + //$NON-NLS-1$
+					"ADRESSEENTITE, CODEPOSTALENTITE, VILLEENTITE, NOTEENTITE, TYPEENTITE) " + //$NON-NLS-1$
+					"VALUES ('" + agrement + "', '"  //$NON-NLS-1$ //$NON-NLS-2$
+					+ nom.replaceAll("'", "''") + "', '"  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+					+ adresse.replaceAll("'", "''") + "', '" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+					+ codePostal + "', '"  //$NON-NLS-1$
+					+ ville.replaceAll("'", "''") + "', '"  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+					+ note.replaceAll("'", "''") + "', "  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+					+ type + ")"); //$NON-NLS-1$
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -202,39 +202,39 @@ public class Entite {
 		try {
 			stmt = ConcoursJeunes.dbConnection.createStatement();
 			
-			String sql = "select * from Entite ";
+			String sql = "select * from Entite "; //$NON-NLS-1$
 			if(eGeneric != null) {
-				sql += "where ";
+				sql += "where "; //$NON-NLS-1$
 				ArrayList<String> filters = new ArrayList<String>();
 				if(eGeneric.getNom().length() > 0) {
-					filters.add("NOMENTITE like '" + eGeneric.getNom().toUpperCase() + "'");
+					filters.add("NOMENTITE like '" + eGeneric.getNom().toUpperCase() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				if(eGeneric.getAgrement().length() > 0) {
-					filters.add("AGREMENTENTITE like '" + eGeneric.getAgrement().toUpperCase() + "'");
+					filters.add("AGREMENTENTITE like '" + eGeneric.getAgrement().toUpperCase() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				if(eGeneric.getVille().length() > 0) {
-					filters.add("VILLEENTITE like '" + eGeneric.getVille().toUpperCase() + "'");
+					filters.add("VILLEENTITE like '" + eGeneric.getVille().toUpperCase() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				
 				for(String filter : filters) {
-					sql += " and " + filter;
+					sql += " and " + filter; //$NON-NLS-1$
 				}
 			}
-			sql = sql.replaceFirst(" and ", "");
+			sql = sql.replaceFirst(" and ", ""); //$NON-NLS-1$ //$NON-NLS-2$
 			if(orderfield.length() > 0)
-				sql += "order by " + orderfield;
+				sql += "order by " + orderfield; //$NON-NLS-1$
 			
 			ResultSet rs = stmt.executeQuery(sql);
 
 			if(rs.next()) {
 				Entite entite = new Entite();
-				entite.setAgrement(rs.getString("AgrementEntite"));
-				entite.setNom(rs.getString("NomEntite"));
-				entite.setAdresse(rs.getString("AdresseEntite"));
-				entite.setCodePostal(rs.getString("CodePostalEntite"));
-				entite.setVille(rs.getString("VilleEntite"));
-				entite.setNote(rs.getString("NoteEntite"));
-				entite.setType(rs.getInt("TypeEntite"));
+				entite.setAgrement(rs.getString("AgrementEntite")); //$NON-NLS-1$
+				entite.setNom(rs.getString("NomEntite")); //$NON-NLS-1$
+				entite.setAdresse(rs.getString("AdresseEntite")); //$NON-NLS-1$
+				entite.setCodePostal(rs.getString("CodePostalEntite")); //$NON-NLS-1$
+				entite.setVille(rs.getString("VilleEntite")); //$NON-NLS-1$
+				entite.setNote(rs.getString("NoteEntite")); //$NON-NLS-1$
+				entite.setType(rs.getInt("TypeEntite")); //$NON-NLS-1$
 				
 				entites.add(entite);
 			}
