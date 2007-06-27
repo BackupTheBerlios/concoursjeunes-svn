@@ -445,7 +445,8 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 					"<html>ConcoursJeunes<br>" + //$NON-NLS-1$
 					ConcoursJeunes.ajrLibelle.getResourceString("apropos.description") + "<br><br>" + //$NON-NLS-1$ //$NON-NLS-2$
 					ConcoursJeunes.ajrLibelle.getResourceString("apropos.version") + "<br>" + ConcoursJeunes.VERSION + "<br>" + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-					ConcoursJeunes.COPYR + " " + ConcoursJeunes.AUTEURS + "<br><br>" + //$NON-NLS-1$ //$NON-NLS-2$
+					ConcoursJeunes.COPYR + " " + ConcoursJeunes.AUTEURS + "<br>" + //$NON-NLS-1$ //$NON-NLS-2$
+					"version base:" + ConcoursJeunes.dbVersion + "<br><br>" +
 					ConcoursJeunes.ajrLibelle.getResourceString("apropos.liens") + "<br></html>", //$NON-NLS-1$ //$NON-NLS-2$
 					ConcoursJeunes.ajrLibelle.getResourceString("apropos.titre"),JOptionPane.INFORMATION_MESSAGE); //$NON-NLS-1$
 		} else if (cmd.equals("menubar.aide.aide")) { //$NON-NLS-1$

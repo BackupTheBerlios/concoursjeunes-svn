@@ -89,9 +89,15 @@
 package org.concoursjeunes;
 
 import java.awt.Desktop;
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FilenameFilter;
+import java.io.PrintStream;
+import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -99,6 +105,7 @@ import java.util.Arrays;
 import java.util.Locale;
 
 import javax.naming.ConfigurationException;
+import javax.swing.JOptionPane;
 import javax.swing.event.EventListenerList;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -131,7 +138,7 @@ import com.lowagie.text.pdf.PdfWriter;
 public class ConcoursJeunes {
 
 	//UID: 1.Major(2).Minor(2).Correctif(2).Build(3).Type(1,Alpha,Beta,RC(1->6),Release)
-	public static final long serialVersionUID          = 10120000011l;
+	public static final long serialVersionUID          = 10190000011l;
 
 	/**
 	 * Chaines de version de ConcoursJeunes
@@ -141,6 +148,7 @@ public class ConcoursJeunes {
 	public static final String CODENAME             = "@version.codename@";  //$NON-NLS-1$
 	public static final String AUTEURS              = "@version.author@";    //$NON-NLS-1$
 	public static final String COPYR                = "@version.copyr@";     //$NON-NLS-1$
+	public static final int DB_RELEASE_REQUIRED		= 1;
 
 	// Chaine de ressources
 	public static final String RES_LIBELLE         = "libelle";                //$NON-NLS-1$
@@ -165,6 +173,7 @@ public class ConcoursJeunes {
 	 * ressources utilisateurs
 	 */
 	public static CJAppRessources userRessources        = new CJAppRessources(NOM);
+	public static int dbVersion = 0;
 	
 	/**
 	 * Connection à la base de données du logiciel
@@ -212,6 +221,24 @@ public class ConcoursJeunes {
 					ajrParametreAppli.getResourceString("database.user"), //$NON-NLS-1$
 					ajrParametreAppli.getResourceString("database.password")); //$NON-NLS-1$
 			
+			Statement stmt = dbConnection.createStatement();
+
+			//test si la base existe déjà et retourne sa révision si c'est le cas
+			ResultSet rs = stmt.executeQuery("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='DBPARAM'");
+			if(rs.first()) {
+				dbVersion = getDBVersion();
+			}
+			
+			//si la version de la base est différente de la version requise par le programme
+			//copie les fichiers de mise à jour par défaut
+			if(dbVersion < DB_RELEASE_REQUIRED) {
+				userRessources.copyDefaultUpdateFile();
+			} else if(dbVersion > DB_RELEASE_REQUIRED) {
+				JOptionPane.showMessageDialog(null, ajrLibelle.getResourceString("erreur.dbrelease"), 
+						ajrLibelle.getResourceString("erreur.dbrelease.title"), JOptionPane.ERROR_MESSAGE);
+				System.exit(1);
+			}
+			
 			String[] updateScripts = new File(userRessources.getAllusersDataPath() + File.separator + "update").list(new FilenameFilter() { //$NON-NLS-1$
 				public boolean accept(File dir, String name) {
 					if(name.endsWith(".sql")) { //$NON-NLS-1$
@@ -220,19 +247,21 @@ public class ConcoursJeunes {
 					return false;
 				}
 			});
-			Arrays.sort(updateScripts);
+			if(updateScripts != null) {
+				Arrays.sort(updateScripts);
+
+				int scriptRelease = dbVersion;
+				for(String scriptPath : updateScripts) {
+					scriptRelease = SqlParser.createBatch(new File(userRessources.getAllusersDataPath() + File.separator +
+							"update" + File.separator + scriptPath), stmt, null, scriptRelease); //$NON-NLS-1$
+					System.out.println("delete: " + new File(userRessources.getAllusersDataPath() + File.separator +
+							"update" + File.separator + scriptPath).delete()); //$NON-NLS-1$
+				}
+				stmt.executeBatch();
+				stmt.close();
 			
-			//test si la base à été généré et la génére dans le cas contraire
-			Statement stmt = dbConnection.createStatement();
-			
-			for(String scriptPath : updateScripts) {
-				SqlParser.createBatch(new File(userRessources.getAllusersDataPath() + File.separator +
-						"update" + File.separator + scriptPath), stmt, null); //$NON-NLS-1$
-				new File(userRessources.getAllusersDataPath() + File.separator +
-						"update" + File.separator + scriptPath).delete(); //$NON-NLS-1$
+				dbVersion = getDBVersion();
 			}
-			stmt.executeBatch();
-			stmt.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			JXErrorDialog.showDialog(null, "SQL Error", e.getLocalizedMessage(), //$NON-NLS-1$
@@ -264,6 +293,23 @@ public class ConcoursJeunes {
 	
 	public void removeConcoursJeunesListener(ConcoursJeunesListener concoursJeunesListener) {
 		listeners.remove(ConcoursJeunesListener.class, concoursJeunesListener);
+	}
+	
+	private int getDBVersion() {
+		Statement stmt = null;
+		try {
+			stmt = dbConnection.createStatement();
+			
+			ResultSet rs = stmt.executeQuery("SELECT * FROM DBPARAM");
+			rs.first();
+			return rs.getInt("VERSION");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try { if(stmt!=null) stmt.close(); } catch (Exception e) {}
+		}
+		
+		return 0;
 	}
 
 	/**

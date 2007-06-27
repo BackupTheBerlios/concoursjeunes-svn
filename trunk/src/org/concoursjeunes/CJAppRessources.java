@@ -147,8 +147,27 @@ public class CJAppRessources extends AppRessources {
             }
         });
         
-        for(int i = 0; i < fileForCopy.length; i++) {
-            copyFile(fileForCopy[i], getUserPath());
+        for(File file : fileForCopy) {
+            copyFile(file, getUserPath());
+        }
+    }
+    
+    /**
+     * 
+     */
+    public void copyDefaultUpdateFile() {
+    	File[] fileForCopy = new File(
+    			ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + 
+    			File.separator + "update").listFiles(new java.io.FileFilter() { //$NON-NLS-1$
+    	            public boolean accept(File pathname) {
+    	                return pathname.isFile();
+    	            }
+    	        });
+    	
+    	createPathIfNotExist(getAllusersDataPath() + File.separator + "update");
+    	
+    	for(File file : fileForCopy) {
+            copyFile(file, getAllusersDataPath() + File.separator + "update");
         }
     }
     

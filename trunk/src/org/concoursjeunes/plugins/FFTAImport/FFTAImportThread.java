@@ -37,7 +37,7 @@ public class FFTAImportThread extends Thread {
      *
      */
     public FFTAImportThread() {
-    	
+    	this.setName("FFTAImportThread");
     }
     
     public void addFFTAImportThreadListener(FFTAImportThreadListener listener) {
@@ -123,13 +123,15 @@ public class FFTAImportThread extends Thread {
             sFiclub = null;
             //FIN HACK
             
-        	ConcoursJeunes.dbConnection.setAutoCommit(true);
+        	//ConcoursJeunes.dbConnection.setAutoCommit(true);
         	
 			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 			
+			stmt.executeUpdate("SET LOG 0");
+			
 			Hashtable<String, String> ht = new Hashtable<String, String>();
 			
-			ht.put("temp", System.getProperty("java.io.tmpdir")); //$NON-NLS-1$ //$NON-NLS-2$
+			ht.put("temp", System.getProperty("java.io.tmpdir").replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$
 			
 			SqlParser.createBatch(
 					new File(pluginRessources.getResourceString("sql.importffta")), stmt, ht); //$NON-NLS-1$

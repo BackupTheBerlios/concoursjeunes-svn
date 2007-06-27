@@ -88,16 +88,12 @@
  */
 package org.concoursjeunes;
 
-import java.io.File;
-import java.io.FilenameFilter;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Hashtable;
-
-import ajinteractive.standard.utilities.sql.SqlParser;
 
 /**
  * <p>
@@ -461,25 +457,6 @@ public class Reglement {
 				availableReglements.add(rs.getString("NOMREGLEMENT")); //$NON-NLS-1$
 			}
 			rs.close();
-			
-			String[] newReglements = new File("config/reglements").list(new FilenameFilter() { //$NON-NLS-1$
-				public boolean accept(File dir, String name) {
-					if(name.endsWith(".sql")) //$NON-NLS-1$
-						return true;
-					return false;
-				}
-			});
-			for(String reglementName : newReglements) {
-				String name = new File(reglementName).getName();
-				name = name.substring(0, name.length() - 4);
-				
-				if(!availableReglements.contains(name)) {
-					SqlParser.createBatch(new File("config/reglements" + File.separator + reglementName), stmt, null); //$NON-NLS-1$
-					
-					stmt.executeBatch();
-					availableReglements.add(name);
-				}
-			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
