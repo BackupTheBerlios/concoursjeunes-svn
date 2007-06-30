@@ -105,5 +105,5 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 public @interface Plugin {
 	Type type();
 	
-	public static enum Type {IMPORT, EXPORT, OTHER }
+	public static enum Type {IMPORT, EXPORT, STARTUP, OTHER }
 }

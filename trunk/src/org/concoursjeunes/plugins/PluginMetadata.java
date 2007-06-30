@@ -9,6 +9,7 @@ package org.concoursjeunes.plugins;
 public class PluginMetadata {
 	public static final int IMPORT_PLUGIN = 1;
 	public static final int EXPORT_PLUGIN = 2;
+	public static final int STARTUP_PLUGIN = 3;
 	
 	private String info = ""; //$NON-NLS-1$
 	private String optionLabel = ""; //$NON-NLS-1$

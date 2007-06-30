@@ -95,6 +95,8 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.PrintStream;
 import java.io.StringReader;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -110,6 +112,9 @@ import javax.swing.event.EventListenerList;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.concoursjeunes.plugins.PluginEntry;
+import org.concoursjeunes.plugins.PluginLoader;
+import org.concoursjeunes.plugins.PluginMetadata;
 import org.jdesktop.swingx.JXErrorDialog;
 import org.xml.sax.InputSource;
 
@@ -268,6 +273,8 @@ public class ConcoursJeunes {
 					e.fillInStackTrace());
 			System.exit(1);
 		}
+		
+		loadStartupPlugin();
 	}
 	
 	/**
@@ -310,6 +317,51 @@ public class ConcoursJeunes {
 		}
 		
 		return 0;
+	}
+	
+	private void loadStartupPlugin() {
+		PluginLoader pl = new PluginLoader();
+		
+    	for(PluginMetadata pm : pl.getPlugins(PluginMetadata.STARTUP_PLUGIN)) {
+    		
+			try {
+    			Class<?> cla = null;
+    			String importClass = pm.getClassName();
+    			if(importClass != null) {
+    				cla = Class.forName(importClass);
+    			}
+
+    			if(cla != null) {
+					Object plugin = cla.newInstance();
+					for(Method m : cla.getMethods()) {
+						if(m.isAnnotationPresent(PluginEntry.class)) {
+							m.invoke(plugin, (Object[])null);
+							break;
+						}
+					}
+    			}
+    		} catch (InstantiationException e1) {
+    			JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
+						e1.fillInStackTrace());
+    			e1.printStackTrace();
+    		} catch (IllegalAccessException e1) {
+    			JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
+						e1.fillInStackTrace());
+    			e1.printStackTrace();
+    		} catch (ClassNotFoundException e1) {
+    			JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
+						e1.fillInStackTrace());
+    			e1.printStackTrace();
+    		} catch (SecurityException e1) {
+    			JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
+						e1.fillInStackTrace());
+				e1.printStackTrace();
+			} catch (InvocationTargetException e1) {
+				JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
+						e1.fillInStackTrace());
+				e1.printStackTrace();
+			}
+    	}
 	}
 
 	/**
