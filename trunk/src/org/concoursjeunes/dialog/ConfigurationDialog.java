@@ -113,6 +113,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
@@ -212,10 +213,22 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	private JLabel jlURLExport              = new JLabel();
 	private JLabel jlResultats              = new JLabel();
 	private JLabel jlAffResultats           = new JLabel();
-	private TitledBorder tbPath             = new TitledBorder(""); //$NON-NLS-1$
+	//private TitledBorder tbPath             = new TitledBorder(""); //$NON-NLS-1$
 	private JCheckBox jcbAvanceResultatCumul= new JCheckBox();
 	private JCheckBox jcbAvanceResultatSupl = new JCheckBox();
 	private JCheckBox jcbAvanceAffResultatExEquo = new JCheckBox();
+	
+	private TitledBorder tbProxy			= new TitledBorder("");
+	private JLabel jlAdresseProxy			= new JLabel();
+	private JLabel jlPortProxy				= new JLabel();
+	private JLabel jlUserProxy				= new JLabel();
+	private JLabel jlPasswordProxy			= new JLabel();
+	private JCheckBox jcbUseProxy			= new JCheckBox();
+	private JTextField jtfAdresseProxy		= new JTextField(20);
+	private JTextField jtfPortProxy			= new JTextField(new NumberDocument(false,false), "", 5);
+	private JCheckBox jcbAuthentificationProxy = new JCheckBox();
+	private JTextField jtfUserProxy			= new JTextField(20);
+	private JPasswordField jpfPasswordProxy	= new JPasswordField(20);
 	//Ecran avancé option debug
 	private JCheckBox jcbFirstBoot    = new JCheckBox();
 
@@ -456,6 +469,27 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		GridBagConstraints c      = new GridBagConstraints();
 
 		GridbagComposer gridbagComposer = new GridbagComposer();
+		
+		JPanel panelProxy = new JPanel();
+		panelProxy.setBorder(tbProxy);
+		
+		jcbUseProxy.addActionListener(this);
+		jcbAuthentificationProxy.addActionListener(this);
+		
+		gridbagComposer.setParentPanel(panelProxy);
+		c.gridy = 0; c.anchor = GridBagConstraints.WEST;
+		gridbagComposer.addComponentIntoGrid(jlAdresseProxy, c);
+		gridbagComposer.addComponentIntoGrid(jtfAdresseProxy, c);
+		gridbagComposer.addComponentIntoGrid(jlPortProxy, c);
+		gridbagComposer.addComponentIntoGrid(jtfPortProxy, c);
+		c.gridy++; c.gridwidth = 2;
+		gridbagComposer.addComponentIntoGrid(jcbAuthentificationProxy, c);
+		c.gridy++; c.gridwidth = 1;
+		gridbagComposer.addComponentIntoGrid(jlUserProxy, c);
+		gridbagComposer.addComponentIntoGrid(jtfUserProxy, c);
+		c.gridy++;
+		gridbagComposer.addComponentIntoGrid(jlPasswordProxy, c);
+		gridbagComposer.addComponentIntoGrid(jpfPasswordProxy, c);
 
 		gridbagComposer.setParentPanel(jpEcranInterface);
 		c.gridy = 0; c.anchor = GridBagConstraints.WEST; c.weightx = 1.0;
@@ -472,6 +506,10 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 			c.gridy++;
 			gridbagComposer.addComponentIntoGrid(jcbFirstBoot, c);
 		}
+		c.gridy++;
+		gridbagComposer.addComponentIntoGrid(jcbUseProxy, c);
+		c.gridy++;
+		gridbagComposer.addComponentIntoGrid(panelProxy, c);
 
 
 		JPanel jpEcranInterface2 = new JPanel();
@@ -543,11 +581,19 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		jlURLExport.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.interface.urlexport")); //$NON-NLS-1$
 		jcbFirstBoot.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.interface.firstboot")); //$NON-NLS-1$
 
-		tbPath.setTitle(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.interface.titre1")); //$NON-NLS-1$
+		//tbPath.setTitle(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.interface.titre1")); //$NON-NLS-1$
 
 		jcbAvanceResultatCumul.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.interface.resultatcumul")); //$NON-NLS-1$
 		jcbAvanceResultatSupl.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.interface.resultatdnm")); //$NON-NLS-1$
 		jcbAvanceAffResultatExEquo.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.interface.resultataffexequo")); //$NON-NLS-1$
+		
+		jcbUseProxy.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.avance.utilisationproxy"));
+		tbProxy.setTitle(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.avance.configurationproxy"));
+		jlAdresseProxy.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.avance.adresseproxy"));
+		jlPortProxy.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.avance.portproxy"));
+		jcbAuthentificationProxy.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.avance.authentificationproxy"));
+		jlUserProxy.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.avance.userproxy"));
+		jlPasswordProxy.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.avance.passwordproxy"));
 	}
 
 	private void completePanel(Configuration configuration) {
@@ -629,6 +675,18 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		jcbAvanceResultatCumul.setSelected(configuration.isInterfaceResultatCumul());
 		jcbAvanceResultatSupl.setSelected(configuration.isInterfaceResultatSupl());
 		jcbAvanceAffResultatExEquo.setSelected(configuration.isInterfaceAffResultatExEquo());
+		 
+		jcbUseProxy.setSelected(configuration.isUseProxy());
+		jtfAdresseProxy.setText(configuration.getProxyURL());
+		jtfAdresseProxy.setEnabled(configuration.isUseProxy());
+		jtfPortProxy.setText(configuration.getProxyPort() + "");
+		jtfPortProxy.setEnabled(configuration.isUseProxy());
+		jcbAuthentificationProxy.setSelected(configuration.isUseAuthentificationProxy());
+		jcbAuthentificationProxy.setEnabled(configuration.isUseProxy());
+		jtfUserProxy.setText(configuration.getProxyUser());
+		jtfUserProxy.setEnabled(configuration.isUseProxy() && configuration.isUseAuthentificationProxy());
+		jpfPasswordProxy.setText(configuration.getProxyPassword());
+		jpfPasswordProxy.setEnabled(configuration.isUseProxy() && configuration.isUseAuthentificationProxy());
 	}
 	
 	/**
@@ -800,6 +858,13 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		workConfiguration.setInterfaceResultatCumul(jcbAvanceResultatCumul.isSelected());
 		workConfiguration.setInterfaceResultatSupl(jcbAvanceResultatSupl.isSelected());
 		workConfiguration.setInterfaceAffResultatExEquo(jcbAvanceAffResultatExEquo.isSelected());
+		
+		workConfiguration.setUseProxy(jcbUseProxy.isSelected());
+		workConfiguration.setProxyURL(jtfAdresseProxy.getText());
+		workConfiguration.setProxyPort(Integer.parseInt(jtfPortProxy.getText()));
+		workConfiguration.setUseAuthentificationProxy(jcbAuthentificationProxy.isSelected());
+		workConfiguration.setProxyUser(jtfUserProxy.getText());
+		workConfiguration.setProxyPassword(new String(jpfPasswordProxy.getPassword()));
 	}
 
 	/**
@@ -871,6 +936,15 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 				
 				renameProfile = false;
 			}
+		} else if(source == jcbUseProxy) {
+			jtfAdresseProxy.setEnabled(jcbUseProxy.isSelected());
+			jtfPortProxy.setEnabled(jcbUseProxy.isSelected());
+			jcbAuthentificationProxy.setEnabled(jcbUseProxy.isSelected());
+			jtfUserProxy.setEnabled(jcbUseProxy.isSelected() && jcbAuthentificationProxy.isSelected());
+			jpfPasswordProxy.setEnabled(jcbUseProxy.isSelected() && jcbAuthentificationProxy.isSelected());
+		} else if(source == jcbAuthentificationProxy) {
+			jtfUserProxy.setEnabled(jcbAuthentificationProxy.isSelected());
+			jpfPasswordProxy.setEnabled(jcbAuthentificationProxy.isSelected());
 		}
 	}
 

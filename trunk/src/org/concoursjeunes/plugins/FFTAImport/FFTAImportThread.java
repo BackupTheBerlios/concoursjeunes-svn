@@ -122,12 +122,8 @@ public class FFTAImportThread extends Thread {
             psficlub.close();
             sFiclub = null;
             //FIN HACK
-            
-        	//ConcoursJeunes.dbConnection.setAutoCommit(true);
         	
 			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
-			
-			stmt.executeUpdate("SET LOG 0");
 			
 			Hashtable<String, String> ht = new Hashtable<String, String>();
 			

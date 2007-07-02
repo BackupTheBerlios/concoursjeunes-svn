@@ -121,6 +121,13 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	private boolean interfaceResultatCumul = false;     //noreboot
 	private boolean interfaceResultatSupl = true;       //noreboot
 	private boolean interfaceAffResultatExEquo = true;  //noreboot
+	
+	private boolean useProxy = false;
+	private String proxyURL = "";
+	private int proxyPort = 8080;
+	private boolean useAuthentificationProxy = false;
+	private String proxyUser = "";
+	private String proxyPassword = "";
 
 	//propriete caché
 	private MetaDataFichesConcours metaDataFichesConcours = new MetaDataFichesConcours();
@@ -394,6 +401,90 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	public void setMetaDataFichesConcours(
 			MetaDataFichesConcours metaDataFichesConcours) {
 		this.metaDataFichesConcours = metaDataFichesConcours;
+	}
+
+	/**
+	 * @return useProxy
+	 */
+	public boolean isUseProxy() {
+		return useProxy;
+	}
+
+	/**
+	 * @param useProxy useProxy à définir
+	 */
+	public void setUseProxy(boolean useProxy) {
+		this.useProxy = useProxy;
+	}
+
+	/**
+	 * @return proxyURL
+	 */
+	public String getProxyURL() {
+		return proxyURL;
+	}
+
+	/**
+	 * @param proxyURL proxyURL à définir
+	 */
+	public void setProxyURL(String proxyURL) {
+		this.proxyURL = proxyURL;
+	}
+
+	/**
+	 * @return proxyPort
+	 */
+	public int getProxyPort() {
+		return proxyPort;
+	}
+
+	/**
+	 * @param proxyPort proxyPort à définir
+	 */
+	public void setProxyPort(int proxyPort) {
+		this.proxyPort = proxyPort;
+	}
+
+	/**
+	 * @return useAuthentificationProxy
+	 */
+	public boolean isUseAuthentificationProxy() {
+		return useAuthentificationProxy;
+	}
+
+	/**
+	 * @param useAuthentificationProxy useAuthentificationProxy à définir
+	 */
+	public void setUseAuthentificationProxy(boolean useAuthentificationProxy) {
+		this.useAuthentificationProxy = useAuthentificationProxy;
+	}
+
+	/**
+	 * @return proxyUser
+	 */
+	public String getProxyUser() {
+		return proxyUser;
+	}
+
+	/**
+	 * @param proxyUser proxyUser à définir
+	 */
+	public void setProxyUser(String proxyUser) {
+		this.proxyUser = proxyUser;
+	}
+
+	/**
+	 * @return proxyPassword
+	 */
+	public String getProxyPassword() {
+		return proxyPassword;
+	}
+
+	/**
+	 * @param proxyPassword proxyPassword à définir
+	 */
+	public void setProxyPassword(String proxyPassword) {
+		this.proxyPassword = proxyPassword;
 	}
 
 	/**

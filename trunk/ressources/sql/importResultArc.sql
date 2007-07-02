@@ -1,6 +1,7 @@
 -- @author Aurélien JEOFFRAY
 -- Optimise les performances sur les machines multi processeur/core ou Hyper-Threading
 SET MULTI_THREADED 1;
+SET LOG 0;
 
 -- Integration des fichiers ASCII
 TRUNCATE TABLE EntiteFFTA;

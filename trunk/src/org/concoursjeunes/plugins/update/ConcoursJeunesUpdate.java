@@ -145,7 +145,12 @@ public class ConcoursJeunesUpdate {
 				pluginRessources.getResourceString("url.reference"), 
 				ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update",
 				ConcoursJeunes.serialVersionUID);
-		
-		ajUpdater.update(0);
+		if(ConcoursJeunes.configuration.isUseProxy()) {
+			ajUpdater.setProxy(ConcoursJeunes.configuration.getProxyURL(),
+					ConcoursJeunes.configuration.getProxyPort(),
+					ConcoursJeunes.configuration.isUseAuthentificationProxy() ? ConcoursJeunes.configuration.getProxyUser() : "",
+					ConcoursJeunes.configuration.isUseAuthentificationProxy() ? ConcoursJeunes.configuration.getProxyPassword() : "");
+		}
+		ajUpdater.update();
 	}
 }

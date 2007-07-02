@@ -29,7 +29,6 @@
 		<!--Copie des ressources du projet-->
 		<copy todir="${projet.pack.dir}" >
 			<fileset dir="." >
-		    	<include name="base"/>
 				<include name="config/**"/>
 				<include name="lang/**"/>
 				<include name="lib/**"/>
@@ -106,6 +105,25 @@
 			nowarn="on"
 			classpath="${compilclasspath}">
 		</javac>
+	</target>
+	
+	<target name="revisions" depends="" description="revisions">
+		<taskdef name="revisionscreator" classpath="lib/AJPackage.jar"
+						classname="ajinteractive.standard.utilities.updater.RevisionsCreator" />
+		
+		<revisionscreator hashfilepath="packager/hash.txt"
+				revisionpath="packager/revision.xml">
+			<fileset dir="${projet.pack.dir}">
+				<include name="config/**"/>
+				<include name="lang/**"/>
+				<include name="lib/**"/>
+				<include name="plugins/**"/>
+				<include name="ressources/**"/>
+				<include name="ConcoursJeunes.jar"/>
+				<include name="*.pdf"/>
+				<include name="*.txt"/>
+			</fileset>
+		</revisionscreator>
 	</target>
 	
 	<target name="jar" depends="compile">
