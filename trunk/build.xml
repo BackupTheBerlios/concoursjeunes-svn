@@ -112,7 +112,7 @@
 						classname="ajinteractive.standard.utilities.updater.RevisionsCreator" />
 		
 		<revisionscreator hashfilepath="packager/hash.txt"
-				revisionpath="packager/revision.xml">
+				revisionpath="packager/revision.xml.gz">
 			<fileset dir="${projet.pack.dir}">
 				<include name="config/**"/>
 				<include name="lang/**"/>

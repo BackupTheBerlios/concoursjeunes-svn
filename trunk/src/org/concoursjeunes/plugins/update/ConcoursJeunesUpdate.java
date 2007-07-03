@@ -102,10 +102,15 @@ import org.concoursjeunes.plugins.PluginEntry;
 
 import ajinteractive.standard.java2.AjResourcesReader;
 import ajinteractive.standard.utilities.updater.AjUpdater;
+import ajinteractive.standard.utilities.updater.AjUpdaterEvent;
+import ajinteractive.standard.utilities.updater.AjUpdaterListener;
+import ajinteractive.standard.utilities.updater.UpdateException;
 
 @Plugin(type=Plugin.Type.STARTUP)
-public class ConcoursJeunesUpdate {
+public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener {
 	//private String baseURL;
+	private SystemTray tray;
+	private TrayIcon trayIcon;
 	
 	private AjResourcesReader pluginRessources = new AjResourcesReader("properties.ConcoursJeunesUpdate"); //$NON-NLS-1$
 	private AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.update.ConcoursJeunesUpdate_libelle"); //$NON-NLS-1$
@@ -113,44 +118,97 @@ public class ConcoursJeunesUpdate {
 	public ConcoursJeunesUpdate() {
 		
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see java.lang.Thread#start()
+	 */
 	@PluginEntry
-	public void start() {
-		TrayIcon trayIcon = null;
-		if (SystemTray.isSupported()) {
-			SystemTray tray = SystemTray.getSystemTray();
-			// load an image
-			Dimension dimension = tray.getTrayIconSize();
-			Image image = Toolkit.getDefaultToolkit().getImage(
-					ajrParametreAppli.getResourceString("path.ressources") + File.separator + 
-					ajrParametreAppli.getResourceString("file.icon.application")).getScaledInstance(dimension.width, dimension.height, Image.SCALE_SMOOTH);
-			
-			// create a popup menu
-			trayIcon = new TrayIcon(image, pluginLocalisation.getResourceString("tray.name"));
-		 
-			try {
-				tray.add(trayIcon);	
-			} catch (AWTException e) {
-				System.err.println(e);
-			}
-			
-			tray.remove(trayIcon);
-			// ...
-		} else {
-			// disable tray option in your application or
-			// perform other actions
-			// ...
-		}
+	@Override
+	public synchronized void start() {
+		super.start();
+	}
+
+	@Override
+	public void run() {
+		
 		AjUpdater ajUpdater = new AjUpdater(
 				pluginRessources.getResourceString("url.reference"), 
 				ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update",
-				ConcoursJeunes.serialVersionUID);
+				0);
+		ajUpdater.addAjUpdaterListener(this);
 		if(ConcoursJeunes.configuration.isUseProxy()) {
 			ajUpdater.setProxy(ConcoursJeunes.configuration.getProxyURL(),
 					ConcoursJeunes.configuration.getProxyPort(),
 					ConcoursJeunes.configuration.isUseAuthentificationProxy() ? ConcoursJeunes.configuration.getProxyUser() : "",
 					ConcoursJeunes.configuration.isUseAuthentificationProxy() ? ConcoursJeunes.configuration.getProxyPassword() : "");
 		}
-		ajUpdater.update();
+		try {
+			ajUpdater.update();
+		} catch (UpdateException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see ajinteractive.standard.utilities.updater.AjUpdaterListener#updaterStatusChanged(ajinteractive.standard.utilities.updater.AjUpdaterEvent)
+	 */
+	@Override
+	public void updaterStatusChanged(AjUpdaterEvent event) {
+		switch(event.getStatus()) {
+			case CONNECTED:
+				if (SystemTray.isSupported()) {
+					tray = SystemTray.getSystemTray();
+					// load an image
+					Dimension dimension = tray.getTrayIconSize();
+					Image image = Toolkit.getDefaultToolkit().getImage(
+							ajrParametreAppli.getResourceString("path.ressources") + File.separator + 
+							ajrParametreAppli.getResourceString("file.icon.application")).getScaledInstance(dimension.width, dimension.height, Image.SCALE_SMOOTH);
+					
+					// create a popup menu
+					trayIcon = new TrayIcon(image, pluginLocalisation.getResourceString("tray.name"));
+				 
+					try {
+						tray.add(trayIcon);
+					} catch (AWTException e) {
+						System.err.println(e);
+					}
+				} else {
+					// disable tray option in your application or
+					// perform other actions
+					// ...
+				}
+				break;
+			case REVISIONFILE_LOADED:
+				if(trayIcon != null) {
+					trayIcon.setToolTip("Telechargement en cours...");
+				}
+				break;
+			case CONNECTION_INTERRUPTED:
+				if(trayIcon != null) {
+					trayIcon.displayMessage("Connexion interrompue", 
+							"La connexion au serveur à été interrompu inopinément,\n" +
+							"la mise n'a pas put s'effectuer correctement", TrayIcon.MessageType.ERROR);
+				}
+				break;
+			case FILE_ERROR:
+				if(trayIcon != null) {
+					trayIcon.displayMessage("Erreur de téléchargement", 
+							"Une erreur est survenu durant le téléchargement,\n" +
+							"celui ci c'est terminé anormalement", TrayIcon.MessageType.ERROR);
+				}
+				break;
+			case FILES_DOWNLOADED:
+				if(trayIcon != null) {
+					trayIcon.setToolTip("Mise à jour disponible");
+					trayIcon.displayMessage("Mise à jour téléchargé", 
+							"Une mise à jour à été téléchargé!\n" +
+							"Redémarrer l'application pour l'installer", TrayIcon.MessageType.INFO);
+				}
+				break;
+			case NO_UPDATE_AVAILABLE:
+				if(trayIcon != null) {
+					tray.remove(trayIcon);
+				}
+		}
 	}
 }
