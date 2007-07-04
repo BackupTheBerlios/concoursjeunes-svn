@@ -105,6 +105,12 @@
 			nowarn="on"
 			classpath="${compilclasspath}">
 		</javac>
+		
+		<copy todir="${projet.pack.dir}/bin">
+			<fileset dir="${projet.pack.dir}/src" >
+		    	<include name="**/*.properties" />
+			</fileset>
+		</copy>
 	</target>
 	
 	<target name="revisions" depends="" description="revisions">

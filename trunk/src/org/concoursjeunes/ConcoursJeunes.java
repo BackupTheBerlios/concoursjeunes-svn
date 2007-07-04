@@ -129,8 +129,8 @@ import com.lowagie.text.pdf.PdfWriter;
  * commune de l'application tel que
  * <ul>
  * 	<li>Le chargement du fichier de configuration</li>
- * 	<li>L'accès aux fichiers de parametrage et libellés</l>
- * 	<li>L'accès aux ressources utilisateurs<li>
+ * 	<li>L'accès aux fichiers de parametrage et libellés</li>
+ * 	<li>L'accès aux ressources utilisateurs</li>
  * 	<li>La connexion à la base de données</li>
  * </ul>
  * 
@@ -229,7 +229,7 @@ public class ConcoursJeunes {
 			Statement stmt = dbConnection.createStatement();
 
 			//test si la base existe déjà et retourne sa révision si c'est le cas
-			ResultSet rs = stmt.executeQuery("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='DBPARAM'");
+			ResultSet rs = stmt.executeQuery("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='PARAM'");
 			if(rs.first()) {
 				dbVersion = getDBVersion();
 			}
@@ -307,9 +307,26 @@ public class ConcoursJeunes {
 		try {
 			stmt = dbConnection.createStatement();
 			
-			ResultSet rs = stmt.executeQuery("SELECT * FROM DBPARAM");
+			ResultSet rs = stmt.executeQuery("SELECT * FROM PARAM");
 			rs.first();
-			return rs.getInt("VERSION");
+			return rs.getInt("DBVERSION");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try { if(stmt!=null) stmt.close(); } catch (Exception e) {}
+		}
+		
+		return 0;
+	}
+	
+	public static int getAppRevision() {
+		Statement stmt = null;
+		try {
+			stmt = dbConnection.createStatement();
+			
+			ResultSet rs = stmt.executeQuery("SELECT * FROM PARAM");
+			rs.first();
+			return rs.getInt("APPREVISION");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {

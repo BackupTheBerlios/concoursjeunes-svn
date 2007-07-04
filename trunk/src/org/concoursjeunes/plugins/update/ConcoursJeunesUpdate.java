@@ -134,7 +134,7 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener {
 		AjUpdater ajUpdater = new AjUpdater(
 				pluginRessources.getResourceString("url.reference"), 
 				ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update",
-				0);
+				ConcoursJeunes.getAppRevision());
 		ajUpdater.addAjUpdaterListener(this);
 		if(ConcoursJeunes.configuration.isUseProxy()) {
 			ajUpdater.setProxy(ConcoursJeunes.configuration.getProxyURL(),

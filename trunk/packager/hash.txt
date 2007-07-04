@@ -1,16 +1,17 @@
-1463091920;ConcoursJeunes.jar
+1594845108;ConcoursJeunes.jar
 2735525322;Documentation ConcoursJeunes.pdf
 1666903922;Licence.txt
-1089439950;Licence_GPL.txt
+2269228409;Licence_GPL.txt
 183026565;Licence_win.txt
 4008306667;Readme.txt
-810918753;changelog.txt
+2794693418;changelog.txt
 3625368221;config/configuration.xml
-2498574324;config/parametre.properties
-1484511837;lang/libelle.properties
+2012271526;config/parametre.properties
+2484467680;hash.txt
+1381791860;lang/libelle.properties
 1135540282;lang/libelle_en.properties
 1;lang/libelle_fr.properties
-4272200632;lib/AJPackage.jar
+1012315439;lib/AJPackage.jar
 1068969449;lib/h2.jar
 1876107628;lib/itext-1.4.8.jar
 734511843;lib/swingx-2006_10_27.jar
@@ -19,11 +20,14 @@
 2033139530;plugins/org/concoursjeunes/plugins/FFTAImport/FFTAImportThreadListener.class
 1295298808;plugins/org/concoursjeunes/plugins/FileImportPlugin.class
 128659165;plugins/org/concoursjeunes/plugins/ImportPlugin.class
-4046513405;plugins/org/concoursjeunes/plugins/Plugin$Type.class
+2032069979;plugins/org/concoursjeunes/plugins/Plugin$Type.class
 2148572622;plugins/org/concoursjeunes/plugins/Plugin.class
 1547663366;plugins/org/concoursjeunes/plugins/PluginEntry.class
 2980380615;plugins/org/concoursjeunes/plugins/PluginLoader.class
-156864726;plugins/org/concoursjeunes/plugins/PluginMetadata.class
+2980419077;plugins/org/concoursjeunes/plugins/PluginMetadata.class
+1088037355;plugins/org/concoursjeunes/plugins/update/ConcoursJeunesUpdate$1.class
+3149261429;plugins/org/concoursjeunes/plugins/update/ConcoursJeunesUpdate.class
+3033353638;plugins/properties/ConcoursJeunesUpdate.properties
 1581278217;plugins/properties/FFTAImportPlugin.properties
 2042640237;plugins/properties/FileImportPlugin.properties
 1766685468;plugins/properties/InternetImportPlugin.properties
@@ -51,7 +55,7 @@
 3996353543;ressources/lock.png
 1189109625;ressources/logo_ffta.gif
 2031646535;ressources/open.png
-2040986394;ressources/sql/importResultArc.sql
+1346322912;ressources/sql/importResultArc.sql
 3958325292;ressources/stock-jump-to.png
 531306761;ressources/stock-media-rec.png
 3960713124;ressources/templates/accueil.html
@@ -66,5 +70,5 @@
 2978871450;ressources/templates/pasdetir.xml
 1530156205;ressources/tiralarc.gif
 3237781298;ressources/trispotflou.jpg
-284100250;ressources/update/01-create_db.sql
+496101965;ressources/update/01-create_db.sql
 121340903;ressources/update/02-savoie.sql
