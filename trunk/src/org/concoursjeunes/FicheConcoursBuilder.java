@@ -90,7 +90,7 @@ package org.concoursjeunes;
 
 import java.io.File;
 
-import ajinteractive.standard.java2.AJToolKit;
+import ajinteractive.standard.common.AJToolKit;
 
 /**
  * @author Aurélien JEOFFRAY

@@ -92,6 +92,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 
 import ajinteractive.standard.utilities.app.AppRessources;
+import ajinteractive.standard.utilities.io.FileUtil;
 
 /**
  * Crée et donne le chemin des ressources utilisateur pour le programme
@@ -148,7 +149,7 @@ public class CJAppRessources extends AppRessources {
         });
         
         for(File file : fileForCopy) {
-            copyFile(file, getUserPath());
+            FileUtil.copyFile(file, new File(getUserPath()));
         }
     }
     
@@ -167,7 +168,7 @@ public class CJAppRessources extends AppRessources {
     	createPathIfNotExist(getAllusersDataPath() + File.separator + "update");
     	
     	for(File file : fileForCopy) {
-            copyFile(file, getAllusersDataPath() + File.separator + "update");
+            FileUtil.copyFile(file, new File(getAllusersDataPath() + File.separator + "update"));
         }
     }
     

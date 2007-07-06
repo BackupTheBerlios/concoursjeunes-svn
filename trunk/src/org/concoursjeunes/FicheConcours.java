@@ -28,8 +28,8 @@ import javax.swing.event.EventListenerList;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import ajinteractive.standard.java2.AJTemplate;
-import ajinteractive.standard.java2.AJToolKit;
+import ajinteractive.standard.common.AJTemplate;
+import ajinteractive.standard.common.AJToolKit;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;

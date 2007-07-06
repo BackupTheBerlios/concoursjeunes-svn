@@ -91,7 +91,8 @@ package org.concoursjeunes;
 import java.io.File;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import ajinteractive.standard.java2.AJToolKit;
+import ajinteractive.standard.common.AJToolKit;
+import ajinteractive.standard.utilities.net.Proxy;
 
 /**
  * parametre de configuration de l'application
@@ -123,11 +124,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	private boolean interfaceAffResultatExEquo = true;  //noreboot
 	
 	private boolean useProxy = false;
-	private String proxyURL = "";
-	private int proxyPort = 8080;
-	private boolean useAuthentificationProxy = false;
-	private String proxyUser = "";
-	private String proxyPassword = "";
+	private Proxy proxy;
 
 	//propriete caché
 	private MetaDataFichesConcours metaDataFichesConcours = new MetaDataFichesConcours();
@@ -418,74 +415,19 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	}
 
 	/**
-	 * @return proxyURL
+	 * @return proxy
 	 */
-	public String getProxyURL() {
-		return proxyURL;
+	public Proxy getProxy() {
+		return proxy;
 	}
 
 	/**
-	 * @param proxyURL proxyURL à définir
+	 * @param proxy proxy à définir
 	 */
-	public void setProxyURL(String proxyURL) {
-		this.proxyURL = proxyURL;
+	public void setProxy(Proxy proxy) {
+		this.proxy = proxy;
 	}
 
-	/**
-	 * @return proxyPort
-	 */
-	public int getProxyPort() {
-		return proxyPort;
-	}
-
-	/**
-	 * @param proxyPort proxyPort à définir
-	 */
-	public void setProxyPort(int proxyPort) {
-		this.proxyPort = proxyPort;
-	}
-
-	/**
-	 * @return useAuthentificationProxy
-	 */
-	public boolean isUseAuthentificationProxy() {
-		return useAuthentificationProxy;
-	}
-
-	/**
-	 * @param useAuthentificationProxy useAuthentificationProxy à définir
-	 */
-	public void setUseAuthentificationProxy(boolean useAuthentificationProxy) {
-		this.useAuthentificationProxy = useAuthentificationProxy;
-	}
-
-	/**
-	 * @return proxyUser
-	 */
-	public String getProxyUser() {
-		return proxyUser;
-	}
-
-	/**
-	 * @param proxyUser proxyUser à définir
-	 */
-	public void setProxyUser(String proxyUser) {
-		this.proxyUser = proxyUser;
-	}
-
-	/**
-	 * @return proxyPassword
-	 */
-	public String getProxyPassword() {
-		return proxyPassword;
-	}
-
-	/**
-	 * @param proxyPassword proxyPassword à définir
-	 */
-	public void setProxyPassword(String proxyPassword) {
-		this.proxyPassword = proxyPassword;
-	}
 
 	/**
 	 * sauvegarde la configuration général du programme

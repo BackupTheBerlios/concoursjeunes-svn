@@ -289,6 +289,11 @@ public class ConcoursJeunes {
         return instance;
 	}
 	
+	/**
+	 * Recharge le fichier de libelle en fonction de la localité en parametre
+	 * 
+	 * @param locale - la localité utilisé pour les libellés 
+	 */
 	public static void reloadLibelle(Locale locale) {
 		AjResourcesReader.setLocale(locale);
 		ajrLibelle = new AjResourcesReader(RES_LIBELLE);
@@ -310,23 +315,6 @@ public class ConcoursJeunes {
 			ResultSet rs = stmt.executeQuery("SELECT * FROM PARAM");
 			rs.first();
 			return rs.getInt("DBVERSION");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try { if(stmt!=null) stmt.close(); } catch (Exception e) {}
-		}
-		
-		return 0;
-	}
-	
-	public static int getAppRevision() {
-		Statement stmt = null;
-		try {
-			stmt = dbConnection.createStatement();
-			
-			ResultSet rs = stmt.executeQuery("SELECT * FROM PARAM");
-			rs.first();
-			return rs.getInt("APPREVISION");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {

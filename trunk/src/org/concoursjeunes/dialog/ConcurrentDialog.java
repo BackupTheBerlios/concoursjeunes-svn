@@ -45,7 +45,7 @@ import org.concoursjeunes.FicheConcours;
 import org.concoursjeunes.OccupationCibles;
 import org.concoursjeunes.ui.ConcoursJeunesFrame;
 
-import ajinteractive.standard.java2.AJToolKit;
+import ajinteractive.standard.common.AJToolKit;
 import ajinteractive.standard.java2.GridbagComposer;
 import ajinteractive.standard.java2.NumberDocument;
 

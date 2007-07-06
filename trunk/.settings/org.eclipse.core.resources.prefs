@@ -1,6 +1,7 @@
-#Sat Jun 30 11:12:10 CEST 2007
+#Fri Jul 06 11:15:12 CEST 2007
 eclipse.preferences.version=1
 encoding//config/parametre.properties=UTF-8
 encoding//lang/libelle.properties=UTF-8
+encoding//packager/version.properties=UTF-8
 encoding//src/org/concoursjeunes/plugins/update/ConcoursJeunesUpdate_libelle.properties=UTF-8
 instance/org.eclipse.core.net/org.eclipse.core.net.hasMigrated=true

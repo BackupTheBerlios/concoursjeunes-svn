@@ -117,8 +117,7 @@
 		<taskdef name="revisionscreator" classpath="lib/AJPackage.jar"
 						classname="ajinteractive.standard.utilities.updater.RevisionsCreator" />
 		
-		<revisionscreator hashfilepath="packager/hash.txt"
-				revisionpath="packager/revision.xml.gz">
+		<revisionscreator hashfilepath="packager/hash.xml.gz">
 			<fileset dir="${projet.pack.dir}">
 				<include name="config/**"/>
 				<include name="lang/**"/>

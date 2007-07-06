@@ -47,7 +47,7 @@ import org.concoursjeunes.plugins.PluginLoader;
 import org.concoursjeunes.plugins.PluginMetadata;
 import org.jdesktop.swingx.JXErrorDialog;
 
-import ajinteractive.standard.java2.AJTemplate;
+import ajinteractive.standard.common.AJTemplate;
 import ajinteractive.standard.java2.GhostGlassPane;
 import ajinteractive.standard.ui.AJTabbedPane;
 import ajinteractive.standard.ui.AJTabbedPaneListener;

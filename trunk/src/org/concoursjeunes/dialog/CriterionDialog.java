@@ -3,14 +3,24 @@
  */
 package org.concoursjeunes.dialog;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
-import org.concoursjeunes.*;
+import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.Criterion;
 
-import ajinteractive.standard.java2.AJToolKit;
+import ajinteractive.standard.common.AJToolKit;
 import ajinteractive.standard.java2.GridbagComposer;
 
 /**

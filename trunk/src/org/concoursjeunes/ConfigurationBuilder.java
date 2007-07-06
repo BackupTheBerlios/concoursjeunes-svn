@@ -17,7 +17,7 @@ package org.concoursjeunes;
 
 import java.io.File;
 
-import ajinteractive.standard.java2.AJToolKit;
+import ajinteractive.standard.common.AJToolKit;
 import static org.concoursjeunes.ConcoursJeunes.ajrParametreAppli;
 import static org.concoursjeunes.ConcoursJeunes.userRessources;
 

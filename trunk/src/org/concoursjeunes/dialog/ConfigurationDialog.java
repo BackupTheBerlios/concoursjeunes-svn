@@ -129,9 +129,10 @@ import org.concoursjeunes.Marges;
 import org.concoursjeunes.Reglement;
 
 import ajinteractive.standard.java2.AJFileFilter;
-import ajinteractive.standard.java2.AJToolKit;
+import ajinteractive.standard.common.AJToolKit;
 import ajinteractive.standard.java2.GridbagComposer;
 import ajinteractive.standard.java2.NumberDocument;
+import ajinteractive.standard.utilities.net.Proxy;
 
 import com.lowagie.text.PageSize;
 
@@ -675,18 +676,20 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		jcbAvanceResultatCumul.setSelected(configuration.isInterfaceResultatCumul());
 		jcbAvanceResultatSupl.setSelected(configuration.isInterfaceResultatSupl());
 		jcbAvanceAffResultatExEquo.setSelected(configuration.isInterfaceAffResultatExEquo());
-		 
+		
 		jcbUseProxy.setSelected(configuration.isUseProxy());
-		jtfAdresseProxy.setText(configuration.getProxyURL());
-		jtfAdresseProxy.setEnabled(configuration.isUseProxy());
-		jtfPortProxy.setText(configuration.getProxyPort() + "");
-		jtfPortProxy.setEnabled(configuration.isUseProxy());
-		jcbAuthentificationProxy.setSelected(configuration.isUseAuthentificationProxy());
-		jcbAuthentificationProxy.setEnabled(configuration.isUseProxy());
-		jtfUserProxy.setText(configuration.getProxyUser());
-		jtfUserProxy.setEnabled(configuration.isUseProxy() && configuration.isUseAuthentificationProxy());
-		jpfPasswordProxy.setText(configuration.getProxyPassword());
-		jpfPasswordProxy.setEnabled(configuration.isUseProxy() && configuration.isUseAuthentificationProxy());
+		if(configuration.getProxy() != null) {
+			jtfAdresseProxy.setText(configuration.getProxy().getProxyServerAddress());
+			jtfAdresseProxy.setEnabled(configuration.isUseProxy());
+			jtfPortProxy.setText(configuration.getProxy().getProxyServerPort() + "");
+			jtfPortProxy.setEnabled(configuration.isUseProxy());
+			jcbAuthentificationProxy.setSelected(configuration.getProxy().isUseProxyAuthentification());
+			jcbAuthentificationProxy.setEnabled(configuration.isUseProxy());
+			jtfUserProxy.setText(configuration.getProxy().getProxyAuthLogin());
+			jtfUserProxy.setEnabled(configuration.isUseProxy() && configuration.getProxy().isUseProxyAuthentification());
+			jpfPasswordProxy.setText(configuration.getProxy().getProxyAuthPassword());
+			jpfPasswordProxy.setEnabled(configuration.isUseProxy() && configuration.getProxy().isUseProxyAuthentification());
+		}
 	}
 	
 	/**
@@ -860,11 +863,12 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		workConfiguration.setInterfaceAffResultatExEquo(jcbAvanceAffResultatExEquo.isSelected());
 		
 		workConfiguration.setUseProxy(jcbUseProxy.isSelected());
-		workConfiguration.setProxyURL(jtfAdresseProxy.getText());
-		workConfiguration.setProxyPort(Integer.parseInt(jtfPortProxy.getText()));
-		workConfiguration.setUseAuthentificationProxy(jcbAuthentificationProxy.isSelected());
-		workConfiguration.setProxyUser(jtfUserProxy.getText());
-		workConfiguration.setProxyPassword(new String(jpfPasswordProxy.getPassword()));
+		Proxy proxy = new Proxy(jtfAdresseProxy.getText(),
+				Integer.parseInt(jtfPortProxy.getText()),
+				jtfUserProxy.getText(),
+				new String(jpfPasswordProxy.getPassword()));
+		proxy.setUseProxyAuthentification(jcbAuthentificationProxy.isSelected());
+		workConfiguration.setProxy(proxy);
 	}
 
 	/**
