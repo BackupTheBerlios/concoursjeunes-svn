@@ -864,7 +864,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		
 		workConfiguration.setUseProxy(jcbUseProxy.isSelected());
 		Proxy proxy = new Proxy(jtfAdresseProxy.getText(),
-				Integer.parseInt(jtfPortProxy.getText()),
+				Integer.parseInt("0" + jtfPortProxy.getText()),
 				jtfUserProxy.getText(),
 				new String(jpfPasswordProxy.getPassword()));
 		proxy.setUseProxyAuthentification(jcbAuthentificationProxy.isSelected());

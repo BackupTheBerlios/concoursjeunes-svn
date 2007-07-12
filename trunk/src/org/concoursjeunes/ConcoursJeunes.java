@@ -97,6 +97,7 @@ import java.io.PrintStream;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -118,6 +119,7 @@ import org.concoursjeunes.plugins.PluginMetadata;
 import org.jdesktop.swingx.JXErrorDialog;
 import org.xml.sax.InputSource;
 
+import ajinteractive.standard.common.PluginClassLoader;
 import ajinteractive.standard.java2.AjResourcesReader;
 import ajinteractive.standard.utilities.sql.SqlParser;
 
@@ -299,10 +301,19 @@ public class ConcoursJeunes {
 		ajrLibelle = new AjResourcesReader(RES_LIBELLE);
 	}
 	
+	/**
+	 * Ajoute un auditeur sur les evenements de gestion de concours de l'application
+	 * 
+	 * @param concoursJeunesListener l'auditeur qui souhaite s'abonner
+	 */
 	public void addConcoursJeunesListener(ConcoursJeunesListener concoursJeunesListener) {
 		listeners.add(ConcoursJeunesListener.class, concoursJeunesListener);
 	}
 	
+	/**
+	 * 
+	 * @param concoursJeunesListener
+	 */
 	public void removeConcoursJeunesListener(ConcoursJeunesListener concoursJeunesListener) {
 		listeners.remove(ConcoursJeunesListener.class, concoursJeunesListener);
 	}
@@ -324,6 +335,9 @@ public class ConcoursJeunes {
 		return 0;
 	}
 	
+	/**
+	 * Charge les plugins devant être initialisé au démmarage de l'application
+	 */
 	private void loadStartupPlugin() {
 		PluginLoader pl = new PluginLoader();
 		
@@ -333,7 +347,8 @@ public class ConcoursJeunes {
     			Class<?> cla = null;
     			String importClass = pm.getClassName();
     			if(importClass != null) {
-    				cla = Class.forName(importClass);
+    				System.out.println("load startup plugin: " + pm.getInfo() + "(" + importClass + ")");
+    				cla = Class.forName(importClass, false, new PluginClassLoader(findParentClassLoader(), new File("plugins")));
     			}
 
     			if(cla != null) {
@@ -365,8 +380,28 @@ public class ConcoursJeunes {
 				JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
 						e1.fillInStackTrace());
 				e1.printStackTrace();
+			} catch(MalformedURLException e) {
+				JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
+						e.fillInStackTrace());
+				e.printStackTrace();
 			}
     	}
+	}
+	
+	/**
+	 * Locates the best class loader based on context (see class description).
+	 * 
+	 * @return The best parent classloader to use
+	 */
+	private ClassLoader findParentClassLoader() {
+		ClassLoader parent = Thread.currentThread().getContextClassLoader();
+		if (parent == null) {
+			parent = this.getClass().getClassLoader();
+			if (parent == null) {
+				parent = ClassLoader.getSystemClassLoader();
+			}
+		}
+		return parent;
 	}
 
 	/**

@@ -14,12 +14,7 @@ package org.concoursjeunes;
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
 import java.sql.SQLException;
-
-import javax.swing.JOptionPane;
 
 import org.concoursjeunes.ui.ConcoursJeunesFrame;
 
@@ -28,7 +23,6 @@ import org.concoursjeunes.ui.ConcoursJeunesFrame;
  *
  */
 public class Main {
-	private static boolean mustUpdate = false;
 	/**
 	 * @param args
 	 */
@@ -41,37 +35,12 @@ public class Main {
 				try {
 					//permet de s'assurer que la base de données est correctement fermé
 					ConcoursJeunes.dbConnection.close();
-					
-					if(mustUpdate && new File(System.getProperty("user.dir")).canWrite()) {
-						Runtime runtime = Runtime.getRuntime();
-						Process process = runtime.exec("java -cp lib/AJPackage.jar ajinteractive.standard.utilities.updater.AjUpdaterApply " +
-								"\"" + ConcoursJeunes.userRessources.getAllusersDataPath() + 
-								File.separator + "update" + "\" \"" + System.getProperty("user.dir") + "\"");
-						process.waitFor();
-						process = runtime.exec("java -jar ConcoursJeunes.jar");
-					}
 				} catch (SQLException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
 		});
-		
-		File[] updateFiles = new File(ConcoursJeunes.userRessources.getAllusersDataPath() + 
-				File.separator + "update").listFiles(new FilenameFilter() {
-					public boolean accept(File file, String name) {
-						return !name.endsWith(".sql");
-					}
-				});
-		if(updateFiles.length > 0 
-				&& JOptionPane.showConfirmDialog(null, "Une mise à jour est disponible, voulez vous l'installer") == JOptionPane.YES_OPTION) {
-			mustUpdate = true;
-			System.exit(0);
-		}
-		
+		System.out.println("core loaded");
 		new ConcoursJeunesFrame(concoursJeunes);
 	}
 

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ConcoursJeunesUpdate">
+	<target name="pack-ConcoursJeunesUpdate">
+		<jar jarfile="${projet.pack.dir}/plugins/ConcoursJeunesUpdate.jar">
+			<fileset dir="${projet.pack.dir}/bin" >
+				<include name="org/concoursjeunes/plugins/ConcoursJeunesUpdate" />
+			</fileset>
+		</jar>
+	</target>
+</project>

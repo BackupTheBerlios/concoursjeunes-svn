@@ -6,6 +6,8 @@
 
 	<property file="packager/version.properties" />
 	
+	<import file="plugins/build-ConcoursJeunesUpdate.xml"/>
+	
 	<!--genere la documentation technique-->
 	<target name="dev_doc" description="genere la documentation développeur">
 		<echo message="Construction de la documentation developpeur..."/>
@@ -35,6 +37,7 @@
 				<include name="plugins/**"/>
 				<include name="ressources/**"/>
 				<include name="src/**"/>
+				<include name="concoursjeunes-updateapply*" />
 				<exclude name="**/.svn*" />
 				<exclude name="src/org/concoursjeunes/test/**" />
 			</fileset>
@@ -117,7 +120,7 @@
 		<taskdef name="revisionscreator" classpath="lib/AJPackage.jar"
 						classname="ajinteractive.standard.utilities.updater.RevisionsCreator" />
 		
-		<revisionscreator hashfilepath="packager/hash.xml.gz">
+		<revisionscreator hashfilepath="${projet.pack.dir}/hash.xml.gz">
 			<fileset dir="${projet.pack.dir}">
 				<include name="config/**"/>
 				<include name="lang/**"/>
@@ -138,7 +141,8 @@
 			manifest="${projet.pack.dir}/MANIFEST.MF">
 			
 			<exclude name="native/**" />
-			<exclude name="org/concoursjeunes/plugins/**" />
+			<exclude name="org/concoursjeunes/plugins/**" unless=""/>
+			<!--<include name="org/concoursjeunes/plugins/*" />-->
 		</jar>
 
 	</target>
@@ -349,6 +353,11 @@
     property="property.key"/>
 </replace>-->
 	
+	<target name="windows" 
+		depends="jar, exportWinFFTA, pack-ConcoursJeunesUpdate, revisions" 
+		description="Pack Windows" />
+	<target name="linux" depends="jar" description="Pack Linux" />
 	<target name="all" depends="dev_doc, packager, makerpm" />
 	<target name="all_nodevdoc" depends="packager, makerpm" />
+
 </project>

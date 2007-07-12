@@ -94,7 +94,13 @@ import java.awt.Image;
 import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import javax.swing.JOptionPane;
 
 import org.concoursjeunes.ConcoursJeunes;
 import org.concoursjeunes.plugins.Plugin;
@@ -107,13 +113,19 @@ import ajinteractive.standard.utilities.updater.AjUpdaterListener;
 import ajinteractive.standard.utilities.updater.UpdateException;
 
 @Plugin(type=Plugin.Type.STARTUP)
-public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener {
+public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, MouseListener {
 	//private String baseURL;
 	private SystemTray tray;
 	private TrayIcon trayIcon;
 	
+	private AjUpdater ajUpdater;
+	ArrayList<String> updateFiles = new ArrayList<String>();
+	
 	private AjResourcesReader pluginRessources = new AjResourcesReader("properties.ConcoursJeunesUpdate"); //$NON-NLS-1$
 	private AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.update.ConcoursJeunesUpdate_libelle"); //$NON-NLS-1$
+	
+	private enum Status { NONE, AVAILABLE, DOWNLODED }
+	private Status currentStatus = Status.NONE;
 	
 	public ConcoursJeunesUpdate() {
 		
@@ -131,7 +143,7 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener {
 	@Override
 	public void run() {
 		
-		AjUpdater ajUpdater = new AjUpdater(
+		ajUpdater = new AjUpdater(
 				pluginRessources.getResourceString("url.reference"), 
 				ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update",
 				"hash.xml.gz");
@@ -140,7 +152,7 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener {
 			ajUpdater.setProxy(ConcoursJeunes.configuration.getProxy());
 		}
 		try {
-			ajUpdater.update();
+			updateFiles = ajUpdater.checkUpdate();
 		} catch (UpdateException e) {
 			e.printStackTrace();
 		}
@@ -163,6 +175,7 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener {
 					
 					// create a popup menu
 					trayIcon = new TrayIcon(image, pluginLocalisation.getResourceString("tray.name"));
+					trayIcon.addMouseListener(this);
 				 
 					try {
 						tray.add(trayIcon);
@@ -175,10 +188,13 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener {
 					// ...
 				}
 				break;
-			case REVISIONFILE_LOADED:
+			case UPDATE_AVAILABLE:
 				if(trayIcon != null) {
-					trayIcon.setToolTip("Telechargement en cours...");
+					trayIcon.displayMessage("Mise à jour disponible", 
+							"Des mises à jour sont disponible et prète à être téléchargé,\n" +
+							"Cliquer sur l'icone pour les télécharger", TrayIcon.MessageType.INFO);
 				}
+				currentStatus = Status.AVAILABLE;
 				break;
 			case CONNECTION_INTERRUPTED:
 				if(trayIcon != null) {
@@ -195,11 +211,16 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener {
 				}
 				break;
 			case FILES_DOWNLOADED:
-				if(trayIcon != null) {
-					trayIcon.setToolTip("Mise à jour disponible");
-					trayIcon.displayMessage("Mise à jour téléchargé", 
-							"Une mise à jour à été téléchargé!\n" +
-							"Redémarrer l'application pour l'installer", TrayIcon.MessageType.INFO);
+				if(JOptionPane.showConfirmDialog(null, "Installer la mise à jour?", 
+						"Mise à jour", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+					try {
+						Runtime.getRuntime().exec("concoursjeunes-updateapply.cmd \"" +
+								ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update\" \"" +
+								System.getProperty("user.dir") + "\"");
+						System.exit(0);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
 				}
 				break;
 			case NO_UPDATE_AVAILABLE:
@@ -207,5 +228,32 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener {
 					tray.remove(trayIcon);
 				}
 		}
+	}
+	
+	public void mouseClicked(MouseEvent e) {
+		if(e.getSource() == trayIcon) {
+			if(currentStatus == Status.AVAILABLE) {
+				if(JOptionPane.showConfirmDialog(null, "Telecharger les mise à jour?", 
+						"Mise à jour", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+					try {
+						ajUpdater.downloadFiles(updateFiles);
+					} catch (UpdateException e1) {
+						e1.printStackTrace();
+					}
+				}
+			}
+		}
+	}
+
+	public void mouseEntered(MouseEvent e) {
+	}
+
+	public void mouseExited(MouseEvent e) {
+	}
+
+	public void mousePressed(MouseEvent e) {
+	}
+
+	public void mouseReleased(MouseEvent e) {
 	}
 }

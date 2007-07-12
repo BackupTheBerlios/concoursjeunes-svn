@@ -89,7 +89,9 @@
 package org.concoursjeunes;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
+import java.io.IOException;
 
 import ajinteractive.standard.utilities.app.AppRessources;
 import ajinteractive.standard.utilities.io.FileUtil;
@@ -126,18 +128,6 @@ public class CJAppRessources extends AppRessources {
     }
     
     /**
-     * Crée l'arborescence inexistante
-     * 
-     * @param path - l'arborescence à tester et cré si nécessaire
-     */
-    private void createPathIfNotExist(String path) {
-        File directory = new File(path);
-        if(!directory.exists()) {
-            directory.mkdirs();
-        }
-    }
-    
-    /**
      * Copie les fichiers de configuration du repertoire de base vers le repertoire utilisateur
      *
      */
@@ -149,7 +139,16 @@ public class CJAppRessources extends AppRessources {
         });
         
         for(File file : fileForCopy) {
-            FileUtil.copyFile(file, new File(getUserPath()));
+        	File configPath = new File(getUserPath());
+        	if(!new File(configPath.getPath(), file.getName()).exists()) {
+	            try {
+					FileUtil.copyFile(file, configPath);
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+        	}
         }
     }
     
@@ -165,10 +164,16 @@ public class CJAppRessources extends AppRessources {
     	            }
     	        });
     	
-    	createPathIfNotExist(getAllusersDataPath() + File.separator + "update");
+    	new File(getAllusersDataPath() + File.separator + "update").mkdirs();
     	
     	for(File file : fileForCopy) {
-            FileUtil.copyFile(file, new File(getAllusersDataPath() + File.separator + "update"));
+            try {
+				FileUtil.copyFile(file, new File(getAllusersDataPath() + File.separator + "update"));
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
         }
     }
     
@@ -191,7 +196,7 @@ public class CJAppRessources extends AppRessources {
     public String getBasePath() {
     	String basePath = getAllusersDataPath() + File.separator + "base";
     	
-    	createPathIfNotExist(basePath); //$NON-NLS-1$
+    	new File(basePath).mkdirs(); //$NON-NLS-1$
         
     	return basePath; //$NON-NLS-1$
     }
@@ -206,7 +211,7 @@ public class CJAppRessources extends AppRessources {
     public String getConcoursPathForProfile(String profile) {
         String concoursPath = getProfilePath(profile) + File.separator + "concours"; //$NON-NLS-1$
         
-        createPathIfNotExist(concoursPath);
+        new File(concoursPath).mkdirs();
         
         return concoursPath;
     }
@@ -220,7 +225,7 @@ public class CJAppRessources extends AppRessources {
     public String getLogPathForProfile(String profile) {
         String concoursPath = getProfilePath(profile) + File.separator + "log"; //$NON-NLS-1$
         
-        createPathIfNotExist(concoursPath);
+        new File(concoursPath).mkdirs();
         
         return concoursPath;
     }
