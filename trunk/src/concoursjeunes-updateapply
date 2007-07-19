@@ -1,5 +1,0 @@
-#!/bin/sh
-
-if [ `ls /usr/bin | grep gksu` ] ; then
-elif [ `ls /usr/bin | grep consolehelper` ] 
-fi

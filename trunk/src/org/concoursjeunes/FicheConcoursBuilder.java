@@ -94,25 +94,24 @@ import ajinteractive.standard.common.AJToolKit;
 
 /**
  * @author Aurélien JEOFFRAY
- *
+ * 
  */
 public class FicheConcoursBuilder {
 	public static FicheConcours getFicheConcours(MetaDataFicheConcours metaDataFicheConcours) {
-		File fFiche = new File(ConcoursJeunes.userRessources.getConcoursPathForProfile(
-				ConcoursJeunes.configuration.getCurProfil()) + File.separator + 
-				metaDataFicheConcours.getFilenameConcours());
-		Object[] savedStructure = (Object[])AJToolKit.loadXMLStructure(fFiche, true);
-		
-		if(savedStructure != null) {
-			//lecture du fichier
+		File fFiche = new File(ConcoursJeunes.userRessources.getConcoursPathForProfile(ConcoursJeunes.configuration.getCurProfil()) + File.separator
+				+ metaDataFicheConcours.getFilenameConcours());
+		Object[] savedStructure = (Object[]) AJToolKit.loadXMLStructure(fFiche, true);
+
+		if (savedStructure != null) {
+			// lecture du fichier
 			FicheConcours ficheConcours = new FicheConcours();
 			ficheConcours.setFiche(savedStructure, metaDataFicheConcours);
 
-			System.out.println("Fin chargement du concours " + metaDataFicheConcours.getIntituleConcours());
+			System.out.println("Fin chargement du concours " + metaDataFicheConcours.getIntituleConcours()); //$NON-NLS-1$
 			return ficheConcours;
 		}
-		
-		System.err.println("Echec de chargement du concours " + metaDataFicheConcours.getIntituleConcours());
+
+		System.err.println("Echec de chargement du concours " + metaDataFicheConcours.getIntituleConcours()); //$NON-NLS-1$
 		return null;
 	}
 }

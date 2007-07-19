@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="FFTAImport">
+	<target name="pack-FFTAImport">
+		<mkdir dir="${projet.pack.dir}/plugins" />
+		<jar jarfile="${projet.pack.dir}/plugins/ConcoursJeunesUpdate.jar">
+			<fileset dir="${projet.pack.dir}/bin" >
+				<include name="org/concoursjeunes/plugins/FFTAImport/**" />
+			</fileset>
+		</jar>
+		<copy todir="${projet.pack.dir}" >
+			<fileset dir="." >
+				<include name="plugins/properties/FFTAImportPlugin.properties" />
+			</fileset>
+		</copy>
+	</target>
+</project>

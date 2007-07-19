@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="ConcoursJeunesUpdate">
 	<target name="pack-ConcoursJeunesUpdate">
-		<jar jarfile="${projet.pack.dir}/plugins/ConcoursJeunesUpdate.jar">
-			<fileset dir="${projet.pack.dir}/bin" >
-				<include name="org/concoursjeunes/plugins/ConcoursJeunesUpdate" />
-			</fileset>
+		<mkdir dir="${projet.pack.dir}/plugins" />
+		<jar jarfile="${projet.pack.dir}/plugins/ConcoursJeunesUpdate.jar"
+			basedir="${projet.pack.dir}/bin"
+			includes="org/concoursjeunes/plugins/update/**">
 		</jar>
+		<copy todir="${projet.pack.dir}" >
+			<fileset dir="." >
+				<include name="plugins/properties/ConcoursJeunesUpdate.properties" />
+			</fileset>
+		</copy>
 	</target>
 </project>

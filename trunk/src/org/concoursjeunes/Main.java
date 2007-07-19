@@ -1,4 +1,5 @@
 package org.concoursjeunes;
+
 /*
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -14,13 +15,14 @@ package org.concoursjeunes;
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+import java.io.File;
 import java.sql.SQLException;
 
 import org.concoursjeunes.ui.ConcoursJeunesFrame;
 
 /**
  * @author aurelien
- *
+ * 
  */
 public class Main {
 	/**
@@ -28,19 +30,29 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		ConcoursJeunes concoursJeunes = ConcoursJeunes.getInstance();
-		
+
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
 				try {
-					//permet de s'assurer que la base de données est correctement fermé
+					// permet de s'assurer que la base de données est
+					// correctement fermé
 					ConcoursJeunes.dbConnection.close();
+					// rend l'ensemble des fichier de la base accessible en lecture/ecriture pour permettre
+					// le multiutilisateur
+					File[] dbfiles = new File(ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "base").listFiles(); //$NON-NLS-1$
+					for (File dbfile : dbfiles) {
+						if (dbfile.isFile()) {
+							dbfile.setWritable(true, false);
+						}
+					}
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
 			}
 		});
-		System.out.println("core loaded");
+		System.out.println("core loaded"); //$NON-NLS-1$
+
 		new ConcoursJeunesFrame(concoursJeunes);
 	}
 

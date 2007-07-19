@@ -112,26 +112,34 @@ import ajinteractive.standard.utilities.updater.AjUpdaterEvent;
 import ajinteractive.standard.utilities.updater.AjUpdaterListener;
 import ajinteractive.standard.utilities.updater.UpdateException;
 
-@Plugin(type=Plugin.Type.STARTUP)
+@Plugin(type = Plugin.Type.STARTUP)
 public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, MouseListener {
-	//private String baseURL;
+	// private String baseURL;
 	private SystemTray tray;
+
 	private TrayIcon trayIcon;
-	
+
 	private AjUpdater ajUpdater;
+
 	ArrayList<String> updateFiles = new ArrayList<String>();
-	
-	private AjResourcesReader pluginRessources = new AjResourcesReader("properties.ConcoursJeunesUpdate"); //$NON-NLS-1$
-	private AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.update.ConcoursJeunesUpdate_libelle"); //$NON-NLS-1$
-	
-	private enum Status { NONE, AVAILABLE, DOWNLODED }
-	private Status currentStatus = Status.NONE;
-	
-	public ConcoursJeunesUpdate() {
-		
+
+	private final AjResourcesReader pluginRessources = new AjResourcesReader("properties.ConcoursJeunesUpdate"); //$NON-NLS-1$
+
+	private final AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.update.ConcoursJeunesUpdate_libelle"); //$NON-NLS-1$
+
+	private enum Status {
+		NONE, AVAILABLE, DOWNLODED
 	}
 
-	/* (non-Javadoc)
+	private Status currentStatus = Status.NONE;
+
+	public ConcoursJeunesUpdate() {
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Thread#start()
 	 */
 	@PluginEntry
@@ -142,99 +150,98 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 
 	@Override
 	public void run() {
-		
-		ajUpdater = new AjUpdater(
-				pluginRessources.getResourceString("url.reference"), 
-				ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update",
-				"hash.xml.gz");
+
+		ajUpdater = new AjUpdater(pluginRessources.getResourceString("url.reference"), //$NON-NLS-1$
+				ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update", "hash.xml.gz"); //$NON-NLS-1$ //$NON-NLS-2$
 		ajUpdater.addAjUpdaterListener(this);
-		if(ConcoursJeunes.configuration.isUseProxy()) {
+		if (ConcoursJeunes.configuration.isUseProxy()) {
 			ajUpdater.setProxy(ConcoursJeunes.configuration.getProxy());
 		}
 		try {
 			updateFiles = ajUpdater.checkUpdate();
 		} catch (UpdateException e) {
-			e.printStackTrace();
+			System.out.println("Mise à jour impossible"); //$NON-NLS-1$
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see ajinteractive.standard.utilities.updater.AjUpdaterListener#updaterStatusChanged(ajinteractive.standard.utilities.updater.AjUpdaterEvent)
 	 */
 	@Override
 	public void updaterStatusChanged(AjUpdaterEvent event) {
-		switch(event.getStatus()) {
-			case CONNECTED:
-				if (SystemTray.isSupported()) {
-					tray = SystemTray.getSystemTray();
-					// load an image
-					Dimension dimension = tray.getTrayIconSize();
-					Image image = Toolkit.getDefaultToolkit().getImage(
-							ajrParametreAppli.getResourceString("path.ressources") + File.separator + 
-							ajrParametreAppli.getResourceString("file.icon.application")).getScaledInstance(dimension.width, dimension.height, Image.SCALE_SMOOTH);
-					
-					// create a popup menu
-					trayIcon = new TrayIcon(image, pluginLocalisation.getResourceString("tray.name"));
-					trayIcon.addMouseListener(this);
-				 
-					try {
-						tray.add(trayIcon);
-					} catch (AWTException e) {
-						System.err.println(e);
+		switch (event.getStatus()) {
+		case CONNECTED:
+			if (SystemTray.isSupported()) {
+				tray = SystemTray.getSystemTray();
+				// load an image
+				Dimension dimension = tray.getTrayIconSize();
+				Image image = Toolkit.getDefaultToolkit().getImage(
+						ajrParametreAppli.getResourceString("path.ressources") + File.separator + ajrParametreAppli.getResourceString("file.icon.application")).getScaledInstance(dimension.width, //$NON-NLS-1$ //$NON-NLS-2$
+						dimension.height, Image.SCALE_SMOOTH);
+
+				// create a popup menu
+				trayIcon = new TrayIcon(image, pluginLocalisation.getResourceString("tray.name")); //$NON-NLS-1$
+				trayIcon.addMouseListener(this);
+
+				try {
+					tray.add(trayIcon);
+				} catch (AWTException e) {
+					System.err.println(e);
+				}
+			} else {
+				// disable tray option in your application or
+				// perform other actions
+				// ...
+			}
+			break;
+		case UPDATE_AVAILABLE:
+			if (trayIcon != null) {
+				trayIcon.displayMessage(pluginLocalisation.getResourceString("update.available.title"), pluginLocalisation.getResourceString("update.available"), TrayIcon.MessageType.INFO); //$NON-NLS-1$ //$NON-NLS-2$
+			}
+			currentStatus = Status.AVAILABLE;
+			break;
+		case CONNECTION_INTERRUPTED:
+			if (trayIcon != null) {
+				trayIcon.displayMessage(pluginLocalisation.getResourceString("update.interrupt.title"), pluginLocalisation.getResourceString("update.interrupt"), TrayIcon.MessageType.ERROR); //$NON-NLS-1$ //$NON-NLS-2$
+			}
+			break;
+		case FILE_ERROR:
+			if (trayIcon != null) {
+				trayIcon.displayMessage(pluginLocalisation.getResourceString("update.downloaderror.title"), pluginLocalisation.getResourceString("update.downloaderror.title"), //$NON-NLS-1$ //$NON-NLS-2$
+						TrayIcon.MessageType.ERROR);
+			}
+			break;
+		case FILES_DOWNLOADED:
+			if (JOptionPane.showConfirmDialog(null, pluginLocalisation.getResourceString("update.confirminstall"), pluginLocalisation.getResourceString("update.confirminstall.title"), //$NON-NLS-1$ //$NON-NLS-2$
+					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+				try {
+					if (System.getProperty("os.name").toLowerCase().startsWith("windows")) { //$NON-NLS-1$ //$NON-NLS-2$
+						Runtime.getRuntime().exec(
+								"concoursjeunes-updateapply.cmd \"" + ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update\" \"" + System.getProperty("user.dir") + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ 
+					} else {
+						Runtime.getRuntime().exec(
+								"concoursjeunes-updateapply \"" + ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update\" \"" + System.getProperty("user.dir") + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 					}
-				} else {
-					// disable tray option in your application or
-					// perform other actions
-					// ...
+					System.exit(0);
+				} catch (IOException e1) {
+					e1.printStackTrace();
 				}
-				break;
-			case UPDATE_AVAILABLE:
-				if(trayIcon != null) {
-					trayIcon.displayMessage("Mise à jour disponible", 
-							"Des mises à jour sont disponible et prète à être téléchargé,\n" +
-							"Cliquer sur l'icone pour les télécharger", TrayIcon.MessageType.INFO);
-				}
-				currentStatus = Status.AVAILABLE;
-				break;
-			case CONNECTION_INTERRUPTED:
-				if(trayIcon != null) {
-					trayIcon.displayMessage("Connexion interrompue", 
-							"La connexion au serveur à été interrompu inopinément,\n" +
-							"la mise n'a pas put s'effectuer correctement", TrayIcon.MessageType.ERROR);
-				}
-				break;
-			case FILE_ERROR:
-				if(trayIcon != null) {
-					trayIcon.displayMessage("Erreur de téléchargement", 
-							"Une erreur est survenu durant le téléchargement,\n" +
-							"celui ci c'est terminé anormalement", TrayIcon.MessageType.ERROR);
-				}
-				break;
-			case FILES_DOWNLOADED:
-				if(JOptionPane.showConfirmDialog(null, "Installer la mise à jour?", 
-						"Mise à jour", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-					try {
-						Runtime.getRuntime().exec("concoursjeunes-updateapply.cmd \"" +
-								ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update\" \"" +
-								System.getProperty("user.dir") + "\"");
-						System.exit(0);
-					} catch (IOException e1) {
-						e1.printStackTrace();
-					}
-				}
-				break;
-			case NO_UPDATE_AVAILABLE:
-				if(trayIcon != null) {
-					tray.remove(trayIcon);
-				}
+			}
+			break;
+		case NO_UPDATE_AVAILABLE:
+			if (trayIcon != null) {
+				tray.remove(trayIcon);
+			}
 		}
 	}
-	
+
 	public void mouseClicked(MouseEvent e) {
-		if(e.getSource() == trayIcon) {
-			if(currentStatus == Status.AVAILABLE) {
-				if(JOptionPane.showConfirmDialog(null, "Telecharger les mise à jour?", 
-						"Mise à jour", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+		if (e.getSource() == trayIcon) {
+			if (currentStatus == Status.AVAILABLE) {
+				if (JOptionPane.showConfirmDialog(null, pluginLocalisation.getResourceString("update.confirmdownload"), pluginLocalisation.getResourceString("update.confirmdownload.title"), //$NON-NLS-1$ //$NON-NLS-2$
+						JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 					try {
 						ajUpdater.downloadFiles(updateFiles);
 					} catch (UpdateException e1) {

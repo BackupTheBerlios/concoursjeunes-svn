@@ -97,56 +97,58 @@ import java.util.Hashtable;
 
 /**
  * <p>
- * Représentation d'un réglement de concours. Un réglement fixe les régles arbitral
- * appliqué à un concours. Un seur réglement peut être appliqué sur un concours, et
- * à plus forte raison à tous les archers du concours.
+ * Représentation d'un réglement de concours. Un réglement fixe les régles
+ * arbitral appliqué à un concours. Un seur réglement peut être appliqué sur un
+ * concours, et à plus forte raison à tous les archers du concours.
  * </p>
  * <p>
- * On retrouve dans un réglement les éléments essentiel afin de compter les points
- * ainsi que l'ensemble des critères de classement et de placement qui doivent être
- * appliqué sur un concours.
+ * On retrouve dans un réglement les éléments essentiel afin de compter les
+ * points ainsi que l'ensemble des critères de classement et de placement qui
+ * doivent être appliqué sur un concours.
  * </p>
  * <p>
- * Un réglement peut être qualifié d'"officiel" ou non. Si il est qualifié d'officiel,
- * celui ci ne devrait pas être altéré par les vue/controlleur. La methode
- * <i>isOfficialReglement()</i> est utilisé pour déterminé si le réglement doit être
- * considéré ou non comme officiel. Cette qualification doit permettre d'effectuer des
- * classement inter-club, inter-concours avec l'assurance que les cirtères d'évaluation
- * sont en tout point identique.
+ * Un réglement peut être qualifié d'"officiel" ou non. Si il est qualifié
+ * d'officiel, celui ci ne devrait pas être altéré par les vue/controlleur. La
+ * methode <i>isOfficialReglement()</i> est utilisé pour déterminé si le
+ * réglement doit être considéré ou non comme officiel. Cette qualification doit
+ * permettre d'effectuer des classement inter-club, inter-concours avec
+ * l'assurance que les cirtères d'évaluation sont en tout point identique.
  * </p>
  * 
  * @author Aurélien JEOFFRAY
- *
+ * 
  */
 public class Reglement {
 
-	private String name				= "default"; //$NON-NLS-1$
-	
-	private int nbSerie             = 2;
-	private int nbVoleeParSerie     = 6;
-	private int nbFlecheParVolee    = 3;
-	private int nbMembresEquipe     = 4;
-	private int nbMembresRetenu     = 3;
+	private String name = "default"; //$NON-NLS-1$
+
+	private int nbSerie = 2;
+	private int nbVoleeParSerie = 6;
+	private int nbFlecheParVolee = 3;
+	private int nbMembresEquipe = 4;
+	private int nbMembresRetenu = 3;
 
 	private ArrayList<Criterion> listCriteria = new ArrayList<Criterion>();
 	private ArrayList<DistancesEtBlason> listDistancesEtBlason = new ArrayList<DistancesEtBlason>();
-	
+
 	private boolean officialReglement = false;
-	
+
 	/**
 	 * Constructeur java-beans. Initialise un réglement par défaut
-	 *
+	 * 
 	 */
-	public Reglement() { }
-	
+	public Reglement() {
+	}
+
 	/**
 	 * Initialise un réglement par défaut en le nommant
+	 * 
 	 * @param name
 	 */
 	public Reglement(String name) {
 		this.name = name;
 	}
-	
+
 	/**
 	 * Retourne le nom du réglement
 	 * 
@@ -159,7 +161,8 @@ public class Reglement {
 	/**
 	 * Donne ou change le nom du réglement
 	 * 
-	 * @param name le nom à donner au réglement
+	 * @param name
+	 *            le nom à donner au réglement
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -175,22 +178,20 @@ public class Reglement {
 	 * le placement, les deux ou simplement informatif.
 	 * </p>
 	 * 
-	 * @return la liste des critéres de distinction utilisé pour
-	 * le réglement
+	 * @return la liste des critéres de distinction utilisé pour le réglement
 	 */
 	public ArrayList<Criterion> getListCriteria() {
 		return listCriteria;
 	}
-	
-	
-	
+
 	/**
 	 * Définit la liste des critères de distinction du réglement.
 	 * 
-	 * <i>Methode essentielement utile à la déserialisation. Ne devrait pas
-	 * être utilisé directement.</i>
+	 * <i>Methode essentielement utile à la déserialisation. Ne devrait pas être
+	 * utilisé directement.</i>
 	 * 
-	 * @param listCriteria the listCriteria to set
+	 * @param listCriteria
+	 *            the listCriteria to set
 	 */
 	public void setListCriteria(ArrayList<Criterion> listCriteria) {
 		this.listCriteria = listCriteria;
@@ -204,22 +205,29 @@ public class Reglement {
 	}
 
 	/**
-	 * @param listDistancesEtBlason listDistancesEtBlason à définir
+	 * @param listDistancesEtBlason
+	 *            listDistancesEtBlason à définir
 	 */
-	public void setListDistancesEtBlason(
-			ArrayList<DistancesEtBlason> listDistancesEtBlason) {
+	public void setListDistancesEtBlason(ArrayList<DistancesEtBlason> listDistancesEtBlason) {
 		this.listDistancesEtBlason = listDistancesEtBlason;
 	}
-	
+
+	/**
+	 * Retourne le couple distances blason associé à un jeux de critères donnée
+	 * 
+	 * @param criteriaSet
+	 *            le jeux de critère pour lequel récuperer le DistancesBlason
+	 * @return le DistancesEtBlason associé au jeux ou null si aucun
+	 */
 	public DistancesEtBlason getDistancesEtBlasonFor(CriteriaSet criteriaSet) {
-		for(DistancesEtBlason db : listDistancesEtBlason) {
-			if(db.getCriteriaSet().equals(criteriaSet)) {
+		for (DistancesEtBlason db : listDistancesEtBlason) {
+			if (db.getCriteriaSet().equals(criteriaSet)) {
 				return db;
 			}
 		}
 		return null;
 	}
-	
+
 	public void addDistancesEtBlason(DistancesEtBlason distancesEtBlason) {
 		listDistancesEtBlason.add(distancesEtBlason);
 	}
@@ -227,25 +235,27 @@ public class Reglement {
 	/**
 	 * Renvoi la politique de placement.
 	 * 
-	 * @return Hashtable<String, Boolean> Renvoi le filtre de critere en place pour le placement des archers
+	 * @return Hashtable<String, Boolean> Renvoi le filtre de critere en place
+	 *         pour le placement des archers
 	 */
 	public Hashtable<Criterion, Boolean> getPlacementFilter() {
 		Hashtable<Criterion, Boolean> filterCriteria = new Hashtable<Criterion, Boolean>();
-		for(Criterion criterion : listCriteria) {
+		for (Criterion criterion : listCriteria) {
 			filterCriteria.put(criterion, criterion.isPlacement());
 		}
 
 		return filterCriteria;
 	}
-	
+
 	/**
 	 * Renvoi la politique de classement
 	 * 
-	 * @return Hashtable<String, Boolean> Renvoi le filtre de critere en place pour le classement des archers
+	 * @return Hashtable<String, Boolean> Renvoi le filtre de critere en place
+	 *         pour le classement des archers
 	 */
 	public Hashtable<Criterion, Boolean> getClassementFilter() {
 		Hashtable<Criterion, Boolean> filterCriteria = new Hashtable<Criterion, Boolean>();
-		for(Criterion criterion : listCriteria) {
+		for (Criterion criterion : listCriteria) {
 			filterCriteria.put(criterion, criterion.isClassement());
 		}
 
@@ -260,7 +270,8 @@ public class Reglement {
 	}
 
 	/**
-	 * @param nbFlecheParVolee nbFlecheParVolee à définir
+	 * @param nbFlecheParVolee
+	 *            nbFlecheParVolee à définir
 	 */
 	public void setNbFlecheParVolee(int nbFlecheParVolee) {
 		this.nbFlecheParVolee = nbFlecheParVolee;
@@ -274,7 +285,8 @@ public class Reglement {
 	}
 
 	/**
-	 * @param nbMembresEquipe nbMembresEquipe à définir
+	 * @param nbMembresEquipe
+	 *            nbMembresEquipe à définir
 	 */
 	public void setNbMembresEquipe(int nbMembresEquipe) {
 		this.nbMembresEquipe = nbMembresEquipe;
@@ -288,7 +300,8 @@ public class Reglement {
 	}
 
 	/**
-	 * @param nbMembresRetenu nbMembresRetenu à définir
+	 * @param nbMembresRetenu
+	 *            nbMembresRetenu à définir
 	 */
 	public void setNbMembresRetenu(int nbMembresRetenu) {
 		this.nbMembresRetenu = nbMembresRetenu;
@@ -302,7 +315,8 @@ public class Reglement {
 	}
 
 	/**
-	 * @param nbSerie nbSerie à définir
+	 * @param nbSerie
+	 *            nbSerie à définir
 	 */
 	public void setNbSerie(int nbSerie) {
 		this.nbSerie = nbSerie;
@@ -316,7 +330,8 @@ public class Reglement {
 	}
 
 	/**
-	 * @param nbVoleeParSerie nbVoleeParSerie à définir
+	 * @param nbVoleeParSerie
+	 *            nbVoleeParSerie à définir
 	 */
 	public void setNbVoleeParSerie(int nbVoleeParSerie) {
 		this.nbVoleeParSerie = nbVoleeParSerie;
@@ -326,8 +341,8 @@ public class Reglement {
 	 * Permet d'identifié le réglement comme officiel ou non.<br>
 	 * Un réglement officiel ne devrait pas être altéré au cours de sa vie.
 	 * 
-	 * @return true si le réglement est qualifié d'officiel, false dans le
-	 * cas contraire.
+	 * @return true si le réglement est qualifié d'officiel, false dans le cas
+	 *         contraire.
 	 */
 	public boolean isOfficialReglement() {
 		return officialReglement;
@@ -338,11 +353,12 @@ public class Reglement {
 	 * Définit si le réglement est ou non officiel
 	 * </p>
 	 * <p>
-	 * <i>Methode essentielement utile à la déserialisation et aux outils de débugage.
-	 * Ne devrait pas être utilisé directement.</i>
+	 * <i>Methode essentielement utile à la déserialisation et aux outils de
+	 * débugage. Ne devrait pas être utilisé directement.</i>
 	 * </p>
 	 * 
-	 * @param officialReglement true pour un réglement officiel, false sinon
+	 * @param officialReglement
+	 *            true pour un réglement officiel, false sinon
 	 */
 	public void setOfficialReglement(boolean officialReglement) {
 		this.officialReglement = officialReglement;
@@ -351,32 +367,33 @@ public class Reglement {
 	/**
 	 * Détermine si un tableau de score donnée est ou non valide su le réglement
 	 * 
-	 * @param scores le tableau de score à validé
+	 * @param scores
+	 *            le tableau de score à validé
 	 * @return true si le score est valide, false dans le cas contraire
 	 */
 	public boolean isValidScore(ArrayList<Integer> scores) {
 		boolean valid = true;
-		for(int score : scores) {
-			if(score > nbVoleeParSerie * nbFlecheParVolee * 10) {
+		for (int score : scores) {
+			if (score > nbVoleeParSerie * nbFlecheParVolee * 10) {
 				valid = false;
 				break;
 			}
 		}
 		return valid;
 	}
-	
+
 	/**
 	 * Rend l'objet persistant. Sauvegarde l'ensemble des données de l'objet
 	 * dans la base de donnée de ConcoursJeunes.
-	 *
+	 * 
 	 */
 	public void save() {
 		try {
 			String sql = "merge into REGLEMENT (NUMREGLEMENT, NOMREGLEMENT, NBSERIE, NBVOLEEPARSERIE," + //$NON-NLS-1$
 					"NBFLECHEPARVOLEE, NBMEMBRESEQUIPE, NBMEMBRESRETENU, ISOFFICIAL) " + //$NON-NLS-1$
 					"VALUES (?, ?, ?, ?, ?, ?, ?, ?)"; //$NON-NLS-1$
-			
-			//Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+
+			// Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 			PreparedStatement pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
 			pstmt.setInt(1, hashCode());
 			pstmt.setString(2, name);
@@ -386,62 +403,62 @@ public class Reglement {
 			pstmt.setInt(6, nbMembresEquipe);
 			pstmt.setInt(7, nbMembresRetenu);
 			pstmt.setBoolean(8, officialReglement);
-			
+
 			pstmt.executeUpdate();
 
-			//sauvegarde les tableaux de crières et correspondance
+			// sauvegarde les tableaux de crières et correspondance
 			saveCriteria();
 			saveDistancesAndBlasons();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void saveCriteria() {
-		for(Criterion criterion : listCriteria) {
+		for (Criterion criterion : listCriteria) {
 			criterion.save();
 		}
 	}
-	
+
 	private void saveDistancesAndBlasons() {
-		for(DistancesEtBlason distancesEtBlason : listDistancesEtBlason) {
+		for (DistancesEtBlason distancesEtBlason : listDistancesEtBlason) {
 			distancesEtBlason.save();
 		}
 	}
 
 	/**
 	 * Supprime la persistance du réglement. Cette persistance ne peut être
-	 * supprimé qu'à la condition que le réglement ne soit pas officiel 
+	 * supprimé qu'à la condition que le réglement ne soit pas officiel
 	 * 
 	 * @return true si suppression effective, false sinon.
 	 */
 	public boolean delete() {
 		boolean success = false;
 
-		if(!officialReglement) {
+		if (!officialReglement) {
 			try {
 				Statement stmt = ConcoursJeunes.dbConnection.createStatement();
-				
+
 				stmt.executeUpdate("delete from REGLEMENT where NUMREGLEMENT=" + hashCode()); //$NON-NLS-1$
-				
+
 				success = true;
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
-		
+
 		return success;
 	}
-	
+
 	/**
 	 * <p>
 	 * Retourne la liste des réglement disponible en base de donnée.<br>
-	 * intégre au passage les réglement disponible sous forme de script sql
-	 * dans le répertoire config/reglements n'ayant pas encore intégré.
+	 * intégre au passage les réglement disponible sous forme de script sql dans
+	 * le répertoire config/reglements n'ayant pas encore intégré.
 	 * </p>
 	 * <p>
-	 * Des mises à jour du programme peuvent apporter de nouveau réglement
-	 * sous forme de script sql
+	 * Des mises à jour du programme peuvent apporter de nouveau réglement sous
+	 * forme de script sql
 	 * </p>
 	 * 
 	 * @return la liste des réglement disponible
@@ -450,21 +467,23 @@ public class Reglement {
 		ArrayList<String> availableReglements = new ArrayList<String>();
 		try {
 			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
-			
+
 			ResultSet rs = stmt.executeQuery("select NOMREGLEMENT from REGLEMENT"); //$NON-NLS-1$
 
-			while(rs.next()) {
+			while (rs.next()) {
 				availableReglements.add(rs.getString("NOMREGLEMENT")); //$NON-NLS-1$
 			}
 			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		return availableReglements.toArray(new String[availableReglements.size()]);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -472,7 +491,7 @@ public class Reglement {
 		final int PRIME = 31;
 		int result = 1;
 		result = PRIME * result + name.hashCode();
-		
+
 		return result;
 	}
 }

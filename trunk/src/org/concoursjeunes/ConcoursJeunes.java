@@ -127,158 +127,200 @@ import com.lowagie.text.Document;
 import com.lowagie.text.pdf.PdfWriter;
 
 /**
- * Class principal de ConcoursJeunes, gére l'ensemble des ressources
- * commune de l'application tel que
+ * Class principal de ConcoursJeunes, gére l'ensemble des ressources commune de
+ * l'application tel que
  * <ul>
- * 	<li>Le chargement du fichier de configuration</li>
- * 	<li>L'accès aux fichiers de parametrage et libellés</li>
- * 	<li>L'accès aux ressources utilisateurs</li>
- * 	<li>La connexion à la base de données</li>
+ * <li>Le chargement du fichier de configuration</li>
+ * <li>L'accès aux fichiers de parametrage et libellés</li>
+ * <li>L'accès aux ressources utilisateurs</li>
+ * <li>La connexion à la base de données</li>
  * </ul>
  * 
- * En outre la class ConcoursJeunes gére l'ensemble des fiches concours du logiciel
- * (création, ouverture, fermeture, suppression)
+ * En outre la class ConcoursJeunes gére l'ensemble des fiches concours du
+ * logiciel (création, ouverture, fermeture, suppression)
  * 
- * @author  Aurelien Jeoffray
- * @version  @version.numero@ - @version.date@
+ * @author Aurelien Jeoffray
+ * @version
+ * @version.numero@ -
+ * @version.date@
  */
 public class ConcoursJeunes {
 
-	//UID: 1.Major(2).Minor(2).Correctif(2).Build(3).Type(1,Alpha,Beta,RC(1->6),Release)
-	public static final long serialVersionUID          = 10190000011l;
+	// UID:
+	// 1.Major(2).Minor(2).Correctif(2).Build(3).Type(1,Alpha,Beta,RC(1->6),Release)
+	public static final long serialVersionUID = 10190000011l;
 
 	/**
 	 * Chaines de version de ConcoursJeunes
 	 */
-	public static final String NOM                  = "@version.name@";      //$NON-NLS-1$
-	public static final String VERSION              = "@version.numero@ - @version.date@";//$NON-NLS-1$
-	public static final String CODENAME             = "@version.codename@";  //$NON-NLS-1$
-	public static final String AUTEURS              = "@version.author@";    //$NON-NLS-1$
-	public static final String COPYR                = "@version.copyr@";     //$NON-NLS-1$
-	public static final int DB_RELEASE_REQUIRED		= 1;
+	public static final String NOM = "@version.name@"; //$NON-NLS-1$
+
+	public static final String VERSION = "@version.numero@ - @version.date@";//$NON-NLS-1$
+
+	public static final String CODENAME = "@version.codename@"; //$NON-NLS-1$
+
+	public static final String AUTEURS = "@version.author@"; //$NON-NLS-1$
+
+	public static final String COPYR = "@version.copyr@"; //$NON-NLS-1$
+
+	public static final int DB_RELEASE_REQUIRED = 1;
 
 	// Chaine de ressources
-	public static final String RES_LIBELLE         = "libelle";                //$NON-NLS-1$
-	public static final String RES_PARAMETRE       = "parametre";              //$NON-NLS-1$
+	public static final String RES_LIBELLE = "libelle"; //$NON-NLS-1$
+
+	public static final String RES_PARAMETRE = "parametre"; //$NON-NLS-1$
 
 	/**
 	 * Chargement des Libelle de l'application
 	 */
-	public static AjResourcesReader ajrLibelle         = new AjResourcesReader(RES_LIBELLE);
+	public static AjResourcesReader ajrLibelle = new AjResourcesReader(
+			RES_LIBELLE);
 
 	/**
 	 * Chargement des parametrages statiques
 	 */
-	public static AjResourcesReader ajrParametreAppli  = new AjResourcesReader(RES_PARAMETRE);
+	public static AjResourcesReader ajrParametreAppli = new AjResourcesReader(
+			RES_PARAMETRE);
 
 	/**
 	 * Gestion de la configuration
 	 */
-	public static Configuration configuration          = new Configuration();
+	public static Configuration configuration = new Configuration();
 
 	/**
 	 * ressources utilisateurs
 	 */
-	public static CJAppRessources userRessources        = new CJAppRessources(NOM);
+	public static CJAppRessources userRessources = new CJAppRessources(NOM);
+
 	public static int dbVersion = 0;
-	
+
 	/**
 	 * Connection à la base de données du logiciel
 	 */
 	public static Connection dbConnection;
 
-	private ArrayList<FicheConcours> fichesConcours    = new ArrayList<FicheConcours>();
-	
-	private EventListenerList listeners = new EventListenerList();
-	
+	private final ArrayList<FicheConcours> fichesConcours = new ArrayList<FicheConcours>();
+
+	private final EventListenerList listeners = new EventListenerList();
+
 	private static ConcoursJeunes instance;
-	
-	/**	
+
+	/**
 	 * constructeur, création de la fenetre principale
 	 */
 	private ConcoursJeunes() {
-		//tente de recuperer la configuration générale du programme
+		// tente de recuperer la configuration générale du programme
 		configuration = ConfigurationBuilder.getCurrentConfiguration();
 
 		reloadLibelle(new Locale(configuration.getLangue()));
+		try {
+			AjResourcesReader.setClassLoader(new PluginClassLoader(
+					findParentClassLoader(), new File("plugins"))); //$NON-NLS-1$
+		} catch (MalformedURLException e1) {
+			e1.printStackTrace();
+		}
 
-		//en debug_mode=0, log la sortie systeme
-		if(ajrParametreAppli.getResourceInteger("debug.mode") == 0) { //$NON-NLS-1$
+		// en debug_mode=0, log la sortie systeme
+		if (ajrParametreAppli.getResourceInteger("debug.mode") == 0) { //$NON-NLS-1$
 			try {
-				System.setErr(new PrintStream(
-						userRessources.getLogPathForProfile(configuration.getCurProfil()) +
-						File.separator + ajrParametreAppli.getResourceString("log.error"))); //$NON-NLS-1$
-				System.setOut(new PrintStream(
-						userRessources.getLogPathForProfile(configuration.getCurProfil()) +
-						File.separator + ajrParametreAppli.getResourceString("log.exec"))); //$NON-NLS-1$
+				System.setErr(new PrintStream(userRessources
+						.getLogPathForProfile(configuration.getCurProfil())
+						+ File.separator
+						+ ajrParametreAppli.getResourceString("log.error"))); //$NON-NLS-1$
+				System.setOut(new PrintStream(userRessources
+						.getLogPathForProfile(configuration.getCurProfil())
+						+ File.separator
+						+ ajrParametreAppli.getResourceString("log.exec"))); //$NON-NLS-1$
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
 		}
 
-		//Pour le debugage donne le systeme de l'utilisateur
+		// Pour le debugage donne le systeme de l'utilisateur
 		System.out.println("OS: " + System.getProperty("os.name")); //$NON-NLS-1$ //$NON-NLS-2$
 		System.out.println("Architecture: " + System.getProperty("os.arch")); //$NON-NLS-1$ //$NON-NLS-2$
 		System.out.println("Version: " + System.getProperty("os.version")); //$NON-NLS-1$ //$NON-NLS-2$
-		System.out.println("Repertoire utilisateur: " + System.getProperty("user.home")); //$NON-NLS-1$ //$NON-NLS-2$
-		
+		System.out
+				.println("Repertoire utilisateur: " + System.getProperty("user.home")); //$NON-NLS-1$ //$NON-NLS-2$
+		System.out
+				.println("Java version:" + System.getProperty("java.version")); //$NON-NLS-1$ //$NON-NLS-2$
+
 		try {
-			dbConnection = DriverManager.getConnection(
-					ajrParametreAppli.getResourceString("database.url", userRessources.getBasePath()), //$NON-NLS-1$
+			dbConnection = DriverManager.getConnection(ajrParametreAppli
+					.getResourceString(
+							"database.url", userRessources.getBasePath()), //$NON-NLS-1$
 					ajrParametreAppli.getResourceString("database.user"), //$NON-NLS-1$
 					ajrParametreAppli.getResourceString("database.password")); //$NON-NLS-1$
-			
+
 			Statement stmt = dbConnection.createStatement();
 
-			//test si la base existe déjà et retourne sa révision si c'est le cas
-			ResultSet rs = stmt.executeQuery("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='PARAM'");
-			if(rs.first()) {
+			// test si la base existe déjà et retourne sa révision si c'est le
+			// cas
+			ResultSet rs = stmt
+					.executeQuery("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='PARAM'"); //$NON-NLS-1$
+			if (rs.first()) {
 				dbVersion = getDBVersion();
 			}
-			
-			//si la version de la base est différente de la version requise par le programme
-			//copie les fichiers de mise à jour par défaut
-			if(dbVersion < DB_RELEASE_REQUIRED) {
+
+			// si la version de la base est différente de la version requise par
+			// le programme
+			// copie les fichiers de mise à jour par défaut
+			if (dbVersion < DB_RELEASE_REQUIRED) {
 				userRessources.copyDefaultUpdateFile();
-			} else if(dbVersion > DB_RELEASE_REQUIRED) {
-				JOptionPane.showMessageDialog(null, ajrLibelle.getResourceString("erreur.dbrelease"), 
-						ajrLibelle.getResourceString("erreur.dbrelease.title"), JOptionPane.ERROR_MESSAGE);
+			} else if (dbVersion > DB_RELEASE_REQUIRED) {
+				JOptionPane.showMessageDialog(null, ajrLibelle
+						.getResourceString("erreur.dbrelease"), ajrLibelle //$NON-NLS-1$
+						.getResourceString("erreur.dbrelease.title"), //$NON-NLS-1$
+						JOptionPane.ERROR_MESSAGE);
 				System.exit(1);
 			}
-			
-			String[] updateScripts = new File(userRessources.getAllusersDataPath() + File.separator + "update").list(new FilenameFilter() { //$NON-NLS-1$
-				public boolean accept(File dir, String name) {
-					if(name.endsWith(".sql")) { //$NON-NLS-1$
-						return true;
-					}
-					return false;
-				}
-			});
-			if(updateScripts != null) {
+
+			String[] updateScripts = new File(userRessources
+					.getAllusersDataPath()
+					+ File.separator + "update").list(new FilenameFilter() { //$NON-NLS-1$
+						public boolean accept(File dir, String name) {
+							if (name.endsWith(".sql")) { //$NON-NLS-1$
+								return true;
+							}
+							return false;
+						}
+					});
+			if (updateScripts != null && updateScripts.length > 0) {
 				Arrays.sort(updateScripts);
 
 				int scriptRelease = dbVersion;
-				for(String scriptPath : updateScripts) {
-					scriptRelease = SqlParser.createBatch(new File(userRessources.getAllusersDataPath() + File.separator +
-							"update" + File.separator + scriptPath), stmt, null, scriptRelease); //$NON-NLS-1$
-					System.out.println("delete: " + new File(userRessources.getAllusersDataPath() + File.separator +
-							"update" + File.separator + scriptPath).delete()); //$NON-NLS-1$
+				for (String scriptPath : updateScripts) {
+					scriptRelease = SqlParser
+							.createBatch(
+									new File(
+											userRessources
+													.getAllusersDataPath()
+													+ File.separator
+													+ "update" + File.separator + scriptPath), stmt, null, scriptRelease); //$NON-NLS-1$
+					System.out
+							.println("delete: " //$NON-NLS-1$
+									+ new File(
+											userRessources
+													.getAllusersDataPath()
+													+ File.separator
+													+ "update" + File.separator + scriptPath).delete()); //$NON-NLS-1$
 				}
 				stmt.executeBatch();
 				stmt.close();
-			
+
 				dbVersion = getDBVersion();
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JXErrorDialog.showDialog(null, "SQL Error", e.getLocalizedMessage(), //$NON-NLS-1$
+			JXErrorDialog.showDialog(null,
+					"SQL Error", e.getLocalizedMessage(), //$NON-NLS-1$
 					e.fillInStackTrace());
 			System.exit(1);
 		}
-		
+
 		loadStartupPlugin();
 	}
-	
+
 	/**
 	 * Retourne l'instance unique du moteur du logiciel
 	 * 
@@ -287,107 +329,125 @@ public class ConcoursJeunes {
 	public synchronized static ConcoursJeunes getInstance() {
 		if (null == instance) { // Premier appel
 			instance = new ConcoursJeunes();
-        }
-        return instance;
+		}
+		return instance;
 	}
-	
+
 	/**
 	 * Recharge le fichier de libelle en fonction de la localité en parametre
 	 * 
-	 * @param locale - la localité utilisé pour les libellés 
+	 * @param locale -
+	 *            la localité utilisé pour les libellés
 	 */
 	public static void reloadLibelle(Locale locale) {
 		AjResourcesReader.setLocale(locale);
 		ajrLibelle = new AjResourcesReader(RES_LIBELLE);
 	}
-	
+
 	/**
-	 * Ajoute un auditeur sur les evenements de gestion de concours de l'application
+	 * Ajoute un auditeur sur les evenements de gestion de concours de
+	 * l'application
 	 * 
-	 * @param concoursJeunesListener l'auditeur qui souhaite s'abonner
+	 * @param concoursJeunesListener
+	 *            l'auditeur qui souhaite s'abonner
 	 */
-	public void addConcoursJeunesListener(ConcoursJeunesListener concoursJeunesListener) {
+	public void addConcoursJeunesListener(
+			ConcoursJeunesListener concoursJeunesListener) {
 		listeners.add(ConcoursJeunesListener.class, concoursJeunesListener);
 	}
-	
+
 	/**
 	 * 
 	 * @param concoursJeunesListener
 	 */
-	public void removeConcoursJeunesListener(ConcoursJeunesListener concoursJeunesListener) {
+	public void removeConcoursJeunesListener(
+			ConcoursJeunesListener concoursJeunesListener) {
 		listeners.remove(ConcoursJeunesListener.class, concoursJeunesListener);
 	}
-	
+
 	private int getDBVersion() {
 		Statement stmt = null;
 		try {
 			stmt = dbConnection.createStatement();
-			
-			ResultSet rs = stmt.executeQuery("SELECT * FROM PARAM");
+
+			ResultSet rs = stmt.executeQuery("SELECT * FROM PARAM"); //$NON-NLS-1$
 			rs.first();
-			return rs.getInt("DBVERSION");
+			return rs.getInt("DBVERSION"); //$NON-NLS-1$
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			try { if(stmt!=null) stmt.close(); } catch (Exception e) {}
+			try {
+				if (stmt != null)
+					stmt.close();
+			} catch (Exception e) {
+			}
 		}
-		
+
 		return 0;
 	}
-	
+
 	/**
 	 * Charge les plugins devant être initialisé au démmarage de l'application
 	 */
 	private void loadStartupPlugin() {
 		PluginLoader pl = new PluginLoader();
-		
-    	for(PluginMetadata pm : pl.getPlugins(PluginMetadata.STARTUP_PLUGIN)) {
-    		
-			try {
-    			Class<?> cla = null;
-    			String importClass = pm.getClassName();
-    			if(importClass != null) {
-    				System.out.println("load startup plugin: " + pm.getInfo() + "(" + importClass + ")");
-    				cla = Class.forName(importClass, false, new PluginClassLoader(findParentClassLoader(), new File("plugins")));
-    			}
 
-    			if(cla != null) {
+		for (PluginMetadata pm : pl.getPlugins(PluginMetadata.STARTUP_PLUGIN)) {
+
+			try {
+				Class<?> cla = null;
+				String importClass = pm.getClassName();
+				if (importClass != null) {
+					System.out.println("load startup plugin: " + pm.getInfo() //$NON-NLS-1$
+							+ "(" + importClass + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+					cla = Class.forName(importClass, false,
+							new PluginClassLoader(findParentClassLoader(),
+									new File("plugins"))); //$NON-NLS-1$
+				}
+
+				if (cla != null) {
 					Object plugin = cla.newInstance();
-					for(Method m : cla.getMethods()) {
-						if(m.isAnnotationPresent(PluginEntry.class)) {
-							m.invoke(plugin, (Object[])null);
+					for (Method m : cla.getMethods()) {
+						if (m.isAnnotationPresent(PluginEntry.class)) {
+							m.invoke(plugin, (Object[]) null);
 							break;
 						}
 					}
-    			}
-    		} catch (InstantiationException e1) {
-    			JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
+				}
+			} catch (InstantiationException e1) {
+				JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle
+						.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
 						e1.fillInStackTrace());
-    			e1.printStackTrace();
-    		} catch (IllegalAccessException e1) {
-    			JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
+				e1.printStackTrace();
+			} catch (IllegalAccessException e1) {
+				JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle
+						.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
 						e1.fillInStackTrace());
-    			e1.printStackTrace();
-    		} catch (ClassNotFoundException e1) {
-    			JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
+				e1.printStackTrace();
+			} catch (ClassNotFoundException e1) {
+				JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle
+						.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
 						e1.fillInStackTrace());
-    			e1.printStackTrace();
-    		} catch (SecurityException e1) {
-    			JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
+				e1.printStackTrace();
+			} catch (SecurityException e1) {
+				JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle
+						.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
 						e1.fillInStackTrace());
 				e1.printStackTrace();
 			} catch (InvocationTargetException e1) {
-				JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
+				JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle
+						.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
 						e1.fillInStackTrace());
 				e1.printStackTrace();
-			} catch(MalformedURLException e) {
-				JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
+			} catch (MalformedURLException e) {
+				JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle
+						.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
 						e.fillInStackTrace());
 				e.printStackTrace();
 			}
-    	}
+		}
 	}
-	
+
 	/**
 	 * Locates the best class loader based on context (see class description).
 	 * 
@@ -410,35 +470,39 @@ public class ConcoursJeunes {
 	 * @throws ConfigurationException
 	 */
 	public void createFicheConcours() throws ConfigurationException {
-		if(configuration == null)
-			throw new ConfigurationException("la configuration est null");
-		
+		if (configuration == null)
+			throw new ConfigurationException("la configuration est null"); //$NON-NLS-1$
+
 		FicheConcours ficheConcours = new FicheConcours();
 		fichesConcours.add(ficheConcours);
-		configuration.getMetaDataFichesConcours().add(ficheConcours.getMetaDataFicheConcours());
-		
+		configuration.getMetaDataFichesConcours().add(
+				ficheConcours.getMetaDataFicheConcours());
+
 		configuration.saveAsDefault();
 		ficheConcours.save();
-		
+
 		fireFicheConcoursCreated(ficheConcours);
 	}
-	
+
 	/**
 	 * 
 	 * @param ficheConcours
 	 * 
 	 * @throws ConfigurationException
 	 */
-	public void deleteFicheConcours(MetaDataFicheConcours metaDataFicheConcours) throws ConfigurationException {
-		if(configuration == null)
-			throw new ConfigurationException("la configuration est null");
+	public void deleteFicheConcours(MetaDataFicheConcours metaDataFicheConcours)
+			throws ConfigurationException {
+		if (configuration == null)
+			throw new ConfigurationException("la configuration est null"); //$NON-NLS-1$
 
 		configuration.getMetaDataFichesConcours().remove(metaDataFicheConcours);
 
-		if(new File(userRessources.getConcoursPathForProfile(configuration.getCurProfil()) + File.separator + 
-				metaDataFicheConcours.getFilenameConcours()).delete()) {
+		if (new File(userRessources.getConcoursPathForProfile(configuration
+				.getCurProfil())
+				+ File.separator + metaDataFicheConcours.getFilenameConcours())
+				.delete()) {
 			configuration.saveAsDefault();
-			
+
 			fireFicheConcoursDeleted(null);
 		}
 	}
@@ -450,28 +514,29 @@ public class ConcoursJeunes {
 	 * 
 	 * @throws ConfigurationException
 	 */
-	public void closeFicheConcours(FicheConcours ficheConcours) throws ConfigurationException {
-		if(configuration == null)
-			throw new ConfigurationException("la configuration est null");
-		
+	public void closeFicheConcours(FicheConcours ficheConcours)
+			throws ConfigurationException {
+		if (configuration == null)
+			throw new ConfigurationException("la configuration est null"); //$NON-NLS-1$
+
 		ficheConcours.save();
 		configuration.saveAsDefault();
-		if(fichesConcours.remove(ficheConcours)) {
+		if (fichesConcours.remove(ficheConcours)) {
 			fireFicheConcoursClosed(ficheConcours);
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @throws ConfigurationException
 	 */
 	public void closeAllFichesConcours() throws ConfigurationException {
 		saveAllFichesConcours();
-		
+
 		ArrayList<FicheConcours> tmpList = new ArrayList<FicheConcours>();
 		tmpList.addAll(fichesConcours);
 		fichesConcours.clear();
-		for(FicheConcours fiche : tmpList) {
+		for (FicheConcours fiche : tmpList) {
 			fireFicheConcoursClosed(fiche);
 		}
 		tmpList.clear();
@@ -480,16 +545,19 @@ public class ConcoursJeunes {
 	/**
 	 * Restaure le coucours fournit en parametre
 	 * 
-	 * @param concoursFile - le chemin du concours à restaurer
+	 * @param concoursFile -
+	 *            le chemin du concours à restaurer
 	 * @throws ConfigurationException
 	 */
-	public void restoreFicheConcours(MetaDataFicheConcours metaDataFicheConcours) throws ConfigurationException {
-		if(configuration == null)
-			throw new ConfigurationException("la configuration est null");
-		
-		FicheConcours ficheConcours = FicheConcoursBuilder.getFicheConcours(metaDataFicheConcours);
-		
-		if(ficheConcours != null) {
+	public void restoreFicheConcours(MetaDataFicheConcours metaDataFicheConcours)
+			throws ConfigurationException {
+		if (configuration == null)
+			throw new ConfigurationException("la configuration est null"); //$NON-NLS-1$
+
+		FicheConcours ficheConcours = FicheConcoursBuilder
+				.getFicheConcours(metaDataFicheConcours);
+
+		if (ficheConcours != null) {
 			fichesConcours.add(ficheConcours);
 			fireFicheConcoursRestored(ficheConcours);
 		}
@@ -497,14 +565,14 @@ public class ConcoursJeunes {
 
 	/**
 	 * Sauvegarde l'ensemble des fiches de concours actuellement ouverte
-	 *
+	 * 
 	 * @exception ConfigurationException
 	 */
 	public void saveAllFichesConcours() throws ConfigurationException {
-		if(configuration == null)
-			throw new ConfigurationException("la configuration est null");
-		
-		for(FicheConcours fiche : fichesConcours) {
+		if (configuration == null)
+			throw new ConfigurationException("la configuration est null"); //$NON-NLS-1$
+
+		for (FicheConcours fiche : fichesConcours) {
 			fiche.save();
 		}
 		configuration.saveAsDefault();
@@ -513,42 +581,52 @@ public class ConcoursJeunes {
 	/**
 	 * genere le pdf à partir des parametres document et du contenu xml
 	 * 
-	 * @param document - parametre du doc
-	 * @param xmlcontent - le contenu formater en xml iText
+	 * @param document -
+	 *            parametre du doc
+	 * @param xmlcontent -
+	 *            le contenu formater en xml iText
 	 * 
-	 * @return true si le pdf à correctement été généré, false si une erreur est survenue
+	 * @return true si le pdf à correctement été généré, false si une erreur est
+	 *         survenue
 	 */
 	public static boolean printDocument(Document document, String xmlcontent) {
 		boolean printOK = true;
 		try {
-			//cré un document pdf temporaire
-			File tmpFile = File.createTempFile("cta", ajrParametreAppli.getResourceString("extention.pdf")); //$NON-NLS-1$ //$NON-NLS-2$
+			// cré un document pdf temporaire
+			File tmpFile = File
+					.createTempFile(
+							"cta", ajrParametreAppli.getResourceString("extention.pdf")); //$NON-NLS-1$ //$NON-NLS-2$
 			String filePath = tmpFile.getCanonicalPath();
 			tmpFile.deleteOnExit();
 
-			/*HeaderFooter footer = new HeaderFooter(new Phrase("page "), new Phrase("."));
-            document.setFooter(footer);*/
+			/*
+			 * HeaderFooter footer = new HeaderFooter(new Phrase("page "), new
+			 * Phrase(".")); document.setFooter(footer);
+			 */
 
-			//genere le pdf
+			// genere le pdf
 			PdfWriter.getInstance(document, new FileOutputStream(filePath));
 
 			SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
 			InputSource is = new InputSource(new StringReader(xmlcontent));
-			parser.parse(is, new com.lowagie.text.xml.SAXiTextHandler(document));
+			parser
+					.parse(is, new com.lowagie.text.xml.SAXiTextHandler(
+							document));
 
-			//affiche le pdf avec le reader pdf standard du systeme
-			if(Desktop.isDesktopSupported()) {
+			// affiche le pdf avec le reader pdf standard du systeme
+			if (Desktop.isDesktopSupported()) {
 				Desktop.getDesktop().open(new File(tmpFile.getAbsolutePath()));
 			} else {
-				if(configuration != null) {
-					String NAV =  configuration.getPdfReaderPath();
-	
-					System.out.println(NAV + " " + tmpFile.getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
-					Runtime.getRuntime().exec(NAV + " " + tmpFile.getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
+				if (configuration != null) {
+					String NAV = configuration.getPdfReaderPath();
+
+					System.out.println(NAV
+							+ " " + tmpFile.getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
+					Runtime.getRuntime().exec(
+							NAV + " " + tmpFile.getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 			}
-		}
-		catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			printOK = false;
 		} finally {
@@ -557,28 +635,39 @@ public class ConcoursJeunes {
 
 		return printOK;
 	}
-	
+
 	private void fireFicheConcoursCreated(FicheConcours ficheConcours) {
-		for(ConcoursJeunesListener concoursJeunesListener : listeners.getListeners(ConcoursJeunesListener.class)) {
-			concoursJeunesListener.ficheConcoursCreated(new ConcoursJeunesEvent(ficheConcours, ConcoursJeunesEvent.CREATE_CONCOURS));
+		for (ConcoursJeunesListener concoursJeunesListener : listeners
+				.getListeners(ConcoursJeunesListener.class)) {
+			concoursJeunesListener
+					.ficheConcoursCreated(new ConcoursJeunesEvent(
+							ficheConcours, ConcoursJeunesEvent.CREATE_CONCOURS));
 		}
 	}
-	
+
 	private void fireFicheConcoursDeleted(FicheConcours ficheConcours) {
-		for(ConcoursJeunesListener concoursJeunesListener : listeners.getListeners(ConcoursJeunesListener.class)) {
-			concoursJeunesListener.ficheConcoursDeleted(new ConcoursJeunesEvent(ficheConcours, ConcoursJeunesEvent.DELETE_CONCOURS));
+		for (ConcoursJeunesListener concoursJeunesListener : listeners
+				.getListeners(ConcoursJeunesListener.class)) {
+			concoursJeunesListener
+					.ficheConcoursDeleted(new ConcoursJeunesEvent(
+							ficheConcours, ConcoursJeunesEvent.DELETE_CONCOURS));
 		}
 	}
-	
+
 	private void fireFicheConcoursClosed(FicheConcours ficheConcours) {
-		for(ConcoursJeunesListener concoursJeunesListener : listeners.getListeners(ConcoursJeunesListener.class)) {
-			concoursJeunesListener.ficheConcoursClosed(new ConcoursJeunesEvent(ficheConcours, ConcoursJeunesEvent.CLOSE_CONCOURS));
+		for (ConcoursJeunesListener concoursJeunesListener : listeners
+				.getListeners(ConcoursJeunesListener.class)) {
+			concoursJeunesListener.ficheConcoursClosed(new ConcoursJeunesEvent(
+					ficheConcours, ConcoursJeunesEvent.CLOSE_CONCOURS));
 		}
 	}
-	
+
 	private void fireFicheConcoursRestored(FicheConcours ficheConcours) {
-		for(ConcoursJeunesListener concoursJeunesListener : listeners.getListeners(ConcoursJeunesListener.class)) {
-			concoursJeunesListener.ficheConcoursRestored(new ConcoursJeunesEvent(ficheConcours, ConcoursJeunesEvent.OPEN_CONCOURS));
+		for (ConcoursJeunesListener concoursJeunesListener : listeners
+				.getListeners(ConcoursJeunesListener.class)) {
+			concoursJeunesListener
+					.ficheConcoursRestored(new ConcoursJeunesEvent(
+							ficheConcours, ConcoursJeunesEvent.OPEN_CONCOURS));
 		}
 	}
 }

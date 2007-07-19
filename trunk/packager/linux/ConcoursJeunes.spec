@@ -14,7 +14,8 @@ BuildRoot: %{_tmppath}/%{name}-root
 # Following are optional fields
 URL: @version.url@
 BuildArch: noarch
-#Requires: 
+
+Requires: usermode
 #Obsoletes: 
 #BuildRequires: 
 
@@ -26,25 +27,31 @@ BuildArch: noarch
 
 %prep
 %setup -c 'ConcoursJeunes-%{version}'
-#%patch
 
 %install
+[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf $RPM_BUILD_ROOT
+
 %__cp -a . "${RPM_BUILD_ROOT-/}"
-mkdir /var/lib/ConcoursJeunes
-chmod 755 /var/lib/ConcoursJeunes
+
+ln -s consolehelper $RPM_BUILD_ROOT%{_bindir}/concoursjeunes-applyupdate
+rm -rf $RPM_BUILD_ROOT/Makefile
 
 %clean
 [ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
 
 %files
 %defattr(-,root,root)
-/usr/lib/ConcoursJeunes/base/*
 /usr/lib/ConcoursJeunes/config/*
 /usr/lib/ConcoursJeunes/lang/*
 /usr/lib/ConcoursJeunes/lib/*
 /usr/lib/ConcoursJeunes/plugins/*
 /usr/lib/ConcoursJeunes/ressources/*
 /usr/lib/ConcoursJeunes/ConcoursJeunes.jar
-%attr(755, -, root) /usr/bin/ConcoursJeunes
-/usr/share/pixmaps/ConcoursJeunes.xpm
-/usr/share/applications/ConcoursJeunes.desktop
+%attr(755, -, root) %{_bindir}/ConcoursJeunes
+%attr(755, -, root) %{_bindir}/concoursjeunes-applyupdate
+%attr(700, root, root) /usr/sbin/concoursjeunes-applyupdate
+%attr(644, root, root) %{_sysconfdir}/pam.d/concoursjeunes-applyupdate
+%attr(644, root, root) %{_sysconfdir}/security/console.apps/concoursjeunes-applyupdate
+%{_datadir}/pixmaps/ConcoursJeunes.xpm
+%{_datadir}/applications/ConcoursJeunes.desktop
+%attr(777, root, root) /var/lib/ConcoursJeunes/*

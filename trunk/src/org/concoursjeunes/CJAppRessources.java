@@ -99,153 +99,156 @@ import ajinteractive.standard.utilities.io.FileUtil;
 /**
  * Crée et donne le chemin des ressources utilisateur pour le programme
  * 
- * @author  Aurélien Jeoffray
+ * @author Aurélien Jeoffray
  */
 public class CJAppRessources extends AppRessources {
 	private static String CONFIG_PROFILE = "configuration_"; //$NON-NLS-1$
 	private static String EXT_XML = ".xml"; //$NON-NLS-1$
-    
-    /**
-     * Construit le répertoire utilisateur selon le systeme
-     * 
-     * @param progname nom du programme
-     */
-    public CJAppRessources(String progname) {
-    	super(progname);
-    }
-    
-    /**
-     * Retourne le chemin absolu du profile
-     * 
-     * @param profile
-     * @return String - le chemin absolu du profile
-     */
-    private String getProfilePath(String profile) {
-        String profilePath = getUserPath() + File.separator + "Profile" + //$NON-NLS-1$
-                File.separator + profile;
-        
-        return profilePath;
-    }
-    
-    /**
-     * Copie les fichiers de configuration du repertoire de base vers le repertoire utilisateur
-     *
-     */
-    private void copyDefaultConfigForUser() {
-        File[] fileForCopy = new File("config").listFiles(new java.io.FileFilter() { //$NON-NLS-1$
-            public boolean accept(File pathname) {
-                return pathname.isFile() && pathname.getName().endsWith(".xml"); //$NON-NLS-1$
-            }
-        });
-        
-        for(File file : fileForCopy) {
-        	File configPath = new File(getUserPath());
-        	if(!new File(configPath.getPath(), file.getName()).exists()) {
-	            try {
+
+	/**
+	 * Construit le répertoire utilisateur selon le systeme
+	 * 
+	 * @param progname
+	 *            nom du programme
+	 */
+	public CJAppRessources(String progname) {
+		super(progname);
+	}
+
+	/**
+	 * Retourne le chemin absolu du profile
+	 * 
+	 * @param profile
+	 * @return String - le chemin absolu du profile
+	 */
+	private String getProfilePath(String profile) {
+		String profilePath = getUserPath() + File.separator + "Profile" + //$NON-NLS-1$
+				File.separator + profile;
+
+		return profilePath;
+	}
+
+	/**
+	 * Copie les fichiers de configuration du repertoire de base vers le
+	 * repertoire utilisateur
+	 * 
+	 */
+	private void copyDefaultConfigForUser() {
+		File[] fileForCopy = new File("config").listFiles(new java.io.FileFilter() { //$NON-NLS-1$
+					public boolean accept(File pathname) {
+						return pathname.isFile() && pathname.getName().endsWith(".xml"); //$NON-NLS-1$
+					}
+				});
+
+		for (File file : fileForCopy) {
+			File configPath = new File(getUserPath());
+			if (!new File(configPath.getPath(), file.getName()).exists()) {
+				try {
 					FileUtil.copyFile(file, configPath);
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-        	}
-        }
-    }
-    
-    /**
-     * 
-     */
-    public void copyDefaultUpdateFile() {
-    	File[] fileForCopy = new File(
-    			ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + 
-    			File.separator + "update").listFiles(new java.io.FileFilter() { //$NON-NLS-1$
-    	            public boolean accept(File pathname) {
-    	                return pathname.isFile();
-    	            }
-    	        });
-    	
-    	new File(getAllusersDataPath() + File.separator + "update").mkdirs();
-    	
-    	for(File file : fileForCopy) {
-            try {
-				FileUtil.copyFile(file, new File(getAllusersDataPath() + File.separator + "update"));
+			}
+		}
+	}
+
+	/**
+	 * 
+	 */
+	public void copyDefaultUpdateFile() {
+		File[] fileForCopy = new File(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + "update").listFiles(new java.io.FileFilter() { //$NON-NLS-1$
+					public boolean accept(File pathname) {
+						return pathname.isFile();
+					}
+				});
+
+		new File(getAllusersDataPath() + File.separator + "update").mkdirs(); //$NON-NLS-1$
+
+		for (File file : fileForCopy) {
+			try {
+				FileUtil.copyFile(file, new File(getAllusersDataPath() + File.separator + "update")); //$NON-NLS-1$
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-        }
-    }
-    
-    /**
-     * Donne le chemin des fichiers de configuration
-     * 
-     * @return String - le chemin des fichiers de configuration
-     */
-    public String getConfigPathForUser() {
-        copyDefaultConfigForUser();
-        
-        return getUserPath();
-    }
-    
-    /**
-     * Donne le chemin de la base de donnée
-     * 
-     * @return le chemin du répertoire contenant la base de donnée
-     */
-    public String getBasePath() {
-    	String basePath = getAllusersDataPath() + File.separator + "base";
-    	
-    	new File(basePath).mkdirs(); //$NON-NLS-1$
-        
-    	return basePath; //$NON-NLS-1$
-    }
-    
-    /**
-     * Donne le répertoire ou sont stocké les concours pour le profil
-     * donné en parametre
-     *  
-     * @param profile le nom du profile pour lequel récuperer le chemin des concours
-     * @return le chemin des concours
-     */
-    public String getConcoursPathForProfile(String profile) {
-        String concoursPath = getProfilePath(profile) + File.separator + "concours"; //$NON-NLS-1$
-        
-        new File(concoursPath).mkdirs();
-        
-        return concoursPath;
-    }
-    
-    /**
-     * Retourne le chemin des logs en fonction du profil
-     * 
-     * @param profile - le profil pour lequelle renvouyé le chemin des logs
-     * @return le chemin des logs du profil
-     */
-    public String getLogPathForProfile(String profile) {
-        String concoursPath = getProfilePath(profile) + File.separator + "log"; //$NON-NLS-1$
-        
-        new File(concoursPath).mkdirs();
-        
-        return concoursPath;
-    }
-    
-    /**
-     * Retourne la liste des configuration disponaible
-     * 
-     * @return la liste des configurations disponibles
-     */
-    public String[] listAvailableConfigurations() {
-    	String[] strConfig = new File(getConfigPathForUser()).list(new FilenameFilter() {
+		}
+	}
+
+	/**
+	 * Donne le chemin des fichiers de configuration
+	 * 
+	 * @return String - le chemin des fichiers de configuration
+	 */
+	public String getConfigPathForUser() {
+		copyDefaultConfigForUser();
+
+		return getUserPath();
+	}
+
+	/**
+	 * Donne le chemin de la base de donnée
+	 * 
+	 * @return le chemin du répertoire contenant la base de donnée
+	 */
+	public String getBasePath() {
+		String basePath = getAllusersDataPath() + File.separator + "base"; //$NON-NLS-1$
+
+		new File(basePath).mkdirs();
+
+		return basePath;
+	}
+
+	/**
+	 * Donne le répertoire ou sont stocké les concours pour le profil donné en
+	 * parametre
+	 * 
+	 * @param profile
+	 *            le nom du profile pour lequel récuperer le chemin des concours
+	 * @return le chemin des concours
+	 */
+	public String getConcoursPathForProfile(String profile) {
+		String concoursPath = getProfilePath(profile) + File.separator + "concours"; //$NON-NLS-1$
+
+		new File(concoursPath).mkdirs();
+
+		return concoursPath;
+	}
+
+	/**
+	 * Retourne le chemin des logs en fonction du profil
+	 * 
+	 * @param profile -
+	 *            le profil pour lequelle renvouyé le chemin des logs
+	 * @return le chemin des logs du profil
+	 */
+	public String getLogPathForProfile(String profile) {
+		String concoursPath = getProfilePath(profile) + File.separator + "log"; //$NON-NLS-1$
+
+		new File(concoursPath).mkdirs();
+
+		return concoursPath;
+	}
+
+	/**
+	 * Retourne la liste des configuration disponaible
+	 * 
+	 * @return la liste des configurations disponibles
+	 */
+	public String[] listAvailableConfigurations() {
+		String[] strConfig = new File(getConfigPathForUser()).list(new FilenameFilter() {
 			public boolean accept(File dir, String name) {
-				if(name.startsWith(CONFIG_PROFILE) && name.endsWith(EXT_XML))
+				if (name.startsWith(CONFIG_PROFILE) && name.endsWith(EXT_XML))
 					return true;
 				return false;
 			}
 		});
 
-		for(int i = 0; i < strConfig.length; i++)
+		for (int i = 0; i < strConfig.length; i++)
 			strConfig[i] = strConfig[i].substring(CONFIG_PROFILE.length(), strConfig[i].length() - EXT_XML.length());
 		return strConfig;
-    }
+	}
 }
