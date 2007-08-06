@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE screen SYSTEM "AjGUI.dtd">
 <screen>
 	<frame width="1024" height="768" extendedstate="MAXIMIZED_BOTH">
 		<title>%s - %s</title>
@@ -7,8 +8,8 @@
 			<menu id="file">
 				<label>menubar.fichier</label>
 				<menuitems>
-					<menu name="mi.import">menubar.fichier.importer</menu>
-					<menu name="mi.export">menubar.fichier.exporter</menu>
+					<menu id="import" name="mi.import">menubar.fichier.importer</menu>
+					<menu id="export" name="mi.export">menubar.fichier.exporter</menu>
 					<menuitem name="mi.maj" enable="false">menubar.fichier.maj</menuitem>
 					<separator />
 					<menuitem keycode="VK_F4" modifier="ALT_DOWN_MASK">menubar.fichier.quitter</menuitem>
@@ -20,7 +21,7 @@
 					<menuitem>menubar.edition.entite</menuitem>
 					<separator />
 					<menuitem name="mi.parametres" enable="false">menubar.edition.parametre</menuitem>
-					<menu name="mi.reglements">menubar.edition.reglement</menu>
+					<menu id="reglement" name="mi.reglements">menubar.edition.reglement</menu>
 					<menuitem>menubar.edition.configuration</menuitem>
 				</menuitems>
 			</menu>

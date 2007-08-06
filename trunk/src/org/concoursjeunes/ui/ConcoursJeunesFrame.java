@@ -1,8 +1,10 @@
 package org.concoursjeunes.ui;
 
+import static org.concoursjeunes.ConcoursJeunes.ajrParametreAppli;
+
+import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Dimension;
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -13,6 +15,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.DateFormat;
+import java.util.ArrayList;
 
 import javax.naming.ConfigurationException;
 import javax.swing.JEditorPane;
@@ -52,8 +55,7 @@ import ajinteractive.standard.java2.GhostGlassPane;
 import ajinteractive.standard.ui.AJTabbedPane;
 import ajinteractive.standard.ui.AJTabbedPaneListener;
 import ajinteractive.standard.ui.FrameCreator;
-
-import static org.concoursjeunes.ConcoursJeunes.ajrParametreAppli;
+import ajinteractive.standard.ui.MenuBarTools;
 
 /**
  * @author Aurélien JEOFFRAY
@@ -153,14 +155,16 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 
 	private void fillImportItem(JMenu importMenu) {
 		PluginLoader pl = new PluginLoader();
+		ArrayList<PluginMetadata> plugins = pl.getPlugins(PluginMetadata.ONDEMAND_PLUGIN);
 
-		if(pl.getPlugins(PluginMetadata.IMPORT_PLUGIN).size() == 0) {
+		if(plugins.size() == 0) {
 			importMenu.setEnabled(false);
 		}
-		
-		for (PluginMetadata pm : pl.getPlugins(PluginMetadata.IMPORT_PLUGIN)) {
+
+		for (PluginMetadata pm : plugins) {
 			JMenuItem mi = new JMenuItem(pm.getOptionLabel());
-			importMenu.add(mi);
+			MenuBarTools.addItem(mi, getJMenuBar(), pm.getMenuPath());
+			//importMenu.add(mi);
 
 			mi.setActionCommand(pm.getClassName());
 			mi.addActionListener(new ActionListener() {

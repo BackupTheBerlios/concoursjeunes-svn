@@ -7,14 +7,14 @@ package org.concoursjeunes.plugins;
  * @author  Aurélien JEOFFRAY
  */
 public class PluginMetadata {
-	public static final int IMPORT_PLUGIN = 1;
-	public static final int EXPORT_PLUGIN = 2;
+	public static final int ONDEMAND_PLUGIN = 1;
 	public static final int STARTUP_PLUGIN = 3;
 	
 	private String info = ""; //$NON-NLS-1$
 	private String optionLabel = ""; //$NON-NLS-1$
 	private int pluginType = 0;
 	private String className = ""; //$NON-NLS-1$
+	private String[] menuPath;
 	
 	public PluginMetadata() {
 		
@@ -83,6 +83,14 @@ public class PluginMetadata {
 	 */
 	public void setClassName(String className) {
 		this.className = className;
+	}
+
+	public String[] getMenuPath() {
+		return menuPath;
+	}
+
+	public void setMenuPath(String[] menuPath) {
+		this.menuPath = menuPath;
 	}
 
 }

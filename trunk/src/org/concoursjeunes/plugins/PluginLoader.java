@@ -6,6 +6,7 @@ package org.concoursjeunes.plugins;
 import java.io.File;
 import java.util.ArrayList;
 
+import ajinteractive.standard.common.AJToolKit;
 import ajinteractive.standard.java2.AjResourcesReader;
 
 /**
@@ -33,6 +34,7 @@ public class PluginLoader {
 				pluginMetadata.setOptionLabel(pluginLocalInfo.getResourceString("plugin.optionlabel")); //$NON-NLS-1$
 				pluginMetadata.setPluginType(pluginProperties.getResourceInteger("plugin.type")); //$NON-NLS-1$
 				pluginMetadata.setClassName(pluginProperties.getResourceString("plugin.class")); //$NON-NLS-1$
+				pluginMetadata.setMenuPath(AJToolKit.tokenize(pluginProperties.getResourceString("plugin.menu"), "/"));
 				
 				listPlugins.add(pluginMetadata);
 			}

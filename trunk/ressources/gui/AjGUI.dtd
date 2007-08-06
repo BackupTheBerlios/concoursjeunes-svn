@@ -1,0 +1,69 @@
+<!--
+	This DTD can be used to validate an XML AjGUI Interface
+
+    For further information, see: http://www.concoursjeunes.org
+
+    Copyright 2007 by Aurélien JEOFFRAY
+    All Rights Reserved.
+
+    $Id: AjGUI.dtd,v 1.00 2007/08/06 17:03:00 AjMaster $
+    $Name:  $
+-->
+
+<!--Noeud racine.
+
+Correspond à incran à décrire. Cette écran peut être un frame ou un window-->
+<!ELEMENT screen ( frame | window ) >
+
+<!--Représente un objet swing JFrame-->
+<!ELEMENT frame ( title, icon, menubar, contentpane ) >
+<!ATTLIST frame extendedstate (NORMAL|ICONIFIED|MAXIMIZED_HORIZ|MAXIMIZED_VERT|MAXIMIZED_BOTH) #FIXED "NORMAL" >
+<!ATTLIST frame height NMTOKEN #REQUIRED >
+<!ATTLIST frame width NMTOKEN #REQUIRED >
+
+<!--Représente un objet de type JWindows (non implémenté actuellement)-->
+<!ELEMENT window ( contentpane ) >
+
+<!ELEMENT title ( #PCDATA ) >
+
+<!ELEMENT icon EMPTY >
+<!ATTLIST icon src CDATA #REQUIRED >
+
+<!ELEMENT menubar ( menu+ ) >
+
+<!ELEMENT contentpane ( tabbedpane* ) >
+
+<!ELEMENT menu ( #PCDATA | label | menuitems )* >
+<!ATTLIST menu id ID #REQUIRED >
+<!ATTLIST menu name NMTOKEN #IMPLIED >
+<!ATTLIST menu visible (true|false) #IMPLIED >
+
+<!ELEMENT label ( #PCDATA ) >
+
+<!ELEMENT menuitems ( menu | menuitem | separator )* >
+
+<!ELEMENT menuitem ( #PCDATA ) >
+<!ATTLIST menuitem enable (true|false) #IMPLIED >
+<!ATTLIST menuitem keycode NMTOKEN #IMPLIED >
+<!ATTLIST menuitem modifier NMTOKEN #IMPLIED >
+<!ATTLIST menuitem name NMTOKEN #IMPLIED >
+
+<!ELEMENT tabbedpane ( method*, tab* ) >
+<!ATTLIST tabbedpane name NMTOKEN #IMPLIED >
+
+<!ELEMENT method ( param* ) >
+<!ATTLIST method name NMTOKEN #REQUIRED >
+
+<!ELEMENT param ( param? ) >
+<!ATTLIST param class NMTOKEN #IMPLIED >
+<!ATTLIST param paramclass NMTOKEN #REQUIRED >
+<!ATTLIST param value NMTOKEN #IMPLIED >
+
+<!ELEMENT separator EMPTY >
+
+<!ELEMENT tab ( label, content? ) >
+<!ATTLIST tab closebutton (true|false) #IMPLIED >
+
+<!ELEMENT content ( method* ) >
+<!ATTLIST content class NMTOKEN #REQUIRED >
+<!ATTLIST content name NMTOKEN #IMPLIED >

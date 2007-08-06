@@ -140,7 +140,7 @@ import com.lowagie.text.pdf.PdfWriter;
  * (création, ouverture, fermeture, suppression)
  * 
  * @author  Aurelien Jeoffray
- * @version  @version.numero@ - @version.date@
+ * @version 2.0
  */
 public class ConcoursJeunes {
 
