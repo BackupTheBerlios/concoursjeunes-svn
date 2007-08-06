@@ -96,8 +96,8 @@ import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
@@ -154,6 +154,8 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 		ajUpdater = new AjUpdater(pluginRessources.getResourceString("url.reference"), //$NON-NLS-1$
 				ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update", "hash.xml.gz"); //$NON-NLS-1$ //$NON-NLS-2$
 		ajUpdater.addAjUpdaterListener(this);
+		ajUpdater.setUserAgent(ConcoursJeunes.NOM + " " + ConcoursJeunes.VERSION //$NON-NLS-1$
+				+ " (" + ConcoursJeunes.configuration.getClub().getAgrement() + " " + ConcoursJeunes.configuration.getClub().getNom() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		if (ConcoursJeunes.configuration.isUseProxy()) {
 			ajUpdater.setProxy(ConcoursJeunes.configuration.getProxy());
 		}
@@ -197,8 +199,45 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 			}
 			break;
 		case UPDATE_AVAILABLE:
+			
+			double downloadSize = ajUpdater.getDownloadSize();
+			int unit = 0;
+			String strUnit = pluginLocalisation.getResourceString("unit.byte"); //$NON-NLS-1$
+			
+			updateFiles = event.getUpdateFiles();
+			
+			while(downloadSize > 1024) {
+				downloadSize = new BigDecimal(downloadSize / 1024.0).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+				unit++;
+			}
+			
+			switch(unit) {
+				case 1:
+					strUnit = pluginLocalisation.getResourceString("unit.kilobyte"); //$NON-NLS-1$
+					break;
+				case 2:
+					strUnit = pluginLocalisation.getResourceString("unit.megabyte"); //$NON-NLS-1$
+					break;
+				case 3:
+					strUnit = pluginLocalisation.getResourceString("unit.gigabyte"); //$NON-NLS-1$
+					break;
+				case 4:
+					strUnit = pluginLocalisation.getResourceString("unit.terabyte"); //$NON-NLS-1$
+					break;
+			}
+			String strSize = Double.toString(downloadSize) + " " + strUnit; //$NON-NLS-1$
+			
 			if (trayIcon != null) {
-				trayIcon.displayMessage(pluginLocalisation.getResourceString("update.available.title"), pluginLocalisation.getResourceString("update.available"), TrayIcon.MessageType.INFO); //$NON-NLS-1$ //$NON-NLS-2$
+				trayIcon.displayMessage(pluginLocalisation.getResourceString("update.available.title"), pluginLocalisation.getResourceString("update.available", strSize), TrayIcon.MessageType.INFO); //$NON-NLS-1$ //$NON-NLS-2$
+			} else {
+				int confirm = JOptionPane.showConfirmDialog(null, pluginLocalisation.getResourceString("update.available", strSize), pluginLocalisation.getResourceString("update.available.title"), JOptionPane.YES_NO_OPTION); //$NON-NLS-1$ //$NON-NLS-2$
+				if(confirm == JOptionPane.YES_OPTION) {
+					try {
+						ajUpdater.downloadFiles(updateFiles);
+					} catch (UpdateException e1) {
+						e1.printStackTrace();
+					}
+				}
 			}
 			currentStatus = Status.AVAILABLE;
 			break;
@@ -221,8 +260,11 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 						Runtime.getRuntime().exec(
 								"concoursjeunes-updateapply.cmd \"" + ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update\" \"" + System.getProperty("user.dir") + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ 
 					} else {
-						Runtime.getRuntime().exec(
-								"concoursjeunes-updateapply \"" + ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update\" \"" + System.getProperty("user.dir") + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+						Runtime.getRuntime().exec(new String[] {
+								"concoursjeunes-applyupdate", //$NON-NLS-1$
+								ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
+								System.getProperty("user.dir") }); //$NON-NLS-1$
+	
 					}
 					System.exit(0);
 				} catch (IOException e1) {

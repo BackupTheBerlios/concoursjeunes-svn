@@ -154,6 +154,10 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	private void fillImportItem(JMenu importMenu) {
 		PluginLoader pl = new PluginLoader();
 
+		if(pl.getPlugins(PluginMetadata.IMPORT_PLUGIN).size() == 0) {
+			importMenu.setEnabled(false);
+		}
+		
 		for (PluginMetadata pm : pl.getPlugins(PluginMetadata.IMPORT_PLUGIN)) {
 			JMenuItem mi = new JMenuItem(pm.getOptionLabel());
 			importMenu.add(mi);

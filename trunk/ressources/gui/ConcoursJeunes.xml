@@ -9,7 +9,7 @@
 				<menuitems>
 					<menu name="mi.import">menubar.fichier.importer</menu>
 					<menu name="mi.export">menubar.fichier.exporter</menu>
-					<menuitem name="mi.maj">menubar.fichier.maj</menuitem>
+					<menuitem name="mi.maj" enable="false">menubar.fichier.maj</menuitem>
 					<separator />
 					<menuitem keycode="VK_F4" modifier="ALT_DOWN_MASK">menubar.fichier.quitter</menuitem>
 				</menuitems>

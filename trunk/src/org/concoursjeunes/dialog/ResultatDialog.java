@@ -46,6 +46,8 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 	
 	private JButton jbValider = new JButton();
 	private JButton jbSuivant = new JButton();
+	private JButton jbPrecedent = new JButton();
+	private JButton jbAnnuler = new JButton();
 
 	private int returnVal = CANCEL;
 
@@ -163,10 +165,14 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 
 		jbValider.addActionListener(this);
 		jbSuivant.addActionListener(this);
+		jbPrecedent.addActionListener(this);
+		jbAnnuler.addActionListener(this);
 
 		gridbagComposer.setParentPanel(pane1);
-		c.anchor = GridBagConstraints.WEST;
-		c.gridy = 0; c.gridx = 0;
+		c.anchor = GridBagConstraints.WEST; c.weightx = 1.0;
+		c.gridy = 0; c.gridwidth = 4 + (ConcoursJeunes.configuration.isInterfaceResultatCumul() ? nbSerie*3 : nbSerie);
+		gridbagComposer.addComponentIntoGrid(jlCible, c);
+		c.gridy++; c.gridwidth = 1;
 		gridbagComposer.addComponentIntoGrid(jlDistance, c);
 		for(int i = 0; i < nbSerie; i++) {
 			c.gridx = i+1;
@@ -207,7 +213,9 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 
 		jpAction.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		jpAction.add(jbValider);
+		jpAction.add(jbPrecedent);
 		jpAction.add(jbSuivant);
+		jpAction.add(jbAnnuler);
 
 		getRootPane().setDefaultButton(jbSuivant);
 		setLayout(new BorderLayout());
@@ -244,7 +252,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 	private void affectLibelle() {
 		setTitle(ConcoursJeunes.ajrLibelle.getResourceString("resultats.titre")); //$NON-NLS-1$
 		
-		jlCible.setText(ConcoursJeunes.ajrLibelle.getResourceString("resultats.cible")); //$NON-NLS-1$
+		jlCible.setText("<html><font size=\"+1\">" + ConcoursJeunes.ajrLibelle.getResourceString("resultats.cible") + " " + concurrents[0].getCible() + "</font></html>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		jlDistance.setText(ConcoursJeunes.ajrLibelle.getResourceString("resultats.distances")); //$NON-NLS-1$
 		for(int i = 0; i < jlDistances.length; i++) {
 			jlDistances[i].setText((i==0) ?
@@ -254,6 +262,8 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 		
 		jbValider.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
 		jbSuivant.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.suivant")); //$NON-NLS-1$
+		jbPrecedent.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.precedent")); //$NON-NLS-1$
+		jbAnnuler.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
 	}
 	
 	public int showResultatDialog() {
@@ -266,9 +276,11 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 	public void actionPerformed(ActionEvent ae) {
 		Object source = ae.getSource();
 
-		if(source == jbValider || source == jbSuivant) {
+		if(source == jbValider || source == jbSuivant || source == jbPrecedent) {
+			//boucle sur les concurrents de la cible
 			for(Concurrent concurrent : concurrents) {
 				ArrayList<Integer> concPoints = new ArrayList<Integer>();
+				//récupere les points du concurrent
 				for(int i = 0; i < parametres.getReglement().getNbSerie(); i++) {
 					if(ConcoursJeunes.configuration.isInterfaceResultatCumul())
 						points[concurrent.getPosition()][i].setText(
@@ -282,13 +294,17 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 						concPoints.add(i, Integer.parseInt(points[concurrent.getPosition()][i].getText()));
 				}
 				
+				//vérifie que le score soit valide et affiche un message d'erreur dans le cas contraire 
 				if(!parametres.getReglement().isValidScore(concPoints)) {
 					JOptionPane.showMessageDialog(new JDialog(),
 							ConcoursJeunes.ajrLibelle.getResourceString("erreur.impscore") + "<br>" + concurrent.getNomArcher(), //$NON-NLS-1$ //$NON-NLS-2$
 							ConcoursJeunes.ajrLibelle.getResourceString("erreur"),JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 					return;
 				}
+				
+				//si c'est bon affecte le score à l'archer
 				concurrent.setScore(concPoints);
+				//intégre les 10/9/M si nécessaire
 				if(ConcoursJeunes.configuration.isInterfaceResultatSupl()) {
 					concurrent.setDix(Integer.parseInt(dix[concurrent.getPosition()].getText()));
 					concurrent.setNeuf(Integer.parseInt(neuf[concurrent.getPosition()].getText()));
@@ -306,6 +322,13 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 				returnVal = NEXT_TARGET;
 				setVisible(false);
 			}
+			//Passe au concurrent precedent
+			else if(source == jbPrecedent) {
+				returnVal = PREVIOUS_TARGET;
+				setVisible(false);
+			}
+			setVisible(false);
+		} else if(source == jbAnnuler) {
 			setVisible(false);
 		}
 	}

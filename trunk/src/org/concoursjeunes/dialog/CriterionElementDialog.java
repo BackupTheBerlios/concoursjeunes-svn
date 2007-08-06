@@ -13,6 +13,8 @@ import org.concoursjeunes.*;
 import ajinteractive.standard.java2.*;
 
 /**
+ * 
+ * 
  * @author Aurélien JEOFFRAY
  */
 public class CriterionElementDialog extends JDialog implements ActionListener {
@@ -30,9 +32,23 @@ public class CriterionElementDialog extends JDialog implements ActionListener {
     private JButton jbValider = new JButton();
     private JButton jbAnnuler = new JButton();
 
+    /**
+     * Construit la boite de dialogue d'élément de critères
+     * 
+     * @param parent la boite de dialogue de reglement parent
+     * @param criterion le critére parent de l'element
+     */
     public CriterionElementDialog(ReglementDialog parent, Criterion criterion) {
         this(parent, criterion, null);
     }
+    
+    /**
+     * Construit la boite de dialogue d'élément de critères
+     * 
+     * @param parent la boite de dialogue de reglement parent
+     * @param criterion le critére parent de l'element
+     * @param criterionIndividu l'element à manipuler
+     */
     public CriterionElementDialog(ReglementDialog parent, Criterion criterion, CriterionElement criterionIndividu) {
         super(parent, ConcoursJeunes.ajrLibelle.getResourceString("criterion.titre"), true); //$NON-NLS-1$
         
@@ -100,7 +116,8 @@ public class CriterionElementDialog extends JDialog implements ActionListener {
             
             jtfCode.setEditable(!parent.getReglement().isOfficialReglement()
             		&& parent.getVerrou() == ReglementDialog.NO_LOCK);
-            jcbActive.setEnabled(!parent.getReglement().isOfficialReglement());
+            jcbActive.setEnabled(!parent.getReglement().isOfficialReglement()
+            		&& parent.getVerrou() == ReglementDialog.NO_LOCK);
         }
     }
 

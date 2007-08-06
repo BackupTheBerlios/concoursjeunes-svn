@@ -239,6 +239,7 @@ public class ParametreDialog extends JDialog implements ActionListener {
 	public void actionPerformed(ActionEvent ae) {
 		if (ae.getSource() == jbValider) {
 
+			//verifie que la place libre restante est suffisante avec le nouveau nombre de cible
 			int placelibre = parametre.getNbCible();
 			for (int i = 0; i < parametre.getNbDepart(); i++) {
 				// ficheConcours.getPasDeTir(i).getOccupationCibles();
@@ -253,6 +254,7 @@ public class ParametreDialog extends JDialog implements ActionListener {
 				return;
 			}
 
+			//verifie que la réduction du nombre de départ est possible (aucun archer sur les départs supprimé)
 			if (Integer.parseInt(jtfNombreDepart.getText()) < parametre.getNbDepart()) {
 				for (int i = Integer.parseInt(jtfNombreDepart.getText()); i < parametre.getNbDepart(); i++) {
 					if (ficheConcours.getConcurrentList().countArcher(i) > 0) {

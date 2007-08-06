@@ -637,7 +637,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			findConcurrent.setDepart(ficheConcours.getCurrentDepart());
 			setConcurrent(findConcurrent);
 		}
-
+		
 		if (concurrent.haveHomonyme()) {
 			jlDescription.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.homonyme")); //$NON-NLS-1$
 			jlDescription.setBackground(Color.ORANGE);
@@ -710,9 +710,24 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			} else {
 				if (concurrent == null)
 					concurrent = new Concurrent();
-				// fixe le jeux de critères definissant le concurrent
-				CriteriaSet differentiationCriteria = readCriteriaSet();
-				concurrent.setCriteriaSet(differentiationCriteria);
+				
+				if(concurrent.getCriteriaSet() != null) {
+					DistancesEtBlason db1 = DistancesEtBlason.getDistancesEtBlasonForConcurrent(ficheConcours.getParametre().getReglement(), concurrent);
+					
+					// fixe le jeux de critères definissant le concurrent
+					CriteriaSet differentiationCriteria = readCriteriaSet();
+					concurrent.setCriteriaSet(differentiationCriteria);
+					
+					DistancesEtBlason db2 = DistancesEtBlason.getDistancesEtBlasonForConcurrent(ficheConcours.getParametre().getReglement(), concurrent);
+					
+					if(!db1.equals(db2)) {
+						ficheConcours.getPasDeTir(concurrent.getDepart()).retraitConcurrent(concurrent);
+					}
+				} else {
+					// fixe le jeux de critères definissant le concurrent
+					CriteriaSet differentiationCriteria = readCriteriaSet();
+					concurrent.setCriteriaSet(differentiationCriteria);
+				}
 
 				if (concurrent.getInscription() == Concurrent.UNINIT) {
 					// si il n'y a plus de place alors retourner une erreur

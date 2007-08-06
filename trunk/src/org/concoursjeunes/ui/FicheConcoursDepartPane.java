@@ -44,14 +44,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
-import org.concoursjeunes.Cible;
-import org.concoursjeunes.ConcoursJeunes;
-import org.concoursjeunes.Concurrent;
-import org.concoursjeunes.ConcurrentList;
-import org.concoursjeunes.Equipe;
-import org.concoursjeunes.FicheConcours;
-import org.concoursjeunes.FicheConcoursEvent;
-import org.concoursjeunes.FicheConcoursListener;
+import org.concoursjeunes.*;
 import org.concoursjeunes.dialog.ConcurrentDialog;
 import org.concoursjeunes.dialog.EquipeDialog;
 import org.concoursjeunes.dialog.TypeListingDialog;
@@ -65,7 +58,8 @@ import ajinteractive.standard.java2.GhostGlassPane;
  * @author Aurélien JEOFFRAY
  * @version 1.0
  */
-public class FicheConcoursDepartPane extends JPanel implements ActionListener, MouseListener, MouseMotionListener, ListSelectionListener, KeyListener, FicheConcoursListener, TreeSelectionListener {
+public class FicheConcoursDepartPane extends JPanel implements ActionListener, MouseListener, 
+		MouseMotionListener, ListSelectionListener, KeyListener, FicheConcoursListener, TreeSelectionListener {
 
 	private final JButton jbAjouterArcher = new JButton();
 	private final JButton jbSupprimerArcher = new JButton();
@@ -188,6 +182,8 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 		jbSupprimerArcher.setEnabled(false);
 		jbSupprimerArcher.addActionListener(this);
 
+		jbEquipe.setIcon(new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$ 
+				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.team"))); //$NON-NLS-1$
 		jbEquipe.setMargin(new Insets(0, 0, 0, 0));
 		jbEquipe.addActionListener(this);
 
@@ -254,6 +250,16 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 
 		pane.setLayout(new BorderLayout());
 		pane.add(scrollcible, BorderLayout.CENTER);
+		
+		jbPrintEtiquettes.setIcon(new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.print") //$NON-NLS-1$
+		));
+		jbPrintListConc.setIcon(new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.print") //$NON-NLS-1$
+		));
+		jbPrintPasDeTir.setIcon(new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.print") //$NON-NLS-1$
+		));
 
 		treeTarget.setModel(treeModel);
 		treeTarget.addMouseListener(this);
@@ -466,14 +472,14 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 	 */
 	public void listConcurrentChanged(FicheConcoursEvent e) {
 		switch (e.getEvent()) {
-		case FicheConcoursEvent.ADD_CONCURRENT:
-			if (e.getConcurrent().getDepart() == depart)
-				ajlConcurrent.add(e.getConcurrent());
-			break;
-		case FicheConcoursEvent.REMOVE_CONCURRENT:
-			if (e.getConcurrent().getDepart() == depart)
-				ajlConcurrent.remove(e.getConcurrent());
-			break;
+			case FicheConcoursEvent.ADD_CONCURRENT:
+				if (e.getConcurrent().getDepart() == depart)
+					ajlConcurrent.add(e.getConcurrent());
+				break;
+			case FicheConcoursEvent.REMOVE_CONCURRENT:
+				if (e.getConcurrent().getDepart() == depart)
+					ajlConcurrent.remove(e.getConcurrent());
+				break;
 		}
 	}
 
@@ -484,6 +490,7 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 	 */
 	public void pasDeTirChanged(FicheConcoursEvent e) {
 		createListeParCible();
+		createListeParNom();
 	}
 
 	/**
@@ -566,10 +573,14 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 						ficheConcoursPane.openConcurrentDialog((Concurrent) selectedTreeNode);
 					} else if (selectedTreeNode instanceof Cible) {
 						ficheConcoursPane.index = ((Cible) selectedTreeNode).getNumCible();
-						ficheConcoursPane.openResultatDialog();
+						if(ficheConcours.getConcurrentList().list(ficheConcoursPane.index, ficheConcours.getCurrentDepart()).length > 0) {
+							ficheConcoursPane.openResultatDialog();
+						}
 					} else {
 						ficheConcoursPane.index = 1;
-						ficheConcoursPane.openResultatDialog();
+						if(ficheConcours.getConcurrentList().list(ficheConcoursPane.index, ficheConcours.getCurrentDepart()).length > 0) {
+							ficheConcoursPane.openResultatDialog();
+						}
 					}
 				}
 			}
@@ -627,7 +638,7 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 	 * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
 	 */
 	public void mouseReleased(MouseEvent e) {
-		if (e.getSource() == ajlConcurrent) {
+		if (e.getSource() == ajlConcurrent && onDrag) {
 			Point p = (Point) e.getPoint().clone();
 			SwingUtilities.convertPointToScreen(p, ajlConcurrent);
 			SwingUtilities.convertPointFromScreen(p, treeTarget);
@@ -636,7 +647,7 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 			if (p.x > 0 & p.y > 0) {
 				placementManuelConcurrent((Concurrent) dragObject, treeTarget.getPathForLocation(p.x, p.y));
 			}
-		} else if (e.getSource() == treeTarget) {
+		} else if (e.getSource() == treeTarget && onDrag) {
 			Point p = (Point) e.getPoint().clone();
 			TreePath tp = treeTarget.getPathForLocation(p.x, p.y);
 			if (tp != null) {

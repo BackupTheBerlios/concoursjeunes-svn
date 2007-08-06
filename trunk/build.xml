@@ -58,24 +58,24 @@
 		<replace 
 		    file="${projet.pack.dir}/config/parametre.properties">
 			<replacefilter 
-		    token="debug.mode=1" 
-		    value="debug.mode=0"/>
+			    token="debug.mode=1" 
+			    value="debug.mode=0"/>
 		</replace>
 
 		<replace 
 		    file="${projet.pack.dir}/Readme.txt"
 			propertyFile="packager/version.properties">
 			<replacefilter 
-		    token="@version.numero@" 
-		    property="version.numero"/>
+			    token="@version.numero@" 
+			    property="version.numero"/>
 		</replace>
 
 		<replace 
 		    file="${projet.pack.dir}/MANIFEST.MF"
 			propertyFile="packager/version.properties">
 			<replacefilter 
-		    token="@classpath@" 
-		    property="classpath"/>
+			    token="@classpath@" 
+			    property="classpath"/>
 		</replace>
 	</target>
 
@@ -83,25 +83,26 @@
 
 		<replace 
 		    file="${projet.pack.dir}/src/org/concoursjeunes/ConcoursJeunes.java"
-			propertyFile="packager/version.properties">
+			propertyFile="packager/version.properties"
+			encoding="UTF-8" >
 			<replacefilter 
-		    token="@version.name@" 
-		    property="version.name" />
+			    token="@version.name@" 
+			    property="version.name" />
 			<replacefilter 
-		    token="@version.numero@" 
-		    property="version.numero" />
+			    token="@version.numero@" 
+			    property="version.numero" />
 			<replacefilter 
-		    token="@version.date@" 
-		    property="version.date" />
+			    token="@version.date@" 
+			    property="version.date" />
 			<replacefilter 
-		    token="@version.codename@" 
-		    property="version.codename" />
+			    token="@version.codename@" 
+			    property="version.codename" />
 			<replacefilter 
-		    token="@version.author@" 
-		    property="version.author" />
+			    token="@version.author@" 
+			    property="version.author" />
 			<replacefilter 
-		    token="@version.copyr@" 
-		    property="version.copyr" />
+			    token="@version.copyr@" 
+			    property="version.copyr" />
 		</replace>
 
 		<javac srcdir="${projet.pack.dir}/src/" destdir="${projet.pack.dir}/bin"
@@ -171,7 +172,10 @@
 		<taskdef name="revisionscreator" classpath="lib/AJPackage.jar"
 						classname="ajinteractive.standard.utilities.updater.RevisionsCreator" />
 
-		<revisionscreator hashfilepath="${projet.pack.dir}/hash.xml.gz">
+		<revisionscreator 
+				hashfilepath="${projet.pack.dir}/hash.xml.gz"
+				sqlscriptpath="${projet.pack.dir}/ressources/update/*.sql"
+				sqlpack="${projet.pack.dir}/sqlupdate.pack">
 			<fileset dir="${projet.pack.dir}">
 				<include name="config/**"/>
 				<include name="lang/**"/>
@@ -181,6 +185,9 @@
 				<include name="ConcoursJeunes.jar"/>
 				<include name="*.pdf"/>
 				<include name="*.txt"/>
+				<include name="*.pack"/>
+				<include name="*.cmd"/>
+				<include name="*.exe"/>
 			</fileset>
 		</revisionscreator>
 	</target>
@@ -251,6 +258,7 @@
 				<include name="plugins/**"/>
 				<include name="ressources/**"/>
 				<include name="ConcoursJeunes.jar"/>
+				<include name="hash.xml.gz"/>
 				<exclude name="plugins/org/concoursjeunes/plugins/*FFTA*"/>
 				<exclude name="config/*FFTA*"/>
 				<exclude name="lang/*FFTA*"/>
@@ -291,10 +299,6 @@
 		</tar>
 		<gzip zipfile="${rpm.pack.path}/SOURCES/ConcoursJeunes.tar.gz" src="${rpm.pack.path}/SOURCES/ConcoursJeunes.tar"/>
 		<delete file="${rpm.pack.path}/SOURCES/ConcoursJeunes.tar" />
-		<delete includeemptydirs="true">
-			<fileset dir="${rpm.pack.path}/SOURCES/usr" includes="**/*" />
-		</delete>
-		<delete dir="${rpm.pack.path}/SOURCES/usr" />
 
 		<copy todir="${rpm.pack.path}/SPECS" >
 			<fileset dir="packager/linux/">
@@ -359,8 +363,28 @@
 		depends="jar, pack-ConcoursJeunesUpdate, revisions, makerpm"
 		description="Pack Linux" />
 	<target name="MacOSX" 
+		depends="jar, pack-ConcoursJeunesUpdate, revisions"
 		description="Pack Mac OS X" />
 	<target name="all" depends="dev_doc, packager, makerpm" />
 	<target name="all_nodevdoc" depends="packager, makerpm" />
+	
+	<target name="deploy" description="deploi les fichier sur le serveur de mise à jour">
+		<copy todir="../ConcoursJeunes.org/update/" >
+			<fileset dir="pack" >
+				<include name="config/**"/>
+				<include name="lang/**"/>
+				<include name="lib/**"/>
+				<include name="plugins/**"/>
+				<include name="ressources/**"/>
+				<include name="ConcoursJeunes.jar"/>
+				<include name="hash.xml.gz"/>
+				<include name="*.txt"/>
+				<include name="*.pack"/>
+				<include name="*.cmd"/>
+				<include name="*.pdf"/>
+				<include name="*.exe"/>
+			</fileset>
+		</copy>
+	</target>
 
 </project>

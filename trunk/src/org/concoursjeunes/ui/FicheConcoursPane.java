@@ -124,6 +124,15 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		printClassementIndiv.addActionListener(this);
 		printClassementEquipe.addActionListener(this);
 		printClassementClub.addActionListener(this);
+		printClassementIndiv.setIcon(new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.print") //$NON-NLS-1$
+		));
+		printClassementEquipe.setIcon(new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.print") //$NON-NLS-1$
+		));
+		printClassementClub.setIcon(new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.print") //$NON-NLS-1$
+		));
 
 		//classement individuel
 		northpane.add(jbResultat);
@@ -264,7 +273,6 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	/**
 	 * Affiche la boite de dialogue de saisie des résultats
 	 * 
-	 * TODO Reprendre la saisi des scores
 	 */
 	public void openResultatDialog() {
 		ResultatDialog resultat = new ResultatDialog(parentframe, 
@@ -279,11 +287,11 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		if(returnVal == ResultatDialog.NEXT_TARGET) {
 			do {
 				index++;
-			} while(ficheConcours.getConcurrentList().list(index).length == 0 && index <= ficheConcours.getParametre().getNbCible());
+			} while(ficheConcours.getConcurrentList().list(index, ficheConcours.getCurrentDepart()).length == 0 && index <= ficheConcours.getParametre().getNbCible());
 		} else if(returnVal == ResultatDialog.PREVIOUS_TARGET) {
 			do {
 				index--;
-			} while(ficheConcours.getConcurrentList().list(index).length == 0 && index > 0);
+			} while(ficheConcours.getConcurrentList().list(index, ficheConcours.getCurrentDepart()).length == 0 && index > 0);
 		}
 
 		if(returnVal != ResultatDialog.SAVE_AND_QUIT && (index > 0 && index <= ficheConcours.getParametre().getNbCible())) {

@@ -47,6 +47,7 @@ rm -rf $RPM_BUILD_ROOT/Makefile
 /usr/lib/ConcoursJeunes/plugins/*
 /usr/lib/ConcoursJeunes/ressources/*
 /usr/lib/ConcoursJeunes/ConcoursJeunes.jar
+/usr/lib/ConcoursJeunes/hash.xml.gz
 %attr(755, -, root) %{_bindir}/ConcoursJeunes
 %attr(755, -, root) %{_bindir}/concoursjeunes-applyupdate
 %attr(700, root, root) /usr/sbin/concoursjeunes-applyupdate
