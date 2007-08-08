@@ -2,7 +2,7 @@
 <project name="FFTAImport">
 	<target name="pack-FFTAImport">
 		<mkdir dir="${projet.pack.dir}/plugins" />
-		<jar jarfile="${projet.pack.dir}/plugins/ConcoursJeunesUpdate.jar">
+		<jar jarfile="${projet.pack.dir}/plugins/FFTAImport.jar">
 			<fileset dir="${projet.pack.dir}/bin" >
 				<include name="org/concoursjeunes/plugins/FFTAImport/**" />
 			</fileset>

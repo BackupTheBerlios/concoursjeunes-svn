@@ -106,7 +106,7 @@
 		</replace>
 
 		<javac srcdir="${projet.pack.dir}/src/" destdir="${projet.pack.dir}/bin"
-			optimize="off"
+			optimize="on"
 			encoding="UTF-8"
 			nowarn="on"
 			classpath="${compilclasspath}">
@@ -188,6 +188,7 @@
 				<include name="*.pack"/>
 				<include name="*.cmd"/>
 				<include name="*.exe"/>
+				<include name="*.dll"/>
 			</fileset>
 		</revisionscreator>
 	</target>
@@ -341,6 +342,20 @@
 	<target name="makemacbundle">
 		
 	</target>
+	
+	<target name="makensissetup">
+		<taskdef name="nsis" classname="net.sf.nsisant.Task">
+	        <classpath location="packager/nsisant-1.2.jar"/>
+	    </taskdef>
+		
+		<mkdir dir="${projet.pack.dir}/windows" />
+		
+		<nsis script="packager/setup.nsi" verbosity="4">
+			<define name="VERSION" value="${version.numero}"/>
+			<define name="OUT_FILE" value="windows\setup-${version.name}-${version.numero}.exe"/>
+			<define name="WORKING_DIR" value="..\${projet.pack.dir}"/>
+		</nsis>
+	</target>
 
 	<!--<replace 
     file="configure.sh"
@@ -357,7 +372,7 @@
 </replace>-->
 
 	<target name="windows" 
-		depends="jar, exportWinFFTA, pack-ConcoursJeunesUpdate, pack-FFTAImport, revisions" 
+		depends="jar, exportWinFFTA, pack-ConcoursJeunesUpdate, pack-FFTAImport, revisions, makensissetup" 
 		description="Pack Windows" />
 	<target name="linux"
 		depends="jar, pack-ConcoursJeunesUpdate, revisions, makerpm"
@@ -383,6 +398,7 @@
 				<include name="*.cmd"/>
 				<include name="*.pdf"/>
 				<include name="*.exe"/>
+				<include name="*.dll"/>
 			</fileset>
 		</copy>
 	</target>

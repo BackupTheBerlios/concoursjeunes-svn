@@ -96,8 +96,8 @@ import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.*;
-import java.math.BigDecimal;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
@@ -106,6 +106,7 @@ import org.concoursjeunes.ConcoursJeunes;
 import org.concoursjeunes.plugins.Plugin;
 import org.concoursjeunes.plugins.PluginEntry;
 
+import ajinteractive.standard.common.AJToolKit;
 import ajinteractive.standard.java2.AjResourcesReader;
 import ajinteractive.standard.utilities.updater.AjUpdater;
 import ajinteractive.standard.utilities.updater.AjUpdaterEvent;
@@ -192,41 +193,14 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 				} catch (AWTException e) {
 					System.err.println(e);
 				}
-			} else {
-				// disable tray option in your application or
-				// perform other actions
-				// ...
 			}
 			break;
 		case UPDATE_AVAILABLE:
 			
-			double downloadSize = ajUpdater.getDownloadSize();
-			int unit = 0;
-			String strUnit = pluginLocalisation.getResourceString("unit.byte"); //$NON-NLS-1$
+			String strSize = AJToolKit.formatFileSize(ajUpdater.getDownloadSize());
 			
 			updateFiles = event.getUpdateFiles();
-			
-			while(downloadSize > 1024) {
-				downloadSize = new BigDecimal(downloadSize / 1024.0).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-				unit++;
-			}
-			
-			switch(unit) {
-				case 1:
-					strUnit = pluginLocalisation.getResourceString("unit.kilobyte"); //$NON-NLS-1$
-					break;
-				case 2:
-					strUnit = pluginLocalisation.getResourceString("unit.megabyte"); //$NON-NLS-1$
-					break;
-				case 3:
-					strUnit = pluginLocalisation.getResourceString("unit.gigabyte"); //$NON-NLS-1$
-					break;
-				case 4:
-					strUnit = pluginLocalisation.getResourceString("unit.terabyte"); //$NON-NLS-1$
-					break;
-			}
-			String strSize = Double.toString(downloadSize) + " " + strUnit; //$NON-NLS-1$
-			
+
 			if (trayIcon != null) {
 				trayIcon.displayMessage(pluginLocalisation.getResourceString("update.available.title"), pluginLocalisation.getResourceString("update.available", strSize), TrayIcon.MessageType.INFO); //$NON-NLS-1$ //$NON-NLS-2$
 			} else {
