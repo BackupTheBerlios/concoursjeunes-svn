@@ -10,6 +10,8 @@
 		<copy todir="${projet.pack.dir}" >
 			<fileset dir="." >
 				<include name="plugins/properties/FFTAImportPlugin.properties" />
+				<include name="ExportWinFFTA.exe" />
+				<include name="*.DLL" />
 			</fileset>
 		</copy>
 	</target>

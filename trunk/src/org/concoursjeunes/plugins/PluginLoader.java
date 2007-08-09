@@ -34,7 +34,8 @@ public class PluginLoader {
 				pluginMetadata.setOptionLabel(pluginLocalInfo.getResourceString("plugin.optionlabel")); //$NON-NLS-1$
 				pluginMetadata.setPluginType(pluginProperties.getResourceInteger("plugin.type")); //$NON-NLS-1$
 				pluginMetadata.setClassName(pluginProperties.getResourceString("plugin.class")); //$NON-NLS-1$
-				pluginMetadata.setMenuPath(AJToolKit.tokenize(pluginProperties.getResourceString("plugin.menu"), "/"));
+				pluginMetadata.setReposURL(pluginProperties.getResourceString("plugin.repos")); //$NON-NLS-1$
+				pluginMetadata.setMenuPath(AJToolKit.tokenize(pluginProperties.getResourceString("plugin.repos"), "/"));
 				
 				listPlugins.add(pluginMetadata);
 			}
@@ -44,7 +45,7 @@ public class PluginLoader {
 	public ArrayList<PluginMetadata> getPlugins(int type) {
 		ArrayList<PluginMetadata> currentList = new ArrayList<PluginMetadata>();
 		for(PluginMetadata pm : listPlugins) {
-			if(pm.getPluginType() == type)
+			if(type == PluginMetadata.ALL || pm.getPluginType() == type)
 				currentList.add(pm);
 		}
 		

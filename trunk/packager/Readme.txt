@@ -11,12 +11,14 @@ disponible sur le CD d'instalation ou telecharageable sur
 http://www.java.com.
 
 ConcoursJeunes fonctionne sous toutes les plateformes
-compatible j2se 5.0 tel que MS Windows, GNU/Linux ou
-Mac OSX 10.4 Tiger et Supérieur.
+compatible jse 6.0 tel que MS Windows, GNU/Linux, Solaris.
+A ce jour, Mac OS X ne supporte pas encore cette version.
 
-ConcoursJeunes est distribué sous licence Open Source
+ConcoursJeunes est distribué sous double licence Open Source
 CeCILL et GPL
 
 Ce Logiciel inclut les Librairies
--iText (http://www.lowagie.com/iText/)
--et Sun Java Help API (http://java.sun.com)
+-iText (http://www.lowagie.com/iText/) - Licence MPL et LGPL
+-H2 Database (http://www.h2database.com) - Licensed under the H2 License, Version 1.0 (http://h2database.com/html/license.html)
+-SwingX (https://swingx.dev.java.net/) - Licence LGPL
+-AJPackage (Librairie personnel libre d'usage source non diffusé à ce jour)

@@ -7,6 +7,7 @@ package org.concoursjeunes.plugins;
  * @author  Aurélien JEOFFRAY
  */
 public class PluginMetadata {
+	public static final int ALL = 0;
 	public static final int ONDEMAND_PLUGIN = 1;
 	public static final int STARTUP_PLUGIN = 3;
 	
@@ -14,6 +15,7 @@ public class PluginMetadata {
 	private String optionLabel = ""; //$NON-NLS-1$
 	private int pluginType = 0;
 	private String className = ""; //$NON-NLS-1$
+	private String reposURL = "";
 	private String[] menuPath;
 	
 	public PluginMetadata() {
@@ -83,6 +85,14 @@ public class PluginMetadata {
 	 */
 	public void setClassName(String className) {
 		this.className = className;
+	}
+
+	public String getReposURL() {
+		return reposURL;
+	}
+
+	public void setReposURL(String reposURL) {
+		this.reposURL = reposURL;
 	}
 
 	public String[] getMenuPath() {

@@ -1,15 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="ConcoursJeunesUpdate">
+<project name="ConcoursJeunesUpdate" basedir="../">
 	<target name="pack-ConcoursJeunesUpdate">
-		<mkdir dir="${projet.pack.dir}/plugins" />
-		<jar jarfile="${projet.pack.dir}/plugins/ConcoursJeunesUpdate.jar"
+		<mkdir dir="${projet.pack.dir}/plugins/ConcoursJeunesUpdate" />
+		<jar jarfile="${projet.pack.dir}/plugins/ConcoursJeunesUpdate/ConcoursJeunesUpdate.jar"
 			basedir="${projet.pack.dir}/bin"
 			includes="org/concoursjeunes/plugins/update/**">
 		</jar>
-		<copy todir="${projet.pack.dir}" >
+		<copy todir="${projet.pack.dir}/plugins/ConcoursJeunesUpdate" >
 			<fileset dir="." >
 				<include name="plugins/properties/ConcoursJeunesUpdate.properties" />
 			</fileset>
 		</copy>
+		
+		<taskdef name="revisionscreator" classpath="lib/AJPackage.jar"
+				classname="ajinteractive.standard.utilities.updater.RevisionsCreator" />
+
+		<revisionscreator 
+				hashfilepath="${projet.pack.dir}/plugins/ConcoursJeunesUpdate/hash.xml.gz">
+			<fileset dir="${projet.pack.dir}">
+				<include name="plugins/ConcoursJeunesUpdate.jar"/>
+				<include name="plugins/properties/ConcoursJeunesUpdate.properties" />
+			</fileset>
+		</revisionscreator>
 	</target>
 </project>
