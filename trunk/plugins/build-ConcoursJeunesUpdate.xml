@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="ConcoursJeunesUpdate" basedir="../">
 	<target name="pack-ConcoursJeunesUpdate">
-		<mkdir dir="${projet.pack.dir}/plugins/ConcoursJeunesUpdate" />
-		<jar jarfile="${projet.pack.dir}/plugins/ConcoursJeunesUpdate/ConcoursJeunesUpdate.jar"
+		<mkdir dir="${projet.pack.dir}/plugins/ConcoursJeunesUpdate/plugins" />
+		<jar jarfile="${projet.pack.dir}/plugins/ConcoursJeunesUpdate/plugins/ConcoursJeunesUpdate.jar"
 			basedir="${projet.pack.dir}/bin"
 			includes="org/concoursjeunes/plugins/update/**">
 		</jar>
@@ -17,7 +17,7 @@
 
 		<revisionscreator 
 				hashfilepath="${projet.pack.dir}/plugins/ConcoursJeunesUpdate/hash.xml.gz">
-			<fileset dir="${projet.pack.dir}">
+			<fileset dir="${projet.pack.dir}/plugins/ConcoursJeunesUpdate">
 				<include name="plugins/ConcoursJeunesUpdate.jar"/>
 				<include name="plugins/properties/ConcoursJeunesUpdate.properties" />
 			</fileset>

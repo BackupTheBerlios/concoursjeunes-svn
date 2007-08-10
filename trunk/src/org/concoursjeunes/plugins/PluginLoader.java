@@ -35,7 +35,7 @@ public class PluginLoader {
 				pluginMetadata.setPluginType(pluginProperties.getResourceInteger("plugin.type")); //$NON-NLS-1$
 				pluginMetadata.setClassName(pluginProperties.getResourceString("plugin.class")); //$NON-NLS-1$
 				pluginMetadata.setReposURL(pluginProperties.getResourceString("plugin.repos")); //$NON-NLS-1$
-				pluginMetadata.setMenuPath(AJToolKit.tokenize(pluginProperties.getResourceString("plugin.repos"), "/"));
+				pluginMetadata.setMenuPath(AJToolKit.tokenize(pluginProperties.getResourceString("plugin.menu"), "/"));
 				
 				listPlugins.add(pluginMetadata);
 			}

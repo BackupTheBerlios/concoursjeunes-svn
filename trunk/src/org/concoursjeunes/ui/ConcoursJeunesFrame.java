@@ -469,12 +469,11 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			// affiche le pdf avec le reader pdf standard du systeme
 			try {
 				if (Desktop.isDesktopSupported()) {
-					Desktop.getDesktop().open(new File("Documentation ConcoursJeunes.pdf")); //$NON-NLS-1$
+					Desktop.getDesktop().open(new File("documentation/Documentation ConcoursJeunes.pdf")); //$NON-NLS-1$
 				} else {
 					String NAV = ConcoursJeunes.configuration.getPdfReaderPath();
 
-					System.out.println(NAV + " \"Documentation ConcoursJeunes.pdf\""); //$NON-NLS-1$
-					Runtime.getRuntime().exec(NAV + " \"Documentation ConcoursJeunes.pdf\""); //$NON-NLS-1$ 
+					Runtime.getRuntime().exec(NAV, new String[] {"documentation/Documentation ConcoursJeunes.pdf"}); //$NON-NLS-1$ 
 				}
 			} catch (IOException e1) {
 				e1.printStackTrace();

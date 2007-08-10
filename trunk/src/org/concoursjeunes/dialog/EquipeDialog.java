@@ -15,7 +15,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -437,65 +436,8 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 	}
 
 	@SuppressWarnings("unchecked")
-	private void removeMembreForEquipe(CriteriaSet scna, Equipe equipe, Concurrent concurrent) {
+	private void removeMembreForEquipe(Equipe equipe, Concurrent concurrent) {
 
-		// recupere la racine de l'arbre
-		DefaultMutableTreeNode tnRoot = (DefaultMutableTreeNode) treeModel.getRoot();
-		DefaultMutableTreeNode tnSCNA = null;
-		DefaultMutableTreeNode tnEquipe = null;
-		DefaultMutableTreeNode tnConcurrent = null;
-
-		Enumeration<DefaultMutableTreeNode> edmtnRoot = tnRoot.children();
-		while (edmtnRoot.hasMoreElements()) {
-			DefaultMutableTreeNode tnStmp = edmtnRoot.nextElement();
-
-			if (((CriteriaSetLibelle) tnStmp.getUserObject()).getCriteriaSet() == scna) {
-				tnSCNA = tnStmp;
-
-				Enumeration<DefaultMutableTreeNode> edmtnSCNA = tnStmp.children();
-				while (edmtnSCNA.hasMoreElements()) {
-					DefaultMutableTreeNode tnEtmp = edmtnSCNA.nextElement();
-
-					if (tnEtmp.getUserObject() == equipe) {
-						tnEquipe = tnEtmp;
-
-						Enumeration<DefaultMutableTreeNode> edmtnEquipe = tnEtmp.children();
-						while (edmtnEquipe.hasMoreElements()) {
-
-							DefaultMutableTreeNode tnCtmp = edmtnEquipe.nextElement();
-							if (tnCtmp.getUserObject() == concurrent) {
-								tnConcurrent = tnCtmp;
-
-								break;
-							}
-						}
-						break;
-					}
-				}
-				break;
-			}
-		}
-
-		assert null != tnSCNA : "L'arbre doit contenir les catégories de classement"; //$NON-NLS-1$
-		assert null != tnEquipe : "L'arbre doit contenir les équipes"; //$NON-NLS-1$
-		assert null != tnConcurrent : "L'arbre doit contenir le concurrent"; //$NON-NLS-1$
-
-		hEquipes.get(scna).get(equipe.getNomEquipe()).removeConcurrent(concurrent);
-		treeModel.removeNodeFromParent(tnConcurrent);
-
-		treeModel.reload();
-
-		treeEquipes.expandPath(new TreePath(tnEquipe.getPath()));
-
-		if (hEquipes.get(scna).get(equipe.getNomEquipe()).getMembresEquipe().size() < ficheConcours.getParametre().getReglement().getNbMembresRetenu()) {
-
-			hEquipes.get(scna).remove(equipe.getNomEquipe());
-			treeModel.removeNodeFromParent(tnEquipe);
-
-			treeModel.reload();
-
-			treeEquipes.expandPath(new TreePath(tnSCNA.getPath()));
-		}
 	}
 
 	/**
@@ -521,12 +463,10 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 
 				} else if (dmtnObj instanceof Concurrent) {
 					DefaultMutableTreeNode tnEquipe = (DefaultMutableTreeNode) dmtn.getParent();
-					DefaultMutableTreeNode tnSCNA = (DefaultMutableTreeNode) tnEquipe.getParent();
 
 					Equipe equipe = (Equipe) tnEquipe.getUserObject();
-					CriteriaSet scna = ((CriteriaSetLibelle) tnSCNA.getUserObject()).getCriteriaSet();
 
-					removeMembreForEquipe(scna, equipe, (Concurrent) dmtnObj);
+					removeMembreForEquipe(equipe, (Concurrent) dmtnObj);
 				}
 			}
 
@@ -620,13 +560,18 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 					treeModel.reload(teamNode);
 
 					DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) treeConcurrents.getSelectionPath().getParentPath().getLastPathComponent();
-					parentNode.remove((DefaultMutableTreeNode) treeConcurrents.getSelectionPath().getLastPathComponent());
+					TreePath[] selectedPaths = treeConcurrents.getSelectionPaths();
+					for(TreePath selectedPath : selectedPaths) {
+						parentNode.remove((DefaultMutableTreeNode) selectedPath.getLastPathComponent());
+					}
 					treeModelConcurrents.reload(parentNode);
 				} else {
 					createEquipe(treeEquipes.getPathForLocation(p.x, p.y));
 
-					((DefaultMutableTreeNode) treeConcurrents.getSelectionPath().getParentPath().getLastPathComponent()).remove((DefaultMutableTreeNode) treeConcurrents.getSelectionPath()
-							.getLastPathComponent());
+					TreePath[] selectedPaths = treeConcurrents.getSelectionPaths();
+					for(TreePath selectedPath : selectedPaths) {
+						((DefaultMutableTreeNode) selectedPath.getParentPath().getLastPathComponent()).remove((DefaultMutableTreeNode) selectedPath.getLastPathComponent());
+					}
 
 					treeModelConcurrents.reload((DefaultMutableTreeNode) treeConcurrents.getSelectionPath().getParentPath().getLastPathComponent());
 				}
@@ -642,8 +587,16 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 				Equipe equipe = (Equipe) parentNode.getUserObject();
 				equipe.removeConcurrent((Concurrent) selectedNode.getUserObject());
 
-				parentNode.remove(selectedNode);
-				treeModel.reload(parentNode);
+				if (equipe.getMembresEquipe().size() < ficheConcours.getParametre().getReglement().getNbMembresRetenu()) {
+					ficheConcours.getEquipes().remove(equipe);
+
+					DefaultMutableTreeNode refNode = (DefaultMutableTreeNode)parentNode.getParent();
+					refNode.removeAllChildren();
+					treeModel.reload(refNode);
+				} else {
+					parentNode.remove(selectedNode);
+					treeModel.reload(parentNode);
+				}
 
 				completePanel();
 			}

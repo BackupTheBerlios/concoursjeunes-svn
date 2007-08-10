@@ -63,47 +63,52 @@ InstallDir $PROGRAMFILES\ConcoursJeunes
 CRCCheck on
 XPStyle on
 ShowInstDetails show
-VIProductVersion 2.0.0.0
-VIAddVersionKey /LANG=${LANG_FRENCH} ProductName ConcoursJeunes
+VIProductVersion 1.0.0.0
+VIAddVersionKey /LANG=${LANG_FRENCH} ProductName "ConcoursJeunes Setup"
 VIAddVersionKey ProductVersion "${VERSION}"
 VIAddVersionKey /LANG=${LANG_FRENCH} CompanyName "${COMPANY}"
 VIAddVersionKey /LANG=${LANG_FRENCH} CompanyWebsite "${URL}"
 VIAddVersionKey /LANG=${LANG_FRENCH} FileVersion ""
 VIAddVersionKey /LANG=${LANG_FRENCH} FileDescription ""
-VIAddVersionKey /LANG=${LANG_FRENCH} LegalCopyright ""
+VIAddVersionKey /LANG=${LANG_FRENCH} LegalCopyright "(c) 2007 Concoursjeunes.org"
 InstallDirRegKey HKLM "${REGKEY}" Path
 ShowUninstDetails show
 
 InstType "Complete"
-InstType "normal"
+#InstType "normal"
 
 # Installer sections
 Section "Base" SEC0000
-    SectionIn RO 1 2
+    SectionIn RO 1
     SetOverwrite on
-    # SetOutPath $INSTDIR\base
-    # File
     SetOutPath $INSTDIR\config
     File /r config\*
     SetOutPath $INSTDIR\lang
     File /r lang\*
     SetOutPath $INSTDIR\lib
     File /r lib\*
-    SetOutPath $INSTDIR\plugins
-    File /r plugins\*
     SetOutPath $INSTDIR\ressources
     File /r ressources\*
+    SetOutPath $INSTDIR\documentation
+    File /r documentation\*
     SetOutPath $INSTDIR
     File ConcoursJeunes.jar
-    File ExportWinFFTA.exe
-    File *.DLL
+    File /r plugins\ConcoursJeunesUpdate\*
     File *.txt
-    File *.pdf
     File hash.xml.gz
-    WriteRegStr HKLM "${REGKEY}\Components" Main 1
+    WriteRegStr HKLM "${REGKEY}\Components" Base 1
 SectionEnd
 
-Section -post SEC0001
+Section "Import Result'Arc" SEC0001
+    SectionIn 1
+    SetOverwrite on
+    SetOutPath $INSTDIR
+    File /r plugins\FFTAImport\*
+    File hash.xml.gz
+    WriteRegStr HKLM "${REGKEY}\Components" "Import Result'Arc" 1
+SectionEnd
+
+Section -post SEC0002
     WriteRegStr HKLM "${REGKEY}" Path $INSTDIR
     WriteUninstaller $INSTDIR\uninstall.exe
     !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
@@ -141,7 +146,12 @@ Section /o un.Base UNSEC0000
     DeleteRegValue HKLM "${REGKEY}\Components" Base
 SectionEnd
 
-Section un.post UNSEC0001
+Section /o "un.Import Reslut'Arc" UNSEC0001
+    RmDir /r /REBOOTOK $INSTDIR\plugins\FFTAImport
+    DeleteRegValue HKLM "${REGKEY}\Components" "Import Result'Arc"
+SectionEnd
+
+Section un.post UNSEC0002
     DeleteRegKey HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\$(^UninstallLink).lnk"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\ConcoursJeunes.lnk"

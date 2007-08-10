@@ -41,6 +41,7 @@
 				<exclude name="**/.svn*" />
 				<exclude name="src/org/concoursjeunes/test/**" />
 				<exclude name="plugins/build*.xml" />
+				<exclude name="lib/*-debug.jar"/>
 			</fileset>
 		</copy>
 
@@ -155,7 +156,7 @@
 		</revisionscreator>
 	</target>
 
-	<target name="makerpm" depends="jar" description="construction du package rpm pour fedora">
+	<target name="makerpm" depends="jar">
 
 		<mkdir dir="${projet.pack.dir}/linux" />
 		<property name="rpm.pack.path" location="${projet.pack.dir}/linux" />
