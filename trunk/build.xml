@@ -175,11 +175,16 @@
 				<include name="config/**"/>
 				<include name="lang/**"/>
 				<include name="lib/**"/>
-				<include name="plugins/**"/>
 				<include name="ressources/**"/>
 				<include name="documentation/**"/>
 				<include name="ConcoursJeunes.jar"/>
 				<include name="hash.xml.gz"/>
+			</fileset>
+		</copy>
+		
+		<copy todir="${rpm.pack.path}/SOURCES/usr/lib/ConcoursJeunes/plugins" >
+			<fileset dir="pack/plugins/ConcoursJeunesUpdate/plugins" >
+				<include name="**/**"/>
 			</fileset>
 		</copy>
 

@@ -99,8 +99,8 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 
 			displayHome();
 		} else {
-			JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), "Moteur non initialiser", //$NON-NLS-1$
-					"concoursJeunes pointe sur une référence null. Elle devrait pointer sur l'instance de l'objet ConcoursJeunes");
+			JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), "Moteur non initialiser", //$NON-NLS-1$ //$NON-NLS-2$
+					"concoursJeunes pointe sur une référence null. Elle devrait pointer sur l'instance de l'objet ConcoursJeunes"); //$NON-NLS-1$
 			System.exit(1);
 		}
 	}
@@ -157,14 +157,14 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 		PluginLoader pl = new PluginLoader();
 		ArrayList<PluginMetadata> plugins = pl.getPlugins(PluginMetadata.ONDEMAND_PLUGIN);
 
-		if(plugins.size() == 0) {
+		if (plugins.size() == 0) {
 			importMenu.setEnabled(false);
 		}
 
 		for (PluginMetadata pm : plugins) {
 			JMenuItem mi = new JMenuItem(pm.getOptionLabel());
 			MenuBarTools.addItem(mi, getJMenuBar(), pm.getMenuPath());
-			//importMenu.add(mi);
+			// importMenu.add(mi);
 
 			mi.setActionCommand(pm.getClassName());
 			mi.addActionListener(new ActionListener() {
@@ -246,7 +246,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			}
 			reglementMenu.addSeparator();
 		}
-		JMenuItem jmiNewReglement = new JMenuItem("Nouveau Réglement");
+		JMenuItem jmiNewReglement = new JMenuItem("Nouveau Réglement"); //$NON-NLS-1$
 		jmiNewReglement.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String reglementName = JOptionPane.showInputDialog(ConcoursJeunes.ajrLibelle.getResourceString("reglement.general.addreglement")); //$NON-NLS-1$
@@ -462,7 +462,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 					ConcoursJeunes.ajrLibelle.getResourceString("apropos.description") + "<br><br>" + //$NON-NLS-1$ //$NON-NLS-2$
 					ConcoursJeunes.ajrLibelle.getResourceString("apropos.version") + "<br>" + ConcoursJeunes.VERSION + "<br>" + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 					ConcoursJeunes.COPYR + " " + ConcoursJeunes.AUTEURS + "<br>" + //$NON-NLS-1$ //$NON-NLS-2$
-					"version base:" + ConcoursJeunes.dbVersion + "<br><br>" //$NON-NLS-2$
+					"version base:" + ConcoursJeunes.dbVersion + "<br><br>" //$NON-NLS-1$ //$NON-NLS-2$
 					+ ConcoursJeunes.ajrLibelle.getResourceString("apropos.liens") + "<br></html>", //$NON-NLS-1$ //$NON-NLS-2$
 					ConcoursJeunes.ajrLibelle.getResourceString("apropos.titre"), JOptionPane.INFORMATION_MESSAGE); //$NON-NLS-1$
 		} else if (cmd.equals("menubar.aide.aide")) { //$NON-NLS-1$
@@ -473,7 +473,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 				} else {
 					String NAV = ConcoursJeunes.configuration.getPdfReaderPath();
 
-					Runtime.getRuntime().exec(NAV, new String[] {"documentation/Documentation ConcoursJeunes.pdf"}); //$NON-NLS-1$ 
+					Runtime.getRuntime().exec(NAV, new String[] { "documentation/Documentation ConcoursJeunes.pdf" }); //$NON-NLS-1$ 
 				}
 			} catch (IOException e1) {
 				e1.printStackTrace();

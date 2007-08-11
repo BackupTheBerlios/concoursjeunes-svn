@@ -110,123 +110,133 @@ import org.concoursjeunes.ConcoursJeunes;
 import org.concoursjeunes.plugins.Plugin;
 import org.concoursjeunes.plugins.PluginEntry;
 
-import ajinteractive.standard.java2.AjResourcesReader;
+import ajinteractive.standard.common.AjResourcesReader;
 import ajinteractive.standard.java2.GridbagComposer;
 
 /**
  * @author Aurélien JEOFFRAY
- *
+ * 
  */
-@Plugin(type=Plugin.Type.IMPORT)
+@Plugin(type = Plugin.Type.IMPORT)
 public class FFTAImportDialog extends JDialog implements ActionListener, FFTAImportThreadListener {
-	
-	private JLabel jlEmplacementLFFTA = new JLabel();
-	private JTextField jtfEmplacementLFFTA = new JTextField("C:\\ResultArc", 30); //$NON-NLS-1$
-	private JButton jbParcourir = new JButton();
-	private JButton jbSart = new JButton();
-	private JProgressBar jpbProgression = new JProgressBar();
-	
-	private JButton jbAnnuler = new JButton();
-	
-	private AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.FFTAImport.FFTAImportPlugin_libelle"); //$NON-NLS-1$
-	
+
+	private final JLabel jlEmplacementLFFTA = new JLabel();
+	private final JTextField jtfEmplacementLFFTA = new JTextField("C:\\ResultArc", 30); //$NON-NLS-1$
+	private final JButton jbParcourir = new JButton();
+	private final JButton jbSart = new JButton();
+	private final JProgressBar jpbProgression = new JProgressBar();
+
+	private final JButton jbAnnuler = new JButton();
+
+	private final AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.FFTAImport.FFTAImportPlugin_libelle"); //$NON-NLS-1$
+
 	public FFTAImportDialog(JFrame parentframe) {
 		super(parentframe);
-		
+
 		init();
 		affectLibelle();
 	}
-	
+
 	private void init() {
 		JPanel jpAnnulation = new JPanel();
 		JPanel jpGeneral = new JPanel();
-		
+
 		GridBagConstraints c = new GridBagConstraints();
 		GridbagComposer gridbagComposer = new GridbagComposer();
-		
+
 		jbAnnuler.addActionListener(this);
 		jbParcourir.addActionListener(this);
-		jbParcourir.setMargin(new Insets(0, 0, 0 ,0));
+		jbParcourir.setMargin(new Insets(0, 0, 0, 0));
 		jbSart.addActionListener(this);
-		
+
 		jpbProgression.setStringPainted(true);
-		
+
 		gridbagComposer.setParentPanel(jpGeneral);
-		c.gridy = 0; c.anchor = GridBagConstraints.WEST;
+		c.gridy = 0;
+		c.anchor = GridBagConstraints.WEST;
 		gridbagComposer.addComponentIntoGrid(jlEmplacementLFFTA, c);
 		c.gridy++;
 		gridbagComposer.addComponentIntoGrid(jtfEmplacementLFFTA, c);
 		gridbagComposer.addComponentIntoGrid(jbParcourir, c);
-		c.gridy++; c.gridwidth = 2; c.anchor = GridBagConstraints.CENTER;
+		c.gridy++;
+		c.gridwidth = 2;
+		c.anchor = GridBagConstraints.CENTER;
 		gridbagComposer.addComponentIntoGrid(jbSart, c);
-		c.gridy++; c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridy++;
+		c.fill = GridBagConstraints.HORIZONTAL;
 		gridbagComposer.addComponentIntoGrid(jpbProgression, c);
 
 		jpAnnulation.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		jpAnnulation.add(jbAnnuler);
-		
+
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().add(jpGeneral, BorderLayout.CENTER);
 		getContentPane().add(jpAnnulation, BorderLayout.SOUTH);
 	}
-	
+
 	private void affectLibelle() {
 		jlEmplacementLFFTA.setText(pluginLocalisation.getResourceString("emplacement.lffta")); //$NON-NLS-1$
 		jbParcourir.setText(pluginLocalisation.getResourceString("button.parcourir")); //$NON-NLS-1$
 		jbSart.setText(pluginLocalisation.getResourceString("button.start")); //$NON-NLS-1$
-		
+
 		jbAnnuler.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
 	}
-	
+
 	private void completePane() {
-		
+
 	}
-	
+
 	@PluginEntry
 	public void showFFTAImportDialog() {
 		completePane();
-		
+
 		pack();
 		setLocationRelativeTo(null);
 		setVisible(true);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() == jbParcourir) {
+		if (e.getSource() == jbParcourir) {
 			JFileChooser jfc = new JFileChooser(new File(jtfEmplacementLFFTA.getText()));
 			jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-			if(jfc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+			if (jfc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
 				jtfEmplacementLFFTA.setText(jfc.getSelectedFile().getPath());
 			}
-		} else if(e.getSource() == jbSart) {
+		} else if (e.getSource() == jbSart) {
 			FFTAImportThread fftaIT = new FFTAImportThread();
 			fftaIT.setParentFrame(this);
 			fftaIT.setFftalogpath(jtfEmplacementLFFTA.getText());
 			fftaIT.addFFTAImportThreadListener(this);
 			jpbProgression.setIndeterminate(true);
 			fftaIT.start();
-		} else if(e.getSource() == jbAnnuler) {
+		} else if (e.getSource() == jbAnnuler) {
 			setVisible(false);
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.concoursjeunes.plugins.FFTAImport.FFTAImportThreadListener#importFinished()
 	 */
 	public void importFinished() {
 		JOptionPane.showMessageDialog(this, pluginLocalisation.getResourceString("message.import.fin"), //$NON-NLS-1$
-                pluginLocalisation.getResourceString("message.import"), JOptionPane.INFORMATION_MESSAGE); //$NON-NLS-1$
+				pluginLocalisation.getResourceString("message.import"), JOptionPane.INFORMATION_MESSAGE); //$NON-NLS-1$
 		setVisible(false);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.concoursjeunes.plugins.FFTAImport.FFTAImportThreadListener#progressionInfo(java.lang.String)
 	 */
 	public void progressionInfo(String info) {
 		jpbProgression.setString(info);
-		//jlProgression.repaint();
+		// jlProgression.repaint();
 	}
 }

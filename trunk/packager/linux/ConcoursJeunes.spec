@@ -44,6 +44,7 @@ rm -rf $RPM_BUILD_ROOT/Makefile
 /usr/lib/ConcoursJeunes/config/*
 /usr/lib/ConcoursJeunes/lang/*
 /usr/lib/ConcoursJeunes/lib/*
+/usr/lib/ConcoursJeunes/documentation/*
 /usr/lib/ConcoursJeunes/plugins/*
 /usr/lib/ConcoursJeunes/ressources/*
 /usr/lib/ConcoursJeunes/ConcoursJeunes.jar

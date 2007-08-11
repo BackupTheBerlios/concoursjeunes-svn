@@ -110,7 +110,7 @@ import org.concoursjeunes.plugins.PluginLoader;
 import org.concoursjeunes.plugins.PluginMetadata;
 
 import ajinteractive.standard.common.AJToolKit;
-import ajinteractive.standard.java2.AjResourcesReader;
+import ajinteractive.standard.common.AjResourcesReader;
 import ajinteractive.standard.utilities.updater.AjUpdater;
 import ajinteractive.standard.utilities.updater.AjUpdaterEvent;
 import ajinteractive.standard.utilities.updater.AjUpdaterListener;
@@ -154,7 +154,7 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 
 	@Override
 	public void run() {
-		
+
 		PluginLoader pl = new PluginLoader();
 
 		ajUpdater = new AjUpdater(ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
@@ -162,8 +162,8 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 		ajUpdater.addAjUpdaterListener(this);
 		ajUpdater.setUserAgent(ConcoursJeunes.NOM + " " + ConcoursJeunes.VERSION //$NON-NLS-1$
 				+ " (" + ConcoursJeunes.configuration.getClub().getAgrement() + " " + ConcoursJeunes.configuration.getClub().getNom() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		ajUpdater.addRepositoryURL(pluginRessources.getResourceString("url.reference"));
-		for(PluginMetadata pm : pl.getPlugins(PluginMetadata.ALL)) {
+		ajUpdater.addRepositoryURL(pluginRessources.getResourceString("url.reference")); //$NON-NLS-1$
+		for (PluginMetadata pm : pl.getPlugins(PluginMetadata.ALL)) {
 			ajUpdater.addRepositoryURL(pm.getReposURL());
 		}
 		if (ConcoursJeunes.configuration.isUseProxy()) {
@@ -206,16 +206,17 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 			}
 			break;
 		case UPDATE_AVAILABLE:
-			
+
 			String strSize = AJToolKit.formatFileSize(ajUpdater.getDownloadSize());
-			
+
 			updateFiles = event.getUpdateFiles();
 
 			if (trayIcon != null) {
 				trayIcon.displayMessage(pluginLocalisation.getResourceString("update.available.title"), pluginLocalisation.getResourceString("update.available", strSize), TrayIcon.MessageType.INFO); //$NON-NLS-1$ //$NON-NLS-2$
 			} else {
-				int confirm = JOptionPane.showConfirmDialog(null, pluginLocalisation.getResourceString("update.available", strSize), pluginLocalisation.getResourceString("update.available.title"), JOptionPane.YES_NO_OPTION); //$NON-NLS-1$ //$NON-NLS-2$
-				if(confirm == JOptionPane.YES_OPTION) {
+				int confirm = JOptionPane.showConfirmDialog(null,
+						pluginLocalisation.getResourceString("update.available", strSize), pluginLocalisation.getResourceString("update.available.title"), JOptionPane.YES_NO_OPTION); //$NON-NLS-1$ //$NON-NLS-2$
+				if (confirm == JOptionPane.YES_OPTION) {
 					ajUpdater.downloadFiles(updateFiles);
 				}
 			}
@@ -240,11 +241,10 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 						Runtime.getRuntime().exec(
 								"concoursjeunes-applyupdate \"" + ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update\" \"" + System.getProperty("user.dir") + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ 
 					} else {
-						Runtime.getRuntime().exec(new String[] {
-								"concoursjeunes-applyupdate", //$NON-NLS-1$
+						Runtime.getRuntime().exec(new String[] { "concoursjeunes-applyupdate", //$NON-NLS-1$
 								ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
 								System.getProperty("user.dir") }); //$NON-NLS-1$
-	
+
 					}
 					System.exit(0);
 				} catch (IOException e1) {

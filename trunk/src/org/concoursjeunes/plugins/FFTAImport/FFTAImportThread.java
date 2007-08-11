@@ -14,7 +14,7 @@ import javax.swing.event.EventListenerList;
 import org.concoursjeunes.ConcoursJeunes;
 import org.jdesktop.swingx.JXErrorDialog;
 
-import ajinteractive.standard.java2.AjResourcesReader;
+import ajinteractive.standard.common.AjResourcesReader;
 import ajinteractive.standard.utilities.sql.SqlParser;
 
 /**

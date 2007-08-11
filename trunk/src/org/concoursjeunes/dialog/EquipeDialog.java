@@ -182,7 +182,7 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 
 	private void completePanel() {
 		DefaultMutableTreeNode[] dmtnCategorie;
-		DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Table des concurrents");
+		DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Table des concurrents"); //$NON-NLS-1$
 
 		treeModelConcurrents = new DefaultTreeModel(rootNode);
 		treeConcurrents.setModel(treeModelConcurrents);
@@ -561,7 +561,7 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 
 					DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) treeConcurrents.getSelectionPath().getParentPath().getLastPathComponent();
 					TreePath[] selectedPaths = treeConcurrents.getSelectionPaths();
-					for(TreePath selectedPath : selectedPaths) {
+					for (TreePath selectedPath : selectedPaths) {
 						parentNode.remove((DefaultMutableTreeNode) selectedPath.getLastPathComponent());
 					}
 					treeModelConcurrents.reload(parentNode);
@@ -569,7 +569,7 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 					createEquipe(treeEquipes.getPathForLocation(p.x, p.y));
 
 					TreePath[] selectedPaths = treeConcurrents.getSelectionPaths();
-					for(TreePath selectedPath : selectedPaths) {
+					for (TreePath selectedPath : selectedPaths) {
 						((DefaultMutableTreeNode) selectedPath.getParentPath().getLastPathComponent()).remove((DefaultMutableTreeNode) selectedPath.getLastPathComponent());
 					}
 
@@ -590,7 +590,7 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 				if (equipe.getMembresEquipe().size() < ficheConcours.getParametre().getReglement().getNbMembresRetenu()) {
 					ficheConcours.getEquipes().remove(equipe);
 
-					DefaultMutableTreeNode refNode = (DefaultMutableTreeNode)parentNode.getParent();
+					DefaultMutableTreeNode refNode = (DefaultMutableTreeNode) parentNode.getParent();
 					refNode.removeAllChildren();
 					treeModel.reload(refNode);
 				} else {
