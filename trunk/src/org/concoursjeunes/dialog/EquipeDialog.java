@@ -46,6 +46,7 @@ import org.concoursjeunes.CriteriaSetLibelle;
 import org.concoursjeunes.Criterion;
 import org.concoursjeunes.Entite;
 import org.concoursjeunes.Equipe;
+import org.concoursjeunes.EquipeList;
 import org.concoursjeunes.FicheConcours;
 
 import ajinteractive.standard.java2.GhostGlassPane;
@@ -76,7 +77,7 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 
 	private boolean validation = false;
 
-	private final Hashtable<CriteriaSet, Hashtable<String, Equipe>> hEquipes = new Hashtable<CriteriaSet, Hashtable<String, Equipe>>();
+	private EquipeList tempEquipes = new EquipeList();
 
 	private boolean onDrag = false;
 	private Object dragObject = null;
@@ -92,6 +93,7 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 	public EquipeDialog(JFrame parentFrame, FicheConcours ficheConcours) {
 		super(parentFrame, true);
 		this.ficheConcours = ficheConcours;
+		tempEquipes = ficheConcours.getEquipes();
 
 		// initialisation de l'interface
 		init();
@@ -211,7 +213,7 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 						if (clubConcurrents.length >= ficheConcours.getParametre().getReglement().getNbMembresRetenu()) {
 							DefaultMutableTreeNode dmtnEntite = new DefaultMutableTreeNode(entite);
 							for (Concurrent concurrent : clubConcurrents) {
-								if (ficheConcours.getEquipes().containsConcurrent(concurrent) == null)
+								if (tempEquipes.containsConcurrent(concurrent) == null)
 									dmtnEntite.add(new DefaultMutableTreeNode(concurrent));
 							}
 							dmtnCategorie[i].add(dmtnEntite);
@@ -225,7 +227,7 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 				} else {
 					concurrents = ConcurrentList.sort(concurrents, ConcurrentList.SORT_BY_NAME);
 					for (Concurrent concurrent : concurrents) {
-						if (ficheConcours.getEquipes().containsConcurrent(concurrent) == null)
+						if (tempEquipes.containsConcurrent(concurrent) == null)
 							dmtnCategorie[i].add(new DefaultMutableTreeNode(concurrent));
 					}
 
@@ -235,19 +237,6 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 				}
 			}
 		}
-
-		// ficheConcours.getConcurrentList().l
-		// ficheConcours.getConcurrentList().list(-1)
-		// for()
-		// parcours toutes les équipes enregistré
-		/*
-		 * for(Equipe equipe : ficheConcours.getEquipes().list()) { //si la catégorie de l'équipe n'existe pas alors la créer if(!hEquipes.containsKey(equipe.getDifferentiationCriteria())) {
-		 * hEquipes.put(equipe.getDifferentiationCriteria(), new Hashtable<String, Equipe>()); } //injecter l'equipes dans sa catégorie de classement
-		 * hEquipes.get(equipe.getDifferentiationCriteria()).put(equipe.getNomEquipe(), equipe); }
-		 * 
-		 * 
-		 * categoriesEquipes();
-		 */
 	}
 
 	/**
@@ -264,7 +253,7 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 
 		ArrayList<Equipe> equipes = new ArrayList<Equipe>();
 
-		for (Equipe equipe : ficheConcours.getEquipes().list(criteriaSet)) {
+		for (Equipe equipe : tempEquipes.list(criteriaSet)) {
 			if (club == null || equipe.getMembresEquipe().get(0).getClub().equals(club)) {
 				// injecter l'equipes dans sa catégorie de classement
 				equipes.add(equipe);
@@ -327,23 +316,8 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 	 * 
 	 * @return Equipe[] - la liste des équipes
 	 */
-	public Equipe[] getEquipes() {
-		ArrayList<Equipe> al = new ArrayList<Equipe>();
-
-		for (Hashtable<String, Equipe> htable : hEquipes.values()) {
-			for (Equipe equipe : htable.values()) {
-				if (equipe.getMembresEquipe().size() < ficheConcours.getParametre().getReglement().getNbMembresRetenu()) {
-					htable.remove(equipe.getNomEquipe());
-				}
-			}
-		}
-
-		for (Hashtable<String, Equipe> htable : hEquipes.values()) {
-			for (Equipe equipe : htable.values()) {
-				al.add(equipe);
-			}
-		}
-		return al.toArray(new Equipe[al.size()]);
+	public EquipeList getEquipes() {
+		return tempEquipes;
 	}
 
 	/**
@@ -376,21 +350,21 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 		String strEquipeName = firstConcurrent.getClub().getNom();
 
 		int i = 2;
-		while (ficheConcours.getEquipes().contains(strEquipeName)) {
+		while (tempEquipes.contains(strEquipeName)) {
 			strEquipeName += String.valueOf(i);
 			i++;
 		}
 
 		do {
 			strEquipeName = JOptionPane.showInputDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("equipe.saisinom"), strEquipeName); //$NON-NLS-1$
-		} while (strEquipeName == null || strEquipeName.equals("") || ficheConcours.getEquipes().contains(strEquipeName)); //$NON-NLS-1$
+		} while (strEquipeName == null || strEquipeName.equals("") || tempEquipes.contains(strEquipeName)); //$NON-NLS-1$
 
 		// on crée l'équipe
 		Equipe equipe = new Equipe(strEquipeName);
 		equipe.setNbRetenu(ficheConcours.getParametre().getReglement().getNbMembresRetenu());
 		equipe.setDifferentiationCriteria(scna);
 
-		ficheConcours.getEquipes().add(equipe);
+		tempEquipes.add(equipe);
 
 		// on crée le point d'arborescence dans l'arbre
 		DefaultMutableTreeNode equipeTreeNode = new DefaultMutableTreeNode(equipe);
@@ -588,7 +562,7 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 				equipe.removeConcurrent((Concurrent) selectedNode.getUserObject());
 
 				if (equipe.getMembresEquipe().size() < ficheConcours.getParametre().getReglement().getNbMembresRetenu()) {
-					ficheConcours.getEquipes().remove(equipe);
+					tempEquipes.remove(equipe);
 
 					DefaultMutableTreeNode refNode = (DefaultMutableTreeNode) parentNode.getParent();
 					refNode.removeAllChildren();

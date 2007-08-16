@@ -34,8 +34,7 @@ import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
 
 /**
- * Represente la fiche concours, regroupe l'ensemble des informations commune à
- * un concours donné
+ * Represente la fiche concours, regroupe l'ensemble des informations commune à un concours donné
  * 
  * @author Aurélien Jeoffray
  */
@@ -119,6 +118,10 @@ public class FicheConcours implements ParametreListener {
 	 */
 	public EquipeList getEquipes() {
 		return equipes;
+	}
+
+	public void setEquipes(EquipeList equipeList) {
+		this.equipes = equipeList;
 	}
 
 	/**
@@ -230,8 +233,7 @@ public class FicheConcours implements ParametreListener {
 	}
 
 	public MetaDataFicheConcours getMetaDataFicheConcours() {
-		MetaDataFicheConcours metaDataFicheConcours = new MetaDataFicheConcours(parametre.getDate(), parametre.getIntituleConcours(), parametre
-				.getSaveName());
+		MetaDataFicheConcours metaDataFicheConcours = new MetaDataFicheConcours(parametre.getDate(), parametre.getIntituleConcours(), parametre.getSaveName());
 		parametre.addParametreListener(metaDataFicheConcours);
 
 		return metaDataFicheConcours;
@@ -242,8 +244,7 @@ public class FicheConcours implements ParametreListener {
 	 * 
 	 */
 	public void save() {
-		File f = new File(ConcoursJeunes.userRessources.getConcoursPathForProfile(ConcoursJeunes.configuration.getCurProfil()) + File.separator
-				+ parametre.getSaveName());
+		File f = new File(ConcoursJeunes.userRessources.getConcoursPathForProfile(ConcoursJeunes.configuration.getCurProfil()) + File.separator + parametre.getSaveName());
 		AJToolKit.saveXMLStructure(f, getFiche(), true);
 	}
 
@@ -413,17 +414,13 @@ public class FicheConcours implements ParametreListener {
 							if (sortList[j].getTotalScore() > 0) {
 								row_exist = true;
 								// test d'ex-Eaquo
-								if ((j < sortList.length - 1 && sortList[j].getTotalScore() == sortList[j + 1].getTotalScore() && ConcoursJeunes.configuration
-										.isInterfaceAffResultatExEquo())
-										|| (j > 0 && sortList[j].getTotalScore() == sortList[j - 1].getTotalScore() && ConcoursJeunes.configuration
-												.isInterfaceAffResultatExEquo())) {
+								if ((j < sortList.length - 1 && sortList[j].getTotalScore() == sortList[j + 1].getTotalScore() && ConcoursJeunes.configuration.isInterfaceAffResultatExEquo())
+										|| (j > 0 && sortList[j].getTotalScore() == sortList[j - 1].getTotalScore() && ConcoursJeunes.configuration.isInterfaceAffResultatExEquo())) {
 
 									if ((sortList[j].getManque() == 0 && sortList[j].getDix() == 0 && sortList[j].getNeuf() == 0)
-											|| (j < sortList.length - 2 && sortList[j].getManque() == sortList[j + 1].getManque()
-													&& sortList[j].getDix() == sortList[j + 1].getDix() && sortList[j].getNeuf() == sortList[j + 1]
-													.getNeuf())
-											|| (j > 0 && sortList[j].getManque() == sortList[j - 1].getManque()
-													&& sortList[j].getDix() == sortList[j - 1].getDix() && sortList[j].getNeuf() == sortList[j - 1]
+											|| (j < sortList.length - 2 && sortList[j].getManque() == sortList[j + 1].getManque() && sortList[j].getDix() == sortList[j + 1].getDix() && sortList[j]
+													.getNeuf() == sortList[j + 1].getNeuf())
+											|| (j > 0 && sortList[j].getManque() == sortList[j - 1].getManque() && sortList[j].getDix() == sortList[j - 1].getDix() && sortList[j].getNeuf() == sortList[j - 1]
 													.getNeuf())) {
 
 										tplClassement.parse("categories.classement.COULEUR", //$NON-NLS-1$
@@ -648,8 +645,7 @@ public class FicheConcours implements ParametreListener {
 	 * Donne le XML de l'etat "Liste des archer"
 	 * 
 	 * @param mode -
-	 *            le mode (ALPHA pour liste alpabétique et GREFFE pour liste
-	 *            pour le greffe)
+	 *            le mode (ALPHA pour liste alpabétique et GREFFE pour liste pour le greffe)
 	 * @return String - le XML iText à retourner
 	 */
 	private String getXMLListeArcher(int mode, int depart) {
@@ -684,12 +680,8 @@ public class FicheConcours implements ParametreListener {
 						concurrent.getCriteriaSet().getCriterionElement(key).getCode());
 			}
 
-			listeArcherXML
-					.parse(
-							"lignes.PAYEE", AJToolKit.tokenize(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.impression.inscription"), ",")[concurrent.getInscription()]); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			listeArcherXML
-					.parse(
-							"lignes.CERTIFICAT", AJToolKit.tokenize(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.certificat"), ",")[concurrent.isCertificat() ? 0 : 1]); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			listeArcherXML.parse("lignes.PAYEE", AJToolKit.tokenize(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.impression.inscription"), ",")[concurrent.getInscription()]); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			listeArcherXML.parse("lignes.CERTIFICAT", AJToolKit.tokenize(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.certificat"), ",")[concurrent.isCertificat() ? 0 : 1]); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			listeArcherXML.parse("lignes.CIBLE", concurrent.getCible() + "" + (char) ('A' + concurrent.getPosition())); //$NON-NLS-1$ //$NON-NLS-2$
 
 			listeArcherXML.loopBloc("lignes"); //$NON-NLS-1$
@@ -711,16 +703,16 @@ public class FicheConcours implements ParametreListener {
 	 */
 	private String getXMLEtiquettes(int nblarg, int nbhaut, int depart) {
 		double marge_gauche = ConcoursJeunes.configuration.getMarges().left; // la
-																				// marge
-																				// gauche
+		// marge
+		// gauche
 		double espacement_cellule_h = ConcoursJeunes.configuration.getEspacements()[0]; // l'espacement
-																						// horizontal
-																						// entre
-																						// cellule
+		// horizontal
+		// entre
+		// cellule
 		double espacement_cellule_v = ConcoursJeunes.configuration.getEspacements()[1]; // l'espacement
-																						// vertical
-																						// entre
-																						// cellule
+		// vertical
+		// entre
+		// cellule
 		double cellule_x;
 		double cellule_y;
 
@@ -757,8 +749,7 @@ public class FicheConcours implements ParametreListener {
 		int ligne = 0;
 		for (Concurrent concurrent : ConcurrentList.sort(concurrentList.list(depart), ConcurrentList.SORT_BY_CIBLES)) {
 			if (colonne == 0)
-				templateEtiquettesXML.parse(
-						"page.ligne.leading", "" + (PageSize.A4.height() * (cellule_y / 100) + PageSize.A4.height() * (espacement_cellule_v / 100))); //$NON-NLS-1$ //$NON-NLS-2$
+				templateEtiquettesXML.parse("page.ligne.leading", "" + (PageSize.A4.height() * (cellule_y / 100) + PageSize.A4.height() * (espacement_cellule_v / 100))); //$NON-NLS-1$ //$NON-NLS-2$
 			templateEtiquettesXML.parse("page.ligne.colonne.cid", concurrent.getID()); //$NON-NLS-1$
 			templateEtiquettesXML.parse("page.ligne.colonne.cclub", concurrent.getClub().getNom()); //$NON-NLS-1$
 			templateEtiquettesXML.parse("page.ligne.colonne.clicence", concurrent.getNumLicenceArcher()); //$NON-NLS-1$
@@ -899,8 +890,7 @@ public class FicheConcours implements ParametreListener {
 	 */
 	public boolean printEtiquettes() {
 		Document document = new Document(PageSize.A4, 0, 0, 0, 0);
-		return ConcoursJeunes.printDocument(document, getXMLEtiquettes(ConcoursJeunes.configuration.getColonneAndLigne()[1],
-				ConcoursJeunes.configuration.getColonneAndLigne()[0], currentDepart));
+		return ConcoursJeunes.printDocument(document, getXMLEtiquettes(ConcoursJeunes.configuration.getColonneAndLigne()[1], ConcoursJeunes.configuration.getColonneAndLigne()[0], currentDepart));
 	}
 
 	/**
@@ -925,12 +915,11 @@ public class FicheConcours implements ParametreListener {
 	public void parametreChanged(ParametreEvent parametreEvent) {
 		assert pasDeTir.size() > 0 : "Il doit exister au moins un pas de tir"; //$NON-NLS-1$
 
-		if (parametreEvent.getParametre().getNbCible() != pasDeTir.get(0).getTargets().size()
-				|| parametreEvent.getParametre().getNbTireur() != pasDeTir.get(0).getTargets().get(0).getNbMaxArchers()) {
-			if(parametreEvent.getParametre().getNbCible() < pasDeTir.get(0).getTargets().size()) {
-				for(int i = 0; i < parametre.getNbDepart(); i++) {
-					for(int j = parametreEvent.getParametre().getNbCible(); j < pasDeTir.get(i).getTargets().size(); j++) {
-						for(Concurrent concurrent : concurrentList.list(j+1, i)) {
+		if (parametreEvent.getParametre().getNbCible() != pasDeTir.get(0).getTargets().size() || parametreEvent.getParametre().getNbTireur() != pasDeTir.get(0).getTargets().get(0).getNbMaxArchers()) {
+			if (parametreEvent.getParametre().getNbCible() < pasDeTir.get(0).getTargets().size()) {
+				for (int i = 0; i < parametre.getNbDepart(); i++) {
+					for (int j = parametreEvent.getParametre().getNbCible(); j < pasDeTir.get(i).getTargets().size(); j++) {
+						for (Concurrent concurrent : concurrentList.list(j + 1, i)) {
 							pasDeTir.get(i).retraitConcurrent(concurrent);
 						}
 					}

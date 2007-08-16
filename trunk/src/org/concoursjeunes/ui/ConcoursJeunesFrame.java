@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 
@@ -51,6 +52,7 @@ import org.concoursjeunes.plugins.PluginMetadata;
 import org.jdesktop.swingx.JXErrorDialog;
 
 import ajinteractive.standard.common.AJTemplate;
+import ajinteractive.standard.common.PluginClassLoader;
 import ajinteractive.standard.java2.GhostGlassPane;
 import ajinteractive.standard.ui.AJTabbedPane;
 import ajinteractive.standard.ui.AJTabbedPaneListener;
@@ -128,7 +130,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 		ajtHome.loadTemplate(ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
 				+ File.separator + ajrParametreAppli.getResourceString("template.accueil.html")); //$NON-NLS-1$
 
-		fillImportItem((JMenu) frameCreator.getNamedComponent("mi.import")); //$NON-NLS-1$
+		fillOnDemandPlugin((JMenu) frameCreator.getNamedComponent("mi.import")); //$NON-NLS-1$
 
 		jmReglements = (JMenu) frameCreator.getNamedComponent("mi.reglements"); //$NON-NLS-1$
 		fillReglementItem(jmReglements);
@@ -153,18 +155,17 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 		setGlassPane(glassPane);
 	}
 
-	private void fillImportItem(JMenu importMenu) {
+	private void fillOnDemandPlugin(JMenu importMenu) {
 		PluginLoader pl = new PluginLoader();
 		ArrayList<PluginMetadata> plugins = pl.getPlugins(PluginMetadata.ONDEMAND_PLUGIN);
 
-		if (plugins.size() == 0) {
-			importMenu.setEnabled(false);
+		if (plugins.size() > 0) {
+			importMenu.setVisible(true);
 		}
 
 		for (PluginMetadata pm : plugins) {
 			JMenuItem mi = new JMenuItem(pm.getOptionLabel());
 			MenuBarTools.addItem(mi, getJMenuBar(), pm.getMenuPath());
-			// importMenu.add(mi);
 
 			mi.setActionCommand(pm.getClassName());
 			mi.addActionListener(new ActionListener() {
@@ -179,7 +180,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 						Class<?> cla = null;
 						String importClass = e.getActionCommand();
 						if (importClass != null) {
-							cla = Class.forName(importClass);
+							cla = Class.forName(importClass, false, new PluginClassLoader(findParentClassLoader(), new File("plugins"))); //$NON-NLS-1$
 						}
 
 						if (cla != null) {
@@ -214,6 +215,10 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 						e1.printStackTrace();
 					} catch (InvocationTargetException e1) {
 						JXErrorDialog.showDialog(ConcoursJeunesFrame.this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
+								e1.fillInStackTrace());
+						e1.printStackTrace();
+					} catch (MalformedURLException e1) {
+						JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
 								e1.fillInStackTrace());
 						e1.printStackTrace();
 					}
@@ -264,6 +269,22 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			}
 		});
 		reglementMenu.add(jmiNewReglement);
+	}
+
+	/**
+	 * Locates the best class loader based on context (see class description).
+	 * 
+	 * @return The best parent classloader to use
+	 */
+	private ClassLoader findParentClassLoader() {
+		ClassLoader parent = Thread.currentThread().getContextClassLoader();
+		if (parent == null) {
+			parent = this.getClass().getClassLoader();
+			if (parent == null) {
+				parent = ClassLoader.getSystemClassLoader();
+			}
+		}
+		return parent;
 	}
 
 	private void showConfigurationDialog() {

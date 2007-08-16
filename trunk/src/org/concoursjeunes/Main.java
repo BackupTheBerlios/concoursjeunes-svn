@@ -19,6 +19,7 @@ import java.io.File;
 import java.sql.SQLException;
 
 import org.concoursjeunes.ui.ConcoursJeunesFrame;
+import org.jdesktop.swingx.JXErrorDialog;
 
 /**
  * @author aurelien
@@ -29,31 +30,37 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		ConcoursJeunes concoursJeunes = ConcoursJeunes.getInstance();
+		try {
+			ConcoursJeunes concoursJeunes = ConcoursJeunes.getInstance();
 
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			@Override
-			public void run() {
-				try {
-					// permet de s'assurer que la base de données est
-					// correctement fermé
-					ConcoursJeunes.dbConnection.close();
-					// rend l'ensemble des fichier de la base accessible en lecture/ecriture pour permettre
-					// le multiutilisateur
-					File[] dbfiles = new File(ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "base").listFiles(); //$NON-NLS-1$
-					for (File dbfile : dbfiles) {
-						if (dbfile.isFile()) {
-							dbfile.setWritable(true, false);
+			Runtime.getRuntime().addShutdownHook(new Thread() {
+				@Override
+				public void run() {
+					try {
+						// permet de s'assurer que la base de données est
+						// correctement fermé
+						ConcoursJeunes.dbConnection.close();
+						// rend l'ensemble des fichier de la base accessible en lecture/ecriture pour permettre
+						// le multiutilisateur
+						File[] dbfiles = new File(ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "base").listFiles(); //$NON-NLS-1$
+						for (File dbfile : dbfiles) {
+							if (dbfile.isFile()) {
+								dbfile.setWritable(true, false);
+							}
 						}
+					} catch (SQLException e) {
+						e.printStackTrace();
 					}
-				} catch (SQLException e) {
-					e.printStackTrace();
 				}
-			}
-		});
-		System.out.println("core loaded"); //$NON-NLS-1$
-		
-		new ConcoursJeunesFrame(concoursJeunes);
+			});
+			System.out.println("core loaded"); //$NON-NLS-1$
+
+			new ConcoursJeunesFrame(concoursJeunes);
+		} catch (RuntimeException e) {
+			JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
+					e.fillInStackTrace());
+			e.printStackTrace();
+		}
 	}
 
 }

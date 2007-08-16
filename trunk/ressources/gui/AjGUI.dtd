@@ -33,7 +33,7 @@ Correspond à incran à décrire. Cette écran peut être un frame ou un window-
 
 <!ELEMENT contentpane ( tabbedpane* ) >
 
-<!ELEMENT menu ( #PCDATA | label | menuitems )* >
+<!ELEMENT menu ( label, menuitems? ) >
 <!ATTLIST menu id ID #REQUIRED >
 <!ATTLIST menu name NMTOKEN #IMPLIED >
 <!ATTLIST menu visible (true|false) #IMPLIED >
@@ -54,7 +54,7 @@ Correspond à incran à décrire. Cette écran peut être un frame ou un window-
 <!ELEMENT method ( param* ) >
 <!ATTLIST method name NMTOKEN #REQUIRED >
 
-<!ELEMENT param ( param? ) >
+<!ELEMENT param ( param* ) >
 <!ATTLIST param class NMTOKEN #IMPLIED >
 <!ATTLIST param paramclass NMTOKEN #REQUIRED >
 <!ATTLIST param value NMTOKEN #IMPLIED >
