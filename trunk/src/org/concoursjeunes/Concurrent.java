@@ -115,7 +115,6 @@ public class Concurrent extends Archer {
 	/**
 	 * Affecte le nombre de dix total du concurrent
 	 * @param  dix
-	 * @uml.property  name="neuf"
 	 */
 	public void setNeuf(int dix) {
 		this.neuf = dix;
@@ -124,7 +123,6 @@ public class Concurrent extends Archer {
 	/**
 	 * Donne le nombre de dix du concurrent
 	 * @return  int
-	 * @uml.property  name="neuf"
 	 */
 	public int getNeuf() {
 		return this.neuf;
@@ -133,7 +131,6 @@ public class Concurrent extends Archer {
 	/**
 	 * Affecte le nombre de 10+ total du concurrent
 	 * @param  dixPlus
-	 * @uml.property  name="dix"
 	 */
 	public void setDix(int dixPlus) {
 		this.dix = dixPlus;
@@ -142,7 +139,6 @@ public class Concurrent extends Archer {
 	/**
 	 * Donne le nombre de 10+ du concurrent
 	 * @return  int
-	 * @uml.property  name="dix"
 	 */
 	public int getDix() {
 		return this.dix;
@@ -151,7 +147,6 @@ public class Concurrent extends Archer {
 	/**
 	 * Affecte le nombre de fleche manquee total du concurrent
 	 * @param  manque
-	 * @uml.property  name="manque"
 	 */
 	public void setManque(int manque) {
 		this.manque = manque;
@@ -160,7 +155,6 @@ public class Concurrent extends Archer {
 	/**
 	 * Donne le nombre de fleche manquee du concurrent
 	 * @return  int
-	 * @uml.property  name="manque"
 	 */
 	public int getManque() {
 		return this.manque;
@@ -169,7 +163,6 @@ public class Concurrent extends Archer {
 	/**
 	 * Retourne le numero de départ de l'archer
 	 * @return  Returns the depart.
-	 * @uml.property  name="depart"
 	 */
 	public int getDepart() {
 		return depart;
@@ -178,7 +171,6 @@ public class Concurrent extends Archer {
 	/**
 	 * Définit le n° de départ de l'archer
 	 * @param depart  The depart to set.
-	 * @uml.property  name="depart"
 	 */
 	public void setDepart(int depart) {
 		this.depart = depart;
@@ -187,7 +179,6 @@ public class Concurrent extends Archer {
 	/**
 	 * Donne le numero de cible du concurrent
 	 * @return  int
-	 * @uml.property  name="cible"
 	 */
 	public int getCible() {
 		return this.cible;
@@ -196,7 +187,6 @@ public class Concurrent extends Archer {
 	/**
 	 * Affecte le numero de cible du concurrent
 	 * @param  cible
-	 * @uml.property  name="cible"
 	 */
 	public void setCible(int cible) {
 		this.cible = cible;
@@ -205,7 +195,6 @@ public class Concurrent extends Archer {
 	/**
 	 * Donne la position sur cible du concurrent
 	 * @return  int
-	 * @uml.property  name="position"
 	 */
 	public int getPosition() {
 		return this.position;
@@ -214,7 +203,6 @@ public class Concurrent extends Archer {
 	/**
 	 * Affecte la position sur cible du concurrent
 	 * @param  position
-	 * @uml.property  name="position"
 	 */
 	public void setPosition(int position) {
 		this.position = position;
@@ -223,7 +211,6 @@ public class Concurrent extends Archer {
 	/**
 	 * Donne l'etat d'inscription du concurennt, réservé/payée
 	 * @return  int
-	 * @uml.property  name="inscription"
 	 */
 	public int getInscription() {
 		return this.inscription;
@@ -232,7 +219,6 @@ public class Concurrent extends Archer {
 	/**
 	 * Affecte l'etat d'inscription du concurennt, réservé/payée
 	 * @param  inscription
-	 * @uml.property  name="inscription"
 	 */
 	public void setInscription(int inscription) {
 		this.inscription = inscription;

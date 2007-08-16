@@ -177,15 +177,18 @@ public class Cible {
 	}
 
 	/**
-	 * @return reglement
+	 * Retourne la Fiche Concours associé à la cible
+	 * 
+	 * @return la Fiche Concours associé à la cible
 	 */
 	public FicheConcours getFicheConcours() {
 		return concours;
 	}
 
 	/**
-	 * @param reglement
-	 *            reglement à définir
+	 * Associe la cible à un concours donné
+	 * 
+	 * @param concours le concours associé à la cible
 	 */
 	public void setFicheConcours(FicheConcours concours) {
 		this.concours = concours;
@@ -193,11 +196,11 @@ public class Cible {
 
 	/**
 	 * insere un concurrent à la premiere position libre et retourne cette
-	 * position ou -1 si ecehc
+	 * position ou -1 si echec
 	 * 
-	 * @param concurrent -
-	 *            le concurrent à inserer
-	 * @return int - la position de concurrent ou -1 si echec
+	 * @param concurrent le concurrent à inserer
+	 * 
+	 * @return la position de concurrent ou -1 si echec
 	 */
 	public int insertConcurrent(Concurrent concurrent) {
 		int position = -1;
@@ -255,6 +258,12 @@ public class Cible {
 		return lstConcurrent;
 	}
 
+	/**
+	 * Retourne la position du concurrent donné sur la cible
+	 * 
+	 * @param concurrent le concurrent à rechercher sur la cible
+	 * @return l'indice du concurrent sur la cible ou -1 si non trouvé
+	 */
 	public int indexOf(Concurrent concurrent) {
 		for (int i = 0; i < concours.getParametre().getNbTireur(); i++)
 			if (concurrents[i] != null && concurrents[i].equals(concurrent))
@@ -265,8 +274,7 @@ public class Cible {
 	/**
 	 * Test si le concurrent transmis en parametre est affecté ou non à la cible
 	 * 
-	 * @param concurrent
-	 *            le concurrent à tester
+	 * @param concurrent le concurrent à tester
 	 * @return true si le concurrent est présent sur la cible, false sinon
 	 */
 	public boolean contains(Concurrent concurrent) {
@@ -276,10 +284,8 @@ public class Cible {
 	/**
 	 * Place un concurrent sur la cible à la position donné
 	 * 
-	 * @param concurrent -
-	 *            le concurrent à placer
-	 * @param position -
-	 *            la positionn de ce concurrent
+	 * @param concurrent le concurrent à placer
+	 * @param position la positionn de ce concurrent
 	 * 
 	 * @return true si affectation avec succès, false sinon
 	 */

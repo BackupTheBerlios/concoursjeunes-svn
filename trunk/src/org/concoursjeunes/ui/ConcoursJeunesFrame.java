@@ -388,7 +388,6 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 
 	/**
 	 * @return concoursJeunes
-	 * @uml.property name="concoursJeunes"
 	 */
 	public ConcoursJeunes getConcoursJeunes() {
 		return concoursJeunes;
@@ -397,7 +396,6 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	/**
 	 * @param concoursJeunes
 	 *            concoursJeunes à définir
-	 * @uml.property name="concoursJeunes"
 	 */
 	public void setConcoursJeunes(ConcoursJeunes concoursJeunes) {
 		this.concoursJeunes = concoursJeunes;

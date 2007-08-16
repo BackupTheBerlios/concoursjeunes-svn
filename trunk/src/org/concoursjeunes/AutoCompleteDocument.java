@@ -104,6 +104,12 @@ import javax.swing.text.PlainDocument;
  */
 public class AutoCompleteDocument extends PlainDocument {
 	
+	/**
+	 * Enumeration des différents type de recherche géré par le document
+	 * d'autocomplement
+	 * 
+	 * @author Aurélien JEOFFRAY
+	 */
 	public enum SearchType {
 		/**
 		 * Type de recherche : recherche par le nom

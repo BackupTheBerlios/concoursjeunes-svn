@@ -127,7 +127,6 @@ public class AutoCompleteDocumentEvent {
 	 * Retourne l'objet concurrent répondant à l'événement
 	 * 
 	 * @return le concurrent renvoyé par l'autocomplement
-	 * @uml.property  name="concurrent"
 	 */
 	public Concurrent getConcurrent() {
 		return concurrent;
@@ -137,7 +136,6 @@ public class AutoCompleteDocumentEvent {
 	 * Définit le concurrent repondant à l'événement
 	 * 
 	 * @param concurrent  the concurrent to set
-	 * @uml.property  name="concurrent"
 	 */
 	public void setConcurrent(Concurrent concurrent) {
 		this.concurrent = concurrent;
@@ -147,7 +145,6 @@ public class AutoCompleteDocumentEvent {
 	 * Retourne l'entite repondant à l'evenement emis
 	 * 
 	 * @return  entite l'entite retourné
-	 * @uml.property  name="entite"
 	 */
 	public Entite getEntite() {
 		return entite;
@@ -157,7 +154,6 @@ public class AutoCompleteDocumentEvent {
 	 * Définit l'entite devant répondre à l'évenement
 	 * 
 	 * @param entite  entite à définir
-	 * @uml.property  name="entite"
 	 */
 	public void setEntite(Entite entite) {
 		this.entite = entite;
@@ -167,7 +163,6 @@ public class AutoCompleteDocumentEvent {
 	 * Retourne l'objet à la source de l'evenement
 	 * 
 	 * @return la source de l'evenement
-	 * @uml.property  name="source"
 	 */
 	public Object getSource() {
 		return source;
@@ -177,7 +172,6 @@ public class AutoCompleteDocumentEvent {
 	 * Définit l'objet source de l'evenement
 	 * 
 	 * @param source l'objet à l'origine de l'evenement
-	 * @uml.property  name="source"
 	 */
 	public void setSource(Object source) {
 		this.source = source;

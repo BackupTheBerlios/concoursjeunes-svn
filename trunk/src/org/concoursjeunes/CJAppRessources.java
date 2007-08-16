@@ -118,8 +118,8 @@ public class CJAppRessources extends AppRessources {
 	/**
 	 * Retourne le chemin absolu du profile
 	 * 
-	 * @param profile
-	 * @return String - le chemin absolu du profile
+	 * @param profile le nom du profil pour lequelle récuperer le chemin
+	 * @return le chemin absolu du profile
 	 */
 	private String getProfilePath(String profile) {
 		String profilePath = getUserPath() + File.separator + "Profile" + //$NON-NLS-1$
@@ -155,7 +155,8 @@ public class CJAppRessources extends AppRessources {
 	}
 
 	/**
-	 * 
+	 * Copie les fichiers de mise à jour fournit à l'installation dans
+	 * le répertoire de mise à jour de l'appli 
 	 */
 	public void copyDefaultUpdateFile() {
 		File[] fileForCopy = new File(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
@@ -181,7 +182,7 @@ public class CJAppRessources extends AppRessources {
 	/**
 	 * Donne le chemin des fichiers de configuration
 	 * 
-	 * @return String - le chemin des fichiers de configuration
+	 * @return le chemin des fichiers de configuration
 	 */
 	public String getConfigPathForUser() {
 		copyDefaultConfigForUser();

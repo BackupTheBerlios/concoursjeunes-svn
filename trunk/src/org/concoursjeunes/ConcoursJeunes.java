@@ -178,6 +178,9 @@ public class ConcoursJeunes {
 	 * ressources utilisateurs
 	 */
 	public static CJAppRessources userRessources = new CJAppRessources(NOM);
+	/**
+	 * version de la base de donnée
+	 */
 	public static int dbVersion = 0;
 
 	/**
@@ -414,8 +417,10 @@ public class ConcoursJeunes {
 	}
 
 	/**
+	 * Supprime une fiche concours du système
 	 * 
-	 * @param ficheConcours
+	 * @param metaDataFicheConcours le fichier de metadonné contenant les
+	 * informations sur le concours à supprimer
 	 * 
 	 * @throws ConfigurationException
 	 */
@@ -435,7 +440,7 @@ public class ConcoursJeunes {
 	/**
 	 * Referme une fiche de concours
 	 * 
-	 * @param ficheConcours
+	 * @param ficheConcours la fiche concours à décharger de la méméoire
 	 * 
 	 * @throws ConfigurationException
 	 */
@@ -451,6 +456,7 @@ public class ConcoursJeunes {
 	}
 
 	/**
+	 * Décharge de la mémoire l'ensemble des fiches ouvertes
 	 * 
 	 * @throws ConfigurationException
 	 */
@@ -552,25 +558,25 @@ public class ConcoursJeunes {
 
 	private void fireFicheConcoursCreated(FicheConcours ficheConcours) {
 		for (ConcoursJeunesListener concoursJeunesListener : listeners.getListeners(ConcoursJeunesListener.class)) {
-			concoursJeunesListener.ficheConcoursCreated(new ConcoursJeunesEvent(ficheConcours, ConcoursJeunesEvent.CREATE_CONCOURS));
+			concoursJeunesListener.ficheConcoursCreated(new ConcoursJeunesEvent(ficheConcours, ConcoursJeunesEvent.Type.CREATE_CONCOURS));
 		}
 	}
 
 	private void fireFicheConcoursDeleted(FicheConcours ficheConcours) {
 		for (ConcoursJeunesListener concoursJeunesListener : listeners.getListeners(ConcoursJeunesListener.class)) {
-			concoursJeunesListener.ficheConcoursDeleted(new ConcoursJeunesEvent(ficheConcours, ConcoursJeunesEvent.DELETE_CONCOURS));
+			concoursJeunesListener.ficheConcoursDeleted(new ConcoursJeunesEvent(ficheConcours, ConcoursJeunesEvent.Type.DELETE_CONCOURS));
 		}
 	}
 
 	private void fireFicheConcoursClosed(FicheConcours ficheConcours) {
 		for (ConcoursJeunesListener concoursJeunesListener : listeners.getListeners(ConcoursJeunesListener.class)) {
-			concoursJeunesListener.ficheConcoursClosed(new ConcoursJeunesEvent(ficheConcours, ConcoursJeunesEvent.CLOSE_CONCOURS));
+			concoursJeunesListener.ficheConcoursClosed(new ConcoursJeunesEvent(ficheConcours, ConcoursJeunesEvent.Type.CLOSE_CONCOURS));
 		}
 	}
 
 	private void fireFicheConcoursRestored(FicheConcours ficheConcours) {
 		for (ConcoursJeunesListener concoursJeunesListener : listeners.getListeners(ConcoursJeunesListener.class)) {
-			concoursJeunesListener.ficheConcoursRestored(new ConcoursJeunesEvent(ficheConcours, ConcoursJeunesEvent.OPEN_CONCOURS));
+			concoursJeunesListener.ficheConcoursRestored(new ConcoursJeunesEvent(ficheConcours, ConcoursJeunesEvent.Type.OPEN_CONCOURS));
 		}
 	}
 }

@@ -61,7 +61,7 @@ public class TargetTreeModel implements TreeModel, CibleListener {
 	}
 
 	/**
-	 * @param targetChild
+	 * @param targetChilds
 	 *            targetChild à définir
 	 */
 	public void setTargetChilds(ArrayList<Cible> targetChilds) {

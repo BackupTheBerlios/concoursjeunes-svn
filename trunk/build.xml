@@ -14,7 +14,7 @@
 		<echo message="Construction de la documentation developpeur..."/>
 		<!--création du répertoire de documentation-->
 		<mkdir dir="docs" />
-		<javadoc sourcepath="src" destdir="docs" >
+		<javadoc sourcepath="src" destdir="docs" classpath="${classpath}" >
 			<fileset dir="src" defaultexcludes="yes">
 				<include name="**/*.java" />
 			</fileset>

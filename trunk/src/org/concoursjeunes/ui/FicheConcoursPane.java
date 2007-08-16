@@ -304,7 +304,6 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 
 	/**
 	 * @return  parentframe
-	 * @uml.property  name="parentframe"
 	 */
 	public ConcoursJeunesFrame getParentframe() {
 		return parentframe;
@@ -312,7 +311,6 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 
 	/**
 	 * @param parentframe  parentframe à définir
-	 * @uml.property  name="parentframe"
 	 */
 	public void setParentframe(ConcoursJeunesFrame parentframe) {
 		this.parentframe = parentframe;
