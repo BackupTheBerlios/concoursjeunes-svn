@@ -135,7 +135,7 @@ import org.concoursjeunes.Equipe;
 import org.concoursjeunes.EquipeList;
 import org.concoursjeunes.FicheConcours;
 
-import ajinteractive.standard.java2.GhostGlassPane;
+import ajinteractive.standard.ui.GhostGlassPane;
 
 /**
  * Boite de dialogue de gestion des équipes
@@ -179,7 +179,8 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 	public EquipeDialog(JFrame parentFrame, FicheConcours ficheConcours) {
 		super(parentFrame, true);
 		this.ficheConcours = ficheConcours;
-		tempEquipes = ficheConcours.getEquipes();
+		tempEquipes = ficheConcours.getEquipes().clone();
+
 
 		// initialisation de l'interface
 		init();

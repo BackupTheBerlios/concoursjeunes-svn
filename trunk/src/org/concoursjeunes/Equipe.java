@@ -15,7 +15,7 @@
  */
 package org.concoursjeunes;
 
-import java.util.*;
+import java.util.ArrayList;
 
 /**
  * Class represantant une membresEquipe d'archer pour le concours
@@ -23,7 +23,7 @@ import java.util.*;
  * @version  2.0
  */
 
-public class Equipe {
+public class Equipe implements Cloneable {
 
 	private ArrayList<Concurrent> membresEquipe = new ArrayList<Concurrent>();
 	private String nomEquipe = ""; //$NON-NLS-1$
@@ -214,5 +214,18 @@ public class Equipe {
     @Override
     public String toString() {
     	return nomEquipe;
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Override
+	public Equipe clone() {
+    	Equipe clone = new Equipe();
+    	
+    	clone.setMembresEquipe((ArrayList<Concurrent>)membresEquipe.clone());
+    	clone.setNomEquipe(new String(nomEquipe));
+    	clone.setNbRetenu(nbRetenu);
+    	clone.setDifferentiationCriteria(differentiationCriteria);
+    	
+    	return clone;
     }
 }

@@ -93,6 +93,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
@@ -199,7 +200,7 @@ public class ConcoursJeunes {
 	 */
 	private ConcoursJeunes() {
 		// tente de recuperer la configuration générale du programme
-		configuration = ConfigurationBuilder.getCurrentConfiguration();
+		configuration = ConfigurationManager.loadCurrentConfiguration();
 
 		reloadLibelle(new Locale(configuration.getLangue()));
 		try {
@@ -479,7 +480,8 @@ public class ConcoursJeunes {
 	 *            le chemin du concours à restaurer
 	 * @throws ConfigurationException
 	 */
-	public void restoreFicheConcours(MetaDataFicheConcours metaDataFicheConcours) throws ConfigurationException {
+	public void restoreFicheConcours(MetaDataFicheConcours metaDataFicheConcours)
+			throws ConfigurationException, IOException {
 		if (configuration == null)
 			throw new ConfigurationException("la configuration est null"); //$NON-NLS-1$
 

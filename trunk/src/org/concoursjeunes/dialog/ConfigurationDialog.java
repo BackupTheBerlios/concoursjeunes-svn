@@ -123,13 +123,13 @@ import org.concoursjeunes.AutoCompleteDocumentEvent;
 import org.concoursjeunes.AutoCompleteDocumentListener;
 import org.concoursjeunes.ConcoursJeunes;
 import org.concoursjeunes.Configuration;
-import org.concoursjeunes.ConfigurationBuilder;
+import org.concoursjeunes.ConfigurationManager;
 import org.concoursjeunes.Entite;
 import org.concoursjeunes.Marges;
 import org.concoursjeunes.Reglement;
 
-import ajinteractive.standard.java2.AJFileFilter;
 import ajinteractive.standard.common.AJToolKit;
+import ajinteractive.standard.java2.AJFileFilter;
 import ajinteractive.standard.java2.GridbagComposer;
 import ajinteractive.standard.java2.NumberDocument;
 import ajinteractive.standard.utilities.net.Proxy;
@@ -899,7 +899,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 
 	private void loadProfile() {
 		workConfiguration.save();
-		workConfiguration = ConfigurationBuilder.getConfiguration((String) jcbProfil.getSelectedItem());
+		workConfiguration = ConfigurationManager.loadConfiguration((String) jcbProfil.getSelectedItem());
 		completePanel(workConfiguration);
 
 		workConfiguration.setCurProfil((String) jcbProfil.getSelectedItem());

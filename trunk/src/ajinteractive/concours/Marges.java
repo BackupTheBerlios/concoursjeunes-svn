@@ -4,82 +4,64 @@
 package ajinteractive.concours;
 
 /**
- * @author xp
+ * @author Aurélien JEOFFRAY
  *
  */
-public class Marges {
+public class Marges extends org.concoursjeunes.Marges {
 
-    private double haut = 0;
-    private double bas = 0;
-    private double gauche = 0;
-    private double droite = 0;
     /**
      * 
      */
     public Marges() {
-        
+        super();
     }
-    
-    /**
-     * Cré un objet Marges en définissant ses marges
-     * 
-     * @param haut
-     * @param bas
-     * @param gauche
-     * @param droite
-     */
-    public Marges(double haut, double bas, double gauche, double droite) {
-        this.haut = haut;
-        this.bas = bas;
-        this.gauche = gauche;
-        this.droite = droite;
-    }
+
     /**
      * @return Renvoie bas.
      */
     public double getBas() {
-        return bas;
+        return getBottom();
     }
     /**
      * @param bas bas à définir.
      */
     public void setBas(double bas) {
-        this.bas = bas;
+        setBottom(bas);
     }
     /**
      * @return Renvoie droite.
      */
     public double getDroite() {
-        return droite;
+        return getRight();
     }
     /**
      * @param droite droite à définir.
      */
     public void setDroite(double droite) {
-        this.droite = droite;
+        setRight(droite);
     }
     /**
      * @return Renvoie gauche.
      */
     public double getGauche() {
-        return gauche;
+        return getLeft();
     }
     /**
      * @param gauche gauche à définir.
      */
     public void setGauche(double gauche) {
-        this.gauche = gauche;
+        setLeft(gauche);
     }
     /**
      * @return Renvoie haut.
      */
     public double getHaut() {
-        return haut;
+        return getTop();
     }
     /**
      * @param haut haut à définir.
      */
     public void setHaut(double haut) {
-        this.haut = haut;
+        setTop(haut);
     }
 }

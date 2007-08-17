@@ -1,8 +1,13 @@
 package org.concoursjeunes.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.naming.ConfigurationException;
@@ -197,6 +202,9 @@ public class ConcoursJeunesTest {
 					concoursJeunes.deleteFicheConcours(
 							e.getFicheConcours().getMetaDataFicheConcours());
 				} catch (ConfigurationException e1) {
+					fail(e1.getLocalizedMessage());
+					e1.printStackTrace();
+				} catch (IOException e1) {
 					fail(e1.getLocalizedMessage());
 					e1.printStackTrace();
 				}

@@ -53,7 +53,7 @@ import org.jdesktop.swingx.JXErrorDialog;
 
 import ajinteractive.standard.common.AJTemplate;
 import ajinteractive.standard.common.PluginClassLoader;
-import ajinteractive.standard.java2.GhostGlassPane;
+import ajinteractive.standard.ui.GhostGlassPane;
 import ajinteractive.standard.ui.AJTabbedPane;
 import ajinteractive.standard.ui.AJTabbedPaneListener;
 import ajinteractive.standard.ui.FrameCreator;
@@ -615,6 +615,10 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 								e1.fillInStackTrace());
 						e1.printStackTrace();
 					} catch (ConfigurationException e1) {
+						JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
+								e1.fillInStackTrace());
+						e1.printStackTrace();
+					} catch (IOException e1) {
 						JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
 								e1.fillInStackTrace());
 						e1.printStackTrace();

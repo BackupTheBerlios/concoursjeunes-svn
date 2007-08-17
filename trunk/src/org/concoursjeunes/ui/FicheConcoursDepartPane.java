@@ -56,7 +56,7 @@ import org.concoursjeunes.dialog.EquipeDialog;
 import org.concoursjeunes.dialog.TypeListingDialog;
 
 import ajinteractive.standard.java2.AJList;
-import ajinteractive.standard.java2.GhostGlassPane;
+import ajinteractive.standard.ui.GhostGlassPane;
 
 /**
  * Panneau de la fiche concours contenant l'ensemble des éléments spécifique à un départ donné

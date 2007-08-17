@@ -16,10 +16,7 @@ public class Configuration extends DefaultParameters {
     private String langue           = "";               //reboot
     private String logoPath         = "ressources/logo_ffta.gif";   //noreboot
     
-    private String ressourcesPath   = "./ressources";   //reboot
     private String pdfReaderPath    = "";               //noreboot
-    private String importURL        = "http://";        //noreboot
-    private String exportURL        = "http://";        //noreboot
     
     private String formatPapier     = "A4";             //noreboot
     private String orientation      = "portrait";       //noreboot
@@ -95,15 +92,6 @@ public class Configuration extends DefaultParameters {
     }
 
     /**
-     * URL pour l'exportation des données
-     * 
-     * @return Returns the exportURL.
-     */
-    public String getExportURL() {
-        return this.exportURL;
-    }
-
-    /**
      * Format du papier étiquettes
      * 
      * @return Returns the formatPapier.
@@ -122,30 +110,12 @@ public class Configuration extends DefaultParameters {
     }
 
     /**
-     * URL d'importation des données
-     * 
-     * @return Returns the importURL.
-     */
-    public String getImportURL() {
-        return this.importURL;
-    }
-
-    /**
      * Marge d'impression des étiquettes
      * 
      * @return Returns the marges.
      */
     public Marges getMarges() {
         return this.marges;
-    }
-    
-    /**
-     * Retourne le chemin du répertoire des ressources
-     * 
-     * @return Returns the ressourcesPath.
-     */
-    public String getRessourcesPath() {
-        return this.ressourcesPath;
     }
 
     /**
@@ -167,15 +137,6 @@ public class Configuration extends DefaultParameters {
     }
 
     /**
-     * Définit l'URL d'export de donnée
-     * 
-     * @param exportURL The exportURL to set.
-     */
-    public void setExportURL(String exportURL) {
-        this.exportURL = exportURL;
-    }
-
-    /**
      * Définit le format du papier étiquettes utilisé
      * 
      * @param formatPapier The formatPapier to set.
@@ -192,15 +153,6 @@ public class Configuration extends DefaultParameters {
     public void setOrientation(String orientation) {
         this.orientation = orientation;
     }
-
-    /**
-     * Définit l'URL d'import des données de concours
-     * 
-     * @param importURL The importURL to set.
-     */
-    public void setImportURL(String importURL) {
-        this.importURL = importURL;
-    }
  
     /**
      * Définit les marges d'impression du papier étiquettes
@@ -209,15 +161,6 @@ public class Configuration extends DefaultParameters {
      */
     public void setMarges(Marges marges) {
         this.marges = marges;
-    }
-
-    /**
-     * Définit le chemin du répertoire de ressources du programme
-     * 
-     * @param ressourcesPath The ressourcesPath to set.
-     */
-    public void setRessourcesPath(String ressourcesPath) {
-        this.ressourcesPath = ressourcesPath;
     }
 
     /**
@@ -345,23 +288,5 @@ public class Configuration extends DefaultParameters {
      */
     public void setOfficialProfile(boolean officialProfile) {
         this.officialProfile = officialProfile;
-    }
-    
-    /**
-     * Remplace les valeurs des champs officiel par celle du  profile officiel passé en parametre
-     * 
-     * @param config
-     */
-    public void resetOfficialInfo(Configuration config) {
-    	setCorrespondanceDifferentiationCriteria_DB(
-    			config.getCorrespondanceDifferentiationCriteria_DB());
-		setNbSerie(config.getNbSerie());
-		setNbVoleeParSerie(config.getNbVoleeParSerie());
-		setNbFlecheParVolee(config.getNbFlecheParVolee());
-		setNbDepart(config.getNbDepart());
-		setNbMembresEquipe(config.getNbMembresEquipe());
-		setNbMembresRetenu(config.getNbMembresRetenu());
-		setCriteriaPopulation(config.getCriteriaPopulation());
-		setListCriteria(config.getListCriteria());
     }
 }

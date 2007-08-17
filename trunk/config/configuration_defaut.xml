@@ -18,7 +18,7 @@
     <curProfil>defaut</curProfil>
     <espacements>0.0</espacements>
     <espacements>0.0</espacements>
-    <firstboot>false</firstboot>
+    <firstboot>true</firstboot>
     <formatPapier>A4</formatPapier>
     <interfaceAffResultatExEquo>true</interfaceAffResultatExEquo>
     <interfaceResultatCumul>false</interfaceResultatCumul>

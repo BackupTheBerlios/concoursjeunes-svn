@@ -89,6 +89,9 @@
 package org.concoursjeunes;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import ajinteractive.standard.common.AJToolKit;
@@ -437,7 +440,13 @@ public class Configuration extends DefaultParameters implements Cloneable {
 		File f = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + 
 				File.separator + 
 				CONFIG_PROFILE + curProfil + EXT_XML);
-		AJToolKit.saveMarshallStructure(f, this, false);
+		try {
+			AJToolKit.saveMarshallStructure(f, this);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void saveAsDefault() {
@@ -445,7 +454,13 @@ public class Configuration extends DefaultParameters implements Cloneable {
 			File f = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + 
 					File.separator + 
 					ConcoursJeunes.ajrParametreAppli.getResourceString("file.configuration")); //$NON-NLS-1$
-			AJToolKit.saveMarshallStructure(f, this, false);
+			try {
+				AJToolKit.saveMarshallStructure(f, this);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (JAXBException e) {
+				e.printStackTrace();
+			}
 		} catch(NullPointerException npe) {
 			npe.printStackTrace();
 		}

@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlTransient;
 /**
  * @author  Aurelien Jeoffray
  */
-public class EquipeList {
+public class EquipeList implements Cloneable {
    
     private ArrayList<Equipe> equipeList  = new ArrayList<Equipe>();
     @XmlTransient
@@ -200,5 +200,19 @@ public class EquipeList {
 	 */
     public void setEquipeList(ArrayList<Equipe> equipeList) {
         this.equipeList = equipeList;
+    }
+    
+    @Override
+    @SuppressWarnings("unchecked")
+    public EquipeList clone() {
+    	EquipeList clone = new EquipeList();
+    	ArrayList<Equipe> equipeListClone = new ArrayList<Equipe>();
+    	for(Equipe equipe : equipeList) {
+    		equipeListClone.add(equipe.clone());
+    	}
+    	clone.setEquipeList(equipeListClone);
+    	clone.setFicheConcours(ficheConcours);
+    	
+    	return clone;
     }
 }

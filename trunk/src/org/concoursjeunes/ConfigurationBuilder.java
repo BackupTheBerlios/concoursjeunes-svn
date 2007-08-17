@@ -15,11 +15,6 @@
  */
 package org.concoursjeunes;
 
-import java.io.File;
-
-import ajinteractive.standard.common.AJToolKit;
-import static org.concoursjeunes.ConcoursJeunes.ajrParametreAppli;
-import static org.concoursjeunes.ConcoursJeunes.userRessources;
 
 /**
  * Fabrique de configuration programme de l'API ConcoursJeunes
@@ -29,44 +24,11 @@ import static org.concoursjeunes.ConcoursJeunes.userRessources;
 public class ConfigurationBuilder {
 	
 	/**
-	 * Retourne la configuration courrante
-	 * 
-	 * @return l'objet de configuration courant
-	 */
-	public static Configuration getCurrentConfiguration() {
-		Configuration configuration = (Configuration)AJToolKit.loadMarshallStructure(new File(userRessources.getConfigPathForUser() + File.separator + 
-				ajrParametreAppli.getResourceString("file.configuration")), Configuration.class, false); //$NON-NLS-1$
-		if(configuration == null) {
-			configuration = new Configuration();
-		}
-		
-		return configuration;
-	}
-	
-	/**
 	 * Retourne la configuration par défaut
 	 * 
 	 * @return l'objet de configuration par défaut
 	 */
 	public static Configuration getDefaultConfiguration() {
 		return new Configuration();
-	}
-	
-	/**
-	 * Retourne la configuration nommé en parametre
-	 * 
-	 * @param profilename
-	 * @return la configuration nommé
-	 */
-	public static Configuration getConfiguration(String profilename) {
-		Configuration configuration = (Configuration)AJToolKit.loadMarshallStructure(
-				new File(ConcoursJeunes.userRessources.getConfigPathForUser() 
-						+ File.separator + "configuration_" + profilename + ".xml"), Configuration.class, false); //$NON-NLS-1$ //$NON-NLS-2$
-		
-		if(configuration == null) {
-			configuration = new Configuration();
-		}
-		
-		return configuration;
 	}
 }

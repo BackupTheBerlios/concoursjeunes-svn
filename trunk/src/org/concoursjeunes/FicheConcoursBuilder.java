@@ -89,6 +89,7 @@
 package org.concoursjeunes;
 
 import java.io.File;
+import java.io.IOException;
 
 import ajinteractive.standard.common.AJToolKit;
 
@@ -97,7 +98,8 @@ import ajinteractive.standard.common.AJToolKit;
  * 
  */
 public class FicheConcoursBuilder {
-	public static FicheConcours getFicheConcours(MetaDataFicheConcours metaDataFicheConcours) {
+	public static FicheConcours getFicheConcours(MetaDataFicheConcours metaDataFicheConcours) 
+			throws IOException {
 		File fFiche = new File(ConcoursJeunes.userRessources.getConcoursPathForProfile(ConcoursJeunes.configuration.getCurProfil()) + File.separator
 				+ metaDataFicheConcours.getFilenameConcours());
 		Object[] savedStructure = (Object[]) AJToolKit.loadXMLStructure(fFiche, true);
@@ -111,7 +113,6 @@ public class FicheConcoursBuilder {
 			return ficheConcours;
 		}
 
-		System.err.println("Echec de chargement du concours " + metaDataFicheConcours.getIntituleConcours()); //$NON-NLS-1$
-		return null;
+		throw new IOException("Echec de chargement du concours " + metaDataFicheConcours.getIntituleConcours() + "(" + metaDataFicheConcours.getFilenameConcours() + ")");
 	}
 }
