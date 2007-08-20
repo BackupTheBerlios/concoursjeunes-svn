@@ -203,7 +203,6 @@ public class EquipeList implements Cloneable {
     }
     
     @Override
-    @SuppressWarnings("unchecked")
     public EquipeList clone() {
     	EquipeList clone = new EquipeList();
     	ArrayList<Equipe> equipeListClone = new ArrayList<Equipe>();

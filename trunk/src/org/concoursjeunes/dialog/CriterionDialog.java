@@ -129,6 +129,7 @@ public class CriterionDialog extends JDialog implements ActionListener {
     private JComboBox jcbSortOrder = new JComboBox();
     private JCheckBox jcbPlacementCriterion = new JCheckBox();
     private JCheckBox jcbClassementCriterion = new JCheckBox();
+    private JCheckBox jcbClassementEquipeCriterion = new JCheckBox();
     private JComboBox jcbWinFFTACode = new JComboBox();
     
     private JButton jbValider = new JButton();
@@ -195,6 +196,8 @@ public class CriterionDialog extends JDialog implements ActionListener {
         c.gridy++;
         gridbagComposer.addComponentIntoGrid(jcbClassementCriterion, c);
         c.gridy++;
+        gridbagComposer.addComponentIntoGrid(jcbClassementEquipeCriterion, c);
+        c.gridy++;
         gridbagComposer.addComponentIntoGrid(jlWinFFTACode, c);
         gridbagComposer.addComponentIntoGrid(jcbWinFFTACode, c);
         
@@ -221,6 +224,7 @@ public class CriterionDialog extends JDialog implements ActionListener {
         jcbSortOrder.addItem(ConcoursJeunes.ajrLibelle.getResourceString("criterion.ordretri.desc")); //$NON-NLS-1$
         jcbPlacementCriterion.setText(ConcoursJeunes.ajrLibelle.getResourceString("criterion.placement")); //$NON-NLS-1$
         jcbClassementCriterion.setText(ConcoursJeunes.ajrLibelle.getResourceString("criterion.classement")); //$NON-NLS-1$
+        jcbClassementEquipeCriterion.setText(ConcoursJeunes.ajrLibelle.getResourceString("criterion.classementequipe")); //$NON-NLS-1$
         jlWinFFTACode.setText(ConcoursJeunes.ajrLibelle.getResourceString("criterion.winfftacode.libelle")); //$NON-NLS-1$
         jcbWinFFTACode.removeAllItems();
         jcbWinFFTACode.addItem(""); //$NON-NLS-1$
@@ -246,6 +250,7 @@ public class CriterionDialog extends JDialog implements ActionListener {
             
             jcbPlacementCriterion.setSelected(criterion.isPlacement());
             jcbClassementCriterion.setSelected(criterion.isClassement());
+            jcbClassementEquipeCriterion.setSelected(criterion.isClassementEquipe());
             jcbWinFFTACode.setSelectedItem(criterion.getCodeffta());
             
             //jcbSortOrder.setEnabled(!parent.getWorkConfiguration().isOfficialProfile());
@@ -317,6 +322,7 @@ public class CriterionDialog extends JDialog implements ActionListener {
             criterion.setLibelle(jtfLibelle.getText());
             criterion.setPlacement(jcbPlacementCriterion.isSelected());
             criterion.setClassement(jcbClassementCriterion.isSelected());
+            criterion.setClassementEquipe(jcbClassementEquipeCriterion.isSelected());
             criterion.setCodeffta((String)jcbWinFFTACode.getSelectedItem());
             
             setVisible(false);

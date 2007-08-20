@@ -17,7 +17,8 @@ package org.concoursjeunes;
 
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Map.Entry;
 
 /**
@@ -266,8 +267,6 @@ public class CriteriaSet {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (!super.equals(obj))
-			return false;
 		if (getClass() != obj.getClass())
 			return false;
 

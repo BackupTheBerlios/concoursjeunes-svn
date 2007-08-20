@@ -154,7 +154,7 @@ public class ConcoursJeunes {
 	public static final String CODENAME = "@version.codename@"; //$NON-NLS-1$
 	public static final String AUTEURS = "@version.author@"; //$NON-NLS-1$
 	public static final String COPYR = "@version.copyr@"; //$NON-NLS-1$
-	public static final int DB_RELEASE_REQUIRED = 1;
+	public static final int DB_RELEASE_REQUIRED = 2;
 
 	// Chaine de ressources
 	public static final String RES_LIBELLE = "libelle"; //$NON-NLS-1$

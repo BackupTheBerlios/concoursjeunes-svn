@@ -1,4 +1,4 @@
 -- Incrémente la version de la base une fois l'ensemble des scripts executé
--- @release 1
+-- @release 2
 
-INSERT INTO PARAM (DBVERSION, APPREVISION) VALUES (1, 1);
+UPDATE PARAM SET DBVERSION=2;

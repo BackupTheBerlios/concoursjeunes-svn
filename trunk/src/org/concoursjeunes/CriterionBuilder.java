@@ -114,6 +114,7 @@ public class CriterionBuilder {
 				criterion.setCodeffta(rs.getString("CODEFFTA")); //$NON-NLS-1$
 				criterion.setSortOrder(rs.getInt("SORTORDERCRITERE")); //$NON-NLS-1$
 				criterion.setClassement(rs.getBoolean("CLASSEMENT")); //$NON-NLS-1$
+				criterion.setClassementEquipe(rs.getBoolean("CLASSEMENTEQUIPE")); //$NON-NLS-1$
 				criterion.setPlacement(rs.getBoolean("PLACEMENT")); //$NON-NLS-1$
 				criterion.setReglementParent(reglement);
 

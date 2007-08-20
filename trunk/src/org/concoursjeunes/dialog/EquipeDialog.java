@@ -186,6 +186,7 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 		init();
 		affectLibelle();
 		completePanel();
+		completePanelEquipes();
 
 		// affichage de la boite de dialogue
 		getRootPane().setDefaultButton(jbValider);
@@ -278,7 +279,8 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 
 		Hashtable<Criterion, Boolean> criteriaFilter = new Hashtable<Criterion, Boolean>();
 		for (Map.Entry<Criterion, JCheckBox> cb : classmentCriteriaCB.entrySet()) {
-			criteriaFilter.put(cb.getKey(), cb.getValue().isSelected());
+			cb.getValue().setSelected(cb.getKey().isClassementEquipe());
+			criteriaFilter.put(cb.getKey(), cb.getKey().isClassementEquipe());
 		}
 		// Donne la liste des codes SCNA filtré
 		CriteriaSet[] catList = CriteriaSet.listCriteriaSet(ficheConcours.getParametre().getReglement(), criteriaFilter);
@@ -324,6 +326,55 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 				}
 			}
 		}
+	}
+	
+	private void completePanelEquipes() {
+		DefaultMutableTreeNode dmtnCategorie = null;
+
+		// supprimer tous le noeud de l'arbre
+		treeRoot.removeAllChildren();
+
+		Hashtable<CriteriaSet, ArrayList<Equipe>> equipes = new Hashtable<CriteriaSet, ArrayList<Equipe>>();
+
+		for (Equipe equipe : tempEquipes.list()) {
+			if(equipes.get(equipe.getDifferentiationCriteria()) == null) {
+				equipes.put(equipe.getDifferentiationCriteria(), new ArrayList<Equipe>());
+			}
+			
+			equipes.get(equipe.getDifferentiationCriteria()).add(equipe);
+		}
+
+		ArrayList<CriteriaSet> activeCriteriaSet = new ArrayList<CriteriaSet>();
+		for(CriteriaSet criteriaSet : equipes.keySet()) {
+			activeCriteriaSet.add(criteriaSet);
+		}
+		CriteriaSet[] sortedCriteriaSets = new CriteriaSet[activeCriteriaSet.size()];
+		sortedCriteriaSets = activeCriteriaSet.toArray(sortedCriteriaSets); 
+		CriteriaSet.sortCriteriaSet(sortedCriteriaSets, ficheConcours.getParametre().getReglement().getListCriteria());
+		
+		for(CriteriaSet criteriaSet : sortedCriteriaSets) {
+			// generer le noeud correspondant
+			dmtnCategorie = new DefaultMutableTreeNode(new CriteriaSetLibelle(criteriaSet));
+	
+			// liste les équipes pour la catégorie
+			for (Equipe equipe : equipes.get(criteriaSet)) {
+				DefaultMutableTreeNode dmtnEquipe = new DefaultMutableTreeNode(equipe);
+				for (Concurrent concurrent : equipe.getMembresEquipe())
+					dmtnEquipe.add(new DefaultMutableTreeNode(concurrent));
+
+				dmtnCategorie.add(dmtnEquipe);
+			}
+	
+			// integrer le noeud à l'arbre
+			treeRoot.add(dmtnCategorie);
+		}
+
+		// recharger l'arbre
+		treeModel.reload(treeRoot);
+
+		// selectionner le 1er élément
+		// treeEquipes.setSelectionRow(0);
+		expandPath(treeEquipes, new TreePath(treeRoot.getPath()));
 	}
 
 	/**
@@ -496,20 +547,18 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private void removeMembreForEquipe(Equipe equipe, Concurrent concurrent) {
-
-	}
-
 	/**
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() instanceof JCheckBox) {
-			if (e.getActionCommand().equals("filter")) //$NON-NLS-1$
+			if (e.getActionCommand().equals("filter")) { //$NON-NLS-1$
+				for (Map.Entry<Criterion, JCheckBox> cb : classmentCriteriaCB.entrySet()) {
+					cb.getKey().setClassementEquipe(cb.getValue().isSelected());
+				}
 				completePanel(); // categoriesEquipes();
 
-			else if (e.getSource() == cbEquipeClub) {
+			} else if (e.getSource() == cbEquipeClub) {
 				completePanel();
 				/*
 				 * DefaultMutableTreeNode dmtn = (DefaultMutableTreeNode)treeEquipes.getLastSelectedPathComponent(); if(dmtn != null) { Object dmtnObj = dmtn.getUserObject(); if(dmtnObj instanceof
@@ -523,11 +572,11 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 				if (dmtnObj instanceof CriteriaSetLibelle) {
 
 				} else if (dmtnObj instanceof Concurrent) {
-					DefaultMutableTreeNode tnEquipe = (DefaultMutableTreeNode) dmtn.getParent();
+					//DefaultMutableTreeNode tnEquipe = (DefaultMutableTreeNode) dmtn.getParent();
 
-					Equipe equipe = (Equipe) tnEquipe.getUserObject();
+					//Equipe equipe = (Equipe) tnEquipe.getUserObject();
 
-					removeMembreForEquipe(equipe, (Concurrent) dmtnObj);
+					//removeMembreForEquipe(equipe, (Concurrent) dmtnObj);
 				}
 			}
 
@@ -660,6 +709,7 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 				}
 
 				completePanel();
+				completePanelEquipes();
 			}
 		}
 		this.getGlassPane().setVisible(false);
@@ -766,6 +816,10 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 							CriteriaSetLibelle critere = (CriteriaSetLibelle) dmtnGrandParent.getUserObject();
 
 							categoriesEquipes(critere.getCriteriaSet(), club);
+						} else if (dmtnParent.getUserObject() instanceof CriteriaSetLibelle) {
+							CriteriaSetLibelle critere = (CriteriaSetLibelle) dmtnParent.getUserObject();
+							
+							categoriesEquipes(critere.getCriteriaSet(), null);
 						}
 					} else if (dmtnObj instanceof Entite) {
 						Entite club = (Entite) dmtnObj;
@@ -774,6 +828,8 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 						CriteriaSetLibelle critere = (CriteriaSetLibelle) dmtnParent.getUserObject();
 
 						categoriesEquipes(critere.getCriteriaSet(), club);
+					} else {
+						completePanelEquipes();
 					}
 				}
 

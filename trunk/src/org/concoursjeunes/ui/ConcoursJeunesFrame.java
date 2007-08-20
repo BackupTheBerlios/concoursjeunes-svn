@@ -95,7 +95,6 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			if (ConcoursJeunes.configuration.isFirstboot()) {
 				showConfigurationDialog();
 			}
-
 			init();
 			setMinimumSize(new Dimension(750, 580));
 

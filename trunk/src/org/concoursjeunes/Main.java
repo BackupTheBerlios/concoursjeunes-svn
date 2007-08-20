@@ -30,37 +30,43 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		try {
-			ConcoursJeunes concoursJeunes = ConcoursJeunes.getInstance();
+		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
 
-			Runtime.getRuntime().addShutdownHook(new Thread() {
-				@Override
-				public void run() {
-					try {
-						// permet de s'assurer que la base de données est
-						// correctement fermé
-						ConcoursJeunes.dbConnection.close();
-						// rend l'ensemble des fichier de la base accessible en lecture/ecriture pour permettre
-						// le multiutilisateur
-						File[] dbfiles = new File(ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "base").listFiles(); //$NON-NLS-1$
-						for (File dbfile : dbfiles) {
-							if (dbfile.isFile()) {
-								dbfile.setWritable(true, false);
-							}
+			@Override
+			public void uncaughtException(Thread t, Throwable e) {
+				JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+						"Une erreur es survenue durand l'execution", //$NON-NLS-1$
+						e.fillInStackTrace());
+				e.printStackTrace();
+			}
+		});
+		
+		
+		ConcoursJeunes concoursJeunes = ConcoursJeunes.getInstance();
+
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				try {
+					// permet de s'assurer que la base de données est
+					// correctement fermé
+					ConcoursJeunes.dbConnection.close();
+					// rend l'ensemble des fichier de la base accessible en lecture/ecriture pour permettre
+					// le multiutilisateur
+					File[] dbfiles = new File(ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "base").listFiles(); //$NON-NLS-1$
+					for (File dbfile : dbfiles) {
+						if (dbfile.isFile()) {
+							dbfile.setWritable(true, false);
 						}
-					} catch (SQLException e) {
-						e.printStackTrace();
 					}
+				} catch (SQLException e) {
+					e.printStackTrace();
 				}
-			});
-			System.out.println("core loaded"); //$NON-NLS-1$
+			}
+		});
+		System.out.println("core loaded"); //$NON-NLS-1$
 
-			new ConcoursJeunesFrame(concoursJeunes);
-		} catch (RuntimeException e) {
-			JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
-					e.fillInStackTrace());
-			e.printStackTrace();
-		}
+		new ConcoursJeunesFrame(concoursJeunes);
 	}
 
 }

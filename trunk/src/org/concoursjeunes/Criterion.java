@@ -34,6 +34,7 @@ public class Criterion {
     private String code = ""; //$NON-NLS-1$
     private String libelle = ""; //$NON-NLS-1$
     private boolean classement = false;
+    private boolean classementEquipe = false;
     private boolean placement = false;
     private String codeffta = ""; //$NON-NLS-1$
     
@@ -163,6 +164,25 @@ public class Criterion {
     }
 
     /**
+     * Donne si le critère est utilisé ou non à des fins de classement
+     * par équipe
+     * 
+     * @return <i>true</i> si utilisé pour le classement par equipe, <i>false</i> sinon
+     */
+    public boolean isClassementEquipe() {
+		return classementEquipe;
+	}
+
+    /**
+     * Définit si le critère est utilisé ou non à des fins de classement
+     * 
+     * @param classementEquipe
+     */
+	public void setClassementEquipe(boolean classementEquipe) {
+		this.classementEquipe = classementEquipe;
+	}
+
+	/**
 	 * Est ce que c'est un critère de placement?
 	 * @return  Renvoie placement.
 	 * @uml.property  name="placement"
@@ -227,10 +247,11 @@ public class Criterion {
 			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 			
 			stmt.executeUpdate("merge into CRITERE (CODECRITERE,NUMREGLEMENT,LIBELLECRITERE,SORTORDERCRITERE," + //$NON-NLS-1$
-					"CLASSEMENT,PLACEMENT,CODEFFTA) VALUES ('" + code + "'," +  //$NON-NLS-1$ //$NON-NLS-2$
+					"CLASSEMENT,CLASSEMENTEQUIPE,PLACEMENT,CODEFFTA) VALUES ('" + code + "'," +  //$NON-NLS-1$ //$NON-NLS-2$
 					reglementParent.hashCode() + ",'" + libelle + "'," +  //$NON-NLS-1$ //$NON-NLS-2$
 					sortOrder + "," + //$NON-NLS-1$
 					Boolean.toString(classement).toUpperCase() + "," + //$NON-NLS-1$
+					Boolean.toString(classementEquipe).toUpperCase() + "," + //$NON-NLS-1$
 					Boolean.toString(placement).toUpperCase() + ",'" + //$NON-NLS-1$
 					codeffta + "')"); //$NON-NLS-1$
 			for(CriterionElement criterionElement : criterionElements) {
