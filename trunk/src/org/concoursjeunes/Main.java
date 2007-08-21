@@ -15,6 +15,7 @@ package org.concoursjeunes;
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+import java.awt.Toolkit;
 import java.io.File;
 import java.sql.SQLException;
 
@@ -26,22 +27,26 @@ import org.jdesktop.swingx.JXErrorDialog;
  * 
  */
 public class Main {
+	
+	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+		Thread.UncaughtExceptionHandler handlerException = new Thread.UncaughtExceptionHandler() {
 
 			@Override
 			public void uncaughtException(Thread t, Throwable e) {
 				JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
-						"Une erreur es survenue durand l'execution", //$NON-NLS-1$
+						e.toString(), //$NON-NLS-1$
 						e.fillInStackTrace());
 				e.printStackTrace();
 			}
-		});
+		};
 		
-		
+		Thread.setDefaultUncaughtExceptionHandler(handlerException);
+		Toolkit.getDefaultToolkit().getSystemEventQueue().push(new ExceptionHandlingEventQueue());
+
 		ConcoursJeunes concoursJeunes = ConcoursJeunes.getInstance();
 
 		Runtime.getRuntime().addShutdownHook(new Thread() {

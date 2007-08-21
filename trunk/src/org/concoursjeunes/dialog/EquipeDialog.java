@@ -181,7 +181,6 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 		this.ficheConcours = ficheConcours;
 		tempEquipes = ficheConcours.getEquipes().clone();
 
-
 		// initialisation de l'interface
 		init();
 		affectLibelle();
@@ -219,8 +218,6 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 
 		treeModel = new DefaultTreeModel(treeRoot);
 		treeEquipes = new JTree(treeModel);
-
-		cbEquipeClub.setSelected(true);
 
 		cbEquipeClub.addActionListener(this);
 		jbValider.addActionListener(this);
@@ -276,10 +273,14 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 
 		treeModelConcurrents = new DefaultTreeModel(rootNode);
 		treeConcurrents.setModel(treeModelConcurrents);
+		
+		cbEquipeClub.setSelected(tempEquipes.isLimitedByClub());
+		cbEquipeClub.setEnabled(tempEquipes.countEquipes() == 0);
 
 		Hashtable<Criterion, Boolean> criteriaFilter = new Hashtable<Criterion, Boolean>();
 		for (Map.Entry<Criterion, JCheckBox> cb : classmentCriteriaCB.entrySet()) {
 			cb.getValue().setSelected(cb.getKey().isClassementEquipe());
+			cb.getValue().setEnabled(tempEquipes.countEquipes() == 0);
 			criteriaFilter.put(cb.getKey(), cb.getKey().isClassementEquipe());
 		}
 		// Donne la liste des codes SCNA filtré
@@ -470,7 +471,7 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 	private void createEquipe(TreePath destPath) {
 		if (destPath == null)
 			return;
-
+		
 		DefaultMutableTreeNode equipesTreeNode;
 		TreePath[] selectedPaths = treeConcurrents.getSelectionPaths();
 
@@ -520,6 +521,10 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 		treeModel.reload();
 		TreePath treePath = new TreePath(equipeTreeNode.getPath());
 		treeEquipes.expandPath(treePath);
+		cbEquipeClub.setEnabled(false);
+		for (Map.Entry<Criterion, JCheckBox> cb : classmentCriteriaCB.entrySet()) {
+			cb.getValue().setEnabled(tempEquipes.countEquipes() == 0);
+		}
 	}
 
 	private void addMembresToEquipe(Equipe equipe, DefaultMutableTreeNode dmtn) {
@@ -559,6 +564,7 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 				completePanel(); // categoriesEquipes();
 
 			} else if (e.getSource() == cbEquipeClub) {
+				tempEquipes.setLimitedByClub(cbEquipeClub.isSelected());
 				completePanel();
 				/*
 				 * DefaultMutableTreeNode dmtn = (DefaultMutableTreeNode)treeEquipes.getLastSelectedPathComponent(); if(dmtn != null) { Object dmtnObj = dmtn.getUserObject(); if(dmtnObj instanceof
@@ -658,7 +664,14 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 			// test si le drop correspond bien à la bonne action
 			if (p.x > 0 && p.y > 0 && p.x < treeEquipes.getWidth() && p.y < treeEquipes.getHeight()) {
 
-				DefaultMutableTreeNode teamNode = (DefaultMutableTreeNode) treeEquipes.getPathForLocation(p.x, p.y).getLastPathComponent();
+				TreePath treePath = treeEquipes.getPathForLocation(p.x, p.y);
+				if(treePath == null) {
+					this.getGlassPane().setVisible(false);
+					dragObject = null;
+					onDrag = false;
+					return;
+				}
+				DefaultMutableTreeNode teamNode = (DefaultMutableTreeNode) treePath.getLastPathComponent();
 				Object destObj = teamNode.getUserObject();
 
 				if (destObj instanceof Equipe) {

@@ -350,7 +350,7 @@ public class FicheConcours implements ParametreListener {
 			tplClassement.parse("INTITULE_CLUB", parametre.getClub().getNom()); //$NON-NLS-1$
 			tplClassement.parse("INTITULE_CONCOURS", parametre.getIntituleConcours()); //$NON-NLS-1$
 			tplClassement.parse("VILLE_CLUB", parametre.getClub().getVille()); //$NON-NLS-1$
-			tplClassement.parse("DATE_CONCOURS", DateFormat.getDateInstance(DateFormat.LONG).format(new Date())); //$NON-NLS-1$
+			tplClassement.parse("DATE_CONCOURS", DateFormat.getDateInstance(DateFormat.LONG).format(parametre.getDate())); //$NON-NLS-1$
 			tplClassement.parse("author", parametre.getClub().getNom()); //$NON-NLS-1$
 
 			for (String arbitre : parametre.getArbitres()) {
@@ -505,7 +505,7 @@ public class FicheConcours implements ParametreListener {
 			tplClassementEquipe.parse("INTITULE_CLUB", parametre.getClub().getNom()); //$NON-NLS-1$
 			tplClassementEquipe.parse("INTITULE_CONCOURS", parametre.getIntituleConcours()); //$NON-NLS-1$
 			tplClassementEquipe.parse("VILLE_CLUB", parametre.getClub().getVille()); //$NON-NLS-1$
-			tplClassementEquipe.parse("DATE_CONCOURS", parametre.getDate().toString()); //$NON-NLS-1$
+			tplClassementEquipe.parse("DATE_CONCOURS", DateFormat.getDateInstance(DateFormat.LONG).format(parametre.getDate())); //$NON-NLS-1$
 
 			String strArbitreResp = ""; //$NON-NLS-1$
 			String strArbitresAss = ""; //$NON-NLS-1$

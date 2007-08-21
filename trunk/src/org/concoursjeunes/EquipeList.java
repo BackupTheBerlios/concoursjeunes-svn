@@ -28,6 +28,8 @@ public class EquipeList implements Cloneable {
     @XmlTransient
     private FicheConcours ficheConcours;
     
+    private boolean limitedByClub = true;
+    
     public EquipeList() {
     	
     }
@@ -145,9 +147,9 @@ public class EquipeList implements Cloneable {
     public Equipe[] list(CriteriaSet scna) {
         ArrayList<Equipe> sel = new ArrayList<Equipe>();
         
-        for(int i=0; i < this.equipeList.size(); i++) {
-            if(this.equipeList.get(i).getDifferentiationCriteria().equals(scna))
-                sel.add(this.equipeList.get(i));
+        for(Equipe equipe : equipeList) {
+            if(equipe.getDifferentiationCriteria().equals(scna))
+                sel.add(equipe);
         }
 
         return sel.toArray(new Equipe[sel.size()]);
@@ -173,6 +175,17 @@ public class EquipeList implements Cloneable {
         }
         
         return no_sort_list;
+    }
+    
+    public ArrayList<CriteriaSet> listCriteriaSet() {
+    	ArrayList<CriteriaSet> listCriteriaSet = new ArrayList<CriteriaSet>();
+    	for(Equipe equipe : equipeList) {
+    		 CriteriaSet criteriaSet = equipe.getDifferentiationCriteria();
+    		 if(!listCriteriaSet.contains(criteriaSet)) {
+    			 listCriteriaSet.add(criteriaSet);
+    		 }
+    	}
+    	 return listCriteriaSet;
     }
     
     /**
@@ -202,7 +215,13 @@ public class EquipeList implements Cloneable {
         this.equipeList = equipeList;
     }
     
-    @Override
+    public boolean isLimitedByClub() {
+		return limitedByClub;
+	}
+	public void setLimitedByClub(boolean limitedByClub) {
+		this.limitedByClub = limitedByClub;
+	}
+	@Override
     public EquipeList clone() {
     	EquipeList clone = new EquipeList();
     	ArrayList<Equipe> equipeListClone = new ArrayList<Equipe>();
@@ -211,6 +230,7 @@ public class EquipeList implements Cloneable {
     	}
     	clone.setEquipeList(equipeListClone);
     	clone.setFicheConcours(ficheConcours);
+    	clone.setLimitedByClub(limitedByClub);
     	
     	return clone;
     }
