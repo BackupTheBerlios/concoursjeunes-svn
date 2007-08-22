@@ -27,11 +27,14 @@ import java.util.Hashtable;
 import javax.swing.event.EventListenerList;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.jdesktop.swingx.JXErrorDialog;
+
 import ajinteractive.standard.common.AJTemplate;
 import ajinteractive.standard.common.AJToolKit;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
+import com.lowagie.text.Rectangle;
 
 /**
  * Represente la fiche concours, regroupe l'ensemble des informations commune à un concours donné
@@ -333,14 +336,14 @@ public class FicheConcours implements ParametreListener {
 			String strArbitresAss = ""; //$NON-NLS-1$
 
 			switch (outType) {
-			case OUT_XML:
-				tplClassement = templateClassementXML;
-				break;
-			case OUT_HTML:
-				tplClassement = templateClassementHTML;
-				break;
-			default:
-				return null;
+				case OUT_XML:
+					tplClassement = templateClassementXML;
+					break;
+				case OUT_HTML:
+					tplClassement = templateClassementHTML;
+					break;
+				default:
+					return null;
 			}
 
 			tplClassement.reset();
@@ -526,32 +529,42 @@ public class FicheConcours implements ParametreListener {
 			tplClassementEquipe.parse("NB_TIREURS", "" + concurrentList.countArcher()); //$NON-NLS-1$ //$NON-NLS-2$
 			tplClassementEquipe.parse("TYPE_CLASSEMENT", ConcoursJeunes.ajrLibelle.getResourceString("classement.equipe")); //$NON-NLS-1$ //$NON-NLS-2$
 
-			tplClassementEquipe.parse("categories.CATEGORIE", ConcoursJeunes.ajrLibelle.getResourceString("equipe.composition")); //$NON-NLS-1$ //$NON-NLS-2$
-			tplClassementEquipe.parse("categories.NB_EQUIPES", "" + equipes.countEquipes()); //$NON-NLS-1$ //$NON-NLS-2$
-
-			Equipe[] sortEquipes = EquipeList.sort(equipes.list());
-
-			for (int i = 0; i < sortEquipes.length; i++) {
-
-				tplClassementEquipe.parse("categories.classement.PLACE", "" + (i + 1)); //$NON-NLS-1$ //$NON-NLS-2$
-
-				String idsXML = ""; //$NON-NLS-1$
-				String ptsXML = ""; //$NON-NLS-1$
-				for (Concurrent concurrent : sortEquipes[i].getMembresEquipe()) {
-					if (outType == OUT_XML) {
-						idsXML += concurrent.getID() + "<newline/>"; //$NON-NLS-1$
-						ptsXML += concurrent.getTotalScore() + "<newline/>"; //$NON-NLS-1$
-					} else {
-						idsXML += concurrent.getID() + "<br>"; //$NON-NLS-1$
-						ptsXML += concurrent.getTotalScore() + "<br>"; //$NON-NLS-1$
+			
+			ArrayList<CriteriaSet> teamCriteriaSet = equipes.listCriteriaSet();
+			CriteriaSet[] sortedTeamCriteriaSets = new CriteriaSet[teamCriteriaSet.size()];
+			sortedTeamCriteriaSets = teamCriteriaSet.toArray(sortedTeamCriteriaSets);
+			
+			CriteriaSet.sortCriteriaSet(sortedTeamCriteriaSets, parametre.getReglement().getListCriteria());
+			
+			for(CriteriaSet criteriaSet : sortedTeamCriteriaSets) {			
+				tplClassementEquipe.parse("categories.CATEGORIE", new CriteriaSetLibelle(criteriaSet).toString()); //$NON-NLS-1$ //$NON-NLS-2$
+				tplClassementEquipe.parse("categories.NB_EQUIPES", "" + equipes.countEquipes()); //$NON-NLS-1$ //$NON-NLS-2$
+	
+				Equipe[] sortEquipes = EquipeList.sort(equipes.list(criteriaSet));
+	
+				for (int i = 0; i < sortEquipes.length; i++) {
+	
+					tplClassementEquipe.parse("categories.classement.PLACE", "" + (i + 1)); //$NON-NLS-1$ //$NON-NLS-2$
+	
+					String idsXML = ""; //$NON-NLS-1$
+					String ptsXML = ""; //$NON-NLS-1$
+					for (Concurrent concurrent : sortEquipes[i].getMembresEquipe()) {
+						if (outType == OUT_XML) {
+							idsXML += concurrent.getID() + "<newline/>"; //$NON-NLS-1$
+							ptsXML += concurrent.getTotalScore() + "<newline/>"; //$NON-NLS-1$
+						} else {
+							idsXML += concurrent.getID() + "<br>"; //$NON-NLS-1$
+							ptsXML += concurrent.getTotalScore() + "<br>"; //$NON-NLS-1$
+						}
 					}
+					tplClassementEquipe.parse("categories.classement.IDENTITEES", idsXML); //$NON-NLS-1$
+					tplClassementEquipe.parse("categories.classement.NOM_EQUIPE", sortEquipes[i].getNomEquipe()); //$NON-NLS-1$
+					tplClassementEquipe.parse("categories.classement.TOTAL_INDIVIDUEL", ptsXML); //$NON-NLS-1$
+					tplClassementEquipe.parse("categories.classement.TOTAL_GENERAL", "" + sortEquipes[i].getTotalScore()); //$NON-NLS-1$ //$NON-NLS-2$
+	
+					tplClassementEquipe.loopBloc("categories.classement"); //$NON-NLS-1$
 				}
-				tplClassementEquipe.parse("categories.classement.IDENTITEES", idsXML); //$NON-NLS-1$
-				tplClassementEquipe.parse("categories.classement.NOM_EQUIPE", sortEquipes[i].getNomEquipe()); //$NON-NLS-1$
-				tplClassementEquipe.parse("categories.classement.TOTAL_INDIVIDUEL", ptsXML); //$NON-NLS-1$
-				tplClassementEquipe.parse("categories.classement.TOTAL_GENERAL", "" + sortEquipes[i].getTotalScore()); //$NON-NLS-1$ //$NON-NLS-2$
-
-				tplClassementEquipe.loopBloc("categories.classement"); //$NON-NLS-1$
+				tplClassementEquipe.loopBloc("categories"); //$NON-NLS-1$
 			}
 			strClassementEquipe = tplClassementEquipe.output();
 		}
@@ -702,84 +715,100 @@ public class FicheConcours implements ParametreListener {
 	 * @return String - le XML iText à retourner
 	 */
 	private String getXMLEtiquettes(int nblarg, int nbhaut, int depart) {
-		double marge_gauche = ConcoursJeunes.configuration.getMarges().left; // la
-		// marge
-		// gauche
-		double espacement_cellule_h = ConcoursJeunes.configuration.getEspacements()[0]; // l'espacement
-		// horizontal
-		// entre
-		// cellule
-		double espacement_cellule_v = ConcoursJeunes.configuration.getEspacements()[1]; // l'espacement
-		// vertical
-		// entre
-		// cellule
-		double cellule_x;
-		double cellule_y;
+		try {
+			double marge_gauche = ConcoursJeunes.configuration.getMarges().left; // la marge gauche
+			double marge_droite = ConcoursJeunes.configuration.getMarges().right; // la marge droite
+			double marge_haut = ConcoursJeunes.configuration.getMarges().top; // la marge haut
+			double marge_bas = ConcoursJeunes.configuration.getMarges().bottom; // la marge bas
+			double espacement_cellule_h = ConcoursJeunes.configuration.getEspacements()[0]; // l'espacement horizontal entre cellule
+			double espacement_cellule_v = ConcoursJeunes.configuration.getEspacements()[1]; // l'espacement vertical entre cellule
+			double cellule_x;
+			double cellule_y;
+			Rectangle pageDimension = (Rectangle)PageSize.class.getField(ConcoursJeunes.configuration.getFormatPapier()).get(null);
+			
+			espacement_cellule_h = AJToolKit.centimeterToDpi(espacement_cellule_h);
+			espacement_cellule_v = AJToolKit.centimeterToDpi(espacement_cellule_v);
+			marge_gauche = AJToolKit.centimeterToDpi(marge_gauche);
+			marge_droite = AJToolKit.centimeterToDpi(marge_droite);
 
-		espacement_cellule_h = espacement_cellule_h / 21 * 100;
-		marge_gauche = marge_gauche / 21 * 100;
-		cellule_x = (100 - (marge_gauche + (espacement_cellule_h + 7) * (nblarg - 1))) / nblarg;
-
-		espacement_cellule_v = espacement_cellule_v / 29.7 * 100;
-		cellule_y = (99 - (espacement_cellule_v * (nbhaut - 1))) / nbhaut;
-
-		// System.out.println("taille:" + PageSize.A4.height());
-
-		String tailles_x = marge_gauche + ""; //$NON-NLS-1$
-		for (int i = 0; i < nblarg; i++) {
-			tailles_x += ";" + cellule_x + ";7"; //$NON-NLS-1$ //$NON-NLS-2$
-			if (i < nblarg - 1)
-				tailles_x += ";" + espacement_cellule_h; //$NON-NLS-1$
-		}
-
-		templateEtiquettesXML.reset();
-
-		templateEtiquettesXML.parse("CURRENT_TIME", DateFormat.getDateInstance(DateFormat.FULL).format(new Date())); //$NON-NLS-1$
-		templateEtiquettesXML.parse("producer", ConcoursJeunes.NOM + " " + ConcoursJeunes.VERSION); //$NON-NLS-1$ //$NON-NLS-2$
-		templateEtiquettesXML.parse("pagesize", ConcoursJeunes.configuration.getFormatPapier()); //$NON-NLS-1$
-		templateEtiquettesXML.parse("orientation", ConcoursJeunes.configuration.getOrientation()); //$NON-NLS-1$
-		templateEtiquettesXML.parse("top", "" + (ConcoursJeunes.configuration.getMarges().top / 0.03527)); //$NON-NLS-1$ //$NON-NLS-2$
-		templateEtiquettesXML.parse("bottom", "" + (ConcoursJeunes.configuration.getMarges().bottom / 0.03527)); //$NON-NLS-1$ //$NON-NLS-2$
-		templateEtiquettesXML.parse("left", "" + (ConcoursJeunes.configuration.getMarges().left / 0.03527)); //$NON-NLS-1$ //$NON-NLS-2$
-		templateEtiquettesXML.parse("right", "" + (ConcoursJeunes.configuration.getMarges().right / 0.03527)); //$NON-NLS-1$ //$NON-NLS-2$
-		templateEtiquettesXML.parse("page.columns", "" + (nblarg * 3)); //$NON-NLS-1$ //$NON-NLS-2$
-		templateEtiquettesXML.parse("page.widths", tailles_x); //$NON-NLS-1$
-
-		int colonne = 0;
-		int ligne = 0;
-		for (Concurrent concurrent : ConcurrentList.sort(concurrentList.list(depart), ConcurrentList.SORT_BY_CIBLES)) {
-			if (colonne == 0)
-				templateEtiquettesXML.parse("page.ligne.leading", "" + (PageSize.A4.height() * (cellule_y / 100) + PageSize.A4.height() * (espacement_cellule_v / 100))); //$NON-NLS-1$ //$NON-NLS-2$
-			templateEtiquettesXML.parse("page.ligne.colonne.cid", concurrent.getID()); //$NON-NLS-1$
-			templateEtiquettesXML.parse("page.ligne.colonne.cclub", concurrent.getClub().getNom()); //$NON-NLS-1$
-			templateEtiquettesXML.parse("page.ligne.colonne.clicence", concurrent.getNumLicenceArcher()); //$NON-NLS-1$
-			templateEtiquettesXML.parse("page.ligne.colonne.emplacement", concurrent.getCible() + "" + (char) ('A' + concurrent.getPosition())); //$NON-NLS-1$ //$NON-NLS-2$
-			if (colonne + 1 == nblarg)
-				templateEtiquettesXML.parseBloc("page.ligne.colonne.interbloc", ""); //$NON-NLS-1$ //$NON-NLS-2$
-
-			templateEtiquettesXML.loopBloc("page.ligne.colonne"); //$NON-NLS-1$
-
-			colonne = (++colonne) % nblarg;
-			if (colonne == 0) {
+			double zoneaffichable_x = pageDimension.width() - marge_gauche - marge_droite;
+			double zoneaffichable_y = pageDimension.height() - marge_haut - marge_bas;
+			
+			cellule_x = (zoneaffichable_x - (espacement_cellule_h * (nblarg - 1.0))) / zoneaffichable_x * 100 / nblarg - 7;
+			cellule_y = (zoneaffichable_y - (espacement_cellule_v * (nbhaut - 1.0))) / zoneaffichable_y * 100 / nbhaut;
+	
+			String tailles_x = 0.1 + ""; //$NON-NLS-1$
+			for (int i = 0; i < nblarg; i++) {
+				tailles_x += ";" + cellule_x + ";7"; //$NON-NLS-1$ //$NON-NLS-2$
+				if (i < nblarg - 1)
+					tailles_x += ";" + espacement_cellule_h / zoneaffichable_x * 100; //$NON-NLS-1$
+			}
+	
+			templateEtiquettesXML.reset();
+	
+			templateEtiquettesXML.parse("CURRENT_TIME", DateFormat.getDateInstance(DateFormat.FULL).format(new Date())); //$NON-NLS-1$
+			templateEtiquettesXML.parse("producer", ConcoursJeunes.NOM + " " + ConcoursJeunes.VERSION); //$NON-NLS-1$ //$NON-NLS-2$
+			templateEtiquettesXML.parse("pagesize", ConcoursJeunes.configuration.getFormatPapier()); //$NON-NLS-1$
+			templateEtiquettesXML.parse("orientation", ConcoursJeunes.configuration.getOrientation()); //$NON-NLS-1$
+			templateEtiquettesXML.parse("top", "" + AJToolKit.centimeterToDpi(ConcoursJeunes.configuration.getMarges().top)); //$NON-NLS-1$ //$NON-NLS-2$
+			templateEtiquettesXML.parse("bottom", "" + AJToolKit.centimeterToDpi(ConcoursJeunes.configuration.getMarges().bottom)); //$NON-NLS-1$ //$NON-NLS-2$
+			templateEtiquettesXML.parse("left", "" + AJToolKit.centimeterToDpi(ConcoursJeunes.configuration.getMarges().left)); //$NON-NLS-1$ //$NON-NLS-2$
+			templateEtiquettesXML.parse("right", "" + AJToolKit.centimeterToDpi(ConcoursJeunes.configuration.getMarges().right)); //$NON-NLS-1$ //$NON-NLS-2$
+			templateEtiquettesXML.parse("page.columns", "" + (nblarg * 3)); //$NON-NLS-1$ //$NON-NLS-2$
+			templateEtiquettesXML.parse("page.widths", tailles_x); //$NON-NLS-1$
+	
+			int colonne = 0;
+			int ligne = 0;
+			for (Concurrent concurrent : ConcurrentList.sort(concurrentList.list(depart), ConcurrentList.SORT_BY_CIBLES)) {
+				if (colonne == 0)
+					templateEtiquettesXML.parse("page.ligne.leading", "" + (zoneaffichable_y * (cellule_y / 100.0) + espacement_cellule_v)); //$NON-NLS-1$ //$NON-NLS-2$
+				templateEtiquettesXML.parse("page.ligne.colonne.cid", concurrent.getID()); //$NON-NLS-1$
+				templateEtiquettesXML.parse("page.ligne.colonne.cclub", concurrent.getClub().getNom()); //$NON-NLS-1$
+				templateEtiquettesXML.parse("page.ligne.colonne.clicence", concurrent.getNumLicenceArcher()); //$NON-NLS-1$
+				templateEtiquettesXML.parse("page.ligne.colonne.emplacement", concurrent.getCible() + "" + (char) ('A' + concurrent.getPosition())); //$NON-NLS-1$ //$NON-NLS-2$
+				if (colonne + 1 == nblarg)
+					templateEtiquettesXML.parseBloc("page.ligne.colonne.interbloc", ""); //$NON-NLS-1$ //$NON-NLS-2$
+	
+				templateEtiquettesXML.loopBloc("page.ligne.colonne"); //$NON-NLS-1$
+	
+				colonne = (++colonne) % nblarg;
+				if (colonne == 0) {
+					templateEtiquettesXML.loopBloc("page.ligne"); //$NON-NLS-1$
+					ligne++;
+				}
+	
+				if (ligne == nbhaut) {
+					templateEtiquettesXML.loopBloc("page"); //$NON-NLS-1$
+	
+					templateEtiquettesXML.parse("page.columns", "" + (nblarg * 3)); //$NON-NLS-1$ //$NON-NLS-2$
+					templateEtiquettesXML.parse("page.widths", tailles_x); //$NON-NLS-1$
+	
+					ligne = 0;
+				}
+			}
+	
+			if (colonne != 0) {
 				templateEtiquettesXML.loopBloc("page.ligne"); //$NON-NLS-1$
-				ligne++;
 			}
-
-			if (ligne == nbhaut) {
+			if (ligne != 0) {
 				templateEtiquettesXML.loopBloc("page"); //$NON-NLS-1$
-
-				templateEtiquettesXML.parse("page.columns", "" + (nblarg * 3)); //$NON-NLS-1$ //$NON-NLS-2$
-				templateEtiquettesXML.parse("page.widths", tailles_x); //$NON-NLS-1$
-
-				ligne = 0;
 			}
-		}
-
-		if (colonne != 0) {
-			templateEtiquettesXML.loopBloc("page.ligne"); //$NON-NLS-1$
-		}
-		if (ligne != 0) {
-			templateEtiquettesXML.loopBloc("page"); //$NON-NLS-1$
+		} catch (SecurityException e) {
+			JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+					e.toString(), e.fillInStackTrace());
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+					e.toString(), e.fillInStackTrace());
+			e.printStackTrace();
+		} catch (NoSuchFieldException e) {
+			JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+					e.toString(), e.fillInStackTrace());
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+					e.toString(), e.fillInStackTrace());
+			e.printStackTrace();
 		}
 
 		return templateEtiquettesXML.output();
@@ -889,7 +918,11 @@ public class FicheConcours implements ParametreListener {
 	 * @return true si impression avec succe, false sinon
 	 */
 	public boolean printEtiquettes() {
-		Document document = new Document(PageSize.A4, 0, 0, 0, 0);
+		float marge_gauche = AJToolKit.centimeterToDpi(ConcoursJeunes.configuration.getMarges().left); // la marge gauche
+		float marge_droite = AJToolKit.centimeterToDpi(ConcoursJeunes.configuration.getMarges().right); // la marge droite
+		float marge_haut = AJToolKit.centimeterToDpi(ConcoursJeunes.configuration.getMarges().top); // la marge haut
+		float marge_bas = AJToolKit.centimeterToDpi(ConcoursJeunes.configuration.getMarges().bottom); // la marge bas
+		Document document = new Document(PageSize.A4, marge_gauche, marge_droite, marge_haut, marge_bas);
 		return ConcoursJeunes.printDocument(document, getXMLEtiquettes(ConcoursJeunes.configuration.getColonneAndLigne()[1], ConcoursJeunes.configuration.getColonneAndLigne()[0], currentDepart));
 	}
 

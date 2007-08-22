@@ -418,9 +418,13 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 			cible = (Cible) destPath.getLastPathComponent();
 		} else if (destPath.getLastPathComponent() instanceof String) {
 			// recupere le noeud destination
-			cible = (Cible) destPath.getParentPath().getLastPathComponent();
-			String strPos = (String) destPath.getLastPathComponent();
-			position = strPos.charAt(strPos.length() - 1) - 'A';
+			if (destPath.getParentPath() != null && destPath.getParentPath().getLastPathComponent() instanceof Cible) {
+				cible = (Cible) destPath.getParentPath().getLastPathComponent();
+				String strPos = (String) destPath.getLastPathComponent();
+				position = strPos.charAt(strPos.length() - 1) - 'A';
+			} else {
+				return;
+			}
 		} else {
 			return;
 		}

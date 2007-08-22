@@ -656,7 +656,7 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 	 * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
 	 */
 	public void mouseReleased(MouseEvent e) {
-		if (e.getSource() == treeConcurrents) {
+		if (e.getSource() == treeConcurrents && onDrag) {
 			Point p = (Point) e.getPoint().clone();
 			SwingUtilities.convertPointToScreen(p, treeConcurrents);
 			SwingUtilities.convertPointFromScreen(p, treeEquipes);
@@ -699,7 +699,7 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 					treeModelConcurrents.reload((DefaultMutableTreeNode) treeConcurrents.getSelectionPath().getParentPath().getLastPathComponent());
 				}
 			}
-		} else if (e.getSource() == treeEquipes) {
+		} else if (e.getSource() == treeEquipes && onDrag) {
 			Point p = (Point) e.getPoint().clone();
 			SwingUtilities.convertPointToScreen(p, treeEquipes);
 			SwingUtilities.convertPointFromScreen(p, treeConcurrents);

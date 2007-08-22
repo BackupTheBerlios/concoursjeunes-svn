@@ -127,6 +127,7 @@ import org.concoursjeunes.ConfigurationManager;
 import org.concoursjeunes.Entite;
 import org.concoursjeunes.Marges;
 import org.concoursjeunes.Reglement;
+import org.jdesktop.swingx.JXErrorDialog;
 
 import ajinteractive.standard.common.AJToolKit;
 import ajinteractive.standard.java2.AJFileFilter;
@@ -135,6 +136,7 @@ import ajinteractive.standard.java2.NumberDocument;
 import ajinteractive.standard.utilities.net.Proxy;
 
 import com.lowagie.text.PageSize;
+import com.lowagie.text.Rectangle;
 
 /**
  * Ecran de configuration de ConcoursJeunes
@@ -921,7 +923,46 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		}
 	}
 
-	private void registerConfig() {
+	private boolean registerConfig() {
+		double margeDroite = Double.parseDouble(this.jtfMargesD.getText());
+		double margeGauche = Double.parseDouble(this.jtfMargesG.getText());
+		double margeHaut = Double.parseDouble(this.jtfMargesH.getText());
+		double margeBas = Double.parseDouble(this.jtfMargesB.getText());
+		double espacementHorizontal = Double.parseDouble(this.jtfEspacementsH.getText());
+		double espacementVertical = Double.parseDouble(this.jtfEspacementsV.getText());
+		int nbColonne = Integer.parseInt(this.jtfColonnes.getText());
+		int nbLigne = Integer.parseInt(this.jtfLignes.getText());
+		
+		try {
+			Field formatPapier = PageSize.class.getField((String) this.jcbFormatPapier.getSelectedItem()); 
+			
+			Rectangle pageDimension = (Rectangle)formatPapier.get(null);
+			
+			if(((margeGauche + (espacementHorizontal*nbColonne-1) + margeDroite) / 2.54 * 72 > pageDimension.width())
+					|| ((margeHaut + (espacementVertical*nbLigne-1) + margeBas) / 2.54 * 72 > pageDimension.height())) {
+				JOptionPane.showMessageDialog(this, 
+						"Les dimensions proposé pour les étiquettes dépasse la taille de la page\n" +
+						"Veuillez vérifier votre saisi.", "Erreur de dimension", JOptionPane.ERROR_MESSAGE);
+				return false;
+			}
+		} catch (SecurityException e) {
+			JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+					e.toString(), e.fillInStackTrace());
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+					e.toString(), e.fillInStackTrace());
+			e.printStackTrace();
+		} catch (NoSuchFieldException e) {
+			JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+					e.toString(), e.fillInStackTrace());
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+					e.toString(), e.fillInStackTrace());
+			e.printStackTrace();
+		}
+		
 		workConfiguration.getClub().setNom(jtfNomClub.getText());
 		workConfiguration.getClub().setAgrement(jtfAgrClub.getText());
 		workConfiguration.setIntituleConcours(jtfIntConc.getText());
@@ -936,10 +977,9 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 
 		workConfiguration.setFormatPapier((String) this.jcbFormatPapier.getSelectedItem());
 		workConfiguration.setOrientation((String) this.jcbOrientation.getSelectedItem());
-		workConfiguration.setColonneAndLigne(new int[] { Integer.parseInt(this.jtfLignes.getText()), Integer.parseInt(this.jtfColonnes.getText()) });
-		workConfiguration.setMarges(new Marges(Double.parseDouble(this.jtfMargesH.getText()), Double.parseDouble(this.jtfMargesB.getText()), Double.parseDouble(this.jtfMargesG.getText()), Double
-				.parseDouble(this.jtfMargesD.getText())));
-		workConfiguration.setEspacements(new double[] { Double.parseDouble(this.jtfEspacementsH.getText()), Double.parseDouble(this.jtfEspacementsV.getText()) });
+		workConfiguration.setColonneAndLigne(new int[] { nbLigne, nbColonne });
+		workConfiguration.setMarges(new Marges(margeHaut, margeBas, margeGauche, margeDroite));
+		workConfiguration.setEspacements(new double[] { espacementHorizontal, espacementVertical });
 		workConfiguration.setInterfaceResultatCumul(jcbAvanceResultatCumul.isSelected());
 		workConfiguration.setInterfaceResultatSupl(jcbAvanceResultatSupl.isSelected());
 		workConfiguration.setInterfaceAffResultatExEquo(jcbAvanceAffResultatExEquo.isSelected());
@@ -948,6 +988,8 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		Proxy proxy = new Proxy(jtfAdresseProxy.getText(), Integer.parseInt("0" + jtfPortProxy.getText()), jtfUserProxy.getText(), new String(jpfPasswordProxy.getPassword())); //$NON-NLS-1$
 		proxy.setUseProxyAuthentification(jcbAuthentificationProxy.isSelected());
 		workConfiguration.setProxy(proxy);
+		
+		return true;
 	}
 
 	/**
@@ -956,8 +998,8 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
 		if (source == this.jbValider) {
-			registerConfig();
-			setVisible(false);
+			if(registerConfig())
+				setVisible(false);
 		} else if (source == jbAnnuler) {
 			workConfiguration = null;
 

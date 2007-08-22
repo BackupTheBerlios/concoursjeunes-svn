@@ -38,7 +38,7 @@ public class Main {
 			@Override
 			public void uncaughtException(Thread t, Throwable e) {
 				JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
-						e.toString(), //$NON-NLS-1$
+						e.toString(),
 						e.fillInStackTrace());
 				e.printStackTrace();
 			}
