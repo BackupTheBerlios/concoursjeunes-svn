@@ -529,7 +529,6 @@ public class ConcoursJeunes {
 			/*
 			 * HeaderFooter footer = new HeaderFooter(new Phrase("page "), new Phrase(".")); document.setFooter(footer);
 			 */
-			System.out.println(xmlcontent);
 
 			// genere le pdf
 			PdfWriter.getInstance(document, new FileOutputStream(filePath));

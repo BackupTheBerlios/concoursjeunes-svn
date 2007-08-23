@@ -8,12 +8,14 @@
 	bottom="{bottom}"
 	left="{left}"
 	right="{right}"
-	author="{author}">
+	author="{author}"
+	title="Etiquettes ConcoursJeunes"
+	>
 	<bloc::page>
 	<table columns="{columns}" width="100%" widths="{widths}">
 		<bloc::ligne>
 		<row>
-			<cell leading="{leading}">
+			<cell leading="{leading}" top="true">
 				<phrase color="#FFFFFF">_</phrase>
 			</cell>
 			<bloc::colonne>

@@ -215,7 +215,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		for(int i = 1; i <= ficheConcours.getParametre().getNbDepart(); i++)
 			comboBox.addItem(
 					ConcoursJeunes.ajrLibelle.getResourceString("onglet.gestionarcher.depart") + i); //$NON-NLS-1$
-
+		comboBox.addItem("---");
 		panel.setLayout(new BorderLayout());
 		panel.setOpaque(false);
 		panel.add(label, BorderLayout.CENTER);

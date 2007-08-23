@@ -725,11 +725,15 @@ public class FicheConcours implements ParametreListener {
 			double cellule_x;
 			double cellule_y;
 			Rectangle pageDimension = (Rectangle)PageSize.class.getField(ConcoursJeunes.configuration.getFormatPapier()).get(null);
+			if(ConcoursJeunes.configuration.getOrientation().equals("landscape"))
+				pageDimension = pageDimension.rotate();
 			
 			espacement_cellule_h = AJToolKit.centimeterToDpi(espacement_cellule_h);
 			espacement_cellule_v = AJToolKit.centimeterToDpi(espacement_cellule_v);
 			marge_gauche = AJToolKit.centimeterToDpi(marge_gauche);
 			marge_droite = AJToolKit.centimeterToDpi(marge_droite);
+			marge_haut = AJToolKit.centimeterToDpi(marge_haut);
+			marge_bas = AJToolKit.centimeterToDpi(marge_bas);
 
 			double zoneaffichable_x = pageDimension.width() - marge_gauche - marge_droite;
 			double zoneaffichable_y = pageDimension.height() - marge_haut - marge_bas;
@@ -748,6 +752,7 @@ public class FicheConcours implements ParametreListener {
 	
 			templateEtiquettesXML.parse("CURRENT_TIME", DateFormat.getDateInstance(DateFormat.FULL).format(new Date())); //$NON-NLS-1$
 			templateEtiquettesXML.parse("producer", ConcoursJeunes.NOM + " " + ConcoursJeunes.VERSION); //$NON-NLS-1$ //$NON-NLS-2$
+			templateEtiquettesXML.parse("author", ConcoursJeunes.configuration.getClub().getNom()); //$NON-NLS-1$
 			templateEtiquettesXML.parse("pagesize", ConcoursJeunes.configuration.getFormatPapier()); //$NON-NLS-1$
 			templateEtiquettesXML.parse("orientation", ConcoursJeunes.configuration.getOrientation()); //$NON-NLS-1$
 			templateEtiquettesXML.parse("top", "" + AJToolKit.centimeterToDpi(ConcoursJeunes.configuration.getMarges().top)); //$NON-NLS-1$ //$NON-NLS-2$
@@ -760,8 +765,12 @@ public class FicheConcours implements ParametreListener {
 			int colonne = 0;
 			int ligne = 0;
 			for (Concurrent concurrent : ConcurrentList.sort(concurrentList.list(depart), ConcurrentList.SORT_BY_CIBLES)) {
+				//double test = zoneaffichable_y * (cellule_y / 100.0) + espacement_cellule_v;
 				if (colonne == 0)
-					templateEtiquettesXML.parse("page.ligne.leading", "" + (zoneaffichable_y * (cellule_y / 100.0) + espacement_cellule_v)); //$NON-NLS-1$ //$NON-NLS-2$
+					if(ligne < nbhaut - 1)
+						templateEtiquettesXML.parse("page.ligne.leading", "" + (zoneaffichable_y * (cellule_y / 100.0) + espacement_cellule_v)); //$NON-NLS-1$ //$NON-NLS-2$
+					else
+						templateEtiquettesXML.parse("page.ligne.leading", "" + (zoneaffichable_y * (cellule_y / 100.0) - 1)); //$NON-NLS-1$ //$NON-NLS-2$
 				templateEtiquettesXML.parse("page.ligne.colonne.cid", concurrent.getID()); //$NON-NLS-1$
 				templateEtiquettesXML.parse("page.ligne.colonne.cclub", concurrent.getClub().getNom()); //$NON-NLS-1$
 				templateEtiquettesXML.parse("page.ligne.colonne.clicence", concurrent.getNumLicenceArcher()); //$NON-NLS-1$
