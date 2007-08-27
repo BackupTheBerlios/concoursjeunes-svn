@@ -2,10 +2,16 @@ USE_CONSOLEHELPER=$(shell if [ -x /usr/bin/consolehelper ] ; then echo "yes" ; f
 USE_GKSU=$(shell if [ -x /usr/bin/gksu ] ; then echo "yes" ; fi)
 USE_KDESU=$(shell if [ -x /usr/bin/kdesu ] ; then echo "yes" ; fi)
 
+all:
+
 install:
 
 	mkdir -p $(DESTDIR)/usr/lib/ConcoursJeunes
 	mkdir -p $(DESTDIR)/var/lib/ConcoursJeunes
+	mkdir -p $(DESTDIR)/usr/bin/
+	mkdir -p $(DESTDIR)/usr/sbin/
+	mkdir -p $(DESTDIR)/usr/share/pixmaps
+	mkdir -p $(DESTDIR)/usr/share/applications
 	
 	cp -r usr/lib/ConcoursJeunes/. $(DESTDIR)/usr/lib/ConcoursJeunes/
 	chmod -R a+Xr,u+w $(DESTDIR)/usr/lib/ConcoursJeunes
@@ -32,6 +38,10 @@ else ifeq ($(USE_KDESU), yes)
 	chmod 755 $(DESTDIR)/usr/bin/concoursjeunes-applyupdate
 endif
 
+clean:
+
+
+
 remove:
 
 	rm -rf $(DESTDIR)/usr/lib/ConcoursJeunes
@@ -44,3 +54,4 @@ ifeq ($(USE_CONSOLEHELPER), yes)
 	rm -f $(DESTDIR)/etc/pam.d/concoursjeunes-applyupdate
 	rm -f $(DESTDIR)/etc/security/console.apps/concoursjeunes-applyupdate
 endif
+

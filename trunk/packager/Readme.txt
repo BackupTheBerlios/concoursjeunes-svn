@@ -6,13 +6,14 @@ http://www.concoursjeunes.org
 ConcoursJeunes est un logiciel de gestion des concours jeunes
 pour les compétitions de tir à l'arc.
 
-ConcoursJeunes nécessite la machine virtuel java 5.0
+ConcoursJeunes nécessite la machine virtuel java 6.0
 disponible sur le CD d'instalation ou telecharageable sur
 http://www.java.com.
 
 ConcoursJeunes fonctionne sous toutes les plateformes
 compatible jse 6.0 tel que MS Windows, GNU/Linux, Solaris.
-A ce jour, Mac OS X ne supporte pas encore cette version.
+A ce jour, Mac OS X ne supporte pas encore cette version se
+repporter à la version 1.1 de ConcoursJeunes pour se système.
 
 ConcoursJeunes est distribué sous double licence Open Source
 CeCILL et GPL

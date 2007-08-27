@@ -125,7 +125,7 @@
 			manifest="${projet.pack.dir}/MANIFEST.MF">
 
 			<fileset dir="${projet.pack.dir}/bin">
-				<include name="org/concoursjeunes/**" />
+				<include name="**/**" />
 				<exclude name="org/concoursjeunes/plugins/**" />
 			</fileset>
 			<fileset dir="${projet.pack.dir}/bin">
@@ -140,9 +140,7 @@
 				classname="ajinteractive.standard.utilities.updater.RevisionsCreator" />
 
 		<revisionscreator 
-				hashfilepath="${projet.pack.dir}/hash.xml.gz"
-				sqlscriptpath="${projet.pack.dir}/ressources/update/*.sql"
-				sqlpack="${projet.pack.dir}/sqlupdate.pack">
+				hashfilepath="${projet.pack.dir}/hash.xml.gz">
 			<fileset dir="${projet.pack.dir}">
 				<include name="config/**"/>
 				<include name="lang/**"/>

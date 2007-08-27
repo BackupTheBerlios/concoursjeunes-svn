@@ -6,6 +6,8 @@ Modification depuis la 1.11.00:
 -Placement des archers plus fluide
 -Ajout d'un page d'accueil pour la selection des concours
 -Ouverture des fiches concours sous forme d'onglet
+-Réecriture complète de la gestion des équipes
+-Réecriture de la gestion des étiquettes 
 -Fonctionnalité d'import/export sous forme de Plugin permettant de faire
 évoluer ces fonction indépendament de ConcoursJeunes
 -Réécriture de l'API pour plus de fiablilité

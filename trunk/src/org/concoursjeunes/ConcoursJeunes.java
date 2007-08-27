@@ -262,7 +262,7 @@ public class ConcoursJeunes {
 
 				int scriptRelease = dbVersion;
 				for (String scriptPath : updateScripts) {
-					scriptRelease = SqlParser.createBatch(new File(userRessources.getAllusersDataPath() + File.separator + "update" + File.separator + scriptPath), stmt, null, scriptRelease + 1); //$NON-NLS-1$
+					SqlParser.createBatch(new File(userRessources.getAllusersDataPath() + File.separator + "update" + File.separator + scriptPath), stmt, null, scriptRelease + 1); //$NON-NLS-1$
 					System.out.println("delete: " //$NON-NLS-1$
 							+ new File(userRessources.getAllusersDataPath() + File.separator + "update" + File.separator + scriptPath).delete()); //$NON-NLS-1$
 				}
