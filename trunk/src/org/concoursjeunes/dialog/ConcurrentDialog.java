@@ -198,9 +198,10 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	private final JLabel jlPlaceLibre = new JLabel("<html></html>"); //$NON-NLS-1$
 
 	private final JPanel jpActionPane = new JPanel();
+	private final JButton jbValider = new JButton();
 	private final JButton jbPrecedent = new JButton();
 	private final JButton jbSuivant = new JButton();
-	private final JButton jbQuitter = new JButton();
+	private final JButton jbAnnuler = new JButton();
 
 	private int selectField = 0;
 
@@ -254,9 +255,10 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		jbSelectionArcher.setMargin(new Insets(0, 0, 0, 0));
 		jbEditerArcher.addActionListener(this);
 		jbEditerArcher.setMargin(new Insets(0, 0, 0, 0));
+		jbValider.addActionListener(this);
 		jbPrecedent.addActionListener(this);
 		jbSuivant.addActionListener(this);
-		jbQuitter.addActionListener(this);
+		jbAnnuler.addActionListener(this);
 		jbDetailClub.addActionListener(this);
 		jbDetailClub.setMargin(new Insets(0, 0, 0, 0));
 		jbDetailClub.setText("+"); //$NON-NLS-1$
@@ -348,9 +350,10 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		gridbagComposer.addComponentIntoGrid(tfpdM, c);
 
 		// panneau action
+		jpActionPane.add(jbValider);
 		jpActionPane.add(jbPrecedent);
 		jpActionPane.add(jbSuivant);
-		jpActionPane.add(jbQuitter);
+		jpActionPane.add(jbAnnuler);
 
 		// panneau global
 		getContentPane().setLayout(gridbag);
@@ -415,9 +418,10 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 
 		jbSelectionArcher.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.selectionarcher")); //$NON-NLS-1$
 		jbEditerArcher.setToolTipText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.editer")); //$NON-NLS-1$
+		jbValider.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
 		jbPrecedent.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.precedent")); //$NON-NLS-1$
 		jbSuivant.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.suivant")); //$NON-NLS-1$
-		jbQuitter.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.quitter")); //$NON-NLS-1$
+		jbAnnuler.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
 
 		for (Criterion key : ficheConcours.getParametre().getReglement().getListCriteria()) {
 			jlCategrieTable.get(key).setText(key.getLibelle());
@@ -465,8 +469,8 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		jtfAgrement.setEditable(!isinit);
 
 		jbPrecedent.setEnabled(isinit);
-		jbSuivant.setText(isinit ? ConcoursJeunes.ajrLibelle.getResourceString("bouton.validersuivant") //$NON-NLS-1$
-				: ConcoursJeunes.ajrLibelle.getResourceString("bouton.validernouveau")); //$NON-NLS-1$
+		/*jbSuivant.setText(isinit ? ConcoursJeunes.ajrLibelle.getResourceString("bouton.validersuivant") //$NON-NLS-1$
+				: ConcoursJeunes.ajrLibelle.getResourceString("bouton.validernouveau")); *///$NON-NLS-1$
 
 		jlPlaceLibre.setText(showPlacesLibre());
 
@@ -663,35 +667,6 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		return strPlaceLibre;
 	}
 
-	private boolean isConcurrentModified() {
-		boolean modif = false;
-		if (concurrent.getInscription() != Concurrent.UNINIT) {
-
-			assert concurrent.getScore() != null : "La grille des scores ne doit pas être null"; //$NON-NLS-1$
-
-			// regarde si il y a changement au niveau des scores
-			for (int i = 0; i < concurrent.getScore().size(); i++) {
-				if (concurrent.getScore().get(i) != Integer.parseInt(this.tfpd[i].getText())) {
-					modif = true;
-
-					break;
-				}
-			}
-
-			if (!modif) {
-				if (Integer.parseInt(tfpd10.getText()) != concurrent.getDix() || Integer.parseInt(tfpdNeuf.getText()) != concurrent.getNeuf()
-						|| Integer.parseInt(tfpdM.getText()) != concurrent.getManque() || (jtfNom.isEditable() && !jtfNom.getText().equals("")) //$NON-NLS-1$
-						|| (jcbInscription.getSelectedIndex() != concurrent.getInscription() && !jtfNom.getText().equals(""))) { //$NON-NLS-1$
-					modif = true;
-				}
-			}
-		} else if (jtfNom.getText().length() > 0) {
-			modif = true;
-		}
-
-		return modif;
-	}
-
 	private ArrayList<Integer> readScores() {
 		ArrayList<Integer> points = new ArrayList<Integer>();
 		for (int i = 0; i < tfpd.length; i++) {
@@ -782,91 +757,88 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	}
 
 	public void actionPerformed(ActionEvent ae) {
-		if (ae.getSource() == jbSuivant || ae.getSource() == jbPrecedent || ae.getSource() == jbQuitter) {
+		if (ae.getSource() == jbSuivant || ae.getSource() == jbPrecedent || ae.getSource() == jbValider) {
 
 			filter = null;
 
 			// si il n'y a pas de modification ou si les modifications sont
 			// refuse alors quitter sans sauvegarder
-			if (ae.getSource() != jbSuivant && (!isConcurrentModified() || JOptionPane.showConfirmDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("concurrent.quitter.enregistrement"), //$NON-NLS-1$
-					ConcoursJeunes.ajrLibelle.getResourceString("concurrent.quitter.titre"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.NO_OPTION)) { //$NON-NLS-1$
-
-				returnVal = CANCEL;
-
-			} else {
-				if (concurrent == null)
-					concurrent = new Concurrent();
+			
+			if (concurrent == null)
+				concurrent = new Concurrent();
+			
+			if(concurrent.getCriteriaSet() != null) {
+				DistancesEtBlason db1 = DistancesEtBlason.getDistancesEtBlasonForConcurrent(ficheConcours.getParametre().getReglement(), concurrent);
 				
-				if(concurrent.getCriteriaSet() != null) {
-					DistancesEtBlason db1 = DistancesEtBlason.getDistancesEtBlasonForConcurrent(ficheConcours.getParametre().getReglement(), concurrent);
-					
-					// fixe le jeux de critères definissant le concurrent
-					CriteriaSet differentiationCriteria = readCriteriaSet();
-					concurrent.setCriteriaSet(differentiationCriteria);
-					
-					DistancesEtBlason db2 = DistancesEtBlason.getDistancesEtBlasonForConcurrent(ficheConcours.getParametre().getReglement(), concurrent);
-					
-					if(!db1.equals(db2)) {
-						ficheConcours.getPasDeTir(concurrent.getDepart()).retraitConcurrent(concurrent);
-					}
-				} else {
-					// fixe le jeux de critères definissant le concurrent
-					CriteriaSet differentiationCriteria = readCriteriaSet();
-					concurrent.setCriteriaSet(differentiationCriteria);
+				// fixe le jeux de critères definissant le concurrent
+				CriteriaSet differentiationCriteria = readCriteriaSet();
+				concurrent.setCriteriaSet(differentiationCriteria);
+				
+				DistancesEtBlason db2 = DistancesEtBlason.getDistancesEtBlasonForConcurrent(ficheConcours.getParametre().getReglement(), concurrent);
+				
+				if(!db1.equals(db2)) {
+					ficheConcours.getPasDeTir(concurrent.getDepart()).retraitConcurrent(concurrent);
 				}
+			} else {
+				// fixe le jeux de critères definissant le concurrent
+				CriteriaSet differentiationCriteria = readCriteriaSet();
+				concurrent.setCriteriaSet(differentiationCriteria);
+			}
 
-				if (concurrent.getInscription() == Concurrent.UNINIT) {
-					// si il n'y a plus de place alors retourner une erreur
-					if (!ficheConcours.getPasDeTir(concurrent.getDepart()).havePlaceForConcurrent(concurrent)) {
-						JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur.maxcible"), //$NON-NLS-1$
-								ConcoursJeunes.ajrLibelle.getResourceString("erreur.maxcible.titre"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
-						return;
-						// si le concurrent existe déjà alors retourner une
-						// erreur
-					} else if (ficheConcours.getConcurrentList().contains(concurrent)) {
-						JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur.alreadyexist"), //$NON-NLS-1$
-								ConcoursJeunes.ajrLibelle.getResourceString("erreur.alreadyexist.titre"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
-						return;
-					}
-				} else {
-					if (!ficheConcours.getPasDeTir(concurrent.getDepart()).havePlaceForConcurrent(concurrent)) {
-						JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur.maxcible"), //$NON-NLS-1$
-								ConcoursJeunes.ajrLibelle.getResourceString("erreur.maxcible.titre"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
-						return;
-					}
-				}
-
-				// verification du score
-				if (!ficheConcours.getParametre().getReglement().isValidScore(readScores())) {
-					JOptionPane.showMessageDialog(new JDialog(), ConcoursJeunes.ajrLibelle.getResourceString("erreur.impscore"), //$NON-NLS-1$
-							ConcoursJeunes.ajrLibelle.getResourceString("erreur"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
+			if (concurrent.getInscription() == Concurrent.UNINIT) {
+				// si il n'y a plus de place alors retourner une erreur
+				if (!ficheConcours.getPasDeTir(concurrent.getDepart()).havePlaceForConcurrent(concurrent)) {
+					JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur.maxcible"), //$NON-NLS-1$
+							ConcoursJeunes.ajrLibelle.getResourceString("erreur.maxcible.titre"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
+					return;
+					// si le concurrent existe déjà alors retourner une
+					// erreur
+				} else if (ficheConcours.getConcurrentList().contains(concurrent)) {
+					JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur.alreadyexist"), //$NON-NLS-1$
+							ConcoursJeunes.ajrLibelle.getResourceString("erreur.alreadyexist.titre"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 					return;
 				}
-				concurrent.setScore(readScores());
-
-				concurrent.setDix(Integer.parseInt(tfpd10.getText()));
-				concurrent.setNeuf(Integer.parseInt(tfpdNeuf.getText()));
-				concurrent.setManque(Integer.parseInt(tfpdM.getText()));
-				concurrent.setNomArcher(jtfNom.getText());
-				concurrent.setPrenomArcher(jtfPrenom.getText());
-				concurrent.setNumLicenceArcher(jtfLicence.getText());
-				concurrent.getClub().setNom(jtfClub.getText());
-				concurrent.getClub().setAgrement(jtfAgrement.getText());
-				concurrent.setInscription(jcbInscription.getSelectedIndex());
-
-				concurrent.saveCriteriaSet(ficheConcours.getParametre().getReglement());
-
-				if (ae.getSource() == jbQuitter) {
-					if (!this.jtfNom.getText().equals("")) { //$NON-NLS-1$
-						returnVal = CONFIRM_AND_CLOSE;
-					}
-				} else if (ae.getSource() == jbSuivant) {
-					returnVal = CONFIRM_AND_NEXT;
-				} else if (ae.getSource() == jbPrecedent) {
-					returnVal = CONFIRM_AND_PREVIOUS;
+			} else {
+				if (!ficheConcours.getPasDeTir(concurrent.getDepart()).havePlaceForConcurrent(concurrent)) {
+					JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur.maxcible"), //$NON-NLS-1$
+							ConcoursJeunes.ajrLibelle.getResourceString("erreur.maxcible.titre"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
+					return;
 				}
 			}
 
+			// verification du score
+			if (!ficheConcours.getParametre().getReglement().isValidScore(readScores())) {
+				JOptionPane.showMessageDialog(new JDialog(), ConcoursJeunes.ajrLibelle.getResourceString("erreur.impscore"), //$NON-NLS-1$
+						ConcoursJeunes.ajrLibelle.getResourceString("erreur"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
+				return;
+			}
+			concurrent.setScore(readScores());
+
+			concurrent.setDix(Integer.parseInt(tfpd10.getText()));
+			concurrent.setNeuf(Integer.parseInt(tfpdNeuf.getText()));
+			concurrent.setManque(Integer.parseInt(tfpdM.getText()));
+			concurrent.setNomArcher(jtfNom.getText());
+			concurrent.setPrenomArcher(jtfPrenom.getText());
+			concurrent.setNumLicenceArcher(jtfLicence.getText());
+			concurrent.getClub().setNom(jtfClub.getText());
+			concurrent.getClub().setAgrement(jtfAgrement.getText());
+			concurrent.setInscription(jcbInscription.getSelectedIndex());
+
+			concurrent.saveCriteriaSet(ficheConcours.getParametre().getReglement());
+
+			if (ae.getSource() == jbValider) {
+				if (!this.jtfNom.getText().equals("")) { //$NON-NLS-1$
+					returnVal = CONFIRM_AND_CLOSE;
+				}
+			} else if (ae.getSource() == jbSuivant) {
+				returnVal = CONFIRM_AND_NEXT;
+			} else if (ae.getSource() == jbPrecedent) {
+				returnVal = CONFIRM_AND_PREVIOUS;
+			}
+
+			setVisible(false);
+		} else if (ae.getSource() == jbAnnuler) {
+			returnVal = CANCEL;
 			setVisible(false);
 		} else if (ae.getSource() == jbSelectionArcher) {
 			ConcurrentListDialog concurrentListDialog = new ConcurrentListDialog(this, ficheConcours.getParametre().getReglement(), filter);

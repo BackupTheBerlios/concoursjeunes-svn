@@ -55,10 +55,10 @@ import org.jdesktop.swingx.JXErrorDialog;
 
 import ajinteractive.standard.common.AJTemplate;
 import ajinteractive.standard.common.PluginClassLoader;
-import ajinteractive.standard.ui.GhostGlassPane;
 import ajinteractive.standard.ui.AJTabbedPane;
 import ajinteractive.standard.ui.AJTabbedPaneListener;
 import ajinteractive.standard.ui.FrameCreator;
+import ajinteractive.standard.ui.GhostGlassPane;
 import ajinteractive.standard.ui.MenuBarTools;
 
 /**
@@ -456,8 +456,14 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			if (jif != null)
 				jif.getFicheConcours().printArcherList(FicheConcours.GREFFE);
 
+			// imprime la liste des concurrents par ordre sur le pas de tir
+		} else if (cmd.equals("menubar.impression.listeconcurrent.bytarget")) { //$NON-NLS-1$
+			if (jif != null)
+				jif.getFicheConcours().printArcherList(FicheConcours.TARGET);
+			
 			// imprime les etiquettes concurrent
 		} else if (cmd.equals("menubar.impression.listeconcurrent.etiquette")) { //$NON-NLS-1$
+
 			if (jif != null)
 				jif.getFicheConcours().printEtiquettes();
 
@@ -480,7 +486,6 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 		} else if (cmd.equals("menubar.aide.apropos")) { //$NON-NLS-1$
 			
 			MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
-			
 			JOptionPane.showMessageDialog(this, "<html>ConcoursJeunes<br>" + //$NON-NLS-1$
 					ConcoursJeunes.ajrLibelle.getResourceString("apropos.description") + "<br><br>" + //$NON-NLS-1$ //$NON-NLS-2$
 					ConcoursJeunes.ajrLibelle.getResourceString("apropos.version") + "<br>" + ConcoursJeunes.VERSION + "<br>" + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

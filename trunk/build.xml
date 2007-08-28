@@ -288,6 +288,12 @@
 		
 		<mkdir dir="${projet.pack.dir}/windows" />
 		
+		<copy todir="${projet.pack.dir}/windows/" >
+			<fileset dir="packager/windows" >
+				<include name="**/**"/>
+			</fileset>
+		</copy>
+		
 		<nsis script="packager/setup.nsi" verbosity="4">
 			<define name="VERSION" value="${version.numero}"/>
 			<define name="OUT_FILE" value="windows\setup-${version.name}-${version.numero}.exe"/>

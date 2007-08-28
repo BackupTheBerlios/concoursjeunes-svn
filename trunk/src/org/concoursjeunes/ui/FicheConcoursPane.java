@@ -275,8 +275,11 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	 * 
 	 */
 	public void openResultatDialog() {
+		Concurrent[] concurrents = ficheConcours.getConcurrentList().list(index, ficheConcours.getCurrentDepart());
+		if(concurrents.length == 0)
+			return;
 		ResultatDialog resultat = new ResultatDialog(parentframe, 
-				ficheConcours.getConcurrentList().list(index, ficheConcours.getCurrentDepart()),
+				concurrents,
 				ficheConcours.getParametre());
 
 		//si annulation ne pas continuer
@@ -338,8 +341,13 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 
 		if(source == jbResultat) {
 			index = 1;
-			openResultatDialog();
-			jepClassIndiv.setText(ficheConcours.getClassement(FicheConcours.OUT_HTML));
+			while(index < ficheConcours.getParametre().getNbCible() 
+					&& ficheConcours.getConcurrentList().list(index, ficheConcours.getCurrentDepart()).length == 0)
+				index++;
+			if(index < ficheConcours.getParametre().getNbCible()) {
+				openResultatDialog();
+				jepClassIndiv.setText(ficheConcours.getClassement(FicheConcours.OUT_HTML));
+			}
 		} else if(source == printClassementIndiv) {
 			ficheConcours.printClassement();
 		} else if(source == printClassementEquipe) {

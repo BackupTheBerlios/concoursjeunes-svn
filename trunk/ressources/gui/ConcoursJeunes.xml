@@ -36,8 +36,11 @@
 				<menuitems>
 					<menuitem>menubar.impression.listeconcurrent.ordrealpha</menuitem>
 					<menuitem>menubar.impression.listeconcurrent.greffe</menuitem>
+					<menuitem>menubar.impression.listeconcurrent.bytarget</menuitem>
+					<separator />
 					<menuitem>menubar.impression.listeconcurrent.etiquette</menuitem>
 					<menuitem>menubar.impression.pasdetir</menuitem>
+					<separator />
 					<menuitem>menubar.impression.classement.individuel</menuitem>
 					<menuitem>menubar.impression.classement.equipe</menuitem>
 				</menuitems>
@@ -45,7 +48,7 @@
 			<menu id="help">
 				<label>menubar.aide</label>
 				<menuitems>
-					<menuitem>menubar.aide.aide</menuitem>
+					<menuitem keycode="VK_F1">menubar.aide.aide</menuitem>
 					<separator />
 					<menuitem>menubar.aide.apropos</menuitem>
 				</menuitems>

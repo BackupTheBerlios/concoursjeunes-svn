@@ -96,6 +96,8 @@ Section "Base" SEC0000
     File /r plugins\ConcoursJeunesUpdate\*
     File *.txt
     File hash.xml.gz
+    File windows\concoursjeunes-applyupdate.exe
+    File windows\concoursjeunes-applyupdate.exe.manifest
     WriteRegStr HKLM "${REGKEY}\Components" Base 1
 SectionEnd
 

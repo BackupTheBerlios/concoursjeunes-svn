@@ -237,15 +237,10 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 			if (JOptionPane.showConfirmDialog(null, pluginLocalisation.getResourceString("update.confirminstall"), pluginLocalisation.getResourceString("update.confirminstall.title"), //$NON-NLS-1$ //$NON-NLS-2$
 					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 				try {
-					if (System.getProperty("os.name").toLowerCase().startsWith("windows")) { //$NON-NLS-1$ //$NON-NLS-2$
-						Runtime.getRuntime().exec(
-								"concoursjeunes-applyupdate \"" + ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update\" \"" + System.getProperty("user.dir") + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ 
-					} else {
-						Runtime.getRuntime().exec(new String[] { "concoursjeunes-applyupdate", //$NON-NLS-1$
-								ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
-								System.getProperty("user.dir") }); //$NON-NLS-1$
+					Runtime.getRuntime().exec(new String[] { "concoursjeunes-applyupdate", //$NON-NLS-1$
+							ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
+							System.getProperty("user.dir") }); //$NON-NLS-1$
 
-					}
 					System.exit(0);
 				} catch (IOException e1) {
 					e1.printStackTrace();
