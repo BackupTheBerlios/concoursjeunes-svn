@@ -765,7 +765,7 @@ public class FicheConcours implements ParametreListener {
 			int colonne = 0;
 			int ligne = 0;
 			for (Concurrent concurrent : ConcurrentList.sort(concurrentList.list(depart), ConcurrentList.SORT_BY_CIBLES)) {
-				//double test = zoneaffichable_y * (cellule_y / 100.0) + espacement_cellule_v;
+				
 				if (colonne == 0)
 					if(ligne < nbhaut - 1)
 						templateEtiquettesXML.parse("page.ligne.leading", "" + (zoneaffichable_y * (cellule_y / 100.0) + espacement_cellule_v)); //$NON-NLS-1$ //$NON-NLS-2$
