@@ -3,6 +3,7 @@ package org.concoursjeunes.ui;
 import static org.concoursjeunes.ConcoursJeunes.ajrParametreAppli;
 
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -647,7 +648,9 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			} else {
 				if (e.getURL().getHost().equals("open_concours")) { //$NON-NLS-1$
 					try {
+						this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 						concoursJeunes.restoreFicheConcours(ConcoursJeunes.configuration.getMetaDataFichesConcours().get(Integer.parseInt(e.getURL().getRef())));
+						this.setCursor(Cursor.getDefaultCursor());
 					} catch (NumberFormatException e1) {
 						JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
 								e1.fillInStackTrace());
@@ -678,7 +681,9 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 					}
 				} else if (e.getURL().getHost().equals("new_concours")) { //$NON-NLS-1$
 					try {
+						this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 						concoursJeunes.createFicheConcours();
+						this.setCursor(Cursor.getDefaultCursor());
 					} catch (ConfigurationException e1) {
 						JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
 								e1.fillInStackTrace());
