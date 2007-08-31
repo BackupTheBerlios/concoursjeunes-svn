@@ -89,6 +89,8 @@
 package org.concoursjeunes;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Map.Entry;
 
 import javax.swing.event.EventListenerList;
 
@@ -97,16 +99,12 @@ import javax.swing.event.EventListenerList;
  * blason appliqué et les concurrents qui y sont associés
  * 
  * @author Aurelien Jeoffray
- * @version 2.1
+ * @version 2.2
  */
 public class Cible {
 
 	private int numCible = 0; // le numero de la cible
 	private FicheConcours concours;
-	/**
-	 * @uml.property name="concurrents"
-	 * @uml.associationEnd multiplicity="(0 -1)"
-	 */
 	private final Concurrent[] concurrents; // le liste des concurrents présents
 	// sur la cible
 	private int nbArcher = 0; // le nombre d'archer sur la cible
@@ -391,6 +389,7 @@ public class Cible {
 		String strCibleLibelle = "<html>" + strCouleur + "<b>" + ConcoursJeunes.ajrLibelle.getResourceString("treenode.cible") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				+ ((this.numCible < 10) ? "0" : "") //$NON-NLS-1$ //$NON-NLS-2$
 				+ this.numCible + "</b> ("; //$NON-NLS-1$
+
 		DistancesEtBlason db = getDistancesEtBlason();
 		if (db != null) {
 			for (int i = 0; i < db.getDistance().length; i++) {
@@ -405,20 +404,27 @@ public class Cible {
 
 		strCibleLibelle += ") (" + this.nbArcher + "/" + concours.getParametre().getNbTireur() + ")</font>"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-		Concurrent precConcurrent = null;
-		boolean valid = false;
+		Hashtable<Entite, Integer> nbArcherByClub = new Hashtable<Entite, Integer>();
 		for (Concurrent concurrent : concurrents) {
-			if (precConcurrent != null && concurrent != null && !precConcurrent.getClub().equals(concurrent.getClub())) {
-				valid = true;
-				break;
+			if(concurrent != null) {
+				if(!nbArcherByClub.containsKey(concurrent.getClub()))
+					nbArcherByClub.put(concurrent.getClub(), 0);
+				nbArcherByClub.put(concurrent.getClub(), nbArcherByClub.get(concurrent.getClub())+1);
 			}
-			if (concurrent != null)
-				precConcurrent = concurrent;
 		}
-		if (!valid && getNbArcher() > 1)
+		
+		if (nbArcherByClub.size() == 1 && getNbArcher() > 1)
 			strCibleLibelle += ConcoursJeunes.ajrLibelle.getResourceString("target.sameclub"); //$NON-NLS-1$
 		else if (getNbArcher() == 1)
 			strCibleLibelle += ConcoursJeunes.ajrLibelle.getResourceString("target.onlyone"); //$NON-NLS-1$
+		else {
+			for(Entry<Entite, Integer> nbarch : nbArcherByClub.entrySet()) {
+				if(nbarch.getValue() > 2) {
+					strCibleLibelle += ConcoursJeunes.ajrLibelle.getResourceString("target.morethan2sameclub"); //$NON-NLS-1$
+					break;
+				}
+			}
+		}
 		strCibleLibelle += "</html>"; //$NON-NLS-1$
 
 		return strCibleLibelle;

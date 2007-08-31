@@ -147,161 +147,94 @@ import com.lowagie.text.Rectangle;
 public class ConfigurationDialog extends JDialog implements ActionListener, AutoCompleteDocumentListener {
 
 	private static String CONFIG_PROFILE = "configuration_"; //$NON-NLS-1$
-
 	private static String EXT_XML = ".xml"; //$NON-NLS-1$
 
 	// private boolean runInitDialog = true;
 
 	private Configuration workConfiguration;
-
 	private final JTabbedPane tabbedpane = new JTabbedPane();
-
 	private final TitledBorder tbProfil = new TitledBorder(""); //$NON-NLS-1$
-
 	private final JLabel jlNomProfil = new JLabel();
-
 	private final JComboBox jcbProfil = new JComboBox();
-
 	private final JButton jbRenameProfile = new JButton();
 
 	// Ecran general personnalisation
 	private final TitledBorder tbParamGeneral = new TitledBorder(""); //$NON-NLS-1$
-
 	private final JLabel jlNomClub = new JLabel();
-
 	private final JLabel jlAgremClub = new JLabel();
-
 	private final JLabel jlIntituleConcours = new JLabel();
-
 	private final JLabel jlLangue = new JLabel();
-
 	private final JLabel jlPathPdf = new JLabel();
-
 	private final JLabel jlLogoPath = new JLabel();
-
 	private final JTextField jtfNomClub = new JTextField(20);
-
 	private final JTextField jtfAgrClub = new JTextField(new NumberDocument(false, false), "", 5); //$NON-NLS-1$
-
 	private final JButton jbDetail = new JButton();
-
 	private final JTextField jtfIntConc = new JTextField(20);
-
 	private final JComboBox jcbLangue = new JComboBox();
-
 	private final JComboBox jcbPathPdf = new JComboBox();
-
 	private final JButton jbParcourirPdf = new JButton("..."); //$NON-NLS-1$
-
 	private final JButton jbLogoPath = new JButton();
 
 	// Ecran concours/pas de tir
 	private final JLabel jlReglement = new JLabel();
-
 	private final JLabel jlNbCible = new JLabel();
-
 	private final JLabel jlNbTireur = new JLabel();
-
 	private final JLabel jlNbDepart = new JLabel();
-
 	private final JComboBox jcbReglement = new JComboBox();
-
 	private final JTextField jtfNbCible = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
-
 	private final JTextField jtfNbTireur = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
-
 	private final JTextField jtfNbDepart = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
 
 	// Ecran etiquette
 	private final JLabel jlFormatPapier = new JLabel();
-
 	private final JLabel jlNbEtiquettes = new JLabel();
-
 	private final JLabel jlColonnes = new JLabel("x"); //$NON-NLS-1$
-
 	private final JLabel jlMarges = new JLabel();
-
 	private final JLabel jlMargesH = new JLabel();
-
 	private final JLabel jlMargesB = new JLabel();
-
 	private final JLabel jlMargesG = new JLabel();
-
 	private final JLabel jlMargesD = new JLabel();
-
 	private final JLabel jlEspacements = new JLabel();
-
 	private final JLabel jlEspacementsH = new JLabel();
-
 	private final JLabel jlEspacementsV = new JLabel();
-
 	private final JComboBox jcbFormatPapier = new JComboBox();
-
 	private final JComboBox jcbOrientation = new JComboBox();
-
 	private final JTextField jtfLignes = new JTextField(new NumberDocument(false, false), "", 5); //$NON-NLS-1$
-
 	private final JTextField jtfColonnes = new JTextField(new NumberDocument(false, false), "", 5); //$NON-NLS-1$
-
 	private final JTextField jtfMargesH = new JTextField(new NumberDocument(true, false), "", 5); //$NON-NLS-1$
-
 	private final JTextField jtfMargesB = new JTextField(new NumberDocument(true, false), "", 5); //$NON-NLS-1$
-
 	private final JTextField jtfMargesG = new JTextField(new NumberDocument(true, false), "", 5); //$NON-NLS-1$
-
 	private final JTextField jtfMargesD = new JTextField(new NumberDocument(true, false), "", 5); //$NON-NLS-1$
-
 	private final JTextField jtfEspacementsH = new JTextField(new NumberDocument(true, false), "", 5); //$NON-NLS-1$
-
 	private final JTextField jtfEspacementsV = new JTextField(new NumberDocument(true, false), "", 5); //$NON-NLS-1$
 
 	// Ecran avancé
 	private final JLabel jlURLImport = new JLabel();
-
 	private final JLabel jlURLExport = new JLabel();
-
 	private final JLabel jlResultats = new JLabel();
-
 	private final JLabel jlAffResultats = new JLabel();
 
 	// private TitledBorder tbPath = new TitledBorder(""); //$NON-NLS-1$
 	private final JCheckBox jcbAvanceResultatCumul = new JCheckBox();
-
 	private final JCheckBox jcbAvanceResultatSupl = new JCheckBox();
-
 	private final JCheckBox jcbAvanceAffResultatExEquo = new JCheckBox();
-
 	private final TitledBorder tbProxy = new TitledBorder(""); //$NON-NLS-1$
-
 	private final JLabel jlAdresseProxy = new JLabel();
-
 	private final JLabel jlPortProxy = new JLabel();
-
 	private final JLabel jlUserProxy = new JLabel();
-
 	private final JLabel jlPasswordProxy = new JLabel();
-
 	private final JCheckBox jcbUseProxy = new JCheckBox();
-
 	private final JTextField jtfAdresseProxy = new JTextField(20);
-
 	private final JTextField jtfPortProxy = new JTextField(new NumberDocument(false, false), "", 5); //$NON-NLS-1$
-
 	private final JCheckBox jcbAuthentificationProxy = new JCheckBox();
-
 	private final JTextField jtfUserProxy = new JTextField(20);
-
 	private final JPasswordField jpfPasswordProxy = new JPasswordField(20);
 
 	// Ecran avancé option debug
 	private final JCheckBox jcbFirstBoot = new JCheckBox();
-
 	private final JButton jbValider = new JButton();
-
 	private final JButton jbAnnuler = new JButton();
-
 	private String[] strLstLangue;
-
 	private boolean renameProfile = false;
 
 	public ConfigurationDialog(JFrame parentframe) {

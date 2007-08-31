@@ -151,6 +151,8 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	private final FicheConcours ficheConcours;
 	private Concurrent concurrent;
 	private Archer filter = null;
+	
+	private ConcurrentListDialog concurrentListDialog;
 
 	private final JLabel jlDescription = new JLabel(); // Description
 	private final JLabel jlNom = new JLabel(); // Nom et prénom du Tireur
@@ -217,6 +219,8 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		super(concoursJeunesFrame, "", true); //$NON-NLS-1$
 
 		this.ficheConcours = ficheConcours;
+		
+		concurrentListDialog = new ConcurrentListDialog(this, ficheConcours.getParametre().getReglement(), filter);
 
 		init();
 		affectLibelle();
@@ -841,7 +845,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			returnVal = CANCEL;
 			setVisible(false);
 		} else if (ae.getSource() == jbSelectionArcher) {
-			ConcurrentListDialog concurrentListDialog = new ConcurrentListDialog(this, ficheConcours.getParametre().getReglement(), filter);
+			//ConcurrentListDialog concurrentListDialog = new ConcurrentListDialog(this, ficheConcours.getParametre().getReglement(), filter);
 			concurrentListDialog.setVisible(true);
 			if (concurrentListDialog.isValider()) {
 				concurrentListDialog.initConcurrent(concurrent);

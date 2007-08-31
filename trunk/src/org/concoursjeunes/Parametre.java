@@ -87,19 +87,21 @@
 
 package org.concoursjeunes;
 
-import java.util.*;
+import static org.concoursjeunes.ConcoursJeunes.ajrParametreAppli;
+
+import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.event.EventListenerList;
-
-import static org.concoursjeunes.ConcoursJeunes.ajrParametreAppli;
 
 /**
  * Parametre d'un concours
  * 
  * @author Aurelien Jeoffray
- * @version 3.0
+ * @version 3.1
  */
 public class Parametre extends DefaultParameters {
+	private String lieuConcours		= null;
 	private Date dDateConcours		= new Date();
 	private ArrayList<String> vArbitres = new ArrayList<String>();
 	private Reglement reglement		= new Reglement();
@@ -129,6 +131,7 @@ public class Parametre extends DefaultParameters {
 	public Parametre(Configuration configuration) {
 		setClub(configuration.getClub());
 		setIntituleConcours(configuration.getIntituleConcours());
+		setLieuConcours(configuration.getClub().getVille());
 		setNbCible(configuration.getNbCible());
 		setNbTireur(configuration.getNbTireur());
 		setNbDepart(configuration.getNbDepart());
@@ -154,6 +157,24 @@ public class Parametre extends DefaultParameters {
 	}
 	
 	/**
+	 * Donne le lieu d'organisation du concours
+	 * 
+	 * @return le lieu d'organisation du concours
+	 */
+	public String getLieuConcours() {
+		return lieuConcours;
+	}
+
+	/**
+	 * Définit le lieu d'organisation du concours
+	 * 
+	 * @param lieuConcours le lieu d'organisation du concours
+	 */
+	public void setLieuConcours(String lieuConcours) {
+		this.lieuConcours = lieuConcours;
+	}
+
+	/**
 	 * Donne la date du concours
 	 * 
 	 * @return Date - la date du concours;
@@ -175,7 +196,6 @@ public class Parametre extends DefaultParameters {
 	 * Donne le chemin du fichier de sauvegarde du concours
 	 * 
 	 * @return  String
-	 * @uml.property  name="saveName"
 	 */
 	public String getSaveName() {
 		return saveName;
@@ -214,7 +234,6 @@ public class Parametre extends DefaultParameters {
 	 * specifie le nom de sauvegarde des infos du concours
 	 * 
 	 * @param  saveName
-	 * @uml.property  name="saveName"
 	 */
 	public void setSaveName(String saveName) {
 		this.saveName = saveName;

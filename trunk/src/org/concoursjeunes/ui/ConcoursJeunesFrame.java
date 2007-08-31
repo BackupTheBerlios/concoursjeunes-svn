@@ -252,7 +252,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			}
 			reglementMenu.addSeparator();
 		}
-		JMenuItem jmiNewReglement = new JMenuItem("Nouveau Réglement"); //$NON-NLS-1$
+		JMenuItem jmiNewReglement = new JMenuItem(ConcoursJeunes.ajrLibelle.getResourceString("menubar.edition.reglement.new")); //$NON-NLS-1$
 		jmiNewReglement.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String reglementName = JOptionPane.showInputDialog(ConcoursJeunes.ajrLibelle.getResourceString("reglement.general.addreglement")); //$NON-NLS-1$
@@ -319,6 +319,11 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	private void displayHome() {
 		if (jepHome != null) {
 			ajtHome.reset();
+			ajtHome.parse("lib_active_profile", ConcoursJeunes.ajrLibelle.getResourceString("home.activeprofile"));
+			ajtHome.parse("lib_gest_competion", ConcoursJeunes.ajrLibelle.getResourceString("home.gestcompet"));
+			ajtHome.parse("lib_new", ConcoursJeunes.ajrLibelle.getResourceString("home.new"));
+			ajtHome.parse("lib_delete", ConcoursJeunes.ajrLibelle.getResourceString("home.delete"));
+			ajtHome.parse("lib_info", ConcoursJeunes.ajrLibelle.getResourceString("home.info"));
 			ajtHome.parse("LOGO_CLUB_URI", ConcoursJeunes.configuration.getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			ajtHome.parse("INTITULE_CLUB", ConcoursJeunes.configuration.getClub().getNom()); //$NON-NLS-1$
 			ajtHome.parse("PROFILE_NAME", ConcoursJeunes.configuration.getCurProfil()); //$NON-NLS-1$
@@ -447,40 +452,62 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			}
 			// imprime la liste des concurrents par ordre alphabetique
 		} else if (cmd.equals("menubar.impression.listeconcurrent.ordrealpha")) { //$NON-NLS-1$
-			if (jif != null)
-				jif.getFicheConcours().printArcherList(FicheConcours.ALPHA);
+			if (jif != null) {
+				if(!jif.getFicheConcours().printArcherList(FicheConcours.ALPHA)) {
+					JOptionPane.showMessageDialog(this, "Rien à imprimer");
+				}
+			}
 
 			// imprime la liste des concurrents par ordre alphabetique avec
 			// information greffe
 		} else if (cmd.equals("menubar.impression.listeconcurrent.greffe")) { //$NON-NLS-1$
 			if (jif != null)
-				jif.getFicheConcours().printArcherList(FicheConcours.GREFFE);
+				if(!jif.getFicheConcours().printArcherList(FicheConcours.GREFFE)) {
+					JOptionPane.showMessageDialog(this, "Rien à imprimer");
+				}
 
 			// imprime la liste des concurrents par ordre sur le pas de tir
 		} else if (cmd.equals("menubar.impression.listeconcurrent.bytarget")) { //$NON-NLS-1$
 			if (jif != null)
-				jif.getFicheConcours().printArcherList(FicheConcours.TARGET);
+				if(!jif.getFicheConcours().printArcherList(FicheConcours.TARGET)) {
+					JOptionPane.showMessageDialog(this, "Rien à imprimer");
+				}
 			
 			// imprime les etiquettes concurrent
 		} else if (cmd.equals("menubar.impression.listeconcurrent.etiquette")) { //$NON-NLS-1$
 
 			if (jif != null)
-				jif.getFicheConcours().printEtiquettes();
+				if(!jif.getFicheConcours().printEtiquettes()) {
+					JOptionPane.showMessageDialog(this, "Rien à imprimer");
+				}
 
 			// imprime la vu du pas de tir
 		} else if (cmd.equals("menubar.impression.pasdetir")) { //$NON-NLS-1$
 			if (jif != null)
-				jif.getFicheConcours().printPasDeTir();
+				if(!jif.getFicheConcours().printPasDeTir()) {
+					JOptionPane.showMessageDialog(this, "Rien à imprimer");
+				}
 
 			// imprime le classement individuel
 		} else if (cmd.equals("menubar.impression.classement.individuel")) { //$NON-NLS-1$
 			if (jif != null)
-				jif.getFicheConcours().printClassement();
+				if(!jif.getFicheConcours().printClassement()) {
+					JOptionPane.showMessageDialog(this, "Rien à imprimer");
+				}
 
 			// imprime le classement par equipe
 		} else if (cmd.equals("menubar.impression.classement.equipe")) { //$NON-NLS-1$
 			if (jif != null)
-				jif.getFicheConcours().printClassementEquipe();
+				if(!jif.getFicheConcours().printClassementEquipe()) {
+					JOptionPane.showMessageDialog(this, "Rien à imprimer");
+				}
+
+			// aimprime le classement par club
+		} else if (cmd.equals("menubar.impression.classement.club")) { //$NON-NLS-1$
+			if (jif != null)
+				if(!jif.getFicheConcours().printClassementClub()) {
+					JOptionPane.showMessageDialog(this, "Rien à imprimer");
+				}
 
 			// affiche la boite de dialogie "A propos"
 		} else if (cmd.equals("menubar.aide.apropos")) { //$NON-NLS-1$

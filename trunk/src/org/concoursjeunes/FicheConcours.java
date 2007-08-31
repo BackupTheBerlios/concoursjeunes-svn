@@ -174,7 +174,7 @@ public class FicheConcours implements ParametreListener {
 		// suppression dans la liste
 		// suppression dans l'equipe si presence dans equipe
 		equipes.removeConcurrent(removedConcurrent);
-		if (concurrentList.remove(removedConcurrent))
+		if (concurrentList.remove(removedConcurrent) != null)
 			fireConcurrentRemoved(removedConcurrent);
 
 		save();
@@ -352,7 +352,7 @@ public class FicheConcours implements ParametreListener {
 			tplClassement.parse("LOGO_CLUB_URI", ConcoursJeunes.configuration.getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			tplClassement.parse("INTITULE_CLUB", parametre.getClub().getNom()); //$NON-NLS-1$
 			tplClassement.parse("INTITULE_CONCOURS", parametre.getIntituleConcours()); //$NON-NLS-1$
-			tplClassement.parse("VILLE_CLUB", parametre.getClub().getVille()); //$NON-NLS-1$
+			tplClassement.parse("VILLE_CLUB", parametre.getLieuConcours()); //$NON-NLS-1$
 			tplClassement.parse("DATE_CONCOURS", DateFormat.getDateInstance(DateFormat.LONG).format(parametre.getDate())); //$NON-NLS-1$
 			tplClassement.parse("author", parametre.getClub().getNom()); //$NON-NLS-1$
 
@@ -507,7 +507,7 @@ public class FicheConcours implements ParametreListener {
 			tplClassementEquipe.parse("LOGO_CLUB_URI", ConcoursJeunes.configuration.getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			tplClassementEquipe.parse("INTITULE_CLUB", parametre.getClub().getNom()); //$NON-NLS-1$
 			tplClassementEquipe.parse("INTITULE_CONCOURS", parametre.getIntituleConcours()); //$NON-NLS-1$
-			tplClassementEquipe.parse("VILLE_CLUB", parametre.getClub().getVille()); //$NON-NLS-1$
+			tplClassementEquipe.parse("VILLE_CLUB", parametre.getLieuConcours()); //$NON-NLS-1$
 			tplClassementEquipe.parse("DATE_CONCOURS", DateFormat.getDateInstance(DateFormat.LONG).format(parametre.getDate())); //$NON-NLS-1$
 
 			String strArbitreResp = ""; //$NON-NLS-1$
@@ -599,8 +599,8 @@ public class FicheConcours implements ParametreListener {
 			tplClassementEquipe.parse("LOGO_CLUB_URI", ConcoursJeunes.configuration.getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			tplClassementEquipe.parse("INTITULE_CLUB", parametre.getClub().getNom()); //$NON-NLS-1$
 			tplClassementEquipe.parse("INTITULE_CONCOURS", parametre.getIntituleConcours()); //$NON-NLS-1$
-			tplClassementEquipe.parse("VILLE_CLUB", parametre.getClub().getVille()); //$NON-NLS-1$
-			tplClassementEquipe.parse("DATE_CONCOURS", parametre.getDate().toString()); //$NON-NLS-1$
+			tplClassementEquipe.parse("VILLE_CLUB", parametre.getLieuConcours()); //$NON-NLS-1$
+			tplClassementEquipe.parse("DATE_CONCOURS", DateFormat.getDateInstance(DateFormat.LONG).format(parametre.getDate())); //$NON-NLS-1$
 
 			String strArbitreResp = ""; //$NON-NLS-1$
 			String strArbitresAss = ""; //$NON-NLS-1$
@@ -664,6 +664,9 @@ public class FicheConcours implements ParametreListener {
 	private String getXMLListeArcher(int mode, int depart) {
 		AJTemplate listeArcherXML;
 		String strArcherListeXML = ""; //$NON-NLS-1$
+		
+		if(concurrentList.countArcher(depart) == 0)
+			return "";
 
 		if (mode == ALPHA || mode == TARGET)
 			listeArcherXML = templateListeArcherXML;
@@ -715,6 +718,9 @@ public class FicheConcours implements ParametreListener {
 	 * @return String - le XML iText à retourner
 	 */
 	private String getXMLEtiquettes(int nblarg, int nbhaut, int depart) {
+		if(concurrentList.countArcher(depart) == 0)
+			return "";
+		
 		try {
 			double marge_gauche = ConcoursJeunes.configuration.getMarges().left; // la marge gauche
 			double marge_droite = ConcoursJeunes.configuration.getMarges().right; // la marge droite
@@ -829,6 +835,9 @@ public class FicheConcours implements ParametreListener {
 	 * @return la sortie XML du pas de tir
 	 */
 	private String getXMLPasDeTir(int depart) {
+		
+		if(concurrentList.countArcher(depart) == 0)
+			return "";
 
 		templatePasDeTirXML.reset();
 
@@ -894,7 +903,7 @@ public class FicheConcours implements ParametreListener {
 	}
 
 	/**
-	 * Genere l'etat classement pour la fiche en parametre
+	 * Genere l'etat classement equipe pour la fiche en parametre
 	 * 
 	 * @return true si impression avec succe, false sinon
 	 */
@@ -903,6 +912,19 @@ public class FicheConcours implements ParametreListener {
 		String classementEquipe = getClassementEquipe(OUT_XML);
 		if (!classementEquipe.equals("")) //$NON-NLS-1$
 			return ConcoursJeunes.printDocument(document, classementEquipe);
+		return false;
+	}
+	
+	/**
+	 * Genere l'etat classement club pour la fiche en parametre
+	 * 
+	 * @return true si impression avec succé, false sinon
+	 */
+	public boolean printClassementClub() {
+		Document document = new Document(PageSize.A4, 10, 10, 10, 65);
+		String classementClub = getClassementClub(OUT_XML);
+		if (!classementClub.equals("")) //$NON-NLS-1$
+			return ConcoursJeunes.printDocument(document, classementClub);
 		return false;
 	}
 

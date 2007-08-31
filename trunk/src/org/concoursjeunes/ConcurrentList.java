@@ -15,7 +15,7 @@
  */
 package org.concoursjeunes;
 
-import java.util.*;
+import java.util.ArrayList;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -63,9 +63,10 @@ public class ConcurrentList {
 	 *
 	 * @param concurrent - le concurrent à ajouter
 	 */
-	public void add(Concurrent concurrent) {
+	public boolean add(Concurrent concurrent) {
 		if(concurrent != null)
-			archList.add(concurrent);
+			return archList.add(concurrent);
+		return false;
 	}
 
 	/**
@@ -75,11 +76,11 @@ public class ConcurrentList {
 	 * 
 	 * @return boolean - true si la suppression à réussi, false sinon
 	 */
-	public boolean remove(int index) {
+	public Concurrent remove(int index) {
 		if(index > 0 && index < archList.size()) {
 			return remove(archList.get(index));
 		}
-		return false;
+		return null;
 	}
 
 	/**
@@ -89,17 +90,16 @@ public class ConcurrentList {
 	 * 
 	 * @return boolean - true si la suppression à réussi, false sinon
 	 */
-	public boolean remove(Concurrent concurrent) {
+	public Concurrent remove(Concurrent concurrent) {
 		if(concurrent != null) {
 			
 			for(int i = 0; i < archList.size(); i++) {
 				if(archList.get(i).equals(concurrent) && archList.get(i).getDepart() == concurrent.getDepart()) {
-					archList.remove(i);
-					return true;
+					return archList.remove(i);
 				}
 			}
 		}
-		return false;
+		return null;
 	}
 
 	/**

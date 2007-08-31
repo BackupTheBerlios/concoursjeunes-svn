@@ -131,6 +131,7 @@ public class ParametreDialog extends JDialog implements ActionListener {
 
 	// private JButton jbLogo;
 	private final JTextField jtfIntituleConcours = new JTextField(20);
+	private final JTextField jtfLieuConcours = new JTextField(20);
 	// private JFormattedTextField jtfDateConcours;
 	private final JXDatePicker jtfDateConcours = new JXDatePicker();
 	private final JComboBox jcbReglement = new JComboBox();
@@ -145,6 +146,7 @@ public class ParametreDialog extends JDialog implements ActionListener {
 	private final AJList jlArbitres = new AJList();
 
 	private final JLabel jlIntituleConcours = new JLabel();
+	private final JLabel jlLieuConcours = new JLabel();
 	private final JLabel jlDateConcours = new JLabel();
 	private final JLabel jlReglement = new JLabel();
 	private final JLabel jlNombreCible = new JLabel();
@@ -211,6 +213,12 @@ public class ParametreDialog extends JDialog implements ActionListener {
 		c.gridwidth = 2;
 		gridbagComposer.addComponentIntoGrid(jtfIntituleConcours, c);
 
+		c.gridy++;
+		c.gridwidth = 1;
+		gridbagComposer.addComponentIntoGrid(jlLieuConcours, c);
+		c.gridwidth = 2;
+		gridbagComposer.addComponentIntoGrid(jtfLieuConcours, c);
+		
 		c.gridy++;
 		c.gridwidth = 1;
 		gridbagComposer.addComponentIntoGrid(jlDateConcours, c);
@@ -291,6 +299,7 @@ public class ParametreDialog extends JDialog implements ActionListener {
 		setTitle(ConcoursJeunes.ajrLibelle.getResourceString("parametre.titre")); //$NON-NLS-1$
 
 		jlIntituleConcours.setText(ConcoursJeunes.ajrLibelle.getResourceString("parametre.intituleconcours")); //$NON-NLS-1$
+		jlLieuConcours.setText(ConcoursJeunes.ajrLibelle.getResourceString("parametre.lieuconcours")); //$NON-NLS-1$
 		jlDateConcours.setText(ConcoursJeunes.ajrLibelle.getResourceString("parametre.dateconcours")); //$NON-NLS-1$
 		jlReglement.setText(ConcoursJeunes.ajrLibelle.getResourceString("parametre.reglement")); //$NON-NLS-1$
 		jlNombreCible.setText(ConcoursJeunes.ajrLibelle.getResourceString("parametre.nombrecible")); //$NON-NLS-1$
@@ -309,6 +318,7 @@ public class ParametreDialog extends JDialog implements ActionListener {
 
 	public void completePanel() {
 		jtfIntituleConcours.setText(parametre.getIntituleConcours());
+		jtfLieuConcours.setText(parametre.getLieuConcours());
 		jtfDateConcours.setDate(parametre.getDate());
 		jcbReglement.setSelectedItem(parametre.getReglement().getName());
 		jcbReglement.setEnabled(!parametre.isReglementLock());
@@ -356,6 +366,7 @@ public class ParametreDialog extends JDialog implements ActionListener {
 			 */
 
 			parametre.setIntituleConcours(jtfIntituleConcours.getText());
+			parametre.setLieuConcours(jtfLieuConcours.getText());
 			parametre.setDate(jtfDateConcours.getDate());
 			parametre.getArbitres().clear();
 			for (Object arbitre : jlArbitres.getAllList()) {

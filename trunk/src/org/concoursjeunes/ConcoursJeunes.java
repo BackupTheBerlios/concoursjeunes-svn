@@ -520,6 +520,10 @@ public class ConcoursJeunes {
 	 */
 	public static boolean printDocument(Document document, String xmlcontent) {
 		boolean printOK = true;
+		
+		if(xmlcontent.isEmpty())
+			return false;
+		
 		try {
 			// cré un document pdf temporaire
 			File tmpFile = File.createTempFile("cta", ajrParametreAppli.getResourceString("extention.pdf")); //$NON-NLS-1$ //$NON-NLS-2$

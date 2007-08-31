@@ -43,6 +43,7 @@
 					<separator />
 					<menuitem>menubar.impression.classement.individuel</menuitem>
 					<menuitem>menubar.impression.classement.equipe</menuitem>
+					<menuitem>menubar.impression.classement.club</menuitem>
 				</menuitems>
 			</menu>
 			<menu id="help">

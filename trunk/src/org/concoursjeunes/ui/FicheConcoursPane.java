@@ -352,6 +352,8 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 			ficheConcours.printClassement();
 		} else if(source == printClassementEquipe) {
 			ficheConcours.printClassementEquipe();
+		} else if(source == printClassementClub) {
+			ficheConcours.printClassementClub();
 		} else if(source instanceof JCheckBox) {
 			for(Criterion criterion : ficheConcours.getParametre().getReglement().getListCriteria()) {
 				criterion.setClassement(classmentCriteriaCB.get(criterion.getCode()).isSelected());
