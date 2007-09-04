@@ -932,6 +932,10 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
 		if (source == this.jbValider) {
+			if(JOptionPane.showConfirmDialog(this, 
+					ConcoursJeunes.ajrLibelle.getResourceString("configuration.fermeture.confirmation"), "", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION)
+				return;
+
 			if(registerConfig())
 				setVisible(false);
 		} else if (source == jbAnnuler) {

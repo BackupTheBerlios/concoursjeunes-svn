@@ -88,8 +88,8 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		if(!ficheConcours.getParametre().isReglementLock()) {
 			paramDialog.showParametreDialog(ficheConcours.getParametre());
 		}
+		
 		init();
-
 		concDialog = new ConcurrentDialog(parentframe, ficheConcours);
 	}
 
@@ -347,13 +347,18 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 			if(index < ficheConcours.getParametre().getNbCible()) {
 				openResultatDialog();
 				jepClassIndiv.setText(ficheConcours.getClassement(FicheConcours.OUT_HTML));
+			} else {
+				JOptionPane.showMessageDialog(this, "Aucune cible n'est occupé");
 			}
 		} else if(source == printClassementIndiv) {
-			ficheConcours.printClassement();
+			if(!ficheConcours.printClassement())
+				JOptionPane.showMessageDialog(this, "Rien à imprimer");
 		} else if(source == printClassementEquipe) {
-			ficheConcours.printClassementEquipe();
+			if(!ficheConcours.printClassementEquipe())
+				JOptionPane.showMessageDialog(this, "Rien à imprimer");
 		} else if(source == printClassementClub) {
-			ficheConcours.printClassementClub();
+			if(!ficheConcours.printClassementClub())
+				JOptionPane.showMessageDialog(this, "Rien à imprimer");
 		} else if(source instanceof JCheckBox) {
 			for(Criterion criterion : ficheConcours.getParametre().getReglement().getListCriteria()) {
 				criterion.setClassement(classmentCriteriaCB.get(criterion.getCode()).isSelected());

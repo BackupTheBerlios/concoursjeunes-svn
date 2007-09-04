@@ -150,6 +150,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 
 	private final FicheConcours ficheConcours;
 	private Concurrent concurrent;
+	private Entite entiteConcurrent;
 	private Archer filter = null;
 	
 	private ConcurrentListDialog concurrentListDialog;
@@ -208,6 +209,8 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	private int selectField = 0;
 
 	private int returnVal = CANCEL;
+	
+	private boolean unlock = false;
 
 	/**
 	 * Création de la boite de dialogue de gestion de concurrent
@@ -447,7 +450,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	 * remplit les champs de la boite de dialogue avec le modèle sous jacent
 	 */
 	private void completeConcurrentDialog() {
-		boolean isinit = concurrent.getInscription() != Concurrent.UNINIT;
+		boolean isinit = concurrent.getInscription() != Concurrent.UNINIT && !unlock;
 
 		jbSelectionArcher.setEnabled(!isinit);
 		jbEditerArcher.setEnabled(isinit);
@@ -489,11 +492,11 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			jtfLicence.setText(concurrent.getNumLicenceArcher());
 		}
 		if (jtfClub.getDocument() instanceof AutoCompleteDocument) {
-			((AutoCompleteDocument) jtfClub.getDocument()).setText(concurrent.getClub().getVille());
-			((AutoCompleteDocument) jtfAgrement.getDocument()).setText(concurrent.getClub().getAgrement());
+			((AutoCompleteDocument) jtfClub.getDocument()).setText(entiteConcurrent.getVille());
+			((AutoCompleteDocument) jtfAgrement.getDocument()).setText(entiteConcurrent.getAgrement());
 		} else {
-			jtfClub.setText(concurrent.getClub().getVille());
-			jtfAgrement.setText(concurrent.getClub().getAgrement());
+			jtfClub.setText(entiteConcurrent.getVille());
+			jtfAgrement.setText(entiteConcurrent.getAgrement());
 		}
 		if (concurrent.getCriteriaSet() != null) {
 			for (Criterion key : ficheConcours.getParametre().getReglement().getListCriteria()) {
@@ -604,6 +607,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	 */
 	public void setConcurrent(Concurrent concurrent) {
 		this.concurrent = concurrent;
+		this.entiteConcurrent = concurrent.getClub();
 
 		completeConcurrentDialog();
 	}
@@ -742,8 +746,10 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	public void entiteFinded(AutoCompleteDocumentEvent e) {
 		Entite findEntite = e.getEntite();
 		if (!findEntite.equals(concurrent.getClub())) {
-			concurrent.setClub(findEntite);
-			setConcurrent(concurrent);
+			//concurrent.setClub(findEntite);
+			//setConcurrent(concurrent);
+			entiteConcurrent = findEntite;
+			completeConcurrentDialog();
 		}
 	}
 
@@ -756,8 +762,10 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			newEntite.setAgrement(jtfAgrement.getText());
 		}
 
-		concurrent.setClub(newEntite);
-		setConcurrent(concurrent);
+		//concurrent.setClub(newEntite);
+		//setConcurrent(concurrent);
+		entiteConcurrent = newEntite;
+		completeConcurrentDialog();
 	}
 
 	public void actionPerformed(ActionEvent ae) {
@@ -824,6 +832,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			concurrent.setNomArcher(jtfNom.getText());
 			concurrent.setPrenomArcher(jtfPrenom.getText());
 			concurrent.setNumLicenceArcher(jtfLicence.getText());
+			concurrent.setClub(entiteConcurrent);
 			concurrent.getClub().setNom(jtfClub.getText());
 			concurrent.getClub().setAgrement(jtfAgrement.getText());
 			concurrent.setInscription(jcbInscription.getSelectedIndex());
@@ -864,6 +873,8 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 				jtfAgrement.setText(entiteListDialog.getSelectedEntite().getAgrement());
 			}
 		} else if (ae.getSource() == jbEditerArcher) {
+			unlock = true;
+			
 			jtfNom.setEditable(true);
 			jtfPrenom.setEditable(true);
 			jtfLicence.setEditable(true);

@@ -647,23 +647,36 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 				((HTMLDocument) jepHome.getDocument()).processHTMLFrameHyperlinkEvent((HTMLFrameHyperlinkEvent) e);
 			} else {
 				if (e.getURL().getHost().equals("open_concours")) { //$NON-NLS-1$
-					try {
-						this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-						concoursJeunes.restoreFicheConcours(ConcoursJeunes.configuration.getMetaDataFichesConcours().get(Integer.parseInt(e.getURL().getRef())));
-						this.setCursor(Cursor.getDefaultCursor());
-					} catch (NumberFormatException e1) {
-						JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
-								e1.fillInStackTrace());
-						e1.printStackTrace();
-					} catch (ConfigurationException e1) {
-						JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
-								e1.fillInStackTrace());
-						e1.printStackTrace();
-					} catch (IOException e1) {
-						JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
-								e1.fillInStackTrace());
-						e1.printStackTrace();
-					}
+					final String concref = e.getURL().getRef();
+					Thread launchFiche = new Thread() {
+						@Override
+						public void run() {
+							
+							try {
+								concoursJeunes.restoreFicheConcours(ConcoursJeunes.configuration.getMetaDataFichesConcours().get(Integer.parseInt(concref)));
+							} catch (NumberFormatException e) {
+								JXErrorDialog.showDialog(ConcoursJeunesFrame.this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+										e.fillInStackTrace());
+								e.printStackTrace();
+							} catch (ConfigurationException e) {
+								JXErrorDialog.showDialog(ConcoursJeunesFrame.this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+										e.fillInStackTrace());
+								e.printStackTrace();
+							} catch (IOException e) {
+								JXErrorDialog.showDialog(ConcoursJeunesFrame.this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+										e.fillInStackTrace());
+								e.printStackTrace();
+							}
+							ConcoursJeunesFrame.this.setCursor(Cursor.getDefaultCursor());
+							ConcoursJeunesFrame.this.jepHome.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+							ConcoursJeunesFrame.this.jepHome.setEnabled(true);
+						}
+					};
+					this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+					this.jepHome.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+					this.jepHome.setEnabled(false);
+					Thread.yield();
+					launchFiche.start();
 				} else if (e.getURL().getHost().equals("delete_concours")) { //$NON-NLS-1$
 					if (JOptionPane.showConfirmDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("confirmation.suppression.concours"), //$NON-NLS-1$
 							ConcoursJeunes.ajrLibelle.getResourceString("confirmation.suppression.concours.titre"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) { //$NON-NLS-1$
@@ -682,6 +695,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 				} else if (e.getURL().getHost().equals("new_concours")) { //$NON-NLS-1$
 					try {
 						this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+						
 						concoursJeunes.createFicheConcours();
 						this.setCursor(Cursor.getDefaultCursor());
 					} catch (ConfigurationException e1) {
