@@ -15,7 +15,6 @@ package org.concoursjeunes;
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-import java.awt.Toolkit;
 import java.io.File;
 import java.sql.SQLException;
 
@@ -44,8 +43,8 @@ public class Main {
 			}
 		};
 		
-		Thread.setDefaultUncaughtExceptionHandler(handlerException);
-		Toolkit.getDefaultToolkit().getSystemEventQueue().push(new ExceptionHandlingEventQueue());
+		//Thread.setDefaultUncaughtExceptionHandler(handlerException);
+		//Toolkit.getDefaultToolkit().getSystemEventQueue().push(new ExceptionHandlingEventQueue());
 
 		ConcoursJeunes concoursJeunes = ConcoursJeunes.getInstance();
 

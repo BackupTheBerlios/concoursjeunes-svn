@@ -731,7 +731,8 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	public void mouseClicked(MouseEvent e) {
 		if (e.getClickCount() == 2) {
 			DefaultMutableTreeNode dmtn = (DefaultMutableTreeNode) treeCriteria.getLastSelectedPathComponent();
-
+			if(dmtn == null)
+				return;
 			Object dmtnObj = dmtn.getUserObject();
 			if (dmtnObj instanceof Criterion) {
 				TreePath selectedPath = treeCriteria.getSelectionPath();

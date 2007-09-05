@@ -94,6 +94,7 @@ import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DateFormat;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -386,41 +387,31 @@ public class ParametreDialog extends JDialog implements ActionListener {
 		} else if (ae.getSource() == jbAnnuler) {
 			setVisible(false);
 		} else if (ae.getSource() == jbAjouterArbitre || ae.getSource() == jtfArbitres) {
-
-			jlArbitres.add(jtfArbitres.getText());
-			jtfArbitres.setText(""); //$NON-NLS-1$
+			if(!jtfArbitres.getText().isEmpty()) {
+				jlArbitres.add(jtfArbitres.getText());
+				jtfArbitres.setText(""); //$NON-NLS-1$
+			}
 		} else if (ae.getSource() == jbSupprimerArbitre) {
 			jlArbitres.remove(jlArbitres.getSelectedIndex());
 		} else if (ae.getSource() == jbArbitreResponsable && jlArbitres.getSelectedIndex() > -1) {
 			// cherche si il existe un arbitre responsable
-			boolean resp = false;
-			for (int i = 0; i < parametre.getArbitres().size(); i++) {
-				if (parametre.getArbitres().get(i).startsWith("*")) { //$NON-NLS-1$
-					resp = true;
-
+			ArrayList<Object> lstArbitres = jlArbitres.getAllList();
+			for (Object arbitre : lstArbitres) {
+				if(((String) arbitre).startsWith("*")) {
 					// si il en existe 1 et qu'il est different de celui que l'on veut
-					if (i != jlArbitres.getSelectedIndex()) {
+					if(!((String) arbitre).equals(jlArbitres.getSelectedValue())) {
+						
 						// affecter à ce statut alors retirer l'* de la selection precedente
-						String strArbitreResponsable = parametre.getArbitres().get(i);
-						parametre.getArbitres().set(i, strArbitreResponsable.substring(1));
-
-						// et l'ajouter sur la nouvelle selection
-						strArbitreResponsable = parametre.getArbitres().get(jlArbitres.getSelectedIndex());
-						parametre.getArbitres().set(jlArbitres.getSelectedIndex(), "*" + strArbitreResponsable); //$NON-NLS-1$
-
-						jlArbitres.setListData(parametre.getArbitres().toArray());
+						lstArbitres.set(lstArbitres.indexOf(arbitre), ((String) arbitre).substring(1));
 					}
-
+					
 					break;
 				}
 			}
-
-			if (!resp) {
-				String strArbitreResponsable = parametre.getArbitres().get(jlArbitres.getSelectedIndex());
-				parametre.getArbitres().set(jlArbitres.getSelectedIndex(), "*" + strArbitreResponsable); //$NON-NLS-1$
-
-				jlArbitres.setListData(parametre.getArbitres().toArray());
-			}
+			// et l'ajouter sur la nouvelle selection
+			lstArbitres.set(jlArbitres.getSelectedIndex(), "*" + jlArbitres.getSelectedValue()); //$NON-NLS-1$
+			
+			jlArbitres.setListData(lstArbitres.toArray());
 		} else if (ae.getSource() == jbDetail) {
 			reglementDialog.setReglement(tempReglement);
 			if (parametre.isReglementLock())

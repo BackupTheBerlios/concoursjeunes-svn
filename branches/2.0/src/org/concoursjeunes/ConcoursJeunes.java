@@ -154,7 +154,7 @@ public class ConcoursJeunes {
 	public static final String CODENAME = "@version.codename@"; //$NON-NLS-1$
 	public static final String AUTEURS = "@version.author@"; //$NON-NLS-1$
 	public static final String COPYR = "@version.copyr@"; //$NON-NLS-1$
-	public static final int DB_RELEASE_REQUIRED = 3;
+	public static final int DB_RELEASE_REQUIRED = 4;
 
 	// Chaine de ressources
 	public static final String RES_LIBELLE = "libelle"; //$NON-NLS-1$
@@ -261,6 +261,7 @@ public class ConcoursJeunes {
 				Arrays.sort(updateScripts);
 
 				int scriptRelease = dbVersion;
+				stmt.addBatch("SET LOG 0;");
 				for (String scriptPath : updateScripts) {
 					SqlParser.createBatch(new File(userRessources.getAllusersDataPath() + File.separator + "update" + File.separator + scriptPath), stmt, null, scriptRelease + 1); //$NON-NLS-1$
 					System.out.println("delete: " //$NON-NLS-1$
