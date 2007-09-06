@@ -351,7 +351,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		}
 		return this.jbAnnuler;
 	}
-
+	
 	/**
 	 * initialise un nouveau concurrent
 	 * 
@@ -469,28 +469,8 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 
 		public ArchersTableModel(Archer filter) {
 
-			// try {
-			// String sql = "select * from archers order by NOMARCHER";
-			// Statement stmt = ConcoursJeunes.dbConnection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
-			// archersRS = stmt.executeQuery(sql);
-			// int nbrow = getRowCount();
-			// for(int i = 0; i < nbrow; i++) {
-			// SoftReference<Concurrent> softConcurrent = new SoftReference<Concurrent>(null);
-			// softRows.add(softConcurrent);
-			// }
-			/*
-			 * while(archersRS.next()) { Concurrent concurrent = ConcurrentBuilder.getConcurrent(archersRS, reglement); SoftReference<Concurrent> softConcurrent = new SoftReference<Concurrent>(concurrent);
-			 * softRows.add(softConcurrent); }
-			 */
-			// } catch (SQLException e) {
-			// e.printStackTrace();
-			// }
 			rows = Concurrent.getArchersInDatabase(filter, reglement, "NOMARCHER"); //$NON-NLS-1$
-			// for(Concurrent concurrent : rows) {
-			// softRows.add(new SoftReference<Concurrent>(concurrent));
-			// }
-			// rows = null;
 
 			columnsName.add(ConcoursJeunes.ajrLibelle.getResourceString("listeconcurrent.numlicence")); //$NON-NLS-1$
 			columnsName.add(ConcoursJeunes.ajrLibelle.getResourceString("listeconcurrent.nom")); //$NON-NLS-1$
@@ -532,10 +512,6 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		 * @see javax.swing.table.TableModel#getRowCount()
 		 */
 		public int getRowCount() {
-			/*
-			 * if(rowCount == 0) { try { archersRS.last(); rowCount = archersRS.getRow(); archersRS.first(); return rowCount; } catch (SQLException e) { e.printStackTrace(); rowCount = 0; return 0; } }
-			 * return rowCount;
-			 */
 			return rows.size();
 		}
 
@@ -599,26 +575,6 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		}
 
 		public Concurrent getConcurrentAtRow(int rowIndex) {
-			// SoftReference<Concurrent> softConcurrent = softRows.get(rowIndex);
-			// Concurrent concurrent;
-			// if ( row == null ) then its never been read from the database...
-			// if (softConcurrent.get() == null ) {
-			// then its been read but its been GC'd
-			// try {
-			// archersRS.absolute(rowIndex + 1);
-			// concurrent = ConcurrentBuilder.getConcurrent(archersRS, reglement);
-			// softRows.set(rowIndex, new SoftReference<Concurrent>(concurrent));
-			// System.out.println("regen:" + concurrent);
-			// } catch (SQLException e) {
-			// concurrent = ConcurrentBuilder.getConcurrent(reglement);
-			// e.printStackTrace();
-			// }
-			// } else {
-			// concurrent = softConcurrent.get();
-			// System.out.println("recup:" + rowIndex + ":" + concurrent);
-			// }
-			// return concurrent;
-
 			return rows.get(rowIndex);
 		}
 	}

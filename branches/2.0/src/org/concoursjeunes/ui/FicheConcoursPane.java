@@ -413,4 +413,9 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 			} 
 		} 
 	}
+	
+	@Override
+	public void finalize() {
+		System.out.println("FicheConcoursPane: Objet récupéré");
+	}
 }

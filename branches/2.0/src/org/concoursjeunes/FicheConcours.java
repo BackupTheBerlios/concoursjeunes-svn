@@ -31,6 +31,7 @@ import org.jdesktop.swingx.JXErrorDialog;
 
 import ajinteractive.standard.common.AJTemplate;
 import ajinteractive.standard.common.AJToolKit;
+import ajinteractive.standard.common.XmlUtils;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
@@ -365,9 +366,8 @@ public class FicheConcours implements ParametreListener {
 					strArbitresAss += arbitre;
 				}
 			}
-
-			tplClassement.parse("ARBITRE_RESPONSABLE", strArbitreResp); //$NON-NLS-1$
-			tplClassement.parse("ARBITRES_ASSISTANT", strArbitresAss); //$NON-NLS-1$
+			tplClassement.parse("ARBITRE_RESPONSABLE", XmlUtils.sanitizeText(strArbitreResp)); //$NON-NLS-1$
+			tplClassement.parse("ARBITRES_ASSISTANT", XmlUtils.sanitizeText(strArbitresAss)); //$NON-NLS-1$
 			tplClassement.parse("NB_CLUB", "" + concurrentList.countCompagnie()); //$NON-NLS-1$ //$NON-NLS-2$
 			tplClassement.parse("NB_TIREURS", "" + concurrentList.countArcher()); //$NON-NLS-1$ //$NON-NLS-2$
 			tplClassement.parse("TYPE_CLASSEMENT", ConcoursJeunes.ajrLibelle.getResourceString("classement.individuel")); //$NON-NLS-1$ //$NON-NLS-2$

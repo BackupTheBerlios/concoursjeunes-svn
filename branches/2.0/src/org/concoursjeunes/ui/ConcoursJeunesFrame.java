@@ -361,7 +361,8 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 		// ajoute la fiche à l'espace de travail et l'affiche
 		tabbedpane.addTab(ficheConcours.getParametre().getIntituleConcours() + " - " + df.format(ficheConcours.getParametre().getDate()), jif); //$NON-NLS-1$
 		tabbedpane.setSelectedComponent(jif);
-		// tabbedpane.add
+		
+		jif = null;
 
 		displayHome();
 	}
@@ -379,6 +380,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 					e.fillInStackTrace());
 			e.printStackTrace();
 		}
+		jif = null; 
 	}
 
 	private void closeApp() {
@@ -593,14 +595,16 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	 */
 	public void ficheConcoursClosed(ConcoursJeunesEvent concoursJeunesEvent) {
 		//
+		FicheConcoursPane jif;
 		for (int i = 1; i < tabbedpane.getTabCount(); i++) {
-			FicheConcoursPane jif = (FicheConcoursPane) tabbedpane.getComponentAt(i);
+			jif = (FicheConcoursPane) tabbedpane.getComponentAt(i);
 			if (jif.getFicheConcours() == concoursJeunesEvent.getFicheConcours()) {
 				tabbedpane.removeTabAt(i);
 
 				break;
 			}
 		}
+		jif = null;
 		displayHome();
 	}
 

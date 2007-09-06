@@ -153,7 +153,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	private Entite entiteConcurrent;
 	private Archer filter = null;
 	
-	private ConcurrentListDialog concurrentListDialog;
+	private static ConcurrentListDialog concurrentListDialog;
 
 	private final JLabel jlDescription = new JLabel(); // Description
 	private final JLabel jlNom = new JLabel(); // Nom et prénom du Tireur
@@ -223,8 +223,15 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 
 		this.ficheConcours = ficheConcours;
 		
-		concurrentListDialog = new ConcurrentListDialog(this, ficheConcours.getParametre().getReglement(), filter);
-
+		Thread initListConc = new Thread() {
+			@Override
+			public void run() {
+				if(concurrentListDialog == null)
+					concurrentListDialog = new ConcurrentListDialog(ConcurrentDialog.this, ConcurrentDialog.this.ficheConcours.getParametre().getReglement(), filter);
+			}
+		};
+		initListConc.start();
+		
 		init();
 		affectLibelle();
 
@@ -855,10 +862,29 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			setVisible(false);
 		} else if (ae.getSource() == jbSelectionArcher) {
 			//ConcurrentListDialog concurrentListDialog = new ConcurrentListDialog(this, ficheConcours.getParametre().getReglement(), filter);
-			concurrentListDialog.setVisible(true);
-			if (concurrentListDialog.isValider()) {
-				concurrentListDialog.initConcurrent(concurrent);
-				setConcurrent(concurrent);
+			try {
+				int i = 0;
+				while(concurrentListDialog == null) {
+					if(i == 30) //timeout au bout de 30 sec
+						break;
+					Thread.sleep(100);
+					Thread.yield();
+					i++;
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
+			if(concurrentListDialog != null) {
+				concurrentListDialog.setVisible(true);
+				if (concurrentListDialog.isValider()) {
+					concurrentListDialog.initConcurrent(concurrent);
+					setConcurrent(concurrent);
+				}
+			} else {
+				JOptionPane.showMessageDialog(this, "La liste des archers n'est " +
+						"pas encore initialiser.\nPatienter encore quelque seconde " +
+						"et recommencer");
 			}
 		} else if (ae.getSource() == jbDetailClub) {
 			if (!jtfAgrement.getText().equals("")) { //$NON-NLS-1$
