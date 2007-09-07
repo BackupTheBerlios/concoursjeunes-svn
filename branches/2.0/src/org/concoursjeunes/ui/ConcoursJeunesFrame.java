@@ -375,6 +375,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 		FicheConcoursPane jif = (FicheConcoursPane) tabComponent;
 		try {
 			concoursJeunes.closeFicheConcours(jif.getFicheConcours());
+			jif.dispose();
 		} catch (ConfigurationException e) {
 			JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
 					e.fillInStackTrace());
@@ -595,16 +596,6 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	 */
 	public void ficheConcoursClosed(ConcoursJeunesEvent concoursJeunesEvent) {
 		//
-		FicheConcoursPane jif;
-		for (int i = 1; i < tabbedpane.getTabCount(); i++) {
-			jif = (FicheConcoursPane) tabbedpane.getComponentAt(i);
-			if (jif.getFicheConcours() == concoursJeunesEvent.getFicheConcours()) {
-				tabbedpane.removeTabAt(i);
-
-				break;
-			}
-		}
-		jif = null;
 		displayHome();
 	}
 

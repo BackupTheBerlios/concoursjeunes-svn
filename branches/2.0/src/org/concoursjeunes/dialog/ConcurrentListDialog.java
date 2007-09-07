@@ -577,5 +577,17 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		public Concurrent getConcurrentAtRow(int rowIndex) {
 			return rows.get(rowIndex);
 		}
+		
+		@Override
+		public void finalize() throws Throwable {
+			System.out.println("ConcurrentListDialog.TableModel detruit");
+			super.finalize();
+		}
+	}
+	
+	@Override
+	public void finalize() throws Throwable {
+		System.out.println("ConcurrentListDialog detruit");
+		super.finalize();
 	}
 }

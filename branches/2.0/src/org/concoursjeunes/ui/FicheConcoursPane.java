@@ -414,6 +414,20 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		} 
 	}
 	
+	public void dispose() {
+		paramDialog.dispose();
+		paramDialog = null;
+		concDialog.dispose();
+		concDialog = null;
+		
+		tabbedpane.removeChangeListener(this);
+		jepClassIndiv.removeHyperlinkListener(this);
+		jbResultat.removeActionListener(this);
+		printClassementIndiv.removeActionListener(this);
+		printClassementEquipe.removeActionListener(this);
+		printClassementClub.removeActionListener(this);
+	}
+	
 	@Override
 	public void finalize() {
 		System.out.println("FicheConcoursPane: Objet récupéré");

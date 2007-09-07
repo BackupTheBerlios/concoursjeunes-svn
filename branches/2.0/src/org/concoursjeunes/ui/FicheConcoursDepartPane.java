@@ -858,4 +858,9 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 	 */
 	public void keyTyped(KeyEvent e) {
 	}
+	
+	/*@Override
+	public void dispose() {
+		System.out.println("Destruction de la fenetre ConcurrentDialog");
+	}*/
 }

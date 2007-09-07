@@ -153,6 +153,8 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	private Entite entiteConcurrent;
 	private Archer filter = null;
 	
+	private static volatile boolean onloadConcurrentListDialog = false;
+	private static volatile int nbInstance = 0;
 	private static ConcurrentListDialog concurrentListDialog;
 
 	private final JLabel jlDescription = new JLabel(); // Description
@@ -222,12 +224,16 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		super(concoursJeunesFrame, "", true); //$NON-NLS-1$
 
 		this.ficheConcours = ficheConcours;
+		nbInstance++;
 		
 		Thread initListConc = new Thread() {
 			@Override
 			public void run() {
-				if(concurrentListDialog == null)
+				if(concurrentListDialog == null && !onloadConcurrentListDialog) {
+					onloadConcurrentListDialog = true;
 					concurrentListDialog = new ConcurrentListDialog(ConcurrentDialog.this, ConcurrentDialog.this.ficheConcours.getParametre().getReglement(), filter);
+					onloadConcurrentListDialog = false;
+				}
 			}
 		};
 		initListConc.start();
@@ -943,5 +949,25 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	 * @see java.awt.event.FocusListener#focusLost(java.awt.event.FocusEvent)
 	 */
 	public void focusLost(FocusEvent fe) {
+	}
+	
+	@Override
+	public void dispose() {
+		System.out.println("Destruction de la fenetre ConcurrentDialog");
+		nbInstance--;
+		if(nbInstance == 0) {
+			if(concurrentListDialog != null)
+				concurrentListDialog.dispose();
+			concurrentListDialog = null;
+			onloadConcurrentListDialog = false;
+		}
+		super.dispose();
+	}
+	
+	@Override
+	public void finalize() throws Throwable {
+		System.out.println("ConcurrentDialog detruit");
+		
+		super.finalize();
 	}
 }
