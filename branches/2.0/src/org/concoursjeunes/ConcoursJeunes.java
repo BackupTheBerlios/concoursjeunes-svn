@@ -202,7 +202,8 @@ public class ConcoursJeunes {
 		// tente de recuperer la configuration générale du programme
 		configuration = ConfigurationManager.loadCurrentConfiguration();
 
-		reloadLibelle(new Locale(configuration.getLangue()));
+		Locale.setDefault(new Locale(configuration.getLangue()));
+		reloadLibelle();
 		try {
 			AjResourcesReader.setClassLoader(new PluginClassLoader(findParentClassLoader(), new File("plugins"))); //$NON-NLS-1$
 		} catch (MalformedURLException e1) {
@@ -300,8 +301,8 @@ public class ConcoursJeunes {
 	 * @param locale -
 	 *            la localité utilisé pour les libellés
 	 */
-	public static void reloadLibelle(Locale locale) {
-		AjResourcesReader.setLocale(locale);
+	public static void reloadLibelle() {
+		AjResourcesReader.setLocale(Locale.getDefault());
 		ajrLibelle = new AjResourcesReader(RES_LIBELLE);
 	}
 

@@ -95,7 +95,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -108,10 +107,8 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
@@ -156,7 +153,7 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 
 	private final JCheckBox cbEquipeClub = new JCheckBox();
 
-	private JPopupMenu popup;
+	//private JPopupMenu popup;
 
 	private final JButton jbValider = new JButton();
 	private final JButton jbAnnuler = new JButton();
@@ -256,7 +253,7 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 		getContentPane().add(splitpane, BorderLayout.CENTER);
 		getContentPane().add(jpValidAnnul, BorderLayout.SOUTH);
 
-		popup();
+		//popup();
 
 		setGlassPane(new GhostGlassPane());
 	}
@@ -439,7 +436,7 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 		}
 	}
 
-	public void popup() {
+	/*public void popup() {
 		popup = new JPopupMenu("Edit"); //$NON-NLS-1$
 
 		JMenuItem mi1 = new JMenuItem(ConcoursJeunes.ajrLibelle.getResourceString("popup.suppression")); //$NON-NLS-1$
@@ -448,7 +445,7 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 		popup.add(mi1);
 
 		treeEquipes.add(popup);
-	}
+	}*/
 
 	/**
 	 * renvoie la liste des équipes
@@ -456,6 +453,8 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 	 * @return Equipe[] - la liste des équipes
 	 */
 	public EquipeList getEquipes() {
+		tempEquipes.removeInvalidTeam();
+		
 		return tempEquipes;
 	}
 
@@ -468,9 +467,9 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 		return validation;
 	}
 
-	private void createEquipe(TreePath destPath) {
+	private boolean createEquipe(TreePath destPath) {
 		if (destPath == null)
-			return;
+			return false;
 		
 		DefaultMutableTreeNode equipesTreeNode;
 		TreePath[] selectedPaths = treeConcurrents.getSelectionPaths();
@@ -496,7 +495,9 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 
 		do {
 			strEquipeName = JOptionPane.showInputDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("equipe.saisinom"), strEquipeName); //$NON-NLS-1$
-		} while (strEquipeName == null || strEquipeName.equals("") || tempEquipes.contains(strEquipeName)); //$NON-NLS-1$
+			if(strEquipeName == null)
+				return false;
+		} while (strEquipeName.isEmpty() || tempEquipes.contains(strEquipeName)); //$NON-NLS-1$
 
 		// on crée l'équipe
 		Equipe equipe = new Equipe(strEquipeName);
@@ -525,9 +526,11 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 		for (Map.Entry<Criterion, JCheckBox> cb : classmentCriteriaCB.entrySet()) {
 			cb.getValue().setEnabled(tempEquipes.countEquipes() == 0);
 		}
+		
+		return true;
 	}
 
-	private void addMembresToEquipe(Equipe equipe, DefaultMutableTreeNode dmtn) {
+	private boolean addMembresToEquipe(Equipe equipe, DefaultMutableTreeNode dmtn) {
 
 		TreePath[] selectedPaths = treeConcurrents.getSelectionPaths();
 		Concurrent[] selectionConc = new Concurrent[selectedPaths.length];
@@ -539,17 +542,20 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 		if (equipe.getMembresEquipe().size() + selectionConc.length > ficheConcours.getParametre().getReglement().getNbMembresEquipe()) {
 			JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("equipe.taille.max"), //$NON-NLS-1$
 					ConcoursJeunes.ajrLibelle.getResourceString("equipe.warning"), JOptionPane.WARNING_MESSAGE); //$NON-NLS-1$
-		} else {
-			for (Object concurrent : selectionConc) {
-				if (concurrent != null) {
-					// ajoute le concurrent à l'equipe
-					equipe.addConcurrent((Concurrent) concurrent);
-					// ajoute le concurrent à l'arborescence.
-					DefaultMutableTreeNode membreTreeNode = new DefaultMutableTreeNode(concurrent);
-					dmtn.add(membreTreeNode);
-				}
+			return false;
+		}
+		
+		for (Object concurrent : selectionConc) {
+			if (concurrent != null) {
+				// ajoute le concurrent à l'equipe
+				equipe.addConcurrent((Concurrent) concurrent);
+				// ajoute le concurrent à l'arborescence.
+				DefaultMutableTreeNode membreTreeNode = new DefaultMutableTreeNode(concurrent);
+				dmtn.add(membreTreeNode);
 			}
 		}
+		
+		return true;
 	}
 
 	/**
@@ -571,43 +577,30 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 				 * CriteriaSetLibelle) { listConcurrents(((CriteriaSetLibelle)dmtnObj).getCriteriaSet(), ConcurrentList.SORT_BY_CLUBS); } }
 				 */
 			}
-		} else if (e.getActionCommand().equals("popup.suppression")) { //$NON-NLS-1$
-			DefaultMutableTreeNode dmtn = (DefaultMutableTreeNode) treeEquipes.getLastSelectedPathComponent();
-			if (dmtn != null) {
-				Object dmtnObj = dmtn.getUserObject();
-				if (dmtnObj instanceof CriteriaSetLibelle) {
-
-				} else if (dmtnObj instanceof Concurrent) {
-					//DefaultMutableTreeNode tnEquipe = (DefaultMutableTreeNode) dmtn.getParent();
-
-					//Equipe equipe = (Equipe) tnEquipe.getUserObject();
-
-					//removeMembreForEquipe(equipe, (Concurrent) dmtnObj);
-				}
-			}
 
 		} else if (e.getSource() == jbAnnuler) {
 			validation = false;
 			setVisible(false);
 		} else if (e.getSource() == jbValider) {
+			for(Equipe equipe : tempEquipes.list()) {
+	            if(equipe.getMembresEquipe().size() < ficheConcours.getParametre().getReglement().getNbMembresRetenu()) {
+	                if(JOptionPane.showConfirmDialog(this, 
+	                		"Des équipes incomplètes ont été renseignées,\n" +
+	                		"Celles ci seront supprimé à la validation\n\n" +
+	                		"Voulez vous continuer?", "Equipes incomplétes", 
+	                		JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
+	                	return;
+	                }
+	                break;
+	            }
+	        }
+			
 			validation = true;
 			setVisible(false);
 		}
 	}
 
 	public void valueChanged(ListSelectionEvent e) {
-		/*
-		 * if(e.getSource() == ajlConcurrents) { AJList tmplist = (AJList)e.getSource(); int[] selection = tmplist.getSelectedIndices();
-		 * 
-		 * if(cbEquipeClub.isSelected()) { Concurrent concRef = null;
-		 * 
-		 * for(int index : selection) { Concurrent concurrent = (Concurrent)tmplist.getValueAt(index); //prend le 1er élément en référence if(concRef == null) concRef = concurrent;
-		 * 
-		 * if(!concurrent.getClub().equals(concRef.getClub())) { tmplist.removeSelectionInterval(index, index); } } }
-		 * 
-		 * if(selection.length > ficheConcours.getParametre().getReglement().getNbMembresEquipe()) {
-		 * tmplist.removeSelectionInterval(selection[ficheConcours.getParametre().getReglement().getNbMembresEquipe()], selection[selection.length-1]); } }
-		 */
 	}
 
 	/*
@@ -616,9 +609,6 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 	 * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
 	 */
 	public void mouseClicked(MouseEvent e) {
-		if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
-			popup.show(e.getComponent(), e.getX(), e.getY());
-		}
 	}
 
 	/*
@@ -678,25 +668,27 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 
 					Equipe equipe = (Equipe) destObj;
 
-					addMembresToEquipe(equipe, teamNode);
+					if(addMembresToEquipe(equipe, teamNode)) {
 
-					treeModel.reload(teamNode);
-
-					DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) treeConcurrents.getSelectionPath().getParentPath().getLastPathComponent();
-					TreePath[] selectedPaths = treeConcurrents.getSelectionPaths();
-					for (TreePath selectedPath : selectedPaths) {
-						parentNode.remove((DefaultMutableTreeNode) selectedPath.getLastPathComponent());
+						treeModel.reload(teamNode);
+	
+						DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) treeConcurrents.getSelectionPath().getParentPath().getLastPathComponent();
+						TreePath[] selectedPaths = treeConcurrents.getSelectionPaths();
+						for (TreePath selectedPath : selectedPaths) {
+							parentNode.remove((DefaultMutableTreeNode) selectedPath.getLastPathComponent());
+						}
+						treeModelConcurrents.reload(parentNode);
 					}
-					treeModelConcurrents.reload(parentNode);
 				} else {
-					createEquipe(treeEquipes.getPathForLocation(p.x, p.y));
+					if(createEquipe(treeEquipes.getPathForLocation(p.x, p.y))) {
 
-					TreePath[] selectedPaths = treeConcurrents.getSelectionPaths();
-					for (TreePath selectedPath : selectedPaths) {
-						((DefaultMutableTreeNode) selectedPath.getParentPath().getLastPathComponent()).remove((DefaultMutableTreeNode) selectedPath.getLastPathComponent());
+						TreePath[] selectedPaths = treeConcurrents.getSelectionPaths();
+						for (TreePath selectedPath : selectedPaths) {
+							((DefaultMutableTreeNode) selectedPath.getParentPath().getLastPathComponent()).remove((DefaultMutableTreeNode) selectedPath.getLastPathComponent());
+						}
+	
+						treeModelConcurrents.reload((DefaultMutableTreeNode) treeConcurrents.getSelectionPath().getParentPath().getLastPathComponent());
 					}
-
-					treeModelConcurrents.reload((DefaultMutableTreeNode) treeConcurrents.getSelectionPath().getParentPath().getLastPathComponent());
 				}
 			}
 		} else if (e.getSource() == treeEquipes && onDrag) {

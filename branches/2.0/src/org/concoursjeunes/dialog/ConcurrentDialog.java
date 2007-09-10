@@ -846,7 +846,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			concurrent.setPrenomArcher(jtfPrenom.getText());
 			concurrent.setNumLicenceArcher(jtfLicence.getText());
 			concurrent.setClub(entiteConcurrent);
-			concurrent.getClub().setNom(jtfClub.getText());
+			concurrent.getClub().setVille(jtfClub.getText());
 			concurrent.getClub().setAgrement(jtfAgrement.getText());
 			concurrent.setInscription(jcbInscription.getSelectedIndex());
 
@@ -861,10 +861,11 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			} else if (ae.getSource() == jbPrecedent) {
 				returnVal = CONFIRM_AND_PREVIOUS;
 			}
-
+			unlock = false;
 			setVisible(false);
 		} else if (ae.getSource() == jbAnnuler) {
 			returnVal = CANCEL;
+			unlock = false;
 			setVisible(false);
 		} else if (ae.getSource() == jbSelectionArcher) {
 			//ConcurrentListDialog concurrentListDialog = new ConcurrentListDialog(this, ficheConcours.getParametre().getReglement(), filter);
