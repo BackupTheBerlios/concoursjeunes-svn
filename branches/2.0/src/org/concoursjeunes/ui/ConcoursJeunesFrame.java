@@ -441,7 +441,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			configurationDialog.showConfigurationDialog(ConcoursJeunes.configuration.clone());
 
 			if (configurationDialog.getWorkConfiguration() != null) {
-				if (configurationDialog.getWorkConfiguration().getCurProfil().equals(ConcoursJeunes.configuration.getCurProfil())) {
+				if (!configurationDialog.getWorkConfiguration().getCurProfil().equals(ConcoursJeunes.configuration.getCurProfil())) {
 					try {
 						concoursJeunes.closeAllFichesConcours();
 					} catch (ConfigurationException e1) {
@@ -596,6 +596,14 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	 */
 	public void ficheConcoursClosed(ConcoursJeunesEvent concoursJeunesEvent) {
 		//
+		for (int i = 1; i < tabbedpane.getTabCount(); i++) {
+			FicheConcoursPane jif = (FicheConcoursPane) tabbedpane.getComponentAt(i);
+			if (jif.getFicheConcours() == concoursJeunesEvent.getFicheConcours()) {
+				tabbedpane.removeTabAt(i);
+
+				break;
+			}
+		}
 		displayHome();
 	}
 
