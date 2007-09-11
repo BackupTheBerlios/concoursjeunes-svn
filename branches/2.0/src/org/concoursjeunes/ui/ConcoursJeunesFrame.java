@@ -297,7 +297,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			configuration.save();
 			configuration.saveAsDefault();
 
-			if (configuration.getCurProfil().equals(ConcoursJeunes.configuration.getCurProfil())) {
+			if (!configuration.getCurProfil().equals(ConcoursJeunes.configuration.getCurProfil())) {
 				try {
 					concoursJeunes.closeAllFichesConcours();
 				} catch (ConfigurationException e1) {

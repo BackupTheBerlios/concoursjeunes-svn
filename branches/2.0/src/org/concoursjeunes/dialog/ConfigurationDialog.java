@@ -642,6 +642,11 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 
 		jcbProfil.setSelectedItem(configuration.getCurProfil());
 		jcbProfil.addActionListener(this);
+		
+		if(configuration.getCurProfil().equals("defaut"))
+			jbRenameProfile.setEnabled(false);
+		else
+			jbRenameProfile.setEnabled(true);
 
 		jcbLangue.removeAllItems();
 		for (int i = 0; i < libelleLangues.length; i++) {
@@ -662,6 +667,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 
 	private void completeConcoursPanel(Configuration configuration) {
 		String[] availableReglements = Reglement.listAvailableReglements();
+		jcbReglement.removeAllItems();
 		if (availableReglements != null) {
 			for (String reglementName : availableReglements)
 				jcbReglement.addItem(reglementName);
@@ -942,6 +948,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		Object source = e.getSource();
 		if (source == this.jbValider) {
 			if(workConfiguration.getMetaDataFichesConcours().getFiches().size() != 0 
+					&& !workConfiguration.getCurProfil().equals(ConcoursJeunes.configuration.getCurProfil())
 					&& JOptionPane.showConfirmDialog(this, 
 					ConcoursJeunes.ajrLibelle.getResourceString("configuration.fermeture.confirmation"), "", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION)
 				return;
