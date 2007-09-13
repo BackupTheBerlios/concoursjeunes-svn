@@ -201,7 +201,7 @@ public class ConcoursJeunes {
 	private ConcoursJeunes() {
 		// tente de recuperer la configuration générale du programme
 		configuration = ConfigurationManager.loadCurrentConfiguration();
-
+		
 		Locale.setDefault(new Locale(configuration.getLangue()));
 		reloadLibelle();
 		try {
@@ -227,12 +227,38 @@ public class ConcoursJeunes {
 		System.out.println("Repertoire utilisateur: " + System.getProperty("user.home")); //$NON-NLS-1$ //$NON-NLS-2$
 		System.out.println("Java version:" + System.getProperty("java.version")); //$NON-NLS-1$ //$NON-NLS-2$
 
+		boolean erasedb = false;
+		do {
+			try {
+				dbConnection = DriverManager.getConnection(ajrParametreAppli.getResourceString("database.url", userRessources.getBasePath()), //$NON-NLS-1$
+						ajrParametreAppli.getResourceString("database.user"), //$NON-NLS-1$
+						ajrParametreAppli.getResourceString("database.password")); //$NON-NLS-1$
+			} catch (SQLException e) {
+				e.printStackTrace();
+				JXErrorDialog.showDialog(null, "SQL Error", e.toString(), //$NON-NLS-1$
+						e.fillInStackTrace());
+				
+				//Si ce n'est pas un message db bloqué par un autre processus
+				if(!e.getMessage().endsWith("[90020-57]")) { //$NON-NLS-1$
+					if(JOptionPane.showConfirmDialog(null, ajrLibelle.getResourceString("erreur.breakdb")) == JOptionPane.YES_OPTION) {
+						erasedb = true;
+						for(File deletefile : new File(userRessources.getBasePath()).listFiles()) {
+							deletefile.delete();
+						}
+					} else {
+						System.exit(1);
+					}
+				} else {
+					System.exit(1);
+				}
+				//TODO effacer les fichiers de la base
+				
+			}
+		} while(erasedb);
+		
+		Statement stmt = null;
 		try {
-			dbConnection = DriverManager.getConnection(ajrParametreAppli.getResourceString("database.url", userRessources.getBasePath()), //$NON-NLS-1$
-					ajrParametreAppli.getResourceString("database.user"), //$NON-NLS-1$
-					ajrParametreAppli.getResourceString("database.password")); //$NON-NLS-1$
-
-			Statement stmt = dbConnection.createStatement();
+			stmt = dbConnection.createStatement();
 
 			// test si la base existe déjà et retourne sa révision si c'est le cas
 			ResultSet rs = stmt.executeQuery("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='PARAM'"); //$NON-NLS-1$
@@ -262,22 +288,23 @@ public class ConcoursJeunes {
 				Arrays.sort(updateScripts);
 
 				int scriptRelease = dbVersion;
-				stmt.addBatch("SET LOG 0;");
+				stmt.addBatch("SET LOG 0;"); //$NON-NLS-1$
 				for (String scriptPath : updateScripts) {
 					SqlParser.createBatch(new File(userRessources.getAllusersDataPath() + File.separator + "update" + File.separator + scriptPath), stmt, null, scriptRelease + 1); //$NON-NLS-1$
-					System.out.println("delete: " //$NON-NLS-1$
+					stmt.executeBatch();
+					stmt.clearBatch();
+					System.out.println("delete: " + scriptPath + ": " //$NON-NLS-1$ //$NON-NLS-2$
 							+ new File(userRessources.getAllusersDataPath() + File.separator + "update" + File.separator + scriptPath).delete()); //$NON-NLS-1$
 				}
-				stmt.executeBatch();
-				stmt.close();
-
-				dbVersion = getDBVersion();
+				stmt.executeUpdate("SET LOG 1;"); //$NON-NLS-1$
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JXErrorDialog.showDialog(null, "SQL Error", e.getLocalizedMessage(), //$NON-NLS-1$
+			JXErrorDialog.showDialog(null, "SQL Error", e.toString(), //$NON-NLS-1$
 					e.fillInStackTrace());
-			System.exit(1);
+		} finally {
+			try { if(stmt != null) stmt.close(); } catch (SQLException e) { }
+			dbVersion = getDBVersion();
 		}
 
 		loadStartupPlugin();

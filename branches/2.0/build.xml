@@ -109,6 +109,7 @@
 			optimize="on"
 			encoding="UTF-8"
 			nowarn="on"
+			debug="true"
 			classpath="${compilclasspath}">
 		</javac>
 
@@ -176,7 +177,6 @@
 				<include name="ressources/**"/>
 				<include name="documentation/**"/>
 				<include name="ConcoursJeunes.jar"/>
-				<include name="hash.xml.gz"/>
 			</fileset>
 		</copy>
 		
@@ -275,7 +275,6 @@
 				<include name="ressources/**"/>
 				<include name="documentation/**"/>
 				<include name="ConcoursJeunes.jar"/>
-				<include name="hash.xml.gz"/>
 				<include name="*.txt"/>
 			</fileset>
 		</copy>

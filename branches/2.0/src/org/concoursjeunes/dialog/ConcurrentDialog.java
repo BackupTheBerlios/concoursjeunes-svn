@@ -231,7 +231,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			public void run() {
 				if(concurrentListDialog == null && !onloadConcurrentListDialog) {
 					onloadConcurrentListDialog = true;
-					concurrentListDialog = new ConcurrentListDialog(ConcurrentDialog.this, ConcurrentDialog.this.ficheConcours.getParametre().getReglement(), filter);
+					concurrentListDialog = new ConcurrentListDialog(ConcurrentDialog.this, ConcurrentDialog.this.ficheConcours.getParametre().getReglement(), null);
 					onloadConcurrentListDialog = false;
 				}
 			}
@@ -868,7 +868,9 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			unlock = false;
 			setVisible(false);
 		} else if (ae.getSource() == jbSelectionArcher) {
-			//ConcurrentListDialog concurrentListDialog = new ConcurrentListDialog(this, ficheConcours.getParametre().getReglement(), filter);
+			//Le chargement de la liste des concurrents etant asynchrone, on doit attendre que celle ci
+			// soit chargé avant de l'afficher. On place un timeout de 30s pour ne pas bloqué définitivement
+			// l'interface en cas d'echec de chargement ou avoir un delai d'attente trop long sur certain système
 			try {
 				int i = 0;
 				while(concurrentListDialog == null) {
@@ -883,6 +885,8 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			}
 			
 			if(concurrentListDialog != null) {
+				//si la liste est disponible alore l'afficher
+				concurrentListDialog.setFilter(filter);
 				concurrentListDialog.setVisible(true);
 				if (concurrentListDialog.isValider()) {
 					concurrentListDialog.initConcurrent(concurrent);

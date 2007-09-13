@@ -104,8 +104,8 @@ public class ExceptionHandlingEventQueue extends EventQueue {
 			super.dispatchEvent(event);
 		} catch (RuntimeException e) {
 			JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
-					e.toString(), //$NON-NLS-1$
-					e.fillInStackTrace());
+					e.toString(),
+					e);
 			e.printStackTrace();
 		}
 	}

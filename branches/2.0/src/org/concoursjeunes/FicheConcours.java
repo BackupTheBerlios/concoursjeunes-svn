@@ -1013,4 +1013,9 @@ public class FicheConcours implements ParametreListener {
 			ficheConcoursListener.pasDeTirChanged(new FicheConcoursEvent(FicheConcoursEvent.PASDETIR_CHANGED, FicheConcoursEvent.ALL_START));
 		}
 	}
+	
+	@Override
+	public void finalize() {
+		System.out.println("FicheConcours: Objet récupéré");
+	}
 }

@@ -68,13 +68,9 @@ import ajinteractive.standard.ui.MenuBarTools;
 public class ConcoursJeunesFrame extends JFrame implements ActionListener, HyperlinkListener, ConcoursJeunesListener, ParametreListener, AJTabbedPaneListener, ChangeListener {
 
 	private JMenuItem jmiParametres;
-
 	private JMenu jmReglements;
-
 	private JMenu jmImpression;
-
 	private AJTabbedPane tabbedpane;
-
 	private JEditorPane jepHome;
 
 	private ConcoursJeunes concoursJeunes;
@@ -89,8 +85,8 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	public ConcoursJeunesFrame(ConcoursJeunes concoursJeunes) {
 		this.concoursJeunes = concoursJeunes;
 
-		if (concoursJeunes != null) {
-			concoursJeunes.addConcoursJeunesListener(this);
+		if (this.concoursJeunes != null) {
+			this.concoursJeunes.addConcoursJeunesListener(this);
 
 			// affiche la boite de dialogue si le fichier de configuration
 			// n'existe pas ou si il est

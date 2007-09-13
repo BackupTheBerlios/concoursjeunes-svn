@@ -351,7 +351,30 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		}
 		return this.jbAnnuler;
 	}
-	
+
+	public void setFilter(Archer filter) {
+		if(filter == null)
+			return;
+		String numLicence = filter.getNumLicenceArcher().replaceAll("%", "");
+		String nom = filter.getNomArcher().replaceAll("%", "");
+		String club = filter.getClub().getNom().replaceAll("%", "");
+		
+		if (!numLicence.isEmpty()) {
+			jtfFilterLicence.setText(numLicence);
+			sorter.setRowFilter(RowFilter.regexFilter("^" + numLicence.toUpperCase(), 0)); //$NON-NLS-1$
+			jTable.setRowSorter(sorter);
+		}
+		if (!nom.isEmpty()) {
+			jtfFilterNom.setText(nom);
+			sorter.setRowFilter(RowFilter.regexFilter("^" + nom.toUpperCase(), 1)); //$NON-NLS-1$
+			jTable.setRowSorter(sorter);
+		}
+		if (!club.isEmpty()) {
+			jtfFilterClub.setText(club);
+			sorter.setRowFilter(RowFilter.regexFilter(club.toUpperCase(), 3));
+			jTable.setRowSorter(sorter);
+		}
+	}
 	/**
 	 * initialise un nouveau concurrent
 	 * 

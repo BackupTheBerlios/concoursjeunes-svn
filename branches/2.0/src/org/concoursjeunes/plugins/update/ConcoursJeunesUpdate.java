@@ -158,7 +158,7 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 		PluginLoader pl = new PluginLoader();
 
 		ajUpdater = new AjUpdater(ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
-				"hash.xml.gz"); //$NON-NLS-1$
+				"."); //$NON-NLS-1$
 		ajUpdater.addAjUpdaterListener(this);
 		ajUpdater.setUserAgent(ConcoursJeunes.NOM + " " + ConcoursJeunes.VERSION //$NON-NLS-1$
 				+ " (" + ConcoursJeunes.configuration.getClub().getAgrement() + " " + ConcoursJeunes.configuration.getClub().getNom() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
