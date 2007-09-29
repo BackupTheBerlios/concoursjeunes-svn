@@ -1,4 +1,0 @@
-#!/bin/sh
-
-cd $2
-java -cp lib/AJPackage.jar ajinteractive.standard.utilities.updater.AjUpdaterApply $1 $2
