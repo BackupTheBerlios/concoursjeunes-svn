@@ -112,16 +112,29 @@ Section "Import Result'Arc" SEC0001
     WriteRegStr HKLM "${REGKEY}\Components" "Import Result'Arc" 1
 SectionEnd
 
-Section -post SEC0002
+Section "Icone de Bureau" SEC0002
+    SectionIn 1
+    SetOverwrite on
+    SetOutPath $INSTDIR
+    CreateShortCut "$DESKTOP\ConcoursJeunes.lnk" "$INSTDIR\concoursjeunes-startup.exe" '' "$INSTDIR\ressources\iconCJ.ico"
+    WriteRegStr HKLM "${REGKEY}\Components" "Icone de Bureau" 1
+SectionEnd
+
+Section "Option de Debugage" SEC0003
+    SetOverwrite on
+    SetOutPath $INSTDIR
+    CreateShortCut "$SMPROGRAMS\$StartMenuGroup\ConcoursJeunes Debug.lnk" "$INSTDIR\concoursjeunes-startup.exe" '-debug' "$INSTDIR\ressources\iconCJ.ico"
+    WriteRegStr HKLM "${REGKEY}\Components" "Option de Debugage" 1
+SectionEnd
+
+Section -post SEC0004
     WriteRegStr HKLM "${REGKEY}" Path $INSTDIR
     WriteUninstaller $INSTDIR\uninstall.exe
     !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
-    SetOutPath $SMPROGRAMS\$StartMenuGroup
-    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\$(^UninstallLink).lnk" $INSTDIR\uninstall.exe
     SetOutPath $INSTDIR
     CreateShortCut "$SMPROGRAMS\$StartMenuGroup\ConcoursJeunes.lnk" "$INSTDIR\concoursjeunes-startup.exe" '' "$INSTDIR\ressources\iconCJ.ico"
-    CreateShortCut "$SMPROGRAMS\$StartMenuGroup\ConcoursJeunes Debug.lnk" "$INSTDIR\concoursjeunes-startup.exe" '-debug' "$INSTDIR\ressources\iconCJ.ico"
-    CreateShortCut "$DESKTOP\ConcoursJeunes.lnk" "$INSTDIR\concoursjeunes-startup.exe" '' "$INSTDIR\ressources\iconCJ.ico"
+    SetOutPath $SMPROGRAMS\$StartMenuGroup
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\$(^UninstallLink).lnk" $INSTDIR\uninstall.exe
     !insertmacro MUI_STARTMENU_WRITE_END
     WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayName "$(^Name)"
     WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayVersion "${VERSION}"
@@ -157,11 +170,20 @@ Section /o "un.Import Reslut'Arc" UNSEC0001
     DeleteRegValue HKLM "${REGKEY}\Components" "Import Result'Arc"
 SectionEnd
 
-Section un.post UNSEC0002
+Section /o "un.Icone de Bureau" UNSEC0002
+    Delete /REBOOTOK "$DESKTOP\ConcoursJeunes.lnk"
+    DeleteRegValue HKLM "${REGKEY}\Components" "Icone de Bureau"
+SectionEnd
+
+Section /o "un.Option de Debugage" UNSEC0003
+    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\ConcoursJeunes Debug.lnk"
+    DeleteRegValue HKLM "${REGKEY}\Components" "Option de Debugage"
+SectionEnd
+
+Section un.post UNSEC0004
     DeleteRegKey HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\$(^UninstallLink).lnk"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\ConcoursJeunes.lnk"
-    Delete /REBOOTOK "$DESKTOP\ConcoursJeunes.lnk"
     Delete /REBOOTOK $INSTDIR\uninstall.exe
     DeleteRegValue HKLM "${REGKEY}" StartMenuGroup
     DeleteRegValue HKLM "${REGKEY}" Path
