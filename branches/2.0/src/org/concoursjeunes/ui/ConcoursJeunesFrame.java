@@ -141,7 +141,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 
 		jmImpression = (JMenu) frameCreator.getNamedComponent("mi.print"); //$NON-NLS-1$
 
-		if (ajrParametreAppli.getResourceInteger("debug.mode") == 1) { //$NON-NLS-1$
+		if (System.getProperty("debug.mode") != null) { //$NON-NLS-1$
 			((JMenu) frameCreator.getNamedComponent("mi.debug")).setVisible(true); //$NON-NLS-1$
 		}
 

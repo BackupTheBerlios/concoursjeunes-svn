@@ -154,7 +154,7 @@ public class ConcoursJeunes {
 	public static final String CODENAME = "@version.codename@"; //$NON-NLS-1$
 	public static final String AUTEURS = "@version.author@"; //$NON-NLS-1$
 	public static final String COPYR = "@version.copyr@"; //$NON-NLS-1$
-	public static final int DB_RELEASE_REQUIRED = 4;
+	public static final int DB_RELEASE_REQUIRED = 5;
 
 	// Chaine de ressources
 	public static final String RES_LIBELLE = "libelle"; //$NON-NLS-1$
@@ -210,8 +210,7 @@ public class ConcoursJeunes {
 			e1.printStackTrace();
 		}
 
-		// en debug_mode=0, log la sortie systeme
-		if (ajrParametreAppli.getResourceInteger("debug.mode") == 0) { //$NON-NLS-1$
+		if (System.getProperty("debug.mode") == null) { //$NON-NLS-1$
 			try {
 				System.setErr(new PrintStream(userRessources.getLogPathForProfile(configuration.getCurProfil()) + File.separator + ajrParametreAppli.getResourceString("log.error"))); //$NON-NLS-1$
 				System.setOut(new PrintStream(userRessources.getLogPathForProfile(configuration.getCurProfil()) + File.separator + ajrParametreAppli.getResourceString("log.exec"))); //$NON-NLS-1$

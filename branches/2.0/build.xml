@@ -54,13 +54,6 @@
 		</copy>
 
 		<replace 
-		    file="${projet.pack.dir}/config/parametre.properties">
-			<replacefilter 
-			    token="debug.mode=1" 
-			    value="debug.mode=0"/>
-		</replace>
-
-		<replace 
 		    file="${projet.pack.dir}/Readme.txt"
 			propertyFile="packager/version.properties">
 			<replacefilter 

@@ -520,7 +520,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		gridbagComposer.addComponentIntoGrid(jlAffResultats, c);
 		c.gridy++;
 		gridbagComposer.addComponentIntoGrid(jcbAvanceAffResultatExEquo, c);
-		if (ConcoursJeunes.ajrParametreAppli.getResourceInteger("debug.mode") == 1) { //$NON-NLS-1$
+		if (System.getProperty("debug.mode") != null) { //$NON-NLS-1$
 			c.gridy++;
 			gridbagComposer.addComponentIntoGrid(jcbFirstBoot, c);
 		}

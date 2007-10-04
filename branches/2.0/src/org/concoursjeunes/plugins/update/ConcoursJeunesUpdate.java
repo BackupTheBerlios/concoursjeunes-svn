@@ -237,12 +237,15 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 			if (JOptionPane.showConfirmDialog(null, pluginLocalisation.getResourceString("update.confirminstall"), pluginLocalisation.getResourceString("update.confirminstall.title"), //$NON-NLS-1$ //$NON-NLS-2$
 					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 				try {
-					Runtime.getRuntime().exec(new String[] { "concoursjeunes-applyupdate", //$NON-NLS-1$
+					Process process = Runtime.getRuntime().exec(new String[] { "concoursjeunes-applyupdate", //$NON-NLS-1$
 							ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
 							System.getProperty("user.dir") }); //$NON-NLS-1$
+					process.waitFor();
 
-					System.exit(0);
+					System.exit(3);
 				} catch (IOException e1) {
+					e1.printStackTrace();
+				} catch (InterruptedException e1) {
 					e1.printStackTrace();
 				}
 			}
