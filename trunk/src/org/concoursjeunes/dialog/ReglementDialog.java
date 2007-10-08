@@ -381,7 +381,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		jtfNbMembresRetenu.setText(reglement.getNbMembresRetenu() + ""); //$NON-NLS-1$
 
 		jcbOfficialReglement.setSelected(reglement.isOfficialReglement());
-		if (ConcoursJeunes.ajrParametreAppli.getResourceInteger("debug.mode") == 0) { //$NON-NLS-1$
+		if (System.getProperty("debug.mode") != null) { //$NON-NLS-1$
 			jcbOfficialReglement.setEnabled(false);
 		}
 	}
@@ -731,7 +731,8 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	public void mouseClicked(MouseEvent e) {
 		if (e.getClickCount() == 2) {
 			DefaultMutableTreeNode dmtn = (DefaultMutableTreeNode) treeCriteria.getLastSelectedPathComponent();
-
+			if(dmtn == null)
+				return;
 			Object dmtnObj = dmtn.getUserObject();
 			if (dmtnObj instanceof Criterion) {
 				TreePath selectedPath = treeCriteria.getSelectionPath();

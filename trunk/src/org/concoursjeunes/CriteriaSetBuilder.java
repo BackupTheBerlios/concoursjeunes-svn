@@ -100,11 +100,12 @@ import java.util.Hashtable;
 public class CriteriaSetBuilder {
 	public static CriteriaSet getCriteriaSet(int numCriteriaSet, Reglement reglement, int hashReglement) {
 		try {
-			String sql = "select * from POSSEDE where NUMCRITERIASET=?"; //$NON-NLS-1$
+			String sql = "select * from POSSEDE where NUMCRITERIASET=? and NUMREGLEMENT=?"; //$NON-NLS-1$
 			
 			PreparedStatement pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
 			
 			pstmt.setInt(1, numCriteriaSet);
+			pstmt.setInt(2, reglement.hashCode());
 			
 			ResultSet rs = pstmt.executeQuery();
 			

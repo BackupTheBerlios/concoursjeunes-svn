@@ -144,7 +144,7 @@ import com.lowagie.text.pdf.PdfWriter;
 public class ConcoursJeunes {
 
 	// UID: 1.Major(2).Minor(2).Correctif(2).Build(3).Type(1,Alpha,Beta,RC(1->6),Release)
-	public static final long serialVersionUID = 10190000011l;
+	public static final long serialVersionUID = 10196000011l;
 
 	/**
 	 * Chaines de version de ConcoursJeunes
@@ -154,7 +154,7 @@ public class ConcoursJeunes {
 	public static final String CODENAME = "@version.codename@"; //$NON-NLS-1$
 	public static final String AUTEURS = "@version.author@"; //$NON-NLS-1$
 	public static final String COPYR = "@version.copyr@"; //$NON-NLS-1$
-	public static final int DB_RELEASE_REQUIRED = 2;
+	public static final int DB_RELEASE_REQUIRED = 5;
 
 	// Chaine de ressources
 	public static final String RES_LIBELLE = "libelle"; //$NON-NLS-1$
@@ -201,16 +201,16 @@ public class ConcoursJeunes {
 	private ConcoursJeunes() {
 		// tente de recuperer la configuration générale du programme
 		configuration = ConfigurationManager.loadCurrentConfiguration();
-
-		reloadLibelle(new Locale(configuration.getLangue()));
+		
+		Locale.setDefault(new Locale(configuration.getLangue()));
+		reloadLibelle();
 		try {
 			AjResourcesReader.setClassLoader(new PluginClassLoader(findParentClassLoader(), new File("plugins"))); //$NON-NLS-1$
 		} catch (MalformedURLException e1) {
 			e1.printStackTrace();
 		}
 
-		// en debug_mode=0, log la sortie systeme
-		if (ajrParametreAppli.getResourceInteger("debug.mode") == 0) { //$NON-NLS-1$
+		if (System.getProperty("debug.mode") == null) { //$NON-NLS-1$
 			try {
 				System.setErr(new PrintStream(userRessources.getLogPathForProfile(configuration.getCurProfil()) + File.separator + ajrParametreAppli.getResourceString("log.error"))); //$NON-NLS-1$
 				System.setOut(new PrintStream(userRessources.getLogPathForProfile(configuration.getCurProfil()) + File.separator + ajrParametreAppli.getResourceString("log.exec"))); //$NON-NLS-1$
@@ -226,12 +226,38 @@ public class ConcoursJeunes {
 		System.out.println("Repertoire utilisateur: " + System.getProperty("user.home")); //$NON-NLS-1$ //$NON-NLS-2$
 		System.out.println("Java version:" + System.getProperty("java.version")); //$NON-NLS-1$ //$NON-NLS-2$
 
+		boolean erasedb = false;
+		do {
+			try {
+				dbConnection = DriverManager.getConnection(ajrParametreAppli.getResourceString("database.url", userRessources.getBasePath()), //$NON-NLS-1$
+						ajrParametreAppli.getResourceString("database.user"), //$NON-NLS-1$
+						ajrParametreAppli.getResourceString("database.password")); //$NON-NLS-1$
+			} catch (SQLException e) {
+				e.printStackTrace();
+				JXErrorDialog.showDialog(null, "SQL Error", e.toString(), //$NON-NLS-1$
+						e.fillInStackTrace());
+				
+				//Si ce n'est pas un message db bloqué par un autre processus
+				if(!e.getMessage().endsWith("[90020-57]")) { //$NON-NLS-1$
+					if(JOptionPane.showConfirmDialog(null, ajrLibelle.getResourceString("erreur.breakdb")) == JOptionPane.YES_OPTION) {
+						erasedb = true;
+						for(File deletefile : new File(userRessources.getBasePath()).listFiles()) {
+							deletefile.delete();
+						}
+					} else {
+						System.exit(1);
+					}
+				} else {
+					System.exit(1);
+				}
+				//TODO effacer les fichiers de la base
+				
+			}
+		} while(erasedb);
+		
+		Statement stmt = null;
 		try {
-			dbConnection = DriverManager.getConnection(ajrParametreAppli.getResourceString("database.url", userRessources.getBasePath()), //$NON-NLS-1$
-					ajrParametreAppli.getResourceString("database.user"), //$NON-NLS-1$
-					ajrParametreAppli.getResourceString("database.password")); //$NON-NLS-1$
-
-			Statement stmt = dbConnection.createStatement();
+			stmt = dbConnection.createStatement();
 
 			// test si la base existe déjà et retourne sa révision si c'est le cas
 			ResultSet rs = stmt.executeQuery("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='PARAM'"); //$NON-NLS-1$
@@ -261,21 +287,23 @@ public class ConcoursJeunes {
 				Arrays.sort(updateScripts);
 
 				int scriptRelease = dbVersion;
+				stmt.addBatch("SET LOG 0;"); //$NON-NLS-1$
 				for (String scriptPath : updateScripts) {
 					SqlParser.createBatch(new File(userRessources.getAllusersDataPath() + File.separator + "update" + File.separator + scriptPath), stmt, null, scriptRelease + 1); //$NON-NLS-1$
-					System.out.println("delete: " //$NON-NLS-1$
+					stmt.executeBatch();
+					stmt.clearBatch();
+					System.out.println("delete: " + scriptPath + ": " //$NON-NLS-1$ //$NON-NLS-2$
 							+ new File(userRessources.getAllusersDataPath() + File.separator + "update" + File.separator + scriptPath).delete()); //$NON-NLS-1$
 				}
-				stmt.executeBatch();
-				stmt.close();
-
-				dbVersion = getDBVersion();
+				stmt.executeUpdate("SET LOG 1;"); //$NON-NLS-1$
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JXErrorDialog.showDialog(null, "SQL Error", e.getLocalizedMessage(), //$NON-NLS-1$
+			JXErrorDialog.showDialog(null, "SQL Error", e.toString(), //$NON-NLS-1$
 					e.fillInStackTrace());
-			System.exit(1);
+		} finally {
+			try { if(stmt != null) stmt.close(); } catch (SQLException e) { }
+			dbVersion = getDBVersion();
 		}
 
 		loadStartupPlugin();
@@ -299,8 +327,8 @@ public class ConcoursJeunes {
 	 * @param locale -
 	 *            la localité utilisé pour les libellés
 	 */
-	public static void reloadLibelle(Locale locale) {
-		AjResourcesReader.setLocale(locale);
+	public static void reloadLibelle() {
+		AjResourcesReader.setLocale(Locale.getDefault());
 		ajrLibelle = new AjResourcesReader(RES_LIBELLE);
 	}
 

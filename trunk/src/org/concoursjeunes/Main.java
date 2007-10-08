@@ -15,8 +15,11 @@ package org.concoursjeunes;
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+
+import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.io.File;
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.sql.SQLException;
 
 import org.concoursjeunes.ui.ConcoursJeunesFrame;
@@ -27,8 +30,6 @@ import org.jdesktop.swingx.JXErrorDialog;
  * 
  */
 public class Main {
-	
-	
 	/**
 	 * @param args
 	 */
@@ -36,11 +37,15 @@ public class Main {
 		Thread.UncaughtExceptionHandler handlerException = new Thread.UncaughtExceptionHandler() {
 
 			@Override
-			public void uncaughtException(Thread t, Throwable e) {
-				JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
-						e.toString(),
-						e.fillInStackTrace());
-				e.printStackTrace();
+			public void uncaughtException(Thread t, final Throwable e) {
+				EventQueue.invokeLater(new Runnable() {
+			         public void run() {
+						JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+								e.toString(),
+								e);
+						e.printStackTrace();
+			         }
+				});
 			}
 		};
 		

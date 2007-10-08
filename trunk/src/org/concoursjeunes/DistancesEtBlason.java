@@ -154,7 +154,7 @@ public class DistancesEtBlason {
 					reglement.hashCode() + "," + //$NON-NLS-1$
 					criteriaSet.hashCode() + ")"); //$NON-NLS-1$
 			
-			stmt.executeUpdate("delete from DISTANCES where NUMDISTANCESBLASONS=" + numdistancesblason); //$NON-NLS-1$
+			stmt.executeUpdate("delete from DISTANCES where NUMDISTANCESBLASONS=" + numdistancesblason + " and NUMREGLEMENT=" + reglement.hashCode()); //$NON-NLS-1$
 			for(int distance : distances) {
 				stmt.executeUpdate("insert into DISTANCES (NUMDISTANCESBLASONS, NUMREGLEMENT, DISTANCE) " + //$NON-NLS-1$
 						"VALUES (" + numdistancesblason + ", " + reglement.hashCode() +", " + distance + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$

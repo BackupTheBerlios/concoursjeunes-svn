@@ -145,10 +145,6 @@ import com.lowagie.text.Rectangle;
  * @version 2.2
  */
 public class ConfigurationDialog extends JDialog implements ActionListener, AutoCompleteDocumentListener {
-
-	private static String CONFIG_PROFILE = "configuration_"; //$NON-NLS-1$
-	private static String EXT_XML = ".xml"; //$NON-NLS-1$
-
 	// private boolean runInitDialog = true;
 
 	private Configuration workConfiguration;
@@ -236,6 +232,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	private final JButton jbAnnuler = new JButton();
 	private String[] strLstLangue;
 	private boolean renameProfile = false;
+	private boolean renamedProfile = false;
 
 	public ConfigurationDialog(JFrame parentframe) {
 		super(parentframe, true);
@@ -523,7 +520,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		gridbagComposer.addComponentIntoGrid(jlAffResultats, c);
 		c.gridy++;
 		gridbagComposer.addComponentIntoGrid(jcbAvanceAffResultatExEquo, c);
-		if (ConcoursJeunes.ajrParametreAppli.getResourceInteger("debug.mode") == 1) { //$NON-NLS-1$
+		if (System.getProperty("debug.mode") != null) { //$NON-NLS-1$
 			c.gridy++;
 			gridbagComposer.addComponentIntoGrid(jcbFirstBoot, c);
 		}
@@ -641,6 +638,11 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 
 		jcbProfil.setSelectedItem(configuration.getCurProfil());
 		jcbProfil.addActionListener(this);
+		
+		if(configuration.getCurProfil().equals("defaut"))
+			jbRenameProfile.setEnabled(false);
+		else
+			jbRenameProfile.setEnabled(true);
 
 		jcbLangue.removeAllItems();
 		for (int i = 0; i < libelleLangues.length; i++) {
@@ -661,6 +663,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 
 	private void completeConcoursPanel(Configuration configuration) {
 		String[] availableReglements = Reglement.listAvailableReglements();
+		jcbReglement.removeAllItems();
 		if (availableReglements != null) {
 			for (String reglementName : availableReglements)
 				jcbReglement.addItem(reglementName);
@@ -834,27 +837,16 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	}
 
 	private void loadProfile() {
-		workConfiguration.save();
+		//workConfiguration.save();
+		renamedProfile = false;
 		workConfiguration = ConfigurationManager.loadConfiguration((String) jcbProfil.getSelectedItem());
 		completePanel(workConfiguration);
 
 		workConfiguration.setCurProfil((String) jcbProfil.getSelectedItem());
 	}
-
-	private void renameProfile(String newName) {
-		try {
-			File f = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + File.separator + CONFIG_PROFILE + workConfiguration.getCurProfil() + EXT_XML);
-			File fNew = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + File.separator + CONFIG_PROFILE + newName + EXT_XML);
-			f.renameTo(fNew);
-
-			f = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + File.separator + "Profile" + File.separator + workConfiguration.getCurProfil()); //$NON-NLS-1$
-			fNew = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + File.separator + "Profile" + File.separator + newName); //$NON-NLS-1$
-			f.renameTo(fNew);
-		} catch (NullPointerException npe) {
-			JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur.save.config"), //$NON-NLS-1$
-					ConcoursJeunes.ajrLibelle.getResourceString("erreur"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
-			npe.printStackTrace();
-		}
+	
+	public boolean isRenamedProfile() {
+		return renamedProfile;
 	}
 
 	private boolean registerConfig() {
@@ -932,6 +924,12 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
 		if (source == this.jbValider) {
+			if(workConfiguration.getMetaDataFichesConcours().getFiches().size() != 0 
+					&& !workConfiguration.getCurProfil().equals(ConcoursJeunes.configuration.getCurProfil())
+					&& JOptionPane.showConfirmDialog(this, 
+					ConcoursJeunes.ajrLibelle.getResourceString("configuration.fermeture.confirmation"), "", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION)
+				return;
+
 			if(registerConfig())
 				setVisible(false);
 		} else if (source == jbAnnuler) {
@@ -983,15 +981,19 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 				renameProfile = true;
 
 				int insIndex = jcbProfil.getSelectedIndex();
-				renameProfile(strP);
+				//if(renameProfile(strP)) {
+					jcbProfil.removeItem(workConfiguration.getCurProfil());
+	
+					workConfiguration.setCurProfil(strP);
+					//workConfiguration.save();
 
-				jcbProfil.removeItem(workConfiguration.getCurProfil());
-
-				workConfiguration.setCurProfil(strP);
-				workConfiguration.save();
-
-				jcbProfil.insertItemAt(strP, insIndex);
-				jcbProfil.setSelectedIndex(insIndex);
+					jcbProfil.insertItemAt(strP, insIndex);
+					jcbProfil.setSelectedIndex(insIndex);
+					
+					renamedProfile = true;
+				/*} else {
+					JOptionPane.showMessageDialog(this, "Il existe déjà un profil portant ce nom", "Renomage impossible", JOptionPane.ERROR_MESSAGE);
+				}*/
 
 				renameProfile = false;
 			}

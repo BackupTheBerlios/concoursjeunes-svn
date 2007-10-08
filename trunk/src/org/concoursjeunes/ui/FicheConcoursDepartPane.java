@@ -304,7 +304,7 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 		mi2.addActionListener(this);
 		popup.add(mi2);
 
-		ajlConcurrent.add(popup);
+		//ajlConcurrent.add(popup);
 	}
 
 	/**
@@ -525,16 +525,24 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 		} else if (source == jbPrintListConc) {
 			TypeListingDialog tld = new TypeListingDialog(ficheConcoursPane.getParentframe());
 			int returnType = tld.showTypeListingDialog();
-			if (returnType == TypeListingDialog.ALPHA)
-				ficheConcours.printArcherList(FicheConcours.ALPHA);
-			else if (returnType == TypeListingDialog.GREFFE)
-				ficheConcours.printArcherList(FicheConcours.GREFFE);
-			else if (returnType == TypeListingDialog.TARGET)
-				ficheConcours.printArcherList(FicheConcours.TARGET);
+			if (returnType == TypeListingDialog.ALPHA) {
+				if(!ficheConcours.printArcherList(FicheConcours.ALPHA))
+					JOptionPane.showMessageDialog(this, "Rien à imprimer");
+			} else if (returnType == TypeListingDialog.GREFFE) {
+				if(!ficheConcours.printArcherList(FicheConcours.GREFFE))
+					JOptionPane.showMessageDialog(this, "Rien à imprimer");
+			} else if (returnType == TypeListingDialog.TARGET) {
+				if(!ficheConcours.printArcherList(FicheConcours.TARGET))
+					JOptionPane.showMessageDialog(this, "Rien à imprimer");
+			}
 		} else if (source == jbPrintEtiquettes) {
-			ficheConcours.printEtiquettes();
+			if(!ficheConcours.printEtiquettes()) {
+				JOptionPane.showMessageDialog(this, "Rien à imprimer");
+			}
 		} else if (source == jbPrintPasDeTir) {
-			ficheConcours.printPasDeTir();
+			if(!ficheConcours.printPasDeTir()) {
+				JOptionPane.showMessageDialog(this, "Rien à imprimer");
+			}
 		} else if (source instanceof JRadioButton) {
 			if (source == jcbSortCible)
 				ajlConcurrent.setListData(ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), ConcurrentList.SORT_BY_CIBLES));
@@ -564,12 +572,18 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 
 				TreePath destinationPath = treeTarget.getPathForLocation(coord.x, coord.y);
 
-				treeTarget.setSelectionPath(destinationPath);
-
-				if (destinationPath.getLastPathComponent() instanceof Concurrent) {
-					ajlConcurrent.setSelectedValue(destinationPath.getLastPathComponent(), true);
-
-					popup.show(e.getComponent(), e.getX(), e.getY());
+				if(destinationPath != null) {
+					treeTarget.setSelectionPath(destinationPath);
+	
+					if (destinationPath.getLastPathComponent() instanceof Concurrent) {
+						ajlConcurrent.setSelectedValue(destinationPath.getLastPathComponent(), true);
+	
+						popup.show(e.getComponent(), e.getX(), e.getY());
+						ajlConcurrent.repaint();
+						/*popup.setLocation(e.getX(), e.getY());
+						popup.setInvoker(ajlConcurrent);
+						popup.setVisible(true);*/
+					}
 				}
 			} else {
 				int selRow = treeTarget.getRowForLocation(e.getX(), e.getY());
@@ -595,17 +609,22 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 			if (e.getClickCount() == 2) {
 				ficheConcoursPane.openConcurrentDialog((Concurrent) ajlConcurrent.getSelectedValue());
 			} else if (e.getModifiers() == InputEvent.BUTTON3_MASK) { //
-				ajlConcurrent.setSelectedIndex(ajlConcurrent.locationToIndex(e.getPoint()));
-
-				Concurrent tmpConcurrent = (Concurrent) ajlConcurrent.getSelectedValue();
-
-				if (tmpConcurrent.getCible() > 0) {
-					if (treeTarget.getSelectionPath() != null)
-						treeTarget.collapsePath(treeTarget.getSelectionPath().getParentPath());
-					treeTarget.setSelectionPath(getTreePathForConcurrent(tmpConcurrent));
+				int elemIndex = ajlConcurrent.locationToIndex(e.getPoint());
+				if(elemIndex > -1) {
+					ajlConcurrent.setSelectedIndex(elemIndex);
+	
+					Concurrent tmpConcurrent = (Concurrent) ajlConcurrent.getSelectedValue();
+	
+					if(tmpConcurrent != null) {
+						if (tmpConcurrent.getCible() > 0) {
+							if (treeTarget.getSelectionPath() != null)
+								treeTarget.collapsePath(treeTarget.getSelectionPath().getParentPath());
+							treeTarget.setSelectionPath(getTreePathForConcurrent(tmpConcurrent));
+						}
+		
+						popup.show(e.getComponent(), e.getX(), e.getY());
+					}
 				}
-
-				popup.show(e.getComponent(), e.getX(), e.getY());
 			}
 		}
 	}
@@ -698,6 +717,8 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 	 */
 	public void mouseDragged(MouseEvent e) {
 		if (e.getSource() == ajlConcurrent) {
+			if(ajlConcurrent.getSelectedIndex() == -1)
+				return;
 			GhostGlassPane glassPane = (GhostGlassPane) ficheConcoursPane.getParentframe().getGlassPane();
 			if (!onDrag) {
 				ajlConcurrent.setSelectable(false);
@@ -837,4 +858,9 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 	 */
 	public void keyTyped(KeyEvent e) {
 	}
+	
+	/*@Override
+	public void dispose() {
+		System.out.println("Destruction de la fenetre ConcurrentDialog");
+	}*/
 }

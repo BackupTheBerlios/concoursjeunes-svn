@@ -54,13 +54,6 @@
 		</copy>
 
 		<replace 
-		    file="${projet.pack.dir}/config/parametre.properties">
-			<replacefilter 
-			    token="debug.mode=1" 
-			    value="debug.mode=0"/>
-		</replace>
-
-		<replace 
 		    file="${projet.pack.dir}/Readme.txt"
 			propertyFile="packager/version.properties">
 			<replacefilter 
@@ -109,6 +102,7 @@
 			optimize="on"
 			encoding="UTF-8"
 			nowarn="on"
+			debug="true"
 			classpath="${compilclasspath}">
 		</javac>
 
@@ -176,7 +170,6 @@
 				<include name="ressources/**"/>
 				<include name="documentation/**"/>
 				<include name="ConcoursJeunes.jar"/>
-				<include name="hash.xml.gz"/>
 			</fileset>
 		</copy>
 		
@@ -275,7 +268,6 @@
 				<include name="ressources/**"/>
 				<include name="documentation/**"/>
 				<include name="ConcoursJeunes.jar"/>
-				<include name="hash.xml.gz"/>
 				<include name="*.txt"/>
 			</fileset>
 		</copy>

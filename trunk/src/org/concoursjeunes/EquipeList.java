@@ -119,6 +119,16 @@ public class EquipeList implements Cloneable {
     }
     
     /**
+     * Supprime les équipes crée et invalide sur le concours
+     */
+    public void removeInvalidTeam() {
+    	for(Equipe equipe : equipeList) {
+            if(equipe.getMembresEquipe().size() < ficheConcours.getParametre().getReglement().getNbMembresRetenu())
+                remove(equipe);
+        }
+    }
+    
+    /**
      * retire toutes les équipes
      *
      */

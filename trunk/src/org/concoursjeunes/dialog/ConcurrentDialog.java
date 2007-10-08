@@ -150,9 +150,12 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 
 	private final FicheConcours ficheConcours;
 	private Concurrent concurrent;
+	private Entite entiteConcurrent;
 	private Archer filter = null;
 	
-	private ConcurrentListDialog concurrentListDialog;
+	private static volatile boolean onloadConcurrentListDialog = false;
+	private static volatile int nbInstance = 0;
+	private static ConcurrentListDialog concurrentListDialog;
 
 	private final JLabel jlDescription = new JLabel(); // Description
 	private final JLabel jlNom = new JLabel(); // Nom et prénom du Tireur
@@ -208,6 +211,8 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	private int selectField = 0;
 
 	private int returnVal = CANCEL;
+	
+	private boolean unlock = false;
 
 	/**
 	 * Création de la boite de dialogue de gestion de concurrent
@@ -219,9 +224,20 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		super(concoursJeunesFrame, "", true); //$NON-NLS-1$
 
 		this.ficheConcours = ficheConcours;
+		nbInstance++;
 		
-		concurrentListDialog = new ConcurrentListDialog(this, ficheConcours.getParametre().getReglement(), filter);
-
+		Thread initListConc = new Thread() {
+			@Override
+			public void run() {
+				if(concurrentListDialog == null && !onloadConcurrentListDialog) {
+					onloadConcurrentListDialog = true;
+					concurrentListDialog = new ConcurrentListDialog(ConcurrentDialog.this, ConcurrentDialog.this.ficheConcours.getParametre().getReglement(), null);
+					onloadConcurrentListDialog = false;
+				}
+			}
+		};
+		initListConc.start();
+		
 		init();
 		affectLibelle();
 
@@ -447,7 +463,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	 * remplit les champs de la boite de dialogue avec le modèle sous jacent
 	 */
 	private void completeConcurrentDialog() {
-		boolean isinit = concurrent.getInscription() != Concurrent.UNINIT;
+		boolean isinit = concurrent.getInscription() != Concurrent.UNINIT && !unlock;
 
 		jbSelectionArcher.setEnabled(!isinit);
 		jbEditerArcher.setEnabled(isinit);
@@ -489,11 +505,11 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			jtfLicence.setText(concurrent.getNumLicenceArcher());
 		}
 		if (jtfClub.getDocument() instanceof AutoCompleteDocument) {
-			((AutoCompleteDocument) jtfClub.getDocument()).setText(concurrent.getClub().getVille());
-			((AutoCompleteDocument) jtfAgrement.getDocument()).setText(concurrent.getClub().getAgrement());
+			((AutoCompleteDocument) jtfClub.getDocument()).setText(entiteConcurrent.getVille());
+			((AutoCompleteDocument) jtfAgrement.getDocument()).setText(entiteConcurrent.getAgrement());
 		} else {
-			jtfClub.setText(concurrent.getClub().getVille());
-			jtfAgrement.setText(concurrent.getClub().getAgrement());
+			jtfClub.setText(entiteConcurrent.getVille());
+			jtfAgrement.setText(entiteConcurrent.getAgrement());
 		}
 		if (concurrent.getCriteriaSet() != null) {
 			for (Criterion key : ficheConcours.getParametre().getReglement().getListCriteria()) {
@@ -604,6 +620,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	 */
 	public void setConcurrent(Concurrent concurrent) {
 		this.concurrent = concurrent;
+		this.entiteConcurrent = concurrent.getClub();
 
 		completeConcurrentDialog();
 	}
@@ -742,8 +759,10 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	public void entiteFinded(AutoCompleteDocumentEvent e) {
 		Entite findEntite = e.getEntite();
 		if (!findEntite.equals(concurrent.getClub())) {
-			concurrent.setClub(findEntite);
-			setConcurrent(concurrent);
+			//concurrent.setClub(findEntite);
+			//setConcurrent(concurrent);
+			entiteConcurrent = findEntite;
+			completeConcurrentDialog();
 		}
 	}
 
@@ -756,8 +775,10 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			newEntite.setAgrement(jtfAgrement.getText());
 		}
 
-		concurrent.setClub(newEntite);
-		setConcurrent(concurrent);
+		//concurrent.setClub(newEntite);
+		//setConcurrent(concurrent);
+		entiteConcurrent = newEntite;
+		completeConcurrentDialog();
 	}
 
 	public void actionPerformed(ActionEvent ae) {
@@ -824,7 +845,8 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			concurrent.setNomArcher(jtfNom.getText());
 			concurrent.setPrenomArcher(jtfPrenom.getText());
 			concurrent.setNumLicenceArcher(jtfLicence.getText());
-			concurrent.getClub().setNom(jtfClub.getText());
+			concurrent.setClub(entiteConcurrent);
+			concurrent.getClub().setVille(jtfClub.getText());
 			concurrent.getClub().setAgrement(jtfAgrement.getText());
 			concurrent.setInscription(jcbInscription.getSelectedIndex());
 
@@ -839,17 +861,41 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			} else if (ae.getSource() == jbPrecedent) {
 				returnVal = CONFIRM_AND_PREVIOUS;
 			}
-
+			unlock = false;
 			setVisible(false);
 		} else if (ae.getSource() == jbAnnuler) {
 			returnVal = CANCEL;
+			unlock = false;
 			setVisible(false);
 		} else if (ae.getSource() == jbSelectionArcher) {
-			//ConcurrentListDialog concurrentListDialog = new ConcurrentListDialog(this, ficheConcours.getParametre().getReglement(), filter);
-			concurrentListDialog.setVisible(true);
-			if (concurrentListDialog.isValider()) {
-				concurrentListDialog.initConcurrent(concurrent);
-				setConcurrent(concurrent);
+			//Le chargement de la liste des concurrents etant asynchrone, on doit attendre que celle ci
+			// soit chargé avant de l'afficher. On place un timeout de 30s pour ne pas bloqué définitivement
+			// l'interface en cas d'echec de chargement ou avoir un delai d'attente trop long sur certain système
+			try {
+				int i = 0;
+				while(concurrentListDialog == null) {
+					if(i == 30) //timeout au bout de 30 sec
+						break;
+					Thread.sleep(100);
+					Thread.yield();
+					i++;
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
+			if(concurrentListDialog != null) {
+				//si la liste est disponible alore l'afficher
+				concurrentListDialog.setFilter(filter);
+				concurrentListDialog.setVisible(true);
+				if (concurrentListDialog.isValider()) {
+					concurrentListDialog.initConcurrent(concurrent);
+					setConcurrent(concurrent);
+				}
+			} else {
+				JOptionPane.showMessageDialog(this, "La liste des archers n'est " +
+						"pas encore initialiser.\nPatienter encore quelque seconde " +
+						"et recommencer");
 			}
 		} else if (ae.getSource() == jbDetailClub) {
 			if (!jtfAgrement.getText().equals("")) { //$NON-NLS-1$
@@ -864,6 +910,8 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 				jtfAgrement.setText(entiteListDialog.getSelectedEntite().getAgrement());
 			}
 		} else if (ae.getSource() == jbEditerArcher) {
+			unlock = true;
+			
 			jtfNom.setEditable(true);
 			jtfPrenom.setEditable(true);
 			jtfLicence.setEditable(true);
@@ -906,5 +954,25 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	 * @see java.awt.event.FocusListener#focusLost(java.awt.event.FocusEvent)
 	 */
 	public void focusLost(FocusEvent fe) {
+	}
+	
+	@Override
+	public void dispose() {
+		System.out.println("Destruction de la fenetre ConcurrentDialog");
+		nbInstance--;
+		if(nbInstance == 0) {
+			if(concurrentListDialog != null)
+				concurrentListDialog.dispose();
+			concurrentListDialog = null;
+			onloadConcurrentListDialog = false;
+		}
+		super.dispose();
+	}
+	
+	@Override
+	public void finalize() throws Throwable {
+		System.out.println("ConcurrentDialog detruit");
+		
+		super.finalize();
 	}
 }
