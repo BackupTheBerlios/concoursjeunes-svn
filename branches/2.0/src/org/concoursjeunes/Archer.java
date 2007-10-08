@@ -213,8 +213,12 @@ public class Archer {
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
-		result = PRIME * result + ((nomArcher == null) ? 0 : nomArcher.hashCode());
-		result = PRIME * result + ((numLicenceArcher == null) ? 0 : numLicenceArcher.hashCode());
+		
+		if(!numLicenceArcher.isEmpty()) {
+			result = PRIME * result + ((numLicenceArcher == null) ? 0 : numLicenceArcher.hashCode());
+		} else {
+			result = PRIME * result + ((nomArcher == null) ? 0 : nomArcher.hashCode());
+		}
 		return result;
 	}
 
@@ -230,16 +234,16 @@ public class Archer {
 		if (getClass() != obj.getClass())
 			return false;
 		final Archer other = (Archer) obj;
-		if (nomArcher == null) {
-			if (other.getNomArcher() != null)
+		if(numLicenceArcher == null || numLicenceArcher.isEmpty()) {
+			if (nomArcher == null) {
+				if (other.getNomArcher() != null)
+					return false;
+			} else if (!nomArcher.equals(other.getNomArcher()))
 				return false;
-		} else if (!nomArcher.equals(other.getNomArcher()))
-			return false;
-		if (numLicenceArcher == null) {
-			if (other.getNumLicenceArcher() != null)
+		} else {
+			if (!numLicenceArcher.equals(other.getNumLicenceArcher()))
 				return false;
-		} else if (!numLicenceArcher.equals(other.getNumLicenceArcher()))
-			return false;
+		}
 		return true;
 	}
 }

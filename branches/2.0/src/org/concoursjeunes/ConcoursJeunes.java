@@ -287,7 +287,7 @@ public class ConcoursJeunes {
 				Arrays.sort(updateScripts);
 
 				int scriptRelease = dbVersion;
-				stmt.addBatch("SET LOG 0;"); //$NON-NLS-1$
+				//stmt.addBatch("SET LOG 0;"); //$NON-NLS-1$
 				for (String scriptPath : updateScripts) {
 					SqlParser.createBatch(new File(userRessources.getAllusersDataPath() + File.separator + "update" + File.separator + scriptPath), stmt, null, scriptRelease + 1); //$NON-NLS-1$
 					stmt.executeBatch();
@@ -295,7 +295,7 @@ public class ConcoursJeunes {
 					System.out.println("delete: " + scriptPath + ": " //$NON-NLS-1$ //$NON-NLS-2$
 							+ new File(userRessources.getAllusersDataPath() + File.separator + "update" + File.separator + scriptPath).delete()); //$NON-NLS-1$
 				}
-				stmt.executeUpdate("SET LOG 1;"); //$NON-NLS-1$
+				//stmt.executeUpdate("SET LOG 1;"); //$NON-NLS-1$
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

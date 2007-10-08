@@ -21,6 +21,10 @@ import java.awt.Toolkit;
 import java.io.File;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.HashMap;
+
+import javax.script.*;
 
 import org.concoursjeunes.ui.ConcoursJeunesFrame;
 import org.jdesktop.swingx.JXErrorDialog;
@@ -75,6 +79,20 @@ public class Main {
 			}
 		});
 		System.out.println("core loaded"); //$NON-NLS-1$
+		
+		/*ScriptEngineManager se = new ScriptEngineManager();
+		ScriptEngine scriptEngine = se.getEngineByName("JavaScript");
+		scriptEngine.setBindings(new SimpleBindings(Collections.synchronizedMap(new HashMap<String, Object>())), ScriptContext.ENGINE_SCOPE);
+		try {
+			scriptEngine.put("window", System.out);
+			scriptEngine.eval("window.println(\"hello, world\");");
+		} catch (ScriptException e1) {
+			e1.printStackTrace();
+		}
+		for(ScriptEngineFactory sef : se.getEngineFactories()) {
+			System.out.println(sef.getEngineName());
+			System.out.println(sef.getExtensions());
+		}*/
 
 		new ConcoursJeunesFrame(concoursJeunes);
 	}

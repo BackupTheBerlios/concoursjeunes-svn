@@ -1,4 +1,7 @@
 #!/bin/sh
 
 cd /usr/lib/ConcoursJeunes
-java -mx128m -jar ConcoursJeunes.jar
+
+while [ `java -mx128m -jar ConcoursJeunes.jar` = 2 ] ; do
+	echo "Restart ConcoursJeunes..."
+done
