@@ -292,6 +292,27 @@
 			<define name="WORKING_DIR" value="..\${projet.pack.dir}"/>
 		</nsis>
 	</target>
+	
+	<target name="makensispatch">
+		<taskdef name="nsis" classname="net.sf.nsisant.Task">
+	        <classpath location="packager/nsisant-1.2.jar"/>
+	    </taskdef>
+		
+		<mkdir dir="${projet.pack.dir}/windows" />
+		
+		<copy todir="${projet.pack.dir}/windows/" >
+			<fileset dir="packager/windows" >
+				<include name="**/**"/>
+			</fileset>
+		</copy>
+		
+		<nsis script="packager/setup_independent_update.nsi" verbosity="4">
+			<define name="VERSION" value="${version.numero}"/>
+			<define name="OUT_FILE" value="windows\setup-idep-update-${version.name}-${version.numero}.exe"/>
+			<define name="WORKING_DIR" value="..\${projet.pack.dir}"/>
+		</nsis>
+	</target>
+	
 
 	<target name="windows" 
 		depends="jar, pack-ConcoursJeunesUpdate, pack-FFTAImport, revisions, makensissetup" 
