@@ -286,10 +286,10 @@
 			</fileset>
 		</copy>
 		
-		<nsis script="packager/setup.nsi" verbosity="4">
+		<nsis script="./packager/setup.nsi" verbosity="4">
 			<define name="VERSION" value="${version.numero}"/>
-			<define name="OUT_FILE" value="windows\setup-${version.name}-${version.numero}.exe"/>
-			<define name="WORKING_DIR" value="..\${projet.pack.dir}"/>
+			<define name="OUT_FILE" value="windows/setup-${version.name}-${version.numero}.exe"/>
+			<define name="WORKING_DIR" value="../${projet.pack.dir}"/>
 		</nsis>
 	</target>
 
@@ -299,6 +299,9 @@
 	<target name="linux"
 		depends="jar, pack-ConcoursJeunesUpdate, revisions, makerpm"
 		description="Pack Linux" />
+	<target name="all-system"
+		depends="jar, pack-ConcoursJeunesUpdate, pack-FFTAImport, revisions, makensissetup, makerpm"
+		description="Compilation Multi-systeme" />
 	<target name="MacOSX" 
 		depends="jar, pack-ConcoursJeunesUpdate, revisions, makemacbundle"
 		description="Pack Mac OS X" />
