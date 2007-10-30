@@ -537,7 +537,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	}
 
 	private void affectLibelle() {
-		setTitle(ConcoursJeunes.ajrLibelle.getResourceString("configuration.title"));
+		setTitle(ConcoursJeunes.ajrLibelle.getResourceString("configuration.title")); //$NON-NLS-1$
 		jbValider.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
 		jbAnnuler.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
 
@@ -639,7 +639,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		jcbProfil.setSelectedItem(configuration.getCurProfil());
 		jcbProfil.addActionListener(this);
 		
-		if(configuration.getCurProfil().equals("defaut"))
+		if(configuration.getCurProfil().equals("defaut")) //$NON-NLS-1$
 			jbRenameProfile.setEnabled(false);
 		else
 			jbRenameProfile.setEnabled(true);
@@ -927,7 +927,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 			if(workConfiguration.getMetaDataFichesConcours().getFiches().size() != 0 
 					&& !workConfiguration.getCurProfil().equals(ConcoursJeunes.configuration.getCurProfil())
 					&& JOptionPane.showConfirmDialog(this, 
-					ConcoursJeunes.ajrLibelle.getResourceString("configuration.fermeture.confirmation"), "", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION)
+					ConcoursJeunes.ajrLibelle.getResourceString("configuration.fermeture.confirmation"), "", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) //$NON-NLS-1$ //$NON-NLS-2$
 				return;
 
 			if(registerConfig())

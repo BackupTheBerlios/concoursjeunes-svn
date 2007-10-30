@@ -181,8 +181,9 @@
 
 		<copy todir="${rpm.pack.path}/SOURCES/">
 			<fileset dir="packager/linux/">
-				<include name="**/*"/>
-				<exclude name="*.spec"/>
+				<include name="**/*" />
+				<exclude name="*.spec" />
+				<exclude name="debian" />
 			</fileset>
 		</copy>
 
@@ -251,6 +252,12 @@
 
 		<rpm specFile="ConcoursJeunes.spec" topDir="${rpm.pack.path}/" cleanBuildDir="true" />
 	</target>
+	
+	<target name="makedeb">
+		<exec command="packager/makedeb.sh" os="Linux">
+			<env key="VERSION" value="${version.numero}"/>
+		</exec>
+	</target>
 
 	<target name="makemacbundle">
 		<copy todir="${projet.pack.dir}/macosx/" >
@@ -286,12 +293,33 @@
 			</fileset>
 		</copy>
 		
-		<nsis script="./packager/setup.nsi" verbosity="4">
+		<nsis script="packager/setup.nsi" verbosity="4">
 			<define name="VERSION" value="${version.numero}"/>
 			<define name="OUT_FILE" value="windows/setup-${version.name}-${version.numero}.exe"/>
 			<define name="WORKING_DIR" value="../${projet.pack.dir}"/>
 		</nsis>
 	</target>
+	
+	<target name="makensispatch">
+		<taskdef name="nsis" classname="net.sf.nsisant.Task">
+	        <classpath location="packager/nsisant-1.2.jar"/>
+	    </taskdef>
+		
+		<mkdir dir="${projet.pack.dir}/windows" />
+		
+		<copy todir="${projet.pack.dir}/windows/" >
+			<fileset dir="packager/windows" >
+				<include name="**/**"/>
+			</fileset>
+		</copy>
+		
+		<nsis script="packager/setup_independent_update.nsi" verbosity="4">
+			<define name="VERSION" value="${version.numero}"/>
+			<define name="OUT_FILE" value="windows\setup-idep-update-${version.name}-${version.numero}.exe"/>
+			<define name="WORKING_DIR" value="..\${projet.pack.dir}"/>
+		</nsis>
+	</target>
+	
 
 	<target name="windows" 
 		depends="jar, pack-ConcoursJeunesUpdate, pack-FFTAImport, revisions, makensissetup" 
@@ -300,7 +328,7 @@
 		depends="jar, pack-ConcoursJeunesUpdate, revisions, makerpm"
 		description="Pack Linux" />
 	<target name="all-system"
-		depends="jar, pack-ConcoursJeunesUpdate, pack-FFTAImport, revisions, makensissetup, makerpm"
+		depends="jar, pack-ConcoursJeunesUpdate, pack-FFTAImport, revisions, makensissetup, makerpm, makedeb"
 		description="Compilation Multi-systeme" />
 	<target name="MacOSX" 
 		depends="jar, pack-ConcoursJeunesUpdate, revisions, makemacbundle"

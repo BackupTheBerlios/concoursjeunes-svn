@@ -6,9 +6,9 @@ package ajinteractive.concours;
 
 
 public class DefaultParameters {
-    private String nomClub          = "";
-    private String numAgrement      = "";
-    private String intituleConcours = "";
+    private String nomClub          = ""; //$NON-NLS-1$
+    private String numAgrement      = ""; //$NON-NLS-1$
+    private String intituleConcours = ""; //$NON-NLS-1$
     
     private int nbCible             = 10;
     private int nbTireur            = 4;

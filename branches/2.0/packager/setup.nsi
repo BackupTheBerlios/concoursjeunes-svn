@@ -128,6 +128,8 @@ Section "Option de Debugage" SEC0003
 SectionEnd
 
 Section -post SEC0004
+	SetOverwrite on
+	
     WriteRegStr HKLM "${REGKEY}" Path $INSTDIR
     WriteUninstaller $INSTDIR\uninstall.exe
     !insertmacro MUI_STARTMENU_WRITE_BEGIN Application

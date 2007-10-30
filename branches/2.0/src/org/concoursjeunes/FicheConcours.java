@@ -537,7 +537,7 @@ public class FicheConcours implements ParametreListener {
 			CriteriaSet.sortCriteriaSet(sortedTeamCriteriaSets, parametre.getReglement().getListCriteria());
 			
 			for(CriteriaSet criteriaSet : sortedTeamCriteriaSets) {			
-				tplClassementEquipe.parse("categories.CATEGORIE", new CriteriaSetLibelle(criteriaSet).toString()); //$NON-NLS-1$ //$NON-NLS-2$
+				tplClassementEquipe.parse("categories.CATEGORIE", new CriteriaSetLibelle(criteriaSet).toString()); //$NON-NLS-1$
 				tplClassementEquipe.parse("categories.NB_EQUIPES", "" + equipes.countEquipes()); //$NON-NLS-1$ //$NON-NLS-2$
 	
 				Equipe[] sortEquipes = EquipeList.sort(equipes.list(criteriaSet));
@@ -666,7 +666,7 @@ public class FicheConcours implements ParametreListener {
 		String strArcherListeXML = ""; //$NON-NLS-1$
 		
 		if(concurrentList.countArcher(depart) == 0)
-			return "";
+			return ""; //$NON-NLS-1$
 
 		if (mode == ALPHA || mode == TARGET)
 			listeArcherXML = templateListeArcherXML;
@@ -719,7 +719,7 @@ public class FicheConcours implements ParametreListener {
 	 */
 	private String getXMLEtiquettes(int nblarg, int nbhaut, int depart) {
 		if(concurrentList.countArcher(depart) == 0)
-			return "";
+			return ""; //$NON-NLS-1$
 		
 		try {
 			double marge_gauche = ConcoursJeunes.configuration.getMarges().left; // la marge gauche
@@ -731,7 +731,7 @@ public class FicheConcours implements ParametreListener {
 			double cellule_x;
 			double cellule_y;
 			Rectangle pageDimension = (Rectangle)PageSize.class.getField(ConcoursJeunes.configuration.getFormatPapier()).get(null);
-			if(ConcoursJeunes.configuration.getOrientation().equals("landscape"))
+			if(ConcoursJeunes.configuration.getOrientation().equals("landscape")) //$NON-NLS-1$
 				pageDimension = pageDimension.rotate();
 			
 			espacement_cellule_h = AJToolKit.centimeterToDpi(espacement_cellule_h);
@@ -837,7 +837,7 @@ public class FicheConcours implements ParametreListener {
 	private String getXMLPasDeTir(int depart) {
 		
 		if(concurrentList.countArcher(depart) == 0)
-			return "";
+			return ""; //$NON-NLS-1$
 
 		templatePasDeTirXML.reset();
 
@@ -1016,6 +1016,6 @@ public class FicheConcours implements ParametreListener {
 	
 	@Override
 	public void finalize() {
-		System.out.println("FicheConcours: Objet récupéré");
+		System.out.println("FicheConcours: Objet récupéré"); //$NON-NLS-1$
 	}
 }

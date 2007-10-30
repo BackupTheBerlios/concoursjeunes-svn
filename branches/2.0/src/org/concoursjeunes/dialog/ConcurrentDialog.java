@@ -958,7 +958,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	
 	@Override
 	public void dispose() {
-		System.out.println("Destruction de la fenetre ConcurrentDialog");
+		System.out.println("Destruction de la fenetre ConcurrentDialog"); //$NON-NLS-1$
 		nbInstance--;
 		if(nbInstance == 0) {
 			if(concurrentListDialog != null)
@@ -971,7 +971,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	
 	@Override
 	public void finalize() throws Throwable {
-		System.out.println("ConcurrentDialog detruit");
+		System.out.println("ConcurrentDialog detruit"); //$NON-NLS-1$
 		
 		super.finalize();
 	}

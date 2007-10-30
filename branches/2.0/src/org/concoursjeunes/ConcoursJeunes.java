@@ -89,13 +89,7 @@
 package org.concoursjeunes;
 
 import java.awt.Desktop;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.StringReader;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -104,11 +98,10 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Locale;
+import java.util.*;
 
 import javax.naming.ConfigurationException;
+import javax.script.*;
 import javax.swing.JOptionPane;
 import javax.swing.event.EventListenerList;
 import javax.xml.parsers.SAXParser;
@@ -122,7 +115,8 @@ import org.xml.sax.InputSource;
 
 import ajinteractive.standard.common.PluginClassLoader;
 import ajinteractive.standard.common.AjResourcesReader;
-import ajinteractive.standard.utilities.sql.SqlParser;
+import ajinteractive.standard.utilities.sql.SqlManager;
+//import ajinteractive.standard.utilities.sql.SqlParser;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.pdf.PdfWriter;
@@ -150,7 +144,7 @@ public class ConcoursJeunes {
 	 * Chaines de version de ConcoursJeunes
 	 */
 	public static final String NOM = "@version.name@"; //$NON-NLS-1$
-	public static final String VERSION = "@version.numero@ - @version.date@";//$NON-NLS-1$
+	public static final String VERSION = new String("@version.numero@ - @version.date@");//$NON-NLS-1$
 	public static final String CODENAME = "@version.codename@"; //$NON-NLS-1$
 	public static final String AUTEURS = "@version.author@"; //$NON-NLS-1$
 	public static final String COPYR = "@version.copyr@"; //$NON-NLS-1$
@@ -239,7 +233,7 @@ public class ConcoursJeunes {
 				
 				//Si ce n'est pas un message db bloqué par un autre processus
 				if(!e.getMessage().endsWith("[90020-57]")) { //$NON-NLS-1$
-					if(JOptionPane.showConfirmDialog(null, ajrLibelle.getResourceString("erreur.breakdb")) == JOptionPane.YES_OPTION) {
+					if(JOptionPane.showConfirmDialog(null, ajrLibelle.getResourceString("erreur.breakdb")) == JOptionPane.YES_OPTION) { //$NON-NLS-1$
 						erasedb = true;
 						for(File deletefile : new File(userRessources.getBasePath()).listFiles()) {
 							deletefile.delete();
@@ -274,8 +268,22 @@ public class ConcoursJeunes {
 						ajrLibelle.getResourceString("erreur.dbrelease.title"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 				System.exit(1);
 			}
-
-			String[] updateScripts = new File(userRessources.getAllusersDataPath() + File.separator + "update").list(new FilenameFilter() { //$NON-NLS-1$
+			if (dbVersion != DB_RELEASE_REQUIRED) {
+				ScriptEngineManager se = new ScriptEngineManager();
+				ScriptEngine scriptEngine = se.getEngineByName("JavaScript"); //$NON-NLS-1$
+				scriptEngine.setBindings(new SimpleBindings(Collections.synchronizedMap(new HashMap<String, Object>())), ScriptContext.ENGINE_SCOPE);
+				try {
+					scriptEngine.put("dbVersion", dbVersion); //$NON-NLS-1$
+					scriptEngine.put("sql", new SqlManager(stmt, new File(userRessources.getAllusersDataPath() + File.separator + "update"))); //$NON-NLS-1$ //$NON-NLS-2$
+					scriptEngine.eval(new FileReader(new File(userRessources.getAllusersDataPath() + File.separator + "update" + File.separator + "updatedb.js"))); //$NON-NLS-1$ //$NON-NLS-2$
+				} catch (ScriptException e1) {
+					e1.printStackTrace();
+				} catch (FileNotFoundException e1) {
+					e1.printStackTrace();
+				}
+			}
+			
+			/*String[] updateScripts = new File(userRessources.getAllusersDataPath() + File.separator + "update").list(new FilenameFilter() { //$NON-NLS-1$
 						public boolean accept(File dir, String name) {
 							if (name.endsWith(".sql")) { //$NON-NLS-1$
 								return true;
@@ -296,7 +304,7 @@ public class ConcoursJeunes {
 							+ new File(userRessources.getAllusersDataPath() + File.separator + "update" + File.separator + scriptPath).delete()); //$NON-NLS-1$
 				}
 				//stmt.executeUpdate("SET LOG 1;"); //$NON-NLS-1$
-			}
+			}*/
 		} catch (SQLException e) {
 			e.printStackTrace();
 			JXErrorDialog.showDialog(null, "SQL Error", e.toString(), //$NON-NLS-1$

@@ -355,9 +355,9 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	public void setFilter(Archer filter) {
 		if(filter == null)
 			return;
-		String numLicence = filter.getNumLicenceArcher().replaceAll("%", "");
-		String nom = filter.getNomArcher().replaceAll("%", "");
-		String club = filter.getClub().getNom().replaceAll("%", "");
+		String numLicence = filter.getNumLicenceArcher().replaceAll("%", ""); //$NON-NLS-1$ //$NON-NLS-2$
+		String nom = filter.getNomArcher().replaceAll("%", ""); //$NON-NLS-1$ //$NON-NLS-2$
+		String club = filter.getClub().getNom().replaceAll("%", ""); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		if (!numLicence.isEmpty()) {
 			jtfFilterLicence.setText(numLicence);
@@ -603,14 +603,14 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		
 		@Override
 		public void finalize() throws Throwable {
-			System.out.println("ConcurrentListDialog.TableModel detruit");
+			System.out.println("ConcurrentListDialog.TableModel detruit"); //$NON-NLS-1$
 			super.finalize();
 		}
 	}
 	
 	@Override
 	public void finalize() throws Throwable {
-		System.out.println("ConcurrentListDialog detruit");
+		System.out.println("ConcurrentListDialog detruit"); //$NON-NLS-1$
 		super.finalize();
 	}
 }

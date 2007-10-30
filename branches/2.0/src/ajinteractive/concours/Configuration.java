@@ -13,13 +13,13 @@ package ajinteractive.concours;
  */
 public class Configuration extends DefaultParameters {
 	
-    private String langue           = "";               //reboot
-    private String logoPath         = "ressources/logo_ffta.gif";   //noreboot
+    private String langue           = "";               //reboot //$NON-NLS-1$
+    private String logoPath         = "ressources/logo_ffta.gif";   //noreboot //$NON-NLS-1$
     
-    private String pdfReaderPath    = "";               //noreboot
+    private String pdfReaderPath    = "";               //noreboot //$NON-NLS-1$
     
-    private String formatPapier     = "A4";             //noreboot
-    private String orientation      = "portrait";       //noreboot
+    private String formatPapier     = "A4";             //noreboot //$NON-NLS-1$
+    private String orientation      = "portrait";       //noreboot //$NON-NLS-1$
     private int[] colonneAndLigne   = new int[] {9, 3}; //noreboot
     private Marges marges           = new Marges();     //noreboot
     private double[] espacements    = new double[] {0.5, 0.5};//noreboot
@@ -31,7 +31,7 @@ public class Configuration extends DefaultParameters {
     //propriete caché
     private boolean firstboot       = false;            //noreboot
     private boolean officialProfile = false;            //noreboot
-    private String curProfil        = "";               //noreboot
+    private String curProfil        = "";               //noreboot //$NON-NLS-1$
 
 	public Configuration() {
         

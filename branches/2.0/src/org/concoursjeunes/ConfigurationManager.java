@@ -112,7 +112,7 @@ public class ConfigurationManager {
 	 */
 	public static Configuration loadCurrentConfiguration() {
 		File confFile = new File(userRessources.getConfigPathForUser() + File.separator + 
-				ajrParametreAppli.getResourceString("file.configuration"));
+				ajrParametreAppli.getResourceString("file.configuration")); //$NON-NLS-1$
 
 		return loadConfiguration(confFile);
 	}
@@ -125,7 +125,7 @@ public class ConfigurationManager {
 	 */
 	public static Configuration loadConfiguration(String profilename) {
 		return loadConfiguration(new File(ConcoursJeunes.userRessources.getConfigPathForUser() 
-				+ File.separator + "configuration_" + profilename + ".xml"));
+				+ File.separator + "configuration_" + profilename + ".xml")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
 	/**
