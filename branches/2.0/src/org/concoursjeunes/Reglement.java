@@ -387,40 +387,36 @@ public class Reglement {
 	 * dans la base de donnée de ConcoursJeunes.
 	 * 
 	 */
-	public void save() {
-		try {
-			String sql = "merge into REGLEMENT (NUMREGLEMENT, NOMREGLEMENT, NBSERIE, NBVOLEEPARSERIE," + //$NON-NLS-1$
-					"NBFLECHEPARVOLEE, NBMEMBRESEQUIPE, NBMEMBRESRETENU, ISOFFICIAL) " + //$NON-NLS-1$
-					"VALUES (?, ?, ?, ?, ?, ?, ?, ?)"; //$NON-NLS-1$
+	public void save() throws SQLException {
+		String sql = "merge into REGLEMENT (NUMREGLEMENT, NOMREGLEMENT, NBSERIE, NBVOLEEPARSERIE," + //$NON-NLS-1$
+				"NBFLECHEPARVOLEE, NBMEMBRESEQUIPE, NBMEMBRESRETENU, ISOFFICIAL) " + //$NON-NLS-1$
+				"VALUES (?, ?, ?, ?, ?, ?, ?, ?)"; //$NON-NLS-1$
 
-			// Statement stmt = ConcoursJeunes.dbConnection.createStatement();
-			PreparedStatement pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
-			pstmt.setInt(1, hashCode());
-			pstmt.setString(2, name);
-			pstmt.setInt(3, nbSerie);
-			pstmt.setInt(4, nbVoleeParSerie);
-			pstmt.setInt(5, nbFlecheParVolee);
-			pstmt.setInt(6, nbMembresEquipe);
-			pstmt.setInt(7, nbMembresRetenu);
-			pstmt.setBoolean(8, officialReglement);
+		// Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+		PreparedStatement pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
+		pstmt.setInt(1, hashCode());
+		pstmt.setString(2, name);
+		pstmt.setInt(3, nbSerie);
+		pstmt.setInt(4, nbVoleeParSerie);
+		pstmt.setInt(5, nbFlecheParVolee);
+		pstmt.setInt(6, nbMembresEquipe);
+		pstmt.setInt(7, nbMembresRetenu);
+		pstmt.setBoolean(8, officialReglement);
 
-			pstmt.executeUpdate();
+		pstmt.executeUpdate();
 
-			// sauvegarde les tableaux de crières et correspondance
-			saveCriteria();
-			saveDistancesAndBlasons();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		// sauvegarde les tableaux de crières et correspondance
+		saveCriteria();
+		saveDistancesAndBlasons();
 	}
 
-	private void saveCriteria() {
+	private void saveCriteria() throws SQLException {
 		for (Criterion criterion : listCriteria) {
 			criterion.save();
 		}
 	}
 
-	private void saveDistancesAndBlasons() {
+	private void saveDistancesAndBlasons() throws SQLException {
 		for (DistancesEtBlason distancesEtBlason : listDistancesEtBlason) {
 			distancesEtBlason.save();
 		}
@@ -468,7 +464,7 @@ public class Reglement {
 		try {
 			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 
-			ResultSet rs = stmt.executeQuery("select NOMREGLEMENT from REGLEMENT"); //$NON-NLS-1$
+			ResultSet rs = stmt.executeQuery("select NOMREGLEMENT from REGLEMENT where NUMREGLEMENT <> 0"); //$NON-NLS-1$
 
 			while (rs.next()) {
 				availableReglements.add(rs.getString("NOMREGLEMENT")); //$NON-NLS-1$

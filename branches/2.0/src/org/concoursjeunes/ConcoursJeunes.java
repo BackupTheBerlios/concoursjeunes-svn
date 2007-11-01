@@ -138,7 +138,7 @@ import com.lowagie.text.pdf.PdfWriter;
 public class ConcoursJeunes {
 
 	// UID: 1.Major(2).Minor(2).Correctif(2).Build(3).Type(1,Alpha,Beta,RC(1->6),Release)
-	public static final long serialVersionUID = 10196000011l;
+	public static final long serialVersionUID = 10199020011l;
 
 	/**
 	 * Chaines de version de ConcoursJeunes
@@ -148,7 +148,7 @@ public class ConcoursJeunes {
 	public static final String CODENAME = "@version.codename@"; //$NON-NLS-1$
 	public static final String AUTEURS = "@version.author@"; //$NON-NLS-1$
 	public static final String COPYR = "@version.copyr@"; //$NON-NLS-1$
-	public static final int DB_RELEASE_REQUIRED = 5;
+	public static final int DB_RELEASE_REQUIRED = 6;
 
 	// Chaine de ressources
 	public static final String RES_LIBELLE = "libelle"; //$NON-NLS-1$
@@ -232,7 +232,7 @@ public class ConcoursJeunes {
 						e.fillInStackTrace());
 				
 				//Si ce n'est pas un message db bloqué par un autre processus
-				if(!e.getMessage().endsWith("[90020-57]")) { //$NON-NLS-1$
+				if(!e.getMessage().endsWith("[90020-59]")) { //$NON-NLS-1$
 					if(JOptionPane.showConfirmDialog(null, ajrLibelle.getResourceString("erreur.breakdb")) == JOptionPane.YES_OPTION) { //$NON-NLS-1$
 						erasedb = true;
 						for(File deletefile : new File(userRessources.getBasePath()).listFiles()) {
@@ -244,8 +244,6 @@ public class ConcoursJeunes {
 				} else {
 					System.exit(1);
 				}
-				//TODO effacer les fichiers de la base
-				
 			}
 		} while(erasedb);
 		

@@ -18,6 +18,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 
@@ -245,7 +246,13 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 						ReglementDialog reglementDialog = new ReglementDialog(ConcoursJeunesFrame.this, ReglementBuilder.createReglement(e.getActionCommand()));
 						Reglement reglement = reglementDialog.showReglementDialog();
 						if (reglement != null) {
-							reglement.save();
+							try {
+								reglement.save();
+							} catch(SQLException e1) {
+								JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
+										e1.fillInStackTrace());
+								e1.printStackTrace();
+							}
 						}
 					}
 				});
@@ -258,12 +265,20 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			public void actionPerformed(ActionEvent e) {
 				String reglementName = JOptionPane.showInputDialog(ConcoursJeunes.ajrLibelle.getResourceString("reglement.general.addreglement")); //$NON-NLS-1$
 				if (reglementName != null) {
-					Reglement reglement = new Reglement(reglementName);
+					//Reglement reglement = new Reglement(reglementName);
+					Reglement reglement = ReglementBuilder.createReglement();
+					reglement.setName(reglementName);
 
 					ReglementDialog reglementDialog = new ReglementDialog(ConcoursJeunesFrame.this, reglement);
 					reglement = reglementDialog.showReglementDialog();
 					if (reglement != null) {
-						reglement.save();
+						try {
+							reglement.save();
+						} catch(SQLException e1) {
+							JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
+									e1.fillInStackTrace());
+							e1.printStackTrace();
+						}
 
 						fillReglementItem(jmReglements);
 					}
@@ -359,11 +374,11 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	private void displayHome() {
 		if (jepHome != null) {
 			ajtHome.reset();
-			ajtHome.parse("lib_active_profile", ConcoursJeunes.ajrLibelle.getResourceString("home.activeprofile"));
-			ajtHome.parse("lib_gest_competion", ConcoursJeunes.ajrLibelle.getResourceString("home.gestcompet"));
-			ajtHome.parse("lib_new", ConcoursJeunes.ajrLibelle.getResourceString("home.new"));
-			ajtHome.parse("lib_delete", ConcoursJeunes.ajrLibelle.getResourceString("home.delete"));
-			ajtHome.parse("lib_info", ConcoursJeunes.ajrLibelle.getResourceString("home.info"));
+			ajtHome.parse("lib_active_profile", ConcoursJeunes.ajrLibelle.getResourceString("home.activeprofile")); //$NON-NLS-1$ //$NON-NLS-2$
+			ajtHome.parse("lib_gest_competion", ConcoursJeunes.ajrLibelle.getResourceString("home.gestcompet")); //$NON-NLS-1$ //$NON-NLS-2$
+			ajtHome.parse("lib_new", ConcoursJeunes.ajrLibelle.getResourceString("home.new")); //$NON-NLS-1$ //$NON-NLS-2$
+			ajtHome.parse("lib_delete", ConcoursJeunes.ajrLibelle.getResourceString("home.delete")); //$NON-NLS-1$ //$NON-NLS-2$
+			ajtHome.parse("lib_info", ConcoursJeunes.ajrLibelle.getResourceString("home.info")); //$NON-NLS-1$ //$NON-NLS-2$
 			ajtHome.parse("LOGO_CLUB_URI", ConcoursJeunes.configuration.getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			ajtHome.parse("INTITULE_CLUB", ConcoursJeunes.configuration.getClub().getNom()); //$NON-NLS-1$
 			ajtHome.parse("PROFILE_NAME", ConcoursJeunes.configuration.getCurProfil()); //$NON-NLS-1$

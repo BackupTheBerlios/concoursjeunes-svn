@@ -289,14 +289,14 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 
 		for (int i = 0; i < catList.length; i++) {
 			// test si il existe des archers dans la catégorie
-			Concurrent[] concurrents = ficheConcours.getConcurrentList().list(catList[i], -1);
+			Concurrent[] concurrents = ficheConcours.getConcurrentList().list(catList[i], -1, criteriaFilter);
 			if (concurrents.length >= ficheConcours.getParametre().getReglement().getNbMembresRetenu()) {
 				dmtnCategorie[i] = new DefaultMutableTreeNode(new CriteriaSetLibelle(catList[i]));
 
 				if (cbEquipeClub.isSelected()) {
 					Entite[] entites = ficheConcours.getConcurrentList().listCompagnie();
 					for (Entite entite : entites) {
-						Concurrent[] clubConcurrents = ConcurrentList.sort(ficheConcours.getConcurrentList().list(entite, catList[i]), ConcurrentList.SORT_BY_NAME);
+						Concurrent[] clubConcurrents = ConcurrentList.sort(ficheConcours.getConcurrentList().list(entite, catList[i], criteriaFilter), ConcurrentList.SORT_BY_NAME);
 						if (clubConcurrents.length >= ficheConcours.getParametre().getReglement().getNbMembresRetenu()) {
 							DefaultMutableTreeNode dmtnEntite = new DefaultMutableTreeNode(entite);
 							for (Concurrent concurrent : clubConcurrents) {

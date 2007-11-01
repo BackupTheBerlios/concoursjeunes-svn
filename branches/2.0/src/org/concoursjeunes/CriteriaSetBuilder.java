@@ -105,7 +105,7 @@ public class CriteriaSetBuilder {
 			PreparedStatement pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
 			
 			pstmt.setInt(1, numCriteriaSet);
-			pstmt.setInt(2, reglement.hashCode());
+			pstmt.setInt(2, hashReglement);
 			
 			ResultSet rs = pstmt.executeQuery();
 			

@@ -115,13 +115,14 @@ public class DistancesEtBlasonBuilder {
 			
 			if(rs.first()) {
 				distancesEtBlason = new DistancesEtBlason();
-				distancesEtBlason.setNumdistancesblason(numdistancesblason);
+				if(hashReglement != 0)
+					distancesEtBlason.setNumdistancesblason(numdistancesblason);
 				distancesEtBlason.setReglement(reglement);
 				distancesEtBlason.setBlason(rs.getInt("BLASONS")); //$NON-NLS-1$
 				
 				pstmt.close();
 				
-				sql = "select * from associer where " + //$NON-NLS-1$
+				sql = "select * from ASSOCIER where " + //$NON-NLS-1$
 						"NUMDISTANCESBLASONS=? and NUMREGLEMENT=?"; //$NON-NLS-1$
 				pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
 				

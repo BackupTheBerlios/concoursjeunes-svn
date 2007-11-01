@@ -278,7 +278,7 @@ public class FicheConcours implements ParametreListener {
 			// sort la liste des concurrents correspondant aux critéres de
 			// recherche
 			ArrayList<Concurrent> unsortList = new ArrayList<Concurrent>();
-			for (Concurrent concurrent : concurrentList.list(catList[i], -1))
+			for (Concurrent concurrent : concurrentList.list(catList[i], -1, parametre.getReglement().getClassementFilter()))
 				unsortList.add(concurrent);
 			Concurrent[] sortList = ConcurrentList.sort(unsortList.toArray(new Concurrent[unsortList.size()]), ConcurrentList.SORT_BY_POINTS);
 			if (sortList.length > 0)
@@ -403,8 +403,6 @@ public class FicheConcours implements ParametreListener {
 					tplClassement.parse("categories.NB_TIREUR_COLS", "" + (4 + parametre.getReglement().getNbSerie())); //$NON-NLS-1$ //$NON-NLS-2$
 					tplClassement.parse("categories.NB_TIREURS", "" + sortList.length); //$NON-NLS-1$ //$NON-NLS-2$
 
-					// FIXME gerer les cas ou plus d'une distance par critères
-					// de classement
 					for (int j = 0; j < parametre.getReglement().getNbSerie(); j++) {
 						tplClassement.parse("categories.distances.DISTANCE", //$NON-NLS-1$
 								parametre.getReglement().getDistancesEtBlasonFor(scna).getDistance()[j] + "m"); //$NON-NLS-1$

@@ -1,3 +1,11 @@
+concoursjeunes (1.99.02-1) unstable; urgency=low
+
+  * Correction d'un problème de gestion de réglement
+  * Ajout d'un parametrage de réglement par défaut pour simplifier la tache de création
+  * Ajout de categorie d'arc au différents reglement
+
+ -- Aurelien JEOFFRAY <aurelien.jeoffray@gmail.com>  Sat, 21 Oct 2007 14:35:00 +0200
+ 
 concoursjeunes (1.99.0-1) unstable; urgency=low
 
   * Redemarrage automatique de l'application en cas de mise à jour

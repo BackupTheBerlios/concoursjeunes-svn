@@ -16,6 +16,7 @@
 package org.concoursjeunes;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -137,8 +138,8 @@ public class ConcurrentList {
 	 * 
 	 * @return Concurrent[] - la liste des concurrents appartenant au meme club
 	 */
-	public Concurrent[] list(Entite compagnie, CriteriaSet criteriaSet) {
-		return list(compagnie, criteriaSet, -1);
+	public Concurrent[] list(Entite compagnie, CriteriaSet criteriaSet, Hashtable<Criterion, Boolean> criteriaFilter) {
+		return list(compagnie, criteriaSet, -1, criteriaFilter);
 	}
 
 	/**
@@ -149,7 +150,7 @@ public class ConcurrentList {
 	 * @param depart - le depart concerne
 	 * @return Concurrent[] - la liste des concurrents appartenant au meme club
 	 */
-	private Concurrent[] list(Entite compagnie, CriteriaSet criteriaSet, int depart) {
+	private Concurrent[] list(Entite compagnie, CriteriaSet criteriaSet, int depart, Hashtable<Criterion, Boolean> criteriaFilter) {
 
 		assert compagnie != null;
 
@@ -160,7 +161,7 @@ public class ConcurrentList {
 		for(Concurrent concurrent : archList) {
 			if(concurrent.getClub().equals(compagnie)
 					&& (criteriaSet == null || 
-							criteriaSet.equals(concurrent.getCriteriaSet()))
+							criteriaSet.equals(concurrent.getCriteriaSet().getFilteredCriteriaSet(criteriaFilter)))
 							&& (depart == -1 || concurrent.getDepart() == depart))
 				sel.add(concurrent);
 		}
@@ -175,14 +176,14 @@ public class ConcurrentList {
 	 * @param depart - le depart concerné
 	 * @return Concurrent[] - la liste des concurrents correspondant aux critere de recherche
 	 */
-	public Concurrent[] list(CriteriaSet criteriaSet, int depart) {
+	public Concurrent[] list(CriteriaSet criteriaSet, int depart, Hashtable<Criterion, Boolean> criteriaFilter) {
 
 		assert criteriaSet != null;
 
 		ArrayList<Concurrent> sel = new ArrayList<Concurrent>();
 
 		for(Concurrent concurrent : archList) {
-			if(criteriaSet.equals(concurrent.getCriteriaSet()) && 
+			if(criteriaSet.equals(concurrent.getCriteriaSet().getFilteredCriteriaSet(criteriaFilter)) && 
 					(depart == -1 || concurrent.getDepart() == depart))
 				sel.add(concurrent);
 		}

@@ -106,13 +106,14 @@ import java.util.ArrayList;
  *
  */
 public class ReglementBuilder {
+	
 	/**
 	 * Crée un nouveau reglement de concours
 	 * 
 	 * @return le reglement créer
 	 */
 	public static Reglement createReglement() {
-		return new Reglement();
+		return createReglement(0);
 	}
 	
 	/**

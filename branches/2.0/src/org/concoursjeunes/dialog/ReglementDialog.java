@@ -425,6 +425,9 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 				return true;
 			}
 		};
+		
+		//s'assure que le nombre de serie est corect
+		reglement.setNbSerie(Integer.parseInt(jtfNbSerie.getText()));
 
 		dtm.addColumn(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.concours.scna")); //$NON-NLS-1$
 		for (int i = 0; i < reglement.getNbSerie(); i++)
@@ -452,43 +455,6 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		}
 
 		return dtm;
-	}
-
-	/**
-	 * generere les ligne de distance et blason par code scna
-	 * 
-	 */
-	private void generateSCNA_DBRow() {
-		DefaultTableModel dtm = (DefaultTableModel) this.jtDistanceBlason.getModel();
-
-		// supprime toutes les lignes
-		while (dtm.getRowCount() > 0)
-			dtm.removeRow(0);
-
-		if (dtm.getColumnCount() < reglement.getNbSerie() + 2) {
-			jtDistanceBlason.removeColumn(jtDistanceBlason.getColumn(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.concours.blason"))); //$NON-NLS-1$
-			dtm.addColumn(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.concours.distance") + " " + reglement.getNbSerie()); //$NON-NLS-1$ //$NON-NLS-2$
-			dtm.addColumn(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.concours.blason")); //$NON-NLS-1$
-		}
-
-		differentiationCriteria = CriteriaSet.listCriteriaSet(reglement, reglement.getPlacementFilter());
-
-		for (int i = 0; i < differentiationCriteria.length; i++) {
-			Object[] row = new String[reglement.getNbSerie() + 2];
-			CriteriaSetLibelle libelle = new CriteriaSetLibelle(differentiationCriteria[i]);
-			row[0] = libelle.toString();
-			for (int j = 1; j < reglement.getNbSerie() + 1; j++) {
-				if (reglement.getDistancesEtBlasonFor(differentiationCriteria[i]) != null)
-					row[j] = "" + reglement.getDistancesEtBlasonFor(differentiationCriteria[i]).getDistance()[j - 1]; //$NON-NLS-1$
-				else
-					row[j] = "0"; //$NON-NLS-1$
-			}
-			if (reglement.getDistancesEtBlasonFor(differentiationCriteria[i]) != null)
-				row[reglement.getNbSerie() + 1] = "" + reglement.getDistancesEtBlasonFor(differentiationCriteria[i]).getBlason(); //$NON-NLS-1$
-			else
-				row[reglement.getNbSerie() + 1] = "0"; //$NON-NLS-1$
-			dtm.addRow(row);
-		}
 	}
 
 	/**
@@ -612,7 +578,8 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 							treeCriteria.setSelectionPath(selectedPath);
 							// treeCriteria.expandPath(selectedPath);
 
-							generateSCNA_DBRow();
+							jtDistanceBlason.setModel(createTableModel());
+							//generateSCNA_DBRow();
 						}
 					} else {
 						JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("reglement.message.criteria.noelement"), //$NON-NLS-1$
@@ -638,7 +605,8 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 
 					treeModel.reload();
 
-					generateSCNA_DBRow();
+					jtDistanceBlason.setModel(createTableModel());
+					//generateSCNA_DBRow();
 				} else if (dmtnObj instanceof CriterionElement) {
 					TreePath selectedPath = treeCriteria.getSelectionPath();
 					DefaultMutableTreeNode dmtnParent = (DefaultMutableTreeNode) selectedPath.getParentPath().getLastPathComponent();
@@ -660,7 +628,8 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 
 					treeModel.reload();
 
-					generateSCNA_DBRow();
+					jtDistanceBlason.setModel(createTableModel());
+					//generateSCNA_DBRow();
 				}
 			}
 		} else if (source == jbDownElement) {
@@ -680,7 +649,8 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 
 					treeModel.reload();
 
-					generateSCNA_DBRow();
+					jtDistanceBlason.setModel(createTableModel());
+					//generateSCNA_DBRow();
 				} else if (dmtnObj instanceof CriterionElement) {
 					TreePath selectedPath = treeCriteria.getSelectionPath();
 					DefaultMutableTreeNode dmtnParent = (DefaultMutableTreeNode) selectedPath.getParentPath().getLastPathComponent();
@@ -698,7 +668,8 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 
 					treeModel.reload();
 
-					generateSCNA_DBRow();
+					jtDistanceBlason.setModel(createTableModel());
+					//generateSCNA_DBRow();
 				}
 			}
 		} else if (source == jbRemoveElement) {
@@ -711,7 +682,8 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 
 					treeModel.removeNodeFromParent(dmtn);
 
-					generateSCNA_DBRow();
+					jtDistanceBlason.setModel(createTableModel());
+					//generateSCNA_DBRow();
 				} else if (dmtnObj instanceof CriterionElement) {
 					TreePath selectedPath = treeCriteria.getSelectionPath();
 					DefaultMutableTreeNode dmtnParent = (DefaultMutableTreeNode) selectedPath.getParentPath().getLastPathComponent();
@@ -722,7 +694,8 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 
 					treeModel.removeNodeFromParent(dmtn);
 
-					generateSCNA_DBRow();
+					jtDistanceBlason.setModel(createTableModel());
+					//generateSCNA_DBRow();
 				}
 			}
 		}
@@ -743,7 +716,8 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 				treeModel.reload((TreeNode) treeCriteria.getSelectionPath().getLastPathComponent());
 				treeCriteria.setSelectionPath(selectedPath);
 
-				generateSCNA_DBRow();
+				jtDistanceBlason.setModel(createTableModel());
+				//generateSCNA_DBRow();
 			} else if (dmtnObj instanceof CriterionElement) {
 				TreePath selectedPath = treeCriteria.getSelectionPath();
 				DefaultMutableTreeNode dmtnParent = (DefaultMutableTreeNode) selectedPath.getParentPath().getLastPathComponent();
@@ -752,7 +726,8 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 				treeModel.reload((TreeNode) treeCriteria.getSelectionPath().getLastPathComponent());
 				treeCriteria.setSelectionPath(selectedPath);
 
-				generateSCNA_DBRow();
+				jtDistanceBlason.setModel(createTableModel());
+				//generateSCNA_DBRow();
 			}
 		}
 	}

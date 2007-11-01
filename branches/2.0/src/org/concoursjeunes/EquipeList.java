@@ -158,6 +158,7 @@ public class EquipeList implements Cloneable {
         ArrayList<Equipe> sel = new ArrayList<Equipe>();
         
         for(Equipe equipe : equipeList) {
+        	//TODO verifier la porté
             if(equipe.getDifferentiationCriteria().equals(scna))
                 sel.add(equipe);
         }
