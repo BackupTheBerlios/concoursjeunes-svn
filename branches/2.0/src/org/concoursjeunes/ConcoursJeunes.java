@@ -119,6 +119,8 @@ import ajinteractive.standard.utilities.sql.SqlManager;
 //import ajinteractive.standard.utilities.sql.SqlParser;
 
 import com.lowagie.text.Document;
+import com.lowagie.text.HeaderFooter;
+import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfWriter;
 
 /**
@@ -564,9 +566,9 @@ public class ConcoursJeunes {
 			String filePath = tmpFile.getCanonicalPath();
 			tmpFile.deleteOnExit();
 
-			/*
-			 * HeaderFooter footer = new HeaderFooter(new Phrase("page "), new Phrase(".")); document.setFooter(footer);
-			 */
+			
+			//HeaderFooter footer = new HeaderFooter(new Phrase("page "), new Phrase(".")); document.setFooter(footer);
+			 
 
 			// genere le pdf
 			PdfWriter.getInstance(document, new FileOutputStream(filePath));

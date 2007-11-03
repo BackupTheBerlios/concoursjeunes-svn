@@ -264,6 +264,7 @@ public class Concurrent extends Archer {
 			try {
 				String sql = "select * from ARCHERS where NUMLICENCEARCHER=?"; //$NON-NLS-1$
 				PreparedStatement pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
+				pstmt.setString(1, getNumLicenceArcher());
 				
 				ResultSet rs = pstmt.executeQuery();
 				if(rs.first()) {
