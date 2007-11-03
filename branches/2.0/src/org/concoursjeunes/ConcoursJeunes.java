@@ -119,8 +119,6 @@ import ajinteractive.standard.utilities.sql.SqlManager;
 //import ajinteractive.standard.utilities.sql.SqlParser;
 
 import com.lowagie.text.Document;
-import com.lowagie.text.HeaderFooter;
-import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfWriter;
 
 /**

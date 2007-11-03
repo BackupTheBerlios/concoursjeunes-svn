@@ -19,12 +19,7 @@ package org.concoursjeunes;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.io.File;
-import java.lang.Thread.UncaughtExceptionHandler;
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.HashMap;
-
-import javax.script.*;
 
 import org.concoursjeunes.ui.ConcoursJeunesFrame;
 import org.jdesktop.swingx.JXErrorDialog;

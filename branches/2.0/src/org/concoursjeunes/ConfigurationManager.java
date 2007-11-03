@@ -134,6 +134,7 @@ public class ConfigurationManager {
 	 * @param confFile le fichier de configuration à charger
 	 * @return l'objet configuration chargé
 	 */
+	@SuppressWarnings("deprecation")
 	public static Configuration loadConfiguration(File confFile) {
 		Configuration configuration = null;
 		//tente de charger la configuration

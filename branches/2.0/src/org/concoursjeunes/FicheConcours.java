@@ -739,8 +739,8 @@ public class FicheConcours implements ParametreListener {
 			marge_haut = AJToolKit.centimeterToDpi(marge_haut);
 			marge_bas = AJToolKit.centimeterToDpi(marge_bas);
 
-			double zoneaffichable_x = pageDimension.width() - marge_gauche - marge_droite;
-			double zoneaffichable_y = pageDimension.height() - marge_haut - marge_bas;
+			double zoneaffichable_x = pageDimension.getWidth() - marge_gauche - marge_droite;
+			double zoneaffichable_y = pageDimension.getHeight() - marge_haut - marge_bas;
 			
 			cellule_x = (zoneaffichable_x - (espacement_cellule_h * (nblarg - 1.0))) / zoneaffichable_x * 100 / nblarg - 7;
 			cellule_y = (zoneaffichable_y - (espacement_cellule_v * (nbhaut - 1.0))) / zoneaffichable_y * 100 / nbhaut;

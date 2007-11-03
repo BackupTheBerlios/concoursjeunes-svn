@@ -353,7 +353,10 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 					if(!success) {
 						configuration.setCurProfil(ConcoursJeunes.configuration.getCurProfil());
 						
-						JOptionPane.showMessageDialog(this, "<html>La tentative de renomage du profil à échoué,<br>L'ancien nom a été conservé", "Erreur renomage", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(this, 
+								ConcoursJeunes.ajrLibelle.getResourceString("configuration.profile.rename.fail"), //$NON-NLS-1$ 
+								ConcoursJeunes.ajrLibelle.getResourceString("configuration.profile.rename.fail.title"), //$NON-NLS-1$ 
+								JOptionPane.ERROR_MESSAGE);
 					}
 				}
 			}
@@ -497,7 +500,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 		} else if (cmd.equals("menubar.impression.listeconcurrent.ordrealpha")) { //$NON-NLS-1$
 			if (jif != null) {
 				if(!jif.getFicheConcours().printArcherList(FicheConcours.ALPHA)) {
-					JOptionPane.showMessageDialog(this, "Rien à imprimer");
+					JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 				}
 			}
 
@@ -506,14 +509,14 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 		} else if (cmd.equals("menubar.impression.listeconcurrent.greffe")) { //$NON-NLS-1$
 			if (jif != null)
 				if(!jif.getFicheConcours().printArcherList(FicheConcours.GREFFE)) {
-					JOptionPane.showMessageDialog(this, "Rien à imprimer");
+					JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 				}
 
 			// imprime la liste des concurrents par ordre sur le pas de tir
 		} else if (cmd.equals("menubar.impression.listeconcurrent.bytarget")) { //$NON-NLS-1$
 			if (jif != null)
 				if(!jif.getFicheConcours().printArcherList(FicheConcours.TARGET)) {
-					JOptionPane.showMessageDialog(this, "Rien à imprimer");
+					JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 				}
 			
 			// imprime les etiquettes concurrent
@@ -521,35 +524,35 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 
 			if (jif != null)
 				if(!jif.getFicheConcours().printEtiquettes()) {
-					JOptionPane.showMessageDialog(this, "Rien à imprimer");
+					JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 				}
 
 			// imprime la vu du pas de tir
 		} else if (cmd.equals("menubar.impression.pasdetir")) { //$NON-NLS-1$
 			if (jif != null)
 				if(!jif.getFicheConcours().printPasDeTir()) {
-					JOptionPane.showMessageDialog(this, "Rien à imprimer");
+					JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 				}
 
 			// imprime le classement individuel
 		} else if (cmd.equals("menubar.impression.classement.individuel")) { //$NON-NLS-1$
 			if (jif != null)
 				if(!jif.getFicheConcours().printClassement()) {
-					JOptionPane.showMessageDialog(this, "Rien à imprimer");
+					JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 				}
 
 			// imprime le classement par equipe
 		} else if (cmd.equals("menubar.impression.classement.equipe")) { //$NON-NLS-1$
 			if (jif != null)
 				if(!jif.getFicheConcours().printClassementEquipe()) {
-					JOptionPane.showMessageDialog(this, "Rien à imprimer");
+					JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 				}
 
 			// aimprime le classement par club
 		} else if (cmd.equals("menubar.impression.classement.club")) { //$NON-NLS-1$
 			if (jif != null)
 				if(!jif.getFicheConcours().printClassementClub()) {
-					JOptionPane.showMessageDialog(this, "Rien à imprimer");
+					JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 				}
 
 			// affiche la boite de dialogie "A propos"

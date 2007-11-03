@@ -864,11 +864,12 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 			
 			Rectangle pageDimension = (Rectangle)formatPapier.get(null);
 			
-			if(((margeGauche + (espacementHorizontal*nbColonne-1) + margeDroite) / 2.54 * 72 > pageDimension.width())
-					|| ((margeHaut + (espacementVertical*nbLigne-1) + margeBas) / 2.54 * 72 > pageDimension.height())) {
+			if(((margeGauche + (espacementHorizontal*nbColonne-1) + margeDroite) / 2.54 * 72 > pageDimension.getWidth())
+					|| ((margeHaut + (espacementVertical*nbLigne-1) + margeBas) / 2.54 * 72 > pageDimension.getHeight())) {
 				JOptionPane.showMessageDialog(this, 
-						"Les dimensions proposé pour les étiquettes dépasse la taille de la page\n" +
-						"Veuillez vérifier votre saisi.", "Erreur de dimension", JOptionPane.ERROR_MESSAGE);
+						ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.etiquettes.errordimension"), //$NON-NLS-1$
+						ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.etiquettes.errordimension.title"), //$NON-NLS-1$
+						JOptionPane.ERROR_MESSAGE);
 				return false;
 			}
 		} catch (SecurityException e) {

@@ -497,7 +497,7 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 			strEquipeName = JOptionPane.showInputDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("equipe.saisinom"), strEquipeName); //$NON-NLS-1$
 			if(strEquipeName == null)
 				return false;
-		} while (strEquipeName.isEmpty() || tempEquipes.contains(strEquipeName)); //$NON-NLS-1$
+		} while (strEquipeName.isEmpty() || tempEquipes.contains(strEquipeName));
 
 		// on crée l'équipe
 		Equipe equipe = new Equipe(strEquipeName);
@@ -585,9 +585,8 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 			for(Equipe equipe : tempEquipes.list()) {
 	            if(equipe.getMembresEquipe().size() < ficheConcours.getParametre().getReglement().getNbMembresRetenu()) {
 	                if(JOptionPane.showConfirmDialog(this, 
-	                		"Des équipes incomplètes ont été renseignées,\n" +
-	                		"Celles ci seront supprimé à la validation\n\n" +
-	                		"Voulez vous continuer?", "Equipes incomplétes", 
+	                		ConcoursJeunes.ajrLibelle.getResourceString("equipe.warning.incomplete"), //$NON-NLS-1$
+	                		ConcoursJeunes.ajrLibelle.getResourceString("equipe.warning.incomplete.title"), //$NON-NLS-1$
 	                		JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
 	                	return;
 	                }

@@ -140,6 +140,8 @@ public class PasDeTir {
 	/**
 	 * calcul la place occupé et disponible sur le concours
 	 *
+	 * TODO gestion des archers handicapé
+	 *
 	 * @param depart - le départ pour lequelle tester la place dispo
 	 * @return la table d'occupation pour le depart
 	 */

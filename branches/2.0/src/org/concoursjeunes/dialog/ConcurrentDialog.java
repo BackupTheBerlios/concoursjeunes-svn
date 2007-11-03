@@ -490,7 +490,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 
 		jbPrecedent.setEnabled(isinit);
 		/*jbSuivant.setText(isinit ? ConcoursJeunes.ajrLibelle.getResourceString("bouton.validersuivant") //$NON-NLS-1$
-				: ConcoursJeunes.ajrLibelle.getResourceString("bouton.validernouveau")); *///$NON-NLS-1$
+				: ConcoursJeunes.ajrLibelle.getResourceString("bouton.validernouveau")); */
 
 		jlPlaceLibre.setText(showPlacesLibre());
 
@@ -893,9 +893,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 					setConcurrent(concurrent);
 				}
 			} else {
-				JOptionPane.showMessageDialog(this, "La liste des archers n'est " +
-						"pas encore initialiser.\nPatienter encore quelque seconde " +
-						"et recommencer");
+				JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("concurrent.info.listing.wait")); //$NON-NLS-1$
 			}
 		} else if (ae.getSource() == jbDetailClub) {
 			if (!jtfAgrement.getText().equals("")) { //$NON-NLS-1$

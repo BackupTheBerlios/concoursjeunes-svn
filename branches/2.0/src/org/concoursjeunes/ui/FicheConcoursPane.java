@@ -215,7 +215,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		for(int i = 1; i <= ficheConcours.getParametre().getNbDepart(); i++)
 			comboBox.addItem(
 					ConcoursJeunes.ajrLibelle.getResourceString("onglet.gestionarcher.depart") + i); //$NON-NLS-1$
-		comboBox.addItem("---");
+		comboBox.addItem("---"); //$NON-NLS-1$
 		panel.setLayout(new BorderLayout());
 		panel.setOpaque(false);
 		panel.add(label, BorderLayout.CENTER);
@@ -348,17 +348,17 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 				openResultatDialog();
 				jepClassIndiv.setText(ficheConcours.getClassement(FicheConcours.OUT_HTML));
 			} else {
-				JOptionPane.showMessageDialog(this, "Aucune cible n'est occupé");
+				JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("ficheconcours.target.empty")); //$NON-NLS-1$
 			}
 		} else if(source == printClassementIndiv) {
 			if(!ficheConcours.printClassement())
-				JOptionPane.showMessageDialog(this, "Rien à imprimer");
+				JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 		} else if(source == printClassementEquipe) {
 			if(!ficheConcours.printClassementEquipe())
-				JOptionPane.showMessageDialog(this, "Rien à imprimer");
+				JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 		} else if(source == printClassementClub) {
 			if(!ficheConcours.printClassementClub())
-				JOptionPane.showMessageDialog(this, "Rien à imprimer");
+				JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 		} else if(source instanceof JCheckBox) {
 			for(Criterion criterion : ficheConcours.getParametre().getReglement().getListCriteria()) {
 				criterion.setClassement(classmentCriteriaCB.get(criterion.getCode()).isSelected());
@@ -430,6 +430,6 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	
 	@Override
 	public void finalize() {
-		System.out.println("FicheConcoursPane: Objet récupéré");
+		System.out.println("FicheConcoursPane: Objet récupéré"); //$NON-NLS-1$
 	}
 }
