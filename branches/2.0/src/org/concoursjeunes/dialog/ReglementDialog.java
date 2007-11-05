@@ -381,7 +381,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		jtfNbMembresRetenu.setText(reglement.getNbMembresRetenu() + ""); //$NON-NLS-1$
 
 		jcbOfficialReglement.setSelected(reglement.isOfficialReglement());
-		if (System.getProperty("debug.mode") != null) { //$NON-NLS-1$
+		if (System.getProperty("debug.mode") == null) { //$NON-NLS-1$
 			jcbOfficialReglement.setEnabled(false);
 		}
 	}

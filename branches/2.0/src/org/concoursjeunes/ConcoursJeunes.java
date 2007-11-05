@@ -89,7 +89,13 @@
 package org.concoursjeunes;
 
 import java.awt.Desktop;
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -98,10 +104,17 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Locale;
 
 import javax.naming.ConfigurationException;
-import javax.script.*;
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+import javax.script.SimpleBindings;
 import javax.swing.JOptionPane;
 import javax.swing.event.EventListenerList;
 import javax.xml.parsers.SAXParser;
@@ -113,10 +126,9 @@ import org.concoursjeunes.plugins.PluginMetadata;
 import org.jdesktop.swingx.JXErrorDialog;
 import org.xml.sax.InputSource;
 
-import ajinteractive.standard.common.PluginClassLoader;
 import ajinteractive.standard.common.AjResourcesReader;
+import ajinteractive.standard.common.PluginClassLoader;
 import ajinteractive.standard.utilities.sql.SqlManager;
-//import ajinteractive.standard.utilities.sql.SqlParser;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.pdf.PdfWriter;
@@ -232,7 +244,7 @@ public class ConcoursJeunes {
 						e.fillInStackTrace());
 				
 				//Si ce n'est pas un message db bloqué par un autre processus
-				if(!e.getMessage().endsWith("[90020-59]")) { //$NON-NLS-1$
+				if(!e.getMessage().endsWith("[90020-60]")) { //$NON-NLS-1$
 					if(JOptionPane.showConfirmDialog(null, ajrLibelle.getResourceString("erreur.breakdb")) == JOptionPane.YES_OPTION) { //$NON-NLS-1$
 						erasedb = true;
 						for(File deletefile : new File(userRessources.getBasePath()).listFiles()) {
