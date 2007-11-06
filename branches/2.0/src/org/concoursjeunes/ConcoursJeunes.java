@@ -128,6 +128,7 @@ import org.xml.sax.InputSource;
 
 import ajinteractive.standard.common.AjResourcesReader;
 import ajinteractive.standard.common.PluginClassLoader;
+import ajinteractive.standard.utilities.io.FileUtil;
 import ajinteractive.standard.utilities.sql.SqlManager;
 
 import com.lowagie.text.Document;
@@ -150,7 +151,7 @@ import com.lowagie.text.pdf.PdfWriter;
 public class ConcoursJeunes {
 
 	// UID: 1.Major(2).Minor(2).Correctif(2).Build(3).Type(1,Alpha,Beta,RC(1->6),Release)
-	public static final long serialVersionUID = 10199020011l;
+	public static final long serialVersionUID = 10199030011l;
 
 	/**
 	 * Chaines de version de ConcoursJeunes
@@ -279,42 +280,27 @@ public class ConcoursJeunes {
 				System.exit(1);
 			}
 			if (dbVersion != DB_RELEASE_REQUIRED) {
+				File updatePath = new File(userRessources.getAllusersDataPath() + File.separator + "update");
+				
 				ScriptEngineManager se = new ScriptEngineManager();
 				ScriptEngine scriptEngine = se.getEngineByName("JavaScript"); //$NON-NLS-1$
 				scriptEngine.setBindings(new SimpleBindings(Collections.synchronizedMap(new HashMap<String, Object>())), ScriptContext.ENGINE_SCOPE);
 				try {
 					scriptEngine.put("dbVersion", dbVersion); //$NON-NLS-1$
-					scriptEngine.put("sql", new SqlManager(stmt, new File(userRessources.getAllusersDataPath() + File.separator + "update"))); //$NON-NLS-1$ //$NON-NLS-2$
-					scriptEngine.eval(new FileReader(new File(userRessources.getAllusersDataPath() + File.separator + "update" + File.separator + "updatedb.js"))); //$NON-NLS-1$ //$NON-NLS-2$
+					scriptEngine.put("sql", new SqlManager(stmt, updatePath)); //$NON-NLS-1$ //$NON-NLS-2$
+					scriptEngine.eval(new FileReader(new File(updatePath, "updatedb.js"))); //$NON-NLS-1$ //$NON-NLS-2$
 				} catch (ScriptException e1) {
 					e1.printStackTrace();
 				} catch (FileNotFoundException e1) {
 					e1.printStackTrace();
+				} finally {
+					//Supprime les fichiers du repertoire update après une mise à jour
+					for(File file : FileUtil.listAllFiles(updatePath, ".*")) {
+						System.out.println("delete: " + file.getName() + ": " //$NON-NLS-1$ //$NON-NLS-2$
+								+ file.delete()); //$NON-NLS-1$
+					}
 				}
 			}
-			
-			/*String[] updateScripts = new File(userRessources.getAllusersDataPath() + File.separator + "update").list(new FilenameFilter() { //$NON-NLS-1$
-						public boolean accept(File dir, String name) {
-							if (name.endsWith(".sql")) { //$NON-NLS-1$
-								return true;
-							}
-							return false;
-						}
-					});
-			if (updateScripts != null) {
-				Arrays.sort(updateScripts);
-
-				int scriptRelease = dbVersion;
-				//stmt.addBatch("SET LOG 0;"); //$NON-NLS-1$
-				for (String scriptPath : updateScripts) {
-					SqlParser.createBatch(new File(userRessources.getAllusersDataPath() + File.separator + "update" + File.separator + scriptPath), stmt, null, scriptRelease + 1); //$NON-NLS-1$
-					stmt.executeBatch();
-					stmt.clearBatch();
-					System.out.println("delete: " + scriptPath + ": " //$NON-NLS-1$ //$NON-NLS-2$
-							+ new File(userRessources.getAllusersDataPath() + File.separator + "update" + File.separator + scriptPath).delete()); //$NON-NLS-1$
-				}
-				//stmt.executeUpdate("SET LOG 1;"); //$NON-NLS-1$
-			}*/
 		} catch (SQLException e) {
 			e.printStackTrace();
 			JXErrorDialog.showDialog(null, "SQL Error", e.toString(), //$NON-NLS-1$

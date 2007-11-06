@@ -1,3 +1,12 @@
+concoursjeunes (1.99.03-1) unstable; urgency=low
+
+  * Correction de libellés
+  * Correction comportement en cas de base déjà utilisé
+  * Correction problème de mode de débugage
+  * Correction ConcurentModificationException sur la validation des équipes
+
+ -- Aurelien JEOFFRAY <aurelien.jeoffray@gmail.com>  Mon, 05 Nov 2007 17:00:00 +0200
+
 concoursjeunes (1.99.02-1) unstable; urgency=low
 
   * Correction d'un problème de gestion de réglement
