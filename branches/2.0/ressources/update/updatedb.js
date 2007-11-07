@@ -1,6 +1,6 @@
 //mapping:
 // int dbVersion
-// SqlManager sql - moteur de base de donnée
+// SqlManager sql - moteur de base de donnï¿½e
 
 if(dbVersion == 0) {
 	sql.executeScript("01-create_db.sql");
@@ -33,4 +33,5 @@ if(dbVersion == 0) {
 		sql.executeUpdate("MERGE INTO PUBLIC.CRITEREELEMENT(CODECRITEREELEMENT, CODECRITERE, NUMREGLEMENT, LIBELLECRITEREELEMENT, ACTIF) VALUES('BB', 'arc', -180676679, 'Bare Bow', TRUE);");
 		sql.executeUpdate("MERGE INTO PUBLIC.CRITEREELEMENT(CODECRITEREELEMENT, CODECRITERE, NUMREGLEMENT, LIBELLECRITEREELEMENT, ACTIF) VALUES('TL', 'arc', -180676679, 'Tir Libre', TRUE);");
 	}
+	sql.executeScript("99-updatedbver.sql");
 }
