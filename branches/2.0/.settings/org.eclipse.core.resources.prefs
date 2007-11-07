@@ -1,11 +1,10 @@
-#Mon Oct 08 12:08:31 CEST 2007
+#Mon Nov 05 19:01:28 CET 2007
 =\=\=\=\=\=\=
 <<<<<<<=.working
 >>>>>>>=.merge-right.r120
 eclipse.preferences.version=1
 encoding//config/parametre.properties=UTF-8
 encoding//lang/libelle.properties=UTF-8
-encoding//lang/libelle_en.properties=UTF-8
 encoding//packager/Licence_win.txt=ISO-8859-1
 encoding//packager/version.properties=ISO-8859-1
 encoding//src/org/concoursjeunes/plugins/FFTAImport/FFTAImportPlugin_libelle.properties=UTF-8
