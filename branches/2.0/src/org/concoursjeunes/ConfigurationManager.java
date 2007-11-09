@@ -143,6 +143,11 @@ public class ConfigurationManager {
 			if(configuration == null) {
 				configuration = ConfigurationBuilder.getDefaultConfiguration();
 			}
+			
+			//changement suite à la dispartion de la ligue du dauphiné
+			if(configuration.getClub().getAgrement().startsWith("16")) { //$NON-NLS-1$
+				configuration.getClub().setAgrement("33" + configuration.getClub().getAgrement().substring(2)); //$NON-NLS-1$
+			}
 		
 		//si il n'y arrive pas vérifie que ce n'est pas une config 1.1
 		} catch (JAXBException e) {

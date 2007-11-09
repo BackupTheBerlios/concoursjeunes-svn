@@ -960,9 +960,8 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 			}
 		} else if (source == jbParcourir) {
 			EntiteListDialog eld = new EntiteListDialog(null);
-			Entite entite = eld.getSelectedEntite();
-			if(entite != null)
-				jtfAgrClub.setText(entite.getAgrement());
+			if (eld.getAction() == EntiteListDialog.VALIDER)
+					jtfAgrClub.setText(eld.getSelectedEntite().getAgrement());
 		} else if (source == this.jbDetail) {
 			EntiteDialog ed = new EntiteDialog(this);
 			ed.showEntite(workConfiguration.getClub());
