@@ -98,9 +98,11 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
+import javax.naming.ConfigurationException;
 import javax.swing.JOptionPane;
 
 import org.concoursjeunes.ConcoursJeunes;
@@ -241,6 +243,16 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 							ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
 							System.getProperty("user.dir") }); //$NON-NLS-1$
 					process.waitFor();
+					
+					try {
+						ConcoursJeunes.getInstance().saveAllFichesConcours();
+						
+						ConcoursJeunes.dbConnection.close();
+					} catch (ConfigurationException e) {
+						e.printStackTrace();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 
 					System.exit(3);
 				} catch (IOException e1) {

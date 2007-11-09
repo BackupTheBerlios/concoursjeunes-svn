@@ -444,7 +444,14 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	private void closeApp() {
 		try {
 			concoursJeunes.saveAllFichesConcours();
+			
+			ConcoursJeunes.dbConnection.close();
 		} catch (ConfigurationException e) {
+			JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
+					e.fillInStackTrace());
+			e.printStackTrace();
+			System.exit(1);
+		} catch (SQLException e) {
 			JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
 					e.fillInStackTrace());
 			e.printStackTrace();
