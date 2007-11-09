@@ -164,6 +164,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	private final JLabel jlLogoPath = new JLabel();
 	private final JTextField jtfNomClub = new JTextField(20);
 	private final JTextField jtfAgrClub = new JTextField(new NumberDocument(false, false), "", 5); //$NON-NLS-1$
+	private final JButton jbParcourir = new JButton();
 	private final JButton jbDetail = new JButton();
 	private final JTextField jtfIntConc = new JTextField(20);
 	private final JComboBox jcbLangue = new JComboBox();
@@ -282,6 +283,8 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		jbRenameProfile.addActionListener(this);
 		jcbProfil.addActionListener(this);
 
+		jbParcourir.addActionListener(this);
+		jbParcourir.setMargin(new Insets(0,2,0,2));
 		jbDetail.addActionListener(this);
 
 		AutoCompleteDocument acdAgrement = new AutoCompleteDocument(jtfAgrClub, AutoCompleteDocument.SearchType.AGREMENT_SEARCH, null);
@@ -313,28 +316,29 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		c.anchor = GridBagConstraints.WEST; // Défaut,Haut
 		gridbagComposer.addComponentIntoGrid(jlAgremClub, c);
 		gridbagComposer.addComponentIntoGrid(jtfAgrClub, c);
+		gridbagComposer.addComponentIntoGrid(jbParcourir, c);
 		gridbagComposer.addComponentIntoGrid(jbDetail, c);
 		c.gridy++;
 		gridbagComposer.addComponentIntoGrid(jlNomClub, c);
-		c.gridwidth = 2;
+		c.gridwidth = 3;
 		gridbagComposer.addComponentIntoGrid(jtfNomClub, c);
 		c.gridy++;
 		c.gridwidth = 1;
 		gridbagComposer.addComponentIntoGrid(new JPanel(), c);
 		c.gridy++;
 		gridbagComposer.addComponentIntoGrid(jlIntituleConcours, c);
-		c.gridwidth = 2;
+		c.gridwidth = 3;
 		gridbagComposer.addComponentIntoGrid(jtfIntConc, c);
 		c.gridy++;
 		c.gridwidth = 1;
 		gridbagComposer.addComponentIntoGrid(jlLangue, c);
-		c.gridwidth = 2;
+		c.gridwidth = 3;
 		gridbagComposer.addComponentIntoGrid(jcbLangue, c);
 		if (!Desktop.isDesktopSupported()) {
 			c.gridy++;
 			c.gridwidth = 1;
 			gridbagComposer.addComponentIntoGrid(jlPathPdf, c);
-			c.gridwidth = 2;
+			c.gridwidth = 3;
 			gridbagComposer.addComponentIntoGrid(jcbPathPdf, c);
 			c.gridwidth = 1;
 			gridbagComposer.addComponentIntoGrid(jbParcourirPdf, c);
@@ -342,7 +346,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		c.gridy++;
 		c.gridwidth = 1;
 		gridbagComposer.addComponentIntoGrid(jlLogoPath, c);
-		c.gridwidth = 2;
+		c.gridwidth = 3;
 		gridbagComposer.addComponentIntoGrid(jbLogoPath, c);
 
 		gridbagComposer.setParentPanel(jpEcranGeneral);
@@ -567,6 +571,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		tbParamGeneral.setTitle(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.general.titre1")); //$NON-NLS-1$
 
 		jbRenameProfile.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.general.renameprofile")); //$NON-NLS-1$
+		jbParcourir.setText("...");
 		jbDetail.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.detail")); //$NON-NLS-1$
 		if (jbLogoPath.getText().equals("")) //$NON-NLS-1$
 			jbLogoPath.setText(ConcoursJeunes.ajrLibelle.getResourceString("parametre.logo")); //$NON-NLS-1$
@@ -953,6 +958,11 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 			} catch (NullPointerException npe) {
 				System.err.println("Aucune sauvegarde possible. Action annulé"); //$NON-NLS-1$
 			}
+		} else if (source == jbParcourir) {
+			EntiteListDialog eld = new EntiteListDialog(null);
+			Entite entite = eld.getSelectedEntite();
+			if(entite != null)
+				jtfAgrClub.setText(entite.getAgrement());
 		} else if (source == this.jbDetail) {
 			EntiteDialog ed = new EntiteDialog(this);
 			ed.showEntite(workConfiguration.getClub());
