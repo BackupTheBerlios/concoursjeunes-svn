@@ -19,7 +19,6 @@ package org.concoursjeunes;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.io.File;
-import java.sql.SQLException;
 
 import org.concoursjeunes.ui.ConcoursJeunesFrame;
 import org.jdesktop.swingx.JXErrorDialog;
@@ -57,9 +56,8 @@ public class Main {
 			@Override
 			public void run() {
 				try {
-					// permet de s'assurer que la base de données est
-					// correctement fermé
-					ConcoursJeunes.dbConnection.close();
+					Thread.setDefaultUncaughtExceptionHandler(null);
+
 					// rend l'ensemble des fichier de la base accessible en lecture/ecriture pour permettre
 					// le multiutilisateur
 					File[] dbfiles = new File(ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "base").listFiles(); //$NON-NLS-1$
@@ -68,7 +66,7 @@ public class Main {
 							dbfile.setWritable(true, false);
 						}
 					}
-				} catch (SQLException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}

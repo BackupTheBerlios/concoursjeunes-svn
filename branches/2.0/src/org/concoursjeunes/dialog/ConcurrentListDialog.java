@@ -391,6 +391,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 			concurrent.setPrenomArcher(dtm.getConcurrentAtRow(rowIndex).getPrenomArcher());
 			concurrent.setClub(dtm.getConcurrentAtRow(rowIndex).getClub());
 			concurrent.setCriteriaSet(dtm.getConcurrentAtRow(rowIndex).getCriteriaSet());
+			concurrent.setCertificat(dtm.getConcurrentAtRow(rowIndex).isCertificat());
 		}
 	}
 
