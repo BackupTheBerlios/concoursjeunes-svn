@@ -1,4 +1,75 @@
 /*
+ * Copyright 2002-2007 - Aurélien JEOFFRAY
+ *
+ * http://www.concoursjeunes.org
+ *
+ * *** CeCILL Terms *** 
+ *
+ * FRANCAIS:
+ *
+ * Ce logiciel est un programme informatique servant à gérer les compétions de type
+ * spécial jeunes de tir à l'Arc. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français et
+ * respectant les principes de diffusion des logiciels libres. Vous pouvez
+ * utiliser, modifier et/ou redistribuer ce programme sous les conditions
+ * de la licence CeCILL telle que diffusée par le CEA, le CNRS et l'INRIA 
+ * sur le site "http://www.cecill.info".
+ *
+ * En contrepartie de l'accessibilité au code source et des droits de copie,
+ * de modification et de redistribution accordés par cette licence, il n'est
+ * offert aux utilisateurs qu'une garantie limitée.  Pour les mêmes raisons,
+ * seule une responsabilité restreinte pèse sur l'auteur du programme,  le
+ * titulaire des droits patrimoniaux et les concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les risques
+ * associés au chargement,  à l'utilisation,  à la modification et/ou au
+ * développement et à la reproduction du logiciel par l'utilisateur étant 
+ * donné sa spécificité de logiciel libre, qui peut le rendre complexe à 
+ * manipuler et qui le réserve donc à des développeurs et des professionnels
+ * avertis possédant  des  connaissances  informatiques approfondies.  Les
+ * utilisateurs sont donc invités à charger  et  tester  l'adéquation  du
+ * logiciel à leurs besoins dans des conditions permettant d'assurer la
+ * sécurité de leurs systèmes et ou de leurs données et, plus généralement, 
+ * à l'utiliser et l'exploiter dans les mêmes conditions de sécurité. 
+ * 
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous avez 
+ * pri connaissance de la licence CeCILL, et que vous en avez accepté les
+ * termes.
+ *
+ * ENGLISH:
+ * 
+ * This software is a computer program whose purpose is to manage the young special archery
+ * tournament.
+ *
+ * This software is governed by the CeCILL license under French law and
+ * abiding by the rules of distribution of free software.  You can  use, 
+ * modify and/ or redistribute the software under the terms of the CeCILL
+ * license as circulated by CEA, CNRS and INRIA at the following URL
+ * "http://www.cecill.info". 
+ *
+ * As a counterpart to the access to the source code and  rights to copy,
+ * modify and redistribute granted by the license, users are provided only
+ * with a limited warranty  and the software's author,  the holder of the
+ * economic rights,  and the successive licensors  have only  limited
+ * liability. 
+ * 
+ * In this respect, the user's attention is drawn to the risks associated
+ * with loading,  using,  modifying and/or developing or reproducing the
+ * software by the user in light of its specific status of free software,
+ * that may mean  that it is complicated to manipulate,  and  that  also
+ * therefore means  that it is reserved for developers  and  experienced
+ * professionals having in-depth computer knowledge. Users are therefore
+ * encouraged to load and test the software's suitability as regards their
+ * requirements in conditions enabling the security of their systems and/or 
+ * data to be ensured and,  more generally, to use and operate it in the 
+ * same conditions as regards security. 
+ * 
+ * The fact that you are presently reading this means that you have had
+ * knowledge of the CeCILL license and that you accept its terms.
+ *
+ *  *** GNU GPL Terms *** 
+ * 
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -16,6 +87,7 @@
 package org.concoursjeunes;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -62,6 +134,8 @@ public class ConcurrentList {
 	/** Ajoute un archer à la liste des archers
 	 *
 	 * @param concurrent - le concurrent à ajouter
+	 * 
+	 * @return true si ajouté avec succés, false sinon
 	 */
 	public boolean add(Concurrent concurrent) {
 		if(concurrent != null)
@@ -74,7 +148,7 @@ public class ConcurrentList {
 	 * 
 	 * @param index - l'index du concurrent à supprimer
 	 * 
-	 * @return boolean - true si la suppression à réussi, false sinon
+	 * @return le concurrent supprimé ou null si inexistant
 	 */
 	public Concurrent remove(int index) {
 		if(index > 0 && index < archList.size()) {
@@ -88,7 +162,7 @@ public class ConcurrentList {
 	 * 
 	 * @param concurrent - le concurrent à supprimer
 	 * 
-	 * @return boolean - true si la suppression à réussi, false sinon
+	 * @return le concurrent supprimé ou null si inexistant
 	 */
 	public Concurrent remove(Concurrent concurrent) {
 		if(concurrent != null) {
@@ -114,7 +188,8 @@ public class ConcurrentList {
 	 * Extrait la liste complete des concurrents pour un depart donnée
 	 * 
 	 * @param depart - le départ pour lequelle lister tous les archers ou -1 si tous
-	 * @return Concurrent[] - tableaux des concurrents
+	 * 
+	 * @return tableaux des concurrents du départ choisi
 	 */
 	public Concurrent[] list(int depart) {
 		//buffer de selection
@@ -133,12 +208,13 @@ public class ConcurrentList {
 	 * Extrait tous les concurrents appartenant à un club donné
 	 * 
 	 * @param compagnie - le club dont on veut la liste
-	 * @param criteriaSet - le filtre se selection
+	 * @param criteriaSet - le filtre de selection ou null pour tout prendre
+	 * @param criteriaFilter filtre à appliquer sur le jeux de critère criteriaSet ou null
 	 * 
-	 * @return Concurrent[] - la liste des concurrents appartenant au meme club
+	 * @return la liste des concurrents appartenant au meme club pour un jeux de critère donné
 	 */
-	public Concurrent[] list(Entite compagnie, CriteriaSet criteriaSet) {
-		return list(compagnie, criteriaSet, -1);
+	public Concurrent[] list(Entite compagnie, CriteriaSet criteriaSet, Hashtable<Criterion, Boolean> criteriaFilter) {
+		return list(compagnie, criteriaSet, -1, criteriaFilter);
 	}
 
 	/**
@@ -147,9 +223,11 @@ public class ConcurrentList {
 	 * @param compagnie - le club dont on veut la liste
 	 * @param criteriaSet - le filtre se selection
 	 * @param depart - le depart concerne
-	 * @return Concurrent[] - la liste des concurrents appartenant au meme club
+	 * @param criteriaFilter filtre à appliquer sur le jeux de critère criteriaSet ou null
+	 * 
+	 * @return la liste des concurrents appartenant au meme club pour un jeux de critère donné et pour un départ donné
 	 */
-	private Concurrent[] list(Entite compagnie, CriteriaSet criteriaSet, int depart) {
+	private Concurrent[] list(Entite compagnie, CriteriaSet criteriaSet, int depart, Hashtable<Criterion, Boolean> criteriaFilter) {
 
 		assert compagnie != null;
 
@@ -160,7 +238,7 @@ public class ConcurrentList {
 		for(Concurrent concurrent : archList) {
 			if(concurrent.getClub().equals(compagnie)
 					&& (criteriaSet == null || 
-							criteriaSet.equals(concurrent.getCriteriaSet()))
+							criteriaSet.equals(concurrent.getCriteriaSet().getFilteredCriteriaSet(criteriaFilter)))
 							&& (depart == -1 || concurrent.getDepart() == depart))
 				sel.add(concurrent);
 		}
@@ -173,16 +251,18 @@ public class ConcurrentList {
 	 * 
 	 * @param criteriaSet - points commun des archers à récuperer
 	 * @param depart - le depart concerné
-	 * @return Concurrent[] - la liste des concurrents correspondant aux critere de recherche
+	 * @param criteriaFilter filtre à appliquer sur le jeux de critère criteriaSet ou null
+	 * 
+	 * @return la liste des concurrents correspondant aux critere de recherche
 	 */
-	public Concurrent[] list(CriteriaSet criteriaSet, int depart) {
+	public Concurrent[] list(CriteriaSet criteriaSet, int depart, Hashtable<Criterion, Boolean> criteriaFilter) {
 
 		assert criteriaSet != null;
 
 		ArrayList<Concurrent> sel = new ArrayList<Concurrent>();
 
 		for(Concurrent concurrent : archList) {
-			if(criteriaSet.equals(concurrent.getCriteriaSet()) && 
+			if(criteriaSet.equals(concurrent.getCriteriaSet().getFilteredCriteriaSet(criteriaFilter)) && 
 					(depart == -1 || concurrent.getDepart() == depart))
 				sel.add(concurrent);
 		}
@@ -195,7 +275,8 @@ public class ConcurrentList {
 	 * 
 	 * @param distancesEtBlason - le D/B concerné
 	 * @param depart - le départ concerné ou -1 si tous
-	 * @return Concurrent[] - la liste des concurrents correspondant aux criteres de recherche
+	 * 
+	 * @return la liste des concurrents correspondant aux criteres de recherche
 	 */
 	public Concurrent[] list(Reglement reglement, DistancesEtBlason distancesEtBlason, int depart) {
 
@@ -220,7 +301,8 @@ public class ConcurrentList {
 	 * 
 	 * @param cible - la cible concerné
 	 * @param depart - le depart concerné
-	 * @return Concurrent[] - la liste des archers présent sur la meme cible
+	 * 
+	 * @return la liste des archers présent sur la meme cible
 	 */
 	public Concurrent[] list(int cible, int depart) {
 		ArrayList<Concurrent> tmp = new ArrayList<Concurrent>();
@@ -239,10 +321,12 @@ public class ConcurrentList {
 	 * <li>SORT_BY_NAME - tri par ordre alphabetique</li>
 	 * <li>SORT_BY_POINTS - classement par points</li>
 	 * <li>SORT_BY_CIBLES - tri par position sur cible</li>
+	 * <li>SORT_BY_CLUBS - tri par clubs</li>
 	 * <ul>
 	 * 
 	 * @param no_sort_list - la liste à trier
-	 * @param sortCritere - les critère de tri (SORT_BY_NAME, SORT_BY_POINTS, SORT_BY_CIBLES)
+	 * @param sortCritere - les critère de tri (SORT_BY_NAME, SORT_BY_POINTS, SORT_BY_CIBLES, SORT_BY_CLUBS)
+	 * 
 	 * @return la liste trié
 	 */
 	public static Concurrent[] sort(Concurrent[] no_sort_list, int sortCritere) {
@@ -321,7 +405,8 @@ public class ConcurrentList {
 	 * Passe au concurrent suivant par ordre de cible/position
 	 * 
 	 * @param curConcurrent - le concurrent courrant
-	 * @return Concurrent - le concurrent suivant
+	 * 
+	 * @return le concurrent suivant
 	 */
 	public Concurrent nextConcurrent(Concurrent curConcurrent) {
 		int depart = curConcurrent.getDepart();
@@ -343,7 +428,8 @@ public class ConcurrentList {
 	 * Passe au concurrent précédent par ordre de cible/position
 	 * 
 	 * @param curConcurrent - le concurrent courrant
-	 * @return Concurrent - le concurrent précedent
+	 * 
+	 * @return le concurrent précedent
 	 */
 	public Concurrent previousConcurrent(Concurrent curConcurrent) {
 		int depart = curConcurrent.getDepart();
@@ -364,7 +450,7 @@ public class ConcurrentList {
 	/**
 	 * Donne la liste des clubs représenté sur le concours
 	 * 
-	 * @return Entite[]
+	 * @return la liste des clubs représenté sur le concours
 	 */
 	public Entite[] listCompagnie() {
 		return listCompagnie(-1);
@@ -374,7 +460,7 @@ public class ConcurrentList {
 	 * Donne la liste des clubs représenté sur le concours pour un départ donné
 	 * 
 	 * @param depart - le départ concerné
-	 * @return Entite[] - la liste des clubs
+	 * @return la liste des clubs représenté sur le concours
 	 */
 	public Entite[] listCompagnie(int depart) {
 		ArrayList<Entite> alCie = new ArrayList<Entite>();
@@ -400,10 +486,12 @@ public class ConcurrentList {
 	}
 
 	/**
-	 * Donne la liste des distance blason utilise pour un départ donnée
+	 * Donne la liste des distances/blasons utilisé pour un départ donnée en fonction du réglement donnée
 	 * 
-	 * @param depart
-	 * @return DistancesEtBlason
+	 * @param reglement le réglement permettant de détérminer les distances/blasons
+	 * @param depart le départ concerné
+	 * 
+	 * @return la liste des distances/blasons du déprt
 	 */
 	public ArrayList<DistancesEtBlason> listDistancesEtBlason(Reglement reglement, int depart) {
 		return listDistancesEtBlason(reglement, false, depart);
@@ -465,7 +553,7 @@ public class ConcurrentList {
 	 * test si la ConcurrentList contient le concurrent donnée en parametre
 	 * 
 	 * @param concurrent - le concurrent à tester
-	 * @return boolean - true si concurrent est présent
+	 * @return true si concurrent est présent
 	 */
 	public boolean contains(Concurrent concurrent) {
 		if(concurrent != null)
@@ -473,6 +561,14 @@ public class ConcurrentList {
 		return false;
 	}
 	
+	/**
+	 * test si la ConcurrentList contient le concurrent donnée sur le départ donnée
+	 * 
+	 * @param concurrent le concurrent à tester
+	 * @param depart le depart donnée
+	 * 
+	 * @return true si le concurrent est présent sur le départ, false sinon
+	 */
 	public boolean contains(Concurrent concurrent, int depart) {
 		if(concurrent != null) {
 			ArrayList<Concurrent> conc = new ArrayList<Concurrent>();
@@ -488,7 +584,7 @@ public class ConcurrentList {
 	/**
 	 * Donne le nombre de concurrent sur le concours
 	 * 
-	 * @return int
+	 * @return le nombre d'archer inscrit sur le concours
 	 */
 	public int countArcher() {
 		return this.archList.size();
@@ -498,7 +594,7 @@ public class ConcurrentList {
 	 * Donne le nombre de concurrent sur le concours pour un départ donné
 	 * 
 	 * @param depart - le départ concerné
-	 * @return int
+	 * @return le nombre d'archer sur le départ concerné
 	 */
 	public int countArcher(int depart) {
 		return list(depart).length;
@@ -507,9 +603,10 @@ public class ConcurrentList {
 	/**
 	 * Donne le nombre de concurrent pour le distance/blason donné
 	 * 
-	 * @param depart
-	 * @param distancesEtBlason
-	 * @return int
+	 * @param reglement le reglement permettant de calculer les distances/blasons
+	 * @param distancesEtBlason le pas de tir pour lequel retourné le nombre d'archer
+	 * @param depart le numero du depart pour lequel retourner le nombre d'archer ou -1 si tous les départs
+	 * @return le nombre d'archer sur une distance donné
 	 */
 	public int countArcher(Reglement reglement, DistancesEtBlason distancesEtBlason, int depart) {
 		return list(reglement, distancesEtBlason, depart).length;
@@ -518,7 +615,7 @@ public class ConcurrentList {
 	/**
 	 * Donne le nombre de club sur le concours
 	 * 
-	 * @return int
+	 * @return le nombre de club représenté sur le concours
 	 */
 	public int countCompagnie() {
 		return listCompagnie(-1).length;
@@ -526,10 +623,10 @@ public class ConcurrentList {
 
 
 	/**
-	 * Donne le nombre de club sur le concours
+	 * Donne le nombre de club sur le départ
 	 * 
-	 * @param depart
-	 * @return int
+	 * @param depart le depart pour lequel retourner le nombre de club
+	 * @return le nombre de club sur le départ
 	 */
 	public int countCompagnie(int depart) {
 		return listCompagnie(depart).length;
@@ -563,12 +660,9 @@ public class ConcurrentList {
 		return null;
 	}
 
-	//public 
-
 	/**
 	 * <i>Methode necessaire à la deserialisation</i> Donne la liste des archers à l'objet
 	 * @return  Returns the archList.
-	 * @uml.property  name="archList"
 	 */
 	public ArrayList<Concurrent> getArchList() {
 		return this.archList;
@@ -576,24 +670,25 @@ public class ConcurrentList {
 
 	/**
 	 * <i>Methode necessaire à la deserialisation</i> Affecte la liste des archers à l'objet
+	 * 
 	 * @param archList  The archList to set.
-	 * @uml.property  name="archList"
 	 */
 	public void setArchList(ArrayList<Concurrent> archList) {
 		this.archList = archList;
 	}
 
 	/**
+	 * <i>Methode necessaire à la serialisation</i>
 	 * @return  parametre
-	 * @uml.property  name="parametre"
 	 */
 	public Parametre getParametre() {
 		return parametre;
 	}
 
 	/**
+	 * <i>Methode necessaire à la deserialisation</i>
+	 * 
 	 * @param parametre  parametre à définir
-	 * @uml.property  name="parametre"
 	 */
 	public void setParametre(Parametre parametre) {
 		this.parametre = parametre;

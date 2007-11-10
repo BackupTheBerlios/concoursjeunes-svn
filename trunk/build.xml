@@ -181,8 +181,9 @@
 
 		<copy todir="${rpm.pack.path}/SOURCES/">
 			<fileset dir="packager/linux/">
-				<include name="**/*"/>
-				<exclude name="*.spec"/>
+				<include name="**/*" />
+				<exclude name="*.spec" />
+				<exclude name="debian" />
 			</fileset>
 		</copy>
 
@@ -251,6 +252,12 @@
 
 		<rpm specFile="ConcoursJeunes.spec" topDir="${rpm.pack.path}/" cleanBuildDir="true" />
 	</target>
+	
+	<target name="makedeb">
+		<exec command="packager/makedeb.sh" os="Linux">
+			<env key="VERSION" value="${version.numero}"/>
+		</exec>
+	</target>
 
 	<target name="makemacbundle">
 		<copy todir="${projet.pack.dir}/macosx/" >
@@ -288,8 +295,8 @@
 		
 		<nsis script="packager/setup.nsi" verbosity="4">
 			<define name="VERSION" value="${version.numero}"/>
-			<define name="OUT_FILE" value="windows\setup-${version.name}-${version.numero}.exe"/>
-			<define name="WORKING_DIR" value="..\${projet.pack.dir}"/>
+			<define name="OUT_FILE" value="windows/setup-${version.name}-${version.numero}.exe"/>
+			<define name="WORKING_DIR" value="../${projet.pack.dir}"/>
 		</nsis>
 	</target>
 	
@@ -320,6 +327,9 @@
 	<target name="linux"
 		depends="jar, pack-ConcoursJeunesUpdate, revisions, makerpm"
 		description="Pack Linux" />
+	<target name="all-system"
+		depends="jar, pack-ConcoursJeunesUpdate, pack-FFTAImport, revisions, makensissetup, makerpm, makedeb"
+		description="Compilation Multi-systeme" />
 	<target name="MacOSX" 
 		depends="jar, pack-ConcoursJeunesUpdate, revisions, makemacbundle"
 		description="Pack Mac OS X" />

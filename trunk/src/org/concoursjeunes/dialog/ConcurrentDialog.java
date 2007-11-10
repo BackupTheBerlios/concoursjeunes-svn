@@ -490,7 +490,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 
 		jbPrecedent.setEnabled(isinit);
 		/*jbSuivant.setText(isinit ? ConcoursJeunes.ajrLibelle.getResourceString("bouton.validersuivant") //$NON-NLS-1$
-				: ConcoursJeunes.ajrLibelle.getResourceString("bouton.validernouveau")); *///$NON-NLS-1$
+				: ConcoursJeunes.ajrLibelle.getResourceString("bouton.validernouveau")); */
 
 		jlPlaceLibre.setText(showPlacesLibre());
 
@@ -893,9 +893,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 					setConcurrent(concurrent);
 				}
 			} else {
-				JOptionPane.showMessageDialog(this, "La liste des archers n'est " +
-						"pas encore initialiser.\nPatienter encore quelque seconde " +
-						"et recommencer");
+				JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("concurrent.info.listing.wait")); //$NON-NLS-1$
 			}
 		} else if (ae.getSource() == jbDetailClub) {
 			if (!jtfAgrement.getText().equals("")) { //$NON-NLS-1$
@@ -958,7 +956,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	
 	@Override
 	public void dispose() {
-		System.out.println("Destruction de la fenetre ConcurrentDialog");
+		System.out.println("Destruction de la fenetre ConcurrentDialog"); //$NON-NLS-1$
 		nbInstance--;
 		if(nbInstance == 0) {
 			if(concurrentListDialog != null)
@@ -971,7 +969,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	
 	@Override
 	public void finalize() throws Throwable {
-		System.out.println("ConcurrentDialog detruit");
+		System.out.println("ConcurrentDialog detruit"); //$NON-NLS-1$
 		
 		super.finalize();
 	}

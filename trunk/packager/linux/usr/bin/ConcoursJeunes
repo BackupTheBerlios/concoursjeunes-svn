@@ -1,4 +1,11 @@
 #!/bin/sh
 
 cd /usr/lib/ConcoursJeunes
+
 java -mx128m -jar ConcoursJeunes.jar
+RETVAL=$?
+while [ "$RETVAL" -eq "3" ] ; do
+	echo "Restart ConcoursJeunes..."
+	java -mx128m -jar ConcoursJeunes.jar
+	RETVAL=$?
+done

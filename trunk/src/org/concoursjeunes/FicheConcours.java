@@ -278,7 +278,7 @@ public class FicheConcours implements ParametreListener {
 			// sort la liste des concurrents correspondant aux critéres de
 			// recherche
 			ArrayList<Concurrent> unsortList = new ArrayList<Concurrent>();
-			for (Concurrent concurrent : concurrentList.list(catList[i], -1))
+			for (Concurrent concurrent : concurrentList.list(catList[i], -1, parametre.getReglement().getClassementFilter()))
 				unsortList.add(concurrent);
 			Concurrent[] sortList = ConcurrentList.sort(unsortList.toArray(new Concurrent[unsortList.size()]), ConcurrentList.SORT_BY_POINTS);
 			if (sortList.length > 0)
@@ -403,11 +403,9 @@ public class FicheConcours implements ParametreListener {
 					tplClassement.parse("categories.NB_TIREUR_COLS", "" + (4 + parametre.getReglement().getNbSerie())); //$NON-NLS-1$ //$NON-NLS-2$
 					tplClassement.parse("categories.NB_TIREURS", "" + sortList.length); //$NON-NLS-1$ //$NON-NLS-2$
 
-					// FIXME gerer les cas ou plus d'une distance par critères
-					// de classement
 					for (int j = 0; j < parametre.getReglement().getNbSerie(); j++) {
 						tplClassement.parse("categories.distances.DISTANCE", //$NON-NLS-1$
-								parametre.getReglement().getDistancesEtBlasonFor(scna).getDistance()[j] + "m"); //$NON-NLS-1$
+								parametre.getReglement().getDistancesEtBlasonFor(scna.getFilteredCriteriaSet(parametre.getReglement().getPlacementFilter())).getDistance()[j] + "m"); //$NON-NLS-1$
 						tplClassement.loopBloc("categories.distances"); //$NON-NLS-1$
 					}
 
@@ -537,7 +535,7 @@ public class FicheConcours implements ParametreListener {
 			CriteriaSet.sortCriteriaSet(sortedTeamCriteriaSets, parametre.getReglement().getListCriteria());
 			
 			for(CriteriaSet criteriaSet : sortedTeamCriteriaSets) {			
-				tplClassementEquipe.parse("categories.CATEGORIE", new CriteriaSetLibelle(criteriaSet).toString()); //$NON-NLS-1$ //$NON-NLS-2$
+				tplClassementEquipe.parse("categories.CATEGORIE", new CriteriaSetLibelle(criteriaSet).toString()); //$NON-NLS-1$
 				tplClassementEquipe.parse("categories.NB_EQUIPES", "" + equipes.countEquipes()); //$NON-NLS-1$ //$NON-NLS-2$
 	
 				Equipe[] sortEquipes = EquipeList.sort(equipes.list(criteriaSet));
@@ -666,7 +664,7 @@ public class FicheConcours implements ParametreListener {
 		String strArcherListeXML = ""; //$NON-NLS-1$
 		
 		if(concurrentList.countArcher(depart) == 0)
-			return "";
+			return ""; //$NON-NLS-1$
 
 		if (mode == ALPHA || mode == TARGET)
 			listeArcherXML = templateListeArcherXML;
@@ -719,7 +717,7 @@ public class FicheConcours implements ParametreListener {
 	 */
 	private String getXMLEtiquettes(int nblarg, int nbhaut, int depart) {
 		if(concurrentList.countArcher(depart) == 0)
-			return "";
+			return ""; //$NON-NLS-1$
 		
 		try {
 			double marge_gauche = ConcoursJeunes.configuration.getMarges().left; // la marge gauche
@@ -731,7 +729,7 @@ public class FicheConcours implements ParametreListener {
 			double cellule_x;
 			double cellule_y;
 			Rectangle pageDimension = (Rectangle)PageSize.class.getField(ConcoursJeunes.configuration.getFormatPapier()).get(null);
-			if(ConcoursJeunes.configuration.getOrientation().equals("landscape"))
+			if(ConcoursJeunes.configuration.getOrientation().equals("landscape")) //$NON-NLS-1$
 				pageDimension = pageDimension.rotate();
 			
 			espacement_cellule_h = AJToolKit.centimeterToDpi(espacement_cellule_h);
@@ -741,8 +739,8 @@ public class FicheConcours implements ParametreListener {
 			marge_haut = AJToolKit.centimeterToDpi(marge_haut);
 			marge_bas = AJToolKit.centimeterToDpi(marge_bas);
 
-			double zoneaffichable_x = pageDimension.width() - marge_gauche - marge_droite;
-			double zoneaffichable_y = pageDimension.height() - marge_haut - marge_bas;
+			double zoneaffichable_x = pageDimension.getWidth() - marge_gauche - marge_droite;
+			double zoneaffichable_y = pageDimension.getHeight() - marge_haut - marge_bas;
 			
 			cellule_x = (zoneaffichable_x - (espacement_cellule_h * (nblarg - 1.0))) / zoneaffichable_x * 100 / nblarg - 7;
 			cellule_y = (zoneaffichable_y - (espacement_cellule_v * (nbhaut - 1.0))) / zoneaffichable_y * 100 / nbhaut;
@@ -837,7 +835,7 @@ public class FicheConcours implements ParametreListener {
 	private String getXMLPasDeTir(int depart) {
 		
 		if(concurrentList.countArcher(depart) == 0)
-			return "";
+			return ""; //$NON-NLS-1$
 
 		templatePasDeTirXML.reset();
 
@@ -852,7 +850,7 @@ public class FicheConcours implements ParametreListener {
 			Concurrent[] concurrents = concurrentList.list(i, depart);
 			if (concurrents != null && concurrents.length > 0) {
 				CriteriaSet dci = concurrents[0].getCriteriaSet();
-				DistancesEtBlason db = parametre.getReglement().getDistancesEtBlasonFor(dci);
+				DistancesEtBlason db = parametre.getReglement().getDistancesEtBlasonFor(dci.getFilteredCriteriaSet(parametre.getReglement().getPlacementFilter()));
 
 				templatePasDeTirXML.parse("ligne.numcible.nc.numcible", "" + i); //$NON-NLS-1$ //$NON-NLS-2$
 				templatePasDeTirXML.parse("ligne.imgcible.ic.url_img_blason", //$NON-NLS-1$
@@ -1016,6 +1014,6 @@ public class FicheConcours implements ParametreListener {
 	
 	@Override
 	public void finalize() {
-		System.out.println("FicheConcours: Objet récupéré");
+		System.out.println("FicheConcours: Objet récupéré"); //$NON-NLS-1$
 	}
 }

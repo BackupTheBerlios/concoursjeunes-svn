@@ -98,9 +98,11 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
+import javax.naming.ConfigurationException;
 import javax.swing.JOptionPane;
 
 import org.concoursjeunes.ConcoursJeunes;
@@ -111,6 +113,7 @@ import org.concoursjeunes.plugins.PluginMetadata;
 
 import ajinteractive.standard.common.AJToolKit;
 import ajinteractive.standard.common.AjResourcesReader;
+import ajinteractive.standard.utilities.app.AppSerializer;
 import ajinteractive.standard.utilities.updater.AjUpdater;
 import ajinteractive.standard.utilities.updater.AjUpdaterEvent;
 import ajinteractive.standard.utilities.updater.AjUpdaterListener;
@@ -156,12 +159,16 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 	public void run() {
 
 		PluginLoader pl = new PluginLoader();
+		
+		
+		AppSerializer appSerializer = new AppSerializer(ConcoursJeunes.userRessources);
+		
 
 		ajUpdater = new AjUpdater(ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
 				"."); //$NON-NLS-1$
 		ajUpdater.addAjUpdaterListener(this);
 		ajUpdater.setUserAgent(ConcoursJeunes.NOM + " " + ConcoursJeunes.VERSION //$NON-NLS-1$
-				+ " (" + ConcoursJeunes.configuration.getClub().getAgrement() + " " + ConcoursJeunes.configuration.getClub().getNom() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				+ " (" + ConcoursJeunes.configuration.getClub().getAgrement() + " " + ConcoursJeunes.configuration.getClub().getNom() + ";" + appSerializer.getSerial() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		ajUpdater.addRepositoryURL(pluginRessources.getResourceString("url.reference")); //$NON-NLS-1$
 		for (PluginMetadata pm : pl.getPlugins(PluginMetadata.ALL)) {
 			ajUpdater.addRepositoryURL(pm.getReposURL());
@@ -241,6 +248,16 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 							ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
 							System.getProperty("user.dir") }); //$NON-NLS-1$
 					process.waitFor();
+					
+					try {
+						ConcoursJeunes.getInstance().saveAllFichesConcours();
+						
+						ConcoursJeunes.dbConnection.close();
+					} catch (ConfigurationException e) {
+						e.printStackTrace();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 
 					System.exit(3);
 				} catch (IOException e1) {

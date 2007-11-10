@@ -113,6 +113,6 @@ public class FicheConcoursBuilder {
 			return ficheConcours;
 		}
 
-		throw new IOException("Echec de chargement du concours " + metaDataFicheConcours.getIntituleConcours() + "(" + metaDataFicheConcours.getFilenameConcours() + ")");
+		throw new IOException("Echec de chargement du concours " + metaDataFicheConcours.getIntituleConcours() + "(" + metaDataFicheConcours.getFilenameConcours() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 }

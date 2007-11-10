@@ -527,21 +527,21 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 			int returnType = tld.showTypeListingDialog();
 			if (returnType == TypeListingDialog.ALPHA) {
 				if(!ficheConcours.printArcherList(FicheConcours.ALPHA))
-					JOptionPane.showMessageDialog(this, "Rien à imprimer");
+					JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 			} else if (returnType == TypeListingDialog.GREFFE) {
 				if(!ficheConcours.printArcherList(FicheConcours.GREFFE))
-					JOptionPane.showMessageDialog(this, "Rien à imprimer");
+					JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 			} else if (returnType == TypeListingDialog.TARGET) {
 				if(!ficheConcours.printArcherList(FicheConcours.TARGET))
-					JOptionPane.showMessageDialog(this, "Rien à imprimer");
+					JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 			}
 		} else if (source == jbPrintEtiquettes) {
 			if(!ficheConcours.printEtiquettes()) {
-				JOptionPane.showMessageDialog(this, "Rien à imprimer");
+				JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 			}
 		} else if (source == jbPrintPasDeTir) {
 			if(!ficheConcours.printPasDeTir()) {
-				JOptionPane.showMessageDialog(this, "Rien à imprimer");
+				JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 			}
 		} else if (source instanceof JRadioButton) {
 			if (source == jcbSortCible)

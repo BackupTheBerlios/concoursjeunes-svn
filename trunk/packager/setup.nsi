@@ -115,24 +115,34 @@ SectionEnd
 Section "Icone de Bureau" SEC0002
     SectionIn 1
     SetOverwrite on
+
+    !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
+    SetOutPath $SMPROGRAMS\$StartMenuGroup
     SetOutPath $INSTDIR
-    CreateShortCut "$DESKTOP\ConcoursJeunes.lnk" "$INSTDIR\concoursjeunes-startup.exe" '' "$INSTDIR\ressources\iconCJ.ico"
+    CreateShortCut "$DESKTOP\ConcoursJeunes.lnk" "$INSTDIR\concoursjeunes-startup.exe"
+    !insertmacro MUI_STARTMENU_WRITE_END
     WriteRegStr HKLM "${REGKEY}\Components" "Icone de Bureau" 1
 SectionEnd
 
 Section "Option de Debugage" SEC0003
     SetOverwrite on
+
+    !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
+    SetOutPath $SMPROGRAMS\$StartMenuGroup
     SetOutPath $INSTDIR
-    CreateShortCut "$SMPROGRAMS\$StartMenuGroup\ConcoursJeunes Debug.lnk" "$INSTDIR\concoursjeunes-startup.exe" '-debug' "$INSTDIR\ressources\iconCJ.ico"
+    CreateShortCut "$SMPROGRAMS\$StartMenuGroup\ConcoursJeunes Debug.lnk" "$INSTDIR\concoursjeunes-startup.exe" '-debug'
+    !insertmacro MUI_STARTMENU_WRITE_END
     WriteRegStr HKLM "${REGKEY}\Components" "Option de Debugage" 1
 SectionEnd
 
 Section -post SEC0004
+    SetOverwrite on
+	
     WriteRegStr HKLM "${REGKEY}" Path $INSTDIR
     WriteUninstaller $INSTDIR\uninstall.exe
     !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
     SetOutPath $INSTDIR
-    CreateShortCut "$SMPROGRAMS\$StartMenuGroup\ConcoursJeunes.lnk" "$INSTDIR\concoursjeunes-startup.exe" '' "$INSTDIR\ressources\iconCJ.ico"
+    CreateShortCut "$SMPROGRAMS\$StartMenuGroup\ConcoursJeunes.lnk" "$INSTDIR\concoursjeunes-startup.exe"
     SetOutPath $SMPROGRAMS\$StartMenuGroup
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\$(^UninstallLink).lnk" $INSTDIR\uninstall.exe
     !insertmacro MUI_STARTMENU_WRITE_END

@@ -122,10 +122,14 @@ public class EquipeList implements Cloneable {
      * Supprime les équipes crée et invalide sur le concours
      */
     public void removeInvalidTeam() {
+    	ArrayList<Equipe> deleteList = new ArrayList<Equipe>();
     	for(Equipe equipe : equipeList) {
             if(equipe.getMembresEquipe().size() < ficheConcours.getParametre().getReglement().getNbMembresRetenu())
-                remove(equipe);
+            	deleteList.add(equipe);
         }
+    	for(Equipe equipe : deleteList) {
+    		remove(equipe);
+    	}
     }
     
     /**
@@ -158,6 +162,7 @@ public class EquipeList implements Cloneable {
         ArrayList<Equipe> sel = new ArrayList<Equipe>();
         
         for(Equipe equipe : equipeList) {
+        	//TODO verifier la porté
             if(equipe.getDifferentiationCriteria().equals(scna))
                 sel.add(equipe);
         }

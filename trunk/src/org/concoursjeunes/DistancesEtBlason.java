@@ -130,39 +130,35 @@ public class DistancesEtBlason {
 		this.reglement = reglement;
 	}
 
-	public void save() {
-		try {
-			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+	public void save() throws SQLException {
+		Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 
-			if (numdistancesblason == 0) {
-				stmt.executeUpdate("insert into DISTANCESBLASONS (NUMREGLEMENT, BLASONS) VALUES (" + //$NON-NLS-1$
-						reglement.hashCode() + ", " + blason + ")", Statement.RETURN_GENERATED_KEYS); //$NON-NLS-1$ //$NON-NLS-2$
-				ResultSet clefs = stmt.getGeneratedKeys();
-				if (clefs.first()) {
-					numdistancesblason = (Integer) clefs.getObject(1);
-				}
-			} else {
-				stmt.executeUpdate("update DISTANCESBLASONS set BLASONS=" + //$NON-NLS-1$
-						blason + " where NUMREGLEMENT=" + reglement.hashCode() + " and NUMDISTANCESBLASONS=" + numdistancesblason); //$NON-NLS-1$ //$NON-NLS-2$
+		if (numdistancesblason == 0) {
+			stmt.executeUpdate("insert into DISTANCESBLASONS (NUMREGLEMENT, BLASONS) VALUES (" + //$NON-NLS-1$
+					reglement.hashCode() + ", " + blason + ")", Statement.RETURN_GENERATED_KEYS); //$NON-NLS-1$ //$NON-NLS-2$
+			ResultSet clefs = stmt.getGeneratedKeys();
+			if (clefs.first()) {
+				numdistancesblason = (Integer) clefs.getObject(1);
 			}
-
-			criteriaSet.save();
-
-			stmt.executeUpdate("merge into ASSOCIER (NUMDISTANCESBLASONS, " + //$NON-NLS-1$
-					"NUMREGLEMENT, NUMCRITERIASET) " + //$NON-NLS-1$
-					"VALUES (" + numdistancesblason + ", " + //$NON-NLS-1$ //$NON-NLS-2$
-					reglement.hashCode() + "," + //$NON-NLS-1$
-					criteriaSet.hashCode() + ")"); //$NON-NLS-1$
-			
-			stmt.executeUpdate("delete from DISTANCES where NUMDISTANCESBLASONS=" + numdistancesblason + " and NUMREGLEMENT=" + reglement.hashCode()); //$NON-NLS-1$
-			for(int distance : distances) {
-				stmt.executeUpdate("insert into DISTANCES (NUMDISTANCESBLASONS, NUMREGLEMENT, DISTANCE) " + //$NON-NLS-1$
-						"VALUES (" + numdistancesblason + ", " + reglement.hashCode() +", " + distance + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} else {
+			stmt.executeUpdate("update DISTANCESBLASONS set BLASONS=" + //$NON-NLS-1$
+					blason + " where NUMREGLEMENT=" + reglement.hashCode() + " and NUMDISTANCESBLASONS=" + numdistancesblason); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
+		criteriaSet.save();
+
+		String sql = "merge into ASSOCIER (NUMDISTANCESBLASONS, " + //$NON-NLS-1$
+				"NUMREGLEMENT, NUMCRITERIASET) " + //$NON-NLS-1$
+				"VALUES (" + numdistancesblason + ", " + //$NON-NLS-1$ //$NON-NLS-2$
+				reglement.hashCode() + "," + //$NON-NLS-1$
+				criteriaSet.hashCode() + ")"; //$NON-NLS-1$
+		stmt.executeUpdate(sql); 
+		
+		stmt.executeUpdate("delete from DISTANCES where NUMDISTANCESBLASONS=" + numdistancesblason + " and NUMREGLEMENT=" + reglement.hashCode()); //$NON-NLS-1$ //$NON-NLS-2$
+		for(int distance : distances) {
+			stmt.executeUpdate("insert into DISTANCES (NUMDISTANCESBLASONS, NUMREGLEMENT, DISTANCE) " + //$NON-NLS-1$
+					"VALUES (" + numdistancesblason + ", " + reglement.hashCode() +", " + distance + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		}
 	}
 
 	/**
@@ -173,7 +169,7 @@ public class DistancesEtBlason {
 	 * @return l'objet DistancesEtBlason correspondant au concurrent
 	 */
 	public static DistancesEtBlason getDistancesEtBlasonForConcurrent(Reglement reglement, Concurrent concurrent) {
-		return reglement.getDistancesEtBlasonFor(concurrent.getCriteriaSet());
+		return reglement.getDistancesEtBlasonFor(concurrent.getCriteriaSet().getFilteredCriteriaSet(reglement.getPlacementFilter()));
 	}
 
 	@Override

@@ -25,7 +25,7 @@ public class EquipeListBuilder {
 		EquipeList equipeList = new EquipeList(ficheConcours);
 		
 		for(Entite entite : concurrentList.listCompagnie()) {
-			Concurrent[] concurrents = concurrentList.list(entite, null);
+			Concurrent[] concurrents = concurrentList.list(entite, null, null);
 			if(concurrents.length >=
 					ficheConcours.getParametre().getReglement().getNbMembresRetenu()) {
 				Equipe equipe = new Equipe(entite.getNom());

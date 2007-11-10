@@ -112,7 +112,7 @@ public class ConfigurationManager {
 	 */
 	public static Configuration loadCurrentConfiguration() {
 		File confFile = new File(userRessources.getConfigPathForUser() + File.separator + 
-				ajrParametreAppli.getResourceString("file.configuration"));
+				ajrParametreAppli.getResourceString("file.configuration")); //$NON-NLS-1$
 
 		return loadConfiguration(confFile);
 	}
@@ -125,7 +125,7 @@ public class ConfigurationManager {
 	 */
 	public static Configuration loadConfiguration(String profilename) {
 		return loadConfiguration(new File(ConcoursJeunes.userRessources.getConfigPathForUser() 
-				+ File.separator + "configuration_" + profilename + ".xml"));
+				+ File.separator + "configuration_" + profilename + ".xml")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
 	/**
@@ -134,6 +134,7 @@ public class ConfigurationManager {
 	 * @param confFile le fichier de configuration à charger
 	 * @return l'objet configuration chargé
 	 */
+	@SuppressWarnings("deprecation")
 	public static Configuration loadConfiguration(File confFile) {
 		Configuration configuration = null;
 		//tente de charger la configuration
@@ -141,6 +142,11 @@ public class ConfigurationManager {
 			configuration = (Configuration)AJToolKit.loadMarshallStructure(confFile, Configuration.class);
 			if(configuration == null) {
 				configuration = ConfigurationBuilder.getDefaultConfiguration();
+			}
+			
+			//changement suite à la dispartion de la ligue du dauphiné
+			if(configuration.getClub().getAgrement().startsWith("16")) { //$NON-NLS-1$
+				configuration.getClub().setAgrement("33" + configuration.getClub().getAgrement().substring(2)); //$NON-NLS-1$
 			}
 		
 		//si il n'y arrive pas vérifie que ce n'est pas une config 1.1

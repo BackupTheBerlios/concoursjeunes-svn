@@ -397,7 +397,7 @@ public class ParametreDialog extends JDialog implements ActionListener {
 			// cherche si il existe un arbitre responsable
 			ArrayList<Object> lstArbitres = jlArbitres.getAllList();
 			for (Object arbitre : lstArbitres) {
-				if(((String) arbitre).startsWith("*")) {
+				if(((String) arbitre).startsWith("*")) { //$NON-NLS-1$
 					// si il en existe 1 et qu'il est different de celui que l'on veut
 					if(!((String) arbitre).equals(jlArbitres.getSelectedValue())) {
 						

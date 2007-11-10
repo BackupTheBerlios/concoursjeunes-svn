@@ -248,6 +248,9 @@ public class CriteriaSet {
 	 */
 	public boolean equals(CriteriaSet criteriaSet) {
 		boolean isEquals = true;
+		
+		if(criteria.size() != criteriaSet.getCriteria().size())
+			return false;
 
 		for(Criterion criterion : criteria.keySet()) {
 			if(getCriterionElement(criterion) != null 

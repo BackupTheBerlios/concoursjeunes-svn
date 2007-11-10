@@ -190,6 +190,8 @@ public class AutoCompleteDocument extends PlainDocument {
 	 */
 	@Override
 	public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
+		if(str == null)
+			return;
 		super.insertString(offs, str, a);
 		//this.
 

@@ -92,7 +92,7 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.StringReader;
@@ -105,10 +105,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Locale;
 
 import javax.naming.ConfigurationException;
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+import javax.script.SimpleBindings;
 import javax.swing.JOptionPane;
 import javax.swing.event.EventListenerList;
 import javax.xml.parsers.SAXParser;
@@ -120,9 +126,10 @@ import org.concoursjeunes.plugins.PluginMetadata;
 import org.jdesktop.swingx.JXErrorDialog;
 import org.xml.sax.InputSource;
 
-import ajinteractive.standard.common.PluginClassLoader;
 import ajinteractive.standard.common.AjResourcesReader;
-import ajinteractive.standard.utilities.sql.SqlParser;
+import ajinteractive.standard.common.PluginClassLoader;
+import ajinteractive.standard.utilities.io.FileUtil;
+import ajinteractive.standard.utilities.sql.SqlManager;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.pdf.PdfWriter;
@@ -144,17 +151,17 @@ import com.lowagie.text.pdf.PdfWriter;
 public class ConcoursJeunes {
 
 	// UID: 1.Major(2).Minor(2).Correctif(2).Build(3).Type(1,Alpha,Beta,RC(1->6),Release)
-	public static final long serialVersionUID = 10196000011l;
+	public static final long serialVersionUID = 10199030011l;
 
 	/**
 	 * Chaines de version de ConcoursJeunes
 	 */
 	public static final String NOM = "@version.name@"; //$NON-NLS-1$
-	public static final String VERSION = "@version.numero@ - @version.date@";//$NON-NLS-1$
+	public static final String VERSION = new String("@version.numero@ - @version.date@");//$NON-NLS-1$
 	public static final String CODENAME = "@version.codename@"; //$NON-NLS-1$
 	public static final String AUTEURS = "@version.author@"; //$NON-NLS-1$
 	public static final String COPYR = "@version.copyr@"; //$NON-NLS-1$
-	public static final int DB_RELEASE_REQUIRED = 5;
+	public static final int DB_RELEASE_REQUIRED = 6;
 
 	// Chaine de ressources
 	public static final String RES_LIBELLE = "libelle"; //$NON-NLS-1$
@@ -238,8 +245,8 @@ public class ConcoursJeunes {
 						e.fillInStackTrace());
 				
 				//Si ce n'est pas un message db bloqué par un autre processus
-				if(!e.getMessage().endsWith("[90020-57]")) { //$NON-NLS-1$
-					if(JOptionPane.showConfirmDialog(null, ajrLibelle.getResourceString("erreur.breakdb")) == JOptionPane.YES_OPTION) {
+				if(!e.getMessage().endsWith("[90020-60]")) { //$NON-NLS-1$
+					if(JOptionPane.showConfirmDialog(null, ajrLibelle.getResourceString("erreur.breakdb")) == JOptionPane.YES_OPTION) { //$NON-NLS-1$
 						erasedb = true;
 						for(File deletefile : new File(userRessources.getBasePath()).listFiles()) {
 							deletefile.delete();
@@ -250,8 +257,6 @@ public class ConcoursJeunes {
 				} else {
 					System.exit(1);
 				}
-				//TODO effacer les fichiers de la base
-				
 			}
 		} while(erasedb);
 		
@@ -274,28 +279,27 @@ public class ConcoursJeunes {
 						ajrLibelle.getResourceString("erreur.dbrelease.title"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 				System.exit(1);
 			}
-
-			String[] updateScripts = new File(userRessources.getAllusersDataPath() + File.separator + "update").list(new FilenameFilter() { //$NON-NLS-1$
-						public boolean accept(File dir, String name) {
-							if (name.endsWith(".sql")) { //$NON-NLS-1$
-								return true;
-							}
-							return false;
-						}
-					});
-			if (updateScripts != null) {
-				Arrays.sort(updateScripts);
-
-				int scriptRelease = dbVersion;
-				stmt.addBatch("SET LOG 0;"); //$NON-NLS-1$
-				for (String scriptPath : updateScripts) {
-					SqlParser.createBatch(new File(userRessources.getAllusersDataPath() + File.separator + "update" + File.separator + scriptPath), stmt, null, scriptRelease + 1); //$NON-NLS-1$
-					stmt.executeBatch();
-					stmt.clearBatch();
-					System.out.println("delete: " + scriptPath + ": " //$NON-NLS-1$ //$NON-NLS-2$
-							+ new File(userRessources.getAllusersDataPath() + File.separator + "update" + File.separator + scriptPath).delete()); //$NON-NLS-1$
+			if (dbVersion != DB_RELEASE_REQUIRED) {
+				File updatePath = new File(userRessources.getAllusersDataPath() + File.separator + "update");
+				
+				ScriptEngineManager se = new ScriptEngineManager();
+				ScriptEngine scriptEngine = se.getEngineByName("JavaScript"); //$NON-NLS-1$
+				scriptEngine.setBindings(new SimpleBindings(Collections.synchronizedMap(new HashMap<String, Object>())), ScriptContext.ENGINE_SCOPE);
+				try {
+					scriptEngine.put("dbVersion", dbVersion); //$NON-NLS-1$
+					scriptEngine.put("sql", new SqlManager(stmt, updatePath)); //$NON-NLS-1$ //$NON-NLS-2$
+					scriptEngine.eval(new FileReader(new File(updatePath, "updatedb.js"))); //$NON-NLS-1$ //$NON-NLS-2$
+				} catch (ScriptException e1) {
+					e1.printStackTrace();
+				} catch (FileNotFoundException e1) {
+					e1.printStackTrace();
+				} finally {
+					//Supprime les fichiers du repertoire update après une mise à jour
+					for(File file : FileUtil.listAllFiles(updatePath, ".*")) {
+						System.out.println("delete: " + file.getName() + ": " //$NON-NLS-1$ //$NON-NLS-2$
+								+ file.delete()); //$NON-NLS-1$
+					}
 				}
-				stmt.executeUpdate("SET LOG 1;"); //$NON-NLS-1$
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -558,9 +562,9 @@ public class ConcoursJeunes {
 			String filePath = tmpFile.getCanonicalPath();
 			tmpFile.deleteOnExit();
 
-			/*
-			 * HeaderFooter footer = new HeaderFooter(new Phrase("page "), new Phrase(".")); document.setFooter(footer);
-			 */
+			
+			//HeaderFooter footer = new HeaderFooter(new Phrase("page "), new Phrase(".")); document.setFooter(footer);
+			 
 
 			// genere le pdf
 			PdfWriter.getInstance(document, new FileOutputStream(filePath));

@@ -262,18 +262,27 @@ public class Concurrent extends Archer {
 		if(!getNumLicenceArcher().equals("")) { //$NON-NLS-1$
 			criteriaSet.save();
 			try {
-				String sql = "merge into distinguer (NUMLICENCEARCHER, NUMREGLEMENT, " + //$NON-NLS-1$
-						"NUMCRITERIASET) KEY (NUMLICENCEARCHER, NUMREGLEMENT)" + //$NON-NLS-1$
-						"VALUES (?, ?, ?)"; //$NON-NLS-1$
-				//NUMREGLEMENT
+				String sql = "select * from ARCHERS where NUMLICENCEARCHER=?"; //$NON-NLS-1$
 				PreparedStatement pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
-				
 				pstmt.setString(1, getNumLicenceArcher());
-				pstmt.setInt(2, reglement.hashCode());
-				pstmt.setInt(3, criteriaSet.hashCode());
-
-				pstmt.executeUpdate();
-				pstmt.close();
+				
+				ResultSet rs = pstmt.executeQuery();
+				if(rs.first()) {
+					pstmt.close();
+					
+					sql = "merge into distinguer (NUMLICENCEARCHER, NUMREGLEMENT, " + //$NON-NLS-1$
+							"NUMCRITERIASET) KEY (NUMLICENCEARCHER, NUMREGLEMENT)" + //$NON-NLS-1$
+							"VALUES (?, ?, ?)"; //$NON-NLS-1$
+					//NUMREGLEMENT
+					pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
+					
+					pstmt.setString(1, getNumLicenceArcher());
+					pstmt.setInt(2, reglement.hashCode());
+					pstmt.setInt(3, criteriaSet.hashCode());
+	
+					pstmt.executeUpdate();
+					pstmt.close();
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}

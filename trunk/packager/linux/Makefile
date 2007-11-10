@@ -31,10 +31,10 @@ ifeq ($(USE_CONSOLEHELPER), yes)
 	
 	ln -s consolehelper $(DESTDIR)/usr/bin/concoursjeunes-applyupdate
 else ifeq ($(USE_GKSU), yes)
-	echo "gksu /usr/sbin/concoursjeunes-applyupdate \$1 \$2" > $(DESTDIR)/usr/bin/concoursjeunes-applyupdate
+	echo "gksu /usr/sbin/concoursjeunes-applyupdate \$$1 \$$2" > $(DESTDIR)/usr/bin/concoursjeunes-applyupdate
 	chmod 755 $(DESTDIR)/usr/bin/concoursjeunes-applyupdate
 else ifeq ($(USE_KDESU), yes)
-	echo "kdesu /usr/sbin/concoursjeunes-applyupdate \$1 \$2" > $(DESTDIR)/usr/bin/concoursjeunes-applyupdate
+	echo "kdesu /usr/sbin/concoursjeunes-applyupdate \$$1 \$$2" > $(DESTDIR)/usr/bin/concoursjeunes-applyupdate
 	chmod 755 $(DESTDIR)/usr/bin/concoursjeunes-applyupdate
 endif
 
