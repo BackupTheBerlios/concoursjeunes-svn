@@ -448,7 +448,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			jcbCategorieTable.get(key).removeAllItems();
 			for (CriterionElement element : key.getCriterionElements()) {
 				if (element.isActive())
-					jcbCategorieTable.get(key).addItem(element.getLibelle());
+					jcbCategorieTable.get(key).addItem(element);
 			}
 		}
 
@@ -514,7 +514,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		if (concurrent.getCriteriaSet() != null) {
 			for (Criterion key : ficheConcours.getParametre().getReglement().getListCriteria()) {
 				CriterionElement element = concurrent.getCriteriaSet().getCriterionElement(key);
-				jcbCategorieTable.get(key).setSelectedIndex(key.getCriterionElements().indexOf(element));
+				jcbCategorieTable.get(key).setSelectedItem(element);
 			}
 		}
 
@@ -703,7 +703,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	private CriteriaSet readCriteriaSet() {
 		CriteriaSet differentiationCriteria = new CriteriaSet();
 		for (Criterion key : ficheConcours.getParametre().getReglement().getListCriteria()) {
-			CriterionElement criterionElement = key.getCriterionElements().get(jcbCategorieTable.get(key).getSelectedIndex());
+			CriterionElement criterionElement = (CriterionElement)jcbCategorieTable.get(key).getSelectedItem();
 			differentiationCriteria.setCriterionElement(key, criterionElement);
 		}
 
