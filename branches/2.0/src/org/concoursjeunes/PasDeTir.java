@@ -154,13 +154,11 @@ public class PasDeTir {
 
 		//recupere dans la configuration la correspondance Critères de distinction/Distance-Blason
 		ArrayList<DistancesEtBlason> distancesEtBlasons = ficheConcours.getParametre().getReglement().getListDistancesEtBlason();
-
 		//liste le nombre d'acher par distances/blason différents
 		//pour chaque distance/blason
 		nbParDistanceBlason = new int[distancesEtBlasons.size()];
 		int i = 0;
 		for(DistancesEtBlason distblas : distancesEtBlasons) {
-
 			nbParDistanceBlason[i] = ficheConcours.getConcurrentList().countArcher(ficheConcours.getParametre().getReglement(), distblas, depart);
 
 			placeLibreSurCible = (nbtireurparcible - nbParDistanceBlason[i] % nbtireurparcible)  % nbtireurparcible;

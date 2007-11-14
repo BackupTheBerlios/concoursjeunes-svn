@@ -201,7 +201,17 @@ public class Reglement {
 	 * @return listDistancesEtBlason
 	 */
 	public ArrayList<DistancesEtBlason> getListDistancesEtBlason() {
-		return listDistancesEtBlason;
+		ArrayList<DistancesEtBlason> filterdListDistancesEtBlason = new ArrayList<DistancesEtBlason>();
+		CriteriaSet[] criteriaSets = CriteriaSet.listCriteriaSet(this, getPlacementFilter());
+		for(CriteriaSet criteriaSet : criteriaSets) {
+			for(DistancesEtBlason db : listDistancesEtBlason) {
+				if(criteriaSet.equals(db.getCriteriaSet().getFilteredCriteriaSet(getPlacementFilter()))) {
+					filterdListDistancesEtBlason.add(db);
+					break;
+				}
+			}
+		}
+		return filterdListDistancesEtBlason;
 	}
 
 	/**

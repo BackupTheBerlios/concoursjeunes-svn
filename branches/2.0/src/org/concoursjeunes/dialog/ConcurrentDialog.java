@@ -514,7 +514,10 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		if (concurrent.getCriteriaSet() != null) {
 			for (Criterion key : ficheConcours.getParametre().getReglement().getListCriteria()) {
 				CriterionElement element = concurrent.getCriteriaSet().getCriterionElement(key);
-				jcbCategorieTable.get(key).setSelectedItem(element);
+				if(element != null)
+					jcbCategorieTable.get(key).setSelectedItem(element);
+				else
+					jcbCategorieTable.get(key).setSelectedIndex(0);
 			}
 		}
 
