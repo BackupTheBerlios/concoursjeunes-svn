@@ -148,7 +148,7 @@
 		</revisionscreator>
 	</target>
 
-	<target name="makerpm" depends="jar">
+	<target name="makerpm">
 
 		<mkdir dir="${projet.pack.dir}/linux" />
 		<property name="rpm.pack.path" location="${projet.pack.dir}/linux" />
@@ -330,6 +330,9 @@
 	<target name="all-system"
 		depends="jar, pack-ConcoursJeunesUpdate, pack-FFTAImport, revisions, makensissetup, makerpm, makedeb"
 		description="Compilation Multi-systeme" />
+	<target name="all-system-nocompilation"
+			depends="revisions, makensissetup, makerpm, makedeb"
+			description="Empaquetage Multi-systeme" />
 	<target name="MacOSX" 
 		depends="jar, pack-ConcoursJeunesUpdate, revisions, makemacbundle"
 		description="Pack Mac OS X" />
