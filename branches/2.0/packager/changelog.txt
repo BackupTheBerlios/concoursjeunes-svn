@@ -1,3 +1,9 @@
+concoursjeunes (2.00.01-1) stable; urgency=low
+
+  * Correction bugs divers
+  
+ -- Aurelien JEOFFRAY <aurelien.jeoffray@gmail.com>  Mon, 14 Nov 2007 18:15:00 +0200
+
 concoursjeunes (2.00.00-1) stable; urgency=low
 
   * Correction NullPointeurException sur insertion club sans nom de ville

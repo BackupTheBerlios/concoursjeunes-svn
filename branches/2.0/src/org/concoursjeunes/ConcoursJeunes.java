@@ -295,9 +295,12 @@ public class ConcoursJeunes {
 					e1.printStackTrace();
 				} finally {
 					//Supprime les fichiers du repertoire update après une mise à jour
-					for(File file : FileUtil.listAllFiles(updatePath, ".*")) {
+					for(File file : FileUtil.listAllFiles(updatePath, ".*")) { //$NON-NLS-1$
+						boolean success = file.delete();
 						System.out.println("delete: " + file.getName() + ": " //$NON-NLS-1$ //$NON-NLS-2$
-								+ file.delete()); //$NON-NLS-1$
+								+ success);
+						if(!success)
+							file.deleteOnExit();
 					}
 				}
 			}

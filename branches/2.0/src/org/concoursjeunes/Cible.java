@@ -292,8 +292,8 @@ public class Cible {
 			if (position == -1) {
 				return insertConcurrent(concurrent) > -1;
 			} else if (position >= 0 && position < concours.getParametre().getNbTireur()) {
-				if ((nbArcher > 0 && DistancesEtBlason.getDistancesEtBlasonForConcurrent(concours.getParametre().getReglement(), concurrent).equals(
-						getDistancesEtBlason()))
+				if ((nbArcher > 0 && DistancesEtBlason.getDistancesEtBlasonForConcurrent(
+						concours.getParametre().getReglement(), concurrent).equals(getDistancesEtBlason()))
 						|| nbArcher == 0) {
 					concurrent.setCible(numCible);
 					concurrent.setPosition(position);

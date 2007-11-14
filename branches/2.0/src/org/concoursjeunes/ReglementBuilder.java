@@ -178,7 +178,14 @@ public class ReglementBuilder {
 				while(rs.next()) {
 					int numdb = rs.getInt("NUMDISTANCESBLASONS"); //$NON-NLS-1$
 					
-					listDistancesEtBlason.add(DistancesEtBlasonBuilder.getDistancesEtBlason(numdb, reglement, numreglment));
+					DistancesEtBlason db = DistancesEtBlasonBuilder.getDistancesEtBlason(numdb, reglement, numreglment);
+					CriteriaSet[] criteriaSets = CriteriaSet.listCriteriaSet(reglement, reglement.getPlacementFilter());
+					for(CriteriaSet criteriaSet : criteriaSets) {
+						if(criteriaSet.equals(db.getCriteriaSet().getFilteredCriteriaSet(reglement.getPlacementFilter()))) {
+							listDistancesEtBlason.add(db);
+							break;
+						}
+					}
 				}
 				rs.close();
 				reglement.setListDistancesEtBlason(listDistancesEtBlason);
