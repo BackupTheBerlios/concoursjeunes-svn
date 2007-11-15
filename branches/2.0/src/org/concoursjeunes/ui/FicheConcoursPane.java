@@ -144,6 +144,8 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 			checkBox.addActionListener(this);
 			if(ficheConcours.getParametre().getReglement().isOfficialReglement())
 				checkBox.setEnabled(false);
+			else if(criteria.isPlacement())
+				checkBox.setEnabled(false);
 			northpane.add(checkBox);
 			
 			classmentCriteriaCB.put(criteria.getCode(), checkBox);

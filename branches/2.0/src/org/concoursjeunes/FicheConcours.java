@@ -503,9 +503,9 @@ public class FicheConcours implements ParametreListener {
 			// classement sortie XML
 			tplClassementEquipe.parse("CURRENT_TIME", DateFormat.getDateInstance(DateFormat.MEDIUM).format(new Date())); //$NON-NLS-1$
 			tplClassementEquipe.parse("LOGO_CLUB_URI", ConcoursJeunes.configuration.getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			tplClassementEquipe.parse("INTITULE_CLUB", parametre.getClub().getNom()); //$NON-NLS-1$
-			tplClassementEquipe.parse("INTITULE_CONCOURS", parametre.getIntituleConcours()); //$NON-NLS-1$
-			tplClassementEquipe.parse("VILLE_CLUB", parametre.getLieuConcours()); //$NON-NLS-1$
+			tplClassementEquipe.parse("INTITULE_CLUB", XmlUtils.sanitizeText(parametre.getClub().getNom())); //$NON-NLS-1$
+			tplClassementEquipe.parse("INTITULE_CONCOURS", XmlUtils.sanitizeText(parametre.getIntituleConcours())); //$NON-NLS-1$
+			tplClassementEquipe.parse("VILLE_CLUB", XmlUtils.sanitizeText(parametre.getLieuConcours())); //$NON-NLS-1$
 			tplClassementEquipe.parse("DATE_CONCOURS", DateFormat.getDateInstance(DateFormat.LONG).format(parametre.getDate())); //$NON-NLS-1$
 
 			String strArbitreResp = ""; //$NON-NLS-1$
@@ -521,8 +521,8 @@ public class FicheConcours implements ParametreListener {
 				}
 			}
 
-			tplClassementEquipe.parse("ARBITRE_RESPONSABLE", strArbitreResp); //$NON-NLS-1$
-			tplClassementEquipe.parse("ARBITRES_ASSISTANT", strArbitresAss); //$NON-NLS-1$
+			tplClassementEquipe.parse("ARBITRE_RESPONSABLE", XmlUtils.sanitizeText(strArbitreResp)); //$NON-NLS-1$
+			tplClassementEquipe.parse("ARBITRES_ASSISTANT", XmlUtils.sanitizeText(strArbitresAss)); //$NON-NLS-1$
 			tplClassementEquipe.parse("NB_CLUB", "" + concurrentList.countCompagnie()); //$NON-NLS-1$ //$NON-NLS-2$
 			tplClassementEquipe.parse("NB_TIREURS", "" + concurrentList.countArcher()); //$NON-NLS-1$ //$NON-NLS-2$
 			tplClassementEquipe.parse("TYPE_CLASSEMENT", ConcoursJeunes.ajrLibelle.getResourceString("classement.equipe")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -548,15 +548,15 @@ public class FicheConcours implements ParametreListener {
 					String ptsXML = ""; //$NON-NLS-1$
 					for (Concurrent concurrent : sortEquipes[i].getMembresEquipe()) {
 						if (outType == OUT_XML) {
-							idsXML += concurrent.getID() + "<newline/>"; //$NON-NLS-1$
+							idsXML += XmlUtils.sanitizeText(concurrent.getID()) + "<newline/>"; //$NON-NLS-1$
 							ptsXML += concurrent.getTotalScore() + "<newline/>"; //$NON-NLS-1$
 						} else {
-							idsXML += concurrent.getID() + "<br>"; //$NON-NLS-1$
+							idsXML += XmlUtils.sanitizeText(concurrent.getID()) + "<br>"; //$NON-NLS-1$
 							ptsXML += concurrent.getTotalScore() + "<br>"; //$NON-NLS-1$
 						}
 					}
 					tplClassementEquipe.parse("categories.classement.IDENTITEES", idsXML); //$NON-NLS-1$
-					tplClassementEquipe.parse("categories.classement.NOM_EQUIPE", sortEquipes[i].getNomEquipe()); //$NON-NLS-1$
+					tplClassementEquipe.parse("categories.classement.NOM_EQUIPE", XmlUtils.sanitizeText(sortEquipes[i].getNomEquipe())); //$NON-NLS-1$
 					tplClassementEquipe.parse("categories.classement.TOTAL_INDIVIDUEL", ptsXML); //$NON-NLS-1$
 					tplClassementEquipe.parse("categories.classement.TOTAL_GENERAL", "" + sortEquipes[i].getTotalScore()); //$NON-NLS-1$ //$NON-NLS-2$
 	
@@ -908,7 +908,7 @@ public class FicheConcours implements ParametreListener {
 	public boolean printClassementEquipe() {
 		Document document = new Document(PageSize.A4, 10, 10, 10, 65);
 		String classementEquipe = getClassementEquipe(OUT_XML);
-		if (!classementEquipe.equals("")) //$NON-NLS-1$
+		if (!classementEquipe.isEmpty()) //$NON-NLS-1$
 			return ConcoursJeunes.printDocument(document, classementEquipe);
 		return false;
 	}

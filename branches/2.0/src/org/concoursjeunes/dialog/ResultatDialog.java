@@ -439,7 +439,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 				setVisible(false);
 			} catch(NumberFormatException e) {
 				JOptionPane.showMessageDialog(this, 
-						"Un champs ne possède pas de valeur, vérifié votre saisi.",
+						"Un champs ne possède pas de valeur, vérifiez votre saisie.",
 						"Erreur de saisie", 
 						JOptionPane.ERROR_MESSAGE);
 			}

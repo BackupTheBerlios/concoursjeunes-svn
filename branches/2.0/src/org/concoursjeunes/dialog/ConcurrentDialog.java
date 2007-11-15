@@ -691,13 +691,17 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		return strPlaceLibre;
 	}
 
-	private ArrayList<Integer> readScores() {
+	private ArrayList<Integer> readScores() throws NumberFormatException {
 		ArrayList<Integer> points = new ArrayList<Integer>();
-		for (int i = 0; i < tfpd.length; i++) {
-			if (points.size() > i)
-				points.set(i, Integer.parseInt(tfpd[i].getText()));
-			else
-				points.add(Integer.parseInt(tfpd[i].getText()));
+		try {
+			for (int i = 0; i < tfpd.length; i++) {
+				if (points.size() > i)
+					points.set(i, Integer.parseInt(tfpd[i].getText()));
+				else
+					points.add(Integer.parseInt(tfpd[i].getText()));
+			}
+		} catch(NumberFormatException e) {
+			throw e;
 		}
 
 		return points;
@@ -833,14 +837,22 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 					return;
 				}
 			}
-
-			// verification du score
-			if (!ficheConcours.getParametre().getReglement().isValidScore(readScores())) {
-				JOptionPane.showMessageDialog(new JDialog(), ConcoursJeunes.ajrLibelle.getResourceString("erreur.impscore"), //$NON-NLS-1$
-						ConcoursJeunes.ajrLibelle.getResourceString("erreur"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
+			try {
+				// verification du score
+				if (!ficheConcours.getParametre().getReglement().isValidScore(readScores())) {
+					JOptionPane.showMessageDialog(new JDialog(), ConcoursJeunes.ajrLibelle.getResourceString("erreur.impscore"), //$NON-NLS-1$
+							ConcoursJeunes.ajrLibelle.getResourceString("erreur"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
+					return;
+				}
+			
+				concurrent.setScore(readScores());
+			} catch (NumberFormatException e) {
+				JOptionPane.showMessageDialog(this, 
+						"Un champs ne possède pas de valeur, vérifiez votre saisie.",
+						"Erreur de saisie", 
+						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			concurrent.setScore(readScores());
 
 			concurrent.setDix(Integer.parseInt(tfpd10.getText()));
 			concurrent.setNeuf(Integer.parseInt(tfpdNeuf.getText()));

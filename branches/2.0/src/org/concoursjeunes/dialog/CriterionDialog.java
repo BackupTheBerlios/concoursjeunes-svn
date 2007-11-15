@@ -99,6 +99,8 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import org.concoursjeunes.ConcoursJeunes;
 import org.concoursjeunes.Criterion;
@@ -110,7 +112,7 @@ import ajinteractive.standard.java2.GridbagComposer;
  * Boite de dialogue de gestion des critère de distinction des archers
  * @author Aurélien JEOFFRAY
  */
-public class CriterionDialog extends JDialog implements ActionListener {
+public class CriterionDialog extends JDialog implements ActionListener, ChangeListener {
 	
 	public static final int NO_LOCK = 0;
 	public static final int PLACEMENT_LOCK = 1;
@@ -175,6 +177,10 @@ public class CriterionDialog extends JDialog implements ActionListener {
         JPanel jpOperation = new JPanel();
         
         jpOperation.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        
+        jcbPlacementCriterion.setEnabled(false);
+        jcbPlacementCriterion.addChangeListener(this);
+        jcbClassementCriterion.addChangeListener(this);
         
         jbValider.addActionListener(this);
         jbAnnuler.addActionListener(this);
@@ -248,8 +254,9 @@ public class CriterionDialog extends JDialog implements ActionListener {
             
             jcbSortOrder.setSelectedIndex((criterion.getSortOrder() > 0) ? 0 : 1);
             
-            jcbPlacementCriterion.setSelected(criterion.isPlacement());
             jcbClassementCriterion.setSelected(criterion.isClassement());
+            //jcbClassementCriterion.setEnabled(!criterion.isPlacement());
+            jcbPlacementCriterion.setSelected(criterion.isPlacement());
             jcbClassementEquipeCriterion.setSelected(criterion.isClassementEquipe());
             jcbWinFFTACode.setSelectedItem(criterion.getCodeffta());
             
@@ -332,4 +339,16 @@ public class CriterionDialog extends JDialog implements ActionListener {
             setVisible(false);
         }
     }
+
+	/* (non-Javadoc)
+	 * @see javax.swing.event.ChangeListener#stateChanged(javax.swing.event.ChangeEvent)
+	 */
+	@Override
+	public void stateChanged(ChangeEvent e) {
+		if(e.getSource() == jcbClassementCriterion) {
+			jcbPlacementCriterion.setEnabled(jcbClassementCriterion.isSelected());
+		} else if(e.getSource() == jcbPlacementCriterion) {
+			jcbClassementCriterion.setEnabled(!jcbPlacementCriterion.isSelected());
+		}
+	}
 }
