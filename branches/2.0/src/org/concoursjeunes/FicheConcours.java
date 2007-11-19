@@ -903,12 +903,12 @@ public class FicheConcours implements ParametreListener {
 	/**
 	 * Genere l'etat classement equipe pour la fiche en parametre
 	 * 
-	 * @return true si impression avec succe, false sinon
+	 * @return true si impression avec succee, false sinon
 	 */
 	public boolean printClassementEquipe() {
 		Document document = new Document(PageSize.A4, 10, 10, 10, 65);
 		String classementEquipe = getClassementEquipe(OUT_XML);
-		if (!classementEquipe.isEmpty()) //$NON-NLS-1$
+		if (!classementEquipe.isEmpty())
 			return ConcoursJeunes.printDocument(document, classementEquipe);
 		return false;
 	}

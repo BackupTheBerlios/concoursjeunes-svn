@@ -62,7 +62,7 @@ public class ConcurrentBuilder {
 				} else {
 					differentiationCriteria = new CriteriaSet();
 					for(Criterion key : reglement.getListCriteria()) {
-						if(!key.getCodeffta().isEmpty()) { //$NON-NLS-1$
+						if(!key.getCodeffta().isEmpty()) {
 							ArrayList<CriterionElement> arrayList = key.getCriterionElements();
 							int valindex = rs.getInt(key.getCodeffta() + "FFTA"); //$NON-NLS-1$
 							if(valindex >= arrayList.size())

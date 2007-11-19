@@ -151,7 +151,7 @@ import com.lowagie.text.pdf.PdfWriter;
 public class ConcoursJeunes {
 
 	// UID: 1.Major(2).Minor(2).Correctif(2).Build(3).Type(1,Alpha,Beta,RC(1->6),Release)
-	public static final long serialVersionUID = 10199030011l;
+	public static final long serialVersionUID = 10200030011l;
 
 	/**
 	 * Chaines de version de ConcoursJeunes
@@ -245,7 +245,7 @@ public class ConcoursJeunes {
 						e.fillInStackTrace());
 				
 				//Si ce n'est pas un message db bloqué par un autre processus
-				if(!e.getMessage().endsWith("[90020-60]")) { //$NON-NLS-1$
+				if(!e.getMessage().contains("[90020")) { //$NON-NLS-1$
 					if(JOptionPane.showConfirmDialog(null, ajrLibelle.getResourceString("erreur.breakdb")) == JOptionPane.YES_OPTION) { //$NON-NLS-1$
 						erasedb = true;
 						for(File deletefile : new File(userRessources.getBasePath()).listFiles()) {
@@ -280,15 +280,15 @@ public class ConcoursJeunes {
 				System.exit(1);
 			}
 			if (dbVersion != DB_RELEASE_REQUIRED) {
-				File updatePath = new File(userRessources.getAllusersDataPath() + File.separator + "update");
+				File updatePath = new File(userRessources.getAllusersDataPath() + File.separator + "update"); //$NON-NLS-1$
 				
 				ScriptEngineManager se = new ScriptEngineManager();
 				ScriptEngine scriptEngine = se.getEngineByName("JavaScript"); //$NON-NLS-1$
 				scriptEngine.setBindings(new SimpleBindings(Collections.synchronizedMap(new HashMap<String, Object>())), ScriptContext.ENGINE_SCOPE);
 				try {
 					scriptEngine.put("dbVersion", dbVersion); //$NON-NLS-1$
-					scriptEngine.put("sql", new SqlManager(stmt, updatePath)); //$NON-NLS-1$ //$NON-NLS-2$
-					scriptEngine.eval(new FileReader(new File(updatePath, "updatedb.js"))); //$NON-NLS-1$ //$NON-NLS-2$
+					scriptEngine.put("sql", new SqlManager(stmt, updatePath)); //$NON-NLS-1$
+					scriptEngine.eval(new FileReader(new File(updatePath, "updatedb.js"))); //$NON-NLS-1$
 				} catch (ScriptException e1) {
 					e1.printStackTrace();
 				} catch (FileNotFoundException e1) {
@@ -312,8 +312,10 @@ public class ConcoursJeunes {
 			try { if(stmt != null) stmt.close(); } catch (SQLException e) { }
 			dbVersion = getDBVersion();
 		}
-
-		loadStartupPlugin();
+		
+		if(System.getProperty("noplugin") == null) { //$NON-NLS-1$
+			loadStartupPlugin();
+		}
 	}
 
 	/**

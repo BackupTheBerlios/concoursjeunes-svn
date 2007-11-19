@@ -51,6 +51,7 @@
 				<menuitems>
 					<menuitem keycode="VK_F1">menubar.aide.aide</menuitem>
 					<separator />
+					<menuitem>menubar.aide.versionnote</menuitem>
 					<menuitem>menubar.aide.apropos</menuitem>
 				</menuitems>
 			</menu>

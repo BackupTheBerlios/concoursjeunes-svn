@@ -18,6 +18,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -133,7 +134,9 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 		ajtHome.loadTemplate(ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
 				+ File.separator + ajrParametreAppli.getResourceString("template.accueil.html")); //$NON-NLS-1$
 
-		fillOnDemandPlugin((JMenu) frameCreator.getNamedComponent("mi.import")); //$NON-NLS-1$
+		if(System.getProperty("noplugin") == null) { //$NON-NLS-1$
+			fillOnDemandPlugin((JMenu) frameCreator.getNamedComponent("mi.import")); //$NON-NLS-1$
+		}
 
 		jmReglements = (JMenu) frameCreator.getNamedComponent("mi.reglements"); //$NON-NLS-1$
 		fillReglementItem(jmReglements);
@@ -588,6 +591,14 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
+		} else if (cmd.equals("menubar.aide.versionnote")) { //$NON-NLS-1$
+			try {
+				if (Desktop.isDesktopSupported()) {
+					Desktop.getDesktop().open(new File("changelog.txt")); //$NON-NLS-1$
+				}
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		} else if (cmd.equals("menubar.debug.addpoints")) { //$NON-NLS-1$
 			if (jif != null) {
 				org.concoursjeunes.debug.Debug.attributePoints(jif.getFicheConcours().getConcurrentList(), 0);
@@ -720,12 +731,12 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 								e.printStackTrace();
 							}
 							ConcoursJeunesFrame.this.setCursor(Cursor.getDefaultCursor());
-							ConcoursJeunesFrame.this.jepHome.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+							//ConcoursJeunesFrame.this.jepHome.setCursor(Cursor.getDefaultCursor());
 							ConcoursJeunesFrame.this.jepHome.setEnabled(true);
 						}
 					};
 					this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-					this.jepHome.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+					//this.jepHome.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 					this.jepHome.setEnabled(false);
 					Thread.yield();
 					launchFiche.start();
@@ -745,18 +756,36 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 						}
 					}
 				} else if (e.getURL().getHost().equals("new_concours")) { //$NON-NLS-1$
-					try {
-						this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-						
-						concoursJeunes.createFicheConcours();
-						this.setCursor(Cursor.getDefaultCursor());
-					} catch (ConfigurationException e1) {
-						JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
-								e1.fillInStackTrace());
-						e1.printStackTrace();
-					}
+					Thread launchFiche = new Thread() {
+						@Override
+						public void run() {
+							try {
+								concoursJeunes.createFicheConcours();
+							} catch (ConfigurationException e1) {
+								JXErrorDialog.showDialog(ConcoursJeunesFrame.this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
+										e1.fillInStackTrace());
+								e1.printStackTrace();
+							}
+							ConcoursJeunesFrame.this.jepHome.setEnabled(true);
+							ConcoursJeunesFrame.this.setCursor(Cursor.getDefaultCursor());
+						}
+					};
+					this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+					this.jepHome.setEnabled(false);
+					Thread.yield();
+					launchFiche.start();
 				} else if (e.getURL().getHost().equals("change_profile")) { //$NON-NLS-1$
 					showConfigurationDialog();
+				} else if(e.getURL().getProtocol().equals("http")) { //$NON-NLS-1$
+					try {
+						if(Desktop.isDesktopSupported()) {
+							Desktop.getDesktop().browse(e.getURL().toURI());
+						}
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					} catch (URISyntaxException e1) {
+						e1.printStackTrace();
+					}
 				}
 			}
 		}

@@ -1,4 +1,4 @@
-concoursjeunes (2.00.02-1) stable; urgency=low
+concoursjeunes (2.00.01-1) stable; urgency=low
 
   * Correction erreur de libellé
   * Correction problème dans les critères de clasement
