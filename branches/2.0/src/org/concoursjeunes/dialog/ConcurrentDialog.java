@@ -105,6 +105,7 @@ import java.util.Hashtable;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -172,6 +173,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	private final JButton jbSelectionArcher = new JButton();
 	private final JButton jbEditerArcher = new JButton();
 	private final JTextField jtfLicence = new JTextField(16);// Numero de
+	private final JCheckBox jcbHandicape = new JCheckBox();
 	// licence
 	private final Hashtable<Criterion, JLabel> jlCategrieTable = new Hashtable<Criterion, JLabel>();
 	private final Hashtable<Criterion, JComboBox> jcbCategorieTable = new Hashtable<Criterion, JComboBox>();
@@ -334,6 +336,9 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		gridbagComposer.addComponentIntoGrid(jlLicence, c);
 		c.gridwidth = 4;
 		gridbagComposer.addComponentIntoGrid(jtfLicence, c);
+		c.gridy++;
+		c.gridwidth = 5;
+		gridbagComposer.addComponentIntoGrid(jcbHandicape, c);
 		for (Criterion key : ficheConcours.getParametre().getReglement().getListCriteria()) {
 			c.gridy++;
 			c.fill = GridBagConstraints.HORIZONTAL;
@@ -430,6 +435,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		jlDescription.setBackground(new Color(255, 255, 225));
 		jlNom.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.identite")); // Nom et prénom du Tireur //$NON-NLS-1$
 		jlLicence.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.numlicence")); // N° de Licence //$NON-NLS-1$
+		jcbHandicape.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.handicap")); // Archer handicapé? //$NON-NLS-1$
 		jlClub.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.nomclub")); // nom du club //$NON-NLS-1$
 		jlAgrement.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.agrementclub")); // n°agrement du club //$NON-NLS-1$
 		jlCible.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.cible")); // cible attribué //$NON-NLS-1$
@@ -480,6 +486,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		jtfNom.setEditable(!isinit);
 		jtfPrenom.setEditable(!isinit);
 		jtfLicence.setEditable(!isinit);
+		jcbHandicape.setEnabled(!isinit);
 
 		for (Criterion key : ficheConcours.getParametre().getReglement().getListCriteria()) {
 			jcbCategorieTable.get(key).setEnabled(!isinit);
@@ -504,6 +511,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			jtfPrenom.setText(concurrent.getPrenomArcher());
 			jtfLicence.setText(concurrent.getNumLicenceArcher());
 		}
+		jcbHandicape.setSelected(concurrent.isHandicape());
 		if (jtfClub.getDocument() instanceof AutoCompleteDocument) {
 			((AutoCompleteDocument) jtfClub.getDocument()).setText(entiteConcurrent.getVille());
 			((AutoCompleteDocument) jtfAgrement.getDocument()).setText(entiteConcurrent.getAgrement());
@@ -860,6 +868,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			concurrent.setNomArcher(jtfNom.getText());
 			concurrent.setPrenomArcher(jtfPrenom.getText());
 			concurrent.setNumLicenceArcher(jtfLicence.getText());
+			concurrent.setHandicape(jcbHandicape.isSelected());
 			concurrent.setClub(entiteConcurrent);
 			concurrent.getClub().setVille(jtfClub.getText());
 			concurrent.getClub().setAgrement(jtfAgrement.getText());

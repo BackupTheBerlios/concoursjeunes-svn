@@ -108,6 +108,7 @@ public class Cible {
 	private final Concurrent[] concurrents; // le liste des concurrents présents
 	// sur la cible
 	private int nbArcher = 0; // le nombre d'archer sur la cible
+	private int nbHandicap = 0;
 
 	private final EventListenerList listeners = new EventListenerList();
 
@@ -166,6 +167,13 @@ public class Cible {
 	}
 
 	/**
+	 * @return nbHandicap
+	 */
+	public int getNbHandicap() {
+		return nbHandicap;
+	}
+
+	/**
 	 * Retourne le nombre maximum d'archers pouvant être accepté sur la cible
 	 * 
 	 * @return le nombre maximum d'archer sur la cible
@@ -203,24 +211,54 @@ public class Cible {
 	public int insertConcurrent(Concurrent concurrent) {
 		int position = -1;
 
-		if (concurrent != null && nbArcher < concours.getParametre().getNbTireur()) {
-			if ((nbArcher > 0 && DistancesEtBlason.getDistancesEtBlasonForConcurrent(concours.getParametre().getReglement(), concurrent).equals(
-					getDistancesEtBlason()))
-					|| nbArcher == 0) {
-				for (int i = 0; i < concurrents.length; i++) {
-					if (concurrents[i] == null) {
-
-						concurrent.setCible(numCible);
-						concurrent.setPosition(i);
-
-						concurrents[i] = concurrent;
-						nbArcher++;
-
-						fireConcurrentJoined(concurrent);
-
-						position = i;
-
-						break;
+		if (concurrent != null) {
+			//verifie qu'il reste des places disponible
+			if(nbArcher < concours.getParametre().getNbTireur() - nbHandicap) {
+				//on valide l'insertion si il n'y a aucun archer sur la cible
+				//OU si les autre archers sont à la même distance
+				if ((nbArcher > 0 && DistancesEtBlason.getDistancesEtBlasonForConcurrent(concours.getParametre().getReglement(), concurrent).equals(
+						getDistancesEtBlason()))
+						|| nbArcher == 0) {
+					//si l'archer est handicapé, vérifié que les condition spécifique sont remplis
+					if(concurrent.isHandicape()) {
+						if(nbArcher < concours.getParametre().getNbTireur() - (nbHandicap+1)) {
+							//dans le cas d'un archer handicapé, on boucle sur les emplacements 2 à 2
+							for (int i = 0; i < concurrents.length; i+=2) {
+								if (concurrents[i] == null && concurrents[i+1] == null) {
+									concurrent.setCible(numCible);
+									concurrent.setPosition(i);
+									
+									concurrents[i] = concurrent;
+									nbArcher++;
+									nbHandicap++;
+									
+									fireConcurrentJoined(concurrent);
+									
+									position = i;
+									
+									break;
+								}
+							}
+						}
+					} else {
+						//on boucle sur les emplacements et on remplit le premier qui est libre
+						for (int i = 0; i < concurrents.length; i++) {
+							if (concurrents[i] == null) {
+								if(i > 0 && concurrents[i-1].isHandicape())
+									continue;
+								concurrent.setCible(numCible);
+								concurrent.setPosition(i);
+		
+								concurrents[i] = concurrent;
+								nbArcher++;
+		
+								fireConcurrentJoined(concurrent);
+		
+								position = i;
+		
+								break;
+							}
+						}
 					}
 				}
 			}
@@ -295,12 +333,18 @@ public class Cible {
 				if ((nbArcher > 0 && DistancesEtBlason.getDistancesEtBlasonForConcurrent(
 						concours.getParametre().getReglement(), concurrent).equals(getDistancesEtBlason()))
 						|| nbArcher == 0) {
+					if(concurrent.isHandicape() && position % 2 != 0)
+						return false;
 					concurrent.setCible(numCible);
 					concurrent.setPosition(position);
 					if (concurrents[position] != null)
 						removeConcurrentAt(position);
-
+					//FIXME possible depacement de capacité si nb de place impair
+					if (concurrent.isHandicape() && concurrents[position+1] != null)
+						removeConcurrentAt(position);
 					nbArcher++;
+					if (concurrent.isHandicape())
+						nbHandicap++;
 					concurrents[position] = concurrent;
 					fireConcurrentJoined(concurrent);
 
@@ -323,6 +367,8 @@ public class Cible {
 
 			Concurrent removedConcurrent = concurrents[position];
 			removedConcurrent.setCible(0);
+			if(removedConcurrent.isHandicape())
+				nbHandicap--;
 
 			concurrents[position] = null;
 

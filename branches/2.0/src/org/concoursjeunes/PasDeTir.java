@@ -235,7 +235,7 @@ public class PasDeTir {
 			place = getOccupationCibles(ficheConcours.getParametre().getNbTireur()).get(
 					DistancesEtBlason.getDistancesEtBlasonForConcurrent(ficheConcours.getParametre().getReglement(), concurrent));
 
-			return place.getPlaceLibre() > 0 || getNbCiblesLibre(ficheConcours.getParametre().getNbTireur()) > 0;
+			return place.getPlaceLibre() > (concurrent.isHandicape()?1:0) || getNbCiblesLibre(ficheConcours.getParametre().getNbTireur()) > 0;
 		}
 
 		int index = ficheConcours.getConcurrentList().getArchList().indexOf(concurrent);
@@ -251,13 +251,13 @@ public class PasDeTir {
 
 		//si il reste de la place dans la nouvelle categorie pas de pb
 		place = getOccupationCibles(ficheConcours.getParametre().getNbTireur()).get(db1);
-		if(place.getPlaceLibre() > 0 || getNbCiblesLibre(ficheConcours.getParametre().getNbTireur()) > 0) {
+		if(place.getPlaceLibre() > (concurrent.isHandicape()?1:0) || getNbCiblesLibre(ficheConcours.getParametre().getNbTireur()) > 0) {
 			return true;
 		}
 
 		//si le retrait du concurrent libere une cible ok
 		place = getOccupationCibles(ficheConcours.getParametre().getNbTireur()).get(db2);
-		if(place.getPlaceOccupe() % ficheConcours.getParametre().getNbTireur() == 1) {
+		if(place.getPlaceOccupe() % ficheConcours.getParametre().getNbTireur() == (concurrent.isHandicape()?2:1)) {
 			return true;
 		}
 
@@ -267,7 +267,7 @@ public class PasDeTir {
 	
 	/**
 	 * Place les archers sur le pas de tir
-	 *
+	 * 
 	 * @param depart - le numero du depart pour lequel placer les archers
 	 */
 	public void placementConcurrents() {
@@ -285,20 +285,30 @@ public class PasDeTir {
 		//pour chaque distance/blason 
 		for(DistancesEtBlason distancesEtBlason : lDB) {
 			//liste les archers pour le distance/blason
-			Concurrent[] concurrents = ConcurrentList.sort( ficheConcours.getConcurrentList().list(ficheConcours.getParametre().getReglement(), distancesEtBlason, depart), ConcurrentList.SORT_BY_CLUBS);
+			Concurrent[] concurrents = ConcurrentList.sort(
+					ficheConcours.getConcurrentList().list(
+							ficheConcours.getParametre().getReglement(), 
+							distancesEtBlason, depart, false),
+					ConcurrentList.SORT_BY_CLUBS);
 
+			int nbConcurrent = ficheConcours.getConcurrentList().countArcher(
+					ficheConcours.getParametre().getReglement(), 
+					distancesEtBlason, depart, true);
 			int startCible = curCible;
-			int endCible = curCible + (concurrents.length / nbTireurParCible) 
-					+ (((concurrents.length % nbTireurParCible) > 0) ? 0 : -1);
-
+			int endCible = curCible + (nbConcurrent / nbTireurParCible) 
+					+ (((nbConcurrent % nbTireurParCible) > 0) ? 0 : -1);
+			//FIXME Placement Archer handicapé
 			for(int j = 0; j < concurrents.length; j++) {
-				targets.get(curCible - 1).insertConcurrent(concurrents[j]);
-
-				if(curCible < endCible)
-					curCible++;
-				else {
-					curCible = startCible;
-				}
+				int position = 0;
+				do {
+					position = targets.get(curCible - 1).insertConcurrent(concurrents[j]);
+					
+					if(curCible < endCible)
+						curCible++;
+					else {
+						curCible = startCible;
+					}
+				} while(position == -1);
 			}
 
 			curCible = endCible + 1;
