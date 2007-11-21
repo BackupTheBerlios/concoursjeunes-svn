@@ -234,10 +234,7 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 		ajlConcurrent.addListSelectionListener(this);
 		ajlConcurrent.addKeyListener(this);
 		ajlConcurrent.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		ajlConcurrent.setCellRenderer(new ConcoursListeRenderer(new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
-				ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.archer.normal")), //$NON-NLS-1$
-				new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
-						ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.archer.notarget")))); //$NON-NLS-1$
+		ajlConcurrent.setCellRenderer(new ConcoursListeRenderer());
 
 		return pane;
 	}

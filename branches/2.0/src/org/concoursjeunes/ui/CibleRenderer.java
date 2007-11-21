@@ -22,11 +22,12 @@ import org.concoursjeunes.TargetPosition;
  */
 
 public class CibleRenderer extends DefaultTreeCellRenderer {
-	private ImageIcon archerIcon;
-	private ImageIcon cibleIcon;
-	private ImageIcon disableIcon;
+	private final ImageIcon archerIcon;
+	private final ImageIcon archerHandicapIcon;
+	private final ImageIcon cibleIcon;
+	private final ImageIcon disableIcon;
 	
-	private PasDeTir pasDeTir;
+	private final PasDeTir pasDeTir;
 
 	/**
 	 * Constructeur, initialise les icone à afficher
@@ -40,12 +41,15 @@ public class CibleRenderer extends DefaultTreeCellRenderer {
 		archerIcon = new ImageIcon(
 				ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
 				ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.archer.normal")); //$NON-NLS-1$
+		archerHandicapIcon = new ImageIcon(
+				ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
+				ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.archer.handicap")); //$NON-NLS-1$
 		cibleIcon = new ImageIcon(
 				ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
-				ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.target"));
+				ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.target")); //$NON-NLS-1$
 		disableIcon = new ImageIcon(
 				ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
-				ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.disable"));
+				ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.disable")); //$NON-NLS-1$
 	}
 
 	/**
@@ -66,7 +70,11 @@ public class CibleRenderer extends DefaultTreeCellRenderer {
 		if (isCible(value)) {
 			setIcon(cibleIcon);
 		} else if(value instanceof Concurrent) {
-			setIcon(archerIcon);
+			Concurrent concurrent = (Concurrent) value;
+			if(concurrent.isHandicape())
+				setIcon(archerHandicapIcon);
+			else
+				setIcon(archerIcon);
 		} else if (value instanceof TargetPosition) {
 			TargetPosition targetPosition = (TargetPosition) value;
 			if(pasDeTir.getTargets().get(targetPosition.getTarget() - 1).isReservedPosition(targetPosition.getPosition()))
