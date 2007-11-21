@@ -28,7 +28,7 @@ import java.util.ArrayList;
  * @author  Aurelien Jeoffray
  * @version  3.0
  */
-public class Concurrent extends Archer {
+public class Concurrent extends Archer implements Cloneable {
 	/**
 	 * Statut de l'archer: réservé
 	 */
@@ -237,7 +237,7 @@ public class Concurrent extends Archer {
 			getPrenomArcher() + " (" + //$NON-NLS-1$
 			getClub() +
 			")</font></html>"; //$NON-NLS-1$
-		return ((this.cible < 10) ? "0" : "") + this.cible + "" + (char)('A' + this.position) + ": " + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		return new TargetPosition(cible, position).toString() + ": " + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		getNomArcher() + " " + //$NON-NLS-1$
 		getPrenomArcher() + " (" + //$NON-NLS-1$
 		getClub() + ")"; //$NON-NLS-1$
@@ -356,5 +356,15 @@ public class Concurrent extends Archer {
 			try { if(stmt != null) stmt.close(); } catch(Exception e) { }
 		}
 		return concurrents;
+	}
+	
+	@Override
+	public Concurrent clone() {
+		try {
+			return (Concurrent)super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+			return this;
+		}
 	}
 }

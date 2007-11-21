@@ -1,10 +1,17 @@
 package org.concoursjeunes.ui;
 
-import java.awt.*;
-import javax.swing.*;
-import javax.swing.tree.*;
+import java.awt.Component;
+import java.io.File;
+
+import javax.swing.ImageIcon;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultTreeCellRenderer;
 
 import org.concoursjeunes.Cible;
+import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.Concurrent;
+import org.concoursjeunes.PasDeTir;
+import org.concoursjeunes.TargetPosition;
 
 /**
  * Affecte les icone à l'arbre des cibles
@@ -17,6 +24,9 @@ import org.concoursjeunes.Cible;
 public class CibleRenderer extends DefaultTreeCellRenderer {
 	private ImageIcon archerIcon;
 	private ImageIcon cibleIcon;
+	private ImageIcon disableIcon;
+	
+	private PasDeTir pasDeTir;
 
 	/**
 	 * Constructeur, initialise les icone à afficher
@@ -24,9 +34,18 @@ public class CibleRenderer extends DefaultTreeCellRenderer {
 	 * @param archerIcon - Icone de representation des archers
 	 * @param cibleIcon - Icone de representation des cibles
 	 */
-	public CibleRenderer(ImageIcon archerIcon, ImageIcon cibleIcon) {
-		this.archerIcon = archerIcon;
-		this.cibleIcon = cibleIcon;
+	public CibleRenderer(PasDeTir pasDeTir) {
+		this.pasDeTir = pasDeTir;
+		
+		archerIcon = new ImageIcon(
+				ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
+				ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.archer.normal")); //$NON-NLS-1$
+		cibleIcon = new ImageIcon(
+				ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
+				ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.target"));
+		disableIcon = new ImageIcon(
+				ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
+				ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.disable"));
 	}
 
 	/**
@@ -45,9 +64,15 @@ public class CibleRenderer extends DefaultTreeCellRenderer {
 	public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
 		super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
 		if (isCible(value)) {
-			setIcon(this.cibleIcon);
-		} else {
-			setIcon(this.archerIcon);
+			setIcon(cibleIcon);
+		} else if(value instanceof Concurrent) {
+			setIcon(archerIcon);
+		} else if (value instanceof TargetPosition) {
+			TargetPosition targetPosition = (TargetPosition) value;
+			if(pasDeTir.getTargets().get(targetPosition.getTarget() - 1).isReservedPosition(targetPosition.getPosition()))
+				setIcon(disableIcon);
+			else
+				setIcon(archerIcon);
 		}
 		return this;
 	}

@@ -66,6 +66,8 @@ import ajinteractive.standard.ui.MenuBarTools;
 import ajinteractive.standard.utilities.io.FileUtil;
 
 /**
+ * TODO Afficher status bar avec nb archers enregistre, place restante
+ * 
  * @author Aurélien JEOFFRAY
  */
 public class ConcoursJeunesFrame extends JFrame implements ActionListener, HyperlinkListener, ConcoursJeunesListener, ParametreListener, AJTabbedPaneListener, ChangeListener {
@@ -316,6 +318,8 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			if (!configuration.getCurProfil().equals(ConcoursJeunes.configuration.getCurProfil())) {
 				try {
 					concoursJeunes.closeAllFichesConcours();
+					
+					ConcoursJeunes.configuration.save();
 				} catch (ConfigurationException e1) {
 					JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
 							e1.fillInStackTrace());

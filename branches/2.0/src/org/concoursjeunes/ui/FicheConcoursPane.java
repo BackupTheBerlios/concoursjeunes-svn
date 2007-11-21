@@ -257,7 +257,6 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	public void openConcurrentDialog(Concurrent concurrent) {
 		if(concurrent != null) {
 			int codeRetour = concDialog.showConcurrentDialog(concurrent);
-
 			if(codeRetour == ConcurrentDialog.CONFIRM_AND_NEXT 
 					|| codeRetour == ConcurrentDialog.CONFIRM_AND_PREVIOUS) {
 				
