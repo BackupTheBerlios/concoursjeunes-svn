@@ -378,10 +378,10 @@ public class Cible {
 					
 					return;
 				}
-				if(isReservedPosition(position))
-					throw new PlacementException(PlacementException.Nature.POSITION_RESERVED_FOR_HANDICAP);
 				throw new PlacementException(PlacementException.Nature.BAD_DISTANCESANDBLASONS);
 			} else {
+				if(isReservedPosition(position))
+					throw new PlacementException(PlacementException.Nature.POSITION_RESERVED_FOR_HANDICAP);
 				throw new PlacementException(PlacementException.Nature.ANY_AVAILABLE_POSITION);
 			}
 		}
@@ -464,7 +464,7 @@ public class Cible {
 	@Override
 	public String toString() {
 		String strCouleur = "<font color=\"#00AA00\">"; //$NON-NLS-1$
-		if (concours.getParametre().getNbTireur() == nbArcher)
+		if (concours.getParametre().getNbTireur() == nbArcher + nbHandicap)
 			strCouleur = "<font color=\"#0000FF\">"; //$NON-NLS-1$
 		String strCibleLibelle = "<html>" + strCouleur + "<b>" + ConcoursJeunes.ajrLibelle.getResourceString("treenode.cible") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				+ ((this.numCible < 10) ? "0" : "") //$NON-NLS-1$ //$NON-NLS-2$
@@ -482,7 +482,7 @@ public class Cible {
 			strCibleLibelle += ", " + db.getBlason() + "cm"; //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
-		strCibleLibelle += ") (" + this.nbArcher + "/" + concours.getParametre().getNbTireur() + ")</font>"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		strCibleLibelle += ") (" + this.nbArcher + "/" + (concours.getParametre().getNbTireur() - nbHandicap) + ")</font>"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 		Hashtable<Entite, Integer> nbArcherByClub = new Hashtable<Entite, Integer>();
 		for (Concurrent concurrent : concurrents) {

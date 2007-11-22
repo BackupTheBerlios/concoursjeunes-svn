@@ -820,7 +820,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 				
 				DistancesEtBlason db2 = DistancesEtBlason.getDistancesEtBlasonForConcurrent(ficheConcours.getParametre().getReglement(), tempConcurrent);
 				
-				if(!db1.equals(db2)) {
+				if(db1 != null && !db1.equals(db2)) {
 					ficheConcours.getPasDeTir(tempConcurrent.getDepart()).retraitConcurrent(tempConcurrent);
 				}
 			} else {

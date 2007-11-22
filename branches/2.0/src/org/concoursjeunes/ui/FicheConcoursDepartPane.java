@@ -425,13 +425,34 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 		}
 
 		if (cible == null) {
-			JOptionPane.showMessageDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur.noplacement"), //$NON-NLS-1$
+			JOptionPane.showMessageDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur.noplacement.notarget"), //$NON-NLS-1$
 					ConcoursJeunes.ajrLibelle.getResourceString("erreur.noplacement.titre"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 		} else {
 			try {
 				ficheConcours.getPasDeTir(depart).placementConcurrent(concurrent, cible, position);
 			} catch (PlacementException e) {
-				JOptionPane.showMessageDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur.noplacement"), //$NON-NLS-1$
+				String message;
+				switch (e.getNature()) {
+					case ANY_AVAILABLE_POSITION:
+						message = ConcoursJeunes.ajrLibelle.getResourceString("erreur.noplacement.anyplace"); //$NON-NLS-1$
+						break;
+					case BAD_DISTANCESANDBLASONS:
+						message = ConcoursJeunes.ajrLibelle.getResourceString("erreur.noplacement.baddistance"); //$NON-NLS-1$
+						break;
+					case NULL_CONCURRENT:
+						message = ConcoursJeunes.ajrLibelle.getResourceString("erreur.noplacement.nullconcurrent"); //$NON-NLS-1$
+						break;
+					case POSITION_AVAILABLE_FOR_VALID_CONCURRENT:
+						message = ConcoursJeunes.ajrLibelle.getResourceString("erreur.noplacement.handicap"); //$NON-NLS-1$
+						break;
+					case POSITION_RESERVED_FOR_HANDICAP:
+						message = ConcoursJeunes.ajrLibelle.getResourceString("erreur.noplacement.reserved"); //$NON-NLS-1$
+						break;
+					default:
+						message = ConcoursJeunes.ajrLibelle.getResourceString("erreur.noplacement.unknown"); //$NON-NLS-1$
+						break;
+				}
+				JOptionPane.showMessageDialog(null, message,
 						ConcoursJeunes.ajrLibelle.getResourceString("erreur.noplacement.titre"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 				//e.printStackTrace();
 			}
