@@ -1,4 +1,5 @@
-
+!define JRE_MAJOR "1"
+!define JRE_MINOR "6"
 !define JRE_VERSION "1.6"
 !define JRE_URL "http://javadl.sun.com/webapps/download/AutoDL?BundleId=12798"
 
@@ -26,11 +27,16 @@ FunctionEnd
  
  
 Function DetectJRE
-  ReadRegStr $2 HKLM "SOFTWARE\JavaSoft\Java Runtime Environment" \
+	ReadRegStr $2 HKLM "SOFTWARE\JavaSoft\Java Runtime Environment" \
              "CurrentVersion"
-  StrCmp $2 ${JRE_VERSION} done
-  
-  Call GetJRE
+             
+      StrCpy $4 $3 1 0
+      IntCmp $4 ${JRE_MAJOR} +1 goNext done
+      StrCpy $4 $3 1 2
+      IntCmp $4 ${JRE_MINOR} done goNext done
+
+  goNext:
+	Call GetJRE
   
   done:
 FunctionEnd
