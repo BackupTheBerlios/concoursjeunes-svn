@@ -35,6 +35,8 @@ SetCompressor lzma
 # Included files
 !include Sections.nsh
 !include MUI.nsh
+!include dotnet.nsh
+!include java.nsh
 
 # Reserved Files
 !insertmacro MUI_RESERVEFILE_LANGDLL
@@ -100,7 +102,11 @@ Section "Base" SEC0000
     File windows\concoursjeunes-applyupdate.exe.manifest
     File windows\concoursjeunes-startup.exe
     File windows\concoursjeunes-startup.exe.manifest
+    File windows\concoursjeunes-startup.exe.config
     WriteRegStr HKLM "${REGKEY}\Components" Base 1
+    
+    Call DetectDotNet
+    Call DetectJRE
 SectionEnd
 
 Section "Import Result'Arc" SEC0001
@@ -175,7 +181,7 @@ Section /o un.Base UNSEC0000
     DeleteRegValue HKLM "${REGKEY}\Components" Base
 SectionEnd
 
-Section /o "un.Import Reslut'Arc" UNSEC0001
+Section /o "un.Import Result'Arc" UNSEC0001
     RmDir /r /REBOOTOK $INSTDIR\plugins\FFTAImport
     DeleteRegValue HKLM "${REGKEY}\Components" "Import Result'Arc"
 SectionEnd
