@@ -559,9 +559,10 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	 * @param depart -
 	 *            le depart affecté au concurrent
 	 */
-	public int showNewConcurrentDialog() {
+	public int showNewConcurrentDialog(int depart) {
 
 		Concurrent concurrent = new Concurrent();
+		concurrent.setDepart(depart);
 
 		AutoCompleteDocument acdNom = new AutoCompleteDocument(jtfNom, AutoCompleteDocument.SearchType.NAME_SEARCH, ficheConcours.getParametre().getReglement());
 		acdNom.addAutoCompleteDocumentListener(this);
@@ -870,10 +871,17 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			
 			concurrent.setCriteriaSet(tempConcurrent.getCriteriaSet());
 			concurrent.setHandicape(tempConcurrent.isHandicape());
-
-			concurrent.setDix(Integer.parseInt(tfpd10.getText()));
-			concurrent.setNeuf(Integer.parseInt(tfpdNeuf.getText()));
-			concurrent.setManque(Integer.parseInt(tfpdM.getText()));
+			try {
+				concurrent.setDix(Integer.parseInt(tfpd10.getText()));
+				concurrent.setNeuf(Integer.parseInt(tfpdNeuf.getText()));
+				concurrent.setManque(Integer.parseInt(tfpdM.getText()));
+			} catch (NumberFormatException e) {
+				JOptionPane.showMessageDialog(this, 
+						"Un champs ne possède pas de valeur, vérifiez votre saisie.",
+						"Erreur de saisie", 
+						JOptionPane.ERROR_MESSAGE);
+				return;
+			}
 			concurrent.setNomArcher(jtfNom.getText());
 			concurrent.setPrenomArcher(jtfPrenom.getText());
 			concurrent.setNumLicenceArcher(jtfLicence.getText());

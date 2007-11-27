@@ -353,7 +353,7 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 	private void showAddConcurrentDialog() {
 		int codeRetour = 0;
 		do {
-			codeRetour = ficheConcoursPane.concDialog.showNewConcurrentDialog();
+			codeRetour = ficheConcoursPane.concDialog.showNewConcurrentDialog(ficheConcours.getCurrentDepart());
 			if (codeRetour != ConcurrentDialog.CANCEL && !ficheConcoursPane.concDialog.getConcurrent().getNomArcher().equals("")) { //$NON-NLS-1$
 
 				ficheConcours.addConcurrent(ficheConcoursPane.concDialog.getConcurrent(), depart);
@@ -367,12 +367,13 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 	private void removeSelectedConcurrent() {
 
 		Concurrent removedConcurrent = (Concurrent) ajlConcurrent.getSelectedValue();
-
-		if (JOptionPane.showConfirmDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("confirmation.suppression"), //$NON-NLS-1$
-				ConcoursJeunes.ajrLibelle.getResourceString("confirmation.suppression.titre"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.NO_OPTION) //$NON-NLS-1$
-			return;
-
-		ficheConcours.removeConcurrent(removedConcurrent);
+		if(removedConcurrent != null) {
+			if (JOptionPane.showConfirmDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("confirmation.suppression"), //$NON-NLS-1$
+					ConcoursJeunes.ajrLibelle.getResourceString("confirmation.suppression.titre"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.NO_OPTION) //$NON-NLS-1$
+				return;
+	
+			ficheConcours.removeConcurrent(removedConcurrent);
+		}
 	}
 
 	/**

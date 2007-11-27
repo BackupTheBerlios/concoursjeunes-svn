@@ -5,6 +5,7 @@
 !define DOT_MINOR 0
 !define BASE_URL http://download.microsoft.com/download
 !define URL_DOTNET "${BASE_URL}/5/6/7/567758a3-759e-473e-bf8f-52154438565a/dotnetfx.exe"
+!define PRODUCT_NAME "Microsoft Framwork .Net 2.0"
 
 Function GetDotNet
     IfFileExists "dotnetfx.exe" lbl_NoDownloadRequired lbl_DownloadRequired
@@ -14,11 +15,11 @@ Function GetDotNet
       GoTo done
 	
     lbl_DownloadRequired:
-	MessageBox MB_OK "${PRODUCT_NAME} uses Framework .Net ${DOT_MAJOR}.${DOT_MINOR}, it will now \
+	MessageBox MB_OK "$(^Name) uses Framework .Net ${DOT_MAJOR}.${DOT_MINOR}, it will now \
                          be downloaded and installed"
  
 	StrCpy $2 "$TEMP\dotnetfx.exe"
-	nsisdl::download /TIMEOUT=30000 ${JRE_URL} $2
+	nsisdl::download /TIMEOUT=30000 ${URL_DOTNET} $2
 	Pop $R0 ;Get the return value
 	StrCmp $R0 "success" +3
 	MessageBox MB_OK "Download failed: $R0"

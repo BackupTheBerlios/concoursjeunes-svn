@@ -101,6 +101,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		JPanel northpane = new JPanel();
 		JPanel northpaneEqu = new JPanel();
 		JPanel northpaneClub = new JPanel();
+		//JPanel statusbar = new JPanel();
 
 		//met la fiche de classement au format html
 		jepClassIndiv.setEditorKit(new HTMLEditorKit());
@@ -199,11 +200,18 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 				ficheE);
 		tabbedpane.addTab("onglet.classementclub",new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$ //$NON-NLS-2$ 
 				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.team")), //$NON-NLS-1$
-				ficheC); 
+				ficheC);
+		
+		//JXStatusBar statusbar = new JXStatusBar();
+		//statusbar.add(new JLabel("Nombre de concurrents inscrit: " + ficheConcours.getConcurrentList().countArcher()));
+		//statusbar.add(new JSeparator(SwingConstants.VERTICAL));
+		//JXBusyLabel label = new JXBusyLabel();
+		//statusbar.add(new JLabel("Place disponible: " + 0));
 
 		//integration
 		setLayout(new BorderLayout());
 		add(tabbedpane, BorderLayout.CENTER);
+		//add(statusbar, BorderLayout.SOUTH);
 
 		affectLibelle();
 	}

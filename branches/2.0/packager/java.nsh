@@ -1,6 +1,5 @@
 !define JRE_MAJOR "1"
 !define JRE_MINOR "6"
-!define JRE_VERSION "1.6"
 !define JRE_URL "http://javadl.sun.com/webapps/download/AutoDL?BundleId=12798"
 
 Function GetJRE
@@ -11,7 +10,7 @@ Function GetJRE
       GoTo done
 	
     lbl_DownloadRequired:
-	MessageBox MB_OK "${PRODUCT_NAME} uses Java ${JRE_VERSION}, it will now \
+	MessageBox MB_OK "$(^Name) uses Java ${JRE_MAJOR}.${JRE_MINOR}, it will now \
                          be downloaded and installed"
  
 	StrCpy $2 "$TEMP\jre-6u3-windows-i586-p-s.exe"
@@ -27,12 +26,11 @@ FunctionEnd
  
  
 Function DetectJRE
-	ReadRegStr $2 HKLM "SOFTWARE\JavaSoft\Java Runtime Environment" \
-             "CurrentVersion"
+	ReadRegStr $2 HKLM "SOFTWARE\JavaSoft\Java Runtime Environment" "CurrentVersion"
              
-      StrCpy $4 $3 1 0
+      StrCpy $4 $2 1 0
       IntCmp $4 ${JRE_MAJOR} +1 goNext done
-      StrCpy $4 $3 1 2
+      StrCpy $4 $2 1 2
       IntCmp $4 ${JRE_MINOR} done goNext done
 
   goNext:

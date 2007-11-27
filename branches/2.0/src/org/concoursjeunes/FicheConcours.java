@@ -988,7 +988,8 @@ public class FicheConcours implements ParametreListener {
 				}
 			}
 			makePasDeTir();
-		}
+		} else if(parametreEvent.getParametre().getNbDepart() != pasDeTir.size())
+			makePasDeTir();
 	}
 
 	private void fireConcurrentAdded(Concurrent concurrent) {
