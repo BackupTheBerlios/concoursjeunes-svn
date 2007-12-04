@@ -978,6 +978,7 @@ public class FicheConcours implements ParametreListener {
 		assert pasDeTir.size() > 0 : "Il doit exister au moins un pas de tir"; //$NON-NLS-1$
 
 		if (parametreEvent.getParametre().getNbCible() != pasDeTir.get(0).getTargets().size() || parametreEvent.getParametre().getNbTireur() != pasDeTir.get(0).getTargets().get(0).getNbMaxArchers()) {
+			makePasDeTir();
 			if (parametreEvent.getParametre().getNbCible() < pasDeTir.get(0).getTargets().size()) {
 				for (int i = 0; i < parametre.getNbDepart(); i++) {
 					for (int j = parametreEvent.getParametre().getNbCible(); j < pasDeTir.get(i).getTargets().size(); j++) {
@@ -987,7 +988,6 @@ public class FicheConcours implements ParametreListener {
 					}
 				}
 			}
-			makePasDeTir();
 		} else if(parametreEvent.getParametre().getNbDepart() != pasDeTir.size())
 			makePasDeTir();
 	}
