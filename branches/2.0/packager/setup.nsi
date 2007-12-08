@@ -77,12 +77,12 @@ VIAddVersionKey /LANG=${LANG_FRENCH} LegalCopyright "(c) 2007 Concoursjeunes.org
 InstallDirRegKey HKLM "${REGKEY}" Path
 ShowUninstDetails show
 
+InstType "Normal"
 InstType "Complete"
-#InstType "normal"
 
 # Installer sections
 Section "Base" SEC0000
-    SectionIn RO 1
+    SectionIn RO 1 2
     SetOverwrite on
     SetOutPath $INSTDIR\config
     File /r config\*
@@ -110,7 +110,7 @@ Section "Base" SEC0000
 SectionEnd
 
 Section "Import Result'Arc" SEC0001
-    SectionIn 1
+    SectionIn 1 2
     SetOverwrite on
     SetOutPath $INSTDIR
     File /r plugins\FFTAImport\*
@@ -119,7 +119,7 @@ Section "Import Result'Arc" SEC0001
 SectionEnd
 
 Section "Icone de Bureau" SEC0002
-    SectionIn 1
+    SectionIn 1 2
     SetOverwrite on
 
     !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
@@ -131,6 +131,7 @@ Section "Icone de Bureau" SEC0002
 SectionEnd
 
 Section "Option de Debugage" SEC0003
+	SectionIn 2
     SetOverwrite on
 
     !insertmacro MUI_STARTMENU_WRITE_BEGIN Application

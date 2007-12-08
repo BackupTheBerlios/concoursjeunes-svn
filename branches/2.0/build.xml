@@ -134,9 +134,9 @@
 				classname="ajinteractive.standard.utilities.updater.RevisionsCreator" />
 
 		<revisionscreator 
-				hashfilepath="${projet.pack.dir}/hash.xml.gz">
-				<!--revisionpath="${projet.pack.dir}/revision.xml.gz"
-				changelog="packager/changelog.txt"-->
+				hashfilepath="${projet.pack.dir}/hash.xml.gz"
+				revisionpath="${projet.pack.dir}/revision.xml.gz"
+				changelog="packager/changelog">
 			<fileset dir="${projet.pack.dir}">
 				<include name="config/**"/>
 				<include name="lang/**"/>

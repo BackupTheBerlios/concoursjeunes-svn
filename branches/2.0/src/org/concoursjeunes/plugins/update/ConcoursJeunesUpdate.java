@@ -113,10 +113,8 @@ import org.concoursjeunes.plugins.PluginMetadata;
 
 import ajinteractive.standard.common.AJToolKit;
 import ajinteractive.standard.common.AjResourcesReader;
-import ajinteractive.standard.utilities.updater.AjUpdater;
-import ajinteractive.standard.utilities.updater.AjUpdaterEvent;
-import ajinteractive.standard.utilities.updater.AjUpdaterListener;
-import ajinteractive.standard.utilities.updater.UpdateException;
+import ajinteractive.standard.utilities.app.AppSerializer;
+import ajinteractive.standard.utilities.updater.*;
 
 @Plugin(type = Plugin.Type.STARTUP)
 public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, MouseListener {
@@ -158,12 +156,15 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 	public void run() {
 
 		PluginLoader pl = new PluginLoader();
+		AppSerializer appSerializer = new AppSerializer(ConcoursJeunes.userRessources);
 
 		ajUpdater = new AjUpdater(ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
 				"."); //$NON-NLS-1$
 		ajUpdater.addAjUpdaterListener(this);
 		ajUpdater.setUserAgent(ConcoursJeunes.NOM + " " + ConcoursJeunes.VERSION //$NON-NLS-1$
-				+ " (" + ConcoursJeunes.configuration.getClub().getAgrement() + " " + ConcoursJeunes.configuration.getClub().getNom() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				+ " (" + appSerializer.getSerial() + ";" + ConcoursJeunes.configuration.getClub().getAgrement() + " " + ConcoursJeunes.configuration.getClub().getNom() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		System.out.println(ConcoursJeunes.NOM + " " + ConcoursJeunes.VERSION //$NON-NLS-1$
+				+ " (" + appSerializer.getSerial() + ";" + ConcoursJeunes.configuration.getClub().getAgrement() + " " + ConcoursJeunes.configuration.getClub().getNom() + ")");
 		ajUpdater.addRepositoryURL(pluginRessources.getResourceString("url.reference")); //$NON-NLS-1$
 		for (PluginMetadata pm : pl.getPlugins(PluginMetadata.ALL)) {
 			ajUpdater.addRepositoryURL(pm.getReposURL());
@@ -216,11 +217,16 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 			if (trayIcon != null) {
 				trayIcon.displayMessage(pluginLocalisation.getResourceString("update.available.title"), pluginLocalisation.getResourceString("update.available", strSize), TrayIcon.MessageType.INFO); //$NON-NLS-1$ //$NON-NLS-2$
 			} else {
-				int confirm = JOptionPane.showConfirmDialog(null,
+				AjUpdaterFrame ajUpdaterFrame = new AjUpdaterFrame(ajUpdater, ConcoursJeunes.VERSION);
+				
+				if(ajUpdaterFrame.showAjUpdaterFrame() == AjUpdaterFrame.ReturnCode.OK) {
+					ajUpdater.downloadFiles(updateFiles);
+				}
+				/*int confirm = JOptionPane.showConfirmDialog(null,
 						pluginLocalisation.getResourceString("update.available", strSize), pluginLocalisation.getResourceString("update.available.title"), JOptionPane.YES_NO_OPTION); //$NON-NLS-1$ //$NON-NLS-2$
 				if (confirm == JOptionPane.YES_OPTION) {
 					ajUpdater.downloadFiles(updateFiles);
-				}
+				}*/
 			}
 			currentStatus = Status.AVAILABLE;
 			break;
@@ -231,7 +237,7 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 			break;
 		case FILE_ERROR:
 			if (trayIcon != null) {
-				trayIcon.displayMessage(pluginLocalisation.getResourceString("update.downloaderror.title"), pluginLocalisation.getResourceString("update.downloaderror.title"), //$NON-NLS-1$ //$NON-NLS-2$
+				trayIcon.displayMessage(pluginLocalisation.getResourceString("update.downloaderror.title"), pluginLocalisation.getResourceString("update.downloaderror"), //$NON-NLS-1$ //$NON-NLS-2$
 						TrayIcon.MessageType.ERROR);
 			}
 			break;
@@ -272,8 +278,9 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 	public void mouseClicked(MouseEvent e) {
 		if (e.getSource() == trayIcon) {
 			if (currentStatus == Status.AVAILABLE) {
-				if (JOptionPane.showConfirmDialog(null, pluginLocalisation.getResourceString("update.confirmdownload"), pluginLocalisation.getResourceString("update.confirmdownload.title"), //$NON-NLS-1$ //$NON-NLS-2$
-						JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+				AjUpdaterFrame ajUpdaterFrame = new AjUpdaterFrame(ajUpdater, ConcoursJeunes.VERSION);
+				
+				if(ajUpdaterFrame.showAjUpdaterFrame() == AjUpdaterFrame.ReturnCode.OK) {
 					ajUpdater.downloadFiles(updateFiles);
 				}
 			}
