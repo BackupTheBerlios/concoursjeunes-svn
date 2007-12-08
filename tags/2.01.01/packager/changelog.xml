@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<java version="1.6.0_03" class="java.beans.XMLDecoder"> 
+ <object class="java.util.ArrayList"> 
+  <void method="add"> 
+   <object class="ajinteractive.standard.utilities.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurelien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction problème de sauvegarde de profil sur changement de celui-ci
+  * Correction problème sur changement de categorie de placement d&apos;un archer
+  * Correction problème création concours multi-depart
+  * Correction problème ajout concurrent en multi-depart
+  * Correction erreur sur pression du bouton &quot;Arbitre responsable&quot; ou &quot;Suppression arbitre&quot; sans séléction au prealable
+  * Correction erreur sur valeur non numérique sur les 10/9/M
+  * Support des archers handicapé
+  * Amélioration des fonctionnalitées et des performances du système de mise à jour
+  * Légère Amélioration de la qualité graphique de l&apos;interface
+  * Message d&apos;erreur plus explicit en cas de nom placement d&apos;un archer
+  * Windows: Installation automatique du Framwork .net et de java en cas d&apos;absence sur le système</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1196192299027</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.01.00</string> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="add"> 
+   <object class="ajinteractive.standard.utilities.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurelien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction problème création concours multi-depart avec nombre de cible different de la valeur par défaut</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1196878670010</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.01.01</string> 
+    </void> 
+   </object> 
+  </void> 
+ </object> 
+</java> 

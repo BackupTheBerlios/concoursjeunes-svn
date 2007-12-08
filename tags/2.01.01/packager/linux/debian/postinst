@@ -1,0 +1,4 @@
+#!/bin/sh
+
+chmod -R a+Xrw /var/lib/ConcoursJeunes
+chmod 700 /usr/sbin/concoursjeunes-applyupdate

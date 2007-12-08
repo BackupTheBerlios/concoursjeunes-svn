@@ -1,0 +1,77 @@
+concoursjeunes (2.00.01-1) stable; urgency=low
+
+  * Correction erreur de libellé
+  * Correction problème dans les critères de clasement
+  * Ajout d'un message d'erreur explicite en cas d'absence de score pour un concurrent
+  * Légère modification du comportement à la création d'équipe (doit encore être retravaillé pour des question ergonomique)
+  
+ -- Aurelien JEOFFRAY <aurelien.jeoffray@gmail.com>  Mon, 17 Nov 2007 12:17:00 +0100
+
+concoursjeunes (2.00.01-1) stable; urgency=low
+
+  * Correction bugs divers
+  
+ -- Aurelien JEOFFRAY <aurelien.jeoffray@gmail.com>  Mon, 14 Nov 2007 18:15:00 +0100
+
+concoursjeunes (2.00.00-1) stable; urgency=low
+
+  * Correction NullPointeurException sur insertion club sans nom de ville
+  * Correction probléme d'arret de l'application
+  * Correction Type Entite
+  * Ajout bouton de choix de club dans la configuration
+  * Passage en version final
+  
+ -- Aurelien JEOFFRAY <aurelien.jeoffray@gmail.com>  Mon, 09 Nov 2007 23:50:00 +0100
+
+concoursjeunes (1.99.03-1) unstable; urgency=low
+
+  * Correction de libellés
+  * Correction comportement en cas de base déjà utilisé
+  * Correction problème de mode de débugage
+  * Correction ConcurentModificationException sur la validation des équipes
+
+ -- Aurelien JEOFFRAY <aurelien.jeoffray@gmail.com>  Mon, 05 Nov 2007 17:00:00 +0100
+
+concoursjeunes (1.99.02-1) unstable; urgency=low
+
+  * Correction d'un problème de gestion de réglement
+  * Ajout d'un parametrage de réglement par défaut pour simplifier la tache de création
+  * Ajout de categorie d'arc au différents reglement
+
+ -- Aurelien JEOFFRAY <aurelien.jeoffray@gmail.com>  Sat, 21 Oct 2007 14:35:00 +0200
+ 
+concoursjeunes (1.99.0-1) unstable; urgency=low
+
+  * Redemarrage automatique de l'application en cas de mise à jour
+  * Correction de la gestion archers avec un affinement des controle Nom/licence
+  * Amélioration du système de mise à jour de la base de donnée avec verification fine de l'état
+  * Correction problème de renomage de profil
+
+ -- Aurelien JEOFFRAY <aurelien.jeoffray@gmail.com>  Sat, 21 Oct 2007 14:35:00 +0200
+
+concoursjeunes (1.98.0-1) unstable; urgency=low
+
+  * Réduction de la consommation mémoire
+  * Amélioration de la vitesse d'ouverture d'un concours
+  * Correction problèmes dans les réglement
+  * Correction bug dans la gestion des équipes
+  * Correction de divers problèmes dans l'interface
+
+ -- Aurelien JEOFFRAY <aurelien.jeoffray@gmail.com>  Sat, 19 Sep 2007 21:34:00 +0200
+
+concoursjeunes (1.95.0-1) unstable; urgency=low
+
+  * Intégration d'une base de donnée permettant une gestion des archers plus rapide
+  * Ajout séléction des archers par auto-complément
+  * Ajout gestion multi-départ
+  * Modification de la gestion des réglements
+  * Placement des archers plus fluide
+  * Ajout d'un page d'accueil pour la selection des concours
+  * Ouverture des fiches concours sous forme d'onglet
+  * Réecriture complète de la gestion des équipes
+  * Réecriture de la gestion des étiquettes 
+  * Fonctionnalité d'import/export sous forme de Plugin permettant de faire évoluer ces fonction indépendament de ConcoursJeunes
+  * Réécriture de l'API pour plus de fiablilité
+
+ -- Aurelien JEOFFRAY <aurelien.jeoffray@gmail.com>  Sat, 26 Aug 2007 14:54:03 +0200
+

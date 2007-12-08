@@ -1,0 +1,22 @@
+concoursjeunes (2.01.01) stable; urgency=low
+
+  * Correction problème création concours multi-depart avec nombre de cible different de la valeur par défaut
+
+ -- Aurelien JEOFFRAY <aurelien.jeoffray@gmail.com>  Wed, 5 Dec 2007 07:20:31 +0100
+
+concoursjeunes (2.01.00) stable; urgency=low
+
+  * Correction problème de sauvegarde de profil sur changement de celui-ci
+  * Correction problème sur changement de categorie de placement d'un archer
+  * Correction problème création concours multi-depart
+  * Correction problème ajout concurrent en multi-depart
+  * Correction erreur sur pression du bouton "Arbitre responsable" ou "Suppression arbitre" sans séléction au prealable
+  * Correction erreur sur valeur non numérique sur les 10/9/M
+  * Support des archers handicapé
+  * Amélioration des fonctionnalitées et des performances du système de mise à jour
+  * Légère Amélioration de la qualité graphique de l'interface
+  * Message d'erreur plus explicit en cas de nom placement d'un archer
+  * Windows: Installation automatique du Framwork .net et de java en cas d'absence sur le système
+
+ -- Aurelien JEOFFRAY <aurelien.jeoffray@gmail.com>  Wed, 5 Dec 2007 07:20:31 +0100
+
