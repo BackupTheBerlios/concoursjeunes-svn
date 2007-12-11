@@ -644,7 +644,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		jcbProfil.setSelectedItem(configuration.getCurProfil());
 		jcbProfil.addActionListener(this);
 		
-		if(configuration.getCurProfil().equals("defaut")) //$NON-NLS-1$
+		if(configuration.getCurProfil().equals("defaut") || !configuration.getCurProfil().equals(ConcoursJeunes.configuration.getCurProfil())) //$NON-NLS-1$
 			jbRenameProfile.setEnabled(false);
 		else
 			jbRenameProfile.setEnabled(true);
