@@ -1,8 +1,14 @@
+concoursjeunes (2.01.02) stable; urgency=low
+
+  * Correction écrasement de profil sur renommage de profils
+
+ -- Aurelien JEOFFRAY <aurelien.jeoffray@gmail.com>  Wed, 12 Dec 2007 08:24:39 +0100
+
 concoursjeunes (2.01.01) stable; urgency=low
 
   * Correction problème création concours multi-depart avec nombre de cible different de la valeur par défaut
 
- -- Aurelien JEOFFRAY <aurelien.jeoffray@gmail.com>  Wed, 5 Dec 2007 07:20:31 +0100
+ -- Aurelien JEOFFRAY <aurelien.jeoffray@gmail.com>  Wed, 12 Dec 2007 08:24:39 +0100
 
 concoursjeunes (2.01.00) stable; urgency=low
 
@@ -18,5 +24,5 @@ concoursjeunes (2.01.00) stable; urgency=low
   * Message d'erreur plus explicit en cas de nom placement d'un archer
   * Windows: Installation automatique du Framwork .net et de java en cas d'absence sur le système
 
- -- Aurelien JEOFFRAY <aurelien.jeoffray@gmail.com>  Wed, 5 Dec 2007 07:20:31 +0100
+ -- Aurelien JEOFFRAY <aurelien.jeoffray@gmail.com>  Wed, 12 Dec 2007 08:24:39 +0100
 

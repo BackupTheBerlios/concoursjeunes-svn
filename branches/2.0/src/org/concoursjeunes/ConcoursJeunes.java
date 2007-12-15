@@ -151,7 +151,7 @@ import com.lowagie.text.pdf.PdfWriter;
 public class ConcoursJeunes {
 
 	// UID: 1.Major(2).Minor(2).Correctif(2).Build(3).Type(1,Alpha,Beta,RC(1->6),Release)
-	public static final long serialVersionUID = 10200030011l;
+	public static final long serialVersionUID = 10201020011l;
 
 	/**
 	 * Chaines de version de ConcoursJeunes
