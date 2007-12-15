@@ -92,10 +92,14 @@ import static org.concoursjeunes.ConcoursJeunes.ajrParametreAppli;
 import static org.concoursjeunes.ConcoursJeunes.userRessources;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 
+import javax.naming.ConfigurationException;
 import javax.xml.bind.JAXBException;
 
 import ajinteractive.standard.common.AJToolKit;
+import ajinteractive.standard.utilities.io.FileUtil;
 
 /**
  * Gére le chargement de la configuration du programme
@@ -185,5 +189,74 @@ public class ConfigurationManager {
 		}
 		
 		return configuration;
+	}
+	
+	public static boolean renameConfiguration(String currentName, String newName) 
+			throws ConfigurationException, IOException {
+		
+		boolean success = false;
+		ConcoursJeunes concoursJeunes = ConcoursJeunes.getInstance();
+		ArrayList<MetaDataFicheConcours> openedFichesConcours = new ArrayList<MetaDataFicheConcours>();
+		
+		if(ConcoursJeunes.configuration.getCurProfil().equals(currentName) && concoursJeunes.getFichesConcours().size() > 0) {
+			for(FicheConcours ficheConcours : concoursJeunes.getFichesConcours()) {
+				openedFichesConcours.add(ficheConcours.getMetaDataFicheConcours());
+			}
+			concoursJeunes.closeAllFichesConcours();
+		}
+		
+		//renome le fichier de configuration
+		File f = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + File.separator 
+				+ Configuration.CONFIG_PROFILE + currentName + Configuration.EXT_XML);
+		File fNew = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + File.separator 
+				+ Configuration.CONFIG_PROFILE + newName + Configuration.EXT_XML);
+		if(fNew.exists())
+			return false;
+		success = f.renameTo(fNew);
+		
+		//renome le dossier du profil
+		f = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + File.separator + "Profile" + File.separator + currentName); //$NON-NLS-1$
+		fNew = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + File.separator + "Profile" + File.separator + newName); //$NON-NLS-1$
+		
+		if(success && f.exists() && !f.renameTo(fNew)) {
+			try {
+				FileUtil.deleteFilesPath(fNew);
+				fNew.delete();
+				success = f.renameTo(fNew);
+			} catch (IOException e1) {
+				success = false;
+				e1.printStackTrace();
+			}
+			
+			if(!success) {
+				//si le renomage du dossier echoue (pouvant avoir pour seul cause
+				//une erreur système) revenir en arrière
+				f = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + File.separator 
+						+ Configuration.CONFIG_PROFILE + currentName + Configuration.EXT_XML);
+				fNew = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + File.separator 
+						+ Configuration.CONFIG_PROFILE + newName + Configuration.EXT_XML);
+				fNew.renameTo(f);
+			}
+		}
+		
+		Configuration configuration = null;
+		if(success) {
+			configuration = loadConfiguration(newName);
+			configuration.setCurProfil(newName);
+			configuration.save();
+		}
+		
+		if(ConcoursJeunes.configuration.getCurProfil().equals(currentName) && openedFichesConcours.size() > 0) {
+			if(success && configuration != null) {
+				ConcoursJeunes.configuration = configuration;
+				ConcoursJeunes.configuration.saveAsDefault();
+			}
+			
+			for(MetaDataFicheConcours metaDataFicheConcours : openedFichesConcours) {
+				concoursJeunes.restoreFicheConcours(metaDataFicheConcours);
+			}
+		}
+		
+		return success;
 	}
 }

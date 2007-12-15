@@ -63,7 +63,6 @@ import ajinteractive.standard.ui.AJTabbedPaneListener;
 import ajinteractive.standard.ui.FrameCreator;
 import ajinteractive.standard.ui.GhostGlassPane;
 import ajinteractive.standard.ui.MenuBarTools;
-import ajinteractive.standard.utilities.io.FileUtil;
 
 /**
  * TODO Afficher status bar avec nb archers enregistre, place restante
@@ -71,10 +70,6 @@ import ajinteractive.standard.utilities.io.FileUtil;
  * @author Aurélien JEOFFRAY
  */
 public class ConcoursJeunesFrame extends JFrame implements ActionListener, HyperlinkListener, ConcoursJeunesListener, ParametreListener, AJTabbedPaneListener, ChangeListener {
-	
-	private static final String CONFIG_PROFILE = "configuration_"; //$NON-NLS-1$
-	private static final String EXT_XML = ".xml"; //$NON-NLS-1$
-
 	private JMenuItem jmiParametres;
 	private JMenu jmReglements;
 	private JMenu jmImpression;
@@ -315,7 +310,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 
 		if (configuration != null) {
 			//si le nom du profile à changer tous fermer
-			if (!configuration.getCurProfil().equals(ConcoursJeunes.configuration.getCurProfil())) {
+			if (!configuration.getCurProfil().equals(ConcoursJeunes.configuration.getCurProfil()) && !configurationDialog.isRenamedProfile()) {
 				try {
 					concoursJeunes.closeAllFichesConcours();
 					
@@ -324,47 +319,6 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 					JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
 							e1.fillInStackTrace());
 					e1.printStackTrace();
-				}
-				//si le profil à simplement été renomé
-				if(configurationDialog.isRenamedProfile()) {
-					boolean success = false;
-					
-					//renome le fichier de configuration
-					File f = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + File.separator + CONFIG_PROFILE + ConcoursJeunes.configuration.getCurProfil() + EXT_XML);
-					File fNew = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + File.separator + CONFIG_PROFILE + configuration.getCurProfil() + EXT_XML);
-					success = f.renameTo(fNew);
-
-					//renome le dossier du profil
-					f = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + File.separator + "Profile" + File.separator + ConcoursJeunes.configuration.getCurProfil()); //$NON-NLS-1$
-					fNew = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + File.separator + "Profile" + File.separator + configuration.getCurProfil()); //$NON-NLS-1$
-					
-					if(success && !f.renameTo(fNew)) {
-						try {
-							FileUtil.deleteFilesPath(fNew);
-							fNew.delete();
-							success = f.renameTo(fNew);
-						} catch (IOException e1) {
-							success = false;
-							e1.printStackTrace();
-						}
-						
-						if(!success) {
-							//si le renomage du dossier echoue (pouvant avoir pour seul cause
-							//une erreur système) revenir en arrière
-							f = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + File.separator + CONFIG_PROFILE + ConcoursJeunes.configuration.getCurProfil() + EXT_XML);
-							fNew = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + File.separator + CONFIG_PROFILE + configuration.getCurProfil() + EXT_XML);
-							fNew.renameTo(f);
-						}
-					}
-					
-					if(!success) {
-						configuration.setCurProfil(ConcoursJeunes.configuration.getCurProfil());
-						
-						JOptionPane.showMessageDialog(this, 
-								ConcoursJeunes.ajrLibelle.getResourceString("configuration.profile.rename.fail"), //$NON-NLS-1$ 
-								ConcoursJeunes.ajrLibelle.getResourceString("configuration.profile.rename.fail.title"), //$NON-NLS-1$ 
-								JOptionPane.ERROR_MESSAGE);
-					}
 				}
 			}
 
@@ -715,35 +669,41 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			} else {
 				if (e.getURL().getHost().equals("open_concours")) { //$NON-NLS-1$
 					final String concref = e.getURL().getRef();
-					Thread launchFiche = new Thread() {
-						@Override
-						public void run() {
-							
-							try {
-								concoursJeunes.restoreFicheConcours(ConcoursJeunes.configuration.getMetaDataFichesConcours().get(Integer.parseInt(concref)));
-							} catch (NumberFormatException e) {
-								JXErrorDialog.showDialog(ConcoursJeunesFrame.this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
-										e.fillInStackTrace());
-								e.printStackTrace();
-							} catch (ConfigurationException e) {
-								JXErrorDialog.showDialog(ConcoursJeunesFrame.this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
-										e.fillInStackTrace());
-								e.printStackTrace();
-							} catch (IOException e) {
-								JXErrorDialog.showDialog(ConcoursJeunesFrame.this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
-										e.fillInStackTrace());
-								e.printStackTrace();
+					
+					final MetaDataFicheConcours metaDataFicheConcours = ConcoursJeunes.configuration.getMetaDataFichesConcours().get(Integer.parseInt(concref));
+					if(!concoursJeunes.isOpenFicheConcours(metaDataFicheConcours)) {
+						Thread launchFiche = new Thread() {
+							@Override
+							public void run() {
+								
+								try {
+									concoursJeunes.restoreFicheConcours(metaDataFicheConcours);
+								} catch (NumberFormatException e) {
+									JXErrorDialog.showDialog(ConcoursJeunesFrame.this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+											e.fillInStackTrace());
+									e.printStackTrace();
+								} catch (ConfigurationException e) {
+									JXErrorDialog.showDialog(ConcoursJeunesFrame.this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+											e.fillInStackTrace());
+									e.printStackTrace();
+								} catch (IOException e) {
+									JXErrorDialog.showDialog(ConcoursJeunesFrame.this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+											e.fillInStackTrace());
+									e.printStackTrace();
+								}
+								ConcoursJeunesFrame.this.setCursor(Cursor.getDefaultCursor());
+								//ConcoursJeunesFrame.this.jepHome.setCursor(Cursor.getDefaultCursor());
+								ConcoursJeunesFrame.this.jepHome.setEnabled(true);
 							}
-							ConcoursJeunesFrame.this.setCursor(Cursor.getDefaultCursor());
-							//ConcoursJeunesFrame.this.jepHome.setCursor(Cursor.getDefaultCursor());
-							ConcoursJeunesFrame.this.jepHome.setEnabled(true);
-						}
-					};
-					this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-					//this.jepHome.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-					this.jepHome.setEnabled(false);
-					Thread.yield();
-					launchFiche.start();
+						};
+						this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+						//this.jepHome.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+						this.jepHome.setEnabled(false);
+						Thread.yield();
+						launchFiche.start();
+					} else {
+						JOptionPane.showMessageDialog(this, "Le concours est déjà ouvert, vous ne pouvez pas l'ouvrir une seconde fois", "Concours déjà ouvert", JOptionPane.WARNING_MESSAGE);
+					}
 				} else if (e.getURL().getHost().equals("delete_concours")) { //$NON-NLS-1$
 					if (JOptionPane.showConfirmDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("confirmation.suppression.concours"), //$NON-NLS-1$
 							ConcoursJeunes.ajrLibelle.getResourceString("confirmation.suppression.concours.titre"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) { //$NON-NLS-1$

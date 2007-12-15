@@ -530,7 +530,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			}
 		}
 
-		jlValCible.setText(new TargetPosition(concurrent.getCible(), concurrent.getPosition()).toString()); //$NON-NLS-1$
+		jlValCible.setText(new TargetPosition(concurrent.getCible(), concurrent.getPosition()).toString());
 
 		ArrayList<Integer> score = concurrent.getScore();
 		if (score.size() > 0) {

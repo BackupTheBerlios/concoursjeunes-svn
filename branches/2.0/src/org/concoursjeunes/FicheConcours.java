@@ -696,7 +696,7 @@ public class FicheConcours implements ParametreListener {
 
 			listeArcherXML.parse("lignes.PAYEE", AJToolKit.tokenize(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.impression.inscription"), ",")[concurrent.getInscription()]); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			listeArcherXML.parse("lignes.CERTIFICAT", AJToolKit.tokenize(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.certificat"), ",")[concurrent.isCertificat() ? 0 : 1]); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			listeArcherXML.parse("lignes.CIBLE", new TargetPosition(concurrent.getCible(), concurrent.getPosition()).toString());
+			listeArcherXML.parse("lignes.CIBLE", new TargetPosition(concurrent.getCible(), concurrent.getPosition()).toString()); //$NON-NLS-1$
 
 			listeArcherXML.loopBloc("lignes"); //$NON-NLS-1$
 		}
@@ -778,7 +778,7 @@ public class FicheConcours implements ParametreListener {
 				templateEtiquettesXML.parse("page.ligne.colonne.cid", concurrent.getID()); //$NON-NLS-1$
 				templateEtiquettesXML.parse("page.ligne.colonne.cclub", concurrent.getClub().getNom()); //$NON-NLS-1$
 				templateEtiquettesXML.parse("page.ligne.colonne.clicence", concurrent.getNumLicenceArcher()); //$NON-NLS-1$
-				templateEtiquettesXML.parse("page.ligne.colonne.emplacement", new TargetPosition(concurrent.getCible(), concurrent.getPosition()).toString()); //$NON-NLS-1$ //$NON-NLS-2$
+				templateEtiquettesXML.parse("page.ligne.colonne.emplacement", new TargetPosition(concurrent.getCible(), concurrent.getPosition()).toString()); //$NON-NLS-1$
 				if (colonne + 1 == nblarg)
 					templateEtiquettesXML.parseBloc("page.ligne.colonne.interbloc", ""); //$NON-NLS-1$ //$NON-NLS-2$
 	

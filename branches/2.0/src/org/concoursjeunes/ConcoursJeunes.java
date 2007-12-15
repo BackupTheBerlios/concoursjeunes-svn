@@ -544,6 +544,29 @@ public class ConcoursJeunes {
 		}
 		configuration.saveAsDefault();
 	}
+	
+	/**
+	 * Retourne la liste des fiches concours actuellement ouvertent
+	 * 
+	 * @return
+	 */
+	public ArrayList<FicheConcours> getFichesConcours() {
+		return fichesConcours;
+	}
+	
+	/**
+	 * Test si une fiche est déjà ouverte ou non
+	 * 
+	 * @param metaDataFicheConcours - le fichier de metadonnées du concours à tester
+	 * @return true si ouvert, false sinon
+	 */
+	public boolean isOpenFicheConcours(MetaDataFicheConcours metaDataFicheConcours) {
+		for(FicheConcours ficheConcours : fichesConcours) {
+			if(ficheConcours.getMetaDataFicheConcours().equals(metaDataFicheConcours))
+				return true;
+		}
+		return false;
+	}
 
 	/**
 	 * genere le pdf à partir des parametres document et du contenu xml

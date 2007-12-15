@@ -114,7 +114,11 @@ import org.concoursjeunes.plugins.PluginMetadata;
 import ajinteractive.standard.common.AJToolKit;
 import ajinteractive.standard.common.AjResourcesReader;
 import ajinteractive.standard.utilities.app.AppSerializer;
-import ajinteractive.standard.utilities.updater.*;
+import ajinteractive.standard.utilities.updater.AjUpdater;
+import ajinteractive.standard.utilities.updater.AjUpdaterEvent;
+import ajinteractive.standard.utilities.updater.AjUpdaterFrame;
+import ajinteractive.standard.utilities.updater.AjUpdaterListener;
+import ajinteractive.standard.utilities.updater.UpdateException;
 
 @Plugin(type = Plugin.Type.STARTUP)
 public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, MouseListener {
@@ -162,9 +166,9 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 				"."); //$NON-NLS-1$
 		ajUpdater.addAjUpdaterListener(this);
 		ajUpdater.setUserAgent(ConcoursJeunes.NOM + " " + ConcoursJeunes.VERSION //$NON-NLS-1$
-				+ " (" + appSerializer.getSerial() + ";" + ConcoursJeunes.configuration.getClub().getAgrement() + " " + ConcoursJeunes.configuration.getClub().getNom() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				+ " (" + appSerializer.getSerial() + ";" + ConcoursJeunes.configuration.getClub().getAgrement() + " " + ConcoursJeunes.configuration.getClub().getNom() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		System.out.println(ConcoursJeunes.NOM + " " + ConcoursJeunes.VERSION //$NON-NLS-1$
-				+ " (" + appSerializer.getSerial() + ";" + ConcoursJeunes.configuration.getClub().getAgrement() + " " + ConcoursJeunes.configuration.getClub().getNom() + ")");
+				+ " (" + appSerializer.getSerial() + ";" + ConcoursJeunes.configuration.getClub().getAgrement() + " " + ConcoursJeunes.configuration.getClub().getNom() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		ajUpdater.addRepositoryURL(pluginRessources.getResourceString("url.reference")); //$NON-NLS-1$
 		for (PluginMetadata pm : pl.getPlugins(PluginMetadata.ALL)) {
 			ajUpdater.addRepositoryURL(pm.getReposURL());

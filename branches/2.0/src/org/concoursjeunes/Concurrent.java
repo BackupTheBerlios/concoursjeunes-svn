@@ -237,7 +237,7 @@ public class Concurrent extends Archer implements Cloneable {
 			getPrenomArcher() + " (" + //$NON-NLS-1$
 			getClub() +
 			")</font></html>"; //$NON-NLS-1$
-		return new TargetPosition(cible, position).toString() + ": " + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		return new TargetPosition(cible, position).toString() + ": " + //$NON-NLS-1$
 		getNomArcher() + " " + //$NON-NLS-1$
 		getPrenomArcher() + " (" + //$NON-NLS-1$
 		getClub() + ")"; //$NON-NLS-1$
