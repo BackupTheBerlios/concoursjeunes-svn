@@ -203,6 +203,7 @@ public class ConfigurationManager {
 				openedFichesConcours.add(ficheConcours.getMetaDataFicheConcours());
 			}
 			concoursJeunes.closeAllFichesConcours();
+			ConcoursJeunes.configuration.save();
 		}
 		
 		//renome le fichier de configuration

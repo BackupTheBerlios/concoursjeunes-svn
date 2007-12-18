@@ -572,7 +572,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		tbParamGeneral.setTitle(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.general.titre1")); //$NON-NLS-1$
 
 		jbRenameProfile.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.general.renameprofile")); //$NON-NLS-1$
-		jbParcourir.setText("...");
+		jbParcourir.setText("..."); //$NON-NLS-1$
 		jbDetail.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.detail")); //$NON-NLS-1$
 		if (jbLogoPath.getText().equals("")) //$NON-NLS-1$
 			jbLogoPath.setText(ConcoursJeunes.ajrLibelle.getResourceString("parametre.logo")); //$NON-NLS-1$
@@ -793,6 +793,8 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	}
 
 	public Configuration showConfigurationDialog(Configuration configuration) {
+		configuration.save();
+		
 		this.workConfiguration = configuration;
 
 		completePanel(workConfiguration);

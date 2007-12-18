@@ -856,7 +856,7 @@ public class FicheConcours implements ParametreListener {
 				templatePasDeTirXML.parse("ligne.imgcible.ic.url_img_blason", //$NON-NLS-1$
 						ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + "/cible.jpg"); //$NON-NLS-1$ //$NON-NLS-2$
 				templatePasDeTirXML.parse("ligne.detail.dc.distance", "" + db.getDistance()[0]); //$NON-NLS-1$ //$NON-NLS-2$
-				templatePasDeTirXML.parse("ligne.detail.dc.blason", "" + db.getBlason()); //$NON-NLS-1$ //$NON-NLS-2$
+				templatePasDeTirXML.parse("ligne.detail.dc.blason", "" + db.getTargetFace().getName()); //$NON-NLS-1$ //$NON-NLS-2$
 			} else {
 				templatePasDeTirXML.parseBloc("ligne.numcible.nc", ""); //$NON-NLS-1$ //$NON-NLS-2$
 				templatePasDeTirXML.parseBloc("ligne.imgcible.ic", ""); //$NON-NLS-1$ //$NON-NLS-2$
@@ -1011,10 +1011,5 @@ public class FicheConcours implements ParametreListener {
 
 			ficheConcoursListener.pasDeTirChanged(new FicheConcoursEvent(FicheConcoursEvent.PASDETIR_CHANGED, FicheConcoursEvent.ALL_START));
 		}
-	}
-	
-	@Override
-	public void finalize() {
-		System.out.println("FicheConcours: Objet récupéré"); //$NON-NLS-1$
 	}
 }

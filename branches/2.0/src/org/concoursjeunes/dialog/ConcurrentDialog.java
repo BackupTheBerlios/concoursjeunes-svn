@@ -686,7 +686,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			strPlaceLibre += "<i>" + //$NON-NLS-1$
 					strCategoriePlacement + "(" + //$NON-NLS-1$
 					distAndBlas.getDistance()[0] + "m/" + //$NON-NLS-1$
-					distAndBlas.getBlason() + "cm)</i><br>\n"; //$NON-NLS-1$
+					distAndBlas.getTargetFace().getName() + ")</i><br>\n"; //$NON-NLS-1$
 			strPlaceLibre += "&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\">" + //$NON-NLS-1$
 					ConcoursJeunes.ajrLibelle.getResourceString("concurrent.placelibre.occupee") + //$NON-NLS-1$
 					" " + occupationCibles.get(distAndBlas).getPlaceOccupe() + "</font>"; //$NON-NLS-1$ //$NON-NLS-2$
@@ -997,7 +997,6 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	
 	@Override
 	public void dispose() {
-		System.out.println("Destruction de la fenetre ConcurrentDialog"); //$NON-NLS-1$
 		nbInstance--;
 		if(nbInstance == 0) {
 			if(concurrentListDialog != null)
@@ -1010,8 +1009,6 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	
 	@Override
 	public void finalize() throws Throwable {
-		System.out.println("ConcurrentDialog detruit"); //$NON-NLS-1$
-		
 		super.finalize();
 	}
 }

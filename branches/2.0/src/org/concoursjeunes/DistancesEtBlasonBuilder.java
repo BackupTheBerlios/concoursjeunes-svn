@@ -118,7 +118,8 @@ public class DistancesEtBlasonBuilder {
 				if(hashReglement != 0)
 					distancesEtBlason.setNumdistancesblason(numdistancesblason);
 				distancesEtBlason.setReglement(reglement);
-				distancesEtBlason.setBlason(rs.getInt("BLASONS")); //$NON-NLS-1$
+				distancesEtBlason.setTargetFace(BlasonBuilder.getBlasons(numdistancesblason, hashReglement));
+				//distancesEtBlason.setBlason(rs.getInt("BLASONS")); //$NON-NLS-1$
 				
 				pstmt.close();
 				

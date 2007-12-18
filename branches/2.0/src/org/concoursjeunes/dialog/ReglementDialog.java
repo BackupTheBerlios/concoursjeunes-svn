@@ -96,36 +96,20 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
-import javax.swing.Box;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.JTree;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
-import org.concoursjeunes.ConcoursJeunes;
-import org.concoursjeunes.CriteriaSet;
-import org.concoursjeunes.CriteriaSetLibelle;
-import org.concoursjeunes.Criterion;
-import org.concoursjeunes.CriterionElement;
-import org.concoursjeunes.DistancesEtBlason;
-import org.concoursjeunes.Reglement;
+import org.concoursjeunes.*;
+import org.jdesktop.swingx.JXErrorDialog;
 
 import ajinteractive.standard.java2.GridbagComposer;
 import ajinteractive.standard.java2.NumberDocument;
@@ -169,6 +153,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 
 	private final JTable jtDistanceBlason = new JTable();
 	private final JScrollPane jspDistanceBlason = new JScrollPane();
+	private final JComboBox jcbBlasons = new JComboBox();
 
 	private final JButton jbValider = new JButton();
 	private final JButton jbAnnuler = new JButton();
@@ -408,6 +393,17 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	private void completeCategories() {
 		if (reglement != null)
 			jtDistanceBlason.setModel(createTableModel());
+		try {
+			List<Blason> blasons = Blason.listAvailableTargetFace();
+			for(Blason blason : blasons)
+				jcbBlasons.addItem(blason);
+			TableColumn cH = jtDistanceBlason.getColumnModel().getColumn(jtDistanceBlason.getColumnModel().getColumnCount() - 1);
+			cH.setCellEditor(new DefaultCellEditor(jcbBlasons));
+		} catch (SQLException e) {
+			JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+					e.fillInStackTrace());
+			e.printStackTrace();
+		}
 
 		if (verrou != NO_LOCK) {
 			jtDistanceBlason.setEnabled(false);
@@ -437,7 +433,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		differentiationCriteria = CriteriaSet.listCriteriaSet(reglement, reglement.getPlacementFilter());
 
 		for (int i = 0; i < differentiationCriteria.length; i++) {
-			Object[] row = new String[reglement.getNbSerie() + 2];
+			Object[] row = new Object[reglement.getNbSerie() + 2];
 			CriteriaSetLibelle scnaLib = new CriteriaSetLibelle(differentiationCriteria[i]);
 			row[0] = scnaLib.toString();
 
@@ -448,9 +444,9 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 					row[j] = "0"; //$NON-NLS-1$
 			}
 			if (reglement.getDistancesEtBlasonFor(differentiationCriteria[i]) != null)
-				row[reglement.getNbSerie() + 1] = "" + reglement.getDistancesEtBlasonFor(differentiationCriteria[i]).getBlason(); //$NON-NLS-1$
+				row[reglement.getNbSerie() + 1] = reglement.getDistancesEtBlasonFor(differentiationCriteria[i]).getTargetFace();
 			else
-				row[reglement.getNbSerie() + 1] = "0"; //$NON-NLS-1$
+				row[reglement.getNbSerie() + 1] = Blason.NULL;
 			dtm.addRow(row);
 		}
 
@@ -531,7 +527,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 					int updateDbIndex = reglement.getListDistancesEtBlason().indexOf(db);
 
 					db.setDistance(distances);
-					db.setBlason(Integer.parseInt((String) this.jtDistanceBlason.getModel().getValueAt(i, jtDistanceBlason.getModel().getColumnCount() - 1)));
+					db.setTargetFace((Blason)jtDistanceBlason.getModel().getValueAt(i, jtDistanceBlason.getModel().getColumnCount() - 1));
 
 					reglement.getListDistancesEtBlason().set(updateDbIndex, db);
 				}

@@ -361,7 +361,6 @@ public class PasDeTir {
 	 * @param concurrent - le concurrent à placer
 	 * @param cible - la cible sur laquelle placer le concurrent
 	 * @param position - la position du concurrent sur la cible
-	 * @return true si placé avec succé, false sinon
 	 */
 	public void placementConcurrent(Concurrent concurrent, Cible cible, int position) 
 			throws PlacementException {

@@ -346,8 +346,6 @@ public class Cible {
 	 * 
 	 * @param concurrent le concurrent à placer
 	 * @param position la positionn de ce concurrent
-	 * 
-	 * @return true si affectation avec succès, false sinon
 	 */
 	public void setConcurrentAt(Concurrent concurrent, int position) 
 			throws PlacementException {
@@ -479,7 +477,7 @@ public class Cible {
 					strCibleLibelle += db.getDistance()[i] + "m"; //$NON-NLS-1$
 				}
 			}
-			strCibleLibelle += ", " + db.getBlason() + "cm"; //$NON-NLS-1$ //$NON-NLS-2$
+			strCibleLibelle += ", " + db.getTargetFace().getName(); //$NON-NLS-1$
 		}
 
 		strCibleLibelle += ") (" + this.nbArcher + "/" + (concours.getParametre().getNbTireur() - nbHandicap) + ")</font>"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

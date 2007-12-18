@@ -611,7 +611,6 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	
 	@Override
 	public void finalize() throws Throwable {
-		System.out.println("ConcurrentListDialog detruit"); //$NON-NLS-1$
 		super.finalize();
 	}
 }

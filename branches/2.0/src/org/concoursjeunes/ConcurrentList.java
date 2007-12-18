@@ -540,7 +540,7 @@ public class ConcurrentList {
 			}
 			for(int i = 0; i < alDB.size() - 1; i++) {
 				for(int j = i + 1; j < alDB.size(); j++) {
-					if(alDB.get(i).getBlason() > alDB.get(j).getBlason() && alDB.get(i).getDistance()[0] == alDB.get(j).getDistance()[0]) {
+					if(alDB.get(i).getTargetFace().getNumordre() > alDB.get(j).getTargetFace().getNumordre() && alDB.get(i).getDistance()[0] == alDB.get(j).getDistance()[0]) {
 						DistancesEtBlason temp = alDB.get(i);
 						alDB.set(i, alDB.get(j));
 						alDB.set(j, temp);

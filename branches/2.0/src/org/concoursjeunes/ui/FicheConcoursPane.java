@@ -436,9 +436,4 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		printClassementEquipe.removeActionListener(this);
 		printClassementClub.removeActionListener(this);
 	}
-	
-	@Override
-	public void finalize() {
-		System.out.println("FicheConcoursPane: Objet récupéré"); //$NON-NLS-1$
-	}
 }
