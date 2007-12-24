@@ -14,6 +14,7 @@ import org.concoursjeunes.Cible;
 import org.concoursjeunes.CibleEvent;
 import org.concoursjeunes.CibleListener;
 import org.concoursjeunes.Concurrent;
+import org.concoursjeunes.TargetPosition;
 
 /**
  * @author Aurélien JEOFFRAY
@@ -61,7 +62,7 @@ public class CibleMutableTreeNode implements MutableTreeNode, CibleListener {
 			for(int i = 0; i < cible.getFicheConcours().getParametre().getNbTireur(); i++) {
 				Concurrent concurrent = cible.getConcurrentAt(i);
 				if(concurrent == null)
-					insert(new DefaultMutableTreeNode(Cible.getCibleLibelle(cible.getNumCible(), i)), i);
+					insert(new DefaultMutableTreeNode(new TargetPosition(cible.getNumCible(), i)), i);
 				else
 					insert(new DefaultMutableTreeNode(concurrent), i);
 			}
@@ -175,7 +176,7 @@ public class CibleMutableTreeNode implements MutableTreeNode, CibleListener {
 	 */
 	public void concurrentQuit(CibleEvent e) {
 		DefaultMutableTreeNode concurrentNode = (DefaultMutableTreeNode)childrens.get(e.getConcurrent().getPosition());
-		concurrentNode.setUserObject(Cible.getCibleLibelle(cible.getNumCible(), e.getConcurrent().getPosition()));
+		concurrentNode.setUserObject(new TargetPosition(cible.getNumCible(), e.getConcurrent().getPosition()));
 	}
 	
 	@Override

@@ -151,7 +151,7 @@ import com.lowagie.text.pdf.PdfWriter;
 public class ConcoursJeunes {
 
 	// UID: 1.Major(2).Minor(2).Correctif(2).Build(3).Type(1,Alpha,Beta,RC(1->6),Release)
-	public static final long serialVersionUID = 10199030011l;
+	public static final long serialVersionUID = 10201020011l;
 
 	/**
 	 * Chaines de version de ConcoursJeunes
@@ -161,7 +161,7 @@ public class ConcoursJeunes {
 	public static final String CODENAME = "@version.codename@"; //$NON-NLS-1$
 	public static final String AUTEURS = "@version.author@"; //$NON-NLS-1$
 	public static final String COPYR = "@version.copyr@"; //$NON-NLS-1$
-	public static final int DB_RELEASE_REQUIRED = 6;
+	public static final int DB_RELEASE_REQUIRED = 7;
 
 	// Chaine de ressources
 	public static final String RES_LIBELLE = "libelle"; //$NON-NLS-1$
@@ -245,7 +245,7 @@ public class ConcoursJeunes {
 						e.fillInStackTrace());
 				
 				//Si ce n'est pas un message db bloqué par un autre processus
-				if(!e.getMessage().endsWith("[90020-60]")) { //$NON-NLS-1$
+				if(!e.getMessage().contains("[90020")) { //$NON-NLS-1$
 					if(JOptionPane.showConfirmDialog(null, ajrLibelle.getResourceString("erreur.breakdb")) == JOptionPane.YES_OPTION) { //$NON-NLS-1$
 						erasedb = true;
 						for(File deletefile : new File(userRessources.getBasePath()).listFiles()) {
@@ -280,24 +280,27 @@ public class ConcoursJeunes {
 				System.exit(1);
 			}
 			if (dbVersion != DB_RELEASE_REQUIRED) {
-				File updatePath = new File(userRessources.getAllusersDataPath() + File.separator + "update");
+				File updatePath = new File(userRessources.getAllusersDataPath() + File.separator + "update"); //$NON-NLS-1$
 				
 				ScriptEngineManager se = new ScriptEngineManager();
 				ScriptEngine scriptEngine = se.getEngineByName("JavaScript"); //$NON-NLS-1$
 				scriptEngine.setBindings(new SimpleBindings(Collections.synchronizedMap(new HashMap<String, Object>())), ScriptContext.ENGINE_SCOPE);
 				try {
 					scriptEngine.put("dbVersion", dbVersion); //$NON-NLS-1$
-					scriptEngine.put("sql", new SqlManager(stmt, updatePath)); //$NON-NLS-1$ //$NON-NLS-2$
-					scriptEngine.eval(new FileReader(new File(updatePath, "updatedb.js"))); //$NON-NLS-1$ //$NON-NLS-2$
+					scriptEngine.put("sql", new SqlManager(stmt, updatePath)); //$NON-NLS-1$
+					scriptEngine.eval(new FileReader(new File(updatePath, "updatedb.js"))); //$NON-NLS-1$
 				} catch (ScriptException e1) {
 					e1.printStackTrace();
 				} catch (FileNotFoundException e1) {
 					e1.printStackTrace();
 				} finally {
 					//Supprime les fichiers du repertoire update après une mise à jour
-					for(File file : FileUtil.listAllFiles(updatePath, ".*")) {
+					for(File file : FileUtil.listAllFiles(updatePath, ".*")) { //$NON-NLS-1$
+						boolean success = file.delete();
 						System.out.println("delete: " + file.getName() + ": " //$NON-NLS-1$ //$NON-NLS-2$
-								+ file.delete()); //$NON-NLS-1$
+								+ success);
+						if(!success)
+							file.deleteOnExit();
 					}
 				}
 			}
@@ -309,8 +312,10 @@ public class ConcoursJeunes {
 			try { if(stmt != null) stmt.close(); } catch (SQLException e) { }
 			dbVersion = getDBVersion();
 		}
-
-		loadStartupPlugin();
+		
+		if(System.getProperty("noplugin") == null) { //$NON-NLS-1$
+			loadStartupPlugin();
+		}
 	}
 
 	/**
@@ -538,6 +543,29 @@ public class ConcoursJeunes {
 			fiche.save();
 		}
 		configuration.saveAsDefault();
+	}
+	
+	/**
+	 * Retourne la liste des fiches concours actuellement ouvertent
+	 * 
+	 * @return
+	 */
+	public ArrayList<FicheConcours> getFichesConcours() {
+		return fichesConcours;
+	}
+	
+	/**
+	 * Test si une fiche est déjà ouverte ou non
+	 * 
+	 * @param metaDataFicheConcours - le fichier de metadonnées du concours à tester
+	 * @return true si ouvert, false sinon
+	 */
+	public boolean isOpenFicheConcours(MetaDataFicheConcours metaDataFicheConcours) {
+		for(FicheConcours ficheConcours : fichesConcours) {
+			if(ficheConcours.getMetaDataFicheConcours().equals(metaDataFicheConcours))
+				return true;
+		}
+		return false;
 	}
 
 	/**

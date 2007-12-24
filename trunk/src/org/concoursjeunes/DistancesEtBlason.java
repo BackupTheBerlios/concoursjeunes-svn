@@ -29,6 +29,7 @@ import java.util.Arrays;
 public class DistancesEtBlason {
 	private int[] distances = new int[] { 18, 18 };
 	private int blason = 80;
+	private Blason targetFace = Blason.NULL;
 
 	private CriteriaSet criteriaSet = new CriteriaSet();
 
@@ -55,8 +56,8 @@ public class DistancesEtBlason {
 
 	/**
 	 * @return Returns the blason.
-	 * @uml.property name="blason"
 	 */
+	@Deprecated
 	public int getBlason() {
 		return this.blason;
 	}
@@ -71,10 +72,37 @@ public class DistancesEtBlason {
 	/**
 	 * @param blason
 	 *            The blason to set.
-	 * @uml.property name="blason"
 	 */
+	@Deprecated
 	public void setBlason(int blason) {
 		this.blason = blason;
+		if(targetFace.equals(Blason.NULL)) {
+			if(numdistancesblason > 0)
+				targetFace = BlasonBuilder.getBlasons(numdistancesblason, reglement.hashCode());
+			else {
+				double hRatio = 1;
+				double vRatio = 1;
+				if(blason >= 60)
+					hRatio = 0.5;
+				if(blason >= 40)
+					vRatio = 0.5;
+				targetFace = new Blason(blason + "cm", hRatio, vRatio); //$NON-NLS-1$
+			}
+		}
+	}
+
+	/**
+	 * @return targetFace
+	 */
+	public Blason getTargetFace() {
+		return targetFace;
+	}
+
+	/**
+	 * @param targetFace targetFace à définir
+	 */
+	public void setTargetFace(Blason targetFace) {
+		this.targetFace = targetFace;
 	}
 
 	/**
@@ -134,15 +162,15 @@ public class DistancesEtBlason {
 		Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 
 		if (numdistancesblason == 0) {
-			stmt.executeUpdate("insert into DISTANCESBLASONS (NUMREGLEMENT, BLASONS) VALUES (" + //$NON-NLS-1$
-					reglement.hashCode() + ", " + blason + ")", Statement.RETURN_GENERATED_KEYS); //$NON-NLS-1$ //$NON-NLS-2$
+			stmt.executeUpdate("insert into DISTANCESBLASONS (NUMREGLEMENT, NUMBLASON) VALUES (" + //$NON-NLS-1$
+					reglement.hashCode() + ", " + targetFace.getNumblason() + ")", Statement.RETURN_GENERATED_KEYS); //$NON-NLS-1$ //$NON-NLS-2$
 			ResultSet clefs = stmt.getGeneratedKeys();
 			if (clefs.first()) {
 				numdistancesblason = (Integer) clefs.getObject(1);
 			}
 		} else {
-			stmt.executeUpdate("update DISTANCESBLASONS set BLASONS=" + //$NON-NLS-1$
-					blason + " where NUMREGLEMENT=" + reglement.hashCode() + " and NUMDISTANCESBLASONS=" + numdistancesblason); //$NON-NLS-1$ //$NON-NLS-2$
+			stmt.executeUpdate("update DISTANCESBLASONS set NUMBLASON=" + //$NON-NLS-1$
+					targetFace.getNumblason() + " where NUMREGLEMENT=" + reglement.hashCode() + " and NUMDISTANCESBLASONS=" + numdistancesblason); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
 		criteriaSet.save();
@@ -172,16 +200,24 @@ public class DistancesEtBlason {
 		return reglement.getDistancesEtBlasonFor(concurrent.getCriteriaSet().getFilteredCriteriaSet(reglement.getPlacementFilter()));
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + blason;
-		result = prime * result + ((criteriaSet == null) ? 0 : criteriaSet.hashCode());
+		result = prime * result
+				+ ((criteriaSet == null) ? 0 : criteriaSet.hashCode());
 		result = prime * result + Arrays.hashCode(distances);
+		result = prime * result
+				+ ((targetFace == null) ? 0 : targetFace.hashCode());
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -191,8 +227,6 @@ public class DistancesEtBlason {
 		if (getClass() != obj.getClass())
 			return false;
 		final DistancesEtBlason other = (DistancesEtBlason) obj;
-		if (blason != other.blason)
-			return false;
 		if (criteriaSet == null) {
 			if (other.criteriaSet != null)
 				return false;
@@ -200,7 +234,14 @@ public class DistancesEtBlason {
 			return false;
 		if (!Arrays.equals(distances, other.distances))
 			return false;
+		if (targetFace == null) {
+			if (other.targetFace != null)
+				return false;
+		} else if (!targetFace.equals(other.targetFace))
+			return false;
 		return true;
 	}
+
+	
 
 }

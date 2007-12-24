@@ -139,16 +139,17 @@ public class CJAppRessources extends AppRessources {
 						return pathname.isFile() && pathname.getName().endsWith(".xml"); //$NON-NLS-1$
 					}
 				});
-
-		for (File file : fileForCopy) {
-			File configPath = new File(getUserPath());
-			if (!new File(configPath.getPath(), file.getName()).exists()) {
-				try {
-					FileUtil.copyFile(file, configPath);
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
+		if(fileForCopy != null) {
+			for (File file : fileForCopy) {
+				File configPath = new File(getUserPath());
+				if (!new File(configPath.getPath(), file.getName()).exists()) {
+					try {
+						FileUtil.copyFile(file, configPath);
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}

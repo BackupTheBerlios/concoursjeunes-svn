@@ -106,8 +106,8 @@ import ajinteractive.standard.utilities.net.Proxy;
 @XmlRootElement
 public class Configuration extends DefaultParameters implements Cloneable {
 	
-	private static String CONFIG_PROFILE = "configuration_"; //$NON-NLS-1$
-	private static String EXT_XML = ".xml"; //$NON-NLS-1$
+	public static String CONFIG_PROFILE = "configuration_"; //$NON-NLS-1$
+	public static String EXT_XML = ".xml"; //$NON-NLS-1$
 
 	private String langue           = "";               //$NON-NLS-1$
 	private String logoPath         = "ressources/logo_ffta.gif";   //$NON-NLS-1$

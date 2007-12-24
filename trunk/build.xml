@@ -134,7 +134,9 @@
 				classname="ajinteractive.standard.utilities.updater.RevisionsCreator" />
 
 		<revisionscreator 
-				hashfilepath="${projet.pack.dir}/hash.xml.gz">
+				hashfilepath="${projet.pack.dir}/hash.xml.gz"
+				revisionpath="${projet.pack.dir}/revision.xml.gz"
+				changelog="packager/changelog">
 			<fileset dir="${projet.pack.dir}">
 				<include name="config/**"/>
 				<include name="lang/**"/>
@@ -148,7 +150,7 @@
 		</revisionscreator>
 	</target>
 
-	<target name="makerpm">
+	<target name="makerpm" depends="jar">
 
 		<mkdir dir="${projet.pack.dir}/linux" />
 		<property name="rpm.pack.path" location="${projet.pack.dir}/linux" />
@@ -330,9 +332,6 @@
 	<target name="all-system"
 		depends="jar, pack-ConcoursJeunesUpdate, pack-FFTAImport, revisions, makensissetup, makerpm, makedeb"
 		description="Compilation Multi-systeme" />
-	<target name="all-system-nocompilation"
-			depends="revisions, makensissetup, makerpm, makedeb"
-			description="Empaquetage Multi-systeme" />
 	<target name="MacOSX" 
 		depends="jar, pack-ConcoursJeunesUpdate, revisions, makemacbundle"
 		description="Pack Mac OS X" />

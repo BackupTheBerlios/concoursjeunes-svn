@@ -1,5 +1,5 @@
 /*
- * Créé le 17/03/2007 à 11:10 pour ConcoursJeunes
+ * Créer le 15 déc. 07 à 20:35:47 pour ConcoursJeunes
  *
  * Copyright 2002-2007 - Aurélien JEOFFRAY
  *
@@ -86,116 +86,47 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
 package org.concoursjeunes;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 
 /**
- * <p>
- * Les réglements son stoqué dans la base de donnée. La présente fabrique
- * permet soit de créer un nouveau réglement, soit d'extraire un réglement
- * de la base en se basant sur son nom.
- * </p>
- * 
  * @author Aurélien JEOFFRAY
- * @version 1.0
  *
  */
-public class ReglementBuilder {
-	
-	/**
-	 * Crée un nouveau reglement de concours
-	 * 
-	 * @return le reglement créer
-	 */
-	public static Reglement createReglement() {
-		return createReglement(0);
-	}
-	
-	/**
-	 * <p>
-	 * Retourne le reglement qualifié par son nom en recherchant l'entrée
-	 * dans la base de donnée. Si aucun réglement, celui ci est initialisé par défaut
-	 * (équivalent à createReglement()).
-	 * </p>
-	 * <p>
-	 * Pour fonctionner correctement, "ConcoursJeunes.dbConnection" dooit auparavent être
-	 * correctement instancié.
-	 * </p>
-	 * 
-	 * @param reglementName - le nom du reglement à retourner
-	 * @return - le reglement retourné
-	 */
-	public static Reglement createReglement(String reglementName) {
-		return createReglement(-1, reglementName);
-	}
-	
-	public static Reglement createReglement(int numreglement) {
-		return createReglement(numreglement, null);
-	}
-	
-	private static Reglement createReglement(int numreglement, String reglementName) {
-
-		Reglement reglement = new Reglement();
-		
+public class BlasonBuilder {
+	public static Blason getBlasons(int numdistancesblason, int numreglement) {
 		try {
-			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+			String sql = "select BLASONS.* from DISTANCESBLASONS,BLASONS " //$NON-NLS-1$
+				+ "where DISTANCESBLASONS.NUMBLASON=BLASONS.NUMBLASON AND NUMDISTANCESBLASONS=? and NUMREGLEMENT=? order by NUMORDRE DESC"; //$NON-NLS-1$
 			
-			String sql = ""; //$NON-NLS-1$
-			if(numreglement > -1)
-				sql = "select * from REGLEMENT where NUMREGLEMENT=" + numreglement; //$NON-NLS-1$
-			else
-				sql = "select * from REGLEMENT where NOMREGLEMENT='" + reglementName + "'"; //$NON-NLS-1$ //$NON-NLS-2$
+			PreparedStatement pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
 			
-			ResultSet rs = stmt.executeQuery(sql);
-			if(rs.first()) {
-				int numreglment = rs.getInt("NUMREGLEMENT"); //$NON-NLS-1$
-				
-				reglement.setName(rs.getString("NOMREGLEMENT")); //$NON-NLS-1$
-				reglement.setNbSerie(rs.getInt("NBSERIE")); //$NON-NLS-1$
-				reglement.setNbVoleeParSerie(rs.getInt("NBVOLEEPARSERIE")); //$NON-NLS-1$
-				reglement.setNbFlecheParVolee(rs.getInt("NBFLECHEPARVOLEE")); //$NON-NLS-1$
-				reglement.setNbMembresEquipe(rs.getInt("NBMEMBRESEQUIPE")); //$NON-NLS-1$
-				reglement.setNbMembresRetenu(rs.getInt("NBMEMBRESRETENU")); //$NON-NLS-1$
-				reglement.setOfficialReglement(rs.getBoolean("ISOFFICIAL")); //$NON-NLS-1$
-				
-				rs.close();
-				
-				ArrayList<Criterion> criteria = new ArrayList<Criterion>();
-				rs = stmt.executeQuery("select CODECRITERE from CRITERE where NUMREGLEMENT=" + numreglment); //$NON-NLS-1$
-				while(rs.next()) {
-					criteria.add(CriterionBuilder.getCriterion(rs.getString("CODECRITERE"), reglement, numreglment)); //$NON-NLS-1$
-				}
-				rs.close();
-				reglement.setListCriteria(criteria);
-				
-				ArrayList<DistancesEtBlason> listDistancesEtBlason = new ArrayList<DistancesEtBlason>();
-				rs = stmt.executeQuery("select * from DISTANCESBLASONS where NUMREGLEMENT=" + numreglment); //$NON-NLS-1$
-				while(rs.next()) {
-					int numdb = rs.getInt("NUMDISTANCESBLASONS"); //$NON-NLS-1$
-					
-					DistancesEtBlason db = DistancesEtBlasonBuilder.getDistancesEtBlason(numdb, reglement, numreglment);
-					CriteriaSet[] criteriaSets = CriteriaSet.listCriteriaSet(reglement, reglement.getPlacementFilter());
-					for(CriteriaSet criteriaSet : criteriaSets) {
-						if(criteriaSet.equals(db.getCriteriaSet().getFilteredCriteriaSet(reglement.getPlacementFilter()))) {
-							listDistancesEtBlason.add(db);
-							break;
-						}
-					}
-				}
-				rs.close();
-				reglement.setListDistancesEtBlason(listDistancesEtBlason);
+			pstmt.setInt(1, numdistancesblason);
+			pstmt.setInt(2, numreglement);
+			
+			ResultSet rs = pstmt.executeQuery();
+			
+			if(rs.first()) {		
+				return getBlason(rs);
 			}
-			
-			stmt.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
-		return reglement;
+		return null;
+	}
+	
+	public static Blason getBlason(ResultSet rs) throws SQLException {
+		Blason blason = new Blason();
+		blason.setNumblason(rs.getInt("NUMBLASON")); //$NON-NLS-1$
+		blason.setName(rs.getString("NOMBLASON")); //$NON-NLS-1$
+		blason.setHorizontalRatio(rs.getDouble("HORIZONTAL_RATIO")); //$NON-NLS-1$
+		blason.setVerticalRatio(rs.getDouble("VERTICAL_RATIO")); //$NON-NLS-1$
+		blason.setNbArcher(rs.getInt("NUMORDRE")); //$NON-NLS-1$
+		
+		return blason;
 	}
 }

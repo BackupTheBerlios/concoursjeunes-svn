@@ -1,5 +1,5 @@
 /*
- * Créé le 17/03/2007 à 11:10 pour ConcoursJeunes
+ * Créer le 15 déc. 07 à 17:58:51 pour ConcoursJeunes
  *
  * Copyright 2002-2007 - Aurélien JEOFFRAY
  *
@@ -86,116 +86,228 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
 package org.concoursjeunes;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
- * <p>
- * Les réglements son stoqué dans la base de donnée. La présente fabrique
- * permet soit de créer un nouveau réglement, soit d'extraire un réglement
- * de la base en se basant sur son nom.
- * </p>
- * 
  * @author Aurélien JEOFFRAY
- * @version 1.0
  *
  */
-public class ReglementBuilder {
+public class Blason {
 	
-	/**
-	 * Crée un nouveau reglement de concours
-	 * 
-	 * @return le reglement créer
-	 */
-	public static Reglement createReglement() {
-		return createReglement(0);
-	}
+	public static Blason NULL = new Blason("80cm",1,1,80); //$NON-NLS-1$
 	
-	/**
-	 * <p>
-	 * Retourne le reglement qualifié par son nom en recherchant l'entrée
-	 * dans la base de donnée. Si aucun réglement, celui ci est initialisé par défaut
-	 * (équivalent à createReglement()).
-	 * </p>
-	 * <p>
-	 * Pour fonctionner correctement, "ConcoursJeunes.dbConnection" dooit auparavent être
-	 * correctement instancié.
-	 * </p>
-	 * 
-	 * @param reglementName - le nom du reglement à retourner
-	 * @return - le reglement retourné
-	 */
-	public static Reglement createReglement(String reglementName) {
-		return createReglement(-1, reglementName);
-	}
+	private String name = ""; //$NON-NLS-1$
+	private double horizontalRatio = 1;
+	private double verticalRatio = 1;
+	private int nbArcher = 4;
+	private int numordre = 0;
 	
-	public static Reglement createReglement(int numreglement) {
-		return createReglement(numreglement, null);
-	}
+	private int numblason = 0;
 	
-	private static Reglement createReglement(int numreglement, String reglementName) {
-
-		Reglement reglement = new Reglement();
+	public Blason() {
 		
-		try {
-			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
-			
-			String sql = ""; //$NON-NLS-1$
-			if(numreglement > -1)
-				sql = "select * from REGLEMENT where NUMREGLEMENT=" + numreglement; //$NON-NLS-1$
-			else
-				sql = "select * from REGLEMENT where NOMREGLEMENT='" + reglementName + "'"; //$NON-NLS-1$ //$NON-NLS-2$
-			
-			ResultSet rs = stmt.executeQuery(sql);
-			if(rs.first()) {
-				int numreglment = rs.getInt("NUMREGLEMENT"); //$NON-NLS-1$
-				
-				reglement.setName(rs.getString("NOMREGLEMENT")); //$NON-NLS-1$
-				reglement.setNbSerie(rs.getInt("NBSERIE")); //$NON-NLS-1$
-				reglement.setNbVoleeParSerie(rs.getInt("NBVOLEEPARSERIE")); //$NON-NLS-1$
-				reglement.setNbFlecheParVolee(rs.getInt("NBFLECHEPARVOLEE")); //$NON-NLS-1$
-				reglement.setNbMembresEquipe(rs.getInt("NBMEMBRESEQUIPE")); //$NON-NLS-1$
-				reglement.setNbMembresRetenu(rs.getInt("NBMEMBRESRETENU")); //$NON-NLS-1$
-				reglement.setOfficialReglement(rs.getBoolean("ISOFFICIAL")); //$NON-NLS-1$
-				
-				rs.close();
-				
-				ArrayList<Criterion> criteria = new ArrayList<Criterion>();
-				rs = stmt.executeQuery("select CODECRITERE from CRITERE where NUMREGLEMENT=" + numreglment); //$NON-NLS-1$
-				while(rs.next()) {
-					criteria.add(CriterionBuilder.getCriterion(rs.getString("CODECRITERE"), reglement, numreglment)); //$NON-NLS-1$
-				}
-				rs.close();
-				reglement.setListCriteria(criteria);
-				
-				ArrayList<DistancesEtBlason> listDistancesEtBlason = new ArrayList<DistancesEtBlason>();
-				rs = stmt.executeQuery("select * from DISTANCESBLASONS where NUMREGLEMENT=" + numreglment); //$NON-NLS-1$
-				while(rs.next()) {
-					int numdb = rs.getInt("NUMDISTANCESBLASONS"); //$NON-NLS-1$
-					
-					DistancesEtBlason db = DistancesEtBlasonBuilder.getDistancesEtBlason(numdb, reglement, numreglment);
-					CriteriaSet[] criteriaSets = CriteriaSet.listCriteriaSet(reglement, reglement.getPlacementFilter());
-					for(CriteriaSet criteriaSet : criteriaSets) {
-						if(criteriaSet.equals(db.getCriteriaSet().getFilteredCriteriaSet(reglement.getPlacementFilter()))) {
-							listDistancesEtBlason.add(db);
-							break;
-						}
-					}
-				}
-				rs.close();
-				reglement.setListDistancesEtBlason(listDistancesEtBlason);
-			}
-			
-			stmt.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
+	}
+
+	/**
+	 * @param name
+	 */
+	public Blason(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * @param name
+	 * @param horizontalRatio
+	 * @param verticalRation
+	 */
+	public Blason(String name, double horizontalRatio, double verticalRation) {
+		this.name = name;
+		this.horizontalRatio = horizontalRatio;
+		this.verticalRatio = verticalRation;
+	}
+	
+	/**
+	 * @param name
+	 * @param horizontalRatio
+	 * @param verticalRatio
+	 * @param numordre
+	 */
+	public Blason(String name, double horizontalRatio, double verticalRatio,
+			int numordre) {
+		this.name = name;
+		this.horizontalRatio = horizontalRatio;
+		this.verticalRatio = verticalRatio;
+		this.numordre = numordre;
+	}
+
+	public static List<Blason> listAvailableTargetFace() throws SQLException {
+		ArrayList<Blason> blasons = new ArrayList<Blason>();
+		
+		String sql = "select * from BLASONS order by NUMORDRE desc"; //$NON-NLS-1$
+		
+		Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+		ResultSet rs = stmt.executeQuery(sql);
+		while(rs.next()) {
+			blasons.add(BlasonBuilder.getBlason(rs));
 		}
 		
-		return reglement;
+		return blasons;
+	}
+
+	/**
+	 * @return name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name name à définir
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * @return horizontalRatio
+	 */
+	public double getHorizontalRatio() {
+		return horizontalRatio;
+	}
+
+	/**
+	 * @param horizontalRatio horizontalRatio à définir
+	 */
+	public void setHorizontalRatio(double horizontalRatio) {
+		this.horizontalRatio = horizontalRatio;
+	}
+
+	/**
+	 * @return verticalRation
+	 */
+	public double getVerticalRatio() {
+		return verticalRatio;
+	}
+
+	/**
+	 * @param verticalRation verticalRation à définir
+	 */
+	public void setVerticalRatio(double verticalRatio) {
+		this.verticalRatio = verticalRatio;
+	}
+	
+	/**
+	 * @return nbArcher
+	 */
+	public int getNbArcher() {
+		return nbArcher;
+	}
+
+	/**
+	 * @param nbArcher nbArcher à définir
+	 */
+	public void setNbArcher(int nbArcher) {
+		this.nbArcher = nbArcher;
+	}
+
+	/**
+	 * @return numordre
+	 */
+	public int getNumordre() {
+		return numordre;
+	}
+
+	/**
+	 * @param numordre numordre à définir
+	 */
+	public void setNumordre(int numordre) {
+		this.numordre = numordre;
+	}
+
+	/**
+	 * @return numblason
+	 */
+	public int getNumblason() {
+		return numblason;
+	}
+
+	/**
+	 * @param numblason numblason à définir
+	 */
+	public void setNumblason(int numblason) {
+		this.numblason = numblason;
+	}
+
+	public void save() throws SQLException {
+		String sql;
+		if(numblason > 0)
+			sql = "update BLASONS set NOMBLASON=?, HORIZONTAL_RATIO=?, VERTICAL_RATIO=? where NUMBLASON=" + numblason; //$NON-NLS-1$
+		else
+			sql = "insert into BLASONS (NOMBLASON, HORIZONTAL_RATIO, VERTICAL_RATIO) values (?, ?, ?)"; //$NON-NLS-1$
+		
+		PreparedStatement pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
+		
+		pstmt.setString(1, name);
+		pstmt.setDouble(2, horizontalRatio);
+		pstmt.setDouble(3, verticalRatio);
+		
+		pstmt.executeUpdate();
+		
+		if(numblason == 0) {
+			ResultSet clefs = pstmt.getGeneratedKeys();
+			if (clefs.first()) {
+				numblason = (Integer) clefs.getObject(1);
+			}
+		}
+	}
+	
+	public void delete() throws SQLException {
+		String sql = "delete from BLASONS where numblason=" + numblason; //$NON-NLS-1$
+		
+		Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+		stmt.executeUpdate(sql);
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final Blason other = (Blason) obj;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		return true;
+	}
+	
+	@Override
+	public String toString() {
+		return name;
 	}
 }

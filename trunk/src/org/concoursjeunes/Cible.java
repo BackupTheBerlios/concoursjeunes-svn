@@ -108,6 +108,7 @@ public class Cible {
 	private final Concurrent[] concurrents; // le liste des concurrents présents
 	// sur la cible
 	private int nbArcher = 0; // le nombre d'archer sur la cible
+	private int nbHandicap = 0;
 
 	private final EventListenerList listeners = new EventListenerList();
 
@@ -166,12 +167,32 @@ public class Cible {
 	}
 
 	/**
+	 * @return nbHandicap
+	 */
+	public int getNbHandicap() {
+		return nbHandicap;
+	}
+
+	/**
 	 * Retourne le nombre maximum d'archers pouvant être accepté sur la cible
 	 * 
 	 * @return le nombre maximum d'archer sur la cible
 	 */
 	public int getNbMaxArchers() {
 		return concurrents.length;
+	}
+	
+	/**
+	 * Determine si une position est reservé pour un archer handicape
+	 * ou non
+	 * 
+	 * @param position la position à tester
+	 * @return true si la position est reservé, false sinon
+	 */
+	public boolean isReservedPosition(int position) {
+		if(position % 2 == 1 && concurrents[position-1] != null && concurrents[position-1].isHandicape())
+			return true;
+		return false;
 	}
 
 	/**
@@ -200,30 +221,71 @@ public class Cible {
 	 * 
 	 * @return la position de concurrent ou -1 si echec
 	 */
-	public int insertConcurrent(Concurrent concurrent) {
+	public int insertConcurrent(Concurrent concurrent)
+			throws PlacementException {
 		int position = -1;
 
-		if (concurrent != null && nbArcher < concours.getParametre().getNbTireur()) {
-			if ((nbArcher > 0 && DistancesEtBlason.getDistancesEtBlasonForConcurrent(concours.getParametre().getReglement(), concurrent).equals(
-					getDistancesEtBlason()))
-					|| nbArcher == 0) {
-				for (int i = 0; i < concurrents.length; i++) {
-					if (concurrents[i] == null) {
-
-						concurrent.setCible(numCible);
-						concurrent.setPosition(i);
-
-						concurrents[i] = concurrent;
-						nbArcher++;
-
-						fireConcurrentJoined(concurrent);
-
-						position = i;
-
-						break;
+		if (concurrent != null) {
+			//verifie qu'il reste des places disponible
+			if(nbArcher < concours.getParametre().getNbTireur() - nbHandicap) {
+				//on valide l'insertion si il n'y a aucun archer sur la cible
+				//OU si les autre archers sont à la même distance
+				if ((nbArcher > 0 && DistancesEtBlason.getDistancesEtBlasonForConcurrent(concours.getParametre().getReglement(), concurrent).equals(
+						getDistancesEtBlason()))
+						|| nbArcher == 0) {
+					//si l'archer est handicapé, vérifié que les condition spécifique sont remplis
+					if(concurrent.isHandicape()) {
+						if(nbArcher < concours.getParametre().getNbTireur() - (nbHandicap+1)) {
+							//dans le cas d'un archer handicapé, on boucle sur les emplacements 2 à 2
+							for (int i = 0; i < concurrents.length; i+=2) {
+								if (concurrents[i] == null && concurrents[i+1] == null) {
+									concurrent.setCible(numCible);
+									concurrent.setPosition(i);
+									
+									concurrents[i] = concurrent;
+									nbArcher++;
+									nbHandicap++;
+									
+									fireConcurrentJoined(concurrent);
+									
+									position = i;
+									
+									break;
+								}
+							}
+						} else {
+							throw new PlacementException(PlacementException.Nature.POSITION_AVAILABLE_FOR_VALID_CONCURRENT);
+						}
+					} else {
+						//on boucle sur les emplacements et on remplit le premier qui est libre
+						for (int i = 0; i < concurrents.length; i++) {
+							if (concurrents[i] == null) {
+								if(i > 0 && concurrents[i-1] != null && concurrents[i-1].isHandicape())
+									continue;
+								concurrent.setCible(numCible);
+								concurrent.setPosition(i);
+		
+								concurrents[i] = concurrent;
+								nbArcher++;
+		
+								fireConcurrentJoined(concurrent);
+		
+								position = i;
+		
+								break;
+							}
+						}
 					}
+				} else {
+					throw new PlacementException(PlacementException.Nature.BAD_DISTANCESANDBLASONS);
 				}
+			} else {
+				if(nbHandicap > 0)
+					throw new PlacementException(PlacementException.Nature.POSITION_RESERVED_FOR_HANDICAP);
+				throw new PlacementException(PlacementException.Nature.ANY_AVAILABLE_POSITION);
 			}
+		} else {
+			throw new PlacementException(PlacementException.Nature.NULL_CONCURRENT);
 		}
 
 		return position;
@@ -284,31 +346,45 @@ public class Cible {
 	 * 
 	 * @param concurrent le concurrent à placer
 	 * @param position la positionn de ce concurrent
-	 * 
-	 * @return true si affectation avec succès, false sinon
 	 */
-	public boolean setConcurrentAt(Concurrent concurrent, int position) {
+	public void setConcurrentAt(Concurrent concurrent, int position) 
+			throws PlacementException {
 		if (concurrent != null) {
 			if (position == -1) {
-				return insertConcurrent(concurrent) > -1;
-			} else if (position >= 0 && position < concours.getParametre().getNbTireur()) {
-				if ((nbArcher > 0 && DistancesEtBlason.getDistancesEtBlasonForConcurrent(concours.getParametre().getReglement(), concurrent).equals(
-						getDistancesEtBlason()))
+				insertConcurrent(concurrent);
+				
+				return;
+			} else if (position >= 0 && position < concours.getParametre().getNbTireur() && !isReservedPosition(position)) {
+				if ((nbArcher > 0 && DistancesEtBlason.getDistancesEtBlasonForConcurrent(
+						concours.getParametre().getReglement(), concurrent).equals(getDistancesEtBlason()))
 						|| nbArcher == 0) {
+					if(concurrent.isHandicape() && position % 2 != 0)
+						throw new PlacementException(PlacementException.Nature.POSITION_AVAILABLE_FOR_VALID_CONCURRENT);
 					concurrent.setCible(numCible);
 					concurrent.setPosition(position);
 					if (concurrents[position] != null)
 						removeConcurrentAt(position);
-
+					
+					if (concurrent.isHandicape())
+						removeConcurrentAt(position+1);
+						
 					nbArcher++;
+					if (concurrent.isHandicape())
+						nbHandicap++;
 					concurrents[position] = concurrent;
 					fireConcurrentJoined(concurrent);
-
-					return true;
+					
+					return;
 				}
+				throw new PlacementException(PlacementException.Nature.BAD_DISTANCESANDBLASONS);
+			} else {
+				if(isReservedPosition(position))
+					throw new PlacementException(PlacementException.Nature.POSITION_RESERVED_FOR_HANDICAP);
+				throw new PlacementException(PlacementException.Nature.ANY_AVAILABLE_POSITION);
 			}
 		}
-		return false;
+		
+		throw new PlacementException(PlacementException.Nature.NULL_CONCURRENT);
 	}
 
 	/**
@@ -318,11 +394,13 @@ public class Cible {
 	 *            la position du concurrent à supprimer
 	 */
 	public void removeConcurrentAt(int position) {
-		if (position < concours.getParametre().getNbTireur() && concurrents[position] != null) {
+		if (position < concurrents.length && concurrents[position] != null) {
 			nbArcher--;
 
 			Concurrent removedConcurrent = concurrents[position];
 			removedConcurrent.setCible(0);
+			if(removedConcurrent.isHandicape())
+				nbHandicap--;
 
 			concurrents[position] = null;
 
@@ -384,7 +462,7 @@ public class Cible {
 	@Override
 	public String toString() {
 		String strCouleur = "<font color=\"#00AA00\">"; //$NON-NLS-1$
-		if (concours.getParametre().getNbTireur() == nbArcher)
+		if (concours.getParametre().getNbTireur() == nbArcher + nbHandicap)
 			strCouleur = "<font color=\"#0000FF\">"; //$NON-NLS-1$
 		String strCibleLibelle = "<html>" + strCouleur + "<b>" + ConcoursJeunes.ajrLibelle.getResourceString("treenode.cible") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				+ ((this.numCible < 10) ? "0" : "") //$NON-NLS-1$ //$NON-NLS-2$
@@ -399,10 +477,10 @@ public class Cible {
 					strCibleLibelle += db.getDistance()[i] + "m"; //$NON-NLS-1$
 				}
 			}
-			strCibleLibelle += ", " + db.getBlason() + "cm"; //$NON-NLS-1$ //$NON-NLS-2$
+			strCibleLibelle += ", " + db.getTargetFace().getName(); //$NON-NLS-1$
 		}
 
-		strCibleLibelle += ") (" + this.nbArcher + "/" + concours.getParametre().getNbTireur() + ")</font>"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		strCibleLibelle += ") (" + this.nbArcher + "/" + (concours.getParametre().getNbTireur() - nbHandicap) + ")</font>"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 		Hashtable<Entite, Integer> nbArcherByClub = new Hashtable<Entite, Integer>();
 		for (Concurrent concurrent : concurrents) {
@@ -439,8 +517,9 @@ public class Cible {
 	 *            l'index de la position
 	 * @return String - le libelle de la position
 	 */
+	@Deprecated
 	public static String getCibleLibelle(int cible, int position) {
-		return ((cible < 10) ? "0" : "") + cible + (char) ('A' + position); //$NON-NLS-1$ //$NON-NLS-2$
+		return new TargetPosition(cible, position).toString();
 	}
 
 	private void fireConcurrentJoined(Concurrent concurrent) {

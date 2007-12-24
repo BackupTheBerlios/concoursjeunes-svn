@@ -503,9 +503,9 @@ public class FicheConcours implements ParametreListener {
 			// classement sortie XML
 			tplClassementEquipe.parse("CURRENT_TIME", DateFormat.getDateInstance(DateFormat.MEDIUM).format(new Date())); //$NON-NLS-1$
 			tplClassementEquipe.parse("LOGO_CLUB_URI", ConcoursJeunes.configuration.getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			tplClassementEquipe.parse("INTITULE_CLUB", parametre.getClub().getNom()); //$NON-NLS-1$
-			tplClassementEquipe.parse("INTITULE_CONCOURS", parametre.getIntituleConcours()); //$NON-NLS-1$
-			tplClassementEquipe.parse("VILLE_CLUB", parametre.getLieuConcours()); //$NON-NLS-1$
+			tplClassementEquipe.parse("INTITULE_CLUB", XmlUtils.sanitizeText(parametre.getClub().getNom())); //$NON-NLS-1$
+			tplClassementEquipe.parse("INTITULE_CONCOURS", XmlUtils.sanitizeText(parametre.getIntituleConcours())); //$NON-NLS-1$
+			tplClassementEquipe.parse("VILLE_CLUB", XmlUtils.sanitizeText(parametre.getLieuConcours())); //$NON-NLS-1$
 			tplClassementEquipe.parse("DATE_CONCOURS", DateFormat.getDateInstance(DateFormat.LONG).format(parametre.getDate())); //$NON-NLS-1$
 
 			String strArbitreResp = ""; //$NON-NLS-1$
@@ -521,8 +521,8 @@ public class FicheConcours implements ParametreListener {
 				}
 			}
 
-			tplClassementEquipe.parse("ARBITRE_RESPONSABLE", strArbitreResp); //$NON-NLS-1$
-			tplClassementEquipe.parse("ARBITRES_ASSISTANT", strArbitresAss); //$NON-NLS-1$
+			tplClassementEquipe.parse("ARBITRE_RESPONSABLE", XmlUtils.sanitizeText(strArbitreResp)); //$NON-NLS-1$
+			tplClassementEquipe.parse("ARBITRES_ASSISTANT", XmlUtils.sanitizeText(strArbitresAss)); //$NON-NLS-1$
 			tplClassementEquipe.parse("NB_CLUB", "" + concurrentList.countCompagnie()); //$NON-NLS-1$ //$NON-NLS-2$
 			tplClassementEquipe.parse("NB_TIREURS", "" + concurrentList.countArcher()); //$NON-NLS-1$ //$NON-NLS-2$
 			tplClassementEquipe.parse("TYPE_CLASSEMENT", ConcoursJeunes.ajrLibelle.getResourceString("classement.equipe")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -548,15 +548,15 @@ public class FicheConcours implements ParametreListener {
 					String ptsXML = ""; //$NON-NLS-1$
 					for (Concurrent concurrent : sortEquipes[i].getMembresEquipe()) {
 						if (outType == OUT_XML) {
-							idsXML += concurrent.getID() + "<newline/>"; //$NON-NLS-1$
+							idsXML += XmlUtils.sanitizeText(concurrent.getID()) + "<newline/>"; //$NON-NLS-1$
 							ptsXML += concurrent.getTotalScore() + "<newline/>"; //$NON-NLS-1$
 						} else {
-							idsXML += concurrent.getID() + "<br>"; //$NON-NLS-1$
+							idsXML += XmlUtils.sanitizeText(concurrent.getID()) + "<br>"; //$NON-NLS-1$
 							ptsXML += concurrent.getTotalScore() + "<br>"; //$NON-NLS-1$
 						}
 					}
 					tplClassementEquipe.parse("categories.classement.IDENTITEES", idsXML); //$NON-NLS-1$
-					tplClassementEquipe.parse("categories.classement.NOM_EQUIPE", sortEquipes[i].getNomEquipe()); //$NON-NLS-1$
+					tplClassementEquipe.parse("categories.classement.NOM_EQUIPE", XmlUtils.sanitizeText(sortEquipes[i].getNomEquipe())); //$NON-NLS-1$
 					tplClassementEquipe.parse("categories.classement.TOTAL_INDIVIDUEL", ptsXML); //$NON-NLS-1$
 					tplClassementEquipe.parse("categories.classement.TOTAL_GENERAL", "" + sortEquipes[i].getTotalScore()); //$NON-NLS-1$ //$NON-NLS-2$
 	
@@ -696,7 +696,7 @@ public class FicheConcours implements ParametreListener {
 
 			listeArcherXML.parse("lignes.PAYEE", AJToolKit.tokenize(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.impression.inscription"), ",")[concurrent.getInscription()]); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			listeArcherXML.parse("lignes.CERTIFICAT", AJToolKit.tokenize(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.certificat"), ",")[concurrent.isCertificat() ? 0 : 1]); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			listeArcherXML.parse("lignes.CIBLE", concurrent.getCible() + "" + (char) ('A' + concurrent.getPosition())); //$NON-NLS-1$ //$NON-NLS-2$
+			listeArcherXML.parse("lignes.CIBLE", new TargetPosition(concurrent.getCible(), concurrent.getPosition()).toString()); //$NON-NLS-1$
 
 			listeArcherXML.loopBloc("lignes"); //$NON-NLS-1$
 		}
@@ -778,7 +778,7 @@ public class FicheConcours implements ParametreListener {
 				templateEtiquettesXML.parse("page.ligne.colonne.cid", concurrent.getID()); //$NON-NLS-1$
 				templateEtiquettesXML.parse("page.ligne.colonne.cclub", concurrent.getClub().getNom()); //$NON-NLS-1$
 				templateEtiquettesXML.parse("page.ligne.colonne.clicence", concurrent.getNumLicenceArcher()); //$NON-NLS-1$
-				templateEtiquettesXML.parse("page.ligne.colonne.emplacement", concurrent.getCible() + "" + (char) ('A' + concurrent.getPosition())); //$NON-NLS-1$ //$NON-NLS-2$
+				templateEtiquettesXML.parse("page.ligne.colonne.emplacement", new TargetPosition(concurrent.getCible(), concurrent.getPosition()).toString()); //$NON-NLS-1$
 				if (colonne + 1 == nblarg)
 					templateEtiquettesXML.parseBloc("page.ligne.colonne.interbloc", ""); //$NON-NLS-1$ //$NON-NLS-2$
 	
@@ -856,7 +856,7 @@ public class FicheConcours implements ParametreListener {
 				templatePasDeTirXML.parse("ligne.imgcible.ic.url_img_blason", //$NON-NLS-1$
 						ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + "/cible.jpg"); //$NON-NLS-1$ //$NON-NLS-2$
 				templatePasDeTirXML.parse("ligne.detail.dc.distance", "" + db.getDistance()[0]); //$NON-NLS-1$ //$NON-NLS-2$
-				templatePasDeTirXML.parse("ligne.detail.dc.blason", "" + db.getBlason()); //$NON-NLS-1$ //$NON-NLS-2$
+				templatePasDeTirXML.parse("ligne.detail.dc.blason", "" + db.getTargetFace().getName()); //$NON-NLS-1$ //$NON-NLS-2$
 			} else {
 				templatePasDeTirXML.parseBloc("ligne.numcible.nc", ""); //$NON-NLS-1$ //$NON-NLS-2$
 				templatePasDeTirXML.parseBloc("ligne.imgcible.ic", ""); //$NON-NLS-1$ //$NON-NLS-2$
@@ -903,12 +903,12 @@ public class FicheConcours implements ParametreListener {
 	/**
 	 * Genere l'etat classement equipe pour la fiche en parametre
 	 * 
-	 * @return true si impression avec succe, false sinon
+	 * @return true si impression avec succee, false sinon
 	 */
 	public boolean printClassementEquipe() {
 		Document document = new Document(PageSize.A4, 10, 10, 10, 65);
 		String classementEquipe = getClassementEquipe(OUT_XML);
-		if (!classementEquipe.equals("")) //$NON-NLS-1$
+		if (!classementEquipe.isEmpty())
 			return ConcoursJeunes.printDocument(document, classementEquipe);
 		return false;
 	}
@@ -978,6 +978,7 @@ public class FicheConcours implements ParametreListener {
 		assert pasDeTir.size() > 0 : "Il doit exister au moins un pas de tir"; //$NON-NLS-1$
 
 		if (parametreEvent.getParametre().getNbCible() != pasDeTir.get(0).getTargets().size() || parametreEvent.getParametre().getNbTireur() != pasDeTir.get(0).getTargets().get(0).getNbMaxArchers()) {
+			makePasDeTir();
 			if (parametreEvent.getParametre().getNbCible() < pasDeTir.get(0).getTargets().size()) {
 				for (int i = 0; i < parametre.getNbDepart(); i++) {
 					for (int j = parametreEvent.getParametre().getNbCible(); j < pasDeTir.get(i).getTargets().size(); j++) {
@@ -987,8 +988,8 @@ public class FicheConcours implements ParametreListener {
 					}
 				}
 			}
+		} else if(parametreEvent.getParametre().getNbDepart() != pasDeTir.size())
 			makePasDeTir();
-		}
 	}
 
 	private void fireConcurrentAdded(Concurrent concurrent) {
@@ -1010,10 +1011,5 @@ public class FicheConcours implements ParametreListener {
 
 			ficheConcoursListener.pasDeTirChanged(new FicheConcoursEvent(FicheConcoursEvent.PASDETIR_CHANGED, FicheConcoursEvent.ALL_START));
 		}
-	}
-	
-	@Override
-	public void finalize() {
-		System.out.println("FicheConcours: Objet récupéré"); //$NON-NLS-1$
 	}
 }

@@ -35,6 +35,8 @@ SetCompressor lzma
 # Included files
 !include Sections.nsh
 !include MUI.nsh
+!include dotnet.nsh
+!include java.nsh
 
 # Reserved Files
 !insertmacro MUI_RESERVEFILE_LANGDLL
@@ -75,12 +77,12 @@ VIAddVersionKey /LANG=${LANG_FRENCH} LegalCopyright "(c) 2007 Concoursjeunes.org
 InstallDirRegKey HKLM "${REGKEY}" Path
 ShowUninstDetails show
 
+InstType "Normal"
 InstType "Complete"
-#InstType "normal"
 
 # Installer sections
 Section "Base" SEC0000
-    SectionIn RO 1
+    SectionIn RO 1 2
     SetOverwrite on
     SetOutPath $INSTDIR\config
     File /r config\*
@@ -100,11 +102,15 @@ Section "Base" SEC0000
     File windows\concoursjeunes-applyupdate.exe.manifest
     File windows\concoursjeunes-startup.exe
     File windows\concoursjeunes-startup.exe.manifest
+    File windows\concoursjeunes-startup.exe.config
     WriteRegStr HKLM "${REGKEY}\Components" Base 1
+    
+    Call DetectDotNet
+    Call DetectJRE
 SectionEnd
 
 Section "Import Result'Arc" SEC0001
-    SectionIn 1
+    SectionIn 1 2
     SetOverwrite on
     SetOutPath $INSTDIR
     File /r plugins\FFTAImport\*
@@ -113,7 +119,7 @@ Section "Import Result'Arc" SEC0001
 SectionEnd
 
 Section "Icone de Bureau" SEC0002
-    SectionIn 1
+    SectionIn 1 2
     SetOverwrite on
 
     !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
@@ -125,6 +131,7 @@ Section "Icone de Bureau" SEC0002
 SectionEnd
 
 Section "Option de Debugage" SEC0003
+	SectionIn 2
     SetOverwrite on
 
     !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
@@ -175,7 +182,7 @@ Section /o un.Base UNSEC0000
     DeleteRegValue HKLM "${REGKEY}\Components" Base
 SectionEnd
 
-Section /o "un.Import Reslut'Arc" UNSEC0001
+Section /o "un.Import Result'Arc" UNSEC0001
     RmDir /r /REBOOTOK $INSTDIR\plugins\FFTAImport
     DeleteRegValue HKLM "${REGKEY}\Components" "Import Result'Arc"
 SectionEnd

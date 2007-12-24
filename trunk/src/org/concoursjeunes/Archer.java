@@ -99,6 +99,7 @@ public class Archer {
 	private String numLicenceArcher = ""; //$NON-NLS-1$
 	private Entite club             = new Entite();
 	private boolean certificat      = false;
+	private boolean handicape		= false;
 
 	/**
 	 * Constructeur vide nécessaire à l'initialisation correct de l'objet
@@ -195,6 +196,20 @@ public class Archer {
 	 */
 	public void setCertificat(boolean certificat) {
 		this.certificat = certificat;
+	}
+
+	/**
+	 * @return handicape
+	 */
+	public boolean isHandicape() {
+		return handicape;
+	}
+
+	/**
+	 * @param handicape handicape à définir
+	 */
+	public void setHandicape(boolean handicape) {
+		this.handicape = handicape;
 	}
 
 	/**

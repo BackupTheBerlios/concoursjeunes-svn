@@ -1,5 +1,5 @@
 /*
- * Créé le 17/03/2007 à 11:10 pour ConcoursJeunes
+ * Créer le 23 déc. 07 à 11:42:29 pour ConcoursJeunes
  *
  * Copyright 2002-2007 - Aurélien JEOFFRAY
  *
@@ -86,116 +86,128 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+package org.concoursjeunes.test;
 
-package org.concoursjeunes;
+import static org.junit.Assert.*;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
+import java.io.File;
+import java.io.IOException;
+
+import javax.naming.ConfigurationException;
+
+import org.concoursjeunes.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import ajinteractive.standard.utilities.io.FileUtil;
 
 /**
- * <p>
- * Les réglements son stoqué dans la base de donnée. La présente fabrique
- * permet soit de créer un nouveau réglement, soit d'extraire un réglement
- * de la base en se basant sur son nom.
- * </p>
- * 
  * @author Aurélien JEOFFRAY
- * @version 1.0
  *
  */
-public class ReglementBuilder {
-	
-	/**
-	 * Crée un nouveau reglement de concours
-	 * 
-	 * @return le reglement créer
-	 */
-	public static Reglement createReglement() {
-		return createReglement(0);
-	}
-	
-	/**
-	 * <p>
-	 * Retourne le reglement qualifié par son nom en recherchant l'entrée
-	 * dans la base de donnée. Si aucun réglement, celui ci est initialisé par défaut
-	 * (équivalent à createReglement()).
-	 * </p>
-	 * <p>
-	 * Pour fonctionner correctement, "ConcoursJeunes.dbConnection" dooit auparavent être
-	 * correctement instancié.
-	 * </p>
-	 * 
-	 * @param reglementName - le nom du reglement à retourner
-	 * @return - le reglement retourné
-	 */
-	public static Reglement createReglement(String reglementName) {
-		return createReglement(-1, reglementName);
-	}
-	
-	public static Reglement createReglement(int numreglement) {
-		return createReglement(numreglement, null);
-	}
-	
-	private static Reglement createReglement(int numreglement, String reglementName) {
+public class ConfigurationManagerTest {
 
-		Reglement reglement = new Reglement();
+	//ConcoursJeunes engine;
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+		//engine = ConcoursJeunes.getInstance();
+	}
+
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@After
+	public void tearDown() throws Exception {
+	}
+
+	/**
+	 * Test method for {@link org.concoursjeunes.ConfigurationManager#loadCurrentConfiguration()}.
+	 */
+	@Test
+	public void testLoadCurrentConfiguration() {
+		assertNotNull(ConfigurationManager.loadCurrentConfiguration());
+	}
+
+	/**
+	 * Test method for {@link org.concoursjeunes.ConfigurationManager#loadConfiguration(java.lang.String)}.
+	 */
+	@Test
+	public void testLoadConfigurationString() {
+		assertNotNull(ConfigurationManager.loadConfiguration("defaut")); //$NON-NLS-1$
+	}
+
+	/**
+	 * Test method for {@link org.concoursjeunes.ConfigurationManager#loadConfiguration(java.io.File)}.
+	 */
+	@Test
+	public void testLoadConfigurationFile() {
+		assertNotNull(ConfigurationManager.loadConfiguration(new File(ConcoursJeunes.userRessources.getConfigPathForUser() 
+				+ File.separator + "configuration_defaut.xml"))); //$NON-NLS-1$
+	}
+
+	/**
+	 * Test method for {@link org.concoursjeunes.ConfigurationManager#renameConfiguration(java.lang.String, java.lang.String)}.
+	 */
+	@Test
+	public void testRenameConfiguration() {
+		Configuration configuration = new Configuration();
+		configuration.setCurProfil("test_rename_orig");
+		configuration.save();
 		
-		try {
-			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
-			
-			String sql = ""; //$NON-NLS-1$
-			if(numreglement > -1)
-				sql = "select * from REGLEMENT where NUMREGLEMENT=" + numreglement; //$NON-NLS-1$
-			else
-				sql = "select * from REGLEMENT where NOMREGLEMENT='" + reglementName + "'"; //$NON-NLS-1$ //$NON-NLS-2$
-			
-			ResultSet rs = stmt.executeQuery(sql);
-			if(rs.first()) {
-				int numreglment = rs.getInt("NUMREGLEMENT"); //$NON-NLS-1$
-				
-				reglement.setName(rs.getString("NOMREGLEMENT")); //$NON-NLS-1$
-				reglement.setNbSerie(rs.getInt("NBSERIE")); //$NON-NLS-1$
-				reglement.setNbVoleeParSerie(rs.getInt("NBVOLEEPARSERIE")); //$NON-NLS-1$
-				reglement.setNbFlecheParVolee(rs.getInt("NBFLECHEPARVOLEE")); //$NON-NLS-1$
-				reglement.setNbMembresEquipe(rs.getInt("NBMEMBRESEQUIPE")); //$NON-NLS-1$
-				reglement.setNbMembresRetenu(rs.getInt("NBMEMBRESRETENU")); //$NON-NLS-1$
-				reglement.setOfficialReglement(rs.getBoolean("ISOFFICIAL")); //$NON-NLS-1$
-				
-				rs.close();
-				
-				ArrayList<Criterion> criteria = new ArrayList<Criterion>();
-				rs = stmt.executeQuery("select CODECRITERE from CRITERE where NUMREGLEMENT=" + numreglment); //$NON-NLS-1$
-				while(rs.next()) {
-					criteria.add(CriterionBuilder.getCriterion(rs.getString("CODECRITERE"), reglement, numreglment)); //$NON-NLS-1$
-				}
-				rs.close();
-				reglement.setListCriteria(criteria);
-				
-				ArrayList<DistancesEtBlason> listDistancesEtBlason = new ArrayList<DistancesEtBlason>();
-				rs = stmt.executeQuery("select * from DISTANCESBLASONS where NUMREGLEMENT=" + numreglment); //$NON-NLS-1$
-				while(rs.next()) {
-					int numdb = rs.getInt("NUMDISTANCESBLASONS"); //$NON-NLS-1$
-					
-					DistancesEtBlason db = DistancesEtBlasonBuilder.getDistancesEtBlason(numdb, reglement, numreglment);
-					CriteriaSet[] criteriaSets = CriteriaSet.listCriteriaSet(reglement, reglement.getPlacementFilter());
-					for(CriteriaSet criteriaSet : criteriaSets) {
-						if(criteriaSet.equals(db.getCriteriaSet().getFilteredCriteriaSet(reglement.getPlacementFilter()))) {
-							listDistancesEtBlason.add(db);
-							break;
-						}
-					}
-				}
-				rs.close();
-				reglement.setListDistancesEtBlason(listDistancesEtBlason);
+		ConcoursJeunes concoursJeunes = ConcoursJeunes.getInstance();
+		
+		String actualProfile = ConcoursJeunes.configuration.getCurProfil();
+		ConcoursJeunes.configuration.save();
+		
+		configuration.saveAsDefault();
+		ConcoursJeunes.configuration = configuration;
+		
+		
+		/*concoursJeunes.addConcoursJeunesListener(new ConcoursJeunesListener() {
+			public void ficheConcoursCreated(ConcoursJeunesEvent concoursJeunesEvent) {
+				concoursJeunesEvent.getFicheConcours().getMetaDataFicheConcours().
 			}
+			public void ficheConcoursDeleted(ConcoursJeunesEvent concoursJeunesEvent) { }
+			public void ficheConcoursClosed(ConcoursJeunesEvent concoursJeunesEvent) { }
+			public void ficheConcoursRestored(ConcoursJeunesEvent concoursJeunesEvent) { }
+		});*/
+		try {
+			concoursJeunes.createFicheConcours();
+			concoursJeunes.saveAllFichesConcours();
 			
-			stmt.close();
-		} catch (SQLException e) {
+			assertFalse("Il est interdit de renommer le profil par defaut", ConfigurationManager.renameConfiguration("defaut", "test_rename"));
+			//test l'absence d'erreur dans l'etat d'origine
+			assertTrue(new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "Profile/test_rename_orig").exists());
+			
+			assertTrue(ConfigurationManager.renameConfiguration("test_rename_orig", "test_rename"));
+			assertTrue(new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "configuration_test_rename.xml").exists());
+			assertFalse(new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "configuration_test_rename_orig.xml").exists());
+			
+			assertTrue(new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "Profile/test_rename").exists());
+			assertFalse(new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "Profile/test_rename_orig").exists());
+			assertTrue(new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "Profile/test_rename").listFiles().length > 0);
+		} catch (ConfigurationException e) {
+			fail(e.getMessage());
+			e.printStackTrace();
+		} catch (IOException e) {
+			fail(e.getMessage());
 			e.printStackTrace();
 		}
 		
-		return reglement;
+		assertTrue(new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "configuration_test_rename.xml").delete());
+		try {
+			FileUtil.deleteFilesPath(new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "Profile/test_rename"));
+			new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "Profile/test_rename").delete();
+		} catch (IOException e) {
+			fail(e.getMessage());
+			e.printStackTrace();
+		}
+		
+		ConfigurationManager.loadConfiguration(actualProfile).saveAsDefault();
 	}
+
 }

@@ -103,6 +103,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import javax.naming.ConfigurationException;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -571,7 +572,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		tbParamGeneral.setTitle(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.general.titre1")); //$NON-NLS-1$
 
 		jbRenameProfile.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.general.renameprofile")); //$NON-NLS-1$
-		jbParcourir.setText("...");
+		jbParcourir.setText("..."); //$NON-NLS-1$
 		jbDetail.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.detail")); //$NON-NLS-1$
 		if (jbLogoPath.getText().equals("")) //$NON-NLS-1$
 			jbLogoPath.setText(ConcoursJeunes.ajrLibelle.getResourceString("parametre.logo")); //$NON-NLS-1$
@@ -644,7 +645,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		jcbProfil.setSelectedItem(configuration.getCurProfil());
 		jcbProfil.addActionListener(this);
 		
-		if(configuration.getCurProfil().equals("defaut")) //$NON-NLS-1$
+		if(configuration.getCurProfil().equals("defaut") /*|| !configuration.getCurProfil().equals(ConcoursJeunes.configuration.getCurProfil())*/) //$NON-NLS-1$
 			jbRenameProfile.setEnabled(false);
 		else
 			jbRenameProfile.setEnabled(true);
@@ -792,6 +793,8 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	}
 
 	public Configuration showConfigurationDialog(Configuration configuration) {
+		configuration.save();
+		
 		this.workConfiguration = configuration;
 
 		completePanel(workConfiguration);
@@ -991,7 +994,17 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 				renameProfile = true;
 
 				int insIndex = jcbProfil.getSelectedIndex();
-				//if(renameProfile(strP)) {
+				
+				try {
+					renamedProfile = ConfigurationManager.renameConfiguration(workConfiguration.getCurProfil(), strP);
+				} catch (ConfigurationException e1) {
+					renamedProfile = false;
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					renamedProfile = false;
+					e1.printStackTrace();
+				}
+				if(renamedProfile) {
 					jcbProfil.removeItem(workConfiguration.getCurProfil());
 	
 					workConfiguration.setCurProfil(strP);
@@ -1001,6 +1014,9 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 					jcbProfil.setSelectedIndex(insIndex);
 					
 					renamedProfile = true;
+				} else {
+					JOptionPane.showMessageDialog(this, "l'opération à échoué", "Renomage impossible", JOptionPane.ERROR_MESSAGE);
+				}
 				/*} else {
 					JOptionPane.showMessageDialog(this, "Il existe déjà un profil portant ce nom", "Renomage impossible", JOptionPane.ERROR_MESSAGE);
 				}*/

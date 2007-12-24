@@ -1,4 +1,11 @@
 #!/bin/sh
 
 chmod -R a+Xrw /var/lib/ConcoursJeunes
+if [ -x /usr/bin/gksu ] ; then
+	echo "gksu /usr/sbin/concoursjeunes-applyupdate \$1 \$2" > /usr/bin/concoursjeunes-applyupdate
+else if [ -x /usr/bin/kdesu ] ; then
+	echo "kdesu /usr/sbin/concoursjeunes-applyupdate \$1 \$2" > /usr/bin/concoursjeunes-applyupdate
+fi
+fi
+
 chmod 700 /usr/sbin/concoursjeunes-applyupdate

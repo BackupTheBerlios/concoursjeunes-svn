@@ -1,5 +1,5 @@
 /*
- * Créer le 22 mai 07 à 15:43:45 pour ConcoursJeunes
+ * Créer le 21 nov. 07 à 11:21:11 pour ConcoursJeunes
  *
  * Copyright 2002-2007 - Aurélien JEOFFRAY
  *
@@ -88,83 +88,50 @@
  */
 package org.concoursjeunes;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-
 /**
  * @author Aurélien JEOFFRAY
  *
  */
-public class DistancesEtBlasonBuilder {
-	public static DistancesEtBlason getDistancesEtBlason(int numdistancesblason, Reglement reglement, int hashReglement) {
-		PreparedStatement pstmt = null;
-		DistancesEtBlason distancesEtBlason = null;
-		
-		try {
-			String sql = "select * from DISTANCESBLASONS where " + //$NON-NLS-1$
-					"NUMDISTANCESBLASONS=? and NUMREGLEMENT=?"; //$NON-NLS-1$
-			
-			pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
-			
-			pstmt.setInt(1, numdistancesblason);
-			pstmt.setInt(2, hashReglement);
-			
-			ResultSet rs = pstmt.executeQuery();
-			
-			if(rs.first()) {
-				distancesEtBlason = new DistancesEtBlason();
-				if(hashReglement != 0)
-					distancesEtBlason.setNumdistancesblason(numdistancesblason);
-				distancesEtBlason.setReglement(reglement);
-				distancesEtBlason.setTargetFace(BlasonBuilder.getBlasons(numdistancesblason, hashReglement));
-				//distancesEtBlason.setBlason(rs.getInt("BLASONS")); //$NON-NLS-1$
-				
-				pstmt.close();
-				
-				sql = "select * from ASSOCIER where " + //$NON-NLS-1$
-						"NUMDISTANCESBLASONS=? and NUMREGLEMENT=?"; //$NON-NLS-1$
-				pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
-				
-				pstmt.setInt(1, numdistancesblason);
-				pstmt.setInt(2, hashReglement);
-				
-				rs = pstmt.executeQuery();
-				
-				if(rs.first()) {
-					distancesEtBlason.setCriteriaSet(CriteriaSetBuilder.getCriteriaSet(rs.getInt("NUMCRITERIASET"), reglement, hashReglement)); //$NON-NLS-1$
-				} else {
-					return null;
-				}
-				
-				pstmt.close();
-				
-				sql = "select * from distances where " + //$NON-NLS-1$
-						"NUMDISTANCESBLASONS=? and NUMREGLEMENT=?"; //$NON-NLS-1$
-				pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
-				
-				pstmt.setInt(1, numdistancesblason);
-				pstmt.setInt(2, hashReglement);
-				
-				rs = pstmt.executeQuery();
-				ArrayList<Integer> distances = new ArrayList<Integer>();
-				while(rs.next()) {
-					distances.add(rs.getInt("DISTANCE")); //$NON-NLS-1$
-				}
-				int[] iDist = new int[distances.size()];
-				for(int i = 0; i < iDist.length; i++)
-					iDist[i] = distances.get(i);
-				distancesEtBlason.setDistance(iDist);
-				
-				pstmt.close();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try { if(pstmt != null && !pstmt.isClosed()) pstmt.close(); } catch (SQLException e) { }
-		}
-		
-		return distancesEtBlason;
+public class TargetPosition {
+	private int target = 0;
+	private int position = 0;
+	
+	/**
+	 * @param target
+	 * @param position
+	 */
+	public TargetPosition(int target, int position) {
+		super();
+		this.target = target;
+		this.position = position;
+	}
+	/**
+	 * @return target
+	 */
+	public int getTarget() {
+		return target;
+	}
+	/**
+	 * @param target target à définir
+	 */
+	public void setTarget(int target) {
+		this.target = target;
+	}
+	/**
+	 * @return position
+	 */
+	public int getPosition() {
+		return position;
+	}
+	/**
+	 * @param position position à définir
+	 */
+	public void setPosition(int position) {
+		this.position = position;
+	}
+	
+	@Override
+	public String toString() {
+		return ((target < 10) ? "0" : "") + target + (char) ('A' + position); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 }

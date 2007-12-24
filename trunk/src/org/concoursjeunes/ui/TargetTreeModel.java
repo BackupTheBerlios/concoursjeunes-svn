@@ -15,6 +15,7 @@ import org.concoursjeunes.Cible;
 import org.concoursjeunes.CibleEvent;
 import org.concoursjeunes.CibleListener;
 import org.concoursjeunes.Concurrent;
+import org.concoursjeunes.TargetPosition;
 
 /**
  * @author Aurélien JEOFFRAY
@@ -116,7 +117,7 @@ public class TargetTreeModel implements TreeModel, CibleListener {
 			Cible cibleParent = (Cible) parent;
 			Concurrent concurrent = cibleParent.getConcurrentAt(index);
 			if (concurrent == null)
-				return Cible.getCibleLibelle(cibleParent.getNumCible(), index);
+				return new TargetPosition(cibleParent.getNumCible(), index);
 			return concurrent;
 		}
 		return null;
@@ -150,8 +151,8 @@ public class TargetTreeModel implements TreeModel, CibleListener {
 			if (child instanceof Concurrent) {
 				return cibleParent.indexOf((Concurrent) child);
 			}
-			String label = (String) child;
-			return label.charAt(label.length() - 1) - 'A';
+			TargetPosition targetPosition = (TargetPosition) child;
+			return targetPosition.getPosition();
 		}
 		return -1;
 	}
@@ -195,7 +196,7 @@ public class TargetTreeModel implements TreeModel, CibleListener {
 	 * @see javax.swing.tree.TreeModel#isLeaf(java.lang.Object)
 	 */
 	public boolean isLeaf(Object node) {
-		if ((node != rootLabel && node instanceof String) || node instanceof Concurrent)
+		if (node instanceof TargetPosition || node instanceof Concurrent)
 			return true;
 		return false;
 	}

@@ -278,7 +278,7 @@ public class ConcurrentList {
 	 * 
 	 * @return la liste des concurrents correspondant aux criteres de recherche
 	 */
-	public Concurrent[] list(Reglement reglement, DistancesEtBlason distancesEtBlason, int depart) {
+	public Concurrent[] list(Reglement reglement, DistancesEtBlason distancesEtBlason, int depart, boolean handicap) {
 
 		assert distancesEtBlason != null;
 
@@ -288,8 +288,11 @@ public class ConcurrentList {
 			if(depart == -1 || concurrent.getDepart() == depart) {
 				DistancesEtBlason db = DistancesEtBlason.getDistancesEtBlasonForConcurrent(reglement, concurrent);
 
-				if(distancesEtBlason == null || db.equals(distancesEtBlason))
+				if(distancesEtBlason == null || db.equals(distancesEtBlason)) {
 					sel.add(concurrent);
+					if(handicap && concurrent.isHandicape())
+						sel.add(concurrent);
+				}
 			}
 		}
 
@@ -537,7 +540,7 @@ public class ConcurrentList {
 			}
 			for(int i = 0; i < alDB.size() - 1; i++) {
 				for(int j = i + 1; j < alDB.size(); j++) {
-					if(alDB.get(i).getBlason() > alDB.get(j).getBlason() && alDB.get(i).getDistance()[0] == alDB.get(j).getDistance()[0]) {
+					if(alDB.get(i).getTargetFace().getNumordre() > alDB.get(j).getTargetFace().getNumordre() && alDB.get(i).getDistance()[0] == alDB.get(j).getDistance()[0]) {
 						DistancesEtBlason temp = alDB.get(i);
 						alDB.set(i, alDB.get(j));
 						alDB.set(j, temp);
@@ -609,7 +612,11 @@ public class ConcurrentList {
 	 * @return le nombre d'archer sur une distance donné
 	 */
 	public int countArcher(Reglement reglement, DistancesEtBlason distancesEtBlason, int depart) {
-		return list(reglement, distancesEtBlason, depart).length;
+		return list(reglement, distancesEtBlason, depart, false).length;
+	}
+	
+	public int countArcher(Reglement reglement, DistancesEtBlason distancesEtBlason, int depart, boolean handicap) {
+		return list(reglement, distancesEtBlason, depart, handicap).length;
 	}
 
 	/**

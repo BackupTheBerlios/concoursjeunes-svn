@@ -20,7 +20,7 @@
 		<row>
 			<bloc::detail>
 			<cell>
-				<bloc::dc><paragraph size="18.0" fontstyle="bold">{distance}m<newline/>{blason}cm</paragraph></bloc::dc>
+				<bloc::dc><paragraph size="18.0" fontstyle="bold">{distance}m<newline/>{blason}</paragraph></bloc::dc>
 			</cell>
 			</bloc::detail>
 		</row>

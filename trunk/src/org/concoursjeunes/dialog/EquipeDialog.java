@@ -372,7 +372,7 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 
 		// selectionner le 1er élément
 		// treeEquipes.setSelectionRow(0);
-		expandPath(treeEquipes, new TreePath(treeRoot.getPath()));
+		expandPath(treeEquipes, new TreePath(treeRoot.getPath()), (cbEquipeClub.isSelected())?1:0);
 	}
 
 	/**
@@ -424,15 +424,17 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 
 		// selectionner le 1er élément
 		// treeEquipes.setSelectionRow(0);
-		expandPath(treeEquipes, new TreePath(dmtnCategorie.getPath()));
+		expandPath(treeEquipes, new TreePath(dmtnCategorie.getPath()), (club!=null)?1:0);
 	}
 
-	private void expandPath(JTree tree, TreePath treePath) {
+	private void expandPath(JTree tree, TreePath treePath, int profondeur) {
 		tree.expandPath(treePath);
 
-		DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) treePath.getLastPathComponent();
-		for (int i = 0; i < treeNode.getChildCount(); i++) {
-			expandPath(tree, new TreePath(((DefaultMutableTreeNode) treeNode.getChildAt(i)).getPath()));
+		if(profondeur > 0) {
+			DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) treePath.getLastPathComponent();
+			for (int i = 0; i < treeNode.getChildCount(); i++) {
+				expandPath(tree, new TreePath(((DefaultMutableTreeNode) treeNode.getChildAt(i)).getPath()), --profondeur);
+			}
 		}
 	}
 

@@ -105,6 +105,7 @@ import java.util.Hashtable;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -129,6 +130,7 @@ import org.concoursjeunes.DistancesEtBlason;
 import org.concoursjeunes.Entite;
 import org.concoursjeunes.FicheConcours;
 import org.concoursjeunes.OccupationCibles;
+import org.concoursjeunes.TargetPosition;
 import org.concoursjeunes.ui.ConcoursJeunesFrame;
 
 import ajinteractive.standard.common.AJToolKit;
@@ -172,6 +174,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	private final JButton jbSelectionArcher = new JButton();
 	private final JButton jbEditerArcher = new JButton();
 	private final JTextField jtfLicence = new JTextField(16);// Numero de
+	private final JCheckBox jcbHandicape = new JCheckBox();
 	// licence
 	private final Hashtable<Criterion, JLabel> jlCategrieTable = new Hashtable<Criterion, JLabel>();
 	private final Hashtable<Criterion, JComboBox> jcbCategorieTable = new Hashtable<Criterion, JComboBox>();
@@ -334,6 +337,9 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		gridbagComposer.addComponentIntoGrid(jlLicence, c);
 		c.gridwidth = 4;
 		gridbagComposer.addComponentIntoGrid(jtfLicence, c);
+		c.gridy++;
+		c.gridwidth = 5;
+		gridbagComposer.addComponentIntoGrid(jcbHandicape, c);
 		for (Criterion key : ficheConcours.getParametre().getReglement().getListCriteria()) {
 			c.gridy++;
 			c.fill = GridBagConstraints.HORIZONTAL;
@@ -430,6 +436,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		jlDescription.setBackground(new Color(255, 255, 225));
 		jlNom.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.identite")); // Nom et prénom du Tireur //$NON-NLS-1$
 		jlLicence.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.numlicence")); // N° de Licence //$NON-NLS-1$
+		jcbHandicape.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.handicap")); // Archer handicapé? //$NON-NLS-1$
 		jlClub.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.nomclub")); // nom du club //$NON-NLS-1$
 		jlAgrement.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.agrementclub")); // n°agrement du club //$NON-NLS-1$
 		jlCible.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.cible")); // cible attribué //$NON-NLS-1$
@@ -448,7 +455,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			jcbCategorieTable.get(key).removeAllItems();
 			for (CriterionElement element : key.getCriterionElements()) {
 				if (element.isActive())
-					jcbCategorieTable.get(key).addItem(element.getLibelle());
+					jcbCategorieTable.get(key).addItem(element);
 			}
 		}
 
@@ -480,6 +487,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		jtfNom.setEditable(!isinit);
 		jtfPrenom.setEditable(!isinit);
 		jtfLicence.setEditable(!isinit);
+		jcbHandicape.setEnabled(!isinit);
 
 		for (Criterion key : ficheConcours.getParametre().getReglement().getListCriteria()) {
 			jcbCategorieTable.get(key).setEnabled(!isinit);
@@ -504,6 +512,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			jtfPrenom.setText(concurrent.getPrenomArcher());
 			jtfLicence.setText(concurrent.getNumLicenceArcher());
 		}
+		jcbHandicape.setSelected(concurrent.isHandicape());
 		if (jtfClub.getDocument() instanceof AutoCompleteDocument) {
 			((AutoCompleteDocument) jtfClub.getDocument()).setText(entiteConcurrent.getVille());
 			((AutoCompleteDocument) jtfAgrement.getDocument()).setText(entiteConcurrent.getAgrement());
@@ -514,11 +523,14 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		if (concurrent.getCriteriaSet() != null) {
 			for (Criterion key : ficheConcours.getParametre().getReglement().getListCriteria()) {
 				CriterionElement element = concurrent.getCriteriaSet().getCriterionElement(key);
-				jcbCategorieTable.get(key).setSelectedIndex(key.getCriterionElements().indexOf(element));
+				if(element != null)
+					jcbCategorieTable.get(key).setSelectedItem(element);
+				else
+					jcbCategorieTable.get(key).setSelectedIndex(0);
 			}
 		}
 
-		jlValCible.setText(concurrent.getCible() + "" + (char) ('A' + concurrent.getPosition())); //$NON-NLS-1$
+		jlValCible.setText(new TargetPosition(concurrent.getCible(), concurrent.getPosition()).toString());
 
 		ArrayList<Integer> score = concurrent.getScore();
 		if (score.size() > 0) {
@@ -547,9 +559,10 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	 * @param depart -
 	 *            le depart affecté au concurrent
 	 */
-	public int showNewConcurrentDialog() {
+	public int showNewConcurrentDialog(int depart) {
 
 		Concurrent concurrent = new Concurrent();
+		concurrent.setDepart(depart);
 
 		AutoCompleteDocument acdNom = new AutoCompleteDocument(jtfNom, AutoCompleteDocument.SearchType.NAME_SEARCH, ficheConcours.getParametre().getReglement());
 		acdNom.addAutoCompleteDocumentListener(this);
@@ -673,7 +686,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			strPlaceLibre += "<i>" + //$NON-NLS-1$
 					strCategoriePlacement + "(" + //$NON-NLS-1$
 					distAndBlas.getDistance()[0] + "m/" + //$NON-NLS-1$
-					distAndBlas.getBlason() + "cm)</i><br>\n"; //$NON-NLS-1$
+					distAndBlas.getTargetFace().getName() + ")</i><br>\n"; //$NON-NLS-1$
 			strPlaceLibre += "&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\">" + //$NON-NLS-1$
 					ConcoursJeunes.ajrLibelle.getResourceString("concurrent.placelibre.occupee") + //$NON-NLS-1$
 					" " + occupationCibles.get(distAndBlas).getPlaceOccupe() + "</font>"; //$NON-NLS-1$ //$NON-NLS-2$
@@ -688,13 +701,17 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		return strPlaceLibre;
 	}
 
-	private ArrayList<Integer> readScores() {
+	private ArrayList<Integer> readScores() throws NumberFormatException {
 		ArrayList<Integer> points = new ArrayList<Integer>();
-		for (int i = 0; i < tfpd.length; i++) {
-			if (points.size() > i)
-				points.set(i, Integer.parseInt(tfpd[i].getText()));
-			else
-				points.add(Integer.parseInt(tfpd[i].getText()));
+		try {
+			for (int i = 0; i < tfpd.length; i++) {
+				if (points.size() > i)
+					points.set(i, Integer.parseInt(tfpd[i].getText()));
+				else
+					points.add(Integer.parseInt(tfpd[i].getText()));
+			}
+		} catch(NumberFormatException e) {
+			throw e;
 		}
 
 		return points;
@@ -703,7 +720,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	private CriteriaSet readCriteriaSet() {
 		CriteriaSet differentiationCriteria = new CriteriaSet();
 		for (Criterion key : ficheConcours.getParametre().getReglement().getListCriteria()) {
-			CriterionElement criterionElement = key.getCriterionElements().get(jcbCategorieTable.get(key).getSelectedIndex());
+			CriterionElement criterionElement = (CriterionElement)jcbCategorieTable.get(key).getSelectedItem();
 			differentiationCriteria.setCriterionElement(key, criterionElement);
 		}
 
@@ -792,56 +809,79 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			if (concurrent == null)
 				concurrent = new Concurrent();
 			
-			if(concurrent.getCriteriaSet() != null) {
-				DistancesEtBlason db1 = DistancesEtBlason.getDistancesEtBlasonForConcurrent(ficheConcours.getParametre().getReglement(), concurrent);
+			//evite de modifier l'objet concurrent avant d'avoir
+			//validé les paramêtres
+			Concurrent tempConcurrent = concurrent.clone();
+			if(tempConcurrent.getCriteriaSet() != null) {
+				DistancesEtBlason db1 = DistancesEtBlason.getDistancesEtBlasonForConcurrent(ficheConcours.getParametre().getReglement(), tempConcurrent);
 				
 				// fixe le jeux de critères definissant le concurrent
 				CriteriaSet differentiationCriteria = readCriteriaSet();
-				concurrent.setCriteriaSet(differentiationCriteria);
+				tempConcurrent.setCriteriaSet(differentiationCriteria);
 				
-				DistancesEtBlason db2 = DistancesEtBlason.getDistancesEtBlasonForConcurrent(ficheConcours.getParametre().getReglement(), concurrent);
+				DistancesEtBlason db2 = DistancesEtBlason.getDistancesEtBlasonForConcurrent(ficheConcours.getParametre().getReglement(), tempConcurrent);
 				
-				if(!db1.equals(db2)) {
-					ficheConcours.getPasDeTir(concurrent.getDepart()).retraitConcurrent(concurrent);
+				if(db1 != null && !db1.equals(db2)) {
+					ficheConcours.getPasDeTir(tempConcurrent.getDepart()).retraitConcurrent(tempConcurrent);
 				}
 			} else {
 				// fixe le jeux de critères definissant le concurrent
 				CriteriaSet differentiationCriteria = readCriteriaSet();
-				concurrent.setCriteriaSet(differentiationCriteria);
+				tempConcurrent.setCriteriaSet(differentiationCriteria);
 			}
+			
+			tempConcurrent.setHandicape(jcbHandicape.isSelected());
 
-			if (concurrent.getInscription() == Concurrent.UNINIT) {
+			if (tempConcurrent.getInscription() == Concurrent.UNINIT) {
 				// si il n'y a plus de place alors retourner une erreur
-				if (!ficheConcours.getPasDeTir(concurrent.getDepart()).havePlaceForConcurrent(concurrent)) {
+				if (!ficheConcours.getPasDeTir(tempConcurrent.getDepart()).havePlaceForConcurrent(tempConcurrent)) {
 					JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur.maxcible"), //$NON-NLS-1$
 							ConcoursJeunes.ajrLibelle.getResourceString("erreur.maxcible.titre"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 					return;
 					// si le concurrent existe déjà alors retourner une
 					// erreur
-				} else if (ficheConcours.getConcurrentList().contains(concurrent)) {
+				} else if (ficheConcours.getConcurrentList().contains(tempConcurrent)) {
 					JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur.alreadyexist"), //$NON-NLS-1$
 							ConcoursJeunes.ajrLibelle.getResourceString("erreur.alreadyexist.titre"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 					return;
 				}
 			} else {
-				if (!ficheConcours.getPasDeTir(concurrent.getDepart()).havePlaceForConcurrent(concurrent)) {
+				if (!ficheConcours.getPasDeTir(tempConcurrent.getDepart()).havePlaceForConcurrent(tempConcurrent)) {
 					JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur.maxcible"), //$NON-NLS-1$
 							ConcoursJeunes.ajrLibelle.getResourceString("erreur.maxcible.titre"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 					return;
 				}
 			}
-
-			// verification du score
-			if (!ficheConcours.getParametre().getReglement().isValidScore(readScores())) {
-				JOptionPane.showMessageDialog(new JDialog(), ConcoursJeunes.ajrLibelle.getResourceString("erreur.impscore"), //$NON-NLS-1$
-						ConcoursJeunes.ajrLibelle.getResourceString("erreur"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
+			try {
+				// verification du score
+				if (!ficheConcours.getParametre().getReglement().isValidScore(readScores())) {
+					JOptionPane.showMessageDialog(new JDialog(), ConcoursJeunes.ajrLibelle.getResourceString("erreur.impscore"), //$NON-NLS-1$
+							ConcoursJeunes.ajrLibelle.getResourceString("erreur"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
+					return;
+				}
+			
+				concurrent.setScore(readScores());
+			} catch (NumberFormatException e) {
+				JOptionPane.showMessageDialog(this, 
+						"Un champs ne possède pas de valeur, vérifiez votre saisie.",
+						"Erreur de saisie", 
+						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			concurrent.setScore(readScores());
-
-			concurrent.setDix(Integer.parseInt(tfpd10.getText()));
-			concurrent.setNeuf(Integer.parseInt(tfpdNeuf.getText()));
-			concurrent.setManque(Integer.parseInt(tfpdM.getText()));
+			
+			concurrent.setCriteriaSet(tempConcurrent.getCriteriaSet());
+			concurrent.setHandicape(tempConcurrent.isHandicape());
+			try {
+				concurrent.setDix(Integer.parseInt(tfpd10.getText()));
+				concurrent.setNeuf(Integer.parseInt(tfpdNeuf.getText()));
+				concurrent.setManque(Integer.parseInt(tfpdM.getText()));
+			} catch (NumberFormatException e) {
+				JOptionPane.showMessageDialog(this, 
+						"Un champs ne possède pas de valeur, vérifiez votre saisie.",
+						"Erreur de saisie", 
+						JOptionPane.ERROR_MESSAGE);
+				return;
+			}
 			concurrent.setNomArcher(jtfNom.getText());
 			concurrent.setPrenomArcher(jtfPrenom.getText());
 			concurrent.setNumLicenceArcher(jtfLicence.getText());
@@ -913,6 +953,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			jtfNom.setEditable(true);
 			jtfPrenom.setEditable(true);
 			jtfLicence.setEditable(true);
+			jcbHandicape.setEnabled(true);
 
 			for (Criterion key : ficheConcours.getParametre().getReglement().getListCriteria())
 				jcbCategorieTable.get(key).setEnabled(true);
@@ -956,7 +997,6 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	
 	@Override
 	public void dispose() {
-		System.out.println("Destruction de la fenetre ConcurrentDialog"); //$NON-NLS-1$
 		nbInstance--;
 		if(nbInstance == 0) {
 			if(concurrentListDialog != null)
@@ -969,8 +1009,6 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	
 	@Override
 	public void finalize() throws Throwable {
-		System.out.println("ConcurrentDialog detruit"); //$NON-NLS-1$
-		
 		super.finalize();
 	}
 }

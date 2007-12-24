@@ -1,5 +1,5 @@
 /*
- * Créer le 11 juin 07 à 12:48:06 pour ConcoursJeunes
+ * Créer le 21 nov. 07 à 14:08:02 pour ConcoursJeunes
  *
  * Copyright 2002-2007 - Aurélien JEOFFRAY
  *
@@ -86,144 +86,68 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes.test;
-
-import static org.junit.Assert.fail;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+package org.concoursjeunes;
 
 /**
  * @author Aurélien JEOFFRAY
  *
  */
-public class CibleTest {
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
+public class PlacementException extends Exception {
+	
+	public enum Nature {
+		NULL_CONCURRENT,
+		ANY_AVAILABLE_POSITION,
+		BAD_DISTANCESANDBLASONS,
+		POSITION_AVAILABLE_FOR_VALID_CONCURRENT,
+		POSITION_RESERVED_FOR_HANDICAP,
+		UNKNOWN_ERROR
+	}
+	
+	private Nature nature = Nature.UNKNOWN_ERROR; 
+	
+	public PlacementException() {
+		super();
+	}
+	
+	public PlacementException(Nature nature) {
+		super();
+		
+		this.nature = nature;
 	}
 
 	/**
-	 * @throws java.lang.Exception
+	 * @param message
+	 * @param cause
 	 */
-	@After
-	public void tearDown() throws Exception {
+	public PlacementException(String message, Throwable cause) {
+		super(message, cause);
 	}
 
 	/**
-	 * Test method for {@link org.concoursjeunes.Cible#Cible(int, org.concoursjeunes.FicheConcours)}.
+	 * @param message
 	 */
-	@Test
-	public void testCible() {
-		fail("Not yet implemented"); //$NON-NLS-1$
+	public PlacementException(String message) {
+		super(message);
 	}
 
 	/**
-	 * Test method for {@link org.concoursjeunes.Cible#setFicheConcours(org.concoursjeunes.FicheConcours)}.
+	 * @param cause
 	 */
-	@Test
-	public void testSetFicheConcours() {
-		fail("Not yet implemented"); //$NON-NLS-1$
+	public PlacementException(Throwable cause) {
+		super(cause);
 	}
 
 	/**
-	 * Test method for {@link org.concoursjeunes.Cible#insertConcurrent(org.concoursjeunes.Concurrent)}.
+	 * @return nature
 	 */
-	@Test
-	public void testInsertConcurrent() {
-		fail("Not yet implemented"); //$NON-NLS-1$
+	public Nature getNature() {
+		return nature;
 	}
 
 	/**
-	 * Test method for {@link org.concoursjeunes.Cible#getConcurrentAt(int)}.
+	 * @param nature nature à définir
 	 */
-	@Test
-	public void testGetConcurrentAt() {
-		fail("Not yet implemented"); //$NON-NLS-1$
+	public void setNature(Nature nature) {
+		this.nature = nature;
 	}
-
-	/**
-	 * Test method for {@link org.concoursjeunes.Cible#getAllConcurrents()}.
-	 */
-	@Test
-	public void testGetAllConcurrents() {
-		fail("Not yet implemented"); //$NON-NLS-1$
-	}
-
-	/**
-	 * Test method for {@link org.concoursjeunes.Cible#indexOf(org.concoursjeunes.Concurrent)}.
-	 */
-	@Test
-	public void testIndexOf() {
-		fail("Not yet implemented"); //$NON-NLS-1$
-	}
-
-	/**
-	 * Test method for {@link org.concoursjeunes.Cible#contains(org.concoursjeunes.Concurrent)}.
-	 */
-	@Test
-	public void testContains() {
-		fail("Not yet implemented"); //$NON-NLS-1$
-	}
-
-	/**
-	 * Test method for {@link org.concoursjeunes.Cible#setConcurrentAt(org.concoursjeunes.Concurrent, int)}.
-	 */
-	@Test
-	public void testSetConcurrentAt() {
-		fail("Not yet implemented"); //$NON-NLS-1$
-	}
-
-	/**
-	 * Test method for {@link org.concoursjeunes.Cible#removeConcurrentAt(int)}.
-	 */
-	@Test
-	public void testRemoveConcurrentAt() {
-		fail("Not yet implemented"); //$NON-NLS-1$
-	}
-
-	/**
-	 * Test method for {@link org.concoursjeunes.Cible#removeConcurrent(org.concoursjeunes.Concurrent)}.
-	 */
-	@Test
-	public void testRemoveConcurrent() {
-		fail("Not yet implemented"); //$NON-NLS-1$
-	}
-
-	/**
-	 * Test method for {@link org.concoursjeunes.Cible#removeAll()}.
-	 */
-	@Test
-	public void testRemoveAll() {
-		fail("Not yet implemented"); //$NON-NLS-1$
-	}
-
-	/**
-	 * Test method for {@link org.concoursjeunes.Cible#getDistancesEtBlason()}.
-	 */
-	@Test
-	public void testGetDistancesEtBlason() {
-		fail("Not yet implemented"); //$NON-NLS-1$
-	}
-
-	/**
-	 * Test method for {@link org.concoursjeunes.Cible#toString()}.
-	 */
-	@Test
-	public void testToString() {
-		fail("Not yet implemented"); //$NON-NLS-1$
-	}
-
-	/**
-	 * Test method for {@link org.concoursjeunes.Cible#getCibleLibelle(int, int)}.
-	 */
-	@Test
-	public void testGetCibleLibelle() {
-		fail("Not yet implemented"); //$NON-NLS-1$
-	}
-
 }

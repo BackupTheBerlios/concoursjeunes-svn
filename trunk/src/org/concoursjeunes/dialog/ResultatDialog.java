@@ -385,57 +385,64 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 		Object source = ae.getSource();
 
 		if(source == jbValider || source == jbSuivant || source == jbPrecedent) {
-			//boucle sur les concurrents de la cible
-			for(Concurrent concurrent : concurrents) {
-				ArrayList<Integer> concPoints = new ArrayList<Integer>();
-				//récupere les points du concurrent
-				for(int i = 0; i < parametres.getReglement().getNbSerie(); i++) {
-					if(ConcoursJeunes.configuration.isInterfaceResultatCumul())
-						points[concurrent.getPosition()][i].setText(
-								Integer.parseInt(oldPoints[concurrent.getPosition()][i].getText())
-								+ Integer.parseInt(pointsCum2V[concurrent.getPosition()][i].getText())
-								+ ""); //$NON-NLS-1$
+			try {
+				//boucle sur les concurrents de la cible
+				for(Concurrent concurrent : concurrents) {
+					ArrayList<Integer> concPoints = new ArrayList<Integer>();
+					//récupere les points du concurrent
+					for(int i = 0; i < parametres.getReglement().getNbSerie(); i++) {
+						if(ConcoursJeunes.configuration.isInterfaceResultatCumul())
+							points[concurrent.getPosition()][i].setText(
+									Integer.parseInt(oldPoints[concurrent.getPosition()][i].getText())
+									+ Integer.parseInt(pointsCum2V[concurrent.getPosition()][i].getText())
+									+ ""); //$NON-NLS-1$
+						
+						if(concPoints.size() > i)
+							concPoints.set(i, Integer.parseInt(points[concurrent.getPosition()][i].getText()));
+						else
+							concPoints.add(i, Integer.parseInt(points[concurrent.getPosition()][i].getText()));
+					}
 					
-					if(concPoints.size() > i)
-						concPoints.set(i, Integer.parseInt(points[concurrent.getPosition()][i].getText()));
-					else
-						concPoints.add(i, Integer.parseInt(points[concurrent.getPosition()][i].getText()));
+					//vérifie que le score soit valide et affiche un message d'erreur dans le cas contraire 
+					if(!parametres.getReglement().isValidScore(concPoints)) {
+						JOptionPane.showMessageDialog(new JDialog(),
+								ConcoursJeunes.ajrLibelle.getResourceString("erreur.impscore") + "<br>" + concurrent.getNomArcher(), //$NON-NLS-1$ //$NON-NLS-2$
+								ConcoursJeunes.ajrLibelle.getResourceString("erreur"),JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
+						return;
+					}
+					
+					//si c'est bon affecte le score à l'archer
+					concurrent.setScore(concPoints);
+					//intégre les 10/9/M si nécessaire
+					if(ConcoursJeunes.configuration.isInterfaceResultatSupl()) {
+						concurrent.setDix(Integer.parseInt(dix[concurrent.getPosition()].getText()));
+						concurrent.setNeuf(Integer.parseInt(neuf[concurrent.getPosition()].getText()));
+						concurrent.setManque(Integer.parseInt(manque[concurrent.getPosition()].getText()));
+					}
 				}
-				
-				//vérifie que le score soit valide et affiche un message d'erreur dans le cas contraire 
-				if(!parametres.getReglement().isValidScore(concPoints)) {
-					JOptionPane.showMessageDialog(new JDialog(),
-							ConcoursJeunes.ajrLibelle.getResourceString("erreur.impscore") + "<br>" + concurrent.getNomArcher(), //$NON-NLS-1$ //$NON-NLS-2$
-							ConcoursJeunes.ajrLibelle.getResourceString("erreur"),JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
-					return;
+		
+				// valide les informations sur le concurrent
+				if(source == jbValider) {
+					returnVal = SAVE_AND_QUIT;
+					setVisible(false);
 				}
-				
-				//si c'est bon affecte le score à l'archer
-				concurrent.setScore(concPoints);
-				//intégre les 10/9/M si nécessaire
-				if(ConcoursJeunes.configuration.isInterfaceResultatSupl()) {
-					concurrent.setDix(Integer.parseInt(dix[concurrent.getPosition()].getText()));
-					concurrent.setNeuf(Integer.parseInt(neuf[concurrent.getPosition()].getText()));
-					concurrent.setManque(Integer.parseInt(manque[concurrent.getPosition()].getText()));
+				//Passe au concurrent suivant
+				else if(source == jbSuivant) {
+					returnVal = NEXT_TARGET;
+					setVisible(false);
 				}
-			}
-	
-			// valide les informations sur le concurrent
-			if(source == jbValider) {
-				returnVal = SAVE_AND_QUIT;
+				//Passe au concurrent precedent
+				else if(source == jbPrecedent) {
+					returnVal = PREVIOUS_TARGET;
+					setVisible(false);
+				}
 				setVisible(false);
+			} catch(NumberFormatException e) {
+				JOptionPane.showMessageDialog(this, 
+						"Un champs ne possède pas de valeur, vérifiez votre saisie.",
+						"Erreur de saisie", 
+						JOptionPane.ERROR_MESSAGE);
 			}
-			//Passe au concurrent suivant
-			else if(source == jbSuivant) {
-				returnVal = NEXT_TARGET;
-				setVisible(false);
-			}
-			//Passe au concurrent precedent
-			else if(source == jbPrecedent) {
-				returnVal = PREVIOUS_TARGET;
-				setVisible(false);
-			}
-			setVisible(false);
 		} else if(source == jbAnnuler) {
 			setVisible(false);
 		}
