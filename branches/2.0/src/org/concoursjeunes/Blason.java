@@ -106,6 +106,7 @@ public class Blason {
 	private String name = ""; //$NON-NLS-1$
 	private double horizontalRatio = 1;
 	private double verticalRatio = 1;
+	private int nbArcher = 4;
 	private int numordre = 0;
 	
 	private int numblason = 0;
@@ -202,6 +203,20 @@ public class Blason {
 		this.verticalRatio = verticalRatio;
 	}
 	
+	/**
+	 * @return nbArcher
+	 */
+	public int getNbArcher() {
+		return nbArcher;
+	}
+
+	/**
+	 * @param nbArcher nbArcher à définir
+	 */
+	public void setNbArcher(int nbArcher) {
+		this.nbArcher = nbArcher;
+	}
+
 	/**
 	 * @return numordre
 	 */

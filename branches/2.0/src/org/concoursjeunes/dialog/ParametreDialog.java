@@ -192,7 +192,7 @@ public class ParametreDialog extends JDialog implements ActionListener {
 		for (String name : Reglement.listAvailableReglements()) {
 			jcbReglement.addItem(name);
 		}
-		for (int i = 2; i <= 6; i += 2)
+		for (int i = 2; i <= 4; i += 2)
 			jcbNombreTireurParCible.addItem(i);
 		jtfArbitres.addActionListener(this);
 		jbAjouterArbitre.addActionListener(this);

@@ -1,5 +1,5 @@
 /*
- * Créer le 15 déc. 07 à 20:35:47 pour ConcoursJeunes
+ * Créer le 23 déc. 07 à 11:42:29 pour ConcoursJeunes
  *
  * Copyright 2002-2007 - Aurélien JEOFFRAY
  *
@@ -86,47 +86,128 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes;
+package org.concoursjeunes.test;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import static org.junit.Assert.*;
+
+import java.io.File;
+import java.io.IOException;
+
+import javax.naming.ConfigurationException;
+
+import org.concoursjeunes.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import ajinteractive.standard.utilities.io.FileUtil;
 
 /**
  * @author Aurélien JEOFFRAY
  *
  */
-public class BlasonBuilder {
-	public static Blason getBlasons(int numdistancesblason, int numreglement) {
-		try {
-			String sql = "select BLASONS.* from DISTANCESBLASONS,BLASONS " //$NON-NLS-1$
-				+ "where DISTANCESBLASONS.NUMBLASON=BLASONS.NUMBLASON AND NUMDISTANCESBLASONS=? and NUMREGLEMENT=? order by NUMORDRE DESC"; //$NON-NLS-1$
-			
-			PreparedStatement pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
-			
-			pstmt.setInt(1, numdistancesblason);
-			pstmt.setInt(2, numreglement);
-			
-			ResultSet rs = pstmt.executeQuery();
-			
-			if(rs.first()) {		
-				return getBlason(rs);
+public class ConfigurationManagerTest {
+
+	//ConcoursJeunes engine;
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+		//engine = ConcoursJeunes.getInstance();
+	}
+
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@After
+	public void tearDown() throws Exception {
+	}
+
+	/**
+	 * Test method for {@link org.concoursjeunes.ConfigurationManager#loadCurrentConfiguration()}.
+	 */
+	@Test
+	public void testLoadCurrentConfiguration() {
+		assertNotNull(ConfigurationManager.loadCurrentConfiguration());
+	}
+
+	/**
+	 * Test method for {@link org.concoursjeunes.ConfigurationManager#loadConfiguration(java.lang.String)}.
+	 */
+	@Test
+	public void testLoadConfigurationString() {
+		assertNotNull(ConfigurationManager.loadConfiguration("defaut")); //$NON-NLS-1$
+	}
+
+	/**
+	 * Test method for {@link org.concoursjeunes.ConfigurationManager#loadConfiguration(java.io.File)}.
+	 */
+	@Test
+	public void testLoadConfigurationFile() {
+		assertNotNull(ConfigurationManager.loadConfiguration(new File(ConcoursJeunes.userRessources.getConfigPathForUser() 
+				+ File.separator + "configuration_defaut.xml"))); //$NON-NLS-1$
+	}
+
+	/**
+	 * Test method for {@link org.concoursjeunes.ConfigurationManager#renameConfiguration(java.lang.String, java.lang.String)}.
+	 */
+	@Test
+	public void testRenameConfiguration() {
+		Configuration configuration = new Configuration();
+		configuration.setCurProfil("test_rename_orig");
+		configuration.save();
+		
+		ConcoursJeunes concoursJeunes = ConcoursJeunes.getInstance();
+		
+		String actualProfile = ConcoursJeunes.configuration.getCurProfil();
+		ConcoursJeunes.configuration.save();
+		
+		configuration.saveAsDefault();
+		ConcoursJeunes.configuration = configuration;
+		
+		
+		/*concoursJeunes.addConcoursJeunesListener(new ConcoursJeunesListener() {
+			public void ficheConcoursCreated(ConcoursJeunesEvent concoursJeunesEvent) {
+				concoursJeunesEvent.getFicheConcours().getMetaDataFicheConcours().
 			}
-		} catch (SQLException e) {
+			public void ficheConcoursDeleted(ConcoursJeunesEvent concoursJeunesEvent) { }
+			public void ficheConcoursClosed(ConcoursJeunesEvent concoursJeunesEvent) { }
+			public void ficheConcoursRestored(ConcoursJeunesEvent concoursJeunesEvent) { }
+		});*/
+		try {
+			concoursJeunes.createFicheConcours();
+			concoursJeunes.saveAllFichesConcours();
+			
+			assertFalse("Il est interdit de renommer le profil par defaut", ConfigurationManager.renameConfiguration("defaut", "test_rename"));
+			//test l'absence d'erreur dans l'etat d'origine
+			assertTrue(new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "Profile/test_rename_orig").exists());
+			
+			assertTrue(ConfigurationManager.renameConfiguration("test_rename_orig", "test_rename"));
+			assertTrue(new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "configuration_test_rename.xml").exists());
+			assertFalse(new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "configuration_test_rename_orig.xml").exists());
+			
+			assertTrue(new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "Profile/test_rename").exists());
+			assertFalse(new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "Profile/test_rename_orig").exists());
+			assertTrue(new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "Profile/test_rename").listFiles().length > 0);
+		} catch (ConfigurationException e) {
+			fail(e.getMessage());
+			e.printStackTrace();
+		} catch (IOException e) {
+			fail(e.getMessage());
 			e.printStackTrace();
 		}
 		
-		return null;
-	}
-	
-	public static Blason getBlason(ResultSet rs) throws SQLException {
-		Blason blason = new Blason();
-		blason.setNumblason(rs.getInt("NUMBLASON")); //$NON-NLS-1$
-		blason.setName(rs.getString("NOMBLASON")); //$NON-NLS-1$
-		blason.setHorizontalRatio(rs.getDouble("HORIZONTAL_RATIO")); //$NON-NLS-1$
-		blason.setVerticalRatio(rs.getDouble("VERTICAL_RATIO")); //$NON-NLS-1$
-		blason.setNbArcher(rs.getInt("NUMORDRE")); //$NON-NLS-1$
+		assertTrue(new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "configuration_test_rename.xml").delete());
+		try {
+			FileUtil.deleteFilesPath(new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "Profile/test_rename"));
+			new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "Profile/test_rename").delete();
+		} catch (IOException e) {
+			fail(e.getMessage());
+			e.printStackTrace();
+		}
 		
-		return blason;
+		ConfigurationManager.loadConfiguration(actualProfile).saveAsDefault();
 	}
+
 }

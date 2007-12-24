@@ -718,6 +718,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 									e1.fillInStackTrace());
 							e1.printStackTrace();
 						}
+						displayHome();
 					}
 				} else if (e.getURL().getHost().equals("new_concours")) { //$NON-NLS-1$
 					Thread launchFiche = new Thread() {

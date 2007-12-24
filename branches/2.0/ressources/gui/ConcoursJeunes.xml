@@ -65,13 +65,6 @@
 		</menubar>
 		<contentpane>
 			<tabbedpane name="tabbedpane">
-				<method name="setUI">
-					<param paramclass="javax.swing.plaf.TabbedPaneUI" class="ajinteractive.standard.java2.AJTabbedPaneUI">
-						<param paramclass="javax.swing.ImageIcon" class="javax.swing.ImageIcon">
-							<param paramclass="java.lang.String" value="ressources/fnd.jpg" />
-						</param>
-					</param>
-				</method>
 				<method name="setTabLayoutPolicy">
 					<param paramclass="int" value="1" />
 				</method>

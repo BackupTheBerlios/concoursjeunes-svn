@@ -191,10 +191,24 @@ public class ConfigurationManager {
 		return configuration;
 	}
 	
+	/**
+	 * Renome un profil
+	 * 
+	 * @param currentName - le nom actuel du profil
+	 * @param newName - le nouveau nom a attribuer au profil
+	 * @return true si le renomage a reussi, false sinon
+	 * 
+	 * @throws ConfigurationException
+	 * @throws IOException
+	 */
 	public static boolean renameConfiguration(String currentName, String newName) 
 			throws ConfigurationException, IOException {
 		
 		boolean success = false;
+		
+		if(currentName.equals("defaut")) //$NON-NLS-1$
+			return false;
+		
 		ConcoursJeunes concoursJeunes = ConcoursJeunes.getInstance();
 		ArrayList<MetaDataFicheConcours> openedFichesConcours = new ArrayList<MetaDataFicheConcours>();
 		

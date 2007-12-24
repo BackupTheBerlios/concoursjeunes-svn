@@ -74,5 +74,30 @@
     </void> 
    </object> 
   </void> 
+  <void method="add"> 
+   <object class="ajinteractive.standard.utilities.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurelien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction problème d&apos;écrasement de profil
+  * Correction problème actualisation de la liste des concours sur suppression
+  * Ajout support des blasons Tri-Spot dans les réglements
+  * Ajout restriction d&apos;ouverture de concours: un concours ne peut desormais être ouvert qu&apos;une fois
+  * Interne: suppression d&apos;un problème de lancement de l&apos;application avec Java 6 Update N beta 8</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1198418904965</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.02.00</string> 
+    </void> 
+   </object> 
+  </void> 
  </object> 
 </java> 
