@@ -159,10 +159,10 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		super(parentframe, ConcoursJeunes.ajrLibelle.getResourceString("concurrent.nouveau.titre"), ModalityType.APPLICATION_MODAL); //$NON-NLS-1$
 		this.reglement = reglement;
 
-		if (filter == null && ConcoursJeunes.configuration.getClub().getAgrement().length() > 0) {
+		if (filter == null && ConcoursJeunes.getConfiguration().getClub().getAgrement().length() > 0) {
 			filter = new Archer();
 			Entite entite = new Entite();
-			entite.setAgrement(ConcoursJeunes.configuration.getClub().getAgrement().substring(0, 2) + "%"); //$NON-NLS-1$
+			entite.setAgrement(ConcoursJeunes.getConfiguration().getClub().getAgrement().substring(0, 2) + "%"); //$NON-NLS-1$
 			filter.setClub(entite);
 		}
 		dtm = new ArchersTableModel(filter);
@@ -219,7 +219,6 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	 * This method initializes jtfFilterLicence
 	 * 
 	 * @return javax.swing.JTextField
-	 * @uml.property name="jtfFilterLicence"
 	 */
 	private JTextField getJtfFilterLicence() {
 		if (jtfFilterLicence == null) {
@@ -234,7 +233,6 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	 * This method initializes jtfFilterNom
 	 * 
 	 * @return javax.swing.JTextField
-	 * @uml.property name="jtfFilterNom"
 	 */
 	private JTextField getJtfFilterNom() {
 		if (jtfFilterNom == null) {
@@ -249,7 +247,6 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	 * This method initializes jtfFilterClub
 	 * 
 	 * @return javax.swing.JTextField
-	 * @uml.property name="jtfFilterClub"
 	 */
 	private JTextField getJtfFilterClub() {
 		if (jtfFilterClub == null) {
@@ -264,7 +261,6 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	 * This method initializes jTable
 	 * 
 	 * @return javax.swing.JTable
-	 * @uml.property name="jTable"
 	 */
 	private JTable getJTable() {
 		if (this.jTable == null) {
@@ -294,7 +290,6 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	 * This method initializes jScrollPane
 	 * 
 	 * @return javax.swing.JScrollPane
-	 * @uml.property name="jScrollPane"
 	 */
 	private JScrollPane getJScrollPane() {
 		if (this.jScrollPane == null) {
@@ -308,7 +303,6 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	 * This method initializes jPanel
 	 * 
 	 * @return javax.swing.JPanel
-	 * @uml.property name="jPanel"
 	 */
 	private JPanel getJPanel() {
 		if (this.jPanel == null) {
@@ -399,7 +393,6 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	 * renvoi si il y a eu validation
 	 * 
 	 * @return boolean
-	 * @uml.property name="isValider"
 	 */
 	public boolean isValider() {
 		return this.isValider;

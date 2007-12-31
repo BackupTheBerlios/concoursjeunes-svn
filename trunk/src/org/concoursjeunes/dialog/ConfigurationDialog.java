@@ -806,7 +806,6 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 
 	/**
 	 * @return Renvoie workConfiguration.
-	 * @uml.property name="workConfiguration"
 	 */
 	public Configuration getWorkConfiguration() {
 		return workConfiguration;
@@ -815,7 +814,6 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	/**
 	 * @param workConfiguration
 	 *            workConfiguration à définir.
-	 * @uml.property name="workConfiguration"
 	 */
 	public void setWorkConfiguration(Configuration workConfiguration) {
 		this.workConfiguration = workConfiguration;
@@ -844,8 +842,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		return strLstLangue;
 	}
 
-	private void loadProfile() {
-		//workConfiguration.save();
+	private void loadProfile() throws IOException {
 		renamedProfile = false;
 		workConfiguration = ConfigurationManager.loadConfiguration((String) jcbProfil.getSelectedItem());
 		completePanel(workConfiguration);
@@ -933,8 +930,8 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
 		if (source == this.jbValider) {
-			if(workConfiguration.getMetaDataFichesConcours().getFiches().size() != 0 
-					&& !workConfiguration.getCurProfil().equals(ConcoursJeunes.configuration.getCurProfil())
+			if(ConcoursJeunes.getInstance().getFichesConcours().size() > 0 
+					&& !workConfiguration.getCurProfil().equals(ConcoursJeunes.getConfiguration().getCurProfil())
 					&& JOptionPane.showConfirmDialog(this, 
 					ConcoursJeunes.ajrLibelle.getResourceString("configuration.fermeture.confirmation"), "", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) //$NON-NLS-1$ //$NON-NLS-2$
 				return;
@@ -973,7 +970,13 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		} else if (source == jcbProfil) {
 			if (!renameProfile) {
 				if (jcbProfil.getSelectedIndex() > -1 && jcbProfil.getSelectedIndex() < jcbProfil.getItemCount() - 2) {
-					loadProfile();
+					try {
+						loadProfile();
+					} catch (IOException e1) {
+						JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+								e1.toString(), e1);
+						e1.printStackTrace();
+					}
 				} else if (jcbProfil.getSelectedIndex() == jcbProfil.getItemCount() - 1) {
 					String strP = JOptionPane.showInputDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.general.newprofile")); //$NON-NLS-1$
 					if (strP != null && !strP.equals("")) { //$NON-NLS-1$
@@ -990,7 +993,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		} else if (source == jbRenameProfile) {
 			String strP = JOptionPane.showInputDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.general.newprofile"), //$NON-NLS-1$ 
 					workConfiguration.getCurProfil());
-			if (strP != null && !strP.equals("")) { //$NON-NLS-1$
+			if (strP != null && !strP.isEmpty()) {
 				renameProfile = true;
 
 				int insIndex = jcbProfil.getSelectedIndex();
@@ -1015,7 +1018,10 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 					
 					renamedProfile = true;
 				} else {
-					JOptionPane.showMessageDialog(this, "l'opération à échoué", "Renomage impossible", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(this, 
+							ConcoursJeunes.ajrLibelle.getResourceString("erreur.renameprofile"), //$NON-NLS-1$
+							ConcoursJeunes.ajrLibelle.getResourceString("erreur.renameprofile.title"), //$NON-NLS-1$
+							JOptionPane.ERROR_MESSAGE);
 				}
 				/*} else {
 					JOptionPane.showMessageDialog(this, "Il existe déjà un profil portant ce nom", "Renomage impossible", JOptionPane.ERROR_MESSAGE);

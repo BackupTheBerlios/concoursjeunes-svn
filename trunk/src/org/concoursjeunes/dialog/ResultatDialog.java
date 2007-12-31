@@ -158,8 +158,9 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 	/**
 	 * Ouverture de la boite de dialogue de saisie des résultats.
 	 * 
-	 * @param ficheConcoursPane - la fiche concours correspondant aux resultats à exploiter
-	 * @param indexCible - numero de la cible à saisir
+	 * @param parentframe la fenetre parentes dont dépent la boite de dialogue
+	 * @param concurrents les concurrents à editer
+	 * @param parametres les parametre specifique du concours regissant la saisie
 	 */
 	public ResultatDialog(JFrame parentframe, Concurrent[] concurrents, Parametre parametres) {
 		super(parentframe, "", true); //$NON-NLS-1$
@@ -175,7 +176,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowActivated(WindowEvent arg0) {
-				if (ConcoursJeunes.configuration.isInterfaceResultatCumul()) {
+				if (ConcoursJeunes.getConfiguration().isInterfaceResultatCumul()) {
 					oldPoints[0][0].requestFocus(true);
 				} else {
 					points[0][0].requestFocus(true);
@@ -208,7 +209,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 				pointsCum2V[i][j].setEnabled(false);
 
 				points[i][j] = new JTextField(new NumberDocument(false, false), "0",3); //$NON-NLS-1$
-				if(ConcoursJeunes.configuration.isInterfaceResultatCumul()) {
+				if(ConcoursJeunes.getConfiguration().isInterfaceResultatCumul()) {
 					points[i][j].setEditable(false);
 					points[i][j].setFocusable(false);
 				} else {
@@ -273,7 +274,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 
 		gridbagComposer.setParentPanel(pane1);
 		c.anchor = GridBagConstraints.WEST; c.weightx = 1.0;
-		c.gridy = 0; c.gridwidth = 4 + (ConcoursJeunes.configuration.isInterfaceResultatCumul() ? nbSerie*3 : nbSerie);
+		c.gridy = 0; c.gridwidth = 4 + (ConcoursJeunes.getConfiguration().isInterfaceResultatCumul() ? nbSerie*3 : nbSerie);
 		gridbagComposer.addComponentIntoGrid(jlCible, c);
 		c.gridy++; c.gridwidth = 1;
 		gridbagComposer.addComponentIntoGrid(jlDistance, c);
@@ -281,7 +282,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 			c.gridx = i+1;
 			gridbagComposer.addComponentIntoGrid(jlDistances[i], c);
 		}
-		if(ConcoursJeunes.configuration.isInterfaceResultatSupl()) {
+		if(ConcoursJeunes.getConfiguration().isInterfaceResultatSupl()) {
 			c.gridx++;
 			gridbagComposer.addComponentIntoGrid(ldix, c);
 			c.gridx++;
@@ -298,7 +299,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 
 			for(int j = 0; j < nbSerie; j++) {
 				ppoints[i][j] = new JPanel();
-				if(ConcoursJeunes.configuration.isInterfaceResultatCumul()) {
+				if(ConcoursJeunes.getConfiguration().isInterfaceResultatCumul()) {
 					ppoints[i][j].add(oldPoints[i][j]);
 					ppoints[i][j].add(new JLabel("+")); //$NON-NLS-1$
 					ppoints[i][j].add(pointsCum2V[i][j]);
@@ -307,7 +308,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 				ppoints[i][j].add(points[i][j]);
 				gridbagComposer.addComponentIntoGrid(ppoints[i][j], c);
 			}
-			if(ConcoursJeunes.configuration.isInterfaceResultatSupl()) {
+			if(ConcoursJeunes.getConfiguration().isInterfaceResultatSupl()) {
 				gridbagComposer.addComponentIntoGrid(dix[i], c);
 				gridbagComposer.addComponentIntoGrid(neuf[i], c);
 				gridbagComposer.addComponentIntoGrid(manque[i], c);
@@ -341,7 +342,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 				points[concurrent.getPosition()][j].setEnabled(true);
 				lPoints[concurrent.getPosition()].setEnabled(true);
 				
-				if(ConcoursJeunes.configuration.isInterfaceResultatSupl()) {
+				if(ConcoursJeunes.getConfiguration().isInterfaceResultatSupl()) {
 					dix[concurrent.getPosition()].setText(concurrent.getDix()+""); //$NON-NLS-1$
 					dix[concurrent.getPosition()].setEnabled(true);
 					neuf[concurrent.getPosition()].setText(concurrent.getNeuf()+""); //$NON-NLS-1$
@@ -391,7 +392,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 					ArrayList<Integer> concPoints = new ArrayList<Integer>();
 					//récupere les points du concurrent
 					for(int i = 0; i < parametres.getReglement().getNbSerie(); i++) {
-						if(ConcoursJeunes.configuration.isInterfaceResultatCumul())
+						if(ConcoursJeunes.getConfiguration().isInterfaceResultatCumul())
 							points[concurrent.getPosition()][i].setText(
 									Integer.parseInt(oldPoints[concurrent.getPosition()][i].getText())
 									+ Integer.parseInt(pointsCum2V[concurrent.getPosition()][i].getText())
@@ -414,7 +415,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 					//si c'est bon affecte le score à l'archer
 					concurrent.setScore(concPoints);
 					//intégre les 10/9/M si nécessaire
-					if(ConcoursJeunes.configuration.isInterfaceResultatSupl()) {
+					if(ConcoursJeunes.getConfiguration().isInterfaceResultatSupl()) {
 						concurrent.setDix(Integer.parseInt(dix[concurrent.getPosition()].getText()));
 						concurrent.setNeuf(Integer.parseInt(neuf[concurrent.getPosition()].getText()));
 						concurrent.setManque(Integer.parseInt(manque[concurrent.getPosition()].getText()));
@@ -439,8 +440,8 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 				setVisible(false);
 			} catch(NumberFormatException e) {
 				JOptionPane.showMessageDialog(this, 
-						"Un champs ne possède pas de valeur, vérifiez votre saisie.",
-						"Erreur de saisie", 
+						ConcoursJeunes.ajrLibelle.getResourceString("erreur.erreursaisie"), //$NON-NLS-1$
+						ConcoursJeunes.ajrLibelle.getResourceString("erreur.erreursaisie.title"), //$NON-NLS-1$
 						JOptionPane.ERROR_MESSAGE);
 			}
 		} else if(source == jbAnnuler) {
@@ -452,7 +453,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 	}
 	
 	public void keyReleased(KeyEvent e) {
-		if(ConcoursJeunes.configuration.isInterfaceResultatCumul()) {
+		if(ConcoursJeunes.getConfiguration().isInterfaceResultatCumul()) {
 			char key = e.getKeyChar();
 			if(Character.isDigit(key)) {
 				for(int i = 0; i < parametres.getNbTireur(); i++) {
@@ -522,7 +523,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 					} else if (aComponent == manque[i]) {
 						if (i + 1 < parametres.getNbTireur() && dix[i + 1].isEnabled())
 							nextComp = dix[i + 1];
-						else if (ConcoursJeunes.configuration.isInterfaceResultatCumul())
+						else if (ConcoursJeunes.getConfiguration().isInterfaceResultatCumul())
 							nextComp = oldPoints[0][0];
 						else
 							nextComp = jbSuivant;
@@ -592,7 +593,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 					} else if (aComponent == dix[i]) {
 						if (i - 1 >= 0)
 							nextComp = manque[i - 1];
-						else if (ConcoursJeunes.configuration.isInterfaceResultatCumul())
+						else if (ConcoursJeunes.getConfiguration().isInterfaceResultatCumul())
 							nextComp = oldPoints[nbConc - 1][parametres.getReglement().getNbSerie() - 1];
 						else
 							nextComp = points[nbConc - 1][parametres.getReglement().getNbSerie() - 1];

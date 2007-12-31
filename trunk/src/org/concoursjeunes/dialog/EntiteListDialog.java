@@ -206,7 +206,6 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 	/**
 	 * This method initializes jTable	
 	 * @return  javax.swing.JTable
-	 * @uml.property  name="jTable"
 	 */    
 	private JTable getJTable() {
 		if (this.jTable == null) {
@@ -235,7 +234,6 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 	/**
 	 * @return l'action réalisé sur la boite de dialogue
 	 * 
-	 * @uml.property  name="action"
 	 */
 	public int getAction() {
 		return action;
@@ -243,7 +241,6 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 
 	/**
 	 * @param action
-	 * @uml.property  name="action"
 	 */
 	public void setAction(int action) {
 		this.action = action;

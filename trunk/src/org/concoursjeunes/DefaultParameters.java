@@ -35,7 +35,6 @@ public class DefaultParameters {
 
 	/**
 	 * @return  Renvoie intituleConcours.
-	 * @uml.property  name="intituleConcours"
 	 */
 	public String getIntituleConcours() {
 		return intituleConcours;
@@ -43,7 +42,6 @@ public class DefaultParameters {
 
 	/**
 	 * @param intituleConcours  intituleConcours à définir.
-	 * @uml.property  name="intituleConcours"
 	 */
 	public void setIntituleConcours(String intituleConcours) {
 		this.intituleConcours = intituleConcours;
@@ -51,7 +49,6 @@ public class DefaultParameters {
 	
 	/**
 	 * @return  Renvoie nbCible.
-	 * @uml.property  name="nbCible"
 	 */
 	public int getNbCible() {
 		return nbCible;
@@ -59,7 +56,6 @@ public class DefaultParameters {
 
 	/**
 	 * @param nbCible  nbCible à définir.
-	 * @uml.property  name="nbCible"
 	 */
 	public void setNbCible(int nbCible) {
 		this.nbCible = nbCible;
@@ -67,7 +63,6 @@ public class DefaultParameters {
 
 	/**
 	 * @return  Renvoie nbDepart.
-	 * @uml.property  name="nbDepart"
 	 */
 	public int getNbDepart() {
 		return nbDepart;
@@ -75,7 +70,6 @@ public class DefaultParameters {
 
 	/**
 	 * @param nbDepart  nbDepart à définir.
-	 * @uml.property  name="nbDepart"
 	 */
 	public void setNbDepart(int nbDepart) {
 		this.nbDepart = nbDepart;
@@ -83,7 +77,6 @@ public class DefaultParameters {
 
 	/**
 	 * @return  Renvoie nbTireur.
-	 * @uml.property  name="nbTireur"
 	 */
 	public int getNbTireur() {
 		return nbTireur;
@@ -91,7 +84,6 @@ public class DefaultParameters {
 
 	/**
 	 * @param nbTireur  nbTireur à définir.
-	 * @uml.property  name="nbTireur"
 	 */
 	public void setNbTireur(int nbTireur) {
 		this.nbTireur = nbTireur;
@@ -99,7 +91,6 @@ public class DefaultParameters {
 
 	/**
 	 * @return  club
-	 * @uml.property  name="club"
 	 */
 	public Entite getClub() {
 		return club;
@@ -107,7 +98,6 @@ public class DefaultParameters {
 
 	/**
 	 * @param club  club à définir
-	 * @uml.property  name="club"
 	 */
 	public void setClub(Entite club) {
 		this.club = club;

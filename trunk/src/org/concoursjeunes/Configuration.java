@@ -92,6 +92,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import ajinteractive.standard.common.AJToolKit;
@@ -141,7 +142,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	/**
 	 * Retourne la langue courante de l'IHM
 	 * @return  String - le code langue
-	 * @uml.property  name="langue"
 	 */
 	public String getLangue() {
 		return this.langue;
@@ -150,8 +150,8 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	/**
 	 * Retourne l'adresse du lecteur pdf
 	 * @return  String - l'adresse du lecteur pdf
-	 * @uml.property  name="pdfReaderPath"
 	 */
+	@XmlElement(required=false)
 	public String getPdfReaderPath() {
 		return this.pdfReaderPath;
 	}
@@ -159,7 +159,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	/**
 	 * defini la langue de l'IHM
 	 * @param langue  - la langue de l'application
-	 * @uml.property  name="langue"
 	 */
 	public void setLangue(String langue) {
 		this.langue = langue;
@@ -182,7 +181,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	/**
 	 * defini l'adresse du lecteur pdf
 	 * @param pdfReaderPath  - l'adresse du lecteur pdf
-	 * @uml.property  name="pdfReaderPath"
 	 */
 	public void setPdfReaderPath(String pdfReaderPath) {
 		this.pdfReaderPath = pdfReaderPath;
@@ -191,7 +189,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	/**
 	 * nombre de colonne et de ligne sur une page d'étiquettes
 	 * @return  Returns the colonneAndLigne.
-	 * @uml.property  name="colonneAndLigne"
 	 */
 	public int[] getColonneAndLigne() {
 		return this.colonneAndLigne;
@@ -200,7 +197,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	/**
 	 * Espacements entre 2 cellules d'étiquettes
 	 * @return  Returns the espacements.
-	 * @uml.property  name="espacements"
 	 */
 	public double[] getEspacements() {
 		return this.espacements;
@@ -210,7 +206,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	/**
 	 * Format du papier étiquettes
 	 * @return  Returns the formatPapier.
-	 * @uml.property  name="formatPapier"
 	 */
 	public String getFormatPapier() {
 		return this.formatPapier;
@@ -219,7 +214,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	/**
 	 * Orientation du papier étiquettes
 	 * @return  Returns the orientation.
-	 * @uml.property  name="orientation"
 	 */
 	public String getOrientation() {
 		return this.orientation;
@@ -228,7 +222,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	/**
 	 * Marge d'impression des étiquettes
 	 * @return  Returns the marges.
-	 * @uml.property  name="marges"
 	 */
 	public Marges getMarges() {
 		return this.marges;
@@ -237,7 +230,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	/**
 	 * Défini le nombre de colonne et ligne d'étiquettes
 	 * @param colonneAndLigne  The colonneAndLigne to set.
-	 * @uml.property  name="colonneAndLigne"
 	 */
 	public void setColonneAndLigne(int[] colonneAndLigne) {
 		this.colonneAndLigne = colonneAndLigne;
@@ -246,7 +238,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	/**
 	 * Définit les espacementes entres cellules d'étiquettes
 	 * @param espacements  The espacements to set.
-	 * @uml.property  name="espacements"
 	 */
 	public void setEspacements(double[] espacements) {
 		this.espacements = espacements;
@@ -255,7 +246,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	/**
 	 * Définit le format du papier étiquettes utilisé
 	 * @param formatPapier  The formatPapier to set.
-	 * @uml.property  name="formatPapier"
 	 */
 	public void setFormatPapier(String formatPapier) {
 		this.formatPapier = formatPapier;
@@ -264,7 +254,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	/**
 	 * Définit l'orientation de la feuille d'étiquettes
 	 * @param orientation  The orientation to set.
-	 * @uml.property  name="orientation"
 	 */
 	public void setOrientation(String orientation) {
 		this.orientation = orientation;
@@ -273,7 +262,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	/**
 	 * Définit les marges d'impression du papier étiquettes
 	 * @param marges  The marges to set.
-	 * @uml.property  name="marges"
 	 */
 	public void setMarges(Marges marges) {
 		this.marges = marges;
@@ -282,7 +270,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	/**
 	 * Donne le nom du profil courrant
 	 * @return  Returns the curProfil.
-	 * @uml.property  name="curProfil"
 	 */
 	public String getCurProfil() {
 		return curProfil;
@@ -292,7 +279,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	/**
 	 * Définit le nom du profil courrant
 	 * @param curProfil  The curProfil to set.
-	 * @uml.property  name="curProfil"
 	 */
 	public void setCurProfil(String curProfil) {
 		this.curProfil = curProfil;
@@ -301,7 +287,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	/**
 	 * Détéremine si c'est le premier lancement de l'application
 	 * @return  Returns the firstboot.
-	 * @uml.property  name="firstboot"
 	 */
 	public boolean isFirstboot() {
 		return firstboot;
@@ -310,7 +295,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	/**
 	 * Place l'application sur premier lancement
 	 * @param firstboot  The firstboot to set.
-	 * @uml.property  name="firstboot"
 	 */
 	public void setFirstboot(boolean firstboot) {
 		this.firstboot = firstboot;
@@ -319,7 +303,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	/**
 	 * Est ce que les champs de cumul doivent être affiché?
 	 * @return  Renvoie interfaceResultatCumul.
-	 * @uml.property  name="interfaceResultatCumul"
 	 */
 	public boolean isInterfaceResultatCumul() {
 		return interfaceResultatCumul;
@@ -328,7 +311,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	/**
 	 * Définit si les champs de cumul doivent être affiché
 	 * @param interfaceResultatCumul  interfaceResultatCumul à définir.
-	 * @uml.property  name="interfaceResultatCumul"
 	 */
 	public void setInterfaceResultatCumul(boolean interfaceResultatCumul) {
 		this.interfaceResultatCumul = interfaceResultatCumul;
@@ -337,7 +319,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	/**
 	 * Est ce qu'on affiche la saisie des 10/9/M
 	 * @return  Renvoie interfaceResultatSupl.
-	 * @uml.property  name="interfaceResultatSupl"
 	 */
 	public boolean isInterfaceResultatSupl() {
 		return interfaceResultatSupl;
@@ -346,7 +327,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	/**
 	 * Définit si l'on affiche la saisie des 10/9/M
 	 * @param interfaceResultatSupl  interfaceResultatSupl à définir.
-	 * @uml.property  name="interfaceResultatSupl"
 	 */
 	public void setInterfaceResultatSupl(boolean interfaceResultatSupl) {
 		this.interfaceResultatSupl = interfaceResultatSupl;
@@ -355,7 +335,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	/**
 	 * Est ce qu'on met en surbriance les ex-aequo?
 	 * @return  Renvoie interfaceAffResultatExEquo.
-	 * @uml.property  name="interfaceAffResultatExEquo"
 	 */
 	public boolean isInterfaceAffResultatExEquo() {
 		return interfaceAffResultatExEquo;
@@ -364,7 +343,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	/**
 	 * Définit si l'on met en surbriance les ex-aequo
 	 * @param interfaceAffResultatExEquo  interfaceAffResultatExEquo à définir.
-	 * @uml.property  name="interfaceAffResultatExEquo"
 	 */
 	public void setInterfaceAffResultatExEquo(boolean interfaceAffResultatExEquo) {
 		this.interfaceAffResultatExEquo = interfaceAffResultatExEquo;
@@ -373,7 +351,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	/**
 	 * Donne le chemin du logo du club
 	 * @return  Renvoie logoPath.
-	 * @uml.property  name="logoPath"
 	 */
 	public String getLogoPath() {
 		return logoPath;
@@ -382,7 +359,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	/**
 	 * Définit le chemin du logo du club
 	 * @param logoPath  logoPath à définir.
-	 * @uml.property  name="logoPath"
 	 */
 	public void setLogoPath(String logoPath) {
 		this.logoPath = logoPath;

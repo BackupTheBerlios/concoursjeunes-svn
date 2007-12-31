@@ -20,6 +20,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
@@ -55,6 +56,7 @@ import org.concoursjeunes.TargetPosition;
 import org.concoursjeunes.dialog.ConcurrentDialog;
 import org.concoursjeunes.dialog.EquipeDialog;
 import org.concoursjeunes.dialog.TypeListingDialog;
+import org.jdesktop.swingx.JXErrorDialog;
 
 import ajinteractive.standard.java2.AJList;
 import ajinteractive.standard.ui.GhostGlassPane;
@@ -356,7 +358,13 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 			codeRetour = ficheConcoursPane.concDialog.showNewConcurrentDialog(ficheConcours.getCurrentDepart());
 			if (codeRetour != ConcurrentDialog.CANCEL && !ficheConcoursPane.concDialog.getConcurrent().getNomArcher().equals("")) { //$NON-NLS-1$
 
-				ficheConcours.addConcurrent(ficheConcoursPane.concDialog.getConcurrent(), depart);
+				try {
+					ficheConcours.addConcurrent(ficheConcoursPane.concDialog.getConcurrent(), depart);
+				} catch (IOException e) {
+					JXErrorDialog.showDialog(ficheConcoursPane.getParentframe(), ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+							e);
+					e.printStackTrace();
+				}
 			}
 		} while (codeRetour == ConcurrentDialog.CONFIRM_AND_NEXT);
 	}
@@ -372,7 +380,13 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 					ConcoursJeunes.ajrLibelle.getResourceString("confirmation.suppression.titre"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.NO_OPTION) //$NON-NLS-1$
 				return;
 	
-			ficheConcours.removeConcurrent(removedConcurrent);
+			try {
+				ficheConcours.removeConcurrent(removedConcurrent);
+			} catch (IOException e) {
+				JXErrorDialog.showDialog(ficheConcoursPane.getParentframe(), ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+						e);
+				e.printStackTrace();
+			}
 		}
 	}
 

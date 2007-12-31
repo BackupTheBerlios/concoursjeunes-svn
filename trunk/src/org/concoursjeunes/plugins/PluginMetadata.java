@@ -94,6 +94,7 @@ public class PluginMetadata {
 	public static final int ONDEMAND_PLUGIN = 1;
 	public static final int STARTUP_PLUGIN = 3;
 
+	private String name = ""; //$NON-NLS-1$
 	private String info = ""; //$NON-NLS-1$
 	private String optionLabel = ""; //$NON-NLS-1$
 	private int pluginType = 0;
@@ -103,6 +104,20 @@ public class PluginMetadata {
 
 	public PluginMetadata() {
 
+	}
+
+	/**
+	 * @return name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name name à définir
+	 */
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**
@@ -136,7 +151,6 @@ public class PluginMetadata {
 	/**
 	 * @return le type de plugin
 	 * 
-	 * @uml.property name="pluginType"
 	 */
 	public int getPluginType() {
 		return pluginType;

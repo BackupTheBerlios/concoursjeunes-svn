@@ -50,7 +50,6 @@ public class Equipe implements Cloneable {
 	 * Retourne l'ensemble des concurrents composant l'equipes
 	 * 
 	 * @return les concurrents composant l'équipe
-	 * @uml.property  name="membresEquipe"
 	 */
     public ArrayList<Concurrent> getMembresEquipe() {
         return this.membresEquipe;
@@ -60,7 +59,6 @@ public class Equipe implements Cloneable {
      * Retourne les concurrents ayant été selectionné pour pouvoir comptabiliser le score
      * 
 	 * @return  Retourne les archers retenu pour le comptage des points
-	 * @uml.property  name="selection"
 	 */
     public ArrayList<Concurrent> getSelection() {
     	ArrayList<Concurrent> selection = new ArrayList<Concurrent>();
@@ -90,7 +88,6 @@ public class Equipe implements Cloneable {
      * Retourne le nombre de concurrent retenu pour comptabiliser le score
      * 
 	 * @return  Returns the nbRetenu.
-	 * @uml.property  name="nbRetenu"
 	 */
     public int getNbRetenu() {
         return this.nbRetenu;
@@ -101,7 +98,6 @@ public class Equipe implements Cloneable {
      * Definit le nombre d'archer retenu dans la comptabilite des scores
      * 
 	 * @param nbRetenu  The nbRetenu to set.
-	 * @uml.property  name="nbRetenu"
 	 */
     public void setNbRetenu(int nbRetenu) {
         this.nbRetenu = nbRetenu;
@@ -110,7 +106,6 @@ public class Equipe implements Cloneable {
 
     /**
 	 * @return  DifferentiationCriteria - Renvoie Le critère de distinction de l'équipe.
-	 * @uml.property  name="differentiationCriteria"
 	 */
     public CriteriaSet getDifferentiationCriteria() {
         if(differentiationCriteria == null)
@@ -121,15 +116,15 @@ public class Equipe implements Cloneable {
 
     /**
 	 * @param differentiationCriteria  - Le critère de distinction de l'équipe.
-	 * @uml.property  name="differentiationCriteria"
 	 */
     public void setDifferentiationCriteria(CriteriaSet differentiationCriteria) {
         this.differentiationCriteria = differentiationCriteria;
     }
 
     /**
-	 * @param membresEquipe  The membresEquipe to set.
-	 * @uml.property  name="membresEquipe"
+     * Definit la liste des membres de l'equipe
+     * 
+	 * @param equipe la liste des membres de l'equipe
 	 */
     public void setMembresEquipe(ArrayList<Concurrent> equipe) {
         this.membresEquipe = equipe;
@@ -169,7 +164,6 @@ public class Equipe implements Cloneable {
 	 * renvoie le nom de l'membresEquipe
 	 * 
 	 * @return  String
-	 * @uml.property  name="nomEquipe"
 	 */
     public String getNomEquipe() {
         return this.nomEquipe;
@@ -178,7 +172,6 @@ public class Equipe implements Cloneable {
     /**
 	 * defini le nom de l'membresEquipe
 	 * @param  nomEquipe
-	 * @uml.property  name="nomEquipe"
 	 */
     public void setNomEquipe(String nomEquipe) {
         this.nomEquipe = nomEquipe;

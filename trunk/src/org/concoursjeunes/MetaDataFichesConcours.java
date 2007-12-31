@@ -28,7 +28,6 @@ public class MetaDataFichesConcours {
 
 	/**
 	 * @return  fiches
-	 * @uml.property  name="fiches"
 	 */
 	public ArrayList<MetaDataFicheConcours> getFiches() {
 		return fiches;
@@ -36,7 +35,6 @@ public class MetaDataFichesConcours {
 
 	/**
 	 * @param fiches  fiches à définir
-	 * @uml.property  name="fiches"
 	 */
 	public void setFiches(ArrayList<MetaDataFicheConcours> fiches) {
 		this.fiches = fiches;
@@ -70,5 +68,9 @@ public class MetaDataFichesConcours {
 	 */
 	public MetaDataFicheConcours get(int index) {
 		return fiches.get(index);
+	}
+	
+	public boolean contains(MetaDataFicheConcours metaDataFicheConcours) {
+		return fiches.contains(metaDataFicheConcours);
 	}
 }

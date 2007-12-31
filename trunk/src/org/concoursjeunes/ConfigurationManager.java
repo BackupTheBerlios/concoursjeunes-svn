@@ -114,7 +114,7 @@ public class ConfigurationManager {
 	 * 
 	 * @return la configuation courante
 	 */
-	public static Configuration loadCurrentConfiguration() {
+	public static Configuration loadCurrentConfiguration() throws IOException {
 		File confFile = new File(userRessources.getConfigPathForUser() + File.separator + 
 				ajrParametreAppli.getResourceString("file.configuration")); //$NON-NLS-1$
 
@@ -127,7 +127,7 @@ public class ConfigurationManager {
 	 * @param profilename
 	 * @return la configuration nommé
 	 */
-	public static Configuration loadConfiguration(String profilename) {
+	public static Configuration loadConfiguration(String profilename) throws IOException {
 		return loadConfiguration(new File(ConcoursJeunes.userRessources.getConfigPathForUser() 
 				+ File.separator + "configuration_" + profilename + ".xml")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
@@ -139,7 +139,7 @@ public class ConfigurationManager {
 	 * @return l'objet configuration chargé
 	 */
 	@SuppressWarnings("deprecation")
-	public static Configuration loadConfiguration(File confFile) {
+	public static Configuration loadConfiguration(File confFile) throws IOException {
 		Configuration configuration = null;
 		//tente de charger la configuration
 		try {
@@ -212,12 +212,12 @@ public class ConfigurationManager {
 		ConcoursJeunes concoursJeunes = ConcoursJeunes.getInstance();
 		ArrayList<MetaDataFicheConcours> openedFichesConcours = new ArrayList<MetaDataFicheConcours>();
 		
-		if(ConcoursJeunes.configuration.getCurProfil().equals(currentName) && concoursJeunes.getFichesConcours().size() > 0) {
+		if(ConcoursJeunes.getConfiguration().getCurProfil().equals(currentName) && concoursJeunes.getFichesConcours().size() > 0) {
 			for(FicheConcours ficheConcours : concoursJeunes.getFichesConcours()) {
 				openedFichesConcours.add(ficheConcours.getMetaDataFicheConcours());
 			}
 			concoursJeunes.closeAllFichesConcours();
-			ConcoursJeunes.configuration.save();
+			ConcoursJeunes.getConfiguration().save();
 		}
 		
 		//renome le fichier de configuration
@@ -261,10 +261,10 @@ public class ConfigurationManager {
 			configuration.save();
 		}
 		
-		if(ConcoursJeunes.configuration.getCurProfil().equals(currentName) && openedFichesConcours.size() > 0) {
+		if(ConcoursJeunes.getConfiguration().getCurProfil().equals(currentName) && openedFichesConcours.size() > 0) {
 			if(success && configuration != null) {
-				ConcoursJeunes.configuration = configuration;
-				ConcoursJeunes.configuration.saveAsDefault();
+				ConcoursJeunes.setConfiguration(configuration);
+				configuration.saveAsDefault();
 			}
 			
 			for(MetaDataFicheConcours metaDataFicheConcours : openedFichesConcours) {

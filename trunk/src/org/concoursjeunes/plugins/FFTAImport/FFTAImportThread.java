@@ -52,8 +52,7 @@ public class FFTAImportThread extends Thread {
 	/**
 	 * Definit l'objet parent auquel est rattaché le plugin
 	 * 
-	 * @param concoursJeunes -
-	 *            l'objet concoursJeunes parent à associer au plugin
+	 * @param parentframe la boite de dialogue rattaché au thread
 	 */
 	public void setParentFrame(JDialog parentframe) {
 		this.parentframe = parentframe;

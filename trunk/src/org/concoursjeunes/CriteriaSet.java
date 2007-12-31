@@ -67,7 +67,6 @@ public class CriteriaSet {
 	 * Renvoi la liste des critères composant le jeux
 	 * 
 	 * @return la liste des critères composant le jeux
-	 * @uml.property  name="criteria"
 	 */
 	public Hashtable<Criterion, CriterionElement> getCriteria() {
 		return criteria;
@@ -77,7 +76,6 @@ public class CriteriaSet {
 	 * Définit la liste des critères composant le jeux
 	 * 
 	 * @param criteria  criteria à définir.
-	 * @uml.property  name="criteria"
 	 */
 	public void setCriteria(Hashtable<Criterion, CriterionElement> criteria) {
 		this.criteria = criteria;

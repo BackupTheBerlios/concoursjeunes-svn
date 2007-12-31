@@ -42,7 +42,6 @@ public class FicheConcoursEvent {
 
 	/**
 	 * @return  concurrent
-	 * @uml.property  name="concurrent"
 	 */
 	public Concurrent getConcurrent() {
 		return concurrent;
@@ -50,7 +49,6 @@ public class FicheConcoursEvent {
 
 	/**
 	 * @param concurrent  concurrent à définir
-	 * @uml.property  name="concurrent"
 	 */
 	public void setConcurrent(Concurrent concurrent) {
 		this.concurrent = concurrent;
@@ -58,7 +56,6 @@ public class FicheConcoursEvent {
 	
 	/**
 	 * @return  depart
-	 * @uml.property  name="depart"
 	 */
 	public int getDepart() {
 		return depart;
@@ -66,7 +63,6 @@ public class FicheConcoursEvent {
 
 	/**
 	 * @param depart  depart à définir
-	 * @uml.property  name="depart"
 	 */
 	public void setDepart(int depart) {
 		this.depart = depart;
@@ -74,7 +70,6 @@ public class FicheConcoursEvent {
 
 	/**
 	 * @return  event
-	 * @uml.property  name="event"
 	 */
 	public int getEvent() {
 		return event;
@@ -82,7 +77,6 @@ public class FicheConcoursEvent {
 
 	/**
 	 * @param event  event à définir
-	 * @uml.property  name="event"
 	 */
 	public void setEvent(int event) {
 		this.event = event;

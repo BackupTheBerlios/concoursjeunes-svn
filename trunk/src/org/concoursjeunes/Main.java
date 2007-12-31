@@ -19,9 +19,18 @@ package org.concoursjeunes;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.util.List;
 
+import org.concoursjeunes.plugins.*;
 import org.concoursjeunes.ui.ConcoursJeunesFrame;
 import org.jdesktop.swingx.JXErrorDialog;
+
+import ajinteractive.standard.common.AJToolKit;
+import ajinteractive.standard.common.PluginClassLoader;
 
 /**
  * @author aurelien
@@ -51,6 +60,9 @@ public class Main {
 		Toolkit.getDefaultToolkit().getSystemEventQueue().push(new ExceptionHandlingEventQueue());
 
 		ConcoursJeunes concoursJeunes = ConcoursJeunes.getInstance();
+		if(System.getProperty("noplugin") == null) { //$NON-NLS-1$
+			loadStartupPlugin();
+		}
 
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
@@ -72,22 +84,83 @@ public class Main {
 			}
 		});
 		System.out.println("core loaded"); //$NON-NLS-1$
-		
-		/*ScriptEngineManager se = new ScriptEngineManager();
-		ScriptEngine scriptEngine = se.getEngineByName("JavaScript");
-		scriptEngine.setBindings(new SimpleBindings(Collections.synchronizedMap(new HashMap<String, Object>())), ScriptContext.ENGINE_SCOPE);
-		try {
-			scriptEngine.put("window", System.out);
-			scriptEngine.eval("window.println(\"hello, world\");");
-		} catch (ScriptException e1) {
-			e1.printStackTrace();
-		}
-		for(ScriptEngineFactory sef : se.getEngineFactories()) {
-			System.out.println(sef.getEngineName());
-			System.out.println(sef.getExtensions());
-		}*/
 
 		new ConcoursJeunesFrame(concoursJeunes);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static void loadStartupPlugin() {
+		PluginLoader pl = new PluginLoader();
+		
+		List<String> disablePlugin = null;
+		try {
+			disablePlugin = (List<String>)AJToolKit.loadXMLStructure(
+					new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "disable_plugins.xml"), false); //$NON-NLS-1$
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		for (PluginMetadata pm : pl.getPlugins(PluginMetadata.STARTUP_PLUGIN)) {
+			if(disablePlugin != null && disablePlugin.contains(pm.getName()))
+				continue;
+			try {
+				Class<?> cla = null;
+				String importClass = pm.getClassName();
+				if (importClass != null) {
+					cla = Class.forName(importClass, false, new PluginClassLoader(findParentClassLoader(), new File("plugins"))); //$NON-NLS-1$
+				}
+
+				if (cla != null) {
+					Object plugin = cla.newInstance();
+					for (Method m : cla.getMethods()) {
+						if (m.isAnnotationPresent(PluginEntry.class)) {
+							m.invoke(plugin, (Object[]) null);
+							break;
+						}
+					}
+				}
+			} catch (InstantiationException e1) {
+				JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
+						e1.fillInStackTrace());
+				e1.printStackTrace();
+			} catch (IllegalAccessException e1) {
+				JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
+						e1.fillInStackTrace());
+				e1.printStackTrace();
+			} catch (ClassNotFoundException e1) {
+				JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
+						e1.fillInStackTrace());
+				e1.printStackTrace();
+			} catch (SecurityException e1) {
+				JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
+						e1.fillInStackTrace());
+				e1.printStackTrace();
+			} catch (InvocationTargetException e1) {
+				JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
+						e1.fillInStackTrace());
+				e1.printStackTrace();
+			} catch (MalformedURLException e1) {
+				JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
+						e1.fillInStackTrace());
+				e1.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * Locates the best class loader based on context (see class description).
+	 * 
+	 * @return The best parent classloader to use
+	 */
+	private static ClassLoader findParentClassLoader() {
+		ClassLoader parent = Thread.currentThread().getContextClassLoader();
+		if (parent == null) {
+			parent = Main.class.getClassLoader();
+			if (parent == null) {
+				parent = ClassLoader.getSystemClassLoader();
+			}
+		}
+		return parent;
 	}
 
 }

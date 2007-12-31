@@ -96,18 +96,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.StringReader;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Locale;
+import java.util.*;
 
 import javax.naming.ConfigurationException;
 import javax.script.ScriptContext;
@@ -120,9 +115,6 @@ import javax.swing.event.EventListenerList;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.concoursjeunes.plugins.PluginEntry;
-import org.concoursjeunes.plugins.PluginLoader;
-import org.concoursjeunes.plugins.PluginMetadata;
 import org.jdesktop.swingx.JXErrorDialog;
 import org.xml.sax.InputSource;
 
@@ -180,7 +172,7 @@ public class ConcoursJeunes {
 	/**
 	 * Gestion de la configuration
 	 */
-	public static Configuration configuration = new Configuration();
+	private static Configuration configuration = new Configuration();
 
 	/**
 	 * ressources utilisateurs
@@ -207,13 +199,22 @@ public class ConcoursJeunes {
 	 */
 	private ConcoursJeunes() {
 		// tente de recuperer la configuration générale du programme
-		configuration = ConfigurationManager.loadCurrentConfiguration();
+		try {
+			configuration = ConfigurationManager.loadCurrentConfiguration();
+		} catch (IOException e2) {
+			JXErrorDialog.showDialog(null, ajrLibelle.getResourceString("erreur.concoursjeunes.loadconfig.title"), //$NON-NLS-1$
+					ajrLibelle.getResourceString("erreur.concoursjeunes.loadconfig"), e2); //$NON-NLS-1$
+			e2.printStackTrace();
+			System.exit(1);
+		}
 		
 		Locale.setDefault(new Locale(configuration.getLangue()));
 		reloadLibelle();
 		try {
 			AjResourcesReader.setClassLoader(new PluginClassLoader(findParentClassLoader(), new File("plugins"))); //$NON-NLS-1$
 		} catch (MalformedURLException e1) {
+			JXErrorDialog.showDialog(null, ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+					e1.toString(), e1);
 			e1.printStackTrace();
 		}
 
@@ -222,6 +223,8 @@ public class ConcoursJeunes {
 				System.setErr(new PrintStream(userRessources.getLogPathForProfile(configuration.getCurProfil()) + File.separator + ajrParametreAppli.getResourceString("log.error"))); //$NON-NLS-1$
 				System.setOut(new PrintStream(userRessources.getLogPathForProfile(configuration.getCurProfil()) + File.separator + ajrParametreAppli.getResourceString("log.exec"))); //$NON-NLS-1$
 			} catch (FileNotFoundException e) {
+				JXErrorDialog.showDialog(null, ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+						e.toString(), e);
 				e.printStackTrace();
 			}
 		}
@@ -313,9 +316,9 @@ public class ConcoursJeunes {
 			dbVersion = getDBVersion();
 		}
 		
-		if(System.getProperty("noplugin") == null) { //$NON-NLS-1$
+		/*if(System.getProperty("noplugin") == null) { //$NON-NLS-1$
 			loadStartupPlugin();
-		}
+		}*/
 	}
 
 	/**
@@ -331,243 +334,13 @@ public class ConcoursJeunes {
 	}
 
 	/**
-	 * Recharge le fichier de libelle en fonction de la localité en parametre
-	 * 
-	 * @param locale -
-	 *            la localité utilisé pour les libellés
+	 * Recharge le fichier de libelle en fonction de la localite definit par defaut
 	 */
 	public static void reloadLibelle() {
 		AjResourcesReader.setLocale(Locale.getDefault());
 		ajrLibelle = new AjResourcesReader(RES_LIBELLE);
 	}
-
-	public void addConcoursJeunesListener(ConcoursJeunesListener concoursJeunesListener) {
-		listeners.add(ConcoursJeunesListener.class, concoursJeunesListener);
-	}
-
-	public void removeConcoursJeunesListener(ConcoursJeunesListener concoursJeunesListener) {
-		listeners.remove(ConcoursJeunesListener.class, concoursJeunesListener);
-	}
-
-	private int getDBVersion() {
-		Statement stmt = null;
-		try {
-			stmt = dbConnection.createStatement();
-
-			ResultSet rs = stmt.executeQuery("SELECT * FROM PARAM"); //$NON-NLS-1$
-			rs.first();
-			return rs.getInt("DBVERSION"); //$NON-NLS-1$
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (stmt != null)
-					stmt.close();
-			} catch (Exception e) {
-			}
-		}
-
-		return 0;
-	}
-
-	private void loadStartupPlugin() {
-		PluginLoader pl = new PluginLoader();
-
-		for (PluginMetadata pm : pl.getPlugins(PluginMetadata.STARTUP_PLUGIN)) {
-
-			try {
-				Class<?> cla = null;
-				String importClass = pm.getClassName();
-				if (importClass != null) {
-					cla = Class.forName(importClass, false, new PluginClassLoader(findParentClassLoader(), new File("plugins"))); //$NON-NLS-1$
-				}
-
-				if (cla != null) {
-					Object plugin = cla.newInstance();
-					for (Method m : cla.getMethods()) {
-						if (m.isAnnotationPresent(PluginEntry.class)) {
-							m.invoke(plugin, (Object[]) null);
-							break;
-						}
-					}
-				}
-			} catch (InstantiationException e1) {
-				JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
-						e1.fillInStackTrace());
-				e1.printStackTrace();
-			} catch (IllegalAccessException e1) {
-				JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
-						e1.fillInStackTrace());
-				e1.printStackTrace();
-			} catch (ClassNotFoundException e1) {
-				JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
-						e1.fillInStackTrace());
-				e1.printStackTrace();
-			} catch (SecurityException e1) {
-				JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
-						e1.fillInStackTrace());
-				e1.printStackTrace();
-			} catch (InvocationTargetException e1) {
-				JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
-						e1.fillInStackTrace());
-				e1.printStackTrace();
-			} catch (MalformedURLException e1) {
-				JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
-						e1.fillInStackTrace());
-				e1.printStackTrace();
-			}
-		}
-	}
-
-	/**
-	 * Locates the best class loader based on context (see class description).
-	 * 
-	 * @return The best parent classloader to use
-	 */
-	private ClassLoader findParentClassLoader() {
-		ClassLoader parent = Thread.currentThread().getContextClassLoader();
-		if (parent == null) {
-			parent = this.getClass().getClassLoader();
-			if (parent == null) {
-				parent = ClassLoader.getSystemClassLoader();
-			}
-		}
-		return parent;
-	}
-
-	/**
-	 * Création d'une nouvelle fiche concours
-	 * 
-	 * @throws ConfigurationException
-	 */
-	public void createFicheConcours() throws ConfigurationException {
-		if (configuration == null)
-			throw new ConfigurationException("la configuration est null"); //$NON-NLS-1$
-
-		FicheConcours ficheConcours = new FicheConcours();
-		fichesConcours.add(ficheConcours);
-		configuration.getMetaDataFichesConcours().add(ficheConcours.getMetaDataFicheConcours());
-
-		configuration.saveAsDefault();
-		ficheConcours.save();
-
-		fireFicheConcoursCreated(ficheConcours);
-	}
-
-	/**
-	 * Supprime une fiche concours du système
-	 * 
-	 * @param metaDataFicheConcours le fichier de metadonné contenant les
-	 * informations sur le concours à supprimer
-	 * 
-	 * @throws ConfigurationException
-	 */
-	public void deleteFicheConcours(MetaDataFicheConcours metaDataFicheConcours) throws ConfigurationException {
-		if (configuration == null)
-			throw new ConfigurationException("la configuration est null"); //$NON-NLS-1$
-
-		configuration.getMetaDataFichesConcours().remove(metaDataFicheConcours);
-
-		if (new File(userRessources.getConcoursPathForProfile(configuration.getCurProfil()) + File.separator + metaDataFicheConcours.getFilenameConcours()).delete()) {
-			configuration.saveAsDefault();
-
-			fireFicheConcoursDeleted(null);
-		}
-	}
-
-	/**
-	 * Referme une fiche de concours
-	 * 
-	 * @param ficheConcours la fiche concours à décharger de la méméoire
-	 * 
-	 * @throws ConfigurationException
-	 */
-	public void closeFicheConcours(FicheConcours ficheConcours) throws ConfigurationException {
-		if (configuration == null)
-			throw new ConfigurationException("la configuration est null"); //$NON-NLS-1$
-
-		ficheConcours.save();
-		configuration.saveAsDefault();
-		if (fichesConcours.remove(ficheConcours)) {
-			fireFicheConcoursClosed(ficheConcours);
-		}
-	}
-
-	/**
-	 * Décharge de la mémoire l'ensemble des fiches ouvertes
-	 * 
-	 * @throws ConfigurationException
-	 */
-	public void closeAllFichesConcours() throws ConfigurationException {
-		saveAllFichesConcours();
-
-		ArrayList<FicheConcours> tmpList = new ArrayList<FicheConcours>();
-		tmpList.addAll(fichesConcours);
-		fichesConcours.clear();
-		for (FicheConcours fiche : tmpList) {
-			fireFicheConcoursClosed(fiche);
-		}
-		tmpList.clear();
-	}
-
-	/**
-	 * Restaure le coucours fournit en parametre
-	 * 
-	 * @param concoursFile -
-	 *            le chemin du concours à restaurer
-	 * @throws ConfigurationException
-	 */
-	public void restoreFicheConcours(MetaDataFicheConcours metaDataFicheConcours)
-			throws ConfigurationException, IOException {
-		if (configuration == null)
-			throw new ConfigurationException("la configuration est null"); //$NON-NLS-1$
-
-		FicheConcours ficheConcours = FicheConcoursBuilder.getFicheConcours(metaDataFicheConcours);
-
-		if (ficheConcours != null) {
-			fichesConcours.add(ficheConcours);
-			fireFicheConcoursRestored(ficheConcours);
-		}
-	}
-
-	/**
-	 * Sauvegarde l'ensemble des fiches de concours actuellement ouverte
-	 * 
-	 * @exception ConfigurationException
-	 */
-	public void saveAllFichesConcours() throws ConfigurationException {
-		if (configuration == null)
-			throw new ConfigurationException("la configuration est null"); //$NON-NLS-1$
-
-		for (FicheConcours fiche : fichesConcours) {
-			fiche.save();
-		}
-		configuration.saveAsDefault();
-	}
 	
-	/**
-	 * Retourne la liste des fiches concours actuellement ouvertent
-	 * 
-	 * @return
-	 */
-	public ArrayList<FicheConcours> getFichesConcours() {
-		return fichesConcours;
-	}
-	
-	/**
-	 * Test si une fiche est déjà ouverte ou non
-	 * 
-	 * @param metaDataFicheConcours - le fichier de metadonnées du concours à tester
-	 * @return true si ouvert, false sinon
-	 */
-	public boolean isOpenFicheConcours(MetaDataFicheConcours metaDataFicheConcours) {
-		for(FicheConcours ficheConcours : fichesConcours) {
-			if(ficheConcours.getMetaDataFicheConcours().equals(metaDataFicheConcours))
-				return true;
-		}
-		return false;
-	}
-
 	/**
 	 * genere le pdf à partir des parametres document et du contenu xml
 	 * 
@@ -621,6 +394,198 @@ public class ConcoursJeunes {
 
 		return printOK;
 	}
+	
+	public static Configuration getConfiguration() {
+		return configuration;
+	}
+	
+	public static void setConfiguration(Configuration _configuration) {
+		configuration = _configuration;
+		if(instance != null)
+			instance.fireConfigurationChanged();
+	}
+
+	public void addConcoursJeunesListener(ConcoursJeunesListener concoursJeunesListener) {
+		listeners.add(ConcoursJeunesListener.class, concoursJeunesListener);
+	}
+
+	public void removeConcoursJeunesListener(ConcoursJeunesListener concoursJeunesListener) {
+		listeners.remove(ConcoursJeunesListener.class, concoursJeunesListener);
+	}
+
+	private int getDBVersion() {
+		Statement stmt = null;
+		try {
+			stmt = dbConnection.createStatement();
+
+			ResultSet rs = stmt.executeQuery("SELECT * FROM PARAM"); //$NON-NLS-1$
+			rs.first();
+			return rs.getInt("DBVERSION"); //$NON-NLS-1$
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (stmt != null)
+					stmt.close();
+			} catch (Exception e) {
+			}
+		}
+
+		return 0;
+	}
+
+	/**
+	 * Locates the best class loader based on context (see class description).
+	 * 
+	 * @return The best parent classloader to use
+	 */
+	private ClassLoader findParentClassLoader() {
+		ClassLoader parent = Thread.currentThread().getContextClassLoader();
+		if (parent == null) {
+			parent = this.getClass().getClassLoader();
+			if (parent == null) {
+				parent = ClassLoader.getSystemClassLoader();
+			}
+		}
+		return parent;
+	}
+
+	/**
+	 * Création d'une nouvelle fiche concours
+	 * 
+	 * @throws ConfigurationException
+	 */
+	public void createFicheConcours() throws ConfigurationException, IOException {
+		if (configuration == null)
+			throw new ConfigurationException("la configuration est null"); //$NON-NLS-1$
+
+		FicheConcours ficheConcours = new FicheConcours();
+		fichesConcours.add(ficheConcours);
+		configuration.getMetaDataFichesConcours().add(ficheConcours.getMetaDataFicheConcours());
+
+		configuration.saveAsDefault();
+		ficheConcours.save();
+
+		fireFicheConcoursCreated(ficheConcours);
+	}
+
+	/**
+	 * Supprime une fiche concours du système
+	 * 
+	 * @param metaDataFicheConcours le fichier de metadonné contenant les
+	 * informations sur le concours à supprimer
+	 * 
+	 * @throws ConfigurationException
+	 */
+	public void deleteFicheConcours(MetaDataFicheConcours metaDataFicheConcours) throws ConfigurationException {
+		if (configuration == null)
+			throw new ConfigurationException("la configuration est null"); //$NON-NLS-1$
+
+		configuration.getMetaDataFichesConcours().remove(metaDataFicheConcours);
+
+		if (new File(userRessources.getConcoursPathForProfile(configuration.getCurProfil()) + File.separator + metaDataFicheConcours.getFilenameConcours()).delete()) {
+			configuration.saveAsDefault();
+
+			fireFicheConcoursDeleted(null);
+		}
+	}
+
+	/**
+	 * Referme une fiche de concours
+	 * 
+	 * @param ficheConcours la fiche concours à décharger de la méméoire
+	 * 
+	 * @throws ConfigurationException
+	 */
+	public void closeFicheConcours(FicheConcours ficheConcours) throws ConfigurationException, IOException {
+		if (configuration == null)
+			throw new ConfigurationException("la configuration est null"); //$NON-NLS-1$
+
+		ficheConcours.save();
+		configuration.saveAsDefault();
+		if (fichesConcours.remove(ficheConcours)) {
+			fireFicheConcoursClosed(ficheConcours);
+		}
+	}
+
+	/**
+	 * Décharge de la mémoire l'ensemble des fiches ouvertes
+	 * 
+	 * @throws ConfigurationException
+	 */
+	public void closeAllFichesConcours() throws ConfigurationException, IOException {
+		saveAllFichesConcours();
+
+		ArrayList<FicheConcours> tmpList = new ArrayList<FicheConcours>();
+		tmpList.addAll(fichesConcours);
+		fichesConcours.clear();
+		for (FicheConcours fiche : tmpList) {
+			fireFicheConcoursClosed(fiche);
+		}
+		tmpList.clear();
+		
+		configuration.save();
+	}
+
+	/**
+	 * Restaure le coucours dont l'objet de metadonnée est fournit en parametre
+	 * 
+	 * @param metaDataFicheConcours -
+	 *            l'objet metadonnée du concours à restaurer
+	 * 
+	 * @throws ConfigurationException
+	 * @throws IOException
+	 */
+	public void restoreFicheConcours(MetaDataFicheConcours metaDataFicheConcours)
+			throws ConfigurationException, IOException {
+		if (configuration == null)
+			throw new ConfigurationException("la configuration est null"); //$NON-NLS-1$
+
+		FicheConcours ficheConcours = FicheConcoursBuilder.getFicheConcours(metaDataFicheConcours);
+
+		if (ficheConcours != null) {
+			fichesConcours.add(ficheConcours);
+			fireFicheConcoursRestored(ficheConcours);
+		}
+	}
+
+	/**
+	 * Sauvegarde l'ensemble des fiches de concours actuellement ouverte
+	 * 
+	 * @exception ConfigurationException
+	 */
+	public void saveAllFichesConcours() throws ConfigurationException, IOException {
+		if (configuration == null)
+			throw new ConfigurationException("la configuration est null"); //$NON-NLS-1$
+
+		for (FicheConcours fiche : fichesConcours) {
+			fiche.save();
+		}
+		configuration.saveAsDefault();
+	}
+	
+	/**
+	 * Retourne la liste des fiches concours actuellement ouvertent
+	 * 
+	 * @return la liste des fiches concours actuellement ouvertent
+	 */
+	public List<FicheConcours> getFichesConcours() {
+		return fichesConcours;
+	}
+	
+	/**
+	 * Test si une fiche est déjà ouverte ou non
+	 * 
+	 * @param metaDataFicheConcours - le fichier de metadonnées du concours à tester
+	 * @return true si ouvert, false sinon
+	 */
+	public boolean isOpenFicheConcours(MetaDataFicheConcours metaDataFicheConcours) {
+		for(FicheConcours ficheConcours : fichesConcours) {
+			if(ficheConcours.getMetaDataFicheConcours().equals(metaDataFicheConcours))
+				return true;
+		}
+		return false;
+	}
 
 	private void fireFicheConcoursCreated(FicheConcours ficheConcours) {
 		for (ConcoursJeunesListener concoursJeunesListener : listeners.getListeners(ConcoursJeunesListener.class)) {
@@ -643,6 +608,12 @@ public class ConcoursJeunes {
 	private void fireFicheConcoursRestored(FicheConcours ficheConcours) {
 		for (ConcoursJeunesListener concoursJeunesListener : listeners.getListeners(ConcoursJeunesListener.class)) {
 			concoursJeunesListener.ficheConcoursRestored(new ConcoursJeunesEvent(ficheConcours, ConcoursJeunesEvent.Type.OPEN_CONCOURS));
+		}
+	}
+	
+	private void fireConfigurationChanged() {
+		for (ConcoursJeunesListener concoursJeunesListener : listeners.getListeners(ConcoursJeunesListener.class)) {
+			concoursJeunesListener.configurationChanged(new ConcoursJeunesEvent(null, ConcoursJeunesEvent.Type.CONFIGURATION_CHANGED));
 		}
 	}
 }

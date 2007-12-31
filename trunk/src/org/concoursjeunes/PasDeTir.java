@@ -195,9 +195,9 @@ public class PasDeTir {
 	}
 	
 	/**
-	 * Retourne la table d'occupation des cibles pour un départ donné
+	 * Retourne la table d'occupation en fonction du nombre de tireur par cible donné
 	 * 
-	 * @param depart - le depart concerné
+	 * @param nbtireurparcible le nombre de tireur par cible servant de base au calcul de la table d'occupation
 	 * @return la table d'occupation des cibles
 	 */
 	public Hashtable<DistancesEtBlason, OccupationCibles> getOccupationCibles(int nbtireurparcible) {
@@ -205,9 +205,9 @@ public class PasDeTir {
 	}
 	
 	/**
-	 * Retourne le nombre de cible libre sur un depart donné
+	 * Retourne le nombre de cible libre en fonction du nombre de tireur par cible donné
 	 * 
-	 * @param depart - le depart pour lequelle retourné le nombre de cible libre
+	 * @param nbtireurparcible le nombre de tireur par cible servant de base au calcul de la table d'occupation
 	 * @return le nombre de cible libre
 	 */
 	public int getNbCiblesLibre(int nbtireurparcible) {
@@ -272,8 +272,6 @@ public class PasDeTir {
 	 * Place les archers sur le pas de tir
 	 * La methode de placement utilisé permet d'éviter, dans la mesure du possible,
 	 * de placer les archers d'un même club sur la même cible 
-	 * 
-	 * @param depart - le numero du depart pour lequel placer les archers
 	 */
 	public void placementConcurrents() {
 		int curCible = 1;

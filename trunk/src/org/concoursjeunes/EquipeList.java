@@ -215,7 +215,6 @@ public class EquipeList implements Cloneable {
     /**
 	 * Pour la sérialisation, la table des équipes
 	 * @return  Renvoie equipeList.
-	 * @uml.property  name="equipeList"
 	 */
     public ArrayList<Equipe> getEquipeList() {
         return equipeList;
@@ -224,7 +223,6 @@ public class EquipeList implements Cloneable {
     /**
 	 * Pour la sérialisation, la table des équipes
 	 * @param equipeList  equipeList à définir.
-	 * @uml.property  name="equipeList"
 	 */
     public void setEquipeList(ArrayList<Equipe> equipeList) {
         this.equipeList = equipeList;

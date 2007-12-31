@@ -3,8 +3,9 @@
  */
 package org.concoursjeunes.test;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import java.io.IOException;
+
+import junit.framework.TestCase;
 
 import org.concoursjeunes.ConcoursJeunes;
 import org.concoursjeunes.ConcoursJeunesEvent;
@@ -19,7 +20,7 @@ import org.junit.Test;
  * @author Aurélien JEOFFRAY
  * TODO revoir les test avec creation de concours
  */
-public class FicheConcoursTest {
+public class FicheConcoursTest extends TestCase {
 	
 	private ConcoursJeunes concoursJeunes;
 	private FicheConcours ficheConcours;
@@ -28,6 +29,7 @@ public class FicheConcoursTest {
 	 * @throws java.lang.Exception
 	 */
 	@Before
+	@Override
 	public void setUp() throws Exception {
 		concoursJeunes = ConcoursJeunes.getInstance();
 		
@@ -42,6 +44,7 @@ public class FicheConcoursTest {
 			}
 			public void ficheConcoursDeleted(ConcoursJeunesEvent concoursJeunesEvent) {}
 			public void ficheConcoursRestored(ConcoursJeunesEvent concoursJeunesEvent) {}
+			public void configurationChanged(ConcoursJeunesEvent concoursJeunesEvent) {}
 			
 		});
 		
@@ -60,7 +63,11 @@ public class FicheConcoursTest {
 	public void testAddConcurrent() {
 		Concurrent concurrent = new Concurrent();
 		//concurrent.setDifferentiationCriteria();
-		assertTrue(ficheConcours.addConcurrent(concurrent, 0));
+		try {
+			assertTrue(ficheConcours.addConcurrent(concurrent, 0));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -80,6 +87,7 @@ public class FicheConcoursTest {
 	}
 
 	@After
+	@Override
 	public void tearDown() {
 		//concoursJeunes.deleteFicheConcours(ficheConcours.getParametre().getSaveName());
 	}

@@ -401,7 +401,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 			cH.setCellEditor(new DefaultCellEditor(jcbBlasons));
 		} catch (SQLException e) {
 			JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
-					e.fillInStackTrace());
+					e);
 			e.printStackTrace();
 		}
 

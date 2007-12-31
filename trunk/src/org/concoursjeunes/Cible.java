@@ -121,9 +121,9 @@ public class Cible {
 	 * @param ficheConcours -
 	 *            La fiche concours associé à la cible
 	 */
-	public Cible(int iNumCible, FicheConcours concours) {
-		this.numCible = iNumCible;
-		this.concours = concours;
+	public Cible(int numCible, FicheConcours ficheConcours) {
+		this.numCible = numCible;
+		this.concours = ficheConcours;
 		this.concurrents = new Concurrent[concours.getParametre().getNbTireur()];
 	}
 

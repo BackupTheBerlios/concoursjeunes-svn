@@ -197,9 +197,18 @@ public class Blason {
 	}
 
 	/**
-	 * @param verticalRation verticalRation à définir
+	 * Definit le ratio d'occupation vertical de la cible.
+	 * Le ratio est une valeur entre 0 et 1 representant la fraction de cible
+	 * occupé par le blason.<br>
+	 * <br>
+	 * Si la valeur definit est superieur à 1 alors celle ci est considere
+	 * comme egal à 1. De même, une valeur negative est consideré comme egal à 0
+	 * 
+	 * @param verticalRatio le ratio d'occupation cible
 	 */
 	public void setVerticalRatio(double verticalRatio) {
+		if(verticalRatio > 1.0) verticalRatio = 1.0;
+		else if(verticalRatio < 0.0) verticalRatio = 0.0;
 		this.verticalRatio = verticalRatio;
 	}
 	

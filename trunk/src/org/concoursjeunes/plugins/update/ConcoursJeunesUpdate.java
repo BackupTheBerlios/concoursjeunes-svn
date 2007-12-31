@@ -160,22 +160,29 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 	public void run() {
 
 		PluginLoader pl = new PluginLoader();
-		AppSerializer appSerializer = new AppSerializer(ConcoursJeunes.userRessources);
+		
 
 		ajUpdater = new AjUpdater(ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
 				"."); //$NON-NLS-1$
 		ajUpdater.addAjUpdaterListener(this);
-		ajUpdater.setUserAgent(ConcoursJeunes.NOM + " " + ConcoursJeunes.VERSION //$NON-NLS-1$
-				+ " (" + appSerializer.getSerial() + ";" + ConcoursJeunes.configuration.getClub().getAgrement() + " " + ConcoursJeunes.configuration.getClub().getNom() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		System.out.println(ConcoursJeunes.NOM + " " + ConcoursJeunes.VERSION //$NON-NLS-1$
-				+ " (" + appSerializer.getSerial() + ";" + ConcoursJeunes.configuration.getClub().getAgrement() + " " + ConcoursJeunes.configuration.getClub().getNom() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		
+		try {
+			AppSerializer appSerializer = new AppSerializer(ConcoursJeunes.userRessources);
+			ajUpdater.setUserAgent(ConcoursJeunes.NOM + " " + ConcoursJeunes.VERSION //$NON-NLS-1$
+					+ " (" + appSerializer.getSerial() + ";" + ConcoursJeunes.getConfiguration().getClub().getAgrement() //$NON-NLS-1$ //$NON-NLS-2$ 
+					+ " " + ConcoursJeunes.getConfiguration().getClub().getNom() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
 		ajUpdater.addRepositoryURL(pluginRessources.getResourceString("url.reference")); //$NON-NLS-1$
 		for (PluginMetadata pm : pl.getPlugins(PluginMetadata.ALL)) {
 			ajUpdater.addRepositoryURL(pm.getReposURL());
 		}
-		if (ConcoursJeunes.configuration.isUseProxy()) {
-			ajUpdater.setProxy(ConcoursJeunes.configuration.getProxy());
+		if (ConcoursJeunes.getConfiguration().isUseProxy()) {
+			ajUpdater.setProxy(ConcoursJeunes.getConfiguration().getProxy());
 		}
+		
 		try {
 			updateFiles = ajUpdater.checkUpdate();
 		} catch (UpdateException e) {

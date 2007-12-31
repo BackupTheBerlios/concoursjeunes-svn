@@ -88,19 +88,14 @@
  */
 package org.concoursjeunes.plugins;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import java.lang.annotation.*;
 
 /**
  * @author Aurélien JEOFFRAY
  *
  */
 @Documented
-@Retention(RUNTIME)
+@Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Plugin {
 	Type type();

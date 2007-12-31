@@ -220,8 +220,9 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	/**
 	 * Création de la boite de dialogue de gestion de concurrent
 	 * 
-	 * @param ficheConcoursFrame -
-	 *            la fiche maître dont depend la boite de dialogue
+	 * @param concoursJeunesFrame -
+	 *            la fenetre parentes dont dépend la boite de dialogue 
+	 * @param ficheConcours la fiche concours à laquelle est/doit être rattaché le concurrent
 	 */
 	public ConcurrentDialog(ConcoursJeunesFrame concoursJeunesFrame, FicheConcours ficheConcours) {
 		super(concoursJeunesFrame, "", true); //$NON-NLS-1$
@@ -629,7 +630,6 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	 * 
 	 * @param concurrent -
 	 *            le concurrent à editer
-	 * @uml.property name="concurrent"
 	 */
 	public void setConcurrent(Concurrent concurrent) {
 		this.concurrent = concurrent;
@@ -642,7 +642,6 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	 * Retourne le concurrent de la boite de dialogue
 	 * 
 	 * @return le concurrent courrant
-	 * @uml.property name="concurrent"
 	 */
 	public Concurrent getConcurrent() {
 		return concurrent;
@@ -863,8 +862,8 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 				concurrent.setScore(readScores());
 			} catch (NumberFormatException e) {
 				JOptionPane.showMessageDialog(this, 
-						"Un champs ne possède pas de valeur, vérifiez votre saisie.",
-						"Erreur de saisie", 
+						ConcoursJeunes.ajrLibelle.getResourceString("erreur.erreursaisie"), //$NON-NLS-1$
+						ConcoursJeunes.ajrLibelle.getResourceString("erreur.erreursaisie.title"), //$NON-NLS-1$
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
@@ -877,8 +876,8 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 				concurrent.setManque(Integer.parseInt(tfpdM.getText()));
 			} catch (NumberFormatException e) {
 				JOptionPane.showMessageDialog(this, 
-						"Un champs ne possède pas de valeur, vérifiez votre saisie.",
-						"Erreur de saisie", 
+						ConcoursJeunes.ajrLibelle.getResourceString("erreur.erreursaisie"), //$NON-NLS-1$
+						ConcoursJeunes.ajrLibelle.getResourceString("erreur.erreursaisie.title"), //$NON-NLS-1$
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}

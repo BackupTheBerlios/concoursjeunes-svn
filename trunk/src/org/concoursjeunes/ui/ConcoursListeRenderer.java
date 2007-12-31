@@ -30,9 +30,6 @@ public class ConcoursListeRenderer extends JLabel implements ListCellRenderer {
 
 	/**
 	 * Construit le rendu des icone pour l'arbre
-	 * 
-	 * @param normalIcon - l'icone normal
-	 * @param redIcon - l'icone pas de cible attribué
 	 */
 	public ConcoursListeRenderer() {
 		archerIcon = new ImageIcon(

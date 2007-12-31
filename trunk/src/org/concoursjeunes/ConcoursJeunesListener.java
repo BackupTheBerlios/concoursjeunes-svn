@@ -26,4 +26,6 @@ public interface ConcoursJeunesListener extends EventListener {
 	public void ficheConcoursDeleted(ConcoursJeunesEvent concoursJeunesEvent);
 	public void ficheConcoursClosed(ConcoursJeunesEvent concoursJeunesEvent);
 	public void ficheConcoursRestored(ConcoursJeunesEvent concoursJeunesEvent);
+	
+	public void configurationChanged(ConcoursJeunesEvent concoursJeunesEvent);
 }

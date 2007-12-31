@@ -18,6 +18,7 @@ package org.concoursjeunes;
 import static org.concoursjeunes.ConcoursJeunes.ajrParametreAppli;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -52,7 +53,7 @@ public class FicheConcours implements ParametreListener {
 	public static final int OUT_XML = 0; // Sortie XML
 	public static final int OUT_HTML = 1; // Sortie HTML
 
-	private Parametre parametre = new Parametre(ConcoursJeunes.configuration);
+	private Parametre parametre = new Parametre(ConcoursJeunes.getConfiguration());
 
 	private ConcurrentList concurrentList = new ConcurrentList(parametre);
 	private EquipeList equipes = new EquipeList(this);
@@ -108,7 +109,6 @@ public class FicheConcours implements ParametreListener {
 	 * Retourne la liste des archers inscrit sur le concours
 	 * 
 	 * @return la liste des archers inscrit sur le concours
-	 * @uml.property name="archerlist"
 	 */
 	public ConcurrentList getConcurrentList() {
 		return concurrentList;
@@ -118,7 +118,6 @@ public class FicheConcours implements ParametreListener {
 	 * Donne la liste des equipes enrezgistré sur le concours
 	 * 
 	 * @return equipes - la liste des équipes
-	 * @uml.property name="equipes"
 	 */
 	public EquipeList getEquipes() {
 		return equipes;
@@ -132,7 +131,6 @@ public class FicheConcours implements ParametreListener {
 	 * Retourne les parametres propre au concours
 	 * 
 	 * @return les parametres du concours
-	 * @uml.property name="parametre"
 	 */
 	public Parametre getParametre() {
 		return parametre;
@@ -145,7 +143,7 @@ public class FicheConcours implements ParametreListener {
 	 *            le concurrent à ajouter au concours
 	 * @return true si ajout avec succès, false sinon
 	 */
-	public boolean addConcurrent(Concurrent concurrent, int depart) {
+	public boolean addConcurrent(Concurrent concurrent, int depart) throws IOException {
 		concurrent.setDepart(depart);
 
 		if (concurrentList.contains(concurrent, depart))
@@ -168,7 +166,7 @@ public class FicheConcours implements ParametreListener {
 	 * @param removedConcurrent -
 	 *            Le concurrent à supprimer
 	 */
-	public void removeConcurrent(Concurrent removedConcurrent) {
+	public void removeConcurrent(Concurrent removedConcurrent) throws IOException {
 		// retire le concurrent du pas de tir si present
 		if (removedConcurrent.getCible() > 0)
 			pasDeTir.get(removedConcurrent.getDepart()).getTargets().get(removedConcurrent.getCible() - 1).removeConcurrent(removedConcurrent);
@@ -185,7 +183,6 @@ public class FicheConcours implements ParametreListener {
 	 * Retourne le numero du départ courrant (actuellement actif)
 	 * 
 	 * @return le numero du départ
-	 * @uml.property name="currentDepart"
 	 */
 	public int getCurrentDepart() {
 		return currentDepart;
@@ -196,7 +193,6 @@ public class FicheConcours implements ParametreListener {
 	 * 
 	 * @param currentDepart -
 	 *            le numero du départ
-	 * @uml.property name="currentDepart"
 	 */
 	public void setCurrentDepart(int currentDepart) {
 		this.currentDepart = currentDepart;
@@ -247,8 +243,8 @@ public class FicheConcours implements ParametreListener {
 	 * sauvegarde "silencieuse" en arriere plan de la fiche concours
 	 * 
 	 */
-	public void save() {
-		File f = new File(ConcoursJeunes.userRessources.getConcoursPathForProfile(ConcoursJeunes.configuration.getCurProfil()) + File.separator + parametre.getSaveName());
+	public void save() throws IOException {
+		File f = new File(ConcoursJeunes.userRessources.getConcoursPathForProfile(ConcoursJeunes.getConfiguration().getCurProfil()) + File.separator + parametre.getSaveName());
 		AJToolKit.saveXMLStructure(f, getFiche(), true);
 	}
 
@@ -319,13 +315,14 @@ public class FicheConcours implements ParametreListener {
 	}
 
 	/**
-	 * Donne le XML de l'etat de classement individuel
+	 * Donne le XML de l'etat de classement individuel<br>
+	 * L'etat peut être retourné au format XML iText en
+	 * specifiant le type OUT_XMLen parametre<br>
+	 * ou au format HTML en specifiant OUT_HTML en parametre 
 	 * 
-	 * @param outType -
-	 *            le type de sortie à produire
-	 * @param depart
+	 * @param outType le type de sortie à produire.
 	 * 
-	 * @return String - le XML iText à retourner
+	 * @return le XML iText à retourner
 	 */
 	public String getClassement(int outType) {
 		String strClassement = ""; //$NON-NLS-1$
@@ -350,7 +347,7 @@ public class FicheConcours implements ParametreListener {
 			tplClassement.reset();
 
 			tplClassement.parse("CURRENT_TIME", DateFormat.getDateInstance(DateFormat.FULL).format(new Date())); //$NON-NLS-1$
-			tplClassement.parse("LOGO_CLUB_URI", ConcoursJeunes.configuration.getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			tplClassement.parse("LOGO_CLUB_URI", ConcoursJeunes.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			tplClassement.parse("INTITULE_CLUB", parametre.getClub().getNom()); //$NON-NLS-1$
 			tplClassement.parse("INTITULE_CONCOURS", parametre.getIntituleConcours()); //$NON-NLS-1$
 			tplClassement.parse("VILLE_CLUB", parametre.getLieuConcours()); //$NON-NLS-1$
@@ -415,8 +412,8 @@ public class FicheConcours implements ParametreListener {
 							if (sortList[j].getTotalScore() > 0) {
 								row_exist = true;
 								// test d'ex-Eaquo
-								if ((j < sortList.length - 1 && sortList[j].getTotalScore() == sortList[j + 1].getTotalScore() && ConcoursJeunes.configuration.isInterfaceAffResultatExEquo())
-										|| (j > 0 && sortList[j].getTotalScore() == sortList[j - 1].getTotalScore() && ConcoursJeunes.configuration.isInterfaceAffResultatExEquo())) {
+								if ((j < sortList.length - 1 && sortList[j].getTotalScore() == sortList[j + 1].getTotalScore() && ConcoursJeunes.getConfiguration().isInterfaceAffResultatExEquo())
+										|| (j > 0 && sortList[j].getTotalScore() == sortList[j - 1].getTotalScore() && ConcoursJeunes.getConfiguration().isInterfaceAffResultatExEquo())) {
 
 									if ((sortList[j].getManque() == 0 && sortList[j].getDix() == 0 && sortList[j].getNeuf() == 0)
 											|| (j < sortList.length - 2 && sortList[j].getManque() == sortList[j + 1].getManque() && sortList[j].getDix() == sortList[j + 1].getDix() && sortList[j]
@@ -472,13 +469,15 @@ public class FicheConcours implements ParametreListener {
 	}
 
 	/**
-	 * Donne le XML de l'etat de classement par équipe
+	 * Donne le XML de l'etat de classement par équipe<br>
+	 * L'etat peut être retourné au format XML iText en
+	 * specifiant le type OUT_XMLen parametre<br>
+	 * ou au format HTML en specifiant OUT_HTML en parametre 
 	 * 
 	 * @param outType -
 	 *            le type de sortie à produire
-	 * @param depart
 	 * 
-	 * @return String - le XML iText à retourner
+	 * @return le XML iText ou le HTML à retourner
 	 */
 	public String getClassementEquipe(int outType) {
 		System.out.println("Sortie Equipes"); //$NON-NLS-1$
@@ -502,7 +501,7 @@ public class FicheConcours implements ParametreListener {
 
 			// classement sortie XML
 			tplClassementEquipe.parse("CURRENT_TIME", DateFormat.getDateInstance(DateFormat.MEDIUM).format(new Date())); //$NON-NLS-1$
-			tplClassementEquipe.parse("LOGO_CLUB_URI", ConcoursJeunes.configuration.getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			tplClassementEquipe.parse("LOGO_CLUB_URI", ConcoursJeunes.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			tplClassementEquipe.parse("INTITULE_CLUB", XmlUtils.sanitizeText(parametre.getClub().getNom())); //$NON-NLS-1$
 			tplClassementEquipe.parse("INTITULE_CONCOURS", XmlUtils.sanitizeText(parametre.getIntituleConcours())); //$NON-NLS-1$
 			tplClassementEquipe.parse("VILLE_CLUB", XmlUtils.sanitizeText(parametre.getLieuConcours())); //$NON-NLS-1$
@@ -594,7 +593,7 @@ public class FicheConcours implements ParametreListener {
 
 			// classement sortie XML
 			tplClassementEquipe.parse("CURRENT_TIME", DateFormat.getDateInstance(DateFormat.FULL).format(new Date())); //$NON-NLS-1$
-			tplClassementEquipe.parse("LOGO_CLUB_URI", ConcoursJeunes.configuration.getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			tplClassementEquipe.parse("LOGO_CLUB_URI", ConcoursJeunes.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			tplClassementEquipe.parse("INTITULE_CLUB", parametre.getClub().getNom()); //$NON-NLS-1$
 			tplClassementEquipe.parse("INTITULE_CONCOURS", parametre.getIntituleConcours()); //$NON-NLS-1$
 			tplClassementEquipe.parse("VILLE_CLUB", parametre.getLieuConcours()); //$NON-NLS-1$
@@ -720,16 +719,16 @@ public class FicheConcours implements ParametreListener {
 			return ""; //$NON-NLS-1$
 		
 		try {
-			double marge_gauche = ConcoursJeunes.configuration.getMarges().left; // la marge gauche
-			double marge_droite = ConcoursJeunes.configuration.getMarges().right; // la marge droite
-			double marge_haut = ConcoursJeunes.configuration.getMarges().top; // la marge haut
-			double marge_bas = ConcoursJeunes.configuration.getMarges().bottom; // la marge bas
-			double espacement_cellule_h = ConcoursJeunes.configuration.getEspacements()[0]; // l'espacement horizontal entre cellule
-			double espacement_cellule_v = ConcoursJeunes.configuration.getEspacements()[1]; // l'espacement vertical entre cellule
+			double marge_gauche = ConcoursJeunes.getConfiguration().getMarges().left; // la marge gauche
+			double marge_droite = ConcoursJeunes.getConfiguration().getMarges().right; // la marge droite
+			double marge_haut = ConcoursJeunes.getConfiguration().getMarges().top; // la marge haut
+			double marge_bas = ConcoursJeunes.getConfiguration().getMarges().bottom; // la marge bas
+			double espacement_cellule_h = ConcoursJeunes.getConfiguration().getEspacements()[0]; // l'espacement horizontal entre cellule
+			double espacement_cellule_v = ConcoursJeunes.getConfiguration().getEspacements()[1]; // l'espacement vertical entre cellule
 			double cellule_x;
 			double cellule_y;
-			Rectangle pageDimension = (Rectangle)PageSize.class.getField(ConcoursJeunes.configuration.getFormatPapier()).get(null);
-			if(ConcoursJeunes.configuration.getOrientation().equals("landscape")) //$NON-NLS-1$
+			Rectangle pageDimension = (Rectangle)PageSize.class.getField(ConcoursJeunes.getConfiguration().getFormatPapier()).get(null);
+			if(ConcoursJeunes.getConfiguration().getOrientation().equals("landscape")) //$NON-NLS-1$
 				pageDimension = pageDimension.rotate();
 			
 			espacement_cellule_h = AJToolKit.centimeterToDpi(espacement_cellule_h);
@@ -756,13 +755,13 @@ public class FicheConcours implements ParametreListener {
 	
 			templateEtiquettesXML.parse("CURRENT_TIME", DateFormat.getDateInstance(DateFormat.FULL).format(new Date())); //$NON-NLS-1$
 			templateEtiquettesXML.parse("producer", ConcoursJeunes.NOM + " " + ConcoursJeunes.VERSION); //$NON-NLS-1$ //$NON-NLS-2$
-			templateEtiquettesXML.parse("author", ConcoursJeunes.configuration.getClub().getNom()); //$NON-NLS-1$
-			templateEtiquettesXML.parse("pagesize", ConcoursJeunes.configuration.getFormatPapier()); //$NON-NLS-1$
-			templateEtiquettesXML.parse("orientation", ConcoursJeunes.configuration.getOrientation()); //$NON-NLS-1$
-			templateEtiquettesXML.parse("top", "" + AJToolKit.centimeterToDpi(ConcoursJeunes.configuration.getMarges().top)); //$NON-NLS-1$ //$NON-NLS-2$
-			templateEtiquettesXML.parse("bottom", "" + AJToolKit.centimeterToDpi(ConcoursJeunes.configuration.getMarges().bottom)); //$NON-NLS-1$ //$NON-NLS-2$
-			templateEtiquettesXML.parse("left", "" + AJToolKit.centimeterToDpi(ConcoursJeunes.configuration.getMarges().left)); //$NON-NLS-1$ //$NON-NLS-2$
-			templateEtiquettesXML.parse("right", "" + AJToolKit.centimeterToDpi(ConcoursJeunes.configuration.getMarges().right)); //$NON-NLS-1$ //$NON-NLS-2$
+			templateEtiquettesXML.parse("author", ConcoursJeunes.getConfiguration().getClub().getNom()); //$NON-NLS-1$
+			templateEtiquettesXML.parse("pagesize", ConcoursJeunes.getConfiguration().getFormatPapier()); //$NON-NLS-1$
+			templateEtiquettesXML.parse("orientation", ConcoursJeunes.getConfiguration().getOrientation()); //$NON-NLS-1$
+			templateEtiquettesXML.parse("top", "" + AJToolKit.centimeterToDpi(ConcoursJeunes.getConfiguration().getMarges().top)); //$NON-NLS-1$ //$NON-NLS-2$
+			templateEtiquettesXML.parse("bottom", "" + AJToolKit.centimeterToDpi(ConcoursJeunes.getConfiguration().getMarges().bottom)); //$NON-NLS-1$ //$NON-NLS-2$
+			templateEtiquettesXML.parse("left", "" + AJToolKit.centimeterToDpi(ConcoursJeunes.getConfiguration().getMarges().left)); //$NON-NLS-1$ //$NON-NLS-2$
+			templateEtiquettesXML.parse("right", "" + AJToolKit.centimeterToDpi(ConcoursJeunes.getConfiguration().getMarges().right)); //$NON-NLS-1$ //$NON-NLS-2$
 			templateEtiquettesXML.parse("page.columns", "" + (nblarg * 3)); //$NON-NLS-1$ //$NON-NLS-2$
 			templateEtiquettesXML.parse("page.widths", tailles_x); //$NON-NLS-1$
 	
@@ -886,7 +885,6 @@ public class FicheConcours implements ParametreListener {
 	/**
 	 * Genere l'etat classement pour la fiche en parametre
 	 * 
-	 * @param depart
 	 * @return true si impression avec succe, false sinon
 	 */
 	public boolean printClassement() {
@@ -930,8 +928,7 @@ public class FicheConcours implements ParametreListener {
 	 * Genere l'etat "liste des archers"
 	 * 
 	 * @param mode -
-	 *            pour le greffe ou pour affichage
-	 * @param depart
+	 *            pour le greffe (GREFFE) ou pour affichage (ALPHA ou TARGET)
 	 * 
 	 * @return true si impression avec succe, false sinon
 	 */
@@ -943,16 +940,15 @@ public class FicheConcours implements ParametreListener {
 	/**
 	 * genere l'etat d'impression des etiquettes
 	 * 
-	 * @param depart
 	 * @return true si impression avec succe, false sinon
 	 */
 	public boolean printEtiquettes() {
-		float marge_gauche = AJToolKit.centimeterToDpi(ConcoursJeunes.configuration.getMarges().left); // la marge gauche
-		float marge_droite = AJToolKit.centimeterToDpi(ConcoursJeunes.configuration.getMarges().right); // la marge droite
-		float marge_haut = AJToolKit.centimeterToDpi(ConcoursJeunes.configuration.getMarges().top); // la marge haut
-		float marge_bas = AJToolKit.centimeterToDpi(ConcoursJeunes.configuration.getMarges().bottom); // la marge bas
+		float marge_gauche = AJToolKit.centimeterToDpi(ConcoursJeunes.getConfiguration().getMarges().left); // la marge gauche
+		float marge_droite = AJToolKit.centimeterToDpi(ConcoursJeunes.getConfiguration().getMarges().right); // la marge droite
+		float marge_haut = AJToolKit.centimeterToDpi(ConcoursJeunes.getConfiguration().getMarges().top); // la marge haut
+		float marge_bas = AJToolKit.centimeterToDpi(ConcoursJeunes.getConfiguration().getMarges().bottom); // la marge bas
 		Document document = new Document(PageSize.A4, marge_gauche, marge_droite, marge_haut, marge_bas);
-		return ConcoursJeunes.printDocument(document, getXMLEtiquettes(ConcoursJeunes.configuration.getColonneAndLigne()[1], ConcoursJeunes.configuration.getColonneAndLigne()[0], currentDepart));
+		return ConcoursJeunes.printDocument(document, getXMLEtiquettes(ConcoursJeunes.getConfiguration().getColonneAndLigne()[1], ConcoursJeunes.getConfiguration().getColonneAndLigne()[0], currentDepart));
 	}
 
 	/**

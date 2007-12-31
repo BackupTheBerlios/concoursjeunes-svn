@@ -39,7 +39,6 @@ public class CriterionElement {
     /**
 	 * Renvoie le code de l'élément
 	 * @return  Renvoie code.
-	 * @uml.property  name="code"
 	 */
     public String getCode() {
         return code;
@@ -48,7 +47,6 @@ public class CriterionElement {
     /**
 	 * Définit le code de l'élément
 	 * @param code  code à définir.
-	 * @uml.property  name="code"
 	 */
     public void setCode(String code) {
         this.code = code;
@@ -57,7 +55,6 @@ public class CriterionElement {
 	/**
 	 * Est-ce que l'élément est utilisé?
 	 * @return  Renvoie isactive.
-	 * @uml.property  name="active"
 	 */
     public boolean isActive() {
         return active;
@@ -66,19 +63,14 @@ public class CriterionElement {
     /**
 	 * Détermine si l'élément doit être utilisé
 	 * @param active  - Etat de l'élément (actif ou non).
-	 * @uml.property  name="active"
 	 */
     public void setActive(boolean active) {
         this.active = active;
     }
 
-    /** +  values (" +
-					"'" + code + "', '" + criterionParent.getCode() + "'," +
-					"" +  + ", '" + libelle + "'," +
-					Boolean.toString(active).toUpperCase() + ")
+    /**
 	 * Renvoi le libellé de l'élément
 	 * @return  Renvoie libelle.
-	 * @uml.property  name="libelle"
 	 */
     public String getLibelle() {
         return libelle;
@@ -87,7 +79,6 @@ public class CriterionElement {
     /**
 	 * Définit le libelle de l'élément
 	 * @param libelle  libelle à définir.
-	 * @uml.property  name="libelle"
 	 */
     public void setLibelle(String libelle) {
         this.libelle = libelle;

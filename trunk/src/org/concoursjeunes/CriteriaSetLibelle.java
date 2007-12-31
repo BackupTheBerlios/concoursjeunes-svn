@@ -52,7 +52,6 @@ public class CriteriaSetLibelle {
      * Retourne le jeux de critere lié au libellé
      * 
 	 * @return le jeux de critere associé au libelle
-	 * @uml.property  name="criteriaSet"
 	 */
     public CriteriaSet getCriteriaSet() {
         return criteriaSet;

@@ -32,8 +32,7 @@ public class CibleRenderer extends DefaultTreeCellRenderer {
 	/**
 	 * Constructeur, initialise les icone à afficher
 	 * 
-	 * @param archerIcon - Icone de representation des archers
-	 * @param cibleIcon - Icone de representation des cibles
+	 * @param pasDeTir le pas de tir qui doit être rendu visuelement
 	 */
 	public CibleRenderer(PasDeTir pasDeTir) {
 		this.pasDeTir = pasDeTir;

@@ -216,7 +216,6 @@ public class CriterionElementDialog extends JDialog implements ActionListener {
 
     /**
 	 * @return  Renvoie criterionIndividu.
-	 * @uml.property  name="criterionIndividu"
 	 */
     public CriterionElement getCriterionIndividu() {
         return criterionIndividu;
@@ -224,7 +223,6 @@ public class CriterionElementDialog extends JDialog implements ActionListener {
 
     /**
 	 * @param criterionIndividu  criterionIndividu à définir.
-	 * @uml.property  name="criterionIndividu"
 	 */
     public void setCriterionIndividu(CriterionElement criterionIndividu) {
         this.criterionIndividu = criterionIndividu;

@@ -33,7 +33,6 @@ public class OccupationCibles {
 
 	/**
 	 * @return  placeLibre
-	 * @uml.property  name="placeLibre"
 	 */
 	public int getPlaceLibre() {
 		return placeLibre;
@@ -41,7 +40,6 @@ public class OccupationCibles {
 
 	/**
 	 * @param placeLibre  placeLibre à définir
-	 * @uml.property  name="placeLibre"
 	 */
 	public void setPlaceLibre(int placeLibre) {
 		this.placeLibre = placeLibre;
@@ -50,7 +48,6 @@ public class OccupationCibles {
 
 	/**
 	 * @return  placeOccupe
-	 * @uml.property  name="placeOccupe"
 	 */
 	public int getPlaceOccupe() {
 		return placeOccupe;
@@ -58,7 +55,6 @@ public class OccupationCibles {
 
 	/**
 	 * @param placeOccupe  placeOccupe à définir
-	 * @uml.property  name="placeOccupe"
 	 */
 	public void setPlaceOccupe(int placeOccupe) {
 		this.placeOccupe = placeOccupe;

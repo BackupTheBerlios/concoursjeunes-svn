@@ -100,7 +100,7 @@ import ajinteractive.standard.common.AJToolKit;
 public class FicheConcoursBuilder {
 	public static FicheConcours getFicheConcours(MetaDataFicheConcours metaDataFicheConcours) 
 			throws IOException {
-		File fFiche = new File(ConcoursJeunes.userRessources.getConcoursPathForProfile(ConcoursJeunes.configuration.getCurProfil()) + File.separator
+		File fFiche = new File(ConcoursJeunes.userRessources.getConcoursPathForProfile(ConcoursJeunes.getConfiguration().getCurProfil()) + File.separator
 				+ metaDataFicheConcours.getFilenameConcours());
 		Object[] savedStructure = (Object[]) AJToolKit.loadXMLStructure(fFiche, true);
 

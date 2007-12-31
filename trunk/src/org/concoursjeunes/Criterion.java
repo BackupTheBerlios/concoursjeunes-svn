@@ -58,7 +58,6 @@ public class Criterion {
     /**
 	 * Renvoi le code du critère
 	 * @return  Renvoie code.
-	 * @uml.property  name="code"
 	 */
     public String getCode() {
         return code;
@@ -67,7 +66,6 @@ public class Criterion {
     /**
 	 * Définit le code du critère
 	 * @param code  code à définir.
-	 * @uml.property  name="code"
 	 */
     public void setCode(String code) {
         this.code = code;
@@ -76,7 +74,6 @@ public class Criterion {
     /**
 	 * Renvoie le libellé du critère
 	 * @return  Renvoie libelle.
-	 * @uml.property  name="libelle"
 	 */
     public String getLibelle() {
         return libelle;
@@ -85,7 +82,6 @@ public class Criterion {
     /**
 	 * Définit le libellé du critère
 	 * @param libelle  libelle à définir.
-	 * @uml.property  name="libelle"
 	 */
     public void setLibelle(String libelle) {
         this.libelle = libelle;
@@ -94,7 +90,6 @@ public class Criterion {
     /**
 	 * Renvoie l'ordre de tri du critère
 	 * @return  Renvoie sortOrder.
-	 * @uml.property  name="sortOrder"
 	 */
     public int getSortOrder() {
         return sortOrder;
@@ -103,7 +98,6 @@ public class Criterion {
     /**
 	 * Définit l'ordre de tri du critère
 	 * @param sortOrder  - Ordre de tri à appliquer pour le critère.
-	 * @uml.property  name="sortOrder"
 	 */
     public void setSortOrder(int sortOrder) {
         this.sortOrder = sortOrder;
@@ -148,7 +142,6 @@ public class Criterion {
     /**
 	 * Est ce que c'est un critère de classement?
 	 * @return  Renvoie classement.
-	 * @uml.property  name="classement"
 	 */
     public boolean isClassement() {
         return classement;
@@ -157,7 +150,6 @@ public class Criterion {
     /**
 	 * Définit si c'est un critère de classement
 	 * @param classement  classement à définir.
-	 * @uml.property  name="classement"
 	 */
     public void setClassement(boolean classement) {
         this.classement = classement;
@@ -185,7 +177,6 @@ public class Criterion {
 	/**
 	 * Est ce que c'est un critère de placement?
 	 * @return  Renvoie placement.
-	 * @uml.property  name="placement"
 	 */
     public boolean isPlacement() {
         return placement;
@@ -194,7 +185,6 @@ public class Criterion {
     /**
 	 * Definit si c'est un critère de placement
 	 * @param placement  placement à définir.
-	 * @uml.property  name="placement"
 	 */
     public void setPlacement(boolean placement) {
         this.placement = placement;
@@ -202,7 +192,6 @@ public class Criterion {
 
     /**
 	 * @return  Renvoie codeffta.
-	 * @uml.property  name="codeffta"
 	 */
     public String getCodeffta() {
         return codeffta;
@@ -210,7 +199,6 @@ public class Criterion {
 
     /**
 	 * @param codeffta  codeffta à définir.
-	 * @uml.property  name="codeffta"
 	 */
     public void setCodeffta(String codeffta) {
         this.codeffta = codeffta;
@@ -220,7 +208,6 @@ public class Criterion {
 	 * Retourne la liste des éléments lié au critère
 	 * 
 	 * @return la liste des élements du critère
-	 * @uml.property  name="criterionElements"
 	 */
 	public ArrayList<CriterionElement> getCriterionElements() {
 		return criterionElements;
@@ -228,7 +215,6 @@ public class Criterion {
 
 	/**
 	 * @param criterionElements
-	 * @uml.property  name="criterionElements"
 	 */
 	public void setCriterionElements(ArrayList<CriterionElement> criterionElements) {
 		this.criterionElements = criterionElements;

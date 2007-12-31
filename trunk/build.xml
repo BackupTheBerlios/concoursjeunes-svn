@@ -8,16 +8,23 @@
 
 	<import file="plugins/build-ConcoursJeunesUpdate.xml"/>
 	<import file="plugins/build-FFTAImport.xml"/>
+	<import file="plugins/build-PhoenixPlugin.xml"/>
 
 	<!--genere la documentation technique-->
 	<target name="dev_doc" description="genere la documentation développeur">
 		<echo message="Construction de la documentation developpeur..."/>
 		<!--création du répertoire de documentation-->
 		<mkdir dir="docs" />
-		<javadoc sourcepath="src" destdir="docs" classpath="${classpath}" >
-			<fileset dir="src" defaultexcludes="yes">
-				<include name="**/*.java" />
-			</fileset>
+		<javadoc
+			sourcepath="src"
+			destdir="docs"
+			excludepackagenames="org.concoursjeunes.test.*"
+			classpath="lib/AJPackage.jar;lib/swingx-2006_10_27.jar;lib/itext-2.0.6.jar" >
+			<link href="http://java.sun.com/javase/6/docs/api/" />
+			<!--<packageset dir="src" defaultexcludes="yes">
+				<include name="**/**" />
+				<exclude name="org/concoursjeunes/test/**" />
+			</packageset>-->
 		</javadoc>
 		<echo message="Fin de la generation de la doc..."/>
 	</target>

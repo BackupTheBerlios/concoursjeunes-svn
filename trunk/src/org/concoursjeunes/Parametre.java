@@ -204,7 +204,7 @@ public class Parametre extends DefaultParameters {
 	/**
 	 * specifie la date du concours
 	 * 
-	 * @param sDateConcours
+	 * @param dDateConcours la date du concours
 	 */
 	public void setDate(Date dDateConcours) {
 		this.dDateConcours = dDateConcours;

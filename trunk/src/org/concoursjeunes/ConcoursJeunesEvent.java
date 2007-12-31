@@ -98,7 +98,8 @@ public class ConcoursJeunesEvent {
 		CREATE_CONCOURS,
 		DELETE_CONCOURS,
 		CLOSE_CONCOURS,
-		OPEN_CONCOURS
+		OPEN_CONCOURS,
+		CONFIGURATION_CHANGED
 	}
 	
 	private FicheConcours ficheConcours;

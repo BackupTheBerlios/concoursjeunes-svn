@@ -16,6 +16,13 @@
 					</menu>
 					<menuitem name="mi.maj" enable="false">menubar.fichier.maj</menuitem>
 					<separator />
+					<menu id="backup" name="mi.backup" visible="true">
+						<label>menubar.fichier.backup</label>
+					</menu>
+					<menu id="restore" name="mi.restore" visible="true">
+						<label>menubar.fichier.restore</label>
+					</menu>
+					<separator />
 					<menuitem keycode="VK_F4" modifier="ALT_DOWN_MASK">menubar.fichier.quitter</menuitem>
 				</menuitems>
 			</menu>
@@ -44,6 +51,13 @@
 					<menuitem>menubar.impression.classement.individuel</menuitem>
 					<menuitem>menubar.impression.classement.equipe</menuitem>
 					<menuitem>menubar.impression.classement.club</menuitem>
+				</menuitems>
+			</menu>
+			<menu id="tools" name="mi.tools">
+				<label>menubar.tools</label>
+				<menuitems>
+					<menuitem>menubar.tools.disableplugins</menuitem>
+					<menuitem>menubar.tools.installplugins</menuitem>
 				</menuitems>
 			</menu>
 			<menu id="help">

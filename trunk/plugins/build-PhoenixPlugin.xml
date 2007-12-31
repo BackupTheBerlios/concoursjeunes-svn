@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="PhoenixPlugin" basedir="../">
+	<target name="pack-PhoenixPlugin">
+		<mkdir dir="${projet.pack.dir}/plugins/PhoenixPlugin/plugins" />
+		<jar jarfile="${projet.pack.dir}/plugins/PhoenixPlugin/plugins/PhoenixPlugin.jar"
+			basedir="${projet.pack.dir}/bin"
+			includes="org/concoursjeunes/plugins/PhoenixPlugin/**">
+		</jar>
+		<copy todir="${projet.pack.dir}/plugins/PhoenixPlugin" >
+			<fileset dir="." >
+				<include name="plugins/properties/PhoenixPlugin.properties" />
+			</fileset>
+		</copy>
+		
+		<taskdef name="revisionscreator" classpath="lib/AJPackage.jar"
+				classname="ajinteractive.standard.utilities.updater.RevisionsCreator" />
+
+		<revisionscreator 
+				hashfilepath="${projet.pack.dir}/plugins/PhoenixPlugin/hash.xml.gz"
+				revisionpath="${projet.pack.dir}/plugins/PhoenixPlugin/revision.xml.gz">
+			<fileset dir="${projet.pack.dir}/plugins/PhoenixPlugin">
+				<include name="plugins/PhoenixPlugin.jar"/>
+				<include name="plugins/properties/PhoenixPlugin.properties" />
+			</fileset>
+		</revisionscreator>
+	</target>
+</project>

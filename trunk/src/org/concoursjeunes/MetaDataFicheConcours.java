@@ -39,7 +39,6 @@ public class MetaDataFicheConcours implements ParametreListener {
 
 	/**
 	 * @return  dateConcours
-	 * @uml.property  name="dateConcours"
 	 */
 	public Date getDateConcours() {
 		return dateConcours;
@@ -47,7 +46,6 @@ public class MetaDataFicheConcours implements ParametreListener {
 
 	/**
 	 * @param dateConcours  dateConcours à définir
-	 * @uml.property  name="dateConcours"
 	 */
 	public void setDateConcours(Date dateConcours) {
 		this.dateConcours = dateConcours;
@@ -55,7 +53,6 @@ public class MetaDataFicheConcours implements ParametreListener {
 
 	/**
 	 * @return  intituleConcours
-	 * @uml.property  name="intituleConcours"
 	 */
 	public String getIntituleConcours() {
 		return intituleConcours;
@@ -63,7 +60,6 @@ public class MetaDataFicheConcours implements ParametreListener {
 
 	/**
 	 * @param intituleConcours  intituleConcours à définir
-	 * @uml.property  name="intituleConcours"
 	 */
 	public void setIntituleConcours(String intituleConcours) {
 		this.intituleConcours = intituleConcours;
@@ -71,7 +67,6 @@ public class MetaDataFicheConcours implements ParametreListener {
 
 	/**
 	 * @return  filenameConcours
-	 * @uml.property  name="filenameConcours"
 	 */
 	public String getFilenameConcours() {
 		return filenameConcours;
@@ -79,7 +74,6 @@ public class MetaDataFicheConcours implements ParametreListener {
 
 	/**
 	 * @param filenameConcours  filenameConcours à définir
-	 * @uml.property  name="filenameConcours"
 	 */
 	public void setFilenameConcours(String filenameConcours) {
 		this.filenameConcours = filenameConcours;

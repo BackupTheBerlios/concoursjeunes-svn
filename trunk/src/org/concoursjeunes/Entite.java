@@ -51,7 +51,6 @@ public class Entite {
 
     /**
 	 * @return  Returns the adresse.
-	 * @uml.property  name="adresse"
 	 */
     public String getAdresse() {
         return adresse;
@@ -60,7 +59,6 @@ public class Entite {
 
     /**
 	 * @return  Returns the agrement.
-	 * @uml.property  name="agrement"
 	 */
     public String getAgrement() {
         return agrement;
@@ -69,7 +67,6 @@ public class Entite {
 
     /**
 	 * @return  Returns the codePostal.
-	 * @uml.property  name="codePostal"
 	 */
     public String getCodePostal() {
         return codePostal;
@@ -78,7 +75,6 @@ public class Entite {
 
     /**
 	 * @return  Returns the nom.
-	 * @uml.property  name="nom"
 	 */
     public String getNom() {
         return nom;
@@ -87,7 +83,6 @@ public class Entite {
 
     /**
 	 * @return  Returns the type.
-	 * @uml.property  name="type"
 	 */
     public int getType() {
         return type;
@@ -96,7 +91,6 @@ public class Entite {
 
     /**
 	 * @return  Returns the ville.
-	 * @uml.property  name="ville"
 	 */
     public String getVille() {
         return ville;
@@ -105,7 +99,6 @@ public class Entite {
 
     /**
 	 * @param adresse  The adresse to set.
-	 * @uml.property  name="adresse"
 	 */
     public void setAdresse(String adresse) {
         this.adresse = adresse;
@@ -114,7 +107,6 @@ public class Entite {
 
     /**
 	 * @param agrement  The agrement to set.
-	 * @uml.property  name="agrement"
 	 */
     public void setAgrement(String agrement) {
         this.agrement = agrement;
@@ -123,7 +115,6 @@ public class Entite {
 
     /**
 	 * @param codePostal  The codePostal to set.
-	 * @uml.property  name="codePostal"
 	 */
     public void setCodePostal(String codePostal) {
         this.codePostal = codePostal;
@@ -132,7 +123,6 @@ public class Entite {
 
     /**
 	 * @param nom  The nom to set.
-	 * @uml.property  name="nom"
 	 */
     public void setNom(String nom) {
         this.nom = nom;
@@ -141,7 +131,6 @@ public class Entite {
 
     /**
 	 * @param type  The type to set.
-	 * @uml.property  name="type"
 	 */
     public void setType(int type) {
         this.type = type;
@@ -150,7 +139,6 @@ public class Entite {
 
     /**
 	 * @param ville  The ville to set.
-	 * @uml.property  name="ville"
 	 */
     public void setVille(String ville) {
         this.ville = ville;
@@ -163,7 +151,6 @@ public class Entite {
 
 	/**
 	 * @return  Returns the note.
-	 * @uml.property  name="note"
 	 */
 	public String getNote() {
 		return note;
@@ -171,7 +158,6 @@ public class Entite {
 
 	/**
 	 * @param note  The note to set.
-	 * @uml.property  name="note"
 	 */
 	public void setNote(String note) {
 		this.note = note;

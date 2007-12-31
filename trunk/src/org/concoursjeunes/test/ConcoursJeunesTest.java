@@ -1,16 +1,12 @@
 package org.concoursjeunes.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.naming.ConfigurationException;
+
+import junit.framework.TestCase;
 
 import org.concoursjeunes.ConcoursJeunes;
 import org.concoursjeunes.ConcoursJeunesEvent;
@@ -22,13 +18,14 @@ import org.junit.Test;
 /**
  * @author  Aurélien JEOFFRAY
  */
-public class ConcoursJeunesTest {
+public class ConcoursJeunesTest extends TestCase {
 	
 	ConcoursJeunes concoursJeunes;
 	
 	private boolean eventReceived = false;
 
 	@Before
+	@Override
 	public void setUp() throws Exception {
 		concoursJeunes = ConcoursJeunes.getInstance();
 	}
@@ -43,7 +40,7 @@ public class ConcoursJeunesTest {
 		assertEquals(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources"), "./ressources"); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		//test l'accès au fichier de config
-		assertNotNull(ConcoursJeunes.configuration);
+		assertNotNull(ConcoursJeunes.getConfiguration());
 		//test l'accès aux ressources utilisateur
 		assertNotNull(ConcoursJeunes.userRessources);
 		if(System.getProperty("os.name").startsWith("Windows")) //$NON-NLS-1$ //$NON-NLS-2$
@@ -72,7 +69,7 @@ public class ConcoursJeunesTest {
 				
 				assertNotNull(e.getFicheConcours());
 				
-				String concourspath = ConcoursJeunes.userRessources.getConcoursPathForProfile(ConcoursJeunes.configuration.getCurProfil());
+				String concourspath = ConcoursJeunes.userRessources.getConcoursPathForProfile(ConcoursJeunes.getConfiguration().getCurProfil());
 				
 				assertTrue(new File(concourspath + File.separator 
 						+ e.getFicheConcours().getParametre().getSaveName()).exists());
@@ -81,13 +78,17 @@ public class ConcoursJeunesTest {
 					concoursJeunes.closeFicheConcours(e.getFicheConcours());
 					concoursJeunes.deleteFicheConcours(e.getFicheConcours().getMetaDataFicheConcours());
 				} catch (ConfigurationException e1) {
-					fail(e1.getLocalizedMessage());
+					fail(e1.toString());
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					fail(e1.toString());
 					e1.printStackTrace();
 				}
 			}
 			public void ficheConcoursClosed(ConcoursJeunesEvent e) { }
 			public void ficheConcoursRestored(ConcoursJeunesEvent e) { }
 			public void ficheConcoursDeleted(ConcoursJeunesEvent e) { }
+			public void configurationChanged(ConcoursJeunesEvent e) { }
 		};
 		concoursJeunes.addConcoursJeunesListener(auditeur);
 		
@@ -95,6 +96,9 @@ public class ConcoursJeunesTest {
 			concoursJeunes.createFicheConcours();
 		} catch (ConfigurationException e1) {
 			fail(e1.getLocalizedMessage());
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			fail(e1.toString());
 			e1.printStackTrace();
 		}
 		//marche à condition que la gestion evenementiel soit synchrone
@@ -121,6 +125,9 @@ public class ConcoursJeunesTest {
 				} catch (ConfigurationException e1) {
 					fail(e1.getLocalizedMessage());
 					e1.printStackTrace();
+				} catch (IOException e1) {
+					fail(e1.toString());
+					e1.printStackTrace();
 				}
 			}
 			public void ficheConcoursClosed(ConcoursJeunesEvent e) { }
@@ -128,11 +135,12 @@ public class ConcoursJeunesTest {
 			public void ficheConcoursDeleted(ConcoursJeunesEvent e) {
 				eventReceived = true;
 
-				String concourspath = ConcoursJeunes.userRessources.getConcoursPathForProfile(ConcoursJeunes.configuration.getCurProfil());
+				String concourspath = ConcoursJeunes.userRessources.getConcoursPathForProfile(ConcoursJeunes.getConfiguration().getCurProfil());
 				
 				assertFalse("Le fichier du concours ne devrait plus exister",  //$NON-NLS-1$
 						new File(concourspath + File.separator + testConcours.getParametre().getSaveName()).exists());
 			}
+			public void configurationChanged(ConcoursJeunesEvent e) { }
 		};
 		
 		concoursJeunes.addConcoursJeunesListener(auditeur);
@@ -141,6 +149,9 @@ public class ConcoursJeunesTest {
 			concoursJeunes.createFicheConcours();
 		} catch (ConfigurationException e1) {
 			fail(e1.getLocalizedMessage());
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			fail(e1.toString());
 			e1.printStackTrace();
 		}
 		
@@ -164,6 +175,9 @@ public class ConcoursJeunesTest {
 				} catch (ConfigurationException e1) {
 					fail(e1.getLocalizedMessage());
 					e1.printStackTrace();
+				} catch (IOException e1) {
+					fail(e1.toString());
+					e1.printStackTrace();
 				}
 			}
 			public void ficheConcoursClosed(ConcoursJeunesEvent e) {
@@ -171,6 +185,7 @@ public class ConcoursJeunesTest {
 			}
 			public void ficheConcoursRestored(ConcoursJeunesEvent e) { }
 			public void ficheConcoursDeleted(ConcoursJeunesEvent e) { }
+			public void configurationChanged(ConcoursJeunesEvent e) { }
 		};
 		
 		concoursJeunes.addConcoursJeunesListener(auditeur);
@@ -179,6 +194,9 @@ public class ConcoursJeunesTest {
 			concoursJeunes.createFicheConcours();
 		} catch (ConfigurationException e1) {
 			fail(e1.getLocalizedMessage());
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			fail(e1.toString());
 			e1.printStackTrace();
 		}
 		
@@ -216,6 +234,7 @@ public class ConcoursJeunesTest {
 				assertNotNull("la fiche concours n'est pas chargé correctement", e.getFicheConcours()); //$NON-NLS-1$
 			}
 			public void ficheConcoursDeleted(ConcoursJeunesEvent e) { }
+			public void configurationChanged(ConcoursJeunesEvent e) { }
 		};
 		
 		concoursJeunes.addConcoursJeunesListener(auditeur);
@@ -224,6 +243,9 @@ public class ConcoursJeunesTest {
 			concoursJeunes.createFicheConcours();
 		} catch (ConfigurationException e1) {
 			fail(e1.getLocalizedMessage());
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			fail(e1.toString());
 			e1.printStackTrace();
 		}
 		

@@ -284,7 +284,6 @@ public class CriterionDialog extends JDialog implements ActionListener, ChangeLi
 
     /**
 	 * @return  Renvoie criterion.
-	 * @uml.property  name="criterion"
 	 */
     public Criterion getCriterion() {
         return criterion;
@@ -292,7 +291,6 @@ public class CriterionDialog extends JDialog implements ActionListener, ChangeLi
 
     /**
 	 * @param criterion  criterion à définir.
-	 * @uml.property  name="criterion"
 	 */
     public void setCriterion(Criterion criterion) {
         this.criterion = criterion;
