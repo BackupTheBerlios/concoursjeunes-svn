@@ -94,10 +94,22 @@ import java.sql.SQLException;
 import java.util.Hashtable;
 
 /**
+ * Construit un jeux de critères à partir des données en base
+ * 
  * @author Aurélien JEOFFRAY
  *
  */
 public class CriteriaSetBuilder {
+	
+	/**
+	 * Construit un jeux de critéres à partir des valeurs de la clé primaire de la table en base
+	 * 
+	 * @param numCriteriaSet le numero d'identifiant du jeux de critères dans la base
+	 * @param reglement le reglement concerné par le jeux de critères
+	 * @param hashReglement le numero d'identification en base du reglement
+	 * 
+	 * @return le jeux de critères concerné
+	 */
 	public static CriteriaSet getCriteriaSet(int numCriteriaSet, Reglement reglement, int hashReglement) {
 		try {
 			String sql = "select * from POSSEDE where NUMCRITERIASET=? and NUMREGLEMENT=?"; //$NON-NLS-1$

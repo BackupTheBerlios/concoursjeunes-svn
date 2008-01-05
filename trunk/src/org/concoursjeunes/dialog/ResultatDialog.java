@@ -101,6 +101,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -133,11 +134,11 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 	//private
 	//private FicheConcours ficheConcours;
 
-	private Concurrent[] concurrents;
-	private Parametre parametres;
+	private final Concurrent[] concurrents;
+	private final Parametre parametres;
 
-	private JLabel jlCible = new JLabel();
-	private JLabel jlDistance = new JLabel();
+	private final JLabel jlCible = new JLabel();
+	private final JLabel jlDistance = new JLabel();
 	private JLabel[] jlDistances;
 
 	private JLabel[] lPoints;
@@ -148,10 +149,10 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 	private JTextField[] neuf;
 	private JTextField[] manque;
 	
-	private JButton jbValider = new JButton();
-	private JButton jbSuivant = new JButton();
-	private JButton jbPrecedent = new JButton();
-	private JButton jbAnnuler = new JButton();
+	private final JButton jbValider = new JButton();
+	private final JButton jbSuivant = new JButton();
+	private final JButton jbPrecedent = new JButton();
+	private final JButton jbAnnuler = new JButton();
 
 	private int returnVal = CANCEL;
 
@@ -331,7 +332,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 	private void completePanel() {
 		//attribue l'ancienne valeur au champ distances
 		for(Concurrent concurrent : concurrents) {
-			ArrayList<Integer> p = concurrent.getScore();
+			List<Integer> p = concurrent.getScore();
 			
 			for(int j = 0; j < parametres.getReglement().getNbSerie(); j++) {
 				oldPoints[concurrent.getPosition()][j].setText(p.get(j)+""); //$NON-NLS-1$

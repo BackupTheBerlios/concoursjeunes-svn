@@ -22,10 +22,39 @@ import java.util.EventListener;
  *
  */
 public interface ConcoursJeunesListener extends EventListener {
+	
+	/**
+	 * Emis lorsqu'une fiche concours est créer
+	 * 
+	 * @param concoursJeunesEvent l'évenement associé à la création de la fiche
+	 */
 	public void ficheConcoursCreated(ConcoursJeunesEvent concoursJeunesEvent);
+	
+	/**
+	 * Emis lorsqu'une fiche concours est supprimé
+	 * 
+	 * @param concoursJeunesEvent l'évenement associé à la suppression de la fiche
+	 */
 	public void ficheConcoursDeleted(ConcoursJeunesEvent concoursJeunesEvent);
+	
+	/**
+	 * Emis lorsqu'une fiche concours est fermé
+	 * 
+	 * @param concoursJeunesEvent l'évenement associé à la fermeture de la fiche
+	 */
 	public void ficheConcoursClosed(ConcoursJeunesEvent concoursJeunesEvent);
+	
+	/**
+	 * Emis lorsqu'une fiche concours est restauré
+	 * 
+	 * @param concoursJeunesEvent l'évenement associé à la restauration de la fiche
+	 */
 	public void ficheConcoursRestored(ConcoursJeunesEvent concoursJeunesEvent);
 	
+	/**
+	 * Emis lorsque la configuration du programme à changé
+	 * 
+	 * @param concoursJeunesEvent l'evenements associé au changement de configguration
+	 */
 	public void configurationChanged(ConcoursJeunesEvent concoursJeunesEvent);
 }

@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Objet de Base de stockage des Information sur un concurrent:
@@ -48,7 +49,7 @@ public class Concurrent extends Archer implements Cloneable {
 	private int cible                   = 0;	//position sur le concours
 	private int position                = 0;
 
-	public ArrayList<Integer> points	= new ArrayList<Integer>();
+	private List<Integer> points	= new ArrayList<Integer>();
 	private int neuf                    = 0;
 	private int dix                     = 0;
 	private int manque                  = 0;
@@ -93,7 +94,7 @@ public class Concurrent extends Archer implements Cloneable {
 	 * 
 	 * @return la grille des scores
 	 */
-	public ArrayList<Integer> getScore() {
+	public List<Integer> getScore() {
 		return points;
 	}
 
@@ -253,11 +254,16 @@ public class Concurrent extends Archer implements Cloneable {
 		aComparant.setNomArcher(getNomArcher());
 		aComparant.setPrenomArcher(getPrenomArcher());
 
-		ArrayList<Concurrent> homonyme = getArchersInDatabase(aComparant, null, ""); //$NON-NLS-1$
+		List<Concurrent> homonyme = getArchersInDatabase(aComparant, null, ""); //$NON-NLS-1$
 
 		return (homonyme.size() > 1);
 	}
 	
+	/**
+	 * Sauvegarde le jeux de critère associé à l'archer
+	 * 
+	 * @param reglement le réglement pour lequel s'applique le jeux de critère
+	 */
 	public void saveCriteriaSet(Reglement reglement) {
 		if(!getNumLicenceArcher().equals("")) { //$NON-NLS-1$
 			criteriaSet.save();
@@ -289,9 +295,24 @@ public class Concurrent extends Archer implements Cloneable {
 		}
 	}
 
-	public static ArrayList<Concurrent> getArchersInDatabase(Archer aGeneric, Reglement reglement, String orderfield) {
+	/**
+	 * Retourne une liste d'archer en provenance de la base de données en fonction
+	 * des critères de recherche fournit en parametres
+	 * 
+	 * @param aGeneric objet Archer generique servant de filtre de recherche (la recherche se
+	 * fait sur les champs renseigné, le caractères genérique (%, ?) sont accepté
+	 * 
+	 * @param reglement le reglement à appliqué aux objets archers retourné
+	 * 
+	 * @param orderfield l'ordre de trie des objets retourné. Doivent être listé dans 
+	 * l'ordre les champs de la base de données (table ARCHERS) servant au trie.
+	 * 
+	 * @return la liste des archers correspondant aux critères de recherche
+	 */
+	public static List<Concurrent> getArchersInDatabase(Archer aGeneric, Reglement reglement, String orderfield) {
 		return getArchersInDatabase(aGeneric, reglement, orderfield, -1);
 	}
+	
 	/**
 	 * Retourne une liste d'archer en provenance de la base de données en fonction
 	 * des critères de recherche fournit en parametres

@@ -19,6 +19,7 @@ package org.concoursjeunes;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Caractéristique d'un critère de distinction
@@ -26,7 +27,14 @@ import java.util.ArrayList;
  * @author Aurélien JEOFFRAY
  */
 public class Criterion {
+	/**
+	 * Tri des éléments du critères croissant
+	 */
     public static final int SORT_ASC = 1;
+    
+    /**
+     * Tri des éléments du critères décroissant
+     */
     public static final int SORT_DESC = -1;
     
     private int sortOrder = 1;
@@ -38,7 +46,7 @@ public class Criterion {
     private boolean placement = false;
     private String codeffta = ""; //$NON-NLS-1$
     
-    private ArrayList<CriterionElement> criterionElements = new ArrayList<CriterionElement>();
+    private List<CriterionElement> criterionElements = new ArrayList<CriterionElement>();
     
     private Reglement reglementParent = new Reglement();
     
@@ -191,14 +199,18 @@ public class Criterion {
     }
 
     /**
-	 * @return  Renvoie codeffta.
+     * Retourne, si associé, le code FFTA correspondant au critère
+     * 
+	 * @return  Renvoie le code FFTA du critère.
 	 */
     public String getCodeffta() {
         return codeffta;
     }
 
     /**
-	 * @param codeffta  codeffta à définir.
+     * Définit, si il existe une correspondance, le code FFTA associé
+     * 
+	 * @param codeffta le code FFTA du critère
 	 */
     public void setCodeffta(String codeffta) {
         this.codeffta = codeffta;
@@ -209,25 +221,42 @@ public class Criterion {
 	 * 
 	 * @return la liste des élements du critère
 	 */
-	public ArrayList<CriterionElement> getCriterionElements() {
+	public List<CriterionElement> getCriterionElements() {
 		return criterionElements;
 	}
 
 	/**
-	 * @param criterionElements
+	 * Définit la liste des éléments lié au critère
+	 * 
+	 * @param criterionElements la liste des élements du critère
 	 */
-	public void setCriterionElements(ArrayList<CriterionElement> criterionElements) {
+	public void setCriterionElements(List<CriterionElement> criterionElements) {
 		this.criterionElements = criterionElements;
 	}
 
+	/**
+	 * Retourne le réglement auquel appartient le critère
+	 * 
+	 * @return le reglement parent du critère
+	 */
 	public Reglement getReglementParent() {
 		return reglementParent;
 	}
 
+	/**
+	 * Définit le réglement parent du critère
+	 * 
+	 * @param reglementParent le reglement parent du critère
+	 */
 	public void setReglementParent(Reglement reglementParent) {
 		this.reglementParent = reglementParent;
 	}
 	
+	/**
+	 * Sauvegarde le critère en base
+	 * 
+	 * @throws SQLException si une erreur d'integration en base se produit
+	 */
 	public void save() throws SQLException {
 
 		Statement stmt = ConcoursJeunes.dbConnection.createStatement();
@@ -245,6 +274,9 @@ public class Criterion {
 		}
 	}
 	
+	/**
+	 * Supprime le critère de la base
+	 */
 	public void delete() {
 		try {
 			Statement stmt = ConcoursJeunes.dbConnection.createStatement();

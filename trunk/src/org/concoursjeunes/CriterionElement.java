@@ -19,6 +19,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Element de critère
@@ -84,14 +85,27 @@ public class CriterionElement {
         this.libelle = libelle;
     }
 
+    /**
+     * Le critère parent de l'élément
+     * 
+     * @return Le critère parent
+     */
     public Criterion getCriterionParent() {
 		return criterionParent;
 	}
 
+    /**
+     * Définit le critère parent de l'élément
+     * 
+     * @param criterionParent le critère parent
+     */
 	public void setCriterionParent(Criterion criterionParent) {
 		this.criterionParent = criterionParent;
 	}
 	
+	/**
+	 * Sauvegarde l'élement de critére dans la base
+	 */
 	public void save() {
 		try {
 			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
@@ -106,6 +120,9 @@ public class CriterionElement {
 		}
 	}
 	
+	/**
+	 * Supprime de la base le présent élément
+	 */
 	public void delete() {
 		try {
 			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
@@ -161,8 +178,11 @@ public class CriterionElement {
     	return getAllCriterionElementsFor(criterion, criterion.getReglementParent().hashCode());
     }*/
     
-    public static ArrayList<CriterionElement> getAllCriterionElementsFor(Criterion criterion, int hashReglement) {
-    	ArrayList<CriterionElement> elements = new ArrayList<CriterionElement>();
+    /**
+     * Retourne l'ensemble des éléments de critére associé à un critére donné et un réglement donné
+     */
+    public static List<CriterionElement> getAllCriterionElementsFor(Criterion criterion, int hashReglement) {
+    	List<CriterionElement> elements = new ArrayList<CriterionElement>();
     	
     	try {
 			Statement stmt = ConcoursJeunes.dbConnection.createStatement();

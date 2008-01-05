@@ -16,6 +16,7 @@
 package org.concoursjeunes;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -24,7 +25,7 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 public class EquipeList implements Cloneable {
    
-    private ArrayList<Equipe> equipeList  = new ArrayList<Equipe>();
+    private List<Equipe> equipeList  = new ArrayList<Equipe>();
     @XmlTransient
     private FicheConcours ficheConcours;
     
@@ -192,8 +193,8 @@ public class EquipeList implements Cloneable {
         return no_sort_list;
     }
     
-    public ArrayList<CriteriaSet> listCriteriaSet() {
-    	ArrayList<CriteriaSet> listCriteriaSet = new ArrayList<CriteriaSet>();
+    public List<CriteriaSet> listCriteriaSet() {
+    	List<CriteriaSet> listCriteriaSet = new ArrayList<CriteriaSet>();
     	for(Equipe equipe : equipeList) {
     		 CriteriaSet criteriaSet = equipe.getDifferentiationCriteria();
     		 if(!listCriteriaSet.contains(criteriaSet)) {
@@ -216,7 +217,7 @@ public class EquipeList implements Cloneable {
 	 * Pour la sérialisation, la table des équipes
 	 * @return  Renvoie equipeList.
 	 */
-    public ArrayList<Equipe> getEquipeList() {
+    public List<Equipe> getEquipeList() {
         return equipeList;
     }
 

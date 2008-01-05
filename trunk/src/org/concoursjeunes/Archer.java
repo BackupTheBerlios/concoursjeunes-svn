@@ -199,14 +199,18 @@ public class Archer {
 	}
 
 	/**
-	 * @return handicape
+	 * Est ce que l'archer est handicapé ou non?
+	 * 
+	 * @return true si l'archer est handicapé, false sinon
 	 */
 	public boolean isHandicape() {
 		return handicape;
 	}
 
 	/**
-	 * @param handicape handicape à définir
+	 * Définit si l'archer est handicapé ou non
+	 * 
+	 * @param handicape true si l'archer est handicapé, false sinon
 	 */
 	public void setHandicape(boolean handicape) {
 		this.handicape = handicape;

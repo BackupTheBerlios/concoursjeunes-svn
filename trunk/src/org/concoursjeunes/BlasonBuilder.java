@@ -93,10 +93,21 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
+ * Construit un objet blason à partir des données en base
+ * 
  * @author Aurélien JEOFFRAY
+ * @version 1.0
  *
  */
 public class BlasonBuilder {
+	
+	/**
+	 * Retourne le blason associé à une ligne distance/blason d'un réglement donnée
+	 * 
+	 * @param numdistancesblason le numero de distance/blason
+	 * @param numreglement le numrero de reglement
+	 * @return le blason associé à la ligne d/b du réglement donnée
+	 */
 	public static Blason getBlasons(int numdistancesblason, int numreglement) {
 		try {
 			String sql = "select BLASONS.* from DISTANCESBLASONS,BLASONS " //$NON-NLS-1$
@@ -119,6 +130,16 @@ public class BlasonBuilder {
 		return null;
 	}
 	
+	/**
+	 * Construit un blason à partir d'un jeux de résultat transmis en parametre.<br>
+	 * Le jeux de résultat doit posseder les champs de la table BLASONS.
+	 * Si le jeux de résultat n'est pas valide, retourne une exception <i>SQLException</i>
+	 * 
+	 * @param rs le jeux de résultat à partir duquel construire l'objet blason
+	 * @return le blason construit à partir du jeux de résultat
+	 * @throws SQLException retourné si le jeux de résultat ne contient pas l'ensemble<br>
+	 * des champs de la table BLASONS 
+	 */
 	public static Blason getBlason(ResultSet rs) throws SQLException {
 		Blason blason = new Blason();
 		blason.setNumblason(rs.getInt("NUMBLASON")); //$NON-NLS-1$

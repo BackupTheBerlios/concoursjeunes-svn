@@ -18,14 +18,21 @@ package org.concoursjeunes;
 import java.util.Hashtable;
 
 /**
+ * Permet la génération du libellé représentant un jeux de critères
+ * 
  * @author Aurelien JEOFFRAY
  * @version 1.0
  */
 public class CriteriaSetLibelle {
     
-    private CriteriaSet criteriaSet;
+    private final CriteriaSet criteriaSet;
     private String libelle = ""; //$NON-NLS-1$
     
+    /**
+     * Construit le libellé associé au jeux de critères  fournit en parametre
+     * 
+     * @param criteriaSet le jeux de criteres pour lequelle construire le libellé
+     */
     public CriteriaSetLibelle(CriteriaSet criteriaSet) {
         this.criteriaSet = criteriaSet;
         
@@ -57,6 +64,9 @@ public class CriteriaSetLibelle {
         return criteriaSet;
     }
     
+    /**
+     * Retourne le libellé construit à partir du jeux de critères
+     */
     @Override
     public String toString() {
         return libelle;

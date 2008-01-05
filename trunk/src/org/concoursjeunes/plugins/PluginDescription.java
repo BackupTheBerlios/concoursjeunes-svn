@@ -99,6 +99,8 @@ public class PluginDescription {
 	private String description = ""; //$NON-NLS-1$
 	private String category = ""; //$NON-NLS-1$
 	private String reposURL = ""; //$NON-NLS-1$
+	private String minVersion = ""; //$NON-NLS-1$
+	private String maxVersion = ""; //$NON-NLS-1$
 	
 	public PluginDescription() {
 		
@@ -160,4 +162,20 @@ public class PluginDescription {
 	public void setReposURL(String reposURL) {
 		this.reposURL = reposURL;
 	}
+
+	public String getMinVersion() {
+    	return minVersion;
+    }
+
+	public void setMinVersion(String minVersion) {
+    	this.minVersion = minVersion;
+    }
+
+	public String getMaxVersion() {
+    	return maxVersion;
+    }
+
+	public void setMaxVersion(String maxVersion) {
+    	this.maxVersion = maxVersion;
+    }
 }

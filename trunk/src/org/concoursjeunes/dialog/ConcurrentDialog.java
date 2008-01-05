@@ -102,6 +102,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -533,7 +534,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 
 		jlValCible.setText(new TargetPosition(concurrent.getCible(), concurrent.getPosition()).toString());
 
-		ArrayList<Integer> score = concurrent.getScore();
+		List<Integer> score = concurrent.getScore();
 		if (score.size() > 0) {
 			for (int i = 0; i < score.size(); i++) {
 				tfpd[i].setText(score.get(i) + ""); //$NON-NLS-1$

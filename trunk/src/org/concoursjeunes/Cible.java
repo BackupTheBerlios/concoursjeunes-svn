@@ -167,7 +167,9 @@ public class Cible {
 	}
 
 	/**
-	 * @return nbHandicap
+	 * Retourne le nombre d'archer handicapé rattaché à la cible
+	 * 
+	 * @return nbHandicap le nombre d'archer handicapé rattaché à la cible
 	 */
 	public int getNbHandicap() {
 		return nbHandicap;

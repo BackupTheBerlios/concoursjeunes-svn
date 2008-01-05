@@ -63,7 +63,9 @@ public class DistancesEtBlason {
 	}
 
 	/**
-	 * @return Returns the distance.
+	 * Retourne le tableau des distances
+	 * 
+	 * @return le tableau des distances
 	 */
 	public int[] getDistance() {
 		return this.distances;
@@ -92,20 +94,26 @@ public class DistancesEtBlason {
 	}
 
 	/**
-	 * @return targetFace
+	 * Retourne le blason
+	 * 
+	 * @return targetFace le blason
 	 */
 	public Blason getTargetFace() {
 		return targetFace;
 	}
 
 	/**
-	 * @param targetFace targetFace à définir
+	 * Définit le blason
+	 * 
+	 * @param targetFace le blason
 	 */
 	public void setTargetFace(Blason targetFace) {
 		this.targetFace = targetFace;
 	}
 
 	/**
+	 * Définit le tableau des distances
+	 * 
 	 * @param distances
 	 *            The distance to set.
 	 */
@@ -114,15 +122,19 @@ public class DistancesEtBlason {
 	}
 
 	/**
-	 * @return criteriaSet
+	 * Le jeux de critère pour lequel l'objet est définit
+	 * 
+	 * @return le jeux de critére associé
 	 */
 	public CriteriaSet getCriteriaSet() {
 		return criteriaSet;
 	}
 
 	/**
+	 * Définit le jeux de critère que représente l'objet
+	 * 
 	 * @param criteriaSet
-	 *            criteriaSet à définir
+	 *            le jeux de critére associé
 	 */
 	public void setCriteriaSet(CriteriaSet criteriaSet) {
 		this.criteriaSet = criteriaSet;
@@ -151,6 +163,8 @@ public class DistancesEtBlason {
 	}
 
 	/**
+	 * Définit le réglement associé au couple distances/blasons
+	 * 
 	 * @param reglement
 	 *            reglement à définir
 	 */
@@ -158,6 +172,11 @@ public class DistancesEtBlason {
 		this.reglement = reglement;
 	}
 
+	/**
+	 * Sauvegarde le couple distances/blasons en base
+	 * 
+	 * @throws SQLException
+	 */
 	public void save() throws SQLException {
 		Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 

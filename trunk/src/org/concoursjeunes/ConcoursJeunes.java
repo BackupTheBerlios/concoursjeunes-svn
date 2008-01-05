@@ -102,7 +102,11 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 
 import javax.naming.ConfigurationException;
 import javax.script.ScriptContext;
@@ -143,21 +147,36 @@ import com.lowagie.text.pdf.PdfWriter;
 public class ConcoursJeunes {
 
 	// UID: 1.Major(2).Minor(2).Correctif(2).Build(3).Type(1,Alpha,Beta,RC(1->6),Release)
-	public static final long serialVersionUID = 10201020011l;
+	public static final long serialVersionUID = 10205000011l;
 
 	/**
-	 * Chaines de version de ConcoursJeunes
+	 * Nom public de l'application
 	 */
 	public static final String NOM = "@version.name@"; //$NON-NLS-1$
+	/**
+	 * version de l'application
+	 */
 	public static final String VERSION = new String("@version.numero@ - @version.date@");//$NON-NLS-1$
+	/**
+	 * Nom de code de l'application
+	 */
 	public static final String CODENAME = "@version.codename@"; //$NON-NLS-1$
+	/**
+	 * Auteur(s) de l'application
+	 */
 	public static final String AUTEURS = "@version.author@"; //$NON-NLS-1$
+	/**
+	 * Copyright de l'application
+	 */
 	public static final String COPYR = "@version.copyr@"; //$NON-NLS-1$
+	/**
+	 * Numero de version de la base de donnée nécessaire au fonctionnement du programme
+	 */
 	public static final int DB_RELEASE_REQUIRED = 7;
-
+	
 	// Chaine de ressources
-	public static final String RES_LIBELLE = "libelle"; //$NON-NLS-1$
-	public static final String RES_PARAMETRE = "parametre"; //$NON-NLS-1$
+	private static final String RES_LIBELLE = "libelle"; //$NON-NLS-1$
+	private static final String RES_PARAMETRE = "parametre"; //$NON-NLS-1$
 
 	/**
 	 * Chargement des Libelle de l'application
@@ -168,11 +187,6 @@ public class ConcoursJeunes {
 	 * Chargement des parametrages statiques
 	 */
 	public static AjResourcesReader ajrParametreAppli = new AjResourcesReader(RES_PARAMETRE);
-
-	/**
-	 * Gestion de la configuration
-	 */
-	private static Configuration configuration = new Configuration();
 
 	/**
 	 * ressources utilisateurs
@@ -188,10 +202,9 @@ public class ConcoursJeunes {
 	 */
 	public static Connection dbConnection;
 
+	private static Configuration configuration = new Configuration();
 	private final ArrayList<FicheConcours> fichesConcours = new ArrayList<FicheConcours>();
-
 	private final EventListenerList listeners = new EventListenerList();
-
 	private static ConcoursJeunes instance;
 
 	/**
@@ -315,10 +328,6 @@ public class ConcoursJeunes {
 			try { if(stmt != null) stmt.close(); } catch (SQLException e) { }
 			dbVersion = getDBVersion();
 		}
-		
-		/*if(System.getProperty("noplugin") == null) { //$NON-NLS-1$
-			loadStartupPlugin();
-		}*/
 	}
 
 	/**
@@ -395,20 +404,39 @@ public class ConcoursJeunes {
 		return printOK;
 	}
 	
+	/**
+	 * Retourne la configuration courante de l'application
+	 * 
+	 * @return la configuration de l'application
+	 */
 	public static Configuration getConfiguration() {
 		return configuration;
 	}
 	
+	/**
+	 * Définit la configuration de l'application
+	 * 
+	 * @param _configuration la configuration de l'application
+	 */
 	public static void setConfiguration(Configuration _configuration) {
 		configuration = _configuration;
 		if(instance != null)
 			instance.fireConfigurationChanged();
 	}
 
+	/**
+	 * Ajoute un auditeur aux evenements du Singleton ConcoursJeunes
+	 * 
+	 * @param concoursJeunesListener l'auditeur qui s'enregistre à la class
+	 */
 	public void addConcoursJeunesListener(ConcoursJeunesListener concoursJeunesListener) {
 		listeners.add(ConcoursJeunesListener.class, concoursJeunesListener);
 	}
 
+	/**
+	 * Retire un auditeur aux evenements du Singleton ConcoursJeunes
+	 * @param concoursJeunesListener l'auditeur qui résilie à la class
+	 */
 	public void removeConcoursJeunesListener(ConcoursJeunesListener concoursJeunesListener) {
 		listeners.remove(ConcoursJeunesListener.class, concoursJeunesListener);
 	}

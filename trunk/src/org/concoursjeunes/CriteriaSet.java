@@ -81,6 +81,13 @@ public class CriteriaSet {
 		this.criteria = criteria;
 	}
 
+	/**
+	 * Retourne le jeux de critère courrant, filtré en fonction de la table de filtrage
+	 * fournit en parametre
+	 * 
+	 * @param criteriaFilter la table de filtrage des critères inclue dans le jeux retourné
+	 * @return le jeux de critères filtré.
+	 */
 	public CriteriaSet getFilteredCriteriaSet(Hashtable<Criterion, Boolean> criteriaFilter) {
 		CriteriaSet criteriaSet = new CriteriaSet();
 		for(Criterion criterion : criteria.keySet()) {
@@ -92,6 +99,9 @@ public class CriteriaSet {
 		return criteriaSet;
 	}
 
+	/**
+	 * Sauvegarde en base le jeux de critère
+	 */
 	public void save() {
 		try {
 			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
@@ -116,6 +126,7 @@ public class CriteriaSet {
 			e.printStackTrace();
 		}
 	}
+	
 	/**
 	 * Tri les criteres de distinction selon l'ordre de la table listCriteria
 	 * 

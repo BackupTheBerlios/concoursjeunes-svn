@@ -95,6 +95,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -127,7 +128,6 @@ import org.concoursjeunes.Reglement;
  * @author Aurelien Jeoffray
  * @version 2.0
  */
-
 public class ConcurrentListDialog extends JDialog implements ActionListener, MouseListener, CaretListener {
 	private ArchersTableModel dtm = null;
 	private TableRowSorter<ArchersTableModel> sorter;
@@ -471,7 +471,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 
 		private final ArrayList<TableModelListener> tmListeners = new ArrayList<TableModelListener>();
 		private final ArrayList<String> columnsName = new ArrayList<String>();
-		private ArrayList<Concurrent> rows = new ArrayList<Concurrent>();
+		private List<Concurrent> rows = new ArrayList<Concurrent>();
 		// private ArrayList<SoftReference<Concurrent>> softRows = new ArrayList<SoftReference<Concurrent>>();
 
 		// private ResultSet archersRS;

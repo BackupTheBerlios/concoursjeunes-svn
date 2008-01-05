@@ -87,12 +87,17 @@
 package org.concoursjeunes;
 
 /**
- * 
+ * Objet evenement de la class ConcoursJeunes
  * 
  * @author Aurélien JEOFFRAY
  */
 public class ConcoursJeunesEvent {
 	
+	/**
+	 * Type d'evenement pouvant être émis par la class ConcoursJeunes
+	 * 
+	 * @author Aurélien JEOFFRAY
+	 */
 	public enum Type {
 		NONE,
 		CREATE_CONCOURS,
@@ -106,38 +111,50 @@ public class ConcoursJeunesEvent {
 	
 	private Type action = Type.NONE;
 
+	/**
+	 * Construit un nouvel evenement
+	 * 
+	 * @param ficheConcours la ficheConcours crée/supprimé
+	 * @param action l'action réalisé
+	 */
 	public ConcoursJeunesEvent(FicheConcours ficheConcours, Type action) {
 		this.ficheConcours = ficheConcours;
 		this.action = action;
 	}
 
 	/**
-	 * @return action
+	 * Retourne l'action à l'origine de l'évenement
+	 * 
+	 * @return action l'action à l'orine de l'évenement
 	 */
 	public Type getAction() {
 		return action;
 	}
 
 	/**
-	 * @param action action à définir
+	 * Définit l'action à l'origine de l'évenement
+	 * 
+	 * @param action l'action à l'orine de l'évenement
 	 */
 	public void setAction(Type action) {
 		this.action = action;
 	}
 
 	/**
-	 * @return ficheConcours
+	 * Retourne la fiche concours objet de l'évenement
+	 * 
+	 * @return ficheConcours la fiche concours objet de l'évenement
 	 */
 	public FicheConcours getFicheConcours() {
 		return ficheConcours;
 	}
 
 	/**
-	 * @param ficheConcours ficheConcours à définir
+	 * Définit la fiche concours objet de l'évenement
+	 * 
+	 * @param ficheConcours la fiche concours objet de l'évenement
 	 */
 	public void setFicheConcours(FicheConcours ficheConcours) {
 		this.ficheConcours = ficheConcours;
 	}
-	
-	
 }

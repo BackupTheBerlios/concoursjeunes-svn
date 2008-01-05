@@ -93,10 +93,22 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
+ * Permet l'instanciation d'un objet critère
+ * 
  * @author Aurélien JEOFFRAY
  *
  */
 public class CriterionBuilder {
+	
+	/**
+	 * Construit un critère à partir des informations en base
+	 * 
+	 * @param codeCritere le code du critère à construire
+	 * @param reglement le réglement parent du critère
+	 * @param hashReglement le clé du réglement parent du critére
+	 * 
+	 * @return le critère correspondant
+	 */
 	public static Criterion getCriterion(String codeCritere, Reglement reglement, int hashReglement) {
 		try {
 			String sql = "select * from critere where CODECRITERE=? and NUMREGLEMENT=?"; //$NON-NLS-1$

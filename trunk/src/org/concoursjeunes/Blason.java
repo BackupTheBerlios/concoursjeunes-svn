@@ -96,12 +96,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Bean representant un blason de tir et ses caracteristiques
+ * 
  * @author Aurélien JEOFFRAY
+ * @version 1.0
  *
  */
 public class Blason {
 	
-	public static Blason NULL = new Blason("80cm",1,1,80); //$NON-NLS-1$
+	/**
+	 * Représente le blason par défaut
+	 */
+	public static Blason NULL = new Blason("80cm",1,1,80,4); //$NON-NLS-1$
 	
 	private String name = ""; //$NON-NLS-1$
 	private double horizontalRatio = 1;
@@ -116,37 +122,65 @@ public class Blason {
 	}
 
 	/**
-	 * @param name
+	 * Construit un nouveau blason portant le nom donnée en parametre
+	 * 
+	 * @param name le nom du blason à construire
 	 */
 	public Blason(String name) {
 		this.name = name;
 	}
+	
 
 	/**
-	 * @param name
-	 * @param horizontalRatio
-	 * @param verticalRation
+	 * <p>Construit un nouveau blason ayant le nom donnée en parametre ainsi
+	 * que les caractéristiques de ratio de cible horizontal et vertical.</p>
+	 * <p>le ratio correspond à une valeur entre 0 et 1 correspondant à la
+	 * fraction de cible occupé par le blason dans les dimensions horizontal
+	 * et vertical</p>
+	 * 
+	 * 
+	 * @param name le nom du blason
+	 * @param horizontalRatio le ratio horizontal exprimé en fraction de cible (valeur entre 0 et 1)
+	 * @param verticalRatio le ratio vertical exprimé en fraction de cible (valeur entre 0 et 1)
 	 */
-	public Blason(String name, double horizontalRatio, double verticalRation) {
+	public Blason(String name, double horizontalRatio, double verticalRatio) {
 		this.name = name;
 		this.horizontalRatio = horizontalRatio;
-		this.verticalRatio = verticalRation;
+		this.verticalRatio = verticalRatio;
 	}
 	
+	
 	/**
-	 * @param name
-	 * @param horizontalRatio
-	 * @param verticalRatio
-	 * @param numordre
+	 * <p>Construit un nouveau blason ayant le nom donnée en parametre ainsi
+	 * que les caractéristiques de ratio de cible horizontal et vertical ainsi
+	 * que son numero d'ordre.</p>
+	 * <p>le ratio correspond à une valeur entre 0 et 1 correspondant à la
+	 * fraction de cible occupé par le blason dans les dimensions horizontal
+	 * et vertical</p>
+	 * <p>le numero d'ordre permet de trié les blasons du plus gros (en taille) au plus petit
+	 * afin de les ordonner correctement sur le pas de tir</p>
+	 * 
+	 * @param name le nom du blason
+	 * @param horizontalRatio le ratio horizontal exprimé en fraction de cible (valeur entre 0 et 1)
+	 * @param verticalRatio le ratio vertical exprimé en fraction de cible (valeur entre 0 et 1)
+	 * @param numordre le numero d'ordre de disposition sur le pas de tir
+	 * @param nbArcher le nombre d'archer pouvant tirer sur le blason
 	 */
 	public Blason(String name, double horizontalRatio, double verticalRatio,
-			int numordre) {
+			int numordre, int nbArcher) {
 		this.name = name;
 		this.horizontalRatio = horizontalRatio;
 		this.verticalRatio = verticalRatio;
 		this.numordre = numordre;
+		this.nbArcher = nbArcher;
 	}
 
+	/**
+	 * Liste l'ensemble des blasons existant dans la base
+	 * 
+	 * @return la liste des blasons existant
+	 * @throws SQLException
+	 */
 	public static List<Blason> listAvailableTargetFace() throws SQLException {
 		ArrayList<Blason> blasons = new ArrayList<Blason>();
 		
@@ -160,37 +194,56 @@ public class Blason {
 		
 		return blasons;
 	}
+	
 
 	/**
-	 * @return name
+	 * Retourne le nom du blason
+	 * 
+	 * @return name le nom du blason
 	 */
 	public String getName() {
 		return name;
 	}
+	
 
 	/**
-	 * @param name name à définir
+	 * Définit le nom attribué au blason
+	 * 
+	 * @param name le nom du blason
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
+	
 
 	/**
-	 * @return horizontalRatio
+	 * Le ratio horizontal définissant le blason.<br>
+	 * Le ratio représente une fraction de la taille de la cible (valeur comprise
+	 * entre 0 et 1)
+	 * 
+	 * @return horizontalRatio le ratio horizontal de la cible
 	 */
 	public double getHorizontalRatio() {
 		return horizontalRatio;
 	}
 
 	/**
-	 * @param horizontalRatio horizontalRatio à définir
+	 * Définit le ratio horizontal définissant le blason.<br>
+	 * Le ratio représente une fraction de la taille de la cible (valeur comprise
+	 * entre 0 et 1)
+	 * 
+	 * @param horizontalRatio le ratio vertical de la cible
 	 */
 	public void setHorizontalRatio(double horizontalRatio) {
 		this.horizontalRatio = horizontalRatio;
 	}
 
 	/**
-	 * @return verticalRation
+	 * Le ratio vertical définissant le blason.<br>
+	 * Le ratio représente une fraction de la taille de la cible (valeur comprise
+	 * entre 0 et 1)
+	 * 
+	 * @return verticalRatio le ratio vertical de la cible
 	 */
 	public double getVerticalRatio() {
 		return verticalRatio;
@@ -213,47 +266,75 @@ public class Blason {
 	}
 	
 	/**
-	 * @return nbArcher
+	 * Le nombre d'archer que peut supporter le blason<br>
+	 * <i>par exemple un blason de 40 ne peut supporter qu'un seul archer,
+	 * alors qu'un blason de 80 supporte jusqu'à 4 archers</i>
+	 * 
+	 * @return nbArcher le nombre d'archer pouvant tiré sur le même blason
 	 */
 	public int getNbArcher() {
 		return nbArcher;
 	}
 
 	/**
-	 * @param nbArcher nbArcher à définir
+	 * Définit le nombre d'archer que peut supporter le blason<br>
+	 * <i>par exemple un blason de 40 ne peut supporter qu'un seul archer,
+	 * alors qu'un blason de 80 supporte jusqu'à 4 archers</i>
+	 * 
+	 * @param nbArcher le nombre d'archer pouvant tiré sur le même blason
 	 */
 	public void setNbArcher(int nbArcher) {
 		this.nbArcher = nbArcher;
 	}
 
 	/**
-	 * @return numordre
+	 * Le numero d'ordre de la cible. Le numero d'ordre permet de classer
+	 * les blasons dans l'ordre.
+	 * 
+	 * @return numordre le numero d'ordre du blason
 	 */
 	public int getNumordre() {
 		return numordre;
 	}
 
 	/**
-	 * @param numordre numordre à définir
+	 * Définit le numero d'ordre de la cible. Le numero d'ordre permet de classer
+	 * les blasons dans l'ordre.
+	 * 
+	 * @param numordre le numero d'ordre du blason
 	 */
 	public void setNumordre(int numordre) {
 		this.numordre = numordre;
 	}
 
 	/**
-	 * @return numblason
+	 * Le numero de blason tel que définit dans la base.<br>
+	 * Ce numero n'est pas destiné à être utilisé directement,
+	 * mais uniquement par afin de permettre la persistance de l'objet
+	 * 
+	 * @return numblason le numero de reference du blason dans la base ou 0 si non définit 
 	 */
 	public int getNumblason() {
 		return numblason;
 	}
 
 	/**
-	 * @param numblason numblason à définir
+	 * Définit le numero de blason tel que définit dans la base.<br>
+	 * Ce numero n'est pas destiné à être utilisé directement,
+	 * mais uniquement par afin de permettre la persistance de l'objet
+	 * 
+	 * @param numblason le numero de reference du blason dans la base ou 0 si non définit
 	 */
 	public void setNumblason(int numblason) {
 		this.numblason = numblason;
 	}
 
+	/**
+	 * Sauvegarde l'objet dans la base en créant une nouvelle ligne si le numero de blason est à 0
+	 * ou en mettant à jour la ligne existante dans la base et identifié par le numero de blason
+	 * 
+	 * @throws SQLException
+	 */
 	public void save() throws SQLException {
 		String sql;
 		if(numblason > 0)
@@ -277,6 +358,11 @@ public class Blason {
 		}
 	}
 	
+	/**
+	 * Supprime la persistance de l'objet
+	 * 
+	 * @throws SQLException
+	 */
 	public void delete() throws SQLException {
 		String sql = "delete from BLASONS where numblason=" + numblason; //$NON-NLS-1$
 		

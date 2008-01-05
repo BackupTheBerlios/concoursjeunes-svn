@@ -93,7 +93,16 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
 
 import org.concoursjeunes.ConcoursJeunes;
 
@@ -103,17 +112,17 @@ import org.concoursjeunes.ConcoursJeunes;
  */
 public class InstallPluginDialog extends JDialog implements ActionListener {
 	
-	private JLabel jllCategorie = new JLabel();
-	private JList jlCategorie = new JList();
+	private final JLabel jllCategorie = new JLabel();
+	private final JList jlCategorie = new JList();
 	
-	private JLabel jlPlugins = new JLabel();
-	private JLabel jlSearch = new JLabel();
-	private JTextField jtfSearch = new JTextField();
-	private JTable jtPlugins = new JTable();
-	private JTextPane jtpDescription = new JTextPane();
+	private final JLabel jlPlugins = new JLabel();
+	private final JLabel jlSearch = new JLabel();
+	private final JTextField jtfSearch = new JTextField();
+	private final JTable jtPlugins = new JTable();
+	private final JTextPane jtpDescription = new JTextPane();
 	
-	private JButton jbValider = new JButton();
-	private JButton jbAnnuler = new JButton();
+	private final JButton jbValider = new JButton();
+	private final JButton jbAnnuler = new JButton();
 	
 	public InstallPluginDialog(JFrame parentframe) {
 		super(parentframe, true);
@@ -125,6 +134,31 @@ public class InstallPluginDialog extends JDialog implements ActionListener {
 	private void init() {
 		JPanel jpPrincipal = new JPanel();
 		JPanel jpAction = new JPanel();
+		JPanel jpCategorie = new JPanel();
+		JPanel jpPlugins = new JPanel();
+		
+		/*GridBagConstraints c = new GridBagConstraints();
+		GridbagComposer gridbagComposer = new GridbagComposer();*/
+		
+		jbValider.addActionListener(this);
+		jbAnnuler.addActionListener(this);
+		
+		//gridbagComposer.setParentPanel(jpPrincipal);
+		
+		/*c.gridy = 0;
+		c.anchor = GridBagConstraints.CENTER;*/
+		jpCategorie.setLayout(new BorderLayout());
+		jpCategorie.add(jllCategorie, BorderLayout.NORTH);
+		jpCategorie.add(new JScrollPane(jlCategorie), BorderLayout.CENTER);
+		
+		jpPlugins.setLayout(new BorderLayout());
+		jpPlugins.add(jlPlugins, BorderLayout.NORTH);
+		jpPlugins.add(new JScrollPane(jtPlugins), BorderLayout.CENTER);
+		jpPlugins.add(new JScrollPane(jtpDescription), BorderLayout.SOUTH);
+		
+		jpPrincipal.setLayout(new BorderLayout());
+		jpPrincipal.add(jpCategorie, BorderLayout.WEST);
+		jpPrincipal.add(jpPlugins, BorderLayout.CENTER);
 		
 		jpAction.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		jpAction.add(jbValider);
@@ -136,6 +170,9 @@ public class InstallPluginDialog extends JDialog implements ActionListener {
 	}
 	
 	private void affectLibelle() {
+		jllCategorie.setText(ConcoursJeunes.ajrLibelle.getResourceString("installplugindialog.category")); //$NON-NLS-1$
+		jlPlugins.setText(ConcoursJeunes.ajrLibelle.getResourceString("installplugindialog.plugins")); //$NON-NLS-1$
+		
 		jbValider.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
 		jbAnnuler.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
 	}

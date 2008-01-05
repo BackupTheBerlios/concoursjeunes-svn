@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
 
 import javax.swing.event.EventListenerList;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -46,11 +47,26 @@ import com.lowagie.text.Rectangle;
 @XmlRootElement
 public class FicheConcours implements ParametreListener {
 
+	/**
+	 * Edition par ordre alphabetique
+	 */
 	public static final int ALPHA = 0; // par ordre alphabetique
+	/**
+	 * Edition pour le greffe
+	 */
 	public static final int GREFFE = 1; // pour le greffe
+	/**
+	 * Edition par positionnement sur cible
+	 */
 	public static final int TARGET = 3; // par ordre sur le pas de tir
 
+	/**
+	 * Edition au format XML iText
+	 */
 	public static final int OUT_XML = 0; // Sortie XML
+	/**
+	 * Edition au format HTML
+	 */
 	public static final int OUT_HTML = 1; // Sortie HTML
 
 	private Parametre parametre = new Parametre(ConcoursJeunes.getConfiguration());
@@ -527,7 +543,7 @@ public class FicheConcours implements ParametreListener {
 			tplClassementEquipe.parse("TYPE_CLASSEMENT", ConcoursJeunes.ajrLibelle.getResourceString("classement.equipe")); //$NON-NLS-1$ //$NON-NLS-2$
 
 			
-			ArrayList<CriteriaSet> teamCriteriaSet = equipes.listCriteriaSet();
+			List<CriteriaSet> teamCriteriaSet = equipes.listCriteriaSet();
 			CriteriaSet[] sortedTeamCriteriaSets = new CriteriaSet[teamCriteriaSet.size()];
 			sortedTeamCriteriaSets = teamCriteriaSet.toArray(sortedTeamCriteriaSets);
 			

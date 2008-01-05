@@ -165,14 +165,18 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	}
 
 	/**
-	 * @return the reglementName
+	 * Retourne le nom du réglement définit par défaut pour la configuration
+	 * 
+	 * @return le nom du réglement
 	 */
 	public String getReglementName() {
 		return reglementName;
 	}
 
 	/**
-	 * @param reglementName the reglementName to set
+	 * Définit le nom du réglement définit par défaut pour la configuration
+	 * 
+	 * @param reglementName le nom du réglement
 	 */
 	public void setReglementName(String reglementName) {
 		this.reglementName = reglementName;
@@ -380,28 +384,36 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	}
 
 	/**
-	 * @return useProxy
+	 * Est ce qu'un proxy doit être utilisé pour la connectivité réseau?
+	 * 
+	 * @return useProxy true si un proxy doit être utilisé
 	 */
 	public boolean isUseProxy() {
 		return useProxy;
 	}
 
 	/**
-	 * @param useProxy useProxy à définir
+	 * Définit l'utilisation ou nom d'un serveur mendataire pour la connectivité réseau
+	 * 
+	 * @param useProxy true si un proxy doit être utilisé, false sinon
 	 */
 	public void setUseProxy(boolean useProxy) {
 		this.useProxy = useProxy;
 	}
 
 	/**
-	 * @return proxy
+	 * Retourne les parametres du proxy qui doit être utilisé pour les connections http
+	 * 
+	 * @return proxy les parametres de proxy
 	 */
 	public Proxy getProxy() {
 		return proxy;
 	}
 
 	/**
-	 * @param proxy proxy à définir
+	 * Définit les parametres du proxy qui doit être utilisé pour les connections http
+	 * 
+	 * @param proxy les parametres de proxy
 	 */
 	public void setProxy(Proxy proxy) {
 		this.proxy = proxy;
@@ -425,6 +437,9 @@ public class Configuration extends DefaultParameters implements Cloneable {
 		}
 	}
 	
+	/**
+	 * sauvegarde la configuration courante comme etant la configuration par défaut du programme
+	 */
 	public void saveAsDefault() {
 		try {
 			File f = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + 

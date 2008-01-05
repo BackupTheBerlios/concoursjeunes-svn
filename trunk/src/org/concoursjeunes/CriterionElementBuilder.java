@@ -97,6 +97,16 @@ import java.sql.SQLException;
  *
  */
 public class CriterionElementBuilder {
+	
+	/**
+	 * Construit l'élément de critère représenté par son code et appartenant au critére et réglement transmis en parametre 
+	 * 
+	 * @param codeElement le code de l'élément à charger
+	 * @param criterion le critère parent de l'élément
+	 * @param hashReglement le code du réglement associé à l'élément
+	 * 
+	 * @return l'élément de critère construit
+	 */
 	public static CriterionElement getCriterionElement(String codeElement, Criterion criterion, int hashReglement) {
 		try {
 			String sql = "select * from CRITEREELEMENT where CODECRITEREELEMENT=?" + //$NON-NLS-1$

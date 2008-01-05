@@ -18,7 +18,7 @@ package org.concoursjeunes;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Fabrique d'archer en se basant sur les données en base
@@ -63,7 +63,7 @@ public class ConcurrentBuilder {
 					differentiationCriteria = new CriteriaSet();
 					for(Criterion key : reglement.getListCriteria()) {
 						if(!key.getCodeffta().isEmpty()) {
-							ArrayList<CriterionElement> arrayList = key.getCriterionElements();
+							List<CriterionElement> arrayList = key.getCriterionElements();
 							int valindex = rs.getInt(key.getCodeffta() + "FFTA"); //$NON-NLS-1$
 							if(valindex >= arrayList.size())
 								valindex = arrayList.size() - 1;
