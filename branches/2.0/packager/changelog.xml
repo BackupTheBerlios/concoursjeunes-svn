@@ -99,5 +99,26 @@
     </void> 
    </object> 
   </void> 
+  <void method="add"> 
+   <object class="ajinteractive.standard.utilities.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurelien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction erreur de casting de l&apos;objet Blason sur création d&apos;une nouvelle DistancesBlason</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1199812348417</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.02.01</string> 
+    </void> 
+   </object> 
+  </void> 
  </object> 
 </java> 

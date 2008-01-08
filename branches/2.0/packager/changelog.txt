@@ -1,3 +1,9 @@
+concoursjeunes (2.02.01) stable; urgency=low
+
+  * Correction erreur de casting de l'objet Blason sur création d'une nouvelle DistancesBlason
+
+ -- Aurelien JEOFFRAY <aurelien.jeoffray@gmail.com>  Tue, 8 Jan 2008 18:12:28 +0100
+
 concoursjeunes (2.02.00) stable; urgency=low
 
   * Correction problème d'écrasement de profil
