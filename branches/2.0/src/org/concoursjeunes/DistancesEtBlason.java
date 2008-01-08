@@ -49,9 +49,9 @@ public class DistancesEtBlason {
 	 * @param distances
 	 * @param blason
 	 */
-	public DistancesEtBlason(int[] distances, int blason) {
+	public DistancesEtBlason(int[] distances, Blason targetFace) {
 		this.distances = distances;
-		this.blason = blason;
+		this.targetFace = targetFace;
 	}
 
 	/**

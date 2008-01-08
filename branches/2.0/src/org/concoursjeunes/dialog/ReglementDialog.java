@@ -100,7 +100,23 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.DefaultCellEditor;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.JTree;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -108,7 +124,14 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
-import org.concoursjeunes.*;
+import org.concoursjeunes.Blason;
+import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.CriteriaSet;
+import org.concoursjeunes.CriteriaSetLibelle;
+import org.concoursjeunes.Criterion;
+import org.concoursjeunes.CriterionElement;
+import org.concoursjeunes.DistancesEtBlason;
+import org.concoursjeunes.Reglement;
 import org.jdesktop.swingx.JXErrorDialog;
 
 import ajinteractive.standard.java2.GridbagComposer;
@@ -517,7 +540,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 				}
 				DistancesEtBlason db = reglement.getDistancesEtBlasonFor(differentiationCriteria[i]);
 				if (db == null) {
-					db = new DistancesEtBlason(distances, Integer.parseInt((String) this.jtDistanceBlason.getModel().getValueAt(i, jtDistanceBlason.getModel().getColumnCount() - 1)));
+					db = new DistancesEtBlason(distances, (Blason) this.jtDistanceBlason.getModel().getValueAt(i, jtDistanceBlason.getModel().getColumnCount() - 1));
 
 					db.setCriteriaSet(differentiationCriteria[i]);
 					db.setReglement(reglement);
