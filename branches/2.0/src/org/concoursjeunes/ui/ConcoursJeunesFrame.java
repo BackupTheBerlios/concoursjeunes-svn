@@ -249,8 +249,8 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 							try {
 								reglement.save();
 							} catch(SQLException e1) {
-								JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
-										e1.fillInStackTrace());
+								JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+										e1);
 								e1.printStackTrace();
 							}
 						}
