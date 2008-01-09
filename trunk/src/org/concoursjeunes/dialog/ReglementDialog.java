@@ -467,8 +467,22 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 			}
 			if (reglement.getDistancesEtBlasonFor(differentiationCriteria[i]) != null)
 				row[reglement.getNbSerie() + 1] = reglement.getDistancesEtBlasonFor(differentiationCriteria[i]).getTargetFace();
-			else
-				row[reglement.getNbSerie() + 1] = Blason.NULL;
+			else {
+				//TODO Hack à retravailler
+				Blason defaultBlason = Blason.NULL;
+				try {
+					List<Blason> availableTargetFace = Blason.listAvailableTargetFace();
+					for(Blason blason : availableTargetFace) {
+						if(blason.equals(Blason.NULL)) {
+							defaultBlason = blason;
+							break;
+						}
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				row[reglement.getNbSerie() + 1] = defaultBlason;
+			}
 			dtm.addRow(row);
 		}
 
@@ -539,7 +553,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 				}
 				DistancesEtBlason db = reglement.getDistancesEtBlasonFor(differentiationCriteria[i]);
 				if (db == null) {
-					db = new DistancesEtBlason(distances, Integer.parseInt((String) this.jtDistanceBlason.getModel().getValueAt(i, jtDistanceBlason.getModel().getColumnCount() - 1)));
+					db = new DistancesEtBlason(distances, (Blason) this.jtDistanceBlason.getModel().getValueAt(i, jtDistanceBlason.getModel().getColumnCount() - 1));
 
 					db.setCriteriaSet(differentiationCriteria[i]);
 					db.setReglement(reglement);
