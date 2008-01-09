@@ -19,9 +19,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Entite organisationnelle
+ * Entite organisationnelle.<br>
+ * Une entite peut représenté
+ * <ul>
+ * <li>Une Fédération</li>
+ * <li>Une ligue</li>
+ * <li>Un comité départemental</li>
+ * <li>Un club</li>
+ * </ul>
  * 
  * @author Aurélien JEOFFRAY
  */
@@ -44,13 +52,21 @@ public class Entite {
         
     }
     
+    /**
+     * Construit une nouvelle entité nommé ayant le type fournit en parametre
+     * 
+     * @param nom le nom de l'entite
+     * @param type le type de l'entite
+     */
     public Entite(String nom, int type) {
         this.nom = nom;
         this.type = type;
     }
 
     /**
-	 * @return  Returns the adresse.
+     * Retourne l'adresse de l'entite
+     * 
+	 * @return l'adresse de l'entite
 	 */
     public String getAdresse() {
         return adresse;
@@ -58,7 +74,9 @@ public class Entite {
     
 
     /**
-	 * @return  Returns the agrement.
+     * Retourne le numero d'agrement identifiant de manière unique l'entite
+     * 
+	 * @return le numero d'agrement
 	 */
     public String getAgrement() {
         return agrement;
@@ -66,7 +84,9 @@ public class Entite {
     
 
     /**
-	 * @return  Returns the codePostal.
+     * Retourne le code postal de l'adresse de l'entite
+     * 
+	 * @return le code postal
 	 */
     public String getCodePostal() {
         return codePostal;
@@ -74,7 +94,9 @@ public class Entite {
     
 
     /**
-	 * @return  Returns the nom.
+     * Retourne le nom de l'entite
+     * 
+	 * @return le nom
 	 */
     public String getNom() {
         return nom;
@@ -82,7 +104,11 @@ public class Entite {
     
 
     /**
-	 * @return  Returns the type.
+     * Retourne le type d'entite.<br>
+     * Les types possible sont:
+     * FEDERATION, LIGUE, CD, CLUB
+     * 
+	 * @return le type de l'entite
 	 */
     public int getType() {
         return type;
@@ -90,7 +116,9 @@ public class Entite {
     
 
     /**
-	 * @return  Returns the ville.
+     * Retourne la ville de l'entite
+     * 
+	 * @return la ville de l'entite
 	 */
     public String getVille() {
         return ville;
@@ -98,7 +126,9 @@ public class Entite {
     
 
     /**
-	 * @param adresse  The adresse to set.
+     * Définit l'adresse de l'entite
+     * 
+	 * @param adresse l'adresse de l'entite
 	 */
     public void setAdresse(String adresse) {
         this.adresse = adresse;
@@ -106,7 +136,9 @@ public class Entite {
     
 
     /**
-	 * @param agrement  The agrement to set.
+     * Définit le numero d'agrement identifiant de manière unique l'entite
+     * 
+	 * @param agrement le numero d'agrement
 	 */
     public void setAgrement(String agrement) {
         this.agrement = agrement;
@@ -114,7 +146,9 @@ public class Entite {
     
 
     /**
-	 * @param codePostal  The codePostal to set.
+     * Définit le code postal de l'adresse de l'entite
+     * 
+	 * @param codePostal le code postal
 	 */
     public void setCodePostal(String codePostal) {
         this.codePostal = codePostal;
@@ -122,7 +156,9 @@ public class Entite {
     
 
     /**
-	 * @param nom  The nom to set.
+     * Définit le nom de l'entite
+     * 
+	 * @param nom le nom
 	 */
     public void setNom(String nom) {
         this.nom = nom;
@@ -130,7 +166,11 @@ public class Entite {
     
 
     /**
-	 * @param type  The type to set.
+     * Définit le type d'entite.<br>
+     * Les types possible sont:
+     * FEDERATION, LIGUE, CD, CLUB
+     * 
+	 * @param type le type d'entite
 	 */
     public void setType(int type) {
         this.type = type;
@@ -138,7 +178,9 @@ public class Entite {
     
 
     /**
-	 * @param ville  The ville to set.
+     * Définit la ville de l'entite
+     * 
+	 * @param ville la ville de l'entite
 	 */
     public void setVille(String ville) {
         this.ville = ville;
@@ -150,19 +192,27 @@ public class Entite {
     }
 
 	/**
-	 * @return  Returns the note.
+	 * Retourne une note ou commentaire préalablement
+	 * définit sur l'entite
+	 * 
+	 * @return une note sur l'entite
 	 */
 	public String getNote() {
 		return note;
 	}
 
 	/**
-	 * @param note  The note to set.
+	 * Ajoute une note ou commentaire sur l'entite
+	 * 
+	 * @param note une note sur l'entite
 	 */
 	public void setNote(String note) {
 		this.note = note;
 	}
 	
+	/**
+	 * Sauvegarde l'entite dans la base de donnée
+	 */
 	public void save() {
 		try {
 			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
@@ -181,8 +231,21 @@ public class Entite {
 		}
 	}
 	
-	public static ArrayList<Entite> getEntitesInDatabase(Entite eGeneric, String orderfield) {
-		ArrayList<Entite> entites = new ArrayList<Entite>();
+	/**
+	 * Liste les entites stocké dans la base correspondant à l'entite generique
+	 * transmis en parametre et ordonné par le nom du champs fournit<br>
+	 * <br>
+	 * Une entite générique est une entite ou seul l'une des 3 propriétés
+	 * (Nom, Agrement, Ville) est renseigné. L'utilisation des wildcards SQL
+	 * est possible (%, _)
+	 * 
+	 * @param eGeneric l'entite générique permettant de filtré les résultats
+	 * @param orderfield le champs de tri de la liste
+	 * 
+	 * @return la liste des entite répondant aux critères de recherche
+	 */
+	public static List<Entite> getEntitesInDatabase(Entite eGeneric, String orderfield) {
+		List<Entite> entites = new ArrayList<Entite>();
 		Statement stmt = null;
 		
 		try {

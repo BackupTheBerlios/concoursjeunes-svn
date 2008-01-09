@@ -24,6 +24,13 @@ import java.sql.Statement;
  *
  */
 public class EntiteBuilder {
+	/**
+	 * Construit une entite à partir des informations en base
+	 * 
+	 * @param numAgrement le numero d'agrement de l'entite à construire
+	 * 
+	 * @return l'entite construite
+	 */
 	public static Entite getEntite(String numAgrement) {
 		Entite entite = new Entite();
 		try {

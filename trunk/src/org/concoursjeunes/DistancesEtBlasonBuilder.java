@@ -98,6 +98,16 @@ import java.util.ArrayList;
  *
  */
 public class DistancesEtBlasonBuilder {
+	/**
+	 * Construit un objet DistancesEtBlason en se basan sur le numero de sa reference
+	 * en base ainsi que le numero de réglement.<br>
+	 * Associe à l'objet DistancesEtBlason l'objet Reglement lié
+	 * 
+	 * @param numdistancesblason Le numero de la ligne en base
+	 * @param reglement Le réglement à lié
+	 * @param hashReglement Le code réglement associé  à l'objet
+	 * @return l'objet DistancesEtBlason généré
+	 */
 	public static DistancesEtBlason getDistancesEtBlason(int numdistancesblason, Reglement reglement, int hashReglement) {
 		PreparedStatement pstmt = null;
 		DistancesEtBlason distancesEtBlason = null;

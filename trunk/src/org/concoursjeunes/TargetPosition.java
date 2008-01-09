@@ -1,7 +1,7 @@
 /*
  * Créer le 21 nov. 07 à 11:21:11 pour ConcoursJeunes
  *
- * Copyright 2002-2007 - Aurélien JEOFFRAY
+ * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
  *

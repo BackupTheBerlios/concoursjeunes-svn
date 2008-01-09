@@ -18,7 +18,7 @@ package org.concoursjeunes;
 import java.util.ArrayList;
 
 /**
- * Class represantant une membresEquipe d'archer pour le concours
+ * Class represantant une Equipe d'archer pour le concours
  * @author  Aurélien Jeoffray
  * @version  2.0
  */
@@ -131,7 +131,7 @@ public class Equipe implements Cloneable {
     }
     
     /**
-     * Ajoute un concurrent à l'membresEquipe
+     * Ajoute un concurrent à l'Equipe
      * 
      * @param concurrent
      */
@@ -141,7 +141,7 @@ public class Equipe implements Cloneable {
     }
     
     /**
-     * retire un concurrent de l'membresEquipe
+     * retire un concurrent de l'Equipe
      * 
      * @param concurrent
      */
@@ -151,7 +151,7 @@ public class Equipe implements Cloneable {
     }
     
     /**
-     * verifie si l'membresEquipe contient ou non le concurrent donné en parametre
+     * verifie si l'Equipe contient ou non le concurrent donné en parametre
      * 
      * @param concurrent - le concurrent à vérifier
      * @return true si present, false sinon
@@ -161,7 +161,7 @@ public class Equipe implements Cloneable {
     }
     
     /**
-	 * renvoie le nom de l'membresEquipe
+	 * renvoie le nom de l'Equipe
 	 * 
 	 * @return  String
 	 */
@@ -170,7 +170,8 @@ public class Equipe implements Cloneable {
     }
     
     /**
-	 * defini le nom de l'membresEquipe
+	 * defini le nom de l'Equipe
+	 * 
 	 * @param  nomEquipe
 	 */
     public void setNomEquipe(String nomEquipe) {

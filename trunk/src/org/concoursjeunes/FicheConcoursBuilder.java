@@ -98,6 +98,14 @@ import ajinteractive.standard.common.AJToolKit;
  * 
  */
 public class FicheConcoursBuilder {
+	/**
+	 * Construit une fiche concours en se basant sur les métatdonnées
+	 * pour identifier le fichier du concours
+	 * 
+	 * @param metaDataFicheConcours les métadonnées du concours à charger
+	 * @return la fiche concours chargé
+	 * @throws IOException
+	 */
 	public static FicheConcours getFicheConcours(MetaDataFicheConcours metaDataFicheConcours) 
 			throws IOException {
 		File fFiche = new File(ConcoursJeunes.userRessources.getConcoursPathForProfile(ConcoursJeunes.getConfiguration().getCurProfil()) + File.separator

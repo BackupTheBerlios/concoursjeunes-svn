@@ -89,6 +89,9 @@
 package org.concoursjeunes;
 
 /**
+ * Répresente une exception de l'execution du programme
+ * pour cause d'absence d'objet de configuration
+ * 
  * @author Aurélien JEOFFRAY
  *
  */

@@ -1,7 +1,7 @@
 /*
  * Créé le 17/03/2007 à 11:10 pour ConcoursJeunes
  *
- * Copyright 2002-2007 - Aurélien JEOFFRAY
+ * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
  *
@@ -123,7 +123,7 @@ public class ReglementBuilder {
 	 * (équivalent à createReglement()).
 	 * </p>
 	 * <p>
-	 * Pour fonctionner correctement, "ConcoursJeunes.dbConnection" dooit auparavent être
+	 * Pour fonctionner correctement, "ConcoursJeunes.dbConnection" doit auparavent être
 	 * correctement instancié.
 	 * </p>
 	 * 
@@ -134,6 +134,21 @@ public class ReglementBuilder {
 		return createReglement(-1, reglementName);
 	}
 	
+	/**
+	 * <p>
+	 * Retourne le reglement identifié par son numero dans la base.
+	 * Si aucun réglement ne correspond au numero, celui ci est initialisé par défaut
+	 * (équivalent à createReglement()).
+	 * </p>
+	 * <p>
+	 * Pour fonctionner correctement, "ConcoursJeunes.dbConnection" doit auparavent être
+	 * correctement instancié.
+	 * </p>
+	 * 
+	 * @param numreglement le numero du reglement à construire
+	 * 
+	 * @return le réglement contruit à partir du numero
+	 */
 	public static Reglement createReglement(int numreglement) {
 		return createReglement(numreglement, null);
 	}

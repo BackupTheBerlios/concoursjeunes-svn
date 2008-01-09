@@ -131,7 +131,7 @@ public class FicheConcours implements ParametreListener {
 	}
 
 	/**
-	 * Donne la liste des equipes enrezgistré sur le concours
+	 * Donne la liste des equipes enregistré sur le concours
 	 * 
 	 * @return equipes - la liste des équipes
 	 */
@@ -139,6 +139,11 @@ public class FicheConcours implements ParametreListener {
 		return equipes;
 	}
 
+	/**
+	 * Définit la liste des équipes inscritent sur le concours
+	 * 
+	 * @param equipeList la liste des équipes
+	 */
 	public void setEquipes(EquipeList equipeList) {
 		this.equipes = equipeList;
 	}
@@ -215,7 +220,9 @@ public class FicheConcours implements ParametreListener {
 	}
 
 	/**
-	 * @return pasDeTir
+	 * Retourne le pas de tir du départ donné en parametre
+	 * 
+	 * @return pasDeTir le pas de tir du départ en parametre
 	 */
 	public PasDeTir getPasDeTir(int depart) {
 		return pasDeTir.get(depart);
@@ -223,6 +230,8 @@ public class FicheConcours implements ParametreListener {
 
 	/**
 	 * Donne la fiche complete du concours pour sauvegarde
+	 * le tableau retourné contient les propriétés:
+	 * { parametre, concurrentList, equipes }
 	 * 
 	 * @return Object[]
 	 */
@@ -248,6 +257,11 @@ public class FicheConcours implements ParametreListener {
 		makePasDeTir();
 	}
 
+	/**
+	 * Retourne les métadonnées associé à un concours
+	 * 
+	 * @return l'objet de métédonnée du concours
+	 */
 	public MetaDataFicheConcours getMetaDataFicheConcours() {
 		MetaDataFicheConcours metaDataFicheConcours = new MetaDataFicheConcours(parametre.getDate(), parametre.getIntituleConcours(), parametre.getSaveName());
 		parametre.addParametreListener(metaDataFicheConcours);
@@ -585,6 +599,14 @@ public class FicheConcours implements ParametreListener {
 		return strClassementEquipe;
 	}
 
+	/**
+	 * Retourne, au format html ou xml, l'etat de classement
+	 * par equipe automatique de club 
+	 * 
+	 * @param outType le type (HTML ou XML de sortie)
+	 * 
+	 * @return l'etat de classment
+	 */
 	public String getClassementClub(int outType) {
 		System.out.println("Sortie Club"); //$NON-NLS-1$
 
@@ -986,12 +1008,19 @@ public class FicheConcours implements ParametreListener {
 
 	}
 
+	/**
+	 * Invoqué par l'objet parametre du concours lors d'une modification de celui ci
+	 * afin de recalculer le pas de tir en fonction
+	 */
 	public void parametreChanged(ParametreEvent parametreEvent) {
 		assert pasDeTir.size() > 0 : "Il doit exister au moins un pas de tir"; //$NON-NLS-1$
 
 		if (parametreEvent.getParametre().getNbCible() != pasDeTir.get(0).getTargets().size() || parametreEvent.getParametre().getNbTireur() != pasDeTir.get(0).getTargets().get(0).getNbMaxArchers()) {
+			//si le nombre de cible à changé reconstruire le pas de tir
 			makePasDeTir();
 			if (parametreEvent.getParametre().getNbCible() < pasDeTir.get(0).getTargets().size()) {
+				//si le nombre de cible est inferieur, virer les archers
+				//sur les cibles supprimé
 				for (int i = 0; i < parametre.getNbDepart(); i++) {
 					for (int j = parametreEvent.getParametre().getNbCible(); j < pasDeTir.get(i).getTargets().size(); j++) {
 						for (Concurrent concurrent : concurrentList.list(j + 1, i)) {

@@ -35,70 +35,108 @@ public class DefaultParameters {
 	}
 
 	/**
-	 * @return  Renvoie intituleConcours.
+	 * Retourne l'intitulé du concours
+	 * 
+	 * @return Renvoie l'intitulé du concours
 	 */
 	public String getIntituleConcours() {
 		return intituleConcours;
 	}
 
 	/**
-	 * @param intituleConcours  intituleConcours à définir.
+	 * Définit l'intitulé du concours ou intitulé par défaut
+	 * 
+	 * @param intituleConcours l'intitulé du concours
 	 */
 	public void setIntituleConcours(String intituleConcours) {
 		this.intituleConcours = intituleConcours;
 	}
 	
 	/**
-	 * @return  Renvoie nbCible.
+	 * Retourne le nombre de cible sur le concours
+	 * 
+	 * @return le nombre de cible
 	 */
 	public int getNbCible() {
 		return nbCible;
 	}
 
 	/**
-	 * @param nbCible  nbCible à définir.
+	 * Définit le nombre de cible sur le concours
+	 * 
+	 * @param nbCible le nombre de cible
 	 */
 	public void setNbCible(int nbCible) {
 		this.nbCible = nbCible;
 	}
 
 	/**
-	 * @return  Renvoie nbDepart.
+	 * Retourne le nombre de départ sur le concours
+	 * 
+	 * @return le nombre de départ
 	 */
 	public int getNbDepart() {
 		return nbDepart;
 	}
 
 	/**
-	 * @param nbDepart  nbDepart à définir.
+	 * Définit le nombre de départ sur le concours
+	 * 
+	 * @param nbDepart le nombre de départ
 	 */
 	public void setNbDepart(int nbDepart) {
 		this.nbDepart = nbDepart;
 	}
 
 	/**
-	 * @return  Renvoie nbTireur.
+	 * Retourne le nombre de tireur par cible accepté sur le concours<br>
+	 * Ce nombre est de:
+	 * <ul>
+	 * <li>2 pour un rytme AB</li>
+	 * <li>3 pour un rytme ABC (Rare)</li>
+	 * <li>4 pour un rytme AB.CD</li>
+	 * <li>6 pour un rytme ABC.DEF (Rare)</li>
+	 * </ul>
+	 * A l'heure actuel, l'interface graphique ne supporte que les modes 2 et 4,
+	 * les modes 3 et 6 sont déconseillé car pouvant entrainer des cas non détérminé
+	 * 
+	 * @return renvoie le nombre de tireur par cible
 	 */
 	public int getNbTireur() {
 		return nbTireur;
 	}
 
 	/**
-	 * @param nbTireur  nbTireur à définir.
+	 * Définit le nombre de tireur par cible accepté sur le concours<br>
+	 * Ce nombre est de:
+	 * <ul>
+	 * <li>2 pour un rytme AB</li>
+	 * <li>3 pour un rytme ABC (Rare)</li>
+	 * <li>4 pour un rytme AB.CD</li>
+	 * <li>6 pour un rytme ABC.DEF (Rare)</li>
+	 * </ul>
+	 * A l'heure actuel, l'interface graphique ne supporte que les modes 2 et 4,
+	 * les modes 3 et 6 sont déconseillé car pouvant entrainer des cas non détérminé
+	 * 
+	 * @param nbTireur le nombre de tireur par cible
 	 */
 	public void setNbTireur(int nbTireur) {
 		this.nbTireur = nbTireur;
 	}
 
 	/**
-	 * @return  club
+	 * Retourne le club organisateur du concours
+	 * 
+	 * @return le club organisateur
 	 */
 	public Entite getClub() {
 		return club;
 	}
 
 	/**
-	 * @param club  club à définir
+	 * Définit le club organisateur du concours
+	 * 
+	 * @param club le club organisateur
 	 */
 	public void setClub(Entite club) {
 		this.club = club;

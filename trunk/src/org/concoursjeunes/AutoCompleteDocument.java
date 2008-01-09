@@ -462,7 +462,7 @@ public class AutoCompleteDocument extends PlainDocument {
 		Entite searchEntite = new Entite();
 		searchEntite.setVille(searchString.toUpperCase() + "%"); //$NON-NLS-1$
 		if(getLength() > 0) {
-			ArrayList<Entite> entites = Entite.getEntitesInDatabase(searchEntite, "VILLEENTITE"); //$NON-NLS-1$
+			List<Entite> entites = Entite.getEntitesInDatabase(searchEntite, "VILLEENTITE"); //$NON-NLS-1$
 			if(entites.size() > 0)
 				entite = entites.get(0);
 			else
@@ -510,7 +510,7 @@ public class AutoCompleteDocument extends PlainDocument {
 		Entite searchEntite = new Entite();
 		searchEntite.setAgrement(searchString.toUpperCase() + "%"); //$NON-NLS-1$
 		if(getLength() > 0) {
-			ArrayList<Entite> entites = Entite.getEntitesInDatabase(searchEntite, "AGREMENTENTITE"); //$NON-NLS-1$
+			List<Entite> entites = Entite.getEntitesInDatabase(searchEntite, "AGREMENTENTITE"); //$NON-NLS-1$
 			if(entites.size() > 0)
 				entite = Entite.getEntitesInDatabase(searchEntite, "AGREMENTENTITE").get(0); //$NON-NLS-1$
 			else
