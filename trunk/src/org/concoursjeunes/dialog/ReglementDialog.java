@@ -543,6 +543,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 			reglement.setNbMembresEquipe(Integer.parseInt(jtfNbMembresEquipe.getText()));
 			reglement.setNbMembresRetenu(Integer.parseInt(jtfNbMembresRetenu.getText()));
 
+			jtDistanceBlason.getCellEditor().stopCellEditing();
 			for (int i = 0; i < jtDistanceBlason.getRowCount(); i++) {
 				int[] distances = new int[reglement.getNbSerie()];
 				for (int j = 0; j < distances.length; j++) {
