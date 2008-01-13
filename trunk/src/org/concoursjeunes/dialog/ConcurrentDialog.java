@@ -103,6 +103,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -133,6 +140,7 @@ import org.concoursjeunes.FicheConcours;
 import org.concoursjeunes.OccupationCibles;
 import org.concoursjeunes.TargetPosition;
 import org.concoursjeunes.ui.ConcoursJeunesFrame;
+import org.jdesktop.swingx.JXErrorDialog;
 
 import ajinteractive.standard.common.AJToolKit;
 import ajinteractive.standard.java2.GridbagComposer;
@@ -156,9 +164,8 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	private Entite entiteConcurrent;
 	private Archer filter = null;
 	
-	private static volatile boolean onloadConcurrentListDialog = false;
 	private static volatile int nbInstance = 0;
-	private static ConcurrentListDialog concurrentListDialog;
+	private static Future<ConcurrentListDialog> concurrentListDialog;
 
 	private final JLabel jlDescription = new JLabel(); // Description
 	private final JLabel jlNom = new JLabel(); // Nom et prénom du Tireur
@@ -231,18 +238,12 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		this.ficheConcours = ficheConcours;
 		nbInstance++;
 		
-		Thread initListConc = new Thread() {
-			@Override
-			public void run() {
-				if(concurrentListDialog == null && !onloadConcurrentListDialog) {
-					onloadConcurrentListDialog = true;
-					concurrentListDialog = new ConcurrentListDialog(ConcurrentDialog.this, ConcurrentDialog.this.ficheConcours.getParametre().getReglement(), null);
-					onloadConcurrentListDialog = false;
-				}
+		ExecutorService executorService = Executors.newSingleThreadExecutor();
+		concurrentListDialog = executorService.submit(new Callable<ConcurrentListDialog>() {
+			public ConcurrentListDialog call() {
+				return new ConcurrentListDialog(ConcurrentDialog.this, ConcurrentDialog.this.ficheConcours.getParametre().getReglement(), null);
 			}
-		};
-		initListConc.start();
-		
+		});
 		init();
 		affectLibelle();
 
@@ -911,30 +912,26 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			//Le chargement de la liste des concurrents etant asynchrone, on doit attendre que celle ci
 			// soit chargé avant de l'afficher. On place un timeout de 30s pour ne pas bloqué définitivement
 			// l'interface en cas d'echec de chargement ou avoir un delai d'attente trop long sur certain système
-			try {
-				int i = 0;
-				while(concurrentListDialog == null) {
-					if(i == 30) //timeout au bout de 30 sec
-						break;
-					Thread.sleep(100);
-					Thread.yield();
-					i++;
-				}
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			
-			if(concurrentListDialog != null) {
-				//si la liste est disponible alore l'afficher
-				concurrentListDialog.setFilter(filter);
-				concurrentListDialog.setVisible(true);
-				if (concurrentListDialog.isValider()) {
-					concurrentListDialog.initConcurrent(concurrent);
+            try {
+            	ConcurrentListDialog cld = concurrentListDialog.get(30, TimeUnit.SECONDS);
+	            
+	            cld.setFilter(filter);
+				cld.setVisible(true);
+				if (cld.isValider()) {
+					cld.initConcurrent(concurrent);
 					setConcurrent(concurrent);
 				}
-			} else {
-				JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("concurrent.info.listing.wait")); //$NON-NLS-1$
-			}
+            } catch (InterruptedException e) {
+            	JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+    					e);
+	            e.printStackTrace();
+            } catch (ExecutionException e) {
+            	JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+    					e);
+	            e.printStackTrace();
+            } catch (TimeoutException e) {
+            	JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("concurrent.info.listing.wait")); //$NON-NLS-1$
+            }
 		} else if (ae.getSource() == jbDetailClub) {
 			if (!jtfAgrement.getText().equals("")) { //$NON-NLS-1$
 				EntiteDialog ed = new EntiteDialog(this);
@@ -999,10 +996,16 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	public void dispose() {
 		nbInstance--;
 		if(nbInstance == 0) {
-			if(concurrentListDialog != null)
-				concurrentListDialog.dispose();
+			
+			try {
+	            if(concurrentListDialog.isDone())
+	            	concurrentListDialog.get().dispose();
+	            else
+	            	concurrentListDialog.cancel(true);
+            } catch (InterruptedException e) {
+            } catch (ExecutionException e) {
+            }
 			concurrentListDialog = null;
-			onloadConcurrentListDialog = false;
 		}
 		super.dispose();
 	}

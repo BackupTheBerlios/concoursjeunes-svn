@@ -564,6 +564,8 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 					Runtime.getRuntime().exec(NAV, new String[] { "documentation/Documentation ConcoursJeunes.pdf" }); //$NON-NLS-1$ 
 				}
 			} catch (IOException e1) {
+				JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+						e1);
 				e1.printStackTrace();
 			}
 		} else if (cmd.equals("menubar.aide.versionnote")) { //$NON-NLS-1$
@@ -572,6 +574,8 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 					Desktop.getDesktop().open(new File("changelog.txt")); //$NON-NLS-1$
 				}
 			} catch (IOException e1) {
+				JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+						e1);
 				e1.printStackTrace();
 			}
 		} else if (cmd.equals("menubar.debug.addpoints")) { //$NON-NLS-1$
@@ -738,12 +742,12 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 						try {
 							concoursJeunes.deleteFicheConcours(ConcoursJeunes.getConfiguration().getMetaDataFichesConcours().get(Integer.parseInt(e.getURL().getRef())));
 						} catch (NumberFormatException e1) {
-							JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
-									e1.fillInStackTrace());
+							JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+									e1);
 							e1.printStackTrace();
 						} catch (ConfigurationException e1) {
-							JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
-									e1.fillInStackTrace());
+							JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+									e1);
 							e1.printStackTrace();
 						}
 						displayHome();
@@ -755,7 +759,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 							try {
 								concoursJeunes.createFicheConcours();
 							} catch (ConfigurationException e1) {
-								JXErrorDialog.showDialog(ConcoursJeunesFrame.this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
+								JXErrorDialog.showDialog(ConcoursJeunesFrame.this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 										e1);
 								e1.printStackTrace();
 							} catch (IOException e1) {
@@ -779,8 +783,12 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 							Desktop.getDesktop().browse(e.getURL().toURI());
 						}
 					} catch (IOException e1) {
+						JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+								e1);
 						e1.printStackTrace();
 					} catch (URISyntaxException e1) {
+						JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+								e1);
 						e1.printStackTrace();
 					}
 				}
