@@ -90,6 +90,7 @@ package org.concoursjeunes;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map.Entry;
 
 import javax.swing.event.EventListenerList;
@@ -104,11 +105,13 @@ import javax.swing.event.EventListenerList;
 public class Cible {
 
 	private int numCible = 0; // le numero de la cible
-	private FicheConcours concours;
 	private final Concurrent[] concurrents; // le liste des concurrents présents
 	// sur la cible
 	private int nbArcher = 0; // le nombre d'archer sur la cible
 	private int nbHandicap = 0;
+	
+	//private int tailleCible = 0;
+	private Reglement reglement;
 
 	private final EventListenerList listeners = new EventListenerList();
 
@@ -121,10 +124,11 @@ public class Cible {
 	 * @param ficheConcours -
 	 *            La fiche concours associé à la cible
 	 */
-	public Cible(int numCible, FicheConcours ficheConcours) {
+	public Cible(int numCible, PasDeTir pasDeTir) {
 		this.numCible = numCible;
-		this.concours = ficheConcours;
-		this.concurrents = new Concurrent[concours.getParametre().getNbTireur()];
+		this.reglement = pasDeTir.getFicheConcours().getParametre().getReglement();
+		
+		this.concurrents = new Concurrent[pasDeTir.getFicheConcours().getParametre().getNbTireur()];
 	}
 
 	/**
@@ -198,30 +202,13 @@ public class Cible {
 	}
 
 	/**
-	 * Retourne la Fiche Concours associé à la cible
-	 * 
-	 * @return la Fiche Concours associé à la cible
-	 */
-	public FicheConcours getFicheConcours() {
-		return concours;
-	}
-
-	/**
-	 * Associe la cible à un concours donné
-	 * 
-	 * @param concours le concours associé à la cible
-	 */
-	public void setFicheConcours(FicheConcours concours) {
-		this.concours = concours;
-	}
-
-	/**
 	 * insere un concurrent à la premiere position libre et retourne cette
-	 * position ou -1 si echec
+	 * position ou produit une exception PlacementException en cas d'echec
 	 * 
 	 * @param concurrent le concurrent à inserer
 	 * 
 	 * @return la position de concurrent ou -1 si echec
+	 * @throws PlacementException si l'insertion du concurrent est impossible
 	 */
 	public int insertConcurrent(Concurrent concurrent)
 			throws PlacementException {
@@ -229,15 +216,15 @@ public class Cible {
 
 		if (concurrent != null) {
 			//verifie qu'il reste des places disponible
-			if(nbArcher < concours.getParametre().getNbTireur() - nbHandicap) {
+			if(nbArcher < concurrents.length - nbHandicap) {
 				//on valide l'insertion si il n'y a aucun archer sur la cible
 				//OU si les autre archers sont à la même distance
-				if ((nbArcher > 0 && DistancesEtBlason.getDistancesEtBlasonForConcurrent(concours.getParametre().getReglement(), concurrent).equals(
+				if ((nbArcher > 0 && DistancesEtBlason.getDistancesEtBlasonForConcurrent(reglement, concurrent).equals(
 						getDistancesEtBlason()))
 						|| nbArcher == 0) {
 					//si l'archer est handicapé, vérifié que les condition spécifique sont remplis
 					if(concurrent.isHandicape()) {
-						if(nbArcher < concours.getParametre().getNbTireur() - (nbHandicap+1)) {
+						if(nbArcher < concurrents.length - (nbHandicap+1)) {
 							//dans le cas d'un archer handicapé, on boucle sur les emplacements 2 à 2
 							for (int i = 0; i < concurrents.length; i+=2) {
 								if (concurrents[i] == null && concurrents[i+1] == null) {
@@ -301,7 +288,7 @@ public class Cible {
 	 *         si aucun concurrent trouvé
 	 */
 	public Concurrent getConcurrentAt(int position) {
-		if (position < concours.getParametre().getNbTireur())
+		if (position < concurrents.length)
 			return concurrents[position];
 		return null;
 	}
@@ -311,8 +298,8 @@ public class Cible {
 	 * 
 	 * @return la liste des concurrents présent sur la cible
 	 */
-	public ArrayList<Concurrent> getAllConcurrents() {
-		ArrayList<Concurrent> lstConcurrent = new ArrayList<Concurrent>();
+	public List<Concurrent> getAllConcurrents() {
+		List<Concurrent> lstConcurrent = new ArrayList<Concurrent>();
 		for (Concurrent concurrent : concurrents) {
 			if (concurrent != null)
 				lstConcurrent.add(concurrent);
@@ -327,7 +314,7 @@ public class Cible {
 	 * @return l'indice du concurrent sur la cible ou -1 si non trouvé
 	 */
 	public int indexOf(Concurrent concurrent) {
-		for (int i = 0; i < concours.getParametre().getNbTireur(); i++)
+		for (int i = 0; i < concurrents.length; i++)
 			if (concurrents[i] != null && concurrents[i].equals(concurrent))
 				return i;
 		return -1;
@@ -348,6 +335,9 @@ public class Cible {
 	 * 
 	 * @param concurrent le concurrent à placer
 	 * @param position la positionn de ce concurrent
+	 * 
+	 * @throws PlacementException invoqué en cas d'echec
+	 * d'insertion du concurrent
 	 */
 	public void setConcurrentAt(Concurrent concurrent, int position) 
 			throws PlacementException {
@@ -356,9 +346,10 @@ public class Cible {
 				insertConcurrent(concurrent);
 				
 				return;
-			} else if (position >= 0 && position < concours.getParametre().getNbTireur() && !isReservedPosition(position)) {
-				if ((nbArcher > 0 && DistancesEtBlason.getDistancesEtBlasonForConcurrent(
-						concours.getParametre().getReglement(), concurrent).equals(getDistancesEtBlason()))
+			} else if (position >= 0 && position < concurrents.length && !isReservedPosition(position)) {
+				DistancesEtBlason dbConcurrent = DistancesEtBlason.getDistancesEtBlasonForConcurrent(
+						reglement, concurrent);
+				if ((nbArcher > 0 && dbConcurrent.equals(getDistancesEtBlason().get(0)))
 						|| nbArcher == 0) {
 					if(concurrent.isHandicape() && position % 2 != 0)
 						throw new PlacementException(PlacementException.Nature.POSITION_AVAILABLE_FOR_VALID_CONCURRENT);
@@ -436,25 +427,29 @@ public class Cible {
 
 	/**
 	 * Donne la disposition de la cible
-	 * 
+	 * FIXME Verifier l'utilisation de la methode
 	 * @return DistancesEtBlason - la disposition de la cible
 	 */
-	public DistancesEtBlason getDistancesEtBlason() {
-		DistancesEtBlason db = null;
+	public List<DistancesEtBlason> getDistancesEtBlason() {
+		//DistancesEtBlason db = null;
+		List<DistancesEtBlason> dbs = new ArrayList<DistancesEtBlason>();
 
 		if (nbArcher > 0) {
-			Concurrent firstConcurrent = null;
+			//Concurrent firstConcurrent = null;
 			for (Concurrent concurrent : concurrents) {
 				if (concurrent != null) {
-					firstConcurrent = concurrent;
-					break;
+					DistancesEtBlason db = DistancesEtBlason.getDistancesEtBlasonForConcurrent(reglement, concurrent);
+					if(!dbs.contains(db))
+						dbs.add(db);
+					//firstConcurrent = concurrent;
+					//break;
 				}
 			}
 
-			db = DistancesEtBlason.getDistancesEtBlasonForConcurrent(concours.getParametre().getReglement(), firstConcurrent);
+			//db = DistancesEtBlason.getDistancesEtBlasonForConcurrent(reglement, firstConcurrent);
 		}
 
-		return db;
+		return dbs;
 	}
 
 	/**
@@ -464,25 +459,26 @@ public class Cible {
 	@Override
 	public String toString() {
 		String strCouleur = "<font color=\"#00AA00\">"; //$NON-NLS-1$
-		if (concours.getParametre().getNbTireur() == nbArcher + nbHandicap)
+		if (concurrents.length == nbArcher + nbHandicap)
 			strCouleur = "<font color=\"#0000FF\">"; //$NON-NLS-1$
 		String strCibleLibelle = "<html>" + strCouleur + "<b>" + ConcoursJeunes.ajrLibelle.getResourceString("treenode.cible") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				+ ((this.numCible < 10) ? "0" : "") //$NON-NLS-1$ //$NON-NLS-2$
 				+ this.numCible + "</b> ("; //$NON-NLS-1$
-
-		DistancesEtBlason db = getDistancesEtBlason();
-		if (db != null) {
-			for (int i = 0; i < db.getDistance().length; i++) {
-				if (i == 0 || (i > 0 && db.getDistance()[i] != db.getDistance()[i - 1])) {
-					if (i > 0)
-						strCibleLibelle += "/"; //$NON-NLS-1$
-					strCibleLibelle += db.getDistance()[i] + "m"; //$NON-NLS-1$
+		if(getDistancesEtBlason().size() > 0) {
+			DistancesEtBlason db = getDistancesEtBlason().get(0);
+			if (db != null) {
+				for (int i = 0; i < db.getDistance().length; i++) {
+					if (i == 0 || (i > 0 && db.getDistance()[i] != db.getDistance()[i - 1])) {
+						if (i > 0)
+							strCibleLibelle += "/"; //$NON-NLS-1$
+						strCibleLibelle += db.getDistance()[i] + "m"; //$NON-NLS-1$
+					}
 				}
+				strCibleLibelle += ", " + db.getTargetFace().getName(); //$NON-NLS-1$
 			}
-			strCibleLibelle += ", " + db.getTargetFace().getName(); //$NON-NLS-1$
 		}
 
-		strCibleLibelle += ") (" + this.nbArcher + "/" + (concours.getParametre().getNbTireur() - nbHandicap) + ")</font>"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		strCibleLibelle += ") (" + this.nbArcher + "/" + (concurrents.length - nbHandicap) + ")</font>"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 		Hashtable<Entite, Integer> nbArcherByClub = new Hashtable<Entite, Integer>();
 		for (Concurrent concurrent : concurrents) {

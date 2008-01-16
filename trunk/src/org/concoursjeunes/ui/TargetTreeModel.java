@@ -133,7 +133,7 @@ public class TargetTreeModel implements TreeModel, CibleListener {
 			return targetChilds.size();
 		else if (parent instanceof Cible) {
 			Cible cibleParent = (Cible) parent;
-			return cibleParent.getFicheConcours().getParametre().getNbTireur();
+			return cibleParent.getNbMaxArchers();
 		}
 		return 0;
 	}

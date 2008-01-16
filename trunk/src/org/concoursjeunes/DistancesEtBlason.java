@@ -209,9 +209,12 @@ public class DistancesEtBlason {
 	}
 
 	/**
-	 * Retourne l'objet DistancesEtBlason associé à un concurrent
+	 * Retourne l'objet DistancesEtBlason associé à un concurrent pour
+	 * un réglement donné.
 	 * 
-	 * @param concurrent -
+	 * @param reglement le reglement detreminant le DistancesEtBlason
+	 * du concurrent
+	 * @param concurrent
 	 *            le concurrent pour lequel retourné l'objet
 	 * @return l'objet DistancesEtBlason correspondant au concurrent
 	 */

@@ -18,7 +18,6 @@ package org.concoursjeunes;
 
 /**
  * Paremtrage commun à Configuration et Parametre
- * TODO à commenter
  * 
  * @author Aurélien JEOFFRAY
  */

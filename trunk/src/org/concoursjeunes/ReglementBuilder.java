@@ -160,7 +160,7 @@ public class ReglementBuilder {
 		try {
 			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 			
-			String sql = ""; //$NON-NLS-1$
+			String sql = null;
 			if(numreglement > -1)
 				sql = "select * from REGLEMENT where NUMREGLEMENT=" + numreglement; //$NON-NLS-1$
 			else

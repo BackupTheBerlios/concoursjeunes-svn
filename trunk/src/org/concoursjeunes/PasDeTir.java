@@ -126,7 +126,7 @@ public class PasDeTir {
 		
 		//construit l'arbre de cible lié au pas de tir
 		for(int j = 0; j < ficheConcours.getParametre().getNbCible(); j++) {
-			Cible cible = new Cible(j+1, ficheConcours);
+			Cible cible = new Cible(j+1, this);
 			//dans le cas d'une ouverture de concours existant, place les archers réferencé
 			//sur leurs cible
 			if(ficheConcours.getConcurrentList().countArcher(depart) > 0) {
@@ -397,5 +397,19 @@ public class PasDeTir {
 	 */
 	public void setTargets(ArrayList<Cible> targets) {
 		this.targets = targets;
+	}
+
+	/**
+	 * @return ficheConcours
+	 */
+	public FicheConcours getFicheConcours() {
+		return ficheConcours;
+	}
+
+	/**
+	 * @param ficheConcours ficheConcours à définir
+	 */
+	public void setFicheConcours(FicheConcours ficheConcours) {
+		this.ficheConcours = ficheConcours;
 	}
 }
