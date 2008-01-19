@@ -138,6 +138,9 @@ public class Main {
 		if(System.getProperty("noplugin") == null) { //$NON-NLS-1$
 			loadStartupPlugin();
 		}
+		
+		//System.setProperty("java.net.useSystemProxies","true");
+		//ProxySelector.getDefault().
 
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override

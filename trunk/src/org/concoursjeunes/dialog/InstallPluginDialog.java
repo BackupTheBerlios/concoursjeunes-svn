@@ -89,22 +89,32 @@
 package org.concoursjeunes.dialog;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.Authenticator;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.table.DefaultTableModel;
 
 import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.webservices.PluginDescription;
+import org.concoursjeunes.webservices.PluginDescriptionArray;
+import org.concoursjeunes.webservices.PluginsWebService;
+import org.concoursjeunes.webservices.PluginsWebServiceService;
+
+import ajinteractive.standard.ui.AJList;
+import ajinteractive.standard.utilities.net.SimpleAuthenticator;
 
 /**
  * @author Aurélien JEOFFRAY
@@ -113,12 +123,19 @@ import org.concoursjeunes.ConcoursJeunes;
 public class InstallPluginDialog extends JDialog implements ActionListener {
 	
 	private final JLabel jllCategorie = new JLabel();
-	private final JList jlCategorie = new JList();
+	private final AJList jlCategorie = new AJList();
 	
 	private final JLabel jlPlugins = new JLabel();
 	private final JLabel jlSearch = new JLabel();
 	private final JTextField jtfSearch = new JTextField();
-	private final JTable jtPlugins = new JTable();
+	private final JTable jtPlugins = new JTable() {
+	//  Returning the Class of each column will allow different
+		//  renderers to be used based on Class
+		@Override
+        public Class<?> getColumnClass(int column)	{
+			return getValueAt(0, column).getClass();
+		}
+	};
 	private final JTextPane jtpDescription = new JTextPane();
 	
 	private final JButton jbValider = new JButton();
@@ -143,7 +160,10 @@ public class InstallPluginDialog extends JDialog implements ActionListener {
 		jbValider.addActionListener(this);
 		jbAnnuler.addActionListener(this);
 		
-		//gridbagComposer.setParentPanel(jpPrincipal);
+		JScrollPane jspTablePlugins = new JScrollPane(jtPlugins);
+		jspTablePlugins.setPreferredSize(new Dimension(450,200));
+		jtpDescription.setPreferredSize(new Dimension(450,200));
+		jtpDescription.setEditable(false);
 		
 		/*c.gridy = 0;
 		c.anchor = GridBagConstraints.CENTER;*/
@@ -153,7 +173,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener {
 		
 		jpPlugins.setLayout(new BorderLayout());
 		jpPlugins.add(jlPlugins, BorderLayout.NORTH);
-		jpPlugins.add(new JScrollPane(jtPlugins), BorderLayout.CENTER);
+		jpPlugins.add(jspTablePlugins, BorderLayout.CENTER);
 		jpPlugins.add(new JScrollPane(jtpDescription), BorderLayout.SOUTH);
 		
 		jpPrincipal.setLayout(new BorderLayout());
@@ -178,7 +198,53 @@ public class InstallPluginDialog extends JDialog implements ActionListener {
 	}
 	
 	private void completePanel() {
+		if(ConcoursJeunes.getConfiguration().isUseProxy()) {
+			System.setProperty("http.proxyHost", ConcoursJeunes.getConfiguration().getProxy().getProxyServerAddress()); //$NON-NLS-1$
+			System.setProperty("http.proxyPort",Integer.toString(ConcoursJeunes.getConfiguration().getProxy().getProxyServerPort())); //$NON-NLS-1$
+			if(ConcoursJeunes.getConfiguration().getProxy().isUseProxyAuthentification()) {
+				Authenticator.setDefault(new SimpleAuthenticator(
+						ConcoursJeunes.getConfiguration().getProxy().getProxyAuthLogin(),
+						ConcoursJeunes.getConfiguration().getProxy().getProxyAuthPassword()));
+			}
+		}
+		PluginsWebService services = new PluginsWebServiceService().getPluginsWebServicePort();
 		
+		PluginDescriptionArray pluginDescriptionArray = services.getAvailablePluginsForVersion(ConcoursJeunes.VERSION);
+		
+		DefaultTableModel dtm = new DefaultTableModel() {
+			@Override
+			public boolean isCellEditable(int row, int col) {
+				if(col == 0)
+					return true;
+				return false;
+			}
+		};
+		
+		dtm.addColumn("");
+		dtm.addColumn("Nom");
+		dtm.addColumn("Version");
+		dtm.addColumn("Description");
+
+		for(PluginDescription pluginDescription : pluginDescriptionArray.getItem()) {
+			Object[] row = new Object[] {
+					new Boolean(false),
+					pluginDescription.getDisplayName(),
+					pluginDescription.getVersion(),
+					pluginDescription.getShortDescription()
+			};
+			
+			dtm.addRow(row);
+		}
+		
+		jtPlugins.setModel(dtm);
+		jtPlugins.setBorder(BorderFactory.createEmptyBorder());
+		
+		jtPlugins.getColumnModel().getColumn(0).setMaxWidth(20);
+		jtPlugins.getColumnModel().getColumn(1).setPreferredWidth(100);
+		jtPlugins.getColumnModel().getColumn(2).setMaxWidth(70);
+		jtPlugins.getColumnModel().getColumn(3).setPreferredWidth(200);
+		
+		jlCategorie.add("Tous");
 	}
 	
 	public void showInstallPluginDialog() {

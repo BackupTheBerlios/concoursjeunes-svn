@@ -36,6 +36,7 @@ import javax.swing.event.HyperlinkListener;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
+import javax.xml.ws.WebServiceException;
 
 import org.concoursjeunes.ConcoursJeunes;
 import org.concoursjeunes.ConcoursJeunesEvent;
@@ -538,8 +539,12 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			DisablePluginDialog disablePluginDialog = new DisablePluginDialog(this);
 			disablePluginDialog.showDisablePluginDialog();
 		} else if (cmd.equals("menubar.tools.installplugins")) { //$NON-NLS-1$
-			InstallPluginDialog installPluginDialog = new InstallPluginDialog(this);
-			installPluginDialog.showInstallPluginDialog();
+			try {
+				InstallPluginDialog installPluginDialog = new InstallPluginDialog(this);
+				installPluginDialog.showInstallPluginDialog();
+			} catch(WebServiceException e1) {
+				JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("webservice.unavalable")); //$NON-NLS-1$
+			}
 			// affiche la boite de dialogie "A propos"
 		} else if (cmd.equals("menubar.aide.apropos")) { //$NON-NLS-1$
 			
