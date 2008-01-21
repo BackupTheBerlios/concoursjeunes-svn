@@ -1,5 +1,7 @@
 /*
- * Copyright 2002-2007 - Aurélien JEOFFRAY
+ * Créer le 19 janv. 08 à 21:50:36 pour ConcoursJeunes
+ *
+ * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
  *
@@ -69,7 +71,7 @@
  * knowledge of the CeCILL license and that you accept its terms.
  *
  *  *** GNU GPL Terms *** 
- *
+ * 
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -84,76 +86,45 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes.plugins;
+package org.concoursjeunes.ui;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.*;
 
-import ajinteractive.standard.common.AJToolKit;
-import ajinteractive.standard.common.AjResourcesReader;
+import javax.swing.JComponent;
 
 /**
- * Permet de lister et charger les plugins installer en mémoire
- * 
  * @author Aurélien JEOFFRAY
- * 
+ *
  */
-public class PluginLoader {
-
-	private final ArrayList<PluginMetadata> listPlugins = new ArrayList<PluginMetadata>();
-
-	public PluginLoader() {
-		File pluginPath = new File("./plugins/properties"); //$NON-NLS-1$
-		File[] pluginsFiles = pluginPath.listFiles();
-
-		if (pluginsFiles != null) {
-			for (File pluginFile : pluginsFiles) {
-				if (pluginFile.getName().endsWith(".properties")) { //$NON-NLS-1$
-					String pluginName = pluginFile.getName().substring(0, pluginFile.getName().length() - ".properties".length()); //$NON-NLS-1$
-					
-					AjResourcesReader pluginProperties = new AjResourcesReader("properties." + //$NON-NLS-1$
-							pluginName); 
-					AjResourcesReader pluginLocalInfo = new AjResourcesReader(pluginProperties.getResourceString("plugin.libelle.file")); //$NON-NLS-1$
-
-					PluginMetadata pluginMetadata = new PluginMetadata();
-					pluginMetadata.setName(pluginName);
-					pluginMetadata.setInfo(pluginLocalInfo.getResourceString("plugin.libelle")); //$NON-NLS-1$
-					pluginMetadata.setOptionLabel(pluginLocalInfo.getResourceString("plugin.optionlabel")); //$NON-NLS-1$
-					pluginMetadata.setPluginType(pluginProperties.getResourceInteger("plugin.type")); //$NON-NLS-1$
-					pluginMetadata.setClassName(pluginProperties.getResourceString("plugin.class")); //$NON-NLS-1$
-					pluginMetadata.setReposURL(pluginProperties.getResourceString("plugin.repos")); //$NON-NLS-1$
-					pluginMetadata.setMenuPath(AJToolKit.tokenize(pluginProperties.getResourceString("plugin.menu"), "/")); //$NON-NLS-1$ //$NON-NLS-2$
-
-					listPlugins.add(pluginMetadata);
-				}
-			}
-		}
-	}
-
-	/**
-	 * Retourne les metadonnées des plugins installé et correspondant
-	 * au type fournit en parametre.<br>
-	 * le type peut être!
-	 * <ul>
-	 * 	<li>PluginMetadata.ALL</li>
-	 *  <li>PluginMetadata.ONDEMAND_PLUGIN</li>
-	 *  <li>PluginMetadata.STARTUP_PLUGIN</li>
-	 * </ul>
-	 * @param type le type des plugins à retourner
-	 * @return les metafonnées des plugins retourné
-	 */
-	public List<PluginMetadata> getPlugins(int type) {
-		ArrayList<PluginMetadata> currentList = new ArrayList<PluginMetadata>();
-		for (PluginMetadata pm : listPlugins) {
-			if (type == PluginMetadata.ALL || pm.getPluginType() == type)
-				currentList.add(pm);
-		}
-
-		return currentList;
+public class GlassPanePanel extends JComponent {
+	
+	private AlphaComposite composite;
+	private String message = "";
+	
+	public GlassPanePanel() {
+		setOpaque(false);
+        composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f);
+        setVisible(true);
 	}
 	
-	public boolean isInstalled(String pluginName) {
-		return new File("./plugins/properties/" + pluginName + ".properties").exists();
+	public void setMessage(String message) {
+		this.message = message;
+	}
+	
+	@Override
+	public void paintComponent(Graphics g) {
+		 Graphics2D g2 = (Graphics2D) g;
+		 g2.setComposite(composite);
+		 g2.setColor(Color.WHITE);
+		 g2.fillRect(0, getHeight()/4, getWidth(), getHeight()/2);
+		 
+		 //String message = "service indisponible pour le moment";
+		 Font font = g2.getFont().deriveFont(Font.BOLD, 18);
+		 g2.setFont(font);
+		 int width = getFontMetrics(font).stringWidth(message);
+		 int height = getFontMetrics(font).getHeight();
+		 g2.setColor(Color.BLACK);
+		 g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+		 g2.drawString(message, getWidth() / 2 - width / 2 , getHeight() / 2 - height / 2);
 	}
 }

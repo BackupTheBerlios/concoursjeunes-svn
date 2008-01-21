@@ -3,7 +3,6 @@ package org.concoursjeunes.webservices;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 import javax.xml.ws.WebEndpoint;
@@ -26,7 +25,7 @@ public class PluginsWebServiceService
     static {
         URL url = null;
         try {
-            url = new URL("http://webservices.concoursjeunes.org/PluginsService.wsdl"); //$NON-NLS-1$
+            url = new URL("http://webservices.concoursjeunes.org/PluginsService.wsdl");
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -38,7 +37,7 @@ public class PluginsWebServiceService
     }
 
     public PluginsWebServiceService() {
-        super(PLUGINSWEBSERVICESERVICE_WSDL_LOCATION, new QName("http://webservices.concoursjeunes.org/", "PluginsWebServiceService")); //$NON-NLS-1$ //$NON-NLS-2$
+        super(PLUGINSWEBSERVICESERVICE_WSDL_LOCATION, new QName("http://webservices.concoursjeunes.org/", "PluginsWebServiceService"));
     }
 
     /**
@@ -48,7 +47,7 @@ public class PluginsWebServiceService
      */
     @WebEndpoint(name = "PluginsWebServicePort")
     public PluginsWebService getPluginsWebServicePort() {
-        return super.getPort(new QName("http://webservices.concoursjeunes.org/", "PluginsWebServicePort"), PluginsWebService.class); //$NON-NLS-1$ //$NON-NLS-2$
+        return (PluginsWebService)super.getPort(new QName("http://webservices.concoursjeunes.org/", "PluginsWebServicePort"), PluginsWebService.class);
     }
 
 }

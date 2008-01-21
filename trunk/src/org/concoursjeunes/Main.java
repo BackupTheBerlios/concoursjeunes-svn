@@ -133,7 +133,6 @@ public class Main {
 		
 		Thread.setDefaultUncaughtExceptionHandler(handlerException);
 		Toolkit.getDefaultToolkit().getSystemEventQueue().push(new ExceptionHandlingEventQueue());
-
 		ConcoursJeunes concoursJeunes = ConcoursJeunes.getInstance();
 		if(System.getProperty("noplugin") == null) { //$NON-NLS-1$
 			loadStartupPlugin();

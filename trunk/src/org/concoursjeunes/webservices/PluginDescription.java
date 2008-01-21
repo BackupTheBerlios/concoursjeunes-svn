@@ -3,6 +3,7 @@ package org.concoursjeunes.webservices;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
@@ -16,13 +17,15 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="logicalName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="displayName" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="version" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="logicalName" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="displayName" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="version" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="shortDescription" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="longDescription" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="minVersionApp" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="minVersionApp" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="maxVersionApp" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="category" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="reposURL" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -39,17 +42,27 @@ import javax.xml.bind.annotation.XmlType;
     "shortDescription",
     "longDescription",
     "minVersionApp",
-    "maxVersionApp"
+    "maxVersionApp",
+    "category",
+    "reposURL"
 })
 public class PluginDescription {
 
+    @XmlElement(required = true)
     protected String logicalName;
+    @XmlElement(required = true)
     protected String displayName;
+    @XmlElement(required = true)
     protected String version;
     protected String shortDescription;
     protected String longDescription;
+    @XmlElement(required = true)
     protected String minVersionApp;
     protected String maxVersionApp;
+    @XmlElement(required = true)
+    protected String category;
+    @XmlElement(required = true)
+    protected String reposURL;
 
     /**
      * Gets the value of the logicalName property.
@@ -217,6 +230,54 @@ public class PluginDescription {
      */
     public void setMaxVersionApp(String value) {
         this.maxVersionApp = value;
+    }
+
+    /**
+     * Gets the value of the category property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getCategory() {
+        return category;
+    }
+
+    /**
+     * Sets the value of the category property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setCategory(String value) {
+        this.category = value;
+    }
+
+    /**
+     * Gets the value of the reposURL property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getReposURL() {
+        return reposURL;
+    }
+
+    /**
+     * Sets the value of the reposURL property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setReposURL(String value) {
+        this.reposURL = value;
     }
 
 }

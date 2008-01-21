@@ -128,9 +128,15 @@
 			<fileset dir="${projet.pack.dir}/bin">
 				<include name="**/**" />
 				<exclude name="org/concoursjeunes/plugins/**" />
+				<exclude name="org/concoursjeunes/webservices/**" />
 			</fileset>
 			<fileset dir="${projet.pack.dir}/bin">
 				<include name="org/concoursjeunes/plugins/*.*" />
+			</fileset>
+		</jar>
+		<jar jarfile="${projet.pack.dir}/ConcoursJeunes-webservices.jar">
+			<fileset dir="${projet.pack.dir}/bin">
+				<include name="org/concoursjeunes/webservices/**" />
 			</fileset>
 		</jar>
 

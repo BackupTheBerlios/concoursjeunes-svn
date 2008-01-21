@@ -88,26 +88,32 @@
  */
 package org.concoursjeunes.dialog;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.net.Authenticator;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
+import javax.naming.ConfigurationException;
+import javax.swing.*;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
+import javax.xml.ws.WebServiceException;
 
 import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.plugins.PluginLoader;
+import org.concoursjeunes.ui.GlassPanePanel;
 import org.concoursjeunes.webservices.PluginDescription;
 import org.concoursjeunes.webservices.PluginDescriptionArray;
 import org.concoursjeunes.webservices.PluginsWebService;
@@ -115,20 +121,21 @@ import org.concoursjeunes.webservices.PluginsWebServiceService;
 
 import ajinteractive.standard.ui.AJList;
 import ajinteractive.standard.utilities.net.SimpleAuthenticator;
+import ajinteractive.standard.utilities.updater.*;
 
 /**
  * @author Aurélien JEOFFRAY
  *
  */
-public class InstallPluginDialog extends JDialog implements ActionListener {
+public class InstallPluginDialog extends JDialog implements ActionListener, CaretListener, ListSelectionListener, AjUpdaterListener {
 	
-	private final JLabel jllCategorie = new JLabel();
-	private final AJList jlCategorie = new AJList();
+	private JLabel jllCategorie = new JLabel();
+	private AJList jlCategorie = new AJList();
 	
-	private final JLabel jlPlugins = new JLabel();
-	private final JLabel jlSearch = new JLabel();
-	private final JTextField jtfSearch = new JTextField();
-	private final JTable jtPlugins = new JTable() {
+	private JLabel jlPlugins = new JLabel();
+	private JLabel jlSearch = new JLabel();
+	private JTextField jtfSearch = new JTextField();
+	private JTable jtPlugins = new JTable() {
 	//  Returning the Class of each column will allow different
 		//  renderers to be used based on Class
 		@Override
@@ -136,10 +143,14 @@ public class InstallPluginDialog extends JDialog implements ActionListener {
 			return getValueAt(0, column).getClass();
 		}
 	};
-	private final JTextPane jtpDescription = new JTextPane();
+	private TableRowSorter<DefaultTableModel> sorter;
+	private JTextPane jtpDescription = new JTextPane();
 	
-	private final JButton jbValider = new JButton();
-	private final JButton jbAnnuler = new JButton();
+	private JButton jbValider = new JButton();
+	private JButton jbAnnuler = new JButton();
+	
+	private List<PluginDescription> pluginsDetail;
+	private AjUpdater ajUpdater;
 	
 	public InstallPluginDialog(JFrame parentframe) {
 		super(parentframe, true);
@@ -152,6 +163,8 @@ public class InstallPluginDialog extends JDialog implements ActionListener {
 		JPanel jpPrincipal = new JPanel();
 		JPanel jpAction = new JPanel();
 		JPanel jpCategorie = new JPanel();
+		JPanel jpSearch = new JPanel();
+		JPanel jpSelection = new JPanel();
 		JPanel jpPlugins = new JPanel();
 		
 		/*GridBagConstraints c = new GridBagConstraints();
@@ -165,15 +178,36 @@ public class InstallPluginDialog extends JDialog implements ActionListener {
 		jtpDescription.setPreferredSize(new Dimension(450,200));
 		jtpDescription.setEditable(false);
 		
+		jlCategorie.addListSelectionListener(this);
+		jlCategorie.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		jlCategorie.setPreferredSize(new Dimension(200, 400));
+		jtfSearch.addCaretListener(this);
+		jtPlugins.setModel(createTableModel());
+		jtPlugins.getSelectionModel().addListSelectionListener(this);
+		
+		jtPlugins.getColumnModel().getColumn(0).setMaxWidth(20);
+		jtPlugins.getColumnModel().getColumn(1).setPreferredWidth(100);
+		jtPlugins.getColumnModel().getColumn(2).setMaxWidth(70);
+		jtPlugins.getColumnModel().getColumn(4).setPreferredWidth(200);
+		jtPlugins.getColumnModel().removeColumn(jtPlugins.getColumnModel().getColumn(3));
+		
 		/*c.gridy = 0;
 		c.anchor = GridBagConstraints.CENTER;*/
 		jpCategorie.setLayout(new BorderLayout());
 		jpCategorie.add(jllCategorie, BorderLayout.NORTH);
 		jpCategorie.add(new JScrollPane(jlCategorie), BorderLayout.CENTER);
 		
+		jpSearch.setLayout(new BorderLayout());
+		jpSearch.add(jlSearch, BorderLayout.WEST);
+		jpSearch.add(jtfSearch, BorderLayout.CENTER);
+		
+		jpSelection.setLayout(new BorderLayout());
+		jpSelection.add(jpSearch, BorderLayout.NORTH);
+		jpSelection.add(jspTablePlugins, BorderLayout.CENTER);
+		
 		jpPlugins.setLayout(new BorderLayout());
 		jpPlugins.add(jlPlugins, BorderLayout.NORTH);
-		jpPlugins.add(jspTablePlugins, BorderLayout.CENTER);
+		jpPlugins.add(jpSelection, BorderLayout.CENTER);
 		jpPlugins.add(new JScrollPane(jtpDescription), BorderLayout.SOUTH);
 		
 		jpPrincipal.setLayout(new BorderLayout());
@@ -192,6 +226,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener {
 	private void affectLibelle() {
 		jllCategorie.setText(ConcoursJeunes.ajrLibelle.getResourceString("installplugindialog.category")); //$NON-NLS-1$
 		jlPlugins.setText(ConcoursJeunes.ajrLibelle.getResourceString("installplugindialog.plugins")); //$NON-NLS-1$
+		jlSearch.setText(ConcoursJeunes.ajrLibelle.getResourceString("installplugindialog.search")); //$NON-NLS-1$
 		
 		jbValider.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
 		jbAnnuler.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
@@ -207,10 +242,87 @@ public class InstallPluginDialog extends JDialog implements ActionListener {
 						ConcoursJeunes.getConfiguration().getProxy().getProxyAuthPassword()));
 			}
 		}
-		PluginsWebService services = new PluginsWebServiceService().getPluginsWebServicePort();
-		
-		PluginDescriptionArray pluginDescriptionArray = services.getAvailablePluginsForVersion(ConcoursJeunes.VERSION);
-		
+		try {
+			try {
+				Thread.currentThread().setContextClassLoader(new URLClassLoader(new URL[] {
+						//new URL("http://webservices.concoursjeunes.org/ConcoursJeunes-webservices.jar")
+						new URL("file:///data/developpement/projets/ConcoursJeunes/pack/ConcoursJeunes-webservices.jar")
+				}));
+			
+				Class.forName("org.concoursjeunes.webservices.PluginsWebServiceService", false, new URLClassLoader(new URL[] {
+							new URL("file:///data/developpement/projets/ConcoursJeunes/pack/ConcoursJeunes-webservices.jar")
+					}));
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+			PluginsWebService services = new PluginsWebServiceService().getPluginsWebServicePort();
+			
+			PluginDescriptionArray pluginDescriptionArray = services.getAvailablePluginsForVersion(ConcoursJeunes.VERSION);
+	
+			DefaultTableModel dtm = createTableModel();
+			
+			PluginLoader pl = new PluginLoader();
+			List<String> categories = new ArrayList<String>();
+			List<String> categoriesLibelle = new ArrayList<String>();
+			List<PluginDescription> alreadyInstalledPlugins = new ArrayList<PluginDescription>();
+			
+			pluginsDetail = pluginDescriptionArray.getItem();
+			for(PluginDescription pluginDescription : pluginsDetail) {
+				if(!pl.isInstalled(pluginDescription.getLogicalName())) {
+					if(!categories.contains(pluginDescription.getCategory())) {
+						categories.add(pluginDescription.getCategory());
+						categoriesLibelle.add(services.getLibelleCategory(pluginDescription.getCategory(), ConcoursJeunes.getConfiguration().getLangue()));
+					}
+					Object[] row = new Object[] {
+							new Boolean(false),
+							pluginDescription.getDisplayName(),
+							pluginDescription.getVersion(),
+							categoriesLibelle.get(categories.indexOf(pluginDescription.getCategory())),
+							pluginDescription.getShortDescription()
+					};
+					
+					
+					dtm.addRow(row);
+				} else {
+					alreadyInstalledPlugins.add(pluginDescription);
+				}
+			}
+			
+			for(PluginDescription pluginDescription : alreadyInstalledPlugins) {
+				pluginsDetail.remove(pluginDescription);
+			}
+			sorter = new TableRowSorter<DefaultTableModel>(dtm);
+			jtPlugins.setModel(dtm);
+			jtPlugins.getColumnModel().getColumn(0).setMaxWidth(20);
+			jtPlugins.getColumnModel().getColumn(1).setPreferredWidth(100);
+			jtPlugins.getColumnModel().getColumn(2).setMaxWidth(70);
+			jtPlugins.getColumnModel().getColumn(3).setMaxWidth(0);
+			jtPlugins.getColumnModel().getColumn(4).setPreferredWidth(200);
+			jtPlugins.getColumnModel().removeColumn(jtPlugins.getColumnModel().getColumn(3));
+			
+			jlCategorie.add("Toutes");
+			for(String category : categories) {
+				jlCategorie.add(categoriesLibelle.get(categories.indexOf(category)));
+			}
+			jlCategorie.setSelectedIndex(0);
+		} catch(WebServiceException e1) {
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					GlassPanePanel panel = new GlassPanePanel();
+					panel.setMessage("Service indisponible pour le moment");
+					setGlassPane(panel);
+					panel.setVisible(true);
+				}
+			});
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	private DefaultTableModel createTableModel() {
 		DefaultTableModel dtm = new DefaultTableModel() {
 			@Override
 			public boolean isCellEditable(int row, int col) {
@@ -220,39 +332,30 @@ public class InstallPluginDialog extends JDialog implements ActionListener {
 			}
 		};
 		
-		dtm.addColumn("");
-		dtm.addColumn("Nom");
-		dtm.addColumn("Version");
-		dtm.addColumn("Description");
-
-		for(PluginDescription pluginDescription : pluginDescriptionArray.getItem()) {
-			Object[] row = new Object[] {
-					new Boolean(false),
-					pluginDescription.getDisplayName(),
-					pluginDescription.getVersion(),
-					pluginDescription.getShortDescription()
-			};
-			
-			dtm.addRow(row);
-		}
+		dtm.addColumn(""); //$NON-NLS-1$
+		dtm.addColumn(ConcoursJeunes.ajrLibelle.getResourceString("installplugindialog.plugins.name")); //$NON-NLS-1$
+		dtm.addColumn(ConcoursJeunes.ajrLibelle.getResourceString("installplugindialog.plugins.version")); //$NON-NLS-1$
+		dtm.addColumn("category_hide"); //$NON-NLS-1$
+		dtm.addColumn(ConcoursJeunes.ajrLibelle.getResourceString("installplugindialog.plugins.description")); //$NON-NLS-1$
 		
-		jtPlugins.setModel(dtm);
-		jtPlugins.setBorder(BorderFactory.createEmptyBorder());
-		
-		jtPlugins.getColumnModel().getColumn(0).setMaxWidth(20);
-		jtPlugins.getColumnModel().getColumn(1).setPreferredWidth(100);
-		jtPlugins.getColumnModel().getColumn(2).setMaxWidth(70);
-		jtPlugins.getColumnModel().getColumn(3).setPreferredWidth(200);
-		
-		jlCategorie.add("Tous");
+		return dtm;
 	}
 	
+	/**
+	 * Affiche la boite de dialogue d'intallation de plugin
+	 */
 	public void showInstallPluginDialog() {
-		completePanel();
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				completePanel();
+			}
+		});
 		
 		pack();
 		setLocationRelativeTo(null);
 		setVisible(true);
+		
+		
 	}
 
 	/* (non-Javadoc)
@@ -261,11 +364,145 @@ public class InstallPluginDialog extends JDialog implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == jbValider) {
+			AjUpdater ajUpdater = new AjUpdater(ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
+					"."); //$NON-NLS-1$
+			ajUpdater.addAjUpdaterListener(this);
+			
+			DefaultTableModel dtm = (DefaultTableModel)jtPlugins.getModel();
+			
+			for(int i = 0; i < dtm.getRowCount(); i++) {
+				if((Boolean)dtm.getValueAt(i, 0) == true) {
+					ajUpdater.addRepositoryURL(pluginsDetail.get(i).getReposURL());
+				}
+			}
+			try {
+				GlassPanePanel panel = new GlassPanePanel();
+				panel.setMessage("En cours de chargement");
+				setGlassPane(panel);
+				panel.setVisible(true);
+				ajUpdater.checkUpdate();
+			} catch (UpdateException e1) {
+				System.out.println("Mise à jour impossible"); //$NON-NLS-1$
+				e1.printStackTrace();
+			}
 			setVisible(false);
 		} else if(e.getSource() == jbAnnuler) {
 			setVisible(false);
 		}
 	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.event.CaretListener#caretUpdate(javax.swing.event.CaretEvent)
+	 */
+	@Override
+	public void caretUpdate(CaretEvent e) {
+		if(jtPlugins.getModel().getRowCount() > 0) {
+			List<RowFilter<DefaultTableModel, Integer>> filters = new ArrayList<RowFilter<DefaultTableModel, Integer>>();
+			filters.add(RowFilter.<DefaultTableModel, Integer>regexFilter("(?i)" + jtfSearch.getText())); //$NON-NLS-1$
+			if(jlCategorie.getSelectedIndex() > 0)
+				filters.add(RowFilter.<DefaultTableModel, Integer>regexFilter((String)jlCategorie.getSelectedValue()));
+			
+			sorter.setRowFilter(RowFilter.<DefaultTableModel, Integer>andFilter((Iterable<RowFilter<DefaultTableModel, Integer>>)filters));
+			jtPlugins.setRowSorter(sorter);
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
+	 */
+	@Override
+	public void valueChanged(ListSelectionEvent e) {
+		if(e.getSource() instanceof DefaultListSelectionModel) {
+			if(e.getFirstIndex() > -1)
+				jtpDescription.setText(pluginsDetail.get(e.getFirstIndex()).getLongDescription());
+		} else if(e.getSource() == jlCategorie) {
+			List<RowFilter<DefaultTableModel, Integer>> filters = new ArrayList<RowFilter<DefaultTableModel, Integer>>();
+			filters.add(RowFilter.<DefaultTableModel, Integer>regexFilter("(?i)" + jtfSearch.getText())); //$NON-NLS-1$
+			if(e.getFirstIndex() > 0)
+				filters.add(RowFilter.<DefaultTableModel, Integer>regexFilter((String)jlCategorie.getSelectedValue()));
+			sorter.setRowFilter(RowFilter.<DefaultTableModel, Integer>andFilter((Iterable<RowFilter<DefaultTableModel, Integer>>)filters));
+			jtPlugins.setRowSorter(sorter);
+		}
+	}
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see ajinteractive.standard.utilities.updater.AjUpdaterListener#updaterStatusChanged(ajinteractive.standard.utilities.updater.AjUpdaterEvent)
+	 */
+	@Override
+	public void updaterStatusChanged(AjUpdaterEvent event) {
+		switch (event.getStatus()) {
+		case CONNECTED:
+			/*if (SystemTray.isSupported() && tray == null) {
+				tray = SystemTray.getSystemTray();
+				// load an image
+				Dimension dimension = tray.getTrayIconSize();
+				Image image = Toolkit.getDefaultToolkit().getImage(
+						ajrParametreAppli.getResourceString("path.ressources") + File.separator + ajrParametreAppli.getResourceString("file.icon.application")).getScaledInstance(dimension.width, //$NON-NLS-1$ //$NON-NLS-2$
+						dimension.height, Image.SCALE_SMOOTH);
+
+				// create a popup menu
+				trayIcon = new TrayIcon(image, pluginLocalisation.getResourceString("tray.name")); //$NON-NLS-1$
+				trayIcon.addMouseListener(this);
+
+				try {
+					tray.add(trayIcon);
+				} catch (AWTException e) {
+					System.err.println(e);
+				}
+			}*/
+			break;
+		case UPDATE_AVAILABLE:
+			AjUpdaterFrame ajUpdaterFrame = new AjUpdaterFrame(ajUpdater, ConcoursJeunes.VERSION);
+			
+			if(ajUpdaterFrame.showAjUpdaterFrame() == AjUpdaterFrame.ReturnCode.OK) {
+				ajUpdater.downloadFiles(event.getUpdateFiles());
+			}
+
+			break;
+		case CONNECTION_INTERRUPTED:
+			/*if (trayIcon != null) {
+				trayIcon.displayMessage(pluginLocalisation.getResourceString("update.interrupt.title"), pluginLocalisation.getResourceString("update.interrupt"), TrayIcon.MessageType.ERROR); //$NON-NLS-1$ //$NON-NLS-2$
+			}*/
+			break;
+		case FILE_ERROR:
+			/*if (trayIcon != null) {
+				trayIcon.displayMessage(pluginLocalisation.getResourceString("update.downloaderror.title"), pluginLocalisation.getResourceString("update.downloaderror"), //$NON-NLS-1$ //$NON-NLS-2$
+						TrayIcon.MessageType.ERROR);
+			}*/
+			break;
+		case FILES_DOWNLOADED:
+			if (JOptionPane.showConfirmDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("update.confirminstall"), ConcoursJeunes.ajrLibelle.getResourceString("update.confirminstall.title"), //$NON-NLS-1$ //$NON-NLS-2$
+					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+				try {
+					Process process = Runtime.getRuntime().exec(new String[] { "concoursjeunes-applyupdate", //$NON-NLS-1$
+							ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
+							System.getProperty("user.dir") }); //$NON-NLS-1$
+					process.waitFor();
+					
+					try {
+						ConcoursJeunes.getInstance().saveAllFichesConcours();
+						
+						ConcoursJeunes.dbConnection.close();
+					} catch (ConfigurationException e) {
+						e.printStackTrace();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+
+					System.exit(3);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
+			}
+			break;
+		case NO_UPDATE_AVAILABLE:
+			/*if (trayIcon != null) {
+				tray.remove(trayIcon);
+			}*/
+		}
+	}
 }

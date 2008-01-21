@@ -539,12 +539,9 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			DisablePluginDialog disablePluginDialog = new DisablePluginDialog(this);
 			disablePluginDialog.showDisablePluginDialog();
 		} else if (cmd.equals("menubar.tools.installplugins")) { //$NON-NLS-1$
-			try {
-				InstallPluginDialog installPluginDialog = new InstallPluginDialog(this);
-				installPluginDialog.showInstallPluginDialog();
-			} catch(WebServiceException e1) {
-				JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("webservice.unavalable")); //$NON-NLS-1$
-			}
+			InstallPluginDialog installPluginDialog = new InstallPluginDialog(this);
+			installPluginDialog.showInstallPluginDialog();
+
 			// affiche la boite de dialogie "A propos"
 		} else if (cmd.equals("menubar.aide.apropos")) { //$NON-NLS-1$
 			
