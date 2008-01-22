@@ -36,7 +36,6 @@ import javax.swing.event.HyperlinkListener;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
-import javax.xml.ws.WebServiceException;
 
 import org.concoursjeunes.ConcoursJeunes;
 import org.concoursjeunes.ConcoursJeunesEvent;
@@ -49,6 +48,7 @@ import org.concoursjeunes.ParametreEvent;
 import org.concoursjeunes.ParametreListener;
 import org.concoursjeunes.Reglement;
 import org.concoursjeunes.ReglementBuilder;
+import org.concoursjeunes.dialog.ChangeLogDialog;
 import org.concoursjeunes.dialog.ConfigurationDialog;
 import org.concoursjeunes.dialog.DisablePluginDialog;
 import org.concoursjeunes.dialog.EntiteListDialog;
@@ -571,7 +571,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 				e1.printStackTrace();
 			}
 		} else if (cmd.equals("menubar.aide.versionnote")) { //$NON-NLS-1$
-			try {
+			/*try {
 				if (Desktop.isDesktopSupported()) {
 					Desktop.getDesktop().open(new File("changelog.txt")); //$NON-NLS-1$
 				}
@@ -579,7 +579,9 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 				JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 						e1);
 				e1.printStackTrace();
-			}
+			}*/
+			ChangeLogDialog changeLogDialog = new ChangeLogDialog(this);
+			changeLogDialog.showChangeLogDialog();
 		} else if (cmd.equals("menubar.debug.addpoints")) { //$NON-NLS-1$
 			if (jif != null) {
 				org.concoursjeunes.debug.Debug.attributePoints(jif.getFicheConcours().getConcurrentList(), 0);
