@@ -88,21 +88,33 @@
  */
 package org.concoursjeunes.dialog;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.Authenticator;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.naming.ConfigurationException;
-import javax.swing.*;
+import javax.swing.DefaultListSelectionModel;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.RowFilter;
+import javax.swing.SwingUtilities;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.ListSelectionEvent;
@@ -118,10 +130,16 @@ import org.concoursjeunes.webservices.PluginDescription;
 import org.concoursjeunes.webservices.PluginDescriptionArray;
 import org.concoursjeunes.webservices.PluginsWebService;
 import org.concoursjeunes.webservices.PluginsWebServiceService;
+import org.jdesktop.swingx.JXLoginPanel;
+import org.jdesktop.swingx.auth.LoginService;
 
 import ajinteractive.standard.ui.AJList;
 import ajinteractive.standard.utilities.net.SimpleAuthenticator;
-import ajinteractive.standard.utilities.updater.*;
+import ajinteractive.standard.utilities.updater.AjUpdater;
+import ajinteractive.standard.utilities.updater.AjUpdaterEvent;
+import ajinteractive.standard.utilities.updater.AjUpdaterFrame;
+import ajinteractive.standard.utilities.updater.AjUpdaterListener;
+import ajinteractive.standard.utilities.updater.UpdateException;
 
 /**
  * @author Aurélien JEOFFRAY
@@ -243,7 +261,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 			}
 		}
 		try {
-			try {
+			/*try {
 				Thread.currentThread().setContextClassLoader(new URLClassLoader(new URL[] {
 						//new URL("http://webservices.concoursjeunes.org/ConcoursJeunes-webservices.jar")
 						new URL("file:///data/developpement/projets/ConcoursJeunes/pack/ConcoursJeunes-webservices.jar")
@@ -256,7 +274,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 				e.printStackTrace();
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
-			}
+			}*/
 			PluginsWebService services = new PluginsWebServiceService().getPluginsWebServicePort();
 			
 			PluginDescriptionArray pluginDescriptionArray = services.getAvailablePluginsForVersion(ConcoursJeunes.VERSION);
@@ -308,14 +326,35 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 			}
 			jlCategorie.setSelectedIndex(0);
 		} catch(WebServiceException e1) {
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
-					GlassPanePanel panel = new GlassPanePanel();
-					panel.setMessage("Service indisponible pour le moment");
-					setGlassPane(panel);
-					panel.setVisible(true);
+			
+			//e1.printStackTrace();
+			if(e1.getCause() != null && e1.getCause() instanceof IOException) {
+				IOException ioe = (IOException)e1.getCause();
+				if(ioe.getMessage().indexOf("HTTP response code: 407") > -1) {
+					LoginService loginService = new LoginService() {
+						@Override
+						public boolean authenticate(String user , char[] password, String server) {
+							Authenticator.setDefault(new SimpleAuthenticator(
+									user,
+									new String(password)));
+							return true;
+						}
+					};
+					JXLoginPanel.showLoginDialog(this, loginService);
+					completePanel();
 				}
-			});
+			} else {
+				e1.printStackTrace();
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						GlassPanePanel panel = new GlassPanePanel();
+						panel.setMessage("Service indisponible pour le moment");
+						setGlassPane(panel);
+						panel.setVisible(true);
+					}
+				});
+			}
+			//e1.getCause().printStackTrace();
 		}
 	}
 	
@@ -345,9 +384,14 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 	 * Affiche la boite de dialogue d'intallation de plugin
 	 */
 	public void showInstallPluginDialog() {
+		final GlassPanePanel panel = new GlassPanePanel();
+		panel.setMessage("En cours de chargement");
+		setGlassPane(panel);
+		panel.setVisible(true);
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				completePanel();
+				panel.setVisible(false);
 			}
 		});
 		

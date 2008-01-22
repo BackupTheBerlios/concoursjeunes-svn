@@ -89,6 +89,7 @@
 package org.concoursjeunes;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map.Entry;
@@ -169,6 +170,25 @@ public class Cible {
 	public int getNbArcher() {
 		return nbArcher;
 	}
+	
+	/**
+	 * Retourne le nombre d'archer present sur la cible pour un DistancesEtBlason donnée
+	 * 
+	 * @param db le DistancesEtBlason pour lequelle retourner le nombre d'archers
+	 * @return le nombre d'archer sur le DistancesEtBlason présent sur la cible
+	 */
+	public int getNbArcherFor(DistancesEtBlason db) {
+		int nbArcher = 0;
+		for(Concurrent concurrent : concurrents) {
+			if(concurrent != null) {
+				DistancesEtBlason concDb = DistancesEtBlason.getDistancesEtBlasonForConcurrent(reglement, concurrent);
+				if(db.equals(concDb)) {
+					nbArcher++;
+				}
+			}
+		}
+		return nbArcher;
+	}
 
 	/**
 	 * Retourne le nombre d'archer handicapé rattaché à la cible
@@ -217,6 +237,19 @@ public class Cible {
 		if (concurrent != null) {
 			//verifie qu'il reste des places disponible
 			if(nbArcher < concurrents.length - nbHandicap) {
+				DistancesEtBlason concurrentDb = DistancesEtBlason.getDistancesEtBlasonForConcurrent(reglement, concurrent);
+				List<DistancesEtBlason> targetDbs = getDistancesEtBlason();
+				boolean useSameDistances = Arrays.equals(concurrentDb.getDistance(), targetDbs.get(0).getDistance());
+				
+				for(DistancesEtBlason db : targetDbs) {
+					double nbBlasonSurDb = Math.floor((double)getNbArcherFor(db) / (double)db.getTargetFace().getNbArcher());
+					//nbBlasonSurDb
+				}
+				
+				
+				
+				boolean isTargetFaceCompatible = false;
+				
 				//on valide l'insertion si il n'y a aucun archer sur la cible
 				//OU si les autre archers sont à la même distance
 				if ((nbArcher > 0 && DistancesEtBlason.getDistancesEtBlasonForConcurrent(reglement, concurrent).equals(
@@ -465,16 +498,26 @@ public class Cible {
 				+ ((this.numCible < 10) ? "0" : "") //$NON-NLS-1$ //$NON-NLS-2$
 				+ this.numCible + "</b> ("; //$NON-NLS-1$
 		if(getDistancesEtBlason().size() > 0) {
-			DistancesEtBlason db = getDistancesEtBlason().get(0);
-			if (db != null) {
-				for (int i = 0; i < db.getDistance().length; i++) {
-					if (i == 0 || (i > 0 && db.getDistance()[i] != db.getDistance()[i - 1])) {
+			List<DistancesEtBlason> dbs = getDistancesEtBlason();
+			if (dbs != null && dbs.size() > 0) {
+				//Sur une cible, les distances des differents objets sont réputées être identique
+				for (int i = 0; i < dbs.get(0).getDistance().length; i++) {
+					if (i == 0 || (i > 0 && dbs.get(0).getDistance()[i] != dbs.get(0).getDistance()[i - 1])) {
 						if (i > 0)
 							strCibleLibelle += "/"; //$NON-NLS-1$
-						strCibleLibelle += db.getDistance()[i] + "m"; //$NON-NLS-1$
+						strCibleLibelle += dbs.get(0).getDistance()[i] + "m"; //$NON-NLS-1$
 					}
 				}
-				strCibleLibelle += ", " + db.getTargetFace().getName(); //$NON-NLS-1$
+				strCibleLibelle += ", ";
+				
+				//Les blasons sont eux toujours différent
+				for (int i = 0; i < dbs.size(); i++) {
+					if (i == 0 || (i > 0 && !dbs.get(i).getTargetFace().equals(dbs.get(i - 1).getTargetFace()))) {
+						if (i > 0)
+							strCibleLibelle += "/"; //$NON-NLS-1$
+						strCibleLibelle += dbs.get(i).getTargetFace().getName() + "m"; //$NON-NLS-1$
+					}
+				}
 			}
 		}
 
