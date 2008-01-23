@@ -306,7 +306,7 @@ public class FicheConcours implements ParametreListener {
 			ArrayList<Concurrent> unsortList = new ArrayList<Concurrent>();
 			for (Concurrent concurrent : concurrentList.list(catList[i], -1, parametre.getReglement().getClassementFilter()))
 				unsortList.add(concurrent);
-			Concurrent[] sortList = ConcurrentList.sort(unsortList.toArray(new Concurrent[unsortList.size()]), ConcurrentList.SORT_BY_POINTS);
+			Concurrent[] sortList = ConcurrentList.sort(unsortList.toArray(new Concurrent[unsortList.size()]), ConcurrentList.SortCriteria.SORT_BY_POINTS);
 			if (sortList.length > 0)
 				concurrentsClasse.put(catList[i], sortList);
 		}
@@ -717,9 +717,9 @@ public class FicheConcours implements ParametreListener {
 
 		Concurrent[] concurrents = null;
 		if (mode == ALPHA || mode == GREFFE)
-			concurrents = ConcurrentList.sort(concurrentList.list(depart), ConcurrentList.SORT_BY_NAME);
+			concurrents = ConcurrentList.sort(concurrentList.list(depart), ConcurrentList.SortCriteria.SORT_BY_NAME);
 		else
-			concurrents = ConcurrentList.sort(concurrentList.list(depart), ConcurrentList.SORT_BY_CIBLES);
+			concurrents = ConcurrentList.sort(concurrentList.list(depart), ConcurrentList.SortCriteria.SORT_BY_TARGETS);
 
 		for (Concurrent concurrent : concurrents) {
 			listeArcherXML.parse("lignes.IDENTITEE", concurrent.getID()); //$NON-NLS-1$
@@ -805,7 +805,7 @@ public class FicheConcours implements ParametreListener {
 	
 			int colonne = 0;
 			int ligne = 0;
-			for (Concurrent concurrent : ConcurrentList.sort(concurrentList.list(depart), ConcurrentList.SORT_BY_CIBLES)) {
+			for (Concurrent concurrent : ConcurrentList.sort(concurrentList.list(depart), ConcurrentList.SortCriteria.SORT_BY_TARGETS)) {
 				
 				if (colonne == 0)
 					if(ligne < nbhaut - 1)

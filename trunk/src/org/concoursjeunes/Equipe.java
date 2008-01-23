@@ -16,6 +16,7 @@
 package org.concoursjeunes;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class represantant une Equipe d'archer pour le concours
@@ -23,7 +24,7 @@ import java.util.ArrayList;
  * @version  2.0
  */
 
-public class Equipe implements Cloneable {
+public class Equipe implements Cloneable, Comparable<Equipe> {
 
 	private ArrayList<Concurrent> membresEquipe = new ArrayList<Concurrent>();
 	private String nomEquipe = ""; //$NON-NLS-1$
@@ -51,7 +52,7 @@ public class Equipe implements Cloneable {
 	 * 
 	 * @return les concurrents composant l'équipe
 	 */
-    public ArrayList<Concurrent> getMembresEquipe() {
+    public List<Concurrent> getMembresEquipe() {
         return this.membresEquipe;
     }
     
@@ -60,8 +61,8 @@ public class Equipe implements Cloneable {
      * 
 	 * @return  Retourne les archers retenu pour le comptage des points
 	 */
-    public ArrayList<Concurrent> getSelection() {
-    	ArrayList<Concurrent> selection = new ArrayList<Concurrent>();
+    public List<Concurrent> getSelection() {
+    	List<Concurrent> selection = new ArrayList<Concurrent>();
     	
     	//effectue le classement des archers de la compagnie
 		for(int i = 0; i<this.membresEquipe.size()-1;i++) {
@@ -184,7 +185,7 @@ public class Equipe implements Cloneable {
      * @return int[]
      */
     public int[] getScore() {
-    	ArrayList<Concurrent> selection = getSelection();
+    	List<Concurrent> selection = getSelection();
         int[] scoreSelection = new int[selection.size()];
         for(int i = 0; i < scoreSelection.length; i++)
             scoreSelection[i] = selection.get(i).getTotalScore();
@@ -197,12 +198,24 @@ public class Equipe implements Cloneable {
      * @return int
      */
     public int getTotalScore() {
-    	ArrayList<Concurrent> selection = getSelection();
+    	List<Concurrent> selection = getSelection();
         int scoreTotal = 0;
         for(int i = 0; i < selection.size(); i++) {
             scoreTotal += selection.get(i).getTotalScore();
         }
         return scoreTotal;
+    }
+    
+    @Override
+    public int compareTo(Equipe equipe) {
+    	int totalScore = getTotalScore();
+    	int otherTotalScore = equipe.getTotalScore();
+    	
+    	if(totalScore > otherTotalScore)
+    		return 1;
+    	else if(totalScore < otherTotalScore)
+    		return -1;
+    	return 0;
     }
     
     @Override

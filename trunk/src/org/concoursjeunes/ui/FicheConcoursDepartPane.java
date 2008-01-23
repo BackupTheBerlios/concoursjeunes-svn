@@ -337,7 +337,7 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 	 * 
 	 */
 	private void createListeParNom() {
-		ajlConcurrent.setListData(ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), ConcurrentList.SORT_BY_CIBLES));
+		ajlConcurrent.setListData(ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), ConcurrentList.SortCriteria.SORT_BY_TARGETS));
 	}
 
 	/**
@@ -403,7 +403,7 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 		ficheConcours.getPasDeTir(depart).placementConcurrents();
 
 		if (jcbSortCible.isSelected()) {
-			ajlConcurrent.setListData(ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), ConcurrentList.SORT_BY_CIBLES));
+			ajlConcurrent.setListData(ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), ConcurrentList.SortCriteria.SORT_BY_TARGETS));
 		}
 		treeTarget.repaint();
 	}
@@ -584,11 +584,11 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 			}
 		} else if (source instanceof JRadioButton) {
 			if (source == jcbSortCible)
-				ajlConcurrent.setListData(ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), ConcurrentList.SORT_BY_CIBLES));
+				ajlConcurrent.setListData(ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), ConcurrentList.SortCriteria.SORT_BY_TARGETS));
 			else if (source == jcbSortNom)
-				ajlConcurrent.setListData(ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), ConcurrentList.SORT_BY_NAME));
+				ajlConcurrent.setListData(ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), ConcurrentList.SortCriteria.SORT_BY_NAME));
 			else if (source == jcbSortClub)
-				ajlConcurrent.setListData(ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), ConcurrentList.SORT_BY_CLUBS));
+				ajlConcurrent.setListData(ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), ConcurrentList.SortCriteria.SORT_BY_CLUBS));
 			ajlConcurrent.repaint();
 		} else if (cmd.equals("popup.edition")) { //$NON-NLS-1$
 			ficheConcoursPane.openConcurrentDialog((Concurrent) ajlConcurrent.getSelectedValue());

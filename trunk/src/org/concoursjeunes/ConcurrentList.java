@@ -87,9 +87,13 @@
 package org.concoursjeunes;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
+
+import ajinteractive.standard.common.ArraysUtils;
 
 /**
  * Collection des concurrents présent sur le concours
@@ -99,22 +103,25 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 public class ConcurrentList {
-	/**
-	 * Trie les archers par nom
-	 */
-	public static final int SORT_BY_NAME   = 0;
-	/**
-	 * Trie les archers par score
-	 */
-	public static final int SORT_BY_POINTS = 1;
-	/**
-	 * Trie les archers par cible
-	 */
-	public static final int SORT_BY_CIBLES = 2;
-	/**
-	 * Trie les archers par club
-	 */
-	public static final int SORT_BY_CLUBS  = 3;
+	
+	public enum SortCriteria {
+		/**
+		 * Trie les archers par nom
+		 */
+		SORT_BY_NAME,
+		/**
+		 * Trie les archers par score
+		 */
+		SORT_BY_POINTS,
+		/**
+		 * Trie les archers par cible
+		 */
+		SORT_BY_TARGETS,
+		/**
+		 * Trie les archers par club
+		 */
+		SORT_BY_CLUBS
+	}
 
 	private ArrayList<Concurrent> archList  = new ArrayList<Concurrent>();
 	private Parametre parametre;
@@ -180,7 +187,16 @@ public class ConcurrentList {
 	 * supprime tout les concurrent de la liste
 	 *
 	 */
+	@Deprecated
 	public void removeAll() {
+		archList.clear();
+	}
+	
+	/**
+	 * supprime tout les concurrent de la liste
+	 *
+	 */
+	public void clear() {
 		archList.clear();
 	}
 
@@ -332,7 +348,7 @@ public class ConcurrentList {
 	 * 
 	 * @return la liste trié
 	 */
-	public static Concurrent[] sort(Concurrent[] no_sort_list, int sortCritere) {
+	public static Concurrent[] sort(Concurrent[] no_sort_list, SortCriteria sortCritere) {
 
 		assert no_sort_list != null;
 
@@ -340,66 +356,58 @@ public class ConcurrentList {
 		Concurrent[] sort_list = no_sort_list;
 
 		switch(sortCritere) {
-		case SORT_BY_NAME:
-			for(int i = 0; i < nbconcurrents-1;i++) {
-				for(int j = i+1; j < nbconcurrents;j++) {
-					String namei = sort_list[i].getID();
-					String namej = sort_list[j].getID();
-					if(namej.compareToIgnoreCase(namei) < 0) {
-						Concurrent tempConcurrent = sort_list[i];
-						sort_list[i] = sort_list[j];
-						sort_list[j] = tempConcurrent;
+			case SORT_BY_NAME:
+				for(int i = 0; i < nbconcurrents-1;i++) {
+					for(int j = i+1; j < nbconcurrents;j++) {
+						String namei = sort_list[i].getID();
+						String namej = sort_list[j].getID();
+						if(namej.compareToIgnoreCase(namei) < 0) {
+							ArraysUtils.swap(sort_list, i, j);
+						}	
 					}	
-				}	
-			}
-
-			break;
-		case SORT_BY_POINTS:
-			for(int i = 0; i < nbconcurrents-1;i++) {
-				for(int j = i+1; j < nbconcurrents;j++) {
-					int scorei = sort_list[i].getTotalScore();
-					int scorej = sort_list[j].getTotalScore();
-					if(scorej > scorei ||
-							(scorej == scorei && (sort_list[j].getManque() < sort_list[i].getManque() ||
-									(sort_list[j].getManque() == sort_list[i].getManque() && sort_list[j].getDix() > sort_list[i].getDix()) ||
-									(sort_list[j].getManque() == sort_list[i].getManque() && sort_list[j].getDix() == sort_list[i].getDix() &&
-											sort_list[j].getNeuf() > sort_list[i].getNeuf())))) {
-						Concurrent tempConcurrent = sort_list[i];
-						sort_list[i] = sort_list[j];
-						sort_list[j] = tempConcurrent;
-					}
-				}	
-			}
-
-			break;
-		case SORT_BY_CIBLES:
-			for(int i = 0; i < nbconcurrents-1;i++) {
-				for(int j = i+1; j < nbconcurrents;j++) {
-					int ciblei = sort_list[i].getCible() * 10 + sort_list[i].getPosition();
-					int ciblej = sort_list[j].getCible() * 10 + sort_list[j].getPosition();
-					if(ciblej < ciblei) {
-						Concurrent tempConcurrent = sort_list[i];
-						sort_list[i] = sort_list[j];
-						sort_list[j] = tempConcurrent;
+				}
+	
+				break;
+			case SORT_BY_POINTS:
+				for(int i = 0; i < nbconcurrents-1;i++) {
+					for(int j = i+1; j < nbconcurrents;j++) {
+						int scorei = sort_list[i].getTotalScore();
+						int scorej = sort_list[j].getTotalScore();
+						if(scorej > scorei ||
+								(scorej == scorei && (sort_list[j].getManque() < sort_list[i].getManque() ||
+										(sort_list[j].getManque() == sort_list[i].getManque() && sort_list[j].getDix() > sort_list[i].getDix()) ||
+										(sort_list[j].getManque() == sort_list[i].getManque() && sort_list[j].getDix() == sort_list[i].getDix() &&
+												sort_list[j].getNeuf() > sort_list[i].getNeuf())))) {
+							ArraysUtils.swap(sort_list, i, j);
+						}
 					}	
-				}	
-			}
-
-			break;
-		case SORT_BY_CLUBS:
-			for(int i = 0; i < nbconcurrents-1;i++) {
-				for(int j = i+1; j < nbconcurrents;j++) {
-					Entite namei = sort_list[i].getClub();
-					Entite namej = sort_list[j].getClub();
-					if(namej.getNom().compareToIgnoreCase(namei.getNom()) < 0) {
-						Concurrent tempConcurrent = sort_list[i];
-						sort_list[i] = sort_list[j];
-						sort_list[j] = tempConcurrent;
+				}
+	
+				break;
+			case SORT_BY_TARGETS:
+				for(int i = 0; i < nbconcurrents-1;i++) {
+					for(int j = i+1; j < nbconcurrents;j++) {
+						int ciblei = sort_list[i].getCible() * 10 + sort_list[i].getPosition();
+						int ciblej = sort_list[j].getCible() * 10 + sort_list[j].getPosition();
+						if(ciblej < ciblei) {
+							ArraysUtils.swap(sort_list, i, j);
+						}	
 					}	
-				}	
-			}
-
-			break;
+				}
+	
+				break;
+			case SORT_BY_CLUBS:
+				for(int i = 0; i < nbconcurrents-1;i++) {
+					for(int j = i+1; j < nbconcurrents;j++) {
+						Entite namei = sort_list[i].getClub();
+						Entite namej = sort_list[j].getClub();
+						if(namej.getNom().compareToIgnoreCase(namei.getNom()) < 0) {
+							ArraysUtils.swap(sort_list, i, j);
+						}	
+					}	
+				}
+	
+				break;
 		}
 		return sort_list;
 	}
@@ -496,7 +504,7 @@ public class ConcurrentList {
 	 * 
 	 * @return la liste des distances/blasons du déprt
 	 */
-	public ArrayList<DistancesEtBlason> listDistancesEtBlason(Reglement reglement, int depart) {
+	public List<DistancesEtBlason> listDistancesEtBlason(Reglement reglement, int depart) {
 		return listDistancesEtBlason(reglement, false, depart);
 	}
 
@@ -509,8 +517,8 @@ public class ConcurrentList {
 	 * 
 	 * @return DistancesEtBlason
 	 */
-	public ArrayList<DistancesEtBlason> listDistancesEtBlason(Reglement reglement, boolean sort, int depart) {
-		ArrayList<DistancesEtBlason> alDB = new ArrayList<DistancesEtBlason>();
+	public List<DistancesEtBlason> listDistancesEtBlason(Reglement reglement, boolean sort, int depart) {
+		List<DistancesEtBlason> alDB = new ArrayList<DistancesEtBlason>();
 
 		for(Concurrent concurrent: archList) {
 			if(depart == -1 || concurrent.getDepart() == depart) {
@@ -532,18 +540,14 @@ public class ConcurrentList {
 			for(int i = 0; i < alDB.size() - 1; i++) {
 				for(int j = i + 1; j < alDB.size(); j++) {
 					if(alDB.get(i).getDistance()[0] < alDB.get(j).getDistance()[0]) {
-						DistancesEtBlason temp = alDB.get(i);
-						alDB.set(i, alDB.get(j));
-						alDB.set(j, temp);
+						Collections.swap(alDB, i, j);
 					}
 				}
 			}
 			for(int i = 0; i < alDB.size() - 1; i++) {
 				for(int j = i + 1; j < alDB.size(); j++) {
 					if(alDB.get(i).getTargetFace().getNumordre() > alDB.get(j).getTargetFace().getNumordre() && alDB.get(i).getDistance()[0] == alDB.get(j).getDistance()[0]) {
-						DistancesEtBlason temp = alDB.get(i);
-						alDB.set(i, alDB.get(j));
-						alDB.set(j, temp);
+						Collections.swap(alDB, i, j);
 					}
 				}
 			}

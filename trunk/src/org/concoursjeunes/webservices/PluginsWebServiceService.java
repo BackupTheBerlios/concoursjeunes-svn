@@ -3,6 +3,7 @@ package org.concoursjeunes.webservices;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 import javax.xml.ws.WebEndpoint;
@@ -47,7 +48,7 @@ public class PluginsWebServiceService
      */
     @WebEndpoint(name = "PluginsWebServicePort")
     public PluginsWebService getPluginsWebServicePort() {
-        return (PluginsWebService)super.getPort(new QName("http://webservices.concoursjeunes.org/", "PluginsWebServicePort"), PluginsWebService.class);
+        return super.getPort(new QName("http://webservices.concoursjeunes.org/", "PluginsWebServicePort"), PluginsWebService.class);
     }
 
 }

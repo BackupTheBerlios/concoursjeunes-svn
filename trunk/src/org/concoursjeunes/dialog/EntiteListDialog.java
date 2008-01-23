@@ -91,7 +91,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.sql.ResultSet;
@@ -283,24 +282,6 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 	public void mouseExited(MouseEvent e) {	}
 	public void mousePressed(MouseEvent e) { }
 	public void mouseReleased(MouseEvent e) { }
-
-	/*public void focusGained(FocusEvent e) {
-		if(e.getSource() == this.jtfNom) {
-			ArrayList<SortKey> sortKeys = new ArrayList<SortKey>();
-	        sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
-			jTable.getRowSorter().setSortKeys(sortKeys);
-		} else if(e.getSource() == this.jtfAgrement) {
-			ArrayList<SortKey> sortKeys = new ArrayList<SortKey>();
-	        sortKeys.add(new RowSorter.SortKey(1, SortOrder.ASCENDING));
-	        jTable.getRowSorter().setSortKeys(sortKeys);
-    	} else if(e.getSource() == this.jtfVille) {
-    		ArrayList<SortKey> sortKeys = new ArrayList<SortKey>();
-	        sortKeys.add(new RowSorter.SortKey(3, SortOrder.ASCENDING));
-	        jTable.getRowSorter().setSortKeys(sortKeys);
-    	}
-	}*/
-
-	public void focusLost(FocusEvent e) { }
 
 	/**
 	 * @author  aurelien

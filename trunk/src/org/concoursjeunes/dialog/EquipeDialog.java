@@ -296,7 +296,7 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 				if (cbEquipeClub.isSelected()) {
 					Entite[] entites = ficheConcours.getConcurrentList().listCompagnie();
 					for (Entite entite : entites) {
-						Concurrent[] clubConcurrents = ConcurrentList.sort(ficheConcours.getConcurrentList().list(entite, catList[i], criteriaFilter), ConcurrentList.SORT_BY_NAME);
+						Concurrent[] clubConcurrents = ConcurrentList.sort(ficheConcours.getConcurrentList().list(entite, catList[i], criteriaFilter), ConcurrentList.SortCriteria.SORT_BY_NAME);
 						if (clubConcurrents.length >= ficheConcours.getParametre().getReglement().getNbMembresRetenu()) {
 							DefaultMutableTreeNode dmtnEntite = new DefaultMutableTreeNode(entite);
 							for (Concurrent concurrent : clubConcurrents) {
@@ -312,7 +312,7 @@ public class EquipeDialog extends JDialog implements ActionListener, ListSelecti
 						treeConcurrents.expandPath(new TreePath(dmtnCategorie[i].getPath()));
 					}
 				} else {
-					concurrents = ConcurrentList.sort(concurrents, ConcurrentList.SORT_BY_NAME);
+					concurrents = ConcurrentList.sort(concurrents, ConcurrentList.SortCriteria.SORT_BY_NAME);
 					for (Concurrent concurrent : concurrents) {
 						if (tempEquipes.containsConcurrent(concurrent) == null)
 							dmtnCategorie[i].add(new DefaultMutableTreeNode(concurrent));

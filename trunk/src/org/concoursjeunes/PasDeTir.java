@@ -91,6 +91,7 @@ package org.concoursjeunes;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
 
 /**
  * <p>
@@ -173,7 +174,7 @@ public class PasDeTir {
 		return occupationCibles;
 	}
 	
-	private int getOptimalRythme(ArrayList<DistancesEtBlason> lDB) {
+	private int getOptimalRythme(List<DistancesEtBlason> lDB) {
 		//defini le nombre de tireur par cible en fonction du nombre de tireurs
 		//max acceptés et du nombre de tireur présent
 		int nbArcherModule = 0;
@@ -275,7 +276,7 @@ public class PasDeTir {
 	 */
 	public void placementConcurrents() {
 		int curCible = 1;
-		ArrayList<DistancesEtBlason> lDB = ficheConcours.getConcurrentList().listDistancesEtBlason(ficheConcours.getParametre().getReglement(), true, depart);
+		List<DistancesEtBlason> lDB = ficheConcours.getConcurrentList().listDistancesEtBlason(ficheConcours.getParametre().getReglement(), true, depart);
 		
 		//defini le nombre de tireur par cible en fonction du nombre de tireurs
 		//max acceptés et du nombre de tireur présent
@@ -292,7 +293,7 @@ public class PasDeTir {
 					ficheConcours.getConcurrentList().list(
 							ficheConcours.getParametre().getReglement(), 
 							distancesEtBlason, depart, false),
-					ConcurrentList.SORT_BY_CLUBS);
+					ConcurrentList.SortCriteria.SORT_BY_CLUBS);
 
 			//determine le nombre de concurrent pour la distance modéré avec les archers handicapé
 			// (un archer handicapé compte pour 2 personnes dans le placement sur pas de tir)

@@ -20,8 +20,13 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlTransient;
 
+import ajinteractive.standard.common.ArraysUtils;
+
 /**
+ * Represente la liste des équipes constitué sur un concours
+ * 
  * @author  Aurelien Jeoffray
+ * @version 1.1
  */
 public class EquipeList implements Cloneable {
    
@@ -38,18 +43,28 @@ public class EquipeList implements Cloneable {
     	this.ficheConcours = ficheConcours;
     }
     
-    @XmlTransient
+    /**
+     * Retourne la fiche concours associé a la liste
+     * 
+     * @return la fiche concours associé a la liste
+     */
     public FicheConcours getFicheConcours() {
 		return ficheConcours;
 	}
 
+    /**
+     * Definit la fiche concours associé a la liste
+     * 
+     * @param ficheConcours la fiche concours associé a la liste
+     */
 	public void setFicheConcours(FicheConcours ficheConcours) {
 		this.ficheConcours = ficheConcours;
 	}
 
 	/**
+     * Ajoute une équipe à la liste
      * 
-     * @param newEquipe
+     * @param newEquipe l'équipe à ajouter
      */
     public void add(Equipe newEquipe) {
         equipeList.add(newEquipe);
@@ -179,12 +194,11 @@ public class EquipeList implements Cloneable {
      */
     public static Equipe[] sort(Equipe[] no_sort_list) {
         if(no_sort_list != null && no_sort_list.length > 0) {
+        	//Arrays.sort(no_sort_list);
             for(int i = 0; i < no_sort_list.length - 1; i++) {
                 for(int j = i+1; j < no_sort_list.length; j++) {
                     if(no_sort_list[i].getTotalScore() < no_sort_list[j].getTotalScore()) {
-                        Equipe tempEquipe = no_sort_list[i];
-                        no_sort_list[i] = no_sort_list[j];
-                        no_sort_list[j] = tempEquipe;
+                    	ArraysUtils.swap(no_sort_list, i, j);
                     }
                 }
             }
@@ -193,6 +207,11 @@ public class EquipeList implements Cloneable {
         return no_sort_list;
     }
     
+    /**
+     * Liste les jeux de critères utilisé pour départager les équipes
+     * 
+     * @return les jeux de critères utilisé pour départager les équipes
+     */
     public List<CriteriaSet> listCriteriaSet() {
     	List<CriteriaSet> listCriteriaSet = new ArrayList<CriteriaSet>();
     	for(Equipe equipe : equipeList) {
@@ -229,12 +248,24 @@ public class EquipeList implements Cloneable {
         this.equipeList = equipeList;
     }
     
+    /**
+     * Est ce que les membres de l'equipe doivent appartenir au même club?
+     * 
+     * @return true si ils doivent appartenir au même club, false sinon
+     */
     public boolean isLimitedByClub() {
 		return limitedByClub;
 	}
+    
+    /**
+     * Est ce que les membres de l'equipe doivent appartenir au même club?
+     * 
+     * @param limitedByClub true si ils doivent appartenir au même club, false sinon
+     */
 	public void setLimitedByClub(boolean limitedByClub) {
 		this.limitedByClub = limitedByClub;
 	}
+	
 	@Override
     public EquipeList clone() {
     	EquipeList clone = new EquipeList();

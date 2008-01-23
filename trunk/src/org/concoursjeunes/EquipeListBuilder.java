@@ -30,7 +30,7 @@ public class EquipeListBuilder {
 					ficheConcours.getParametre().getReglement().getNbMembresRetenu()) {
 				Equipe equipe = new Equipe(entite.getNom());
 				
-				concurrents = ConcurrentList.sort(concurrents, ConcurrentList.SORT_BY_POINTS);
+				concurrents = ConcurrentList.sort(concurrents, ConcurrentList.SortCriteria.SORT_BY_POINTS);
 				
 				int i = 0;
 				for(Concurrent concurrent : concurrents) {
