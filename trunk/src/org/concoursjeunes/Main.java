@@ -160,7 +160,6 @@ public class Main {
 			}
 		});
 		System.out.println("core loaded"); //$NON-NLS-1$
-
 		new ConcoursJeunesFrame(concoursJeunes);
 	}
 	
