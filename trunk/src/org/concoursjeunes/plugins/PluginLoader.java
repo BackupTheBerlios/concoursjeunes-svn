@@ -87,11 +87,16 @@
 package org.concoursjeunes.plugins;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.concoursjeunes.Main;
+import org.concoursjeunes.plugins.Plugin.Type;
+
 import ajinteractive.standard.common.AJToolKit;
 import ajinteractive.standard.common.AjResourcesReader;
+import ajinteractive.standard.common.PluginClassLoader;
 
 /**
  * Permet de lister et charger les plugins installer en mémoire
@@ -102,6 +107,7 @@ import ajinteractive.standard.common.AjResourcesReader;
 public class PluginLoader {
 
 	private final ArrayList<PluginMetadata> listPlugins = new ArrayList<PluginMetadata>();
+	
 
 	public PluginLoader() {
 		File pluginPath = new File("./plugins/properties"); //$NON-NLS-1$
@@ -113,22 +119,62 @@ public class PluginLoader {
 					String pluginName = pluginFile.getName().substring(0, pluginFile.getName().length() - ".properties".length()); //$NON-NLS-1$
 					
 					AjResourcesReader pluginProperties = new AjResourcesReader("properties." + //$NON-NLS-1$
-							pluginName); 
-					AjResourcesReader pluginLocalInfo = new AjResourcesReader(pluginProperties.getResourceString("plugin.libelle.file")); //$NON-NLS-1$
-
-					PluginMetadata pluginMetadata = new PluginMetadata();
-					pluginMetadata.setName(pluginName);
-					pluginMetadata.setInfo(pluginLocalInfo.getResourceString("plugin.libelle")); //$NON-NLS-1$
-					pluginMetadata.setOptionLabel(pluginLocalInfo.getResourceString("plugin.optionlabel")); //$NON-NLS-1$
-					pluginMetadata.setPluginType(pluginProperties.getResourceInteger("plugin.type")); //$NON-NLS-1$
-					pluginMetadata.setClassName(pluginProperties.getResourceString("plugin.class")); //$NON-NLS-1$
-					pluginMetadata.setReposURL(pluginProperties.getResourceString("plugin.repos")); //$NON-NLS-1$
-					pluginMetadata.setMenuPath(AJToolKit.tokenize(pluginProperties.getResourceString("plugin.menu"), "/")); //$NON-NLS-1$ //$NON-NLS-2$
-
-					listPlugins.add(pluginMetadata);
+							pluginName);
+					
+					Class<?> cla = loadPluginClass(pluginProperties.getResourceString("plugin.class")); //$NON-NLS-1$
+					if(cla != null) {
+						AjResourcesReader pluginLocalInfo = new AjResourcesReader(pluginProperties.getResourceString("plugin.libelle.file")); //$NON-NLS-1$
+	
+						PluginMetadata pluginMetadata = new PluginMetadata();
+						pluginMetadata.setName(pluginName);
+						pluginMetadata.setInfo(pluginLocalInfo.getResourceString("plugin.libelle")); //$NON-NLS-1$
+						pluginMetadata.setOptionLabel(pluginLocalInfo.getResourceString("plugin.optionlabel")); //$NON-NLS-1$
+						pluginMetadata.setPluginType(cla.getAnnotation(Plugin.class).type()); //$NON-NLS-1$
+						pluginMetadata.setClassName(pluginProperties.getResourceString("plugin.class")); //$NON-NLS-1$
+						pluginMetadata.setReposURL(pluginProperties.getResourceString("plugin.repos")); //$NON-NLS-1$
+						pluginMetadata.setMenuPath(AJToolKit.tokenize(pluginProperties.getResourceString("plugin.menu"), "/")); //$NON-NLS-1$ //$NON-NLS-2$
+	
+						listPlugins.add(pluginMetadata);
+					}
 				}
 			}
 		}
+	}
+	
+	private Class<?> loadPluginClass(String className) {
+		Class<?> cla = null;
+		try {
+			cla =  Class.forName(className, false, new PluginClassLoader(findParentClassLoader(), new File("plugins"))); //$NON-NLS-1$
+			
+			if (cla != null) {
+				//annule le chargement de la class si ce n'est pas une class de plugin
+				if(!cla.isAnnotationPresent(Plugin.class)) {
+					cla = null;
+				}
+			}
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		return cla;
+	}
+	
+	/**
+	 * Locates the best class loader based on context (see class description).
+	 * 
+	 * @return The best parent classloader to use
+	 */
+	private static ClassLoader findParentClassLoader() {
+		ClassLoader parent = Thread.currentThread().getContextClassLoader();
+		if (parent == null) {
+			parent = Main.class.getClassLoader();
+			if (parent == null) {
+				parent = ClassLoader.getSystemClassLoader();
+			}
+		}
+		return parent;
 	}
 
 	/**
@@ -143,16 +189,23 @@ public class PluginLoader {
 	 * @param type le type des plugins à retourner
 	 * @return les metafonnées des plugins retourné
 	 */
-	public List<PluginMetadata> getPlugins(int type) {
+	public List<PluginMetadata> getPlugins(Type type) {
 		ArrayList<PluginMetadata> currentList = new ArrayList<PluginMetadata>();
 		for (PluginMetadata pm : listPlugins) {
-			if (type == PluginMetadata.ALL || pm.getPluginType() == type)
+			if (type == Type.ALL || pm.getPluginType() == type)
 				currentList.add(pm);
 		}
 
 		return currentList;
 	}
 	
+	/**
+	 * Determine si un plugin représenté par son nom logique est installé ou non
+	 * sur le système
+	 * 
+	 * @param pluginName le nom du plugin à tester
+	 * @return true si le plugin est installé, false sinon
+	 */
 	public boolean isInstalled(String pluginName) {
 		return new File("./plugins/properties/" + pluginName + ".properties").exists();
 	}

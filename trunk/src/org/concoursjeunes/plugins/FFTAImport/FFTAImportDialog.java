@@ -117,7 +117,7 @@ import ajinteractive.standard.java2.GridbagComposer;
  * @author Aurélien JEOFFRAY
  * 
  */
-@Plugin(type = Plugin.Type.IMPORT)
+@Plugin(type = Plugin.Type.ON_DEMAND)
 public class FFTAImportDialog extends JDialog implements ActionListener, FFTAImportThreadListener {
 
 	private final JLabel jlEmplacementLFFTA = new JLabel();

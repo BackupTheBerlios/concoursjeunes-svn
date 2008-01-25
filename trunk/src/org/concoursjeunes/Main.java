@@ -92,17 +92,16 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
 import java.util.List;
 
 import org.concoursjeunes.plugins.PluginEntry;
 import org.concoursjeunes.plugins.PluginLoader;
 import org.concoursjeunes.plugins.PluginMetadata;
+import org.concoursjeunes.plugins.Plugin.Type;
 import org.concoursjeunes.ui.ConcoursJeunesFrame;
 import org.jdesktop.swingx.JXErrorDialog;
 
 import ajinteractive.standard.common.AJToolKit;
-import ajinteractive.standard.common.PluginClassLoader;
 
 /**
  * Class initial de l'application.
@@ -177,23 +176,19 @@ public class Main {
 			e.printStackTrace();
 		}
 
-		for (PluginMetadata pm : pl.getPlugins(PluginMetadata.STARTUP_PLUGIN)) {
+		for (PluginMetadata pm : pl.getPlugins(Type.STARTUP)) {
 			if(disablePlugin != null && disablePlugin.contains(pm.getName()))
 				continue;
 			try {
-				Class<?> cla = null;
-				String importClass = pm.getClassName();
-				if (importClass != null) {
-					cla = Class.forName(importClass, false, new PluginClassLoader(findParentClassLoader(), new File("plugins"))); //$NON-NLS-1$
-				}
-
-				if (cla != null) {
-					Object plugin = cla.newInstance();
-					for (Method m : cla.getMethods()) {
-						if (m.isAnnotationPresent(PluginEntry.class)) {
-							m.invoke(plugin, (Object[]) null);
-							break;
-						}
+				Class<?> cla = pm.getPluginClass();
+				
+				assert cla != null : "le loader devrait toujours retourner une class";
+				
+				Object plugin = cla.newInstance();
+				for (Method m : cla.getMethods()) {
+					if (m.isAnnotationPresent(PluginEntry.class)) {
+						m.invoke(plugin, (Object[]) null);
+						break;
 					}
 				}
 			} catch (InstantiationException e1) {
@@ -201,10 +196,6 @@ public class Main {
 						e1);
 				e1.printStackTrace();
 			} catch (IllegalAccessException e1) {
-				JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
-						e1);
-				e1.printStackTrace();
-			} catch (ClassNotFoundException e1) {
 				JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 						e1);
 				e1.printStackTrace();
@@ -216,28 +207,7 @@ public class Main {
 				JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 						e1);
 				e1.printStackTrace();
-			} catch (MalformedURLException e1) {
-				JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
-						e1);
-				e1.printStackTrace();
 			}
 		}
 	}
-
-	/**
-	 * Locates the best class loader based on context (see class description).
-	 * 
-	 * @return The best parent classloader to use
-	 */
-	private static ClassLoader findParentClassLoader() {
-		ClassLoader parent = Thread.currentThread().getContextClassLoader();
-		if (parent == null) {
-			parent = Main.class.getClassLoader();
-			if (parent == null) {
-				parent = ClassLoader.getSystemClassLoader();
-			}
-		}
-		return parent;
-	}
-
 }

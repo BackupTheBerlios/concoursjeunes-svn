@@ -98,6 +98,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
+import java.net.Authenticator;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -110,10 +111,14 @@ import org.concoursjeunes.plugins.Plugin;
 import org.concoursjeunes.plugins.PluginEntry;
 import org.concoursjeunes.plugins.PluginLoader;
 import org.concoursjeunes.plugins.PluginMetadata;
+import org.concoursjeunes.plugins.Plugin.Type;
+import org.jdesktop.swingx.JXLoginPanel;
+import org.jdesktop.swingx.auth.LoginService;
 
 import ajinteractive.standard.common.AJToolKit;
 import ajinteractive.standard.common.AjResourcesReader;
 import ajinteractive.standard.utilities.app.AppSerializer;
+import ajinteractive.standard.utilities.net.SimpleAuthenticator;
 import ajinteractive.standard.utilities.updater.AjUpdater;
 import ajinteractive.standard.utilities.updater.AjUpdaterEvent;
 import ajinteractive.standard.utilities.updater.AjUpdaterFrame;
@@ -158,7 +163,7 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 
 	@Override
 	public void run() {
-
+		boolean proxyAuthRequired = false;
 		PluginLoader pl = new PluginLoader();
 		
 
@@ -176,19 +181,52 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 		}
 		
 		ajUpdater.addRepositoryURL(pluginRessources.getResourceString("url.reference")); //$NON-NLS-1$
-		for (PluginMetadata pm : pl.getPlugins(PluginMetadata.ALL)) {
+		for (PluginMetadata pm : pl.getPlugins(Type.ALL)) {
 			ajUpdater.addRepositoryURL(pm.getReposURL());
 		}
 		if (ConcoursJeunes.getConfiguration().isUseProxy()) {
-			ajUpdater.setProxy(ConcoursJeunes.getConfiguration().getProxy());
+			System.setProperty("http.proxyHost", ConcoursJeunes.getConfiguration().getProxy().getProxyServerAddress()); //$NON-NLS-1$
+			System.setProperty("http.proxyPort",Integer.toString(ConcoursJeunes.getConfiguration().getProxy().getProxyServerPort())); //$NON-NLS-1$
+			if(ConcoursJeunes.getConfiguration().getProxy().isUseProxyAuthentification()) {
+				Authenticator.setDefault(new SimpleAuthenticator(
+						ConcoursJeunes.getConfiguration().getProxy().getProxyAuthLogin(),
+						ConcoursJeunes.getConfiguration().getProxy().getProxyAuthPassword()));
+			}
 		}
 		
-		try {
-			updateFiles = ajUpdater.checkUpdate();
-		} catch (UpdateException e) {
-			System.out.println("Mise à jour impossible"); //$NON-NLS-1$
-			e.printStackTrace();
-		}
+		boolean loop;
+		do {
+			loop = false;
+			proxyAuthRequired = false;
+			try {
+				updateFiles = ajUpdater.checkUpdate();
+			} catch (UpdateException e) {
+				if(e.getMessage().equals("Proxy Authentification required")) {
+					proxyAuthRequired = true;
+				} else {
+					System.out.println("Mise à jour impossible"); //$NON-NLS-1$
+					e.printStackTrace();
+				}
+			}
+			if(proxyAuthRequired) {
+				LoginService loginService = new LoginService() {
+					@Override
+					public boolean authenticate(String user , char[] password, String server) {
+						Authenticator.setDefault(new SimpleAuthenticator(
+								user,
+								new String(password)));
+						return true;
+					}
+				};
+				JXLoginPanel loginPanel = new JXLoginPanel(loginService);
+				loginPanel.setBannerText("Authentification Proxy");
+				loginPanel.setMessage("<html>Autentification au serveur proxy nécessaire pour vérifier<br>les mises à jours</html>");
+				//loginPanel.setP
+				org.jdesktop.swingx.JXLoginPanel.Status status = JXLoginPanel.showLoginDialog(null, loginPanel);
+				if(status == JXLoginPanel.Status.SUCCEEDED)
+					loop = true;
+			}
+		} while(loop);
 	}
 
 	/*
@@ -233,11 +271,6 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 				if(ajUpdaterFrame.showAjUpdaterFrame() == AjUpdaterFrame.ReturnCode.OK) {
 					ajUpdater.downloadFiles(updateFiles);
 				}
-				/*int confirm = JOptionPane.showConfirmDialog(null,
-						pluginLocalisation.getResourceString("update.available", strSize), pluginLocalisation.getResourceString("update.available.title"), JOptionPane.YES_NO_OPTION); //$NON-NLS-1$ //$NON-NLS-2$
-				if (confirm == JOptionPane.YES_OPTION) {
-					ajUpdater.downloadFiles(updateFiles);
-				}*/
 			}
 			currentStatus = Status.AVAILABLE;
 			break;

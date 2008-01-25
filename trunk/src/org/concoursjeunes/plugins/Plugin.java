@@ -88,7 +88,11 @@
  */
 package org.concoursjeunes.plugins;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author Aurélien JEOFFRAY
@@ -100,5 +104,5 @@ import java.lang.annotation.*;
 public @interface Plugin {
 	Type type();
 	
-	public static enum Type {IMPORT, EXPORT, STARTUP, OTHER }
+	public static enum Type {STARTUP, UI_STARTUP, ON_DEMAND, ALL }
 }

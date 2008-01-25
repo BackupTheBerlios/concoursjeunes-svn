@@ -88,7 +88,11 @@
  */
 package org.concoursjeunes.plugins.backup;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Pack200;
@@ -110,7 +114,7 @@ import ajinteractive.standard.common.AjResourcesReader;
  * @author Aurélien JEOFFRAY
  *
  */
-@Plugin(type = Plugin.Type.EXPORT)
+@Plugin(type = Plugin.Type.ON_DEMAND)
 public class BackupPlugin {
 	
 	private AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.restore.RestorePlugin_libelle"); //$NON-NLS-1$

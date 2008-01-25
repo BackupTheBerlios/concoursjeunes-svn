@@ -100,11 +100,19 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import org.concoursjeunes.ConcoursJeunes;
 import org.concoursjeunes.plugins.PluginLoader;
 import org.concoursjeunes.plugins.PluginMetadata;
+import org.concoursjeunes.plugins.Plugin.Type;
 import org.jdesktop.swingx.JXErrorDialog;
 
 import ajinteractive.standard.common.AJToolKit;
@@ -134,7 +142,7 @@ public class DisablePluginDialog extends JDialog implements ActionListener {
 		
 		//this.parentframe = parentframe;
 		PluginLoader pl = new PluginLoader();
-		plugins = pl.getPlugins(PluginMetadata.STARTUP_PLUGIN);
+		plugins = pl.getPlugins(Type.STARTUP);
 		
 		init();
 		affectLibelle();

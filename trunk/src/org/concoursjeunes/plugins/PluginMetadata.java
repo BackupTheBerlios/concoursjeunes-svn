@@ -86,6 +86,8 @@
  */
 package org.concoursjeunes.plugins;
 
+import org.concoursjeunes.plugins.Plugin.Type;
+
 /**
  * @author Aurélien JEOFFRAY
  */
@@ -97,10 +99,11 @@ public class PluginMetadata {
 	private String name = ""; //$NON-NLS-1$
 	private String info = ""; //$NON-NLS-1$
 	private String optionLabel = ""; //$NON-NLS-1$
-	private int pluginType = 0;
+	private Type pluginType = Type.ALL;
 	private String className = ""; //$NON-NLS-1$
 	private String reposURL = ""; //$NON-NLS-1$
 	private String[] menuPath;
+	private Class<?> pluginClass;
 
 	public PluginMetadata() {
 
@@ -152,14 +155,14 @@ public class PluginMetadata {
 	 * @return le type de plugin
 	 * 
 	 */
-	public int getPluginType() {
+	public Type getPluginType() {
 		return pluginType;
 	}
 
 	/**
 	 * @param pluginType
 	 */
-	public void setPluginType(int pluginType) {
+	public void setPluginType(Type pluginType) {
 		this.pluginType = pluginType;
 	}
 
@@ -193,4 +196,16 @@ public class PluginMetadata {
 		this.menuPath = menuPath;
 	}
 
+	/**
+	 * @return pluginClass
+	 */
+	public Class<?> getPluginClass() {
+		return pluginClass;
+	}
+	/**
+	 * @param pluginClass pluginClass à définir
+	 */
+	public void setPluginClass(Class<?> pluginClass) {
+		this.pluginClass = pluginClass;
+	}
 }

@@ -17,7 +17,6 @@ import java.lang.management.MemoryMXBean;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -57,10 +56,10 @@ import org.concoursjeunes.dialog.ReglementDialog;
 import org.concoursjeunes.plugins.PluginEntry;
 import org.concoursjeunes.plugins.PluginLoader;
 import org.concoursjeunes.plugins.PluginMetadata;
+import org.concoursjeunes.plugins.Plugin.Type;
 import org.jdesktop.swingx.JXErrorDialog;
 
 import ajinteractive.standard.common.AJTemplate;
-import ajinteractive.standard.common.PluginClassLoader;
 import ajinteractive.standard.ui.AJTabbedPane;
 import ajinteractive.standard.ui.AJTabbedPaneListener;
 import ajinteractive.standard.ui.FrameCreator;
@@ -163,7 +162,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 
 	private void fillOnDemandPlugin(JMenu importMenu) {
 		PluginLoader pl = new PluginLoader();
-		List<PluginMetadata> plugins = pl.getPlugins(PluginMetadata.ONDEMAND_PLUGIN);
+		List<PluginMetadata> plugins = pl.getPlugins(Type.ON_DEMAND);
 
 		if (plugins.size() > 0) {
 			importMenu.setVisible(true);
@@ -173,7 +172,8 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			JMenuItem mi = new JMenuItem(pm.getOptionLabel());
 			MenuBarTools.addItem(mi, getJMenuBar(), pm.getMenuPath());
 
-			mi.setActionCommand(pm.getClassName());
+			final Class<?> pluginClass = pm.getPluginClass();
+			//mi.setActionCommand(pm.getClassName());
 			mi.addActionListener(new ActionListener() {
 
 				/*
@@ -183,37 +183,25 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 				 */
 				public void actionPerformed(ActionEvent e) {
 					try {
-						Class<?> cla = null;
-						String importClass = e.getActionCommand();
-						if (importClass != null) {
-							cla = Class.forName(importClass, false, new PluginClassLoader(findParentClassLoader(), new File("plugins"))); //$NON-NLS-1$
-						}
-
-						if (cla != null) {
-							Constructor<?> c = cla.getConstructor(JFrame.class);
-							Object plugin = c.newInstance(ConcoursJeunesFrame.this);
-							for (Method m : cla.getMethods()) {
-								if (m.isAnnotationPresent(PluginEntry.class)) {
-									m.invoke(plugin, (Object[]) null);
-									break;
-								}
+						Constructor<?> c = pluginClass.getConstructor(JFrame.class);
+						Object plugin = c.newInstance(ConcoursJeunesFrame.this);
+						for (Method m : pluginClass.getMethods()) {
+							if (m.isAnnotationPresent(PluginEntry.class)) {
+								m.invoke(plugin, (Object[]) null);
+								break;
 							}
 						}
 					} catch (InstantiationException e1) {
-						JXErrorDialog.showDialog(ConcoursJeunesFrame.this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
-								e1.fillInStackTrace());
+						JXErrorDialog.showDialog(ConcoursJeunesFrame.this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+								e1);
 						e1.printStackTrace();
 					} catch (IllegalAccessException e1) {
-						JXErrorDialog.showDialog(ConcoursJeunesFrame.this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
-								e1.fillInStackTrace());
+						JXErrorDialog.showDialog(ConcoursJeunesFrame.this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+								e1);
 						e1.printStackTrace();
-					} catch (ClassNotFoundException e1) {
-						JXErrorDialog.showDialog(ConcoursJeunesFrame.this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
-								e1.fillInStackTrace());
-						e1.printStackTrace();
-					} catch (SecurityException e1) {
-						JXErrorDialog.showDialog(ConcoursJeunesFrame.this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
-								e1.fillInStackTrace());
+					}  catch (SecurityException e1) {
+						JXErrorDialog.showDialog(ConcoursJeunesFrame.this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+								e1);
 						e1.printStackTrace();
 					} catch (NoSuchMethodException e1) {
 						JXErrorDialog.showDialog(ConcoursJeunesFrame.this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
@@ -221,10 +209,6 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 						e1.printStackTrace();
 					} catch (InvocationTargetException e1) {
 						JXErrorDialog.showDialog(ConcoursJeunesFrame.this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
-								e1);
-						e1.printStackTrace();
-					} catch (MalformedURLException e1) {
-						JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 								e1);
 						e1.printStackTrace();
 					}
@@ -289,22 +273,6 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			}
 		});
 		reglementMenu.add(jmiNewReglement);
-	}
-
-	/**
-	 * Locates the best class loader based on context (see class description).
-	 * 
-	 * @return The best parent classloader to use
-	 */
-	private ClassLoader findParentClassLoader() {
-		ClassLoader parent = Thread.currentThread().getContextClassLoader();
-		if (parent == null) {
-			parent = this.getClass().getClassLoader();
-			if (parent == null) {
-				parent = ClassLoader.getSystemClassLoader();
-			}
-		}
-		return parent;
 	}
 
 	private void showConfigurationDialog() {	
