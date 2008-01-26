@@ -181,6 +181,8 @@ public class Main {
 			try {
 				Class<?> cla = pm.getPluginClass();
 				
+				//Object[] signers = cla.getSigners();
+				
 				assert cla != null : "le loader devrait toujours retourner une class";
 				
 				Object plugin = cla.newInstance();

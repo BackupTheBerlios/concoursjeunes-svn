@@ -4,7 +4,7 @@
 		<mkdir dir="${projet.pack.dir}/plugins/PhoenixPlugin/plugins" />
 		<jar jarfile="${projet.pack.dir}/plugins/PhoenixPlugin/plugins/PhoenixPlugin.jar"
 			basedir="${projet.pack.dir}/bin"
-			includes="org/concoursjeunes/plugins/PhoenixPlugin/**">
+			includes="org/concoursjeunes/plugins/phoenix/**">
 		</jar>
 		<copy todir="${projet.pack.dir}/plugins/PhoenixPlugin" >
 			<fileset dir="." >

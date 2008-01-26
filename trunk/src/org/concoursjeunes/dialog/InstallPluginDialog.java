@@ -147,13 +147,13 @@ import ajinteractive.standard.utilities.updater.UpdateException;
  */
 public class InstallPluginDialog extends JDialog implements ActionListener, CaretListener, ListSelectionListener, AjUpdaterListener {
 	
-	private JLabel jllCategorie = new JLabel();
-	private AJList jlCategorie = new AJList();
+	private final JLabel jllCategorie = new JLabel();
+	private final AJList jlCategorie = new AJList();
 	
-	private JLabel jlPlugins = new JLabel();
-	private JLabel jlSearch = new JLabel();
-	private JTextField jtfSearch = new JTextField();
-	private JTable jtPlugins = new JTable() {
+	private final JLabel jlPlugins = new JLabel();
+	private final JLabel jlSearch = new JLabel();
+	private final JTextField jtfSearch = new JTextField();
+	private final JTable jtPlugins = new JTable() {
 	//  Returning the Class of each column will allow different
 		//  renderers to be used based on Class
 		@Override
@@ -162,10 +162,10 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 		}
 	};
 	private TableRowSorter<DefaultTableModel> sorter;
-	private JTextPane jtpDescription = new JTextPane();
+	private final JTextPane jtpDescription = new JTextPane();
 	
-	private JButton jbValider = new JButton();
-	private JButton jbAnnuler = new JButton();
+	private final JButton jbValider = new JButton();
+	private final JButton jbAnnuler = new JButton();
 	
 	private List<PluginDescription> pluginsDetail;
 	private AjUpdater ajUpdater;

@@ -17,7 +17,7 @@ Correspond à incran à décrire. Cette écran peut être un frame ou un window-
 
 <!--Représente un objet swing JFrame-->
 <!ELEMENT frame ( title, icon, menubar, contentpane ) >
-<!ATTLIST frame extendedstate (NORMAL|ICONIFIED|MAXIMIZED_HORIZ|MAXIMIZED_VERT|MAXIMIZED_BOTH) #FIXED "NORMAL" >
+<!ATTLIST frame extendedstate (NORMAL|ICONIFIED|MAXIMIZED_HORIZ|MAXIMIZED_VERT|MAXIMIZED_BOTH) #IMPLIED >
 <!ATTLIST frame height NMTOKEN #REQUIRED >
 <!ATTLIST frame width NMTOKEN #REQUIRED >
 
@@ -33,7 +33,7 @@ Correspond à incran à décrire. Cette écran peut être un frame ou un window-
 
 <!ELEMENT contentpane ( tabbedpane* ) >
 
-<!ELEMENT menu ( label, menuitems? ) >
+<!ELEMENT menu ( #PCDATA | label | menuitems )* >
 <!ATTLIST menu id ID #REQUIRED >
 <!ATTLIST menu name NMTOKEN #IMPLIED >
 <!ATTLIST menu visible (true|false) #IMPLIED >
@@ -54,10 +54,10 @@ Correspond à incran à décrire. Cette écran peut être un frame ou un window-
 <!ELEMENT method ( param* ) >
 <!ATTLIST method name NMTOKEN #REQUIRED >
 
-<!ELEMENT param ( param* ) >
+<!ELEMENT param ( param? ) >
 <!ATTLIST param class NMTOKEN #IMPLIED >
 <!ATTLIST param paramclass NMTOKEN #REQUIRED >
-<!ATTLIST param value NMTOKEN #IMPLIED >
+<!ATTLIST param value CDATA #IMPLIED >
 
 <!ELEMENT separator EMPTY >
 

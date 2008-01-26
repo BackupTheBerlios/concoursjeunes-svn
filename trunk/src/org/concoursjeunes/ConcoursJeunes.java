@@ -172,7 +172,7 @@ public class ConcoursJeunes {
 	/**
 	 * Numero de version de la base de donnée nécessaire au fonctionnement du programme
 	 */
-	public static final int DB_RELEASE_REQUIRED = 7;
+	public static final int DB_RELEASE_REQUIRED = 8;
 	
 	// Chaine de ressources
 	private static final String RES_LIBELLE = "libelle"; //$NON-NLS-1$
