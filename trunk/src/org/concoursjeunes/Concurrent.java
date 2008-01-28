@@ -46,8 +46,7 @@ public class Concurrent extends Archer implements Cloneable {
 	private CriteriaSet criteriaSet;
 	
 	private int depart                  = 0;
-	private int cible                   = 0;	//position sur le concours
-	private int position                = 0;
+	private TargetPosition targetPosition = new TargetPosition();
 
 	private List<Integer> points	= new ArrayList<Integer>();
 	private int neuf                    = 0;
@@ -182,7 +181,7 @@ public class Concurrent extends Archer implements Cloneable {
 	 * @return  int
 	 */
 	public int getCible() {
-		return this.cible;
+		return this.targetPosition.getTarget();
 	}
 
 	/**
@@ -190,7 +189,7 @@ public class Concurrent extends Archer implements Cloneable {
 	 * @param  cible
 	 */
 	public void setCible(int cible) {
-		this.cible = cible;
+		this.targetPosition.setTarget(cible);
 	}
 
 	/**
@@ -198,7 +197,7 @@ public class Concurrent extends Archer implements Cloneable {
 	 * @return  int
 	 */
 	public int getPosition() {
-		return this.position;
+		return this.targetPosition.getPosition();
 	}
 
 	/**
@@ -206,7 +205,7 @@ public class Concurrent extends Archer implements Cloneable {
 	 * @param  position
 	 */
 	public void setPosition(int position) {
-		this.position = position;
+		this.targetPosition.setPosition(position);
 	}
 
 	/**
@@ -232,13 +231,13 @@ public class Concurrent extends Archer implements Cloneable {
 	 */
 	@Override
 	public String toString() {
-		if(this.cible == 0)
+		if(this.targetPosition.getTarget() == 0)
 			return "<html><font color=red>" + //$NON-NLS-1$
 			getNomArcher() + " " + //$NON-NLS-1$
 			getPrenomArcher() + " (" + //$NON-NLS-1$
 			getClub() +
 			")</font></html>"; //$NON-NLS-1$
-		return new TargetPosition(cible, position).toString() + ": " + //$NON-NLS-1$
+		return targetPosition.toString() + ": " + //$NON-NLS-1$
 		getNomArcher() + " " + //$NON-NLS-1$
 		getPrenomArcher() + " (" + //$NON-NLS-1$
 		getClub() + ")"; //$NON-NLS-1$

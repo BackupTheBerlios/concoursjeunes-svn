@@ -9,8 +9,13 @@ if(dbVersion == 0) {
 	sql.executeScript("02-savoie.sql");
 	sql.executeScript("04-insertclub.sql");
 	sql.executeScript("99-updatedbver.sql");
-} else {
+} else if(dbVersion < 8) {
 	var rowSet;
+	
+	rowSet = sql.executeQuery("SELECT * FROM REGLEMENT where NUMREGLEMENT=-909407998");
+	if(!rowSet.first()) {
+		sql.executeScript("05-patch01.sql");
+	}
 	
 	rowSet = sql.executeQuery("SELECT * FROM INFORMATION_SCHEMA.COLUMNS " 
 		+ "WHERE TABLE_SCHEMA='PUBLIC' AND TABLE_NAME='CRITERE' AND COLUMN_NAME='CLASSEMENTEQUIPE';");
@@ -61,6 +66,14 @@ if(dbVersion == 0) {
 		sql.executeUpdate("MERGE INTO PUBLIC.CRITEREELEMENT(CODECRITEREELEMENT, CODECRITERE, NUMREGLEMENT, LIBELLECRITEREELEMENT, ACTIF) VALUES('AC', 'arc', -180676679, 'Arc chasse', TRUE);");
 		sql.executeUpdate("MERGE INTO PUBLIC.CRITEREELEMENT(CODECRITEREELEMENT, CODECRITERE, NUMREGLEMENT, LIBELLECRITEREELEMENT, ACTIF) VALUES('BB', 'arc', -180676679, 'Bare Bow', TRUE);");
 		sql.executeUpdate("MERGE INTO PUBLIC.CRITEREELEMENT(CODECRITEREELEMENT, CODECRITERE, NUMREGLEMENT, LIBELLECRITEREELEMENT, ACTIF) VALUES('TL', 'arc', -180676679, 'Tir Libre', TRUE);");
+	}
+}
+
+if(dbVersion > 0) {
+	rowSet = sql.executeQuery("SELECT * FROM INFORMATION_SCHEMA.TABLES "
+		+ "WHERE TABLE_SCHEMA='PUBLIC' AND TABLE_NAME='ANCRAGES_BLASONS'");
+	if(!rowSet.first()) {
+		sql.executeScript("05-patch02.sql");
 	}
 	sql.executeScript("99-updatedbver.sql");
 }

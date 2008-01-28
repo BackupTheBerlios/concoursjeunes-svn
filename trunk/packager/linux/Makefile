@@ -43,7 +43,6 @@ clean:
 
 
 remove:
-
 	rm -rf $(DESTDIR)/usr/lib/ConcoursJeunes
 	rm -f $(DESTDIR)/usr/bin/ConcoursJeunes
 	rm -f $(DESTDIR)/usr/sbin/concoursjeunes-applyupdate

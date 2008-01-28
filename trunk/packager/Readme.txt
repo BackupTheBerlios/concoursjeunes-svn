@@ -23,3 +23,10 @@ Ce Logiciel inclut les Librairies
 -H2 Database (http://www.h2database.com) - Licensed under the H2 License, Version 1.0 (http://h2database.com/html/license.html)
 -SwingX (https://swingx.dev.java.net/) - Licence LGPL
 -AJPackage (Librairie personnel libre d'usage source non diffusé à ce jour)
+
+Historique:
+- Mai 2002 Sortie de la version 0.1
+- Septembre 2005 Sortie de la version 1.0
+- Avril 2006 Ouverture du site internet
+- Eté 2006 Sortie de la version 1.1
+- Octobre 2007 Sortie de la version 2.0

@@ -88,7 +88,11 @@
  */
 package org.concoursjeunes;
 
+import java.text.DecimalFormat;
+
 /**
+ * Represente une position sur le pas de tir
+ * 
  * @author Aurélien JEOFFRAY
  *
  */
@@ -96,6 +100,9 @@ public class TargetPosition {
 	private int target = 0;
 	private int position = 0;
 	
+	public TargetPosition() {
+		
+	}
 	/**
 	 * @param target
 	 * @param position
@@ -132,6 +139,6 @@ public class TargetPosition {
 	
 	@Override
 	public String toString() {
-		return ((target < 10) ? "0" : "") + target + (char) ('A' + position); //$NON-NLS-1$ //$NON-NLS-2$
+		return new DecimalFormat("00").format(target) + (char) ('A' + position); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 }
