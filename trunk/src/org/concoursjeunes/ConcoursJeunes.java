@@ -107,6 +107,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
 
 import javax.naming.ConfigurationException;
 import javax.script.ScriptContext;
@@ -119,7 +120,8 @@ import javax.swing.event.EventListenerList;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.jdesktop.swingx.JXErrorDialog;
+import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.error.ErrorInfo;
 import org.xml.sax.InputSource;
 
 import ajinteractive.standard.common.AjResourcesReader;
@@ -215,8 +217,10 @@ public class ConcoursJeunes {
 		try {
 			configuration = ConfigurationManager.loadCurrentConfiguration();
 		} catch (IOException e2) {
-			JXErrorDialog.showDialog(null, ajrLibelle.getResourceString("erreur.concoursjeunes.loadconfig.title"), //$NON-NLS-1$
-					ajrLibelle.getResourceString("erreur.concoursjeunes.loadconfig"), e2); //$NON-NLS-1$
+			JXErrorPane.showDialog(null, 
+					new ErrorInfo(ajrLibelle.getResourceString("erreur.concoursjeunes.loadconfig.title"), //$NON-NLS-1$
+					ajrLibelle.getResourceString("erreur.concoursjeunes.loadconfig"),  //$NON-NLS-1$
+					null, null, e2, Level.SEVERE, null));
 			e2.printStackTrace();
 			System.exit(1);
 		}
@@ -226,8 +230,8 @@ public class ConcoursJeunes {
 		try {
 			AjResourcesReader.setClassLoader(new PluginClassLoader(findParentClassLoader(), new File("plugins"))); //$NON-NLS-1$
 		} catch (MalformedURLException e1) {
-			JXErrorDialog.showDialog(null, ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
-					e1.toString(), e1);
+			JXErrorPane.showDialog(null, new ErrorInfo(ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+					e1.toString(), null, null, e1, Level.SEVERE, null));
 			e1.printStackTrace();
 		}
 
@@ -236,12 +240,12 @@ public class ConcoursJeunes {
 				System.setErr(new PrintStream(userRessources.getLogPathForProfile(configuration.getCurProfil()) + File.separator + ajrParametreAppli.getResourceString("log.error"))); //$NON-NLS-1$
 				System.setOut(new PrintStream(userRessources.getLogPathForProfile(configuration.getCurProfil()) + File.separator + ajrParametreAppli.getResourceString("log.exec"))); //$NON-NLS-1$
 			} catch (FileNotFoundException e) {
-				JXErrorDialog.showDialog(null, ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
-						e.toString(), e);
+				JXErrorPane.showDialog(null, new ErrorInfo(ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+						e.toString(), null, null, e, Level.SEVERE, null));
 				e.printStackTrace();
 			}
 		}
-
+		
 		// Pour le debugage donne le systeme de l'utilisateur
 		System.out.println("OS: " + System.getProperty("os.name")); //$NON-NLS-1$ //$NON-NLS-2$
 		System.out.println("Architecture: " + System.getProperty("os.arch")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -257,8 +261,8 @@ public class ConcoursJeunes {
 						ajrParametreAppli.getResourceString("database.password")); //$NON-NLS-1$
 			} catch (SQLException e) {
 				e.printStackTrace();
-				JXErrorDialog.showDialog(null, "SQL Error", e.toString(), //$NON-NLS-1$
-						e.fillInStackTrace());
+				JXErrorPane.showDialog(null,new ErrorInfo( "SQL Error", e.toString(), //$NON-NLS-1$
+						null, null, e, Level.SEVERE, null));
 				
 				//Si ce n'est pas un message db bloqué par un autre processus
 				if(!e.getMessage().contains("[90020")) { //$NON-NLS-1$
@@ -322,8 +326,8 @@ public class ConcoursJeunes {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JXErrorDialog.showDialog(null, "SQL Error", e.toString(), //$NON-NLS-1$
-					e.fillInStackTrace());
+			JXErrorPane.showDialog(null, new ErrorInfo("SQL Error", e.toString(), //$NON-NLS-1$
+					null, null, e, Level.SEVERE, null));
 		} finally {
 			try { if(stmt != null) stmt.close(); } catch (SQLException e) { }
 			dbVersion = getDBVersion();

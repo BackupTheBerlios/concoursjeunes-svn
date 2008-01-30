@@ -239,11 +239,44 @@ public class Cible {
 			if(nbArcher < concurrents.length - nbHandicap) {
 				DistancesEtBlason concurrentDb = DistancesEtBlason.getDistancesEtBlasonForConcurrent(reglement, concurrent);
 				List<DistancesEtBlason> targetDbs = getDistancesEtBlason();
-				boolean useSameDistances = Arrays.equals(concurrentDb.getDistance(), targetDbs.get(0).getDistance());
 				
+				//verifie que la distance soit bonne
+				if(!Arrays.equals(concurrentDb.getDistance(), targetDbs.get(0).getDistance()))
+					throw new PlacementException(PlacementException.Nature.BAD_DISTANCESANDBLASONS);
+				
+				/*
+				 * Verifie qu'un blason peut lui être attrubuer
+				 * Combinaison possible à calculer
+				 * 1 Blason exclusif de 122 ou de 80
+				 * 2 Blason de 60 - Horizontal
+				 * 1 Blason de 60 et 2 de 40
+				 * 1 Blason de 60 et 2 Tri Spot
+				 * 4 Blason de 40
+				 * 2 Blason de 40 et 2 Tri Spot
+				 * 4 Tri Spot 
+				 */
 				for(DistancesEtBlason db : targetDbs) {
 					double nbBlasonSurDb = Math.floor((double)getNbArcherFor(db) / (double)db.getTargetFace().getNbArcher());
-					//nbBlasonSurDb
+					
+					double dbVRatio = db.getTargetFace().getVerticalRatio();
+					double dbHRatio = db.getTargetFace().getHorizontalRatio();
+					
+					double nbColonneOccupe = 0;
+					double occupationV = 0;
+					for(int i = 0; i < nbBlasonSurDb; i++) {
+						if(occupationV < 1 && occupationV + dbVRatio <= 1) {
+							occupationV += dbVRatio;
+							if(occupationV == 1) {
+								nbColonneOccupe++;
+								occupationV = 0;
+							}
+						} else {
+							nbColonneOccupe++;
+							occupationV = 0;
+						}
+					}
+					
+					
 				}
 				
 				
@@ -508,7 +541,7 @@ public class Cible {
 						strCibleLibelle += dbs.get(0).getDistance()[i] + "m"; //$NON-NLS-1$
 					}
 				}
-				strCibleLibelle += ", ";
+				strCibleLibelle += ", "; //$NON-NLS-1$
 				
 				//Les blasons sont eux toujours différent
 				for (int i = 0; i < dbs.size(); i++) {

@@ -99,7 +99,7 @@ import javax.swing.JComponent;
 public class GlassPanePanel extends JComponent {
 	
 	private AlphaComposite composite;
-	private String message = "";
+	private String message = ""; //$NON-NLS-1$
 	
 	public GlassPanePanel() {
 		setOpaque(false);

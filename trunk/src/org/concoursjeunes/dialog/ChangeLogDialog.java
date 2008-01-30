@@ -138,17 +138,17 @@ public class ChangeLogDialog extends JDialog implements ActionListener {
 	}
 	
 	private void affectLibelle() {
-		setTitle(ConcoursJeunes.ajrLibelle.getResourceString("changelog.title"));
-		jbFermer.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.fermer"));
+		setTitle(ConcoursJeunes.ajrLibelle.getResourceString("changelog.title")); //$NON-NLS-1$
+		jbFermer.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.fermer")); //$NON-NLS-1$
 	}
 	
 	private void completePane() {
 		try {
-			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream("changelog.txt"), "UTF-8"));
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream("changelog.txt"), "UTF-8")); //$NON-NLS-1$ //$NON-NLS-2$
 			StringBuilder stringBuilder = new StringBuilder();
 			String line;
 			while((line = bufferedReader.readLine()) != null) {
-				stringBuilder.append(line + "\n");
+				stringBuilder.append(line + "\n"); //$NON-NLS-1$
 			}
 			
 			jtpChangeLog.setText(stringBuilder.toString());

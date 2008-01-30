@@ -25,11 +25,13 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.logging.Level;
 
 import javax.swing.event.EventListenerList;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.jdesktop.swingx.JXErrorDialog;
+import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.error.ErrorInfo;
 
 import ajinteractive.standard.common.AJTemplate;
 import ajinteractive.standard.common.AJToolKit;
@@ -844,20 +846,20 @@ public class FicheConcours implements ParametreListener {
 				templateEtiquettesXML.loopBloc("page"); //$NON-NLS-1$
 			}
 		} catch (SecurityException e) {
-			JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
-					e.toString(), e.fillInStackTrace());
+			JXErrorPane.showDialog(null, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+					e.toString(), null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
-			JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
-					e.toString(), e.fillInStackTrace());
+			JXErrorPane.showDialog(null, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+					e.toString(), null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		} catch (NoSuchFieldException e) {
-			JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
-					e.toString(), e.fillInStackTrace());
+			JXErrorPane.showDialog(null, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+					e.toString(), null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
-					e.toString(), e.fillInStackTrace());
+			JXErrorPane.showDialog(null, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+					e.toString(), null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		}
 

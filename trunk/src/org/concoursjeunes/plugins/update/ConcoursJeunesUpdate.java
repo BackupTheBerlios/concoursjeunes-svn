@@ -112,7 +112,7 @@ import org.concoursjeunes.plugins.PluginEntry;
 import org.concoursjeunes.plugins.PluginLoader;
 import org.concoursjeunes.plugins.PluginMetadata;
 import org.concoursjeunes.plugins.Plugin.Type;
-import org.jdesktop.swingx.JXLoginPanel;
+import org.jdesktop.swingx.JXLoginPane;
 import org.jdesktop.swingx.auth.LoginService;
 
 import ajinteractive.standard.common.AJToolKit;
@@ -201,7 +201,7 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 			try {
 				updateFiles = ajUpdater.checkUpdate();
 			} catch (UpdateException e) {
-				if(e.getMessage().equals("Proxy Authentification required")) {
+				if(e.getMessage().equals("Proxy Authentification required")) { //$NON-NLS-1$
 					proxyAuthRequired = true;
 				} else {
 					System.out.println("Mise à jour impossible"); //$NON-NLS-1$
@@ -218,12 +218,12 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 						return true;
 					}
 				};
-				JXLoginPanel loginPanel = new JXLoginPanel(loginService);
+				JXLoginPane loginPanel = new JXLoginPane(loginService);
 				loginPanel.setBannerText("Authentification Proxy");
 				loginPanel.setMessage("<html>Autentification au serveur proxy nécessaire pour vérifier<br>les mises à jours</html>");
 				//loginPanel.setP
-				org.jdesktop.swingx.JXLoginPanel.Status status = JXLoginPanel.showLoginDialog(null, loginPanel);
-				if(status == JXLoginPanel.Status.SUCCEEDED)
+				org.jdesktop.swingx.JXLoginPane.Status status = JXLoginPane.showLoginDialog(null, loginPanel);
+				if(status == JXLoginPane.Status.SUCCEEDED)
 					loop = true;
 			}
 		} while(loop);

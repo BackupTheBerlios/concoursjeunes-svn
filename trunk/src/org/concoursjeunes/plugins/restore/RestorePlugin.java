@@ -96,6 +96,7 @@ import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Pack200;
 import java.util.jar.Pack200.Unpacker;
+import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 
 import javax.naming.ConfigurationException;
@@ -109,7 +110,8 @@ import org.concoursjeunes.ConfigurationManager;
 import org.concoursjeunes.MetaDataFicheConcours;
 import org.concoursjeunes.plugins.Plugin;
 import org.concoursjeunes.plugins.PluginEntry;
-import org.jdesktop.swingx.JXErrorDialog;
+import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.error.ErrorInfo;
 
 import ajinteractive.standard.common.AjResourcesReader;
 
@@ -189,8 +191,8 @@ public class RestorePlugin {
 								
 								//ConcoursJeunes.configuration.save();
 							} catch (ConfigurationException e1) {
-								JXErrorDialog.showDialog(parentframe, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
-										e1);
+								JXErrorPane.showDialog(parentframe, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+										null, null, e1, Level.SEVERE, null));
 								e1.printStackTrace();
 							}
 							
@@ -207,8 +209,8 @@ public class RestorePlugin {
 					}
 				}
 			} catch (IOException e) {
-				JXErrorDialog.showDialog(parentframe, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
-						e);
+				JXErrorPane.showDialog(parentframe, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+						null, null, e, Level.SEVERE, null));
 				e.printStackTrace();
 			}
 	    }

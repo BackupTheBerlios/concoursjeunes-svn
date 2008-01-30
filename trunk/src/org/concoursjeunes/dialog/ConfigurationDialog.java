@@ -102,6 +102,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.logging.Level;
 
 import javax.naming.ConfigurationException;
 import javax.swing.Box;
@@ -128,7 +129,8 @@ import org.concoursjeunes.ConfigurationManager;
 import org.concoursjeunes.Entite;
 import org.concoursjeunes.Marges;
 import org.concoursjeunes.Reglement;
-import org.jdesktop.swingx.JXErrorDialog;
+import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.error.ErrorInfo;
 
 import ajinteractive.standard.common.AJToolKit;
 import ajinteractive.standard.java2.AJFileFilter;
@@ -878,20 +880,20 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 				return false;
 			}
 		} catch (SecurityException e) {
-			JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
-					e.toString(), e.fillInStackTrace());
+			JXErrorPane.showDialog(this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+					e.toString(), null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
-			JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
-					e.toString(), e.fillInStackTrace());
+			JXErrorPane.showDialog(this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+					e.toString(), null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		} catch (NoSuchFieldException e) {
-			JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
-					e.toString(), e.fillInStackTrace());
+			JXErrorPane.showDialog(this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+					e.toString(), null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
-					e.toString(), e.fillInStackTrace());
+			JXErrorPane.showDialog(this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+					e.toString(), null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		}
 		
@@ -973,8 +975,8 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 					try {
 						loadProfile();
 					} catch (IOException e1) {
-						JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
-								e1.toString(), e1);
+						JXErrorPane.showDialog(null, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+								e1.toString(), null, null, e1, Level.SEVERE, null));
 						e1.printStackTrace();
 					}
 				} else if (jcbProfil.getSelectedIndex() == jcbProfil.getItemCount() - 1) {

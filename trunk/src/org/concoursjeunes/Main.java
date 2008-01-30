@@ -93,13 +93,15 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.concoursjeunes.plugins.PluginEntry;
 import org.concoursjeunes.plugins.PluginLoader;
 import org.concoursjeunes.plugins.PluginMetadata;
 import org.concoursjeunes.plugins.Plugin.Type;
 import org.concoursjeunes.ui.ConcoursJeunesFrame;
-import org.jdesktop.swingx.JXErrorDialog;
+import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.error.ErrorInfo;
 
 import ajinteractive.standard.common.AJToolKit;
 
@@ -116,7 +118,7 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		
-		System.setProperty("java.net.useSystemProxies","true");
+		System.setProperty("java.net.useSystemProxies","true"); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		Thread.UncaughtExceptionHandler handlerException = new Thread.UncaughtExceptionHandler() {
 
@@ -124,9 +126,10 @@ public class Main {
 			public void uncaughtException(Thread t, final Throwable e) {
 				EventQueue.invokeLater(new Runnable() {
 			         public void run() {
-						JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+						JXErrorPane.showDialog(null, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
 								e.toString(),
-								e);
+								null, null, e, Level.SEVERE, null));
+			        	//JXErrorPane.showDialog(e);
 						e.printStackTrace();
 			         }
 				});
@@ -181,9 +184,7 @@ public class Main {
 			try {
 				Class<?> cla = pm.getPluginClass();
 				
-				//Object[] signers = cla.getSigners();
-				
-				assert cla != null : "le loader devrait toujours retourner une class";
+				assert cla != null : "le loader devrait toujours retourner une class"; //$NON-NLS-1$
 				
 				Object plugin = cla.newInstance();
 				for (Method m : cla.getMethods()) {
@@ -193,20 +194,20 @@ public class Main {
 					}
 				}
 			} catch (InstantiationException e1) {
-				JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
-						e1);
+				JXErrorPane.showDialog(null, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+						null, null, e1, Level.SEVERE, null));
 				e1.printStackTrace();
 			} catch (IllegalAccessException e1) {
-				JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
-						e1);
+				JXErrorPane.showDialog(null, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+						null, null, e1, Level.SEVERE, null));
 				e1.printStackTrace();
 			} catch (SecurityException e1) {
-				JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
-						e1);
+				JXErrorPane.showDialog(null, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+						null, null, e1, Level.SEVERE, null));
 				e1.printStackTrace();
 			} catch (InvocationTargetException e1) {
-				JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
-						e1);
+				JXErrorPane.showDialog(null, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+						null, null, e1, Level.SEVERE, null));
 				e1.printStackTrace();
 			}
 		}

@@ -21,6 +21,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
 
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
@@ -56,7 +57,8 @@ import org.concoursjeunes.TargetPosition;
 import org.concoursjeunes.dialog.ConcurrentDialog;
 import org.concoursjeunes.dialog.EquipeDialog;
 import org.concoursjeunes.dialog.TypeListingDialog;
-import org.jdesktop.swingx.JXErrorDialog;
+import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.error.ErrorInfo;
 
 import ajinteractive.standard.java2.AJList;
 import ajinteractive.standard.ui.GhostGlassPane;
@@ -361,8 +363,8 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 				try {
 					ficheConcours.addConcurrent(ficheConcoursPane.concDialog.getConcurrent(), depart);
 				} catch (IOException e) {
-					JXErrorDialog.showDialog(ficheConcoursPane.getParentframe(), ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
-							e);
+					JXErrorPane.showDialog(ficheConcoursPane.getParentframe(), new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+							null, null, e, Level.SEVERE, null));
 					e.printStackTrace();
 				}
 			}
@@ -383,8 +385,8 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 			try {
 				ficheConcours.removeConcurrent(removedConcurrent);
 			} catch (IOException e) {
-				JXErrorDialog.showDialog(ficheConcoursPane.getParentframe(), ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
-						e);
+				JXErrorPane.showDialog(ficheConcoursPane.getParentframe(), new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+						null, null, e, Level.SEVERE, null));
 				e.printStackTrace();
 			}
 		}

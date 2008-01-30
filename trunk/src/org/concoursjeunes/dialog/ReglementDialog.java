@@ -98,6 +98,7 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
 
 import javax.swing.Box;
 import javax.swing.DefaultCellEditor;
@@ -131,7 +132,8 @@ import org.concoursjeunes.Criterion;
 import org.concoursjeunes.CriterionElement;
 import org.concoursjeunes.DistancesEtBlason;
 import org.concoursjeunes.Reglement;
-import org.jdesktop.swingx.JXErrorDialog;
+import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.error.ErrorInfo;
 
 import ajinteractive.standard.java2.GridbagComposer;
 import ajinteractive.standard.java2.NumberDocument;
@@ -422,8 +424,8 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 			TableColumn cH = jtDistanceBlason.getColumnModel().getColumn(jtDistanceBlason.getColumnModel().getColumnCount() - 1);
 			cH.setCellEditor(new DefaultCellEditor(jcbBlasons));
 		} catch (SQLException e) {
-			JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
-					e);
+			JXErrorPane.showDialog(this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+					null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		}
 

@@ -129,7 +129,7 @@ public class PluginLoader {
 						pluginMetadata.setName(pluginName);
 						pluginMetadata.setInfo(pluginLocalInfo.getResourceString("plugin.libelle")); //$NON-NLS-1$
 						pluginMetadata.setOptionLabel(pluginLocalInfo.getResourceString("plugin.optionlabel")); //$NON-NLS-1$
-						pluginMetadata.setPluginType(cla.getAnnotation(Plugin.class).type()); //$NON-NLS-1$
+						pluginMetadata.setPluginType(cla.getAnnotation(Plugin.class).type());
 						pluginMetadata.setClassName(pluginProperties.getResourceString("plugin.class")); //$NON-NLS-1$
 						pluginMetadata.setReposURL(pluginProperties.getResourceString("plugin.repos")); //$NON-NLS-1$
 						pluginMetadata.setMenuPath(AJToolKit.tokenize(pluginProperties.getResourceString("plugin.menu"), "/")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -208,6 +208,6 @@ public class PluginLoader {
 	 * @return true si le plugin est installé, false sinon
 	 */
 	public boolean isInstalled(String pluginName) {
-		return new File("./plugins/properties/" + pluginName + ".properties").exists();
+		return new File("./plugins/properties/" + pluginName + ".properties").exists(); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 }

@@ -110,6 +110,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -140,7 +141,8 @@ import org.concoursjeunes.FicheConcours;
 import org.concoursjeunes.OccupationCibles;
 import org.concoursjeunes.TargetPosition;
 import org.concoursjeunes.ui.ConcoursJeunesFrame;
-import org.jdesktop.swingx.JXErrorDialog;
+import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.error.ErrorInfo;
 
 import ajinteractive.standard.common.AJToolKit;
 import ajinteractive.standard.java2.GridbagComposer;
@@ -922,12 +924,12 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 					setConcurrent(concurrent);
 				}
             } catch (InterruptedException e) {
-            	JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
-    					e);
+            	JXErrorPane.showDialog(this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+            			null, null, e, Level.SEVERE, null));
 	            e.printStackTrace();
             } catch (ExecutionException e) {
-            	JXErrorDialog.showDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
-    					e);
+            	JXErrorPane.showDialog(this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+            			null, null, e, Level.SEVERE, null));
 	            e.printStackTrace();
             } catch (TimeoutException e) {
             	JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("concurrent.info.listing.wait")); //$NON-NLS-1$

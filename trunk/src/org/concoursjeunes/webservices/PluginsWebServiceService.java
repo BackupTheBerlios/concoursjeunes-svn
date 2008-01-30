@@ -26,7 +26,7 @@ public class PluginsWebServiceService
     static {
         URL url = null;
         try {
-            url = new URL("http://webservices.concoursjeunes.org/PluginsService.wsdl");
+            url = new URL("http://webservices.concoursjeunes.org/PluginsService.wsdl"); //$NON-NLS-1$
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -38,7 +38,7 @@ public class PluginsWebServiceService
     }
 
     public PluginsWebServiceService() {
-        super(PLUGINSWEBSERVICESERVICE_WSDL_LOCATION, new QName("http://webservices.concoursjeunes.org/", "PluginsWebServiceService"));
+        super(PLUGINSWEBSERVICESERVICE_WSDL_LOCATION, new QName("http://webservices.concoursjeunes.org/", "PluginsWebServiceService")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -48,7 +48,7 @@ public class PluginsWebServiceService
      */
     @WebEndpoint(name = "PluginsWebServicePort")
     public PluginsWebService getPluginsWebServicePort() {
-        return super.getPort(new QName("http://webservices.concoursjeunes.org/", "PluginsWebServicePort"), PluginsWebService.class);
+        return super.getPort(new QName("http://webservices.concoursjeunes.org/", "PluginsWebServicePort"), PluginsWebService.class); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
 }

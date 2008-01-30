@@ -130,7 +130,7 @@ import org.concoursjeunes.webservices.PluginDescription;
 import org.concoursjeunes.webservices.PluginDescriptionArray;
 import org.concoursjeunes.webservices.PluginsWebService;
 import org.concoursjeunes.webservices.PluginsWebServiceService;
-import org.jdesktop.swingx.JXLoginPanel;
+import org.jdesktop.swingx.JXLoginPane;
 import org.jdesktop.swingx.auth.LoginService;
 
 import ajinteractive.standard.ui.AJList;
@@ -320,7 +320,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 			jtPlugins.getColumnModel().getColumn(4).setPreferredWidth(200);
 			jtPlugins.getColumnModel().removeColumn(jtPlugins.getColumnModel().getColumn(3));
 			
-			jlCategorie.add("Toutes");
+			jlCategorie.add("Tous");
 			for(String category : categories) {
 				jlCategorie.add(categoriesLibelle.get(categories.indexOf(category)));
 			}
@@ -330,7 +330,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 			//e1.printStackTrace();
 			if(e1.getCause() != null && e1.getCause() instanceof IOException) {
 				IOException ioe = (IOException)e1.getCause();
-				if(ioe.getMessage().indexOf("HTTP response code: 407") > -1) {
+				if(ioe.getMessage().indexOf("HTTP response code: 407") > -1) { //$NON-NLS-1$
 					LoginService loginService = new LoginService() {
 						@Override
 						public boolean authenticate(String user , char[] password, String server) {
@@ -340,7 +340,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 							return true;
 						}
 					};
-					JXLoginPanel.showLoginDialog(this, loginService);
+					JXLoginPane.showLoginDialog(this, loginService);
 					completePanel();
 				}
 			} else {

@@ -90,8 +90,10 @@ package org.concoursjeunes;
 
 import java.awt.AWTEvent;
 import java.awt.EventQueue;
+import java.util.logging.Level;
 
-import org.jdesktop.swingx.JXErrorDialog;
+import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.error.ErrorInfo;
 
 /**
  * @author Aurélien JEOFFRAY
@@ -103,9 +105,9 @@ public class ExceptionHandlingEventQueue extends EventQueue {
 		try {
 			super.dispatchEvent(event);
 		} catch (RuntimeException e) {
-			JXErrorDialog.showDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+			JXErrorPane.showDialog(null, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
 					e.toString(),
-					e);
+					null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		}
 	}
