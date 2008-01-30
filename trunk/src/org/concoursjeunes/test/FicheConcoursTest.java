@@ -8,10 +8,10 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.concoursjeunes.ConcoursJeunes;
-import org.concoursjeunes.ConcoursJeunesEvent;
-import org.concoursjeunes.ConcoursJeunesListener;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.FicheConcours;
+import org.concoursjeunes.event.ConcoursJeunesEvent;
+import org.concoursjeunes.event.ConcoursJeunesListener;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

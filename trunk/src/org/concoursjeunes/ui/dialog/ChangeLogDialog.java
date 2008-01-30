@@ -1,5 +1,5 @@
 /*
- * Créer le 21 nov. 07 à 11:21:11 pour ConcoursJeunes
+ * Créer le 22 janv. 08 à 17:08:31 pour ConcoursJeunes
  *
  * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
@@ -86,59 +86,97 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes;
+package org.concoursjeunes.ui.dialog;
 
-import java.text.DecimalFormat;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextPane;
+
+import org.concoursjeunes.ConcoursJeunes;
 
 /**
- * Represente une position sur le pas de tir
- * 
  * @author Aurélien JEOFFRAY
  *
  */
-public class TargetPosition {
-	private int target = 0;
-	private int position = 0;
+public class ChangeLogDialog extends JDialog implements ActionListener {
 	
-	public TargetPosition() {
+	private JTextPane jtpChangeLog = new JTextPane();
+	private JButton jbFermer = new JButton(); 
+	
+	public ChangeLogDialog(JFrame parentframe) {
+		super(parentframe, true);
+		init();
+		affectLibelle();
+	}
+	
+	private void init() {
+		JPanel jpAction = new JPanel();
 		
-	}
-	/**
-	 * @param target
-	 * @param position
-	 */
-	public TargetPosition(int target, int position) {
-		super();
-		this.target = target;
-		this.position = position;
-	}
-	/**
-	 * @return target
-	 */
-	public int getTarget() {
-		return target;
-	}
-	/**
-	 * @param target target à définir
-	 */
-	public void setTarget(int target) {
-		this.target = target;
-	}
-	/**
-	 * @return position
-	 */
-	public int getPosition() {
-		return position;
-	}
-	/**
-	 * @param position position à définir
-	 */
-	public void setPosition(int position) {
-		this.position = position;
+		jtpChangeLog.setEditable(false);
+		jbFermer.addActionListener(this);
+		
+		jpAction.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		jpAction.add(jbFermer);
+		
+		setLayout(new BorderLayout());
+		add(new JScrollPane(jtpChangeLog), BorderLayout.CENTER);
+		add(jpAction, BorderLayout.SOUTH);
 	}
 	
+	private void affectLibelle() {
+		setTitle(ConcoursJeunes.ajrLibelle.getResourceString("changelog.title")); //$NON-NLS-1$
+		jbFermer.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.fermer")); //$NON-NLS-1$
+	}
+	
+	private void completePane() {
+		try {
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream("changelog.txt"), "UTF-8")); //$NON-NLS-1$ //$NON-NLS-2$
+			StringBuilder stringBuilder = new StringBuilder();
+			String line;
+			while((line = bufferedReader.readLine()) != null) {
+				stringBuilder.append(line + "\n"); //$NON-NLS-1$
+			}
+			
+			jtpChangeLog.setText(stringBuilder.toString());
+			jtpChangeLog.setCaretPosition(0);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			jtpChangeLog.setText(e.getMessage());
+		} catch (IOException e) {
+			e.printStackTrace();
+			jtpChangeLog.setText(e.getMessage());
+		}
+	}
+	
+	public void showChangeLogDialog() {
+		completePane();
+		
+		setSize(new Dimension(640, 480));
+		setLocationRelativeTo(null);
+		setVisible(true);
+	}
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
-	public String toString() {
-		return new DecimalFormat("00").format(target) + (char) ('A' + position); //$NON-NLS-1$
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() == jbFermer) {
+			setVisible(false);
+		}
 	}
 }

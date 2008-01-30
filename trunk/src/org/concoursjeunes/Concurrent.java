@@ -22,6 +22,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.concoursjeunes.builders.ConcurrentBuilder;
+
 /**
  * Objet de Base de stockage des Information sur un concurrent:
  *  Nom Categorie Licence Cible Nombre de volée points

@@ -1,6 +1,6 @@
 /*
- * Créer le 29 déc. 07 à 16:15:22 pour ConcoursJeunes
- *
+ * Créé le 20 déc. 06 - 17:17:57
+ * 
  * Copyright 2002-2007 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
@@ -71,7 +71,7 @@
  * knowledge of the CeCILL license and that you accept its terms.
  *
  *  *** GNU GPL Terms *** 
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -86,107 +86,146 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes.plugins.phoenix;
+package org.concoursjeunes.event;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.concoursjeunes.*;
-import org.concoursjeunes.event.ConcoursJeunesEvent;
-import org.concoursjeunes.event.ConcoursJeunesListener;
-import org.concoursjeunes.plugins.Plugin;
-import org.concoursjeunes.plugins.PluginEntry;
-
-import ajinteractive.standard.common.AJToolKit;
+import org.concoursjeunes.Archer;
+import org.concoursjeunes.Concurrent;
+import org.concoursjeunes.Entite;
 
 /**
+ * L'événement de réponse à l'action de l'AutoCompleteDocument
+ * 
  * @author Aurélien JEOFFRAY
- *
+ * @version 1.0
  */
-@Plugin(type = Plugin.Type.STARTUP)
-public class PhoenixPlugin extends Thread implements ConcoursJeunesListener {
-	public PhoenixPlugin() {
-		ConcoursJeunes.getInstance().addConcoursJeunesListener(this);
+public class AutoCompleteDocumentEvent {
+	private Object source;
+	private Concurrent concurrent;
+	private Entite entite;
+	private Archer genericArcher;
+	private Entite genericEntite;
+	
+	/**
+	 * Crée un événement retournant un concurrent
+	 * 
+	 * @param source - l'objet swing à l'origine de l'événement
+	 * @param concurrent - le concurrent retourné par l'autocomplement
+	 */
+	public AutoCompleteDocumentEvent(Object source, Concurrent concurrent) {
+		this.source = source;
+		this.concurrent = concurrent;
 	}
 	
-	@Override
-	@PluginEntry
-	public void start() {
-		super.start();
-	}
-	
-	@Override
-	public void run() {
-		Configuration configuration = ConcoursJeunes.getConfiguration();
-		
-		MetaDataFichesConcours metaDataFichesConcours = configuration.getMetaDataFichesConcours();
-		
-		String concoursPath = ConcoursJeunes.userRessources.getConcoursPathForProfile(configuration.getCurProfil());
-		
-		File[] concoursFiles = new File(concoursPath).listFiles();
-		
-		if(metaDataFichesConcours.getFiches().size() != concoursFiles.length) {
-			for(File concoursFile : concoursFiles) {
-				try {
-					Object obj = AJToolKit.loadXMLStructure(concoursFile, true);
-					if(obj != null && obj instanceof Object[]) {
-						Object[] structure = (Object[])obj;
-						if(structure[0] instanceof Parametre) {
-							Parametre parametre = (Parametre) structure[0];
-							
-							MetaDataFicheConcours metaDataFicheConcours = new MetaDataFicheConcours(
-									parametre.getDate(), parametre.getIntituleConcours(), parametre.getSaveName());
-							if(!metaDataFichesConcours.contains(metaDataFicheConcours)) {
-								metaDataFichesConcours.add(metaDataFicheConcours);
-							}
-						}
-					} else {
-						//concoursFile.delete(); //Fichier verolé on supprime
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
+	/**
+	 * Cré un événement retournant une entite
+	 * 
+	 * @param source - l'objet swing à l'origine de l'événement
+	 * @param entite - l'entite retourné par l'autocomplement
+	 */
+	public AutoCompleteDocumentEvent(Object source, Entite entite) {
+		this.source = source;
+		this.entite = entite;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.concoursjeunes.ConcoursJeunesListener#configurationChanged(org.concoursjeunes.ConcoursJeunesEvent)
+	/**
+	 * Retourne l'objet concurrent répondant à l'événement
+	 * 
+	 * @return le concurrent renvoyé par l'autocomplement
 	 */
-	@Override
-	public void configurationChanged(ConcoursJeunesEvent concoursJeunesEvent) {
-		run();
+	public Concurrent getConcurrent() {
+		return concurrent;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursClosed(org.concoursjeunes.ConcoursJeunesEvent)
+	/**
+	 * Définit le concurrent repondant à l'événement
+	 * 
+	 * @param concurrent  the concurrent to set
 	 */
-	@Override
-	public void ficheConcoursClosed(ConcoursJeunesEvent concoursJeunesEvent) {
-		
+	public void setConcurrent(Concurrent concurrent) {
+		this.concurrent = concurrent;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursCreated(org.concoursjeunes.ConcoursJeunesEvent)
+	/**
+	 * Retourne l'entite repondant à l'evenement emis
+	 * 
+	 * @return  entite l'entite retourné
 	 */
-	@Override
-	public void ficheConcoursCreated(ConcoursJeunesEvent concoursJeunesEvent) {
-		
+	public Entite getEntite() {
+		return entite;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursDeleted(org.concoursjeunes.ConcoursJeunesEvent)
+	/**
+	 * Définit l'entite devant répondre à l'évenement
+	 * 
+	 * @param entite  entite à définir
 	 */
-	@Override
-	public void ficheConcoursDeleted(ConcoursJeunesEvent concoursJeunesEvent) {
-		
+	public void setEntite(Entite entite) {
+		this.entite = entite;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursRestored(org.concoursjeunes.ConcoursJeunesEvent)
+	/**
+	 * Retourne l'objet à la source de l'evenement
+	 * 
+	 * @return la source de l'evenement
 	 */
-	@Override
-	public void ficheConcoursRestored(ConcoursJeunesEvent concoursJeunesEvent) {
-		
+	public Object getSource() {
+		return source;
+	}
+
+	/**
+	 * Définit l'objet source de l'evenement
+	 * 
+	 * @param source l'objet à l'origine de l'evenement
+	 */
+	public void setSource(Object source) {
+		this.source = source;
+	}
+
+	/**
+	 * Retourne le "générique de recherche utilisé pour l'autocomplement"
+	 * <br>
+	 * l'archer générique est définit/retourné uniquement dans le cas d'une
+	 * recherche par licencié
+	 * 
+	 * @return  genericArcher
+	 */
+	public Archer getGenericArcher() {
+		return genericArcher;
+	}
+
+	/**
+	 * Définit le "générique de recherche utilisé pour l'autocomplement"
+	 * <br>
+	 * l'archer générique est définit/retourné uniquement dans le cas d'une
+	 * recherche par licencié
+	 * 
+	 * @param genericArcher genericArcher à définir
+	 */
+	public void setGenericArcher(Archer genericArcher) {
+		this.genericArcher = genericArcher;
+	}
+
+	/**
+	 * Retourne le "générique de recherche utilisé pour l'autocomplement"
+	 * <br>
+	 * l'entite générique est définit/retourné uniquement dans le cas d'une
+	 * recherche de club
+	 * 
+	 * @return genericEntite
+	 */
+	public Entite getGenericEntite() {
+		return genericEntite;
+	}
+
+	/**
+	 * Définit le "générique de recherche utilisé pour l'autocomplement"
+	 * <br>
+	 * l'entite générique est définit/retourné uniquement dans le cas d'une
+	 * recherche de club
+	 * 
+	 * @param genericEntite genericEntite à définir
+	 */
+	public void setGenericEntite(Entite genericEntite) {
+		this.genericEntite = genericEntite;
 	}
 }

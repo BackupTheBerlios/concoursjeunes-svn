@@ -1,7 +1,7 @@
 /*
- * Créer le 21 nov. 07 à 11:21:11 pour ConcoursJeunes
+ * Créer le 22 mai 07 à 15:14:26 pour ConcoursJeunes
  *
- * Copyright 2002-2008 - Aurélien JEOFFRAY
+ * Copyright 2002-2007 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
  *
@@ -86,59 +86,56 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes;
+package org.concoursjeunes.builders;
 
-import java.text.DecimalFormat;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.Criterion;
+import org.concoursjeunes.CriterionElement;
 
 /**
- * Represente une position sur le pas de tir
- * 
  * @author Aurélien JEOFFRAY
  *
  */
-public class TargetPosition {
-	private int target = 0;
-	private int position = 0;
+public class CriterionElementBuilder {
 	
-	public TargetPosition() {
-		
-	}
 	/**
-	 * @param target
-	 * @param position
+	 * Construit l'élément de critère représenté par son code et appartenant au critére et réglement transmis en parametre 
+	 * 
+	 * @param codeElement le code de l'élément à charger
+	 * @param criterion le critère parent de l'élément
+	 * @param hashReglement le code du réglement associé à l'élément
+	 * 
+	 * @return l'élément de critère construit
 	 */
-	public TargetPosition(int target, int position) {
-		super();
-		this.target = target;
-		this.position = position;
-	}
-	/**
-	 * @return target
-	 */
-	public int getTarget() {
-		return target;
-	}
-	/**
-	 * @param target target à définir
-	 */
-	public void setTarget(int target) {
-		this.target = target;
-	}
-	/**
-	 * @return position
-	 */
-	public int getPosition() {
-		return position;
-	}
-	/**
-	 * @param position position à définir
-	 */
-	public void setPosition(int position) {
-		this.position = position;
-	}
+	public static CriterionElement getCriterionElement(String codeElement, Criterion criterion, int hashReglement) {
+		try {
+			String sql = "select * from CRITEREELEMENT where CODECRITEREELEMENT=?" + //$NON-NLS-1$
+					" and CODECRITERE=? and NUMREGLEMENT=?"; //$NON-NLS-1$
+			
+			PreparedStatement pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
+
+			pstmt.setString(1, codeElement);
+			pstmt.setString(2, criterion.getCode());
+			pstmt.setInt(3, hashReglement);
 	
-	@Override
-	public String toString() {
-		return new DecimalFormat("00").format(target) + (char) ('A' + position); //$NON-NLS-1$
+			ResultSet rs = pstmt.executeQuery();
+			
+			if(rs.first()) {
+				CriterionElement criterionElement = new CriterionElement();
+				criterionElement.setCode(codeElement);
+				criterionElement.setLibelle(rs.getString("LIBELLECRITEREELEMENT")); //$NON-NLS-1$
+				criterionElement.setActive(rs.getBoolean("ACTIF")); //$NON-NLS-1$
+				criterionElement.setCriterionParent(criterion);
+				
+				return criterionElement;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

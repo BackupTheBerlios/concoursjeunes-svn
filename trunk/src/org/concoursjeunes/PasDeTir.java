@@ -93,6 +93,8 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.concoursjeunes.exceptions.PlacementException;
+
 /**
  * <p>
  * Réprésente le pas de tir d'un départ de concours. Un pas de tir est associé à un concours
@@ -148,8 +150,8 @@ public class PasDeTir {
 	 * @param depart - le départ pour lequelle tester la place dispo
 	 * @return la table d'occupation pour le depart
 	 */
-	private Hashtable<DistancesEtBlason, OccupationCibles> calculatePlaceDisponible(int nbtireurparcible) {
-		Hashtable<DistancesEtBlason, OccupationCibles> occupationCibles = new Hashtable<DistancesEtBlason, OccupationCibles>();
+	private Hashtable<DistancesEtBlason, TargetsOccupation> calculatePlaceDisponible(int nbtireurparcible) {
+		Hashtable<DistancesEtBlason, TargetsOccupation> occupationCibles = new Hashtable<DistancesEtBlason, TargetsOccupation>();
 
 		//recupere le nombre d'archer total possible
 		int placeLibreSurCible = 0;
@@ -166,7 +168,7 @@ public class PasDeTir {
 
 			placeLibreSurCible = (nbtireurparcible - nbParDistanceBlason[i] % nbtireurparcible)  % nbtireurparcible;
 
-			occupationCibles.put(distblas, new OccupationCibles(placeLibreSurCible, nbParDistanceBlason[i]));
+			occupationCibles.put(distblas, new TargetsOccupation(placeLibreSurCible, nbParDistanceBlason[i]));
 
 			i++;
 		}
@@ -182,7 +184,7 @@ public class PasDeTir {
 		for(int i = 2; i <= ficheConcours.getParametre().getNbTireur(); i+=2) {
 			nbArcherModule = 0;
 			for(DistancesEtBlason distancesEtBlason : lDB) {
-				OccupationCibles occupationCibles = getOccupationCibles(ficheConcours.getParametre().getNbTireur()).get(distancesEtBlason);
+				TargetsOccupation occupationCibles = getOccupationCibles(ficheConcours.getParametre().getNbTireur()).get(distancesEtBlason);
 				nbArcherModule += occupationCibles.getPlaceOccupe() % i + occupationCibles.getPlaceOccupe();
 			}
 			if(nbArcherModule <= ficheConcours.getParametre().getNbCible() * i) {
@@ -201,7 +203,7 @@ public class PasDeTir {
 	 * @param nbtireurparcible le nombre de tireur par cible servant de base au calcul de la table d'occupation
 	 * @return la table d'occupation des cibles
 	 */
-	public Hashtable<DistancesEtBlason, OccupationCibles> getOccupationCibles(int nbtireurparcible) {
+	public Hashtable<DistancesEtBlason, TargetsOccupation> getOccupationCibles(int nbtireurparcible) {
 		return calculatePlaceDisponible(nbtireurparcible);
 	}
 	
@@ -214,11 +216,11 @@ public class PasDeTir {
 	public int getNbCiblesLibre(int nbtireurparcible) {
 		int nbCibleOccupe = 0;
 		//deduit le nombre de cible libre de la table d'ocupation des cibles
-		Hashtable<DistancesEtBlason, OccupationCibles> occupationCibles = getOccupationCibles(nbtireurparcible);
+		Hashtable<DistancesEtBlason, TargetsOccupation> occupationCibles = getOccupationCibles(nbtireurparcible);
 		//decompte les cibles occupés
-		Enumeration<OccupationCibles> ocEnum = occupationCibles.elements();
+		Enumeration<TargetsOccupation> ocEnum = occupationCibles.elements();
 		while(ocEnum.hasMoreElements()) {
-			OccupationCibles oc = ocEnum.nextElement();
+			TargetsOccupation oc = ocEnum.nextElement();
 
 			nbCibleOccupe += (oc.getPlaceOccupe() + oc.getPlaceLibre()) / nbtireurparcible;
 		}
@@ -233,7 +235,7 @@ public class PasDeTir {
 	 * @return true si une place est disponible pour le concurrent, false sinon
 	 */
 	public boolean havePlaceForConcurrent(Concurrent concurrent) {
-		OccupationCibles place = null;
+		TargetsOccupation place = null;
 		if(!ficheConcours.getConcurrentList().contains(concurrent, concurrent.getDepart())) {
 			place = getOccupationCibles(ficheConcours.getParametre().getNbTireur()).get(
 					DistancesEtBlason.getDistancesEtBlasonForConcurrent(ficheConcours.getParametre().getReglement(), concurrent));

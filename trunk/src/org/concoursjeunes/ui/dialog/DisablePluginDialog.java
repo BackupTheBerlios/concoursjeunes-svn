@@ -1,5 +1,7 @@
 /*
- * Copyright 2002-2008 - Aurélien JEOFFRAY
+ * Créer le 30 déc. 07 à 15:02:57 pour ConcoursJeunes
+ *
+ * Copyright 2002-2007 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
  *
@@ -84,133 +86,172 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes;
+package org.concoursjeunes.ui.dialog;
 
-import java.awt.EventQueue;
-import java.awt.Toolkit;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.concoursjeunes.exceptions.ExceptionHandlingEventQueue;
-import org.concoursjeunes.plugins.PluginEntry;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
+import org.concoursjeunes.ConcoursJeunes;
 import org.concoursjeunes.plugins.PluginLoader;
 import org.concoursjeunes.plugins.PluginMetadata;
 import org.concoursjeunes.plugins.Plugin.Type;
-import org.concoursjeunes.ui.ConcoursJeunesFrame;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
 import ajinteractive.standard.common.AJToolKit;
+import ajinteractive.standard.java2.GridbagComposer;
 
 /**
- * Class initial de l'application.
- * 
- * @author Aurelien JEOFFRAY
- * @version 2.0
- * 
+ * @author Aurélien JEOFFRAY
+ *
  */
-public class Main {
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
+public class DisablePluginDialog extends JDialog implements ActionListener {
+	
+	//private JFrame parentframe;
+	
+	private JLabel jlColumnName = new JLabel();
+	private JLabel jlColumnState = new JLabel();
+	
+	private Hashtable<String, JLabel> jlNomsPlugins = new Hashtable<String, JLabel>();
+	private Hashtable<String, JCheckBox> jcbStatePlugins = new Hashtable<String, JCheckBox>();
+	
+	private JButton jbValider = new JButton();
+	private JButton jbAnnuler = new JButton();
+	
+	private List<PluginMetadata> plugins;
+	
+	public DisablePluginDialog(JFrame parentframe) {
+		super(parentframe, true);
 		
-		System.setProperty("java.net.useSystemProxies","true"); //$NON-NLS-1$ //$NON-NLS-2$
+		//this.parentframe = parentframe;
+		PluginLoader pl = new PluginLoader();
+		plugins = pl.getPlugins(Type.STARTUP);
 		
-		Thread.UncaughtExceptionHandler handlerException = new Thread.UncaughtExceptionHandler() {
+		init();
+		affectLibelle();
+	}
+	
+	private void init() {
+		JPanel jpPrincipal = new JPanel();
+		JPanel jpAction = new JPanel();
+		
+		GridBagConstraints c = new GridBagConstraints();
+		GridbagComposer gridbagComposer = new GridbagComposer();
+		
+		jbAnnuler.addActionListener(this);
+		jbValider.addActionListener(this);
 
-			@Override
-			public void uncaughtException(Thread t, final Throwable e) {
-				EventQueue.invokeLater(new Runnable() {
-			         public void run() {
-						JXErrorPane.showDialog(null, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
-								e.toString(),
-								null, null, e, Level.SEVERE, null));
-			        	//JXErrorPane.showDialog(e);
-						e.printStackTrace();
-			         }
-				});
-			}
-		};
-		
-		Thread.setDefaultUncaughtExceptionHandler(handlerException);
-		Toolkit.getDefaultToolkit().getSystemEventQueue().push(new ExceptionHandlingEventQueue());
-		ConcoursJeunes concoursJeunes = ConcoursJeunes.getInstance();
-		if(System.getProperty("noplugin") == null) { //$NON-NLS-1$
-			loadStartupPlugin();
+		gridbagComposer.setParentPanel(jpPrincipal);
+		c.gridy = 0;
+		c.weightx = 1.0;
+		c.anchor = GridBagConstraints.CENTER;
+		gridbagComposer.addComponentIntoGrid(jlColumnName, c);
+		gridbagComposer.addComponentIntoGrid(jlColumnState, c);
+		for (PluginMetadata pm : plugins) {
+			JLabel label = new JLabel(pm.getOptionLabel());
+			label.setToolTipText(pm.getInfo());
+			jlNomsPlugins.put(pm.getName(), label);
+			jcbStatePlugins.put(pm.getName(), new JCheckBox("", true)); //$NON-NLS-1$
+			
+			c.gridy++;
+			c.anchor = GridBagConstraints.WEST;
+			gridbagComposer.addComponentIntoGrid(jlNomsPlugins.get(pm.getName()), c);
+			c.anchor = GridBagConstraints.CENTER;
+			gridbagComposer.addComponentIntoGrid(jcbStatePlugins.get(pm.getName()), c);
 		}
-
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			@Override
-			public void run() {
-				try {
-					Thread.setDefaultUncaughtExceptionHandler(null);
-
-					// rend l'ensemble des fichier de la base accessible en lecture/ecriture pour permettre
-					// le multiutilisateur
-					File[] dbfiles = new File(ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "base").listFiles(); //$NON-NLS-1$
-					for (File dbfile : dbfiles) {
-						if (dbfile.isFile()) {
-							dbfile.setWritable(true, false);
-						}
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-		System.out.println("core loaded"); //$NON-NLS-1$
-		new ConcoursJeunesFrame(concoursJeunes);
+		c.gridy++;
+		c.gridwidth = 2;
+		c.weighty = 1.0;
+		c.fill = GridBagConstraints.BOTH;
+		gridbagComposer.addComponentIntoGrid(Box.createGlue(), c);
+		
+		jpAction.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		jpAction.add(jbValider);
+		jpAction.add(jbAnnuler);
+		
+		getContentPane().setLayout(new BorderLayout());
+		getContentPane().add(new JScrollPane(jpPrincipal), BorderLayout.CENTER);
+		getContentPane().add(jpAction, BorderLayout.SOUTH);
+	}
+	
+	private void affectLibelle() {
+		jlColumnName.setText(ConcoursJeunes.ajrLibelle.getResourceString("disableplugin.columnname")); //$NON-NLS-1$
+		jlColumnState.setText(ConcoursJeunes.ajrLibelle.getResourceString("disableplugin.columnstate")); //$NON-NLS-1$
+		
+		jbValider.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
+		jbAnnuler.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
 	}
 	
 	@SuppressWarnings("unchecked")
-	private static void loadStartupPlugin() {
-		PluginLoader pl = new PluginLoader();
-		
+	private void completePanel() {
 		List<String> disablePlugin = null;
 		try {
 			disablePlugin = (List<String>)AJToolKit.loadXMLStructure(
 					new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "disable_plugins.xml"), false); //$NON-NLS-1$
 		} catch (IOException e) {
+			JXErrorPane.showDialog(this, 
+					new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+							null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		}
+		if(disablePlugin != null) {
+			for(String name : disablePlugin) {
+				jcbStatePlugins.get(name).setSelected(false);
+			}
+		}
+	}
+	
+	public void showDisablePluginDialog() {
+		completePanel();
+		setSize(new Dimension(400,300));
+		setLocationRelativeTo(null);
+		setVisible(true);
+	}
 
-		for (PluginMetadata pm : pl.getPlugins(Type.STARTUP)) {
-			if(disablePlugin != null && disablePlugin.contains(pm.getName()))
-				continue;
-			try {
-				Class<?> cla = pm.getPluginClass();
-				
-				assert cla != null : "le loader devrait toujours retourner une class"; //$NON-NLS-1$
-				
-				Object plugin = cla.newInstance();
-				for (Method m : cla.getMethods()) {
-					if (m.isAnnotationPresent(PluginEntry.class)) {
-						m.invoke(plugin, (Object[]) null);
-						break;
-					}
+	/* (non-Javadoc)
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() == jbValider) {
+			List<String> disablePlugin = new ArrayList<String>();
+			for(PluginMetadata pm : plugins) {
+				if(!jcbStatePlugins.get(pm.getName()).isSelected()) {
+					disablePlugin.add(pm.getName());
 				}
-			} catch (InstantiationException e1) {
-				JXErrorPane.showDialog(null, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
-						null, null, e1, Level.SEVERE, null));
-				e1.printStackTrace();
-			} catch (IllegalAccessException e1) {
-				JXErrorPane.showDialog(null, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
-						null, null, e1, Level.SEVERE, null));
-				e1.printStackTrace();
-			} catch (SecurityException e1) {
-				JXErrorPane.showDialog(null, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
-						null, null, e1, Level.SEVERE, null));
-				e1.printStackTrace();
-			} catch (InvocationTargetException e1) {
-				JXErrorPane.showDialog(null, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+			}
+
+			try {
+				AJToolKit.saveXMLStructure(
+						new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "disable_plugins.xml"), disablePlugin, false); //$NON-NLS-1$
+				setVisible(false);
+			} catch (IOException e1) {
+				JXErrorPane.showDialog(this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 						null, null, e1, Level.SEVERE, null));
 				e1.printStackTrace();
 			}
+			
+		} else if(e.getSource() == jbAnnuler) {
+			setVisible(false);
 		}
 	}
 }

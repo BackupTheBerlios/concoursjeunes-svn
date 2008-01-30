@@ -1,6 +1,4 @@
 /*
- * Créer le 29 déc. 07 à 16:15:22 pour ConcoursJeunes
- *
  * Copyright 2002-2007 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
@@ -71,7 +69,7 @@
  * knowledge of the CeCILL license and that you accept its terms.
  *
  *  *** GNU GPL Terms *** 
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -86,107 +84,64 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes.plugins.phoenix;
+package org.concoursjeunes.event;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.concoursjeunes.*;
-import org.concoursjeunes.event.ConcoursJeunesEvent;
-import org.concoursjeunes.event.ConcoursJeunesListener;
-import org.concoursjeunes.plugins.Plugin;
-import org.concoursjeunes.plugins.PluginEntry;
-
-import ajinteractive.standard.common.AJToolKit;
+import org.concoursjeunes.Cible;
+import org.concoursjeunes.Concurrent;
 
 /**
+ * Evenement transmit par l'objet Cible lorsqu'un concurrent la rejoint
+ * ou la quitte
+ * 
  * @author Aurélien JEOFFRAY
  *
  */
-@Plugin(type = Plugin.Type.STARTUP)
-public class PhoenixPlugin extends Thread implements ConcoursJeunesListener {
-	public PhoenixPlugin() {
-		ConcoursJeunes.getInstance().addConcoursJeunesListener(this);
-	}
+public class CibleEvent {
+	private Concurrent concurrent;
+	private Cible cible;
 	
-	@Override
-	@PluginEntry
-	public void start() {
-		super.start();
-	}
-	
-	@Override
-	public void run() {
-		Configuration configuration = ConcoursJeunes.getConfiguration();
-		
-		MetaDataFichesConcours metaDataFichesConcours = configuration.getMetaDataFichesConcours();
-		
-		String concoursPath = ConcoursJeunes.userRessources.getConcoursPathForProfile(configuration.getCurProfil());
-		
-		File[] concoursFiles = new File(concoursPath).listFiles();
-		
-		if(metaDataFichesConcours.getFiches().size() != concoursFiles.length) {
-			for(File concoursFile : concoursFiles) {
-				try {
-					Object obj = AJToolKit.loadXMLStructure(concoursFile, true);
-					if(obj != null && obj instanceof Object[]) {
-						Object[] structure = (Object[])obj;
-						if(structure[0] instanceof Parametre) {
-							Parametre parametre = (Parametre) structure[0];
-							
-							MetaDataFicheConcours metaDataFicheConcours = new MetaDataFicheConcours(
-									parametre.getDate(), parametre.getIntituleConcours(), parametre.getSaveName());
-							if(!metaDataFichesConcours.contains(metaDataFicheConcours)) {
-								metaDataFichesConcours.add(metaDataFicheConcours);
-							}
-						}
-					} else {
-						//concoursFile.delete(); //Fichier verolé on supprime
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
+	/**
+	 * @param concurrent le concurrent qui rejoint ou quitte la cible
+	 * @param cible la cible concerné
+	 */
+	public CibleEvent(Concurrent concurrent, Cible cible) {
+		this.concurrent = concurrent;
+		this.cible = cible;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.concoursjeunes.ConcoursJeunesListener#configurationChanged(org.concoursjeunes.ConcoursJeunesEvent)
+	/**
+	 * Retourne le concurrent qui rejoin ou quitte la cible
+	 * 
+	 * @return concurrent le concurrent qui rejoint ou quitte la cible
 	 */
-	@Override
-	public void configurationChanged(ConcoursJeunesEvent concoursJeunesEvent) {
-		run();
+	public Concurrent getConcurrent() {
+		return concurrent;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursClosed(org.concoursjeunes.ConcoursJeunesEvent)
+	/**
+	 * Défini le concurrent qui rejoint ou quitte la cible
+	 * 
+	 * @param concurrent le concurrent qui rejoint ou quitte la cible
 	 */
-	@Override
-	public void ficheConcoursClosed(ConcoursJeunesEvent concoursJeunesEvent) {
-		
+	public void setConcurrent(Concurrent concurrent) {
+		this.concurrent = concurrent;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursCreated(org.concoursjeunes.ConcoursJeunesEvent)
+	/**
+	 * Retourne la cible à l'origine de l'événement
+	 * 
+	 * @return cible la cible à l'origine de l'événement
 	 */
-	@Override
-	public void ficheConcoursCreated(ConcoursJeunesEvent concoursJeunesEvent) {
-		
+	public Cible getCible() {
+		return cible;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursDeleted(org.concoursjeunes.ConcoursJeunesEvent)
+	/**
+	 * Défini la cible à l'origine de l'événement
+	 * 
+	 * @param cible la cible à l'origine de l'événement
 	 */
-	@Override
-	public void ficheConcoursDeleted(ConcoursJeunesEvent concoursJeunesEvent) {
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursRestored(org.concoursjeunes.ConcoursJeunesEvent)
-	 */
-	@Override
-	public void ficheConcoursRestored(ConcoursJeunesEvent concoursJeunesEvent) {
-		
+	public void setCible(Cible cible) {
+		this.cible = cible;
 	}
 }

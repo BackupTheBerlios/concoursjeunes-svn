@@ -96,6 +96,10 @@ import java.util.Map.Entry;
 
 import javax.swing.event.EventListenerList;
 
+import org.concoursjeunes.event.CibleEvent;
+import org.concoursjeunes.event.CibleListener;
+import org.concoursjeunes.exceptions.PlacementException;
+
 /**
  * Reprensentation de l'entite 'Cible' avec ses parametres de distances, de
  * blason appliqué et les concurrents qui y sont associés

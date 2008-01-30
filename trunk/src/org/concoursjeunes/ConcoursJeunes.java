@@ -120,6 +120,9 @@ import javax.swing.event.EventListenerList;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.concoursjeunes.builders.FicheConcoursBuilder;
+import org.concoursjeunes.event.ConcoursJeunesEvent;
+import org.concoursjeunes.event.ConcoursJeunesListener;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 import org.xml.sax.InputSource;

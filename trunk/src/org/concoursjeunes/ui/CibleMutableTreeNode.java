@@ -11,10 +11,10 @@ import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 
 import org.concoursjeunes.Cible;
-import org.concoursjeunes.CibleEvent;
-import org.concoursjeunes.CibleListener;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.TargetPosition;
+import org.concoursjeunes.event.CibleEvent;
+import org.concoursjeunes.event.CibleListener;
 
 /**
  * @author Aurélien JEOFFRAY

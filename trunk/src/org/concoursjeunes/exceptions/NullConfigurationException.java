@@ -1,7 +1,7 @@
 /*
- * Créer le 21 nov. 07 à 11:21:11 pour ConcoursJeunes
+ * Créé le 3 mai 07 à 12:26:51 pour ConcoursJeunes
  *
- * Copyright 2002-2008 - Aurélien JEOFFRAY
+ * Copyright 2002-2007 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
  *
@@ -86,59 +86,30 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes;
-
-import java.text.DecimalFormat;
+package org.concoursjeunes.exceptions;
 
 /**
- * Represente une position sur le pas de tir
+ * Répresente une exception de l'execution du programme
+ * pour cause d'absence d'objet de configuration
  * 
  * @author Aurélien JEOFFRAY
  *
  */
-public class TargetPosition {
-	private int target = 0;
-	private int position = 0;
-	
-	public TargetPosition() {
-		
-	}
-	/**
-	 * @param target
-	 * @param position
-	 */
-	public TargetPosition(int target, int position) {
+public class NullConfigurationException extends Exception {
+
+	public NullConfigurationException() {
 		super();
-		this.target = target;
-		this.position = position;
 	}
-	/**
-	 * @return target
-	 */
-	public int getTarget() {
-		return target;
+
+	public NullConfigurationException(String message, Throwable cause) {
+		super(message, cause);
 	}
-	/**
-	 * @param target target à définir
-	 */
-	public void setTarget(int target) {
-		this.target = target;
+
+	public NullConfigurationException(String message) {
+		super(message);
 	}
-	/**
-	 * @return position
-	 */
-	public int getPosition() {
-		return position;
-	}
-	/**
-	 * @param position position à définir
-	 */
-	public void setPosition(int position) {
-		this.position = position;
-	}
-	
-	@Override
-	public String toString() {
-		return new DecimalFormat("00").format(target) + (char) ('A' + position); //$NON-NLS-1$
+
+	public NullConfigurationException(Throwable cause) {
+		super(cause);
 	}
 }

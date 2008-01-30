@@ -1,7 +1,7 @@
 /*
- * Créer le 21 nov. 07 à 11:21:11 pour ConcoursJeunes
+ * Créer le 22 mai 07 à 15:43:45 pour ConcoursJeunes
  *
- * Copyright 2002-2008 - Aurélien JEOFFRAY
+ * Copyright 2002-2007 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
  *
@@ -86,59 +86,99 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes;
+package org.concoursjeunes.builders;
 
-import java.text.DecimalFormat;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.DistancesEtBlason;
+import org.concoursjeunes.Reglement;
 
 /**
- * Represente une position sur le pas de tir
- * 
  * @author Aurélien JEOFFRAY
  *
  */
-public class TargetPosition {
-	private int target = 0;
-	private int position = 0;
-	
-	public TargetPosition() {
+public class DistancesEtBlasonBuilder {
+	/**
+	 * Construit un objet DistancesEtBlason en se basan sur le numero de sa reference
+	 * en base ainsi que le numero de réglement.<br>
+	 * Associe à l'objet DistancesEtBlason l'objet Reglement lié
+	 * 
+	 * @param numdistancesblason Le numero de la ligne en base
+	 * @param reglement Le réglement à lié
+	 * @param hashReglement Le code réglement associé  à l'objet
+	 * @return l'objet DistancesEtBlason généré
+	 */
+	public static DistancesEtBlason getDistancesEtBlason(int numdistancesblason, Reglement reglement, int hashReglement) {
+		PreparedStatement pstmt = null;
+		DistancesEtBlason distancesEtBlason = null;
 		
-	}
-	/**
-	 * @param target
-	 * @param position
-	 */
-	public TargetPosition(int target, int position) {
-		super();
-		this.target = target;
-		this.position = position;
-	}
-	/**
-	 * @return target
-	 */
-	public int getTarget() {
-		return target;
-	}
-	/**
-	 * @param target target à définir
-	 */
-	public void setTarget(int target) {
-		this.target = target;
-	}
-	/**
-	 * @return position
-	 */
-	public int getPosition() {
-		return position;
-	}
-	/**
-	 * @param position position à définir
-	 */
-	public void setPosition(int position) {
-		this.position = position;
-	}
-	
-	@Override
-	public String toString() {
-		return new DecimalFormat("00").format(target) + (char) ('A' + position); //$NON-NLS-1$
+		try {
+			String sql = "select * from DISTANCESBLASONS where " + //$NON-NLS-1$
+					"NUMDISTANCESBLASONS=? and NUMREGLEMENT=?"; //$NON-NLS-1$
+			
+			pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
+			
+			pstmt.setInt(1, numdistancesblason);
+			pstmt.setInt(2, hashReglement);
+			
+			ResultSet rs = pstmt.executeQuery();
+			
+			if(rs.first()) {
+				distancesEtBlason = new DistancesEtBlason();
+				if(hashReglement != 0)
+					distancesEtBlason.setNumdistancesblason(numdistancesblason);
+				distancesEtBlason.setReglement(reglement);
+				distancesEtBlason.setTargetFace(BlasonBuilder.getBlasons(numdistancesblason, hashReglement));
+				//distancesEtBlason.setBlason(rs.getInt("BLASONS")); //$NON-NLS-1$
+				
+				pstmt.close();
+				
+				sql = "select * from ASSOCIER where " + //$NON-NLS-1$
+						"NUMDISTANCESBLASONS=? and NUMREGLEMENT=?"; //$NON-NLS-1$
+				pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
+				
+				pstmt.setInt(1, numdistancesblason);
+				pstmt.setInt(2, hashReglement);
+				
+				rs = pstmt.executeQuery();
+				
+				if(rs.first()) {
+					distancesEtBlason.setCriteriaSet(CriteriaSetBuilder.getCriteriaSet(rs.getInt("NUMCRITERIASET"), reglement, hashReglement)); //$NON-NLS-1$
+				} else {
+					return null;
+				}
+				
+				pstmt.close();
+				
+				sql = "select * from distances where " + //$NON-NLS-1$
+						"NUMDISTANCESBLASONS=? and NUMREGLEMENT=?"; //$NON-NLS-1$
+				pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
+				
+				pstmt.setInt(1, numdistancesblason);
+				pstmt.setInt(2, hashReglement);
+				
+				rs = pstmt.executeQuery();
+				ArrayList<Integer> distances = new ArrayList<Integer>();
+				while(rs.next()) {
+					distances.add(rs.getInt("DISTANCE")); //$NON-NLS-1$
+				}
+				int[] iDist = new int[distances.size()];
+				for(int i = 0; i < iDist.length; i++)
+					iDist[i] = distances.get(i);
+				distancesEtBlason.setDistance(iDist);
+				
+				pstmt.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try { if(pstmt != null && !pstmt.isClosed()) pstmt.close(); } catch (SQLException e) { }
+		}
+		
+		return distancesEtBlason;
 	}
 }

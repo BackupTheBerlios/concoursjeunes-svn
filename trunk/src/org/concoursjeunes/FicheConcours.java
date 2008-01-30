@@ -30,6 +30,11 @@ import java.util.logging.Level;
 import javax.swing.event.EventListenerList;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.concoursjeunes.builders.EquipeListBuilder;
+import org.concoursjeunes.event.FicheConcoursEvent;
+import org.concoursjeunes.event.FicheConcoursListener;
+import org.concoursjeunes.event.ParametreEvent;
+import org.concoursjeunes.event.ParametreListener;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 

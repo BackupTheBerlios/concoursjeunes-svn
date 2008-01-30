@@ -1,7 +1,5 @@
 /*
- * Créer le 21 nov. 07 à 11:21:11 pour ConcoursJeunes
- *
- * Copyright 2002-2008 - Aurélien JEOFFRAY
+ * Copyright 2002-2007 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
  *
@@ -71,7 +69,7 @@
  * knowledge of the CeCILL license and that you accept its terms.
  *
  *  *** GNU GPL Terms *** 
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -86,59 +84,79 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes;
+package org.concoursjeunes.event;
 
-import java.text.DecimalFormat;
+import org.concoursjeunes.FicheConcours;
 
 /**
- * Represente une position sur le pas de tir
+ * Objet evenement de la class ConcoursJeunes
  * 
  * @author Aurélien JEOFFRAY
- *
  */
-public class TargetPosition {
-	private int target = 0;
-	private int position = 0;
+public class ConcoursJeunesEvent {
 	
-	public TargetPosition() {
-		
-	}
 	/**
-	 * @param target
-	 * @param position
+	 * Type d'evenement pouvant être émis par la class ConcoursJeunes
+	 * 
+	 * @author Aurélien JEOFFRAY
 	 */
-	public TargetPosition(int target, int position) {
-		super();
-		this.target = target;
-		this.position = position;
-	}
-	/**
-	 * @return target
-	 */
-	public int getTarget() {
-		return target;
-	}
-	/**
-	 * @param target target à définir
-	 */
-	public void setTarget(int target) {
-		this.target = target;
-	}
-	/**
-	 * @return position
-	 */
-	public int getPosition() {
-		return position;
-	}
-	/**
-	 * @param position position à définir
-	 */
-	public void setPosition(int position) {
-		this.position = position;
+	public enum Type {
+		NONE,
+		CREATE_CONCOURS,
+		DELETE_CONCOURS,
+		CLOSE_CONCOURS,
+		OPEN_CONCOURS,
+		CONFIGURATION_CHANGED
 	}
 	
-	@Override
-	public String toString() {
-		return new DecimalFormat("00").format(target) + (char) ('A' + position); //$NON-NLS-1$
+	private FicheConcours ficheConcours;
+	
+	private Type action = Type.NONE;
+
+	/**
+	 * Construit un nouvel evenement
+	 * 
+	 * @param ficheConcours la ficheConcours crée/supprimé
+	 * @param action l'action réalisé
+	 */
+	public ConcoursJeunesEvent(FicheConcours ficheConcours, Type action) {
+		this.ficheConcours = ficheConcours;
+		this.action = action;
+	}
+
+	/**
+	 * Retourne l'action à l'origine de l'évenement
+	 * 
+	 * @return action l'action à l'orine de l'évenement
+	 */
+	public Type getAction() {
+		return action;
+	}
+
+	/**
+	 * Définit l'action à l'origine de l'évenement
+	 * 
+	 * @param action l'action à l'orine de l'évenement
+	 */
+	public void setAction(Type action) {
+		this.action = action;
+	}
+
+	/**
+	 * Retourne la fiche concours objet de l'évenement
+	 * 
+	 * @return ficheConcours la fiche concours objet de l'évenement
+	 */
+	public FicheConcours getFicheConcours() {
+		return ficheConcours;
+	}
+
+	/**
+	 * Définit la fiche concours objet de l'évenement
+	 * 
+	 * @param ficheConcours la fiche concours objet de l'évenement
+	 */
+	public void setFicheConcours(FicheConcours ficheConcours) {
+		this.ficheConcours = ficheConcours;
 	}
 }

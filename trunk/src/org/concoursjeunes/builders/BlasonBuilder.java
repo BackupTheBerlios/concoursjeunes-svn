@@ -1,5 +1,5 @@
 /*
- * Créer le 29 déc. 07 à 16:15:22 pour ConcoursJeunes
+ * Créer le 15 déc. 07 à 20:35:47 pour ConcoursJeunes
  *
  * Copyright 2002-2007 - Aurélien JEOFFRAY
  *
@@ -86,107 +86,71 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes.plugins.phoenix;
+package org.concoursjeunes.builders;
 
-import java.io.File;
-import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-import org.concoursjeunes.*;
-import org.concoursjeunes.event.ConcoursJeunesEvent;
-import org.concoursjeunes.event.ConcoursJeunesListener;
-import org.concoursjeunes.plugins.Plugin;
-import org.concoursjeunes.plugins.PluginEntry;
-
-import ajinteractive.standard.common.AJToolKit;
+import org.concoursjeunes.Blason;
+import org.concoursjeunes.ConcoursJeunes;
 
 /**
+ * Construit un objet blason à partir des données en base
+ * 
  * @author Aurélien JEOFFRAY
+ * @version 1.0
  *
  */
-@Plugin(type = Plugin.Type.STARTUP)
-public class PhoenixPlugin extends Thread implements ConcoursJeunesListener {
-	public PhoenixPlugin() {
-		ConcoursJeunes.getInstance().addConcoursJeunesListener(this);
-	}
+public class BlasonBuilder {
 	
-	@Override
-	@PluginEntry
-	public void start() {
-		super.start();
-	}
-	
-	@Override
-	public void run() {
-		Configuration configuration = ConcoursJeunes.getConfiguration();
-		
-		MetaDataFichesConcours metaDataFichesConcours = configuration.getMetaDataFichesConcours();
-		
-		String concoursPath = ConcoursJeunes.userRessources.getConcoursPathForProfile(configuration.getCurProfil());
-		
-		File[] concoursFiles = new File(concoursPath).listFiles();
-		
-		if(metaDataFichesConcours.getFiches().size() != concoursFiles.length) {
-			for(File concoursFile : concoursFiles) {
-				try {
-					Object obj = AJToolKit.loadXMLStructure(concoursFile, true);
-					if(obj != null && obj instanceof Object[]) {
-						Object[] structure = (Object[])obj;
-						if(structure[0] instanceof Parametre) {
-							Parametre parametre = (Parametre) structure[0];
-							
-							MetaDataFicheConcours metaDataFicheConcours = new MetaDataFicheConcours(
-									parametre.getDate(), parametre.getIntituleConcours(), parametre.getSaveName());
-							if(!metaDataFichesConcours.contains(metaDataFicheConcours)) {
-								metaDataFichesConcours.add(metaDataFicheConcours);
-							}
-						}
-					} else {
-						//concoursFile.delete(); //Fichier verolé on supprime
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+	/**
+	 * Retourne le blason associé à une ligne distance/blason d'un réglement donnée
+	 * 
+	 * @param numdistancesblason le numero de distance/blason
+	 * @param numreglement le numrero de reglement
+	 * @return le blason associé à la ligne d/b du réglement donnée
+	 */
+	public static Blason getBlasons(int numdistancesblason, int numreglement) {
+		try {
+			String sql = "select BLASONS.* from DISTANCESBLASONS,BLASONS " //$NON-NLS-1$
+				+ "where DISTANCESBLASONS.NUMBLASON=BLASONS.NUMBLASON AND NUMDISTANCESBLASONS=? and NUMREGLEMENT=? order by NUMORDRE DESC"; //$NON-NLS-1$
+			
+			PreparedStatement pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
+			
+			pstmt.setInt(1, numdistancesblason);
+			pstmt.setInt(2, numreglement);
+			
+			ResultSet rs = pstmt.executeQuery();
+			
+			if(rs.first()) {		
+				return getBlason(rs);
 			}
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
-	}
-
-	/* (non-Javadoc)
-	 * @see org.concoursjeunes.ConcoursJeunesListener#configurationChanged(org.concoursjeunes.ConcoursJeunesEvent)
-	 */
-	@Override
-	public void configurationChanged(ConcoursJeunesEvent concoursJeunesEvent) {
-		run();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursClosed(org.concoursjeunes.ConcoursJeunesEvent)
-	 */
-	@Override
-	public void ficheConcoursClosed(ConcoursJeunesEvent concoursJeunesEvent) {
 		
+		return null;
 	}
-
-	/* (non-Javadoc)
-	 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursCreated(org.concoursjeunes.ConcoursJeunesEvent)
+	
+	/**
+	 * Construit un blason à partir d'un jeux de résultat transmis en parametre.<br>
+	 * Le jeux de résultat doit posseder les champs de la table BLASONS.
+	 * Si le jeux de résultat n'est pas valide, retourne une exception <i>SQLException</i>
+	 * 
+	 * @param rs le jeux de résultat à partir duquel construire l'objet blason
+	 * @return le blason construit à partir du jeux de résultat
+	 * @throws SQLException retourné si le jeux de résultat ne contient pas l'ensemble<br>
+	 * des champs de la table BLASONS 
 	 */
-	@Override
-	public void ficheConcoursCreated(ConcoursJeunesEvent concoursJeunesEvent) {
+	public static Blason getBlason(ResultSet rs) throws SQLException {
+		Blason blason = new Blason();
+		blason.setNumblason(rs.getInt("NUMBLASON")); //$NON-NLS-1$
+		blason.setName(rs.getString("NOMBLASON")); //$NON-NLS-1$
+		blason.setHorizontalRatio(rs.getDouble("HORIZONTAL_RATIO")); //$NON-NLS-1$
+		blason.setVerticalRatio(rs.getDouble("VERTICAL_RATIO")); //$NON-NLS-1$
+		blason.setNbArcher(rs.getInt("NUMORDRE")); //$NON-NLS-1$
 		
-	}
-
-	/* (non-Javadoc)
-	 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursDeleted(org.concoursjeunes.ConcoursJeunesEvent)
-	 */
-	@Override
-	public void ficheConcoursDeleted(ConcoursJeunesEvent concoursJeunesEvent) {
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursRestored(org.concoursjeunes.ConcoursJeunesEvent)
-	 */
-	@Override
-	public void ficheConcoursRestored(ConcoursJeunesEvent concoursJeunesEvent) {
-		
+		return blason;
 	}
 }

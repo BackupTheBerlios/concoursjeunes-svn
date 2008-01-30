@@ -95,6 +95,9 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 
+import org.concoursjeunes.event.AutoCompleteDocumentEvent;
+import org.concoursjeunes.event.AutoCompleteDocumentListener;
+
 /**
  * Réalise la saisi semi automatique d'un concurrent en fonction de
  * la chaine saisi manuellement et des informations présente en base

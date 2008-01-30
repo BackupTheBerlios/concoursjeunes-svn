@@ -1,6 +1,4 @@
 /*
- * Créer le 29 déc. 07 à 16:15:22 pour ConcoursJeunes
- *
  * Copyright 2002-2007 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
@@ -71,7 +69,7 @@
  * knowledge of the CeCILL license and that you accept its terms.
  *
  *  *** GNU GPL Terms *** 
- * 
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -86,107 +84,119 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes.plugins.phoenix;
+package org.concoursjeunes.ui.dialog;
 
-import java.io.File;
-import java.io.IOException;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import org.concoursjeunes.*;
-import org.concoursjeunes.event.ConcoursJeunesEvent;
-import org.concoursjeunes.event.ConcoursJeunesListener;
-import org.concoursjeunes.plugins.Plugin;
-import org.concoursjeunes.plugins.PluginEntry;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 
-import ajinteractive.standard.common.AJToolKit;
+import org.concoursjeunes.ConcoursJeunes;
+
+import ajinteractive.standard.java2.GridbagComposer;
 
 /**
  * @author Aurélien JEOFFRAY
  *
  */
-@Plugin(type = Plugin.Type.STARTUP)
-public class PhoenixPlugin extends Thread implements ConcoursJeunesListener {
-	public PhoenixPlugin() {
-		ConcoursJeunes.getInstance().addConcoursJeunesListener(this);
-	}
-	
-	@Override
-	@PluginEntry
-	public void start() {
-		super.start();
-	}
-	
-	@Override
-	public void run() {
-		Configuration configuration = ConcoursJeunes.getConfiguration();
-		
-		MetaDataFichesConcours metaDataFichesConcours = configuration.getMetaDataFichesConcours();
-		
-		String concoursPath = ConcoursJeunes.userRessources.getConcoursPathForProfile(configuration.getCurProfil());
-		
-		File[] concoursFiles = new File(concoursPath).listFiles();
-		
-		if(metaDataFichesConcours.getFiches().size() != concoursFiles.length) {
-			for(File concoursFile : concoursFiles) {
-				try {
-					Object obj = AJToolKit.loadXMLStructure(concoursFile, true);
-					if(obj != null && obj instanceof Object[]) {
-						Object[] structure = (Object[])obj;
-						if(structure[0] instanceof Parametre) {
-							Parametre parametre = (Parametre) structure[0];
-							
-							MetaDataFicheConcours metaDataFicheConcours = new MetaDataFicheConcours(
-									parametre.getDate(), parametre.getIntituleConcours(), parametre.getSaveName());
-							if(!metaDataFichesConcours.contains(metaDataFicheConcours)) {
-								metaDataFichesConcours.add(metaDataFicheConcours);
-							}
-						}
-					} else {
-						//concoursFile.delete(); //Fichier verolé on supprime
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
+public class TypeListingDialog extends JDialog implements ActionListener {
+    public static final int ALPHA = 0;
+    public static final int GREFFE = 1;
+    public static final int TARGET = 2;
+    public static final int NONE = 3;
+    
+    private JRadioButton jrbAlpha;
+    private JRadioButton jrbGreffe;
+    private JRadioButton jrbTarget;
+    
+    private JButton jbValider;
+    private JButton jbAnnuler;
+    
+    private ButtonGroup jrbTypeExport;
+    
+    private int returnType = ALPHA;
 
-	/* (non-Javadoc)
-	 * @see org.concoursjeunes.ConcoursJeunesListener#configurationChanged(org.concoursjeunes.ConcoursJeunesEvent)
-	 */
-	@Override
-	public void configurationChanged(ConcoursJeunesEvent concoursJeunesEvent) {
-		run();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursClosed(org.concoursjeunes.ConcoursJeunesEvent)
-	 */
-	@Override
-	public void ficheConcoursClosed(ConcoursJeunesEvent concoursJeunesEvent) {
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursCreated(org.concoursjeunes.ConcoursJeunesEvent)
-	 */
-	@Override
-	public void ficheConcoursCreated(ConcoursJeunesEvent concoursJeunesEvent) {
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursDeleted(org.concoursjeunes.ConcoursJeunesEvent)
-	 */
-	@Override
-	public void ficheConcoursDeleted(ConcoursJeunesEvent concoursJeunesEvent) {
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursRestored(org.concoursjeunes.ConcoursJeunesEvent)
-	 */
-	@Override
-	public void ficheConcoursRestored(ConcoursJeunesEvent concoursJeunesEvent) {
-		
-	}
+    public TypeListingDialog(JFrame parentframe) {
+        super(parentframe);
+        
+        setTitle(ConcoursJeunes.ajrLibelle.getResourceString("typelisting.titre")); //$NON-NLS-1$
+        setModal(true);
+        
+        init();
+    }
+    
+    private void init() {
+        //Layout Manager
+        GridBagConstraints c = new GridBagConstraints();
+        
+        GridbagComposer gridbagComposer = new GridbagComposer();
+        
+        JPanel exportPane = new JPanel();
+        JPanel boutonPane = new JPanel();
+        
+        jrbAlpha = new JRadioButton(ConcoursJeunes.ajrLibelle.getResourceString("typelisting.alpha"), true); //$NON-NLS-1$
+        jrbGreffe = new JRadioButton(ConcoursJeunes.ajrLibelle.getResourceString("typelisting.greffe")); //$NON-NLS-1$
+        jrbTarget = new JRadioButton(ConcoursJeunes.ajrLibelle.getResourceString("typelisting.target")); //$NON-NLS-1$
+        
+        jbValider = new JButton(ConcoursJeunes.ajrLibelle.getResourceString("typelisting.imprimer")); //$NON-NLS-1$
+        jbAnnuler = new JButton(ConcoursJeunes.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
+        
+        jrbAlpha.addActionListener(this);
+        jrbGreffe.addActionListener(this);
+        jrbTarget.addActionListener(this);
+        jbValider.addActionListener(this);
+        jbAnnuler.addActionListener(this);
+        
+        jrbTypeExport = new ButtonGroup();
+        jrbTypeExport.add(jrbAlpha);
+        jrbTypeExport.add(jrbGreffe);
+        jrbTypeExport.add(jrbTarget);
+        
+        boutonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        boutonPane.add(jbValider);
+        boutonPane.add(jbAnnuler);
+        
+        gridbagComposer.setParentPanel(exportPane);
+        c.gridy = 0; c.anchor = GridBagConstraints.WEST;                       //Défaut,Haut
+        gridbagComposer.addComponentIntoGrid(jrbAlpha, c);
+        c.gridy++;
+        gridbagComposer.addComponentIntoGrid(jrbGreffe, c);
+        c.gridy++;                        
+        gridbagComposer.addComponentIntoGrid(jrbTarget, c);
+        c.gridy++; c.fill = GridBagConstraints.HORIZONTAL;                 
+        gridbagComposer.addComponentIntoGrid(boutonPane, c);
+        
+        getContentPane().add(exportPane);
+    }
+    
+    public int showTypeListingDialog() {
+    	pack();
+        setResizable(false);
+        setLocationRelativeTo(null);
+        setVisible(true);
+        
+        return returnType;
+    }
+    
+    public void actionPerformed(ActionEvent ae) {
+        if(ae.getSource() == jrbAlpha) {
+            returnType = ALPHA;
+        } else if(ae.getSource() == jrbGreffe) {
+            returnType = GREFFE;
+        } else if(ae.getSource() == jrbTarget) {
+            returnType = TARGET;
+        } else if(ae.getSource() == jbValider) {
+            setVisible(false);
+        } else if(ae.getSource() == jbAnnuler) {
+            returnType = NONE;
+            setVisible(false);
+        }
+    }
 }

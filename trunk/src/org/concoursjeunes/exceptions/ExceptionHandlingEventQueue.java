@@ -1,7 +1,7 @@
 /*
- * Créer le 21 nov. 07 à 11:21:11 pour ConcoursJeunes
+ * Créer le 21 août 07 à 16:36:29 pour ConcoursJeunes
  *
- * Copyright 2002-2008 - Aurélien JEOFFRAY
+ * Copyright 2002-2007 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
  *
@@ -86,59 +86,30 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes;
+package org.concoursjeunes.exceptions;
 
-import java.text.DecimalFormat;
+import java.awt.AWTEvent;
+import java.awt.EventQueue;
+import java.util.logging.Level;
+
+import org.concoursjeunes.ConcoursJeunes;
+import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.error.ErrorInfo;
 
 /**
- * Represente une position sur le pas de tir
- * 
  * @author Aurélien JEOFFRAY
- *
+ * 
  */
-public class TargetPosition {
-	private int target = 0;
-	private int position = 0;
-	
-	public TargetPosition() {
-		
-	}
-	/**
-	 * @param target
-	 * @param position
-	 */
-	public TargetPosition(int target, int position) {
-		super();
-		this.target = target;
-		this.position = position;
-	}
-	/**
-	 * @return target
-	 */
-	public int getTarget() {
-		return target;
-	}
-	/**
-	 * @param target target à définir
-	 */
-	public void setTarget(int target) {
-		this.target = target;
-	}
-	/**
-	 * @return position
-	 */
-	public int getPosition() {
-		return position;
-	}
-	/**
-	 * @param position position à définir
-	 */
-	public void setPosition(int position) {
-		this.position = position;
-	}
-	
+public class ExceptionHandlingEventQueue extends EventQueue {
 	@Override
-	public String toString() {
-		return new DecimalFormat("00").format(target) + (char) ('A' + position); //$NON-NLS-1$
+	public void dispatchEvent(AWTEvent event) {
+		try {
+			super.dispatchEvent(event);
+		} catch (RuntimeException e) {
+			JXErrorPane.showDialog(null, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+					e.toString(),
+					null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
+		}
 	}
 }

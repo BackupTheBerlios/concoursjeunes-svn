@@ -12,10 +12,10 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
 import org.concoursjeunes.Cible;
-import org.concoursjeunes.CibleEvent;
-import org.concoursjeunes.CibleListener;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.TargetPosition;
+import org.concoursjeunes.event.CibleEvent;
+import org.concoursjeunes.event.CibleListener;
 
 /**
  * @author Aurélien JEOFFRAY

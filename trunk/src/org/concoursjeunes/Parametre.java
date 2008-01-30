@@ -94,6 +94,10 @@ import java.util.Date;
 
 import javax.swing.event.EventListenerList;
 
+import org.concoursjeunes.builders.ReglementBuilder;
+import org.concoursjeunes.event.ParametreEvent;
+import org.concoursjeunes.event.ParametreListener;
+
 /**
  * Parametre d'un concours
  * 

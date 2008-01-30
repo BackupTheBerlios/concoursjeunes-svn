@@ -20,6 +20,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
 
+import org.concoursjeunes.builders.BlasonBuilder;
+
 /**
  * parametre de distances et blason pour une cible et un concurrent
  * 

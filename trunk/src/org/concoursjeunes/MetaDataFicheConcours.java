@@ -17,6 +17,9 @@ package org.concoursjeunes;
 
 import java.util.Date;
 
+import org.concoursjeunes.event.ParametreEvent;
+import org.concoursjeunes.event.ParametreListener;
+
 /**
  * @author Aurélien JEOFFRAY
  */

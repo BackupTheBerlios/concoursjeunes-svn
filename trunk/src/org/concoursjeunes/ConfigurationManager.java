@@ -98,6 +98,8 @@ import java.util.ArrayList;
 import javax.naming.ConfigurationException;
 import javax.xml.bind.JAXBException;
 
+import org.concoursjeunes.builders.ConfigurationBuilder;
+
 import ajinteractive.standard.common.AJToolKit;
 import ajinteractive.standard.utilities.io.FileUtil;
 
@@ -115,8 +117,7 @@ public class ConfigurationManager {
 	 * @return la configuation courante
 	 */
 	public static Configuration loadCurrentConfiguration() throws IOException {
-		File confFile = new File(userRessources.getConfigPathForUser() + File.separator + 
-				ajrParametreAppli.getResourceString("file.configuration")); //$NON-NLS-1$
+		File confFile = new File(userRessources.getConfigPathForUser(), ajrParametreAppli.getResourceString("file.configuration")); //$NON-NLS-1$
 
 		return loadConfiguration(confFile);
 	}
@@ -128,8 +129,7 @@ public class ConfigurationManager {
 	 * @return la configuration nommé
 	 */
 	public static Configuration loadConfiguration(String profilename) throws IOException {
-		return loadConfiguration(new File(ConcoursJeunes.userRessources.getConfigPathForUser() 
-				+ File.separator + "configuration_" + profilename + ".xml")); //$NON-NLS-1$ //$NON-NLS-2$
+		return loadConfiguration(new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "configuration_" + profilename + ".xml")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
 	/**
@@ -230,8 +230,8 @@ public class ConfigurationManager {
 		success = f.renameTo(fNew);
 		
 		//renome le dossier du profil
-		f = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + File.separator + "Profile" + File.separator + currentName); //$NON-NLS-1$
-		fNew = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + File.separator + "Profile" + File.separator + newName); //$NON-NLS-1$
+		f = new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "Profile" + File.separator + currentName); //$NON-NLS-1$
+		fNew = new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "Profile" + File.separator + newName); //$NON-NLS-1$
 		
 		if(success && f.exists() && !f.renameTo(fNew)) {
 			try {
@@ -246,10 +246,8 @@ public class ConfigurationManager {
 			if(!success) {
 				//si le renomage du dossier echoue (pouvant avoir pour seul cause
 				//une erreur système) revenir en arrière
-				f = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + File.separator 
-						+ Configuration.CONFIG_PROFILE + currentName + Configuration.EXT_XML);
-				fNew = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + File.separator 
-						+ Configuration.CONFIG_PROFILE + newName + Configuration.EXT_XML);
+				f = new File(ConcoursJeunes.userRessources.getConfigPathForUser(), Configuration.CONFIG_PROFILE + currentName + Configuration.EXT_XML);
+				fNew = new File(ConcoursJeunes.userRessources.getConfigPathForUser(), Configuration.CONFIG_PROFILE + newName + Configuration.EXT_XML);
 				fNew.renameTo(f);
 			}
 		}

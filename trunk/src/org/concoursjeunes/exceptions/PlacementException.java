@@ -1,7 +1,7 @@
 /*
- * Créer le 21 nov. 07 à 11:21:11 pour ConcoursJeunes
+ * Créer le 21 nov. 07 à 14:08:02 pour ConcoursJeunes
  *
- * Copyright 2002-2008 - Aurélien JEOFFRAY
+ * Copyright 2002-2007 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
  *
@@ -86,59 +86,68 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes;
-
-import java.text.DecimalFormat;
+package org.concoursjeunes.exceptions;
 
 /**
- * Represente une position sur le pas de tir
- * 
  * @author Aurélien JEOFFRAY
  *
  */
-public class TargetPosition {
-	private int target = 0;
-	private int position = 0;
+public class PlacementException extends Exception {
 	
-	public TargetPosition() {
-		
+	public enum Nature {
+		NULL_CONCURRENT,
+		ANY_AVAILABLE_POSITION,
+		BAD_DISTANCESANDBLASONS,
+		POSITION_AVAILABLE_FOR_VALID_CONCURRENT,
+		POSITION_RESERVED_FOR_HANDICAP,
+		UNKNOWN_ERROR
 	}
-	/**
-	 * @param target
-	 * @param position
-	 */
-	public TargetPosition(int target, int position) {
+	
+	private Nature nature = Nature.UNKNOWN_ERROR; 
+	
+	public PlacementException() {
 		super();
-		this.target = target;
-		this.position = position;
-	}
-	/**
-	 * @return target
-	 */
-	public int getTarget() {
-		return target;
-	}
-	/**
-	 * @param target target à définir
-	 */
-	public void setTarget(int target) {
-		this.target = target;
-	}
-	/**
-	 * @return position
-	 */
-	public int getPosition() {
-		return position;
-	}
-	/**
-	 * @param position position à définir
-	 */
-	public void setPosition(int position) {
-		this.position = position;
 	}
 	
-	@Override
-	public String toString() {
-		return new DecimalFormat("00").format(target) + (char) ('A' + position); //$NON-NLS-1$
+	public PlacementException(Nature nature) {
+		super();
+		
+		this.nature = nature;
+	}
+
+	/**
+	 * @param message
+	 * @param cause
+	 */
+	public PlacementException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	/**
+	 * @param message
+	 */
+	public PlacementException(String message) {
+		super(message);
+	}
+
+	/**
+	 * @param cause
+	 */
+	public PlacementException(Throwable cause) {
+		super(cause);
+	}
+
+	/**
+	 * @return nature
+	 */
+	public Nature getNature() {
+		return nature;
+	}
+
+	/**
+	 * @param nature nature à définir
+	 */
+	public void setNature(Nature nature) {
+		this.nature = nature;
 	}
 }

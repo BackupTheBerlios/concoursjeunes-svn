@@ -31,9 +31,9 @@ import org.concoursjeunes.ConcoursJeunes;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.Criterion;
 import org.concoursjeunes.FicheConcours;
-import org.concoursjeunes.dialog.ConcurrentDialog;
-import org.concoursjeunes.dialog.ParametreDialog;
-import org.concoursjeunes.dialog.ResultatDialog;
+import org.concoursjeunes.ui.dialog.ConcurrentDialog;
+import org.concoursjeunes.ui.dialog.ParametreDialog;
+import org.concoursjeunes.ui.dialog.ResultatDialog;
 
 /**
  * fiche concours. cette fiche correspond à la table d'inscrit et de résultats

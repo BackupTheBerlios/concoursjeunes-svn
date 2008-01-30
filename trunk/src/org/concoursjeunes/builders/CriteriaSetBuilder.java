@@ -1,7 +1,7 @@
 /*
- * Créer le 21 nov. 07 à 11:21:11 pour ConcoursJeunes
+ * Créer le 22 mai 07 à 12:50:28 pour ConcoursJeunes
  *
- * Copyright 2002-2008 - Aurélien JEOFFRAY
+ * Copyright 2002-2007 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
  *
@@ -86,59 +86,62 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes;
+package org.concoursjeunes.builders;
 
-import java.text.DecimalFormat;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Hashtable;
+
+import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.CriteriaSet;
+import org.concoursjeunes.Criterion;
+import org.concoursjeunes.CriterionElement;
+import org.concoursjeunes.Reglement;
 
 /**
- * Represente une position sur le pas de tir
+ * Construit un jeux de critères à partir des données en base
  * 
  * @author Aurélien JEOFFRAY
  *
  */
-public class TargetPosition {
-	private int target = 0;
-	private int position = 0;
+public class CriteriaSetBuilder {
 	
-	public TargetPosition() {
+	/**
+	 * Construit un jeux de critéres à partir des valeurs de la clé primaire de la table en base
+	 * 
+	 * @param numCriteriaSet le numero d'identifiant du jeux de critères dans la base
+	 * @param reglement le reglement concerné par le jeux de critères
+	 * @param hashReglement le numero d'identification en base du reglement
+	 * 
+	 * @return le jeux de critères concerné
+	 */
+	public static CriteriaSet getCriteriaSet(int numCriteriaSet, Reglement reglement, int hashReglement) {
+		try {
+			String sql = "select * from POSSEDE where NUMCRITERIASET=? and NUMREGLEMENT=?"; //$NON-NLS-1$
+			
+			PreparedStatement pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
+			
+			pstmt.setInt(1, numCriteriaSet);
+			pstmt.setInt(2, hashReglement);
+			
+			ResultSet rs = pstmt.executeQuery();
+			
+			Hashtable<Criterion, CriterionElement> criteria = new Hashtable<Criterion, CriterionElement>();
+			while(rs.next()) {
+				Criterion criterion = CriterionBuilder.getCriterion(rs.getString("CODECRITERE"), reglement, hashReglement); //$NON-NLS-1$
+				criteria.put(
+						criterion,
+						CriterionElementBuilder.getCriterionElement(rs.getString("CODECRITEREELEMENT"), criterion, hashReglement));//$NON-NLS-1$
+			}
+			CriteriaSet criteriaSet = new CriteriaSet();
+			criteriaSet.setCriteria(criteria);
+			
+			return criteriaSet;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		
-	}
-	/**
-	 * @param target
-	 * @param position
-	 */
-	public TargetPosition(int target, int position) {
-		super();
-		this.target = target;
-		this.position = position;
-	}
-	/**
-	 * @return target
-	 */
-	public int getTarget() {
-		return target;
-	}
-	/**
-	 * @param target target à définir
-	 */
-	public void setTarget(int target) {
-		this.target = target;
-	}
-	/**
-	 * @return position
-	 */
-	public int getPosition() {
-		return position;
-	}
-	/**
-	 * @param position position à définir
-	 */
-	public void setPosition(int position) {
-		this.position = position;
-	}
-	
-	@Override
-	public String toString() {
-		return new DecimalFormat("00").format(target) + (char) ('A' + position); //$NON-NLS-1$
+		return null;
 	}
 }

@@ -50,13 +50,13 @@ import org.concoursjeunes.ConcoursJeunes;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.ConcurrentList;
 import org.concoursjeunes.FicheConcours;
-import org.concoursjeunes.FicheConcoursEvent;
-import org.concoursjeunes.FicheConcoursListener;
-import org.concoursjeunes.PlacementException;
 import org.concoursjeunes.TargetPosition;
-import org.concoursjeunes.dialog.ConcurrentDialog;
-import org.concoursjeunes.dialog.EquipeDialog;
-import org.concoursjeunes.dialog.TypeListingDialog;
+import org.concoursjeunes.event.FicheConcoursEvent;
+import org.concoursjeunes.event.FicheConcoursListener;
+import org.concoursjeunes.exceptions.PlacementException;
+import org.concoursjeunes.ui.dialog.ConcurrentDialog;
+import org.concoursjeunes.ui.dialog.EquipeDialog;
+import org.concoursjeunes.ui.dialog.TypeListingDialog;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
@@ -518,7 +518,7 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 	/**
 	 * Invoqué lorsque la liste des concurents change (ajout ou suppression d'un concurrent)
 	 * 
-	 * @see org.concoursjeunes.FicheConcoursListener#listConcurrentChanged(org.concoursjeunes.FicheConcoursEvent)
+	 * @see org.concoursjeunes.event.FicheConcoursListener#listConcurrentChanged(org.concoursjeunes.event.FicheConcoursEvent)
 	 */
 	public void listConcurrentChanged(FicheConcoursEvent e) {
 		switch (e.getEvent()) {
