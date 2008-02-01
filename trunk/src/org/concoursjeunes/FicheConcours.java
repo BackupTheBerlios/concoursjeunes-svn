@@ -282,7 +282,9 @@ public class FicheConcours implements ParametreListener {
 	 */
 	public void save() throws IOException {
 		File f = new File(ConcoursJeunes.userRessources.getConcoursPathForProfile(ConcoursJeunes.getConfiguration().getCurProfil()) + File.separator + parametre.getSaveName());
+		System.out.println("Sauvegarde:");
 		AJToolKit.saveXMLStructure(f, getFiche(), true);
+		System.out.println("Fin Sauvegarde");
 	}
 
 	private void makePasDeTir() {

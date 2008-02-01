@@ -1,7 +1,7 @@
 /*
- * Créer le 15 déc. 07 à 20:35:47 pour ConcoursJeunes
+ * Créer le 31 janv. 08 à 22:06:16 pour ConcoursJeunes
  *
- * Copyright 2002-2007 - Aurélien JEOFFRAY
+ * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
  *
@@ -86,95 +86,42 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes.builders;
+package org.concoursjeunes;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashMap;
-
-import org.concoursjeunes.Ancrage;
-import org.concoursjeunes.Blason;
-import org.concoursjeunes.ConcoursJeunes;
-
-/**
- * Construit un objet blason à partir des données en base
- * 
- * @author Aurélien JEOFFRAY
- * @version 1.0
- *
- */
-public class BlasonBuilder {
+public class Ancrage {
+	public static final int POSITION_A = 0;
+	public static final int POSITION_B = 1;
+	public static final int POSITION_C = 2;
+	public static final int POSITION_D = 3;
+	public static final int POSITION_ABCD = 4;
+	public static final int POSITION_AB = 5;
+	public static final int POSITION_CD = 6;
 	
-	/**
-	 * Retourne le blason associé à une ligne distance/blason d'un réglement donnée
-	 * 
-	 * @param numdistancesblason le numero de distance/blason
-	 * @param numreglement le numrero de reglement
-	 * @return le blason associé à la ligne d/b du réglement donnée
-	 */
-	public static Blason getBlasons(int numdistancesblason, int numreglement) {
-		try {
-			String sql = "select BLASONS.* from DISTANCESBLASONS,BLASONS " //$NON-NLS-1$
-				+ "where DISTANCESBLASONS.NUMBLASON=BLASONS.NUMBLASON AND NUMDISTANCESBLASONS=? and NUMREGLEMENT=? order by NUMORDRE DESC"; //$NON-NLS-1$
-			
-			PreparedStatement pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
-			
-			pstmt.setInt(1, numdistancesblason);
-			pstmt.setInt(2, numreglement);
-			
-			ResultSet rs = pstmt.executeQuery();
-			
-			if(rs.first()) {		
-				return getBlason(rs);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	private double x = 0;
+	private double y = 0;
+	
+	public Ancrage() {
 		
-		return null;
 	}
 	
-	/**
-	 * Construit un blason à partir d'un jeux de résultat transmis en parametre.<br>
-	 * Le jeux de résultat doit posseder les champs de la table BLASONS.
-	 * Si le jeux de résultat n'est pas valide, retourne une exception <i>SQLException</i>
-	 * 
-	 * @param rs le jeux de résultat à partir duquel construire l'objet blason
-	 * @return le blason construit à partir du jeux de résultat
-	 * @throws SQLException retourné si le jeux de résultat ne contient pas l'ensemble<br>
-	 * des champs de la table BLASONS 
-	 */
-	public static Blason getBlason(ResultSet rs) throws SQLException {
-		
-		int numblason = rs.getInt("NUMBLASON"); //$NON-NLS-1$
-		HashMap<String, Ancrage> ancrages = new HashMap<String, Ancrage>();
-		
-		Blason blason = new Blason();
-		blason.setNumblason(numblason); 
-		blason.setName(rs.getString("NOMBLASON")); //$NON-NLS-1$
-		blason.setHorizontalRatio(rs.getDouble("HORIZONTAL_RATIO")); //$NON-NLS-1$
-		blason.setVerticalRatio(rs.getDouble("VERTICAL_RATIO")); //$NON-NLS-1$
-		blason.setNbArcher(rs.getInt("NUMORDRE")); //$NON-NLS-1$
-		
-		String sql = "select * from ANCRAGES_BLASONS where NUMBLASON=?"; //$NON-NLS-1$
-		
-		PreparedStatement pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
-		
-		pstmt.setInt(1, numblason);
-		
-		ResultSet rs2 = pstmt.executeQuery();
-		while(rs2.next()) {
-			ancrages.put(
-				rs2.getInt("EMPLACEMENT") + "", //$NON-NLS-1$
-				new Ancrage(
-					rs2.getDouble("ANCRAGEX"), //$NON-NLS-1$
-					rs2.getDouble("ANCRAGEY") //$NON-NLS-1$
-				)
-			);
-		}
-		blason.setAncrages(ancrages);
-		
-		return blason;
+	public Ancrage(double x, double y) {
+		this.x = x;
+		this.y = y;
 	}
+
+	public double getX() {
+    	return x;
+    }
+
+	public void setX(double x) {
+    	this.x = x;
+    }
+
+	public double getY() {
+    	return y;
+    }
+
+	public void setY(double y) {
+    	this.y = y;
+    }
 }

@@ -93,6 +93,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.concoursjeunes.builders.BlasonBuilder;
@@ -116,11 +117,12 @@ public class Blason {
 	private double verticalRatio = 1;
 	private int nbArcher = 4;
 	private int numordre = 0;
+	private HashMap<String, Ancrage> ancrages = new HashMap<String, Ancrage>();
 	
 	private int numblason = 0;
 	
 	public Blason() {
-		
+		System.out.println("instantiate:" + super.hashCode());
 	}
 
 	/**
@@ -131,7 +133,6 @@ public class Blason {
 	public Blason(String name) {
 		this.name = name;
 	}
-	
 
 	/**
 	 * <p>Construit un nouveau blason ayant le nom donnée en parametre ainsi
@@ -150,7 +151,6 @@ public class Blason {
 		this.horizontalRatio = horizontalRatio;
 		this.verticalRatio = verticalRatio;
 	}
-	
 	
 	/**
 	 * <p>Construit un nouveau blason ayant le nom donnée en parametre ainsi
@@ -196,7 +196,6 @@ public class Blason {
 		
 		return blasons;
 	}
-	
 
 	/**
 	 * Retourne le nom du blason
@@ -206,7 +205,6 @@ public class Blason {
 	public String getName() {
 		return name;
 	}
-	
 
 	/**
 	 * Définit le nom attribué au blason
@@ -216,7 +214,6 @@ public class Blason {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
 
 	/**
 	 * Le ratio horizontal définissant le blason.<br>
@@ -330,6 +327,28 @@ public class Blason {
 	public void setNumblason(int numblason) {
 		this.numblason = numblason;
 	}
+
+	/**
+	 * Retourne la table des points d'ancrages possible du blason
+	 * 
+	 * @return la table des points d'ancrages possible du blason
+	 */
+	public synchronized HashMap<String, Ancrage> getAncrages() {
+		System.out.println("get ancrage:" + ancrages.size() + " : " + super.hashCode() + " : " + name);
+    	return ancrages;
+    }
+	
+
+	/**
+	 * Définit la table des points d'ancarge du blason en fonction de la position
+	 * 
+	 * @param ancrages la table des points d'ancrages possible du blason
+	 */
+	public void setAncrages(HashMap<String, Ancrage> ancrages) {
+		System.out.println("set ancrage:" + ancrages.size() + " : " + super.hashCode() + " : " + name);
+    	this.ancrages = ancrages;
+    }
+	
 
 	/**
 	 * Sauvegarde l'objet dans la base en créant une nouvelle ligne si le numero de blason est à 0

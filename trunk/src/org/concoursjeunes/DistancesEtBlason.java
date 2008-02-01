@@ -79,18 +79,25 @@ public class DistancesEtBlason {
 	 */
 	@Deprecated
 	public void setBlason(int blason) {
-		this.blason = blason;
+		//this.blason = blason;
 		if(targetFace.equals(Blason.NULL)) {
 			if(numdistancesblason > 0)
 				targetFace = BlasonBuilder.getBlasons(numdistancesblason, reglement.hashCode());
 			else {
-				double hRatio = 1;
-				double vRatio = 1;
-				if(blason >= 60)
-					hRatio = 0.5;
-				if(blason >= 40)
-					vRatio = 0.5;
-				targetFace = new Blason(blason + "cm", hRatio, vRatio); //$NON-NLS-1$
+				try {
+	                targetFace = BlasonManager.findBlasonInDatabase(blason + "cm"); //$NON-NLS-1$
+                } catch (SQLException e) {
+	                e.printStackTrace();
+                }
+				if(targetFace == null) {
+					double hRatio = 1;
+					double vRatio = 1;
+					if(blason >= 60)
+						hRatio = 0.5;
+					if(blason >= 40)
+						vRatio = 0.5;
+					targetFace = new Blason(blason + "cm", hRatio, vRatio); //$NON-NLS-1$
+				}
 			}
 		}
 	}

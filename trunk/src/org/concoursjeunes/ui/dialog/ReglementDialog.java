@@ -366,19 +366,19 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 			verrou = LOCK_CHANGE_L2;
 
 		switch (verrou) {
-		case LOCK_CHANGE_L2:
-			jtfNbMembresEquipe.setEditable(false);
-			jtfNbMembresRetenu.setEditable(false);
-
-			jbAddCriteria.setEnabled(false);
-			jbAddCriteriaMember.setEnabled(false);
-			jbDownElement.setEnabled(false);
-			jbUpElement.setEnabled(false);
-			jbRemoveElement.setEnabled(false);
-		case LOCK_CHANGE_L1:
-			jtfNbSerie.setEditable(false);
-			jtfNbVoleeParSerie.setEditable(false);
-			jtfNbFlecheParVolee.setEditable(false);
+			case LOCK_CHANGE_L2:
+				jtfNbMembresEquipe.setEditable(false);
+				jtfNbMembresRetenu.setEditable(false);
+	
+				jbAddCriteria.setEnabled(false);
+				jbAddCriteriaMember.setEnabled(false);
+				jbDownElement.setEnabled(false);
+				jbUpElement.setEnabled(false);
+				jbRemoveElement.setEnabled(false);
+			case LOCK_CHANGE_L1:
+				jtfNbSerie.setEditable(false);
+				jtfNbVoleeParSerie.setEditable(false);
+				jtfNbFlecheParVolee.setEditable(false);
 		}
 
 		jlReglementName.setText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.name") + " " + reglement.getName()); //$NON-NLS-1$ //$NON-NLS-2$
@@ -545,7 +545,8 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 			reglement.setNbMembresEquipe(Integer.parseInt(jtfNbMembresEquipe.getText()));
 			reglement.setNbMembresRetenu(Integer.parseInt(jtfNbMembresRetenu.getText()));
 
-			jtDistanceBlason.getCellEditor().stopCellEditing();
+			if(jtDistanceBlason.getCellEditor() != null)
+				jtDistanceBlason.getCellEditor().stopCellEditing();
 			for (int i = 0; i < jtDistanceBlason.getRowCount(); i++) {
 				int[] distances = new int[reglement.getNbSerie()];
 				for (int j = 0; j < distances.length; j++) {
