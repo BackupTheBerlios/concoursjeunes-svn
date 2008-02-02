@@ -19,7 +19,7 @@
 			sourcepath="src"
 			destdir="docs"
 			excludepackagenames="org.concoursjeunes.test.*"
-			classpath="lib/AJPackage.jar;lib/swingx-2006_10_27.jar;lib/itext-2.0.6.jar" >
+			classpath="${compilclasspath}" >
 			<link href="http://java.sun.com/javase/6/docs/api/" />
 			<!--<packageset dir="src" defaultexcludes="yes">
 				<include name="**/**" />
