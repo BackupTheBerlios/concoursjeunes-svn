@@ -29,6 +29,7 @@ public class CriterionElement {
     private String code = ""; //$NON-NLS-1$
     private String libelle = ""; //$NON-NLS-1$
     private boolean active = true;
+    private int numordre = 0;
     
     private Criterion criterionParent = new Criterion();
     
@@ -93,7 +94,15 @@ public class CriterionElement {
         this.libelle = libelle;
     }
 
-    public Criterion getCriterionParent() {
+    public int getNumordre() {
+    	return numordre;
+    }
+
+	public void setNumordre(int numordre) {
+    	this.numordre = numordre;
+    }
+
+	public Criterion getCriterionParent() {
 		return criterionParent;
 	}
 
@@ -106,10 +115,10 @@ public class CriterionElement {
 			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 			
 			stmt.executeUpdate("merge into CRITEREELEMENT (CODECRITEREELEMENT," + //$NON-NLS-1$
-					"CODECRITERE,NUMREGLEMENT,LIBELLECRITEREELEMENT,ACTIF) values (" + //$NON-NLS-1$
+					"CODECRITERE,NUMREGLEMENT,LIBELLECRITEREELEMENT,ACTIF,NUMORDRE) values (" + //$NON-NLS-1$
 					"'" + code + "', '" + criterionParent.getCode() + "'," + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 					"" + criterionParent.getReglementParent().hashCode() + ", '" + libelle + "'," + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-					Boolean.toString(active).toUpperCase() + ")"); //$NON-NLS-1$
+					Boolean.toString(active).toUpperCase() + "," + numordre + ")"); //$NON-NLS-1$ //$NON-NLS-2$
 		} catch(SQLException e) {
 			
 		}
@@ -178,7 +187,7 @@ public class CriterionElement {
 			
 			String sql = "select CODECRITEREELEMENT from critereelement where " + //$NON-NLS-1$
 					"codecritere='" + criterion.getCode() + "' " + //$NON-NLS-1$ //$NON-NLS-2$
-					"and numreglement=" + hashReglement; //$NON-NLS-1$
+					"and numreglement=" + hashReglement + " order by NUMORDRE"; //$NON-NLS-1$ //$NON-NLS-2$
 			
 			ResultSet rs = stmt.executeQuery(sql);
 			

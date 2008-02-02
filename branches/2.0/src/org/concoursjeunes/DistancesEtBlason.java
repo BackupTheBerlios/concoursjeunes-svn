@@ -82,9 +82,9 @@ public class DistancesEtBlason {
 			else {
 				double hRatio = 1;
 				double vRatio = 1;
-				if(blason >= 60)
+				if(blason <= 60)
 					hRatio = 0.5;
-				if(blason >= 40)
+				if(blason <= 40)
 					vRatio = 0.5;
 				targetFace = new Blason(blason + "cm", hRatio, vRatio); //$NON-NLS-1$
 			}

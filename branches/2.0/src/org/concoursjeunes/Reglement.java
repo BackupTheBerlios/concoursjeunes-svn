@@ -411,7 +411,9 @@ public class Reglement {
 	}
 
 	private void saveCriteria() throws SQLException {
+		int numordre = 1;
 		for (Criterion criterion : listCriteria) {
+			criterion.setNumordre(numordre++);
 			criterion.save();
 		}
 	}

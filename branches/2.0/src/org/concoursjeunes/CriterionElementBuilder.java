@@ -115,6 +115,7 @@ public class CriterionElementBuilder {
 				criterionElement.setCode(codeElement);
 				criterionElement.setLibelle(rs.getString("LIBELLECRITEREELEMENT")); //$NON-NLS-1$
 				criterionElement.setActive(rs.getBoolean("ACTIF")); //$NON-NLS-1$
+				criterionElement.setNumordre(rs.getInt("NUMORDRE")); //$NON-NLS-1$
 				criterionElement.setCriterionParent(criterion);
 				
 				return criterionElement;
