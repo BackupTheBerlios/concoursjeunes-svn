@@ -334,28 +334,30 @@ public class ParametreDialog extends JDialog implements ActionListener {
 	public void actionPerformed(ActionEvent ae) {
 		if (ae.getSource() == jbValider) {
 
-			//verifie que la place libre restante est suffisante avec le nouveau nombre de cible
-			int placelibre = parametre.getNbCible();
-			for (int i = 0; i < parametre.getNbDepart(); i++) {
-				// ficheConcours.getPasDeTir(i).getOccupationCibles();
-				int placelibre_tmp = ficheConcours.getPasDeTir(i).getNbCiblesLibre((Integer) jcbNombreTireurParCible.getSelectedItem());
-				if (placelibre_tmp < placelibre)
-					placelibre = placelibre_tmp;
-			}
-
-			if (placelibre < 0 || parametre.getNbCible() - placelibre > Integer.parseInt(jtfNombreCible.getText())) {
-				JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("parametre.toomany"), ConcoursJeunes.ajrLibelle.getResourceString("parametre.toomany.title"), //$NON-NLS-1$ //$NON-NLS-2$
-						JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-
-			//verifie que la réduction du nombre de départ est possible (aucun archer sur les départs supprimé)
-			if (Integer.parseInt(jtfNombreDepart.getText()) < parametre.getNbDepart()) {
-				for (int i = Integer.parseInt(jtfNombreDepart.getText()); i < parametre.getNbDepart(); i++) {
-					if (ficheConcours.getConcurrentList().countArcher(i) > 0) {
-						JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("parametre.enablereducestart"), ConcoursJeunes.ajrLibelle //$NON-NLS-1$
-								.getResourceString("parametre.enablereducestart.title"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
-						return;
+			if(ficheConcours != null) {
+				//verifie que la place libre restante est suffisante avec le nouveau nombre de cible
+				int placelibre = parametre.getNbCible();
+				for (int i = 0; i < parametre.getNbDepart(); i++) {
+					// ficheConcours.getPasDeTir(i).getOccupationCibles();
+					int placelibre_tmp = ficheConcours.getPasDeTir(i).getNbCiblesLibre((Integer) jcbNombreTireurParCible.getSelectedItem());
+					if (placelibre_tmp < placelibre)
+						placelibre = placelibre_tmp;
+				}
+	
+				if (placelibre < 0 || parametre.getNbCible() - placelibre > Integer.parseInt(jtfNombreCible.getText())) {
+					JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("parametre.toomany"), ConcoursJeunes.ajrLibelle.getResourceString("parametre.toomany.title"), //$NON-NLS-1$ //$NON-NLS-2$
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+	
+				//verifie que la réduction du nombre de départ est possible (aucun archer sur les départs supprimé)
+				if (Integer.parseInt(jtfNombreDepart.getText()) < parametre.getNbDepart()) {
+					for (int i = Integer.parseInt(jtfNombreDepart.getText()); i < parametre.getNbDepart(); i++) {
+						if (ficheConcours.getConcurrentList().countArcher(i) > 0) {
+							JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("parametre.enablereducestart"), ConcoursJeunes.ajrLibelle //$NON-NLS-1$
+									.getResourceString("parametre.enablereducestart.title"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
+							return;
+						}
 					}
 				}
 			}

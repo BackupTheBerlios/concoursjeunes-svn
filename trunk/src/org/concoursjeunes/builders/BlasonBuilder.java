@@ -88,14 +88,13 @@
  */
 package org.concoursjeunes.builders;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.concoursjeunes.Ancrage;
 import org.concoursjeunes.Blason;
-import org.concoursjeunes.ConcoursJeunes;
 
 /**
  * Construit un objet blason à partir des données en base
@@ -105,35 +104,6 @@ import org.concoursjeunes.ConcoursJeunes;
  *
  */
 public class BlasonBuilder {
-	
-	/**
-	 * Retourne le blason associé à une ligne distance/blason d'un réglement donnée
-	 * 
-	 * @param numdistancesblason le numero de distance/blason
-	 * @param numreglement le numrero de reglement
-	 * @return le blason associé à la ligne d/b du réglement donnée
-	 */
-	public static Blason getBlasons(int numdistancesblason, int numreglement) {
-		try {
-			String sql = "select BLASONS.* from DISTANCESBLASONS,BLASONS " //$NON-NLS-1$
-				+ "where DISTANCESBLASONS.NUMBLASON=BLASONS.NUMBLASON AND NUMDISTANCESBLASONS=? and NUMREGLEMENT=? order by NUMORDRE DESC"; //$NON-NLS-1$
-			
-			PreparedStatement pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
-			
-			pstmt.setInt(1, numdistancesblason);
-			pstmt.setInt(2, numreglement);
-			
-			ResultSet rs = pstmt.executeQuery();
-			
-			if(rs.first()) {		
-				return getBlason(rs);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return null;
-	}
 	
 	/**
 	 * Construit un blason à partir d'un jeux de résultat transmis en parametre.<br>
@@ -148,7 +118,6 @@ public class BlasonBuilder {
 	public static Blason getBlason(ResultSet rs) throws SQLException {
 		
 		int numblason = rs.getInt("NUMBLASON"); //$NON-NLS-1$
-		HashMap<String, Ancrage> ancrages = new HashMap<String, Ancrage>();
 		
 		Blason blason = new Blason();
 		blason.setNumblason(numblason); 
@@ -157,22 +126,46 @@ public class BlasonBuilder {
 		blason.setVerticalRatio(rs.getDouble("VERTICAL_RATIO")); //$NON-NLS-1$
 		blason.setNbArcher(rs.getInt("NUMORDRE")); //$NON-NLS-1$
 		
-		String sql = "select * from ANCRAGES_BLASONS where NUMBLASON=?"; //$NON-NLS-1$
+		blason.setAncrages(AncragesMapBuilder.getAncragesMap(blason));
 		
-		PreparedStatement pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
+		return blason;
+	}
+	
+	/**
+	 * Construit un blason au caracteristique standard à partir de sa taille.<br>
+	 * Dans ce cas, on considère que le blason à une forme carré dans le calcul de position
+	 * et de ratio.
+	 * 
+	 * @param size la taille du blason à créer
+	 * @return le blason créer
+	 */
+	public static Blason getBlason(int size) {
+		Blason blason = null;
 		
-		pstmt.setInt(1, numblason);
-		
-		ResultSet rs2 = pstmt.executeQuery();
-		while(rs2.next()) {
-			ancrages.put(
-				rs2.getInt("EMPLACEMENT") + "", //$NON-NLS-1$
-				new Ancrage(
-					rs2.getDouble("ANCRAGEX"), //$NON-NLS-1$
-					rs2.getDouble("ANCRAGEY") //$NON-NLS-1$
-				)
-			);
+		double hRatio = 1;
+		double vRatio = 1;
+		int nbArcher = 4;
+		ConcurrentMap<Integer, Ancrage> ancrages = new ConcurrentHashMap<Integer, Ancrage>();
+		ancrages.put(Ancrage.POSITION_ABCD, new Ancrage(0, 0));
+		if(size <= 60) {
+			hRatio = 0.5;
+			nbArcher = 2;
+			ancrages.clear();
+			ancrages.put(Ancrage.POSITION_AB, new Ancrage(0, 0));
+			ancrages.put(Ancrage.POSITION_CD, new Ancrage(0, 0.5));
 		}
+		if(size <= 40) {
+			vRatio = 0.5;
+			nbArcher = 1;
+			ancrages.clear();
+			ancrages.put(Ancrage.POSITION_A, new Ancrage(0, 0));
+			ancrages.put(Ancrage.POSITION_B, new Ancrage(0, 0.5));
+			ancrages.put(Ancrage.POSITION_C, new Ancrage(0.5, 0));
+			ancrages.put(Ancrage.POSITION_D, new Ancrage(0.5, 0.5));
+		}
+		
+		blason = new Blason(size + "cm", hRatio, vRatio); //$NON-NLS-1$
+		blason.setNbArcher(nbArcher);
 		blason.setAncrages(ancrages);
 		
 		return blason;

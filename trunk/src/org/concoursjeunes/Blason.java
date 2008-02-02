@@ -93,8 +93,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.concoursjeunes.builders.BlasonBuilder;
 
@@ -110,19 +111,18 @@ public class Blason {
 	/**
 	 * Représente le blason par défaut
 	 */
-	public static Blason NULL = new Blason("80cm",1,1,80,4); //$NON-NLS-1$
+	public static Blason NULL = new Blason();
 	
 	private String name = ""; //$NON-NLS-1$
 	private double horizontalRatio = 1;
 	private double verticalRatio = 1;
 	private int nbArcher = 4;
 	private int numordre = 0;
-	private HashMap<String, Ancrage> ancrages = new HashMap<String, Ancrage>();
+	private ConcurrentMap<Integer, Ancrage> ancrages = new ConcurrentHashMap<Integer, Ancrage>();
 	
 	private int numblason = 0;
 	
 	public Blason() {
-		System.out.println("instantiate:" + super.hashCode());
 	}
 
 	/**
@@ -333,8 +333,7 @@ public class Blason {
 	 * 
 	 * @return la table des points d'ancrages possible du blason
 	 */
-	public synchronized HashMap<String, Ancrage> getAncrages() {
-		System.out.println("get ancrage:" + ancrages.size() + " : " + super.hashCode() + " : " + name);
+	public synchronized ConcurrentMap<Integer, Ancrage> getAncrages() {
     	return ancrages;
     }
 	
@@ -344,8 +343,7 @@ public class Blason {
 	 * 
 	 * @param ancrages la table des points d'ancrages possible du blason
 	 */
-	public void setAncrages(HashMap<String, Ancrage> ancrages) {
-		System.out.println("set ancrage:" + ancrages.size() + " : " + super.hashCode() + " : " + name);
+	public void setAncrages(ConcurrentMap<Integer, Ancrage> ancrages) {
     	this.ancrages = ancrages;
     }
 	

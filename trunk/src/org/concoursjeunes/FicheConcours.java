@@ -19,17 +19,21 @@ import static org.concoursjeunes.ConcoursJeunes.ajrParametreAppli;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 
 import javax.swing.event.EventListenerList;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.concoursjeunes.builders.AncragesMapBuilder;
+import org.concoursjeunes.builders.BlasonBuilder;
 import org.concoursjeunes.builders.EquipeListBuilder;
 import org.concoursjeunes.event.FicheConcoursEvent;
 import org.concoursjeunes.event.FicheConcoursListener;
@@ -101,7 +105,7 @@ public class FicheConcours implements ParametreListener {
 	}
 
 	/**
-	 * 
+	 * Initialise une nouvelle fiche concours
 	 */
 	public FicheConcours() {
 		parametre.addParametreListener(this);
@@ -257,6 +261,8 @@ public class FicheConcours implements ParametreListener {
 		parametre = (Parametre) fiche[0];
 		concurrentList = (ConcurrentList) fiche[1];
 		equipes = (EquipeList) fiche[2];
+		
+		checkFiche();
 
 		parametre.addParametreListener(metaDataFicheConcours);
 		parametre.addParametreListener(this);
@@ -282,9 +288,63 @@ public class FicheConcours implements ParametreListener {
 	 */
 	public void save() throws IOException {
 		File f = new File(ConcoursJeunes.userRessources.getConcoursPathForProfile(ConcoursJeunes.getConfiguration().getCurProfil()) + File.separator + parametre.getSaveName());
-		System.out.println("Sauvegarde:");
 		AJToolKit.saveXMLStructure(f, getFiche(), true);
-		System.out.println("Fin Sauvegarde");
+	}
+	
+	/**
+	 * <p>Controle la cohérance d'une fiche et effectue une mise
+	 * à niveau si besoin.</p>
+	 * <p>Permet de mettre à niveau les fiches serialisé dans des versions
+	 * inférieur du programme</p>
+	 */
+	@SuppressWarnings("deprecation")
+	private void checkFiche() {
+		Reglement reglement = parametre.getReglement();
+		
+		DistancesEtBlason defaultDistancesEtBlason = new DistancesEtBlason();
+		for(DistancesEtBlason distancesEtBlason : reglement.getListDistancesEtBlason()) {
+			
+			//si le blason n'est pas initialiser 
+			if(distancesEtBlason.getTargetFace().equals(Blason.NULL)) {
+				if(distancesEtBlason.getNumdistancesblason() > 0) { //si le reglement est dans la base
+					distancesEtBlason.setTargetFace(BlasonManager.findBlasonAssociateToDistancesEtBlason(distancesEtBlason));
+				} else {
+					Blason targetFace = null;
+					try { //on tente de retrouver une correspondance pour le blason dans la base
+		                targetFace = BlasonManager.findBlasonByName(distancesEtBlason.getBlason() + "cm"); //$NON-NLS-1$
+	                } catch (SQLException e) {
+		                e.printStackTrace(); //on trace l'erreur mais on ne la fait pas remonter dans l'interface
+	                }
+	                if(targetFace == null) { //si on a pas retrouvé de blason correspondant dans la base alors créer l'entrée
+	                	targetFace = BlasonBuilder.getBlason(distancesEtBlason.getBlason());
+	                }
+				}
+				//remet la valeur par defaut pour supprimer la section du XML de persistance à la prochaine sauvergarde
+				distancesEtBlason.setBlason(defaultDistancesEtBlason.getBlason());
+			
+			} else {
+				//si il est initialisé mais ne possede pas d'ancrage
+				if(distancesEtBlason.getTargetFace().getAncrages().size() == 0) {
+					//si le blason est present dans la base
+					if(distancesEtBlason.getTargetFace().getNumblason() > 0) {
+						ConcurrentMap<Integer, Ancrage> ancrages = null;
+						try {
+							ancrages = AncragesMapBuilder.getAncragesMap(distancesEtBlason.getTargetFace());
+                        } catch (SQLException e) {
+	                        e.printStackTrace(); //on trace l'erreur mais on ne la fait pas remonter dans l'interface
+                        }
+                        if(ancrages == null) {
+                        	ancrages = AncragesMapBuilder.getAncragesMap(distancesEtBlason.getTargetFace().getNbArcher());
+                        }
+                        
+                        distancesEtBlason.getTargetFace().setAncrages(ancrages);
+					} else {
+						ConcurrentMap<Integer, Ancrage> ancrages = AncragesMapBuilder.getAncragesMap(distancesEtBlason.getTargetFace().getNbArcher());
+						distancesEtBlason.getTargetFace().setAncrages(ancrages);
+					}
+				}
+			}
+		}
 	}
 
 	private void makePasDeTir() {

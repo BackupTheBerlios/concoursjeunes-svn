@@ -93,6 +93,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.concoursjeunes.BlasonManager;
 import org.concoursjeunes.ConcoursJeunes;
 import org.concoursjeunes.DistancesEtBlason;
 import org.concoursjeunes.Reglement;
@@ -132,8 +133,7 @@ public class DistancesEtBlasonBuilder {
 				if(hashReglement != 0)
 					distancesEtBlason.setNumdistancesblason(numdistancesblason);
 				distancesEtBlason.setReglement(reglement);
-				distancesEtBlason.setTargetFace(BlasonBuilder.getBlasons(numdistancesblason, hashReglement));
-				//distancesEtBlason.setBlason(rs.getInt("BLASONS")); //$NON-NLS-1$
+				distancesEtBlason.setTargetFace(BlasonManager.findBlasonAssociateToDistancesEtBlason(distancesEtBlason, hashReglement));
 				
 				pstmt.close();
 				

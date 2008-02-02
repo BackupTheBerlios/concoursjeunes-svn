@@ -21,7 +21,6 @@ import org.concoursjeunes.Entite;
 import org.concoursjeunes.Equipe;
 import org.concoursjeunes.EquipeList;
 import org.concoursjeunes.FicheConcours;
-import org.concoursjeunes.ConcurrentList.SortCriteria;
 
 /**
  * @author Aurélien JEOFFRAY

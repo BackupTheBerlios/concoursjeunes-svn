@@ -20,8 +20,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
 
-import org.concoursjeunes.builders.BlasonBuilder;
-
 /**
  * parametre de distances et blason pour une cible et un concurrent
  * 
@@ -57,11 +55,30 @@ public class DistancesEtBlason {
 	}
 
 	/**
+	 * <p>Conserver pour compatibilite avec les concours réalisé avant la création
+	 * de la propriete targetFace.</p>
+	 * 
+	 * @deprecated remplacer par <b><i>getTargetFace()</i></b>
+	 * 
 	 * @return Returns the blason.
 	 */
 	@Deprecated
 	public int getBlason() {
 		return this.blason;
+	}
+	
+	/**
+	 * <p>Conserver pour compatibilite avec les concours réalisé avant la création
+	 * de la propriete targetFace.</p>
+	 * 
+	 * @deprecated remplacer par <b><i>setTargetFace(Blason targetFace)</i></b>
+	 * 
+	 * @param blason
+	 *            The blason to set.
+	 */
+	@Deprecated
+	public void setBlason(int blason) {
+		this.blason = blason;
 	}
 
 	/**
@@ -71,35 +88,6 @@ public class DistancesEtBlason {
 	 */
 	public int[] getDistance() {
 		return this.distances;
-	}
-
-	/**
-	 * @param blason
-	 *            The blason to set.
-	 */
-	@Deprecated
-	public void setBlason(int blason) {
-		//this.blason = blason;
-		if(targetFace.equals(Blason.NULL)) {
-			if(numdistancesblason > 0)
-				targetFace = BlasonBuilder.getBlasons(numdistancesblason, reglement.hashCode());
-			else {
-				try {
-	                targetFace = BlasonManager.findBlasonInDatabase(blason + "cm"); //$NON-NLS-1$
-                } catch (SQLException e) {
-	                e.printStackTrace();
-                }
-				if(targetFace == null) {
-					double hRatio = 1;
-					double vRatio = 1;
-					if(blason >= 60)
-						hRatio = 0.5;
-					if(blason >= 40)
-						vRatio = 0.5;
-					targetFace = new Blason(blason + "cm", hRatio, vRatio); //$NON-NLS-1$
-				}
-			}
-		}
 	}
 
 	/**
