@@ -141,5 +141,29 @@
     </void> 
    </object> 
   </void> 
+  <void method="add"> 
+   <object class="ajinteractive.standard.utilities.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurelien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction parametrage de certain blasons
+  * Correction ordonnancement aléatoire des critères
+  * Correction sortie de zone non validée sur le tableau des Distances et Blason d&apos;un réglement
+  * Correction problème éventuel au niveau de la mise à jour de certaine vielle version</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1201950861209</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.02.03</string> 
+    </void> 
+   </object> 
+  </void> 
  </object> 
 </java> 
