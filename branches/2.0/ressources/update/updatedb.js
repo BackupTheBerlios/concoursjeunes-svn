@@ -31,7 +31,7 @@ if(dbVersion == 0) {
 		while(rowSet.next()) {
 			sql.executeUpdate("UPDATE CRITERE SET NUMORDRE=(SELECT MAX(NUMORDRE) + 1 FROM CRITERE WHERE NUMREGLEMENT="
 				+ rowSet.getInt("NUMREGLEMENT") + ") WHERE NUMREGLEMENT=" + rowSet.getInt("NUMREGLEMENT") 
-				+ " AND CODECRITERE=" + rowSet.getInt("CODECRITERE") + ";");
+				+ " AND CODECRITERE='" + rowSet.getInt("CODECRITERE") + "';");
 		}
 	}
 	
@@ -43,7 +43,7 @@ if(dbVersion == 0) {
 		while(rowSet.next()) {
 			sql.executeUpdate("UPDATE CRITERE SET NUMORDRE=(SELECT MAX(NUMORDRE) + 1 FROM CRITERE WHERE NUMREGLEMENT="
 				+ rowSet.getInt("NUMREGLEMENT") + " AND CODECRITERE=" + rowSet.getInt("CODECRITERE") + ") WHERE NUMREGLEMENT=" + rowSet.getInt("NUMREGLEMENT") 
-				+ " AND CODECRITERE=" + rowSet.getInt("CODECRITERE") + " AND CODECRITEREELEMENT=" + rowSet.getInt("CODECRITEREELEMENT") + ";");
+				+ " AND CODECRITERE='" + rowSet.getInt("CODECRITERE") + "' AND CODECRITEREELEMENT='" + rowSet.getInt("CODECRITEREELEMENT") + "';");
 		}
 	}
 	
