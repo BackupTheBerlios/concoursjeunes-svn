@@ -491,10 +491,20 @@ public class ConcoursJeunes {
 	 * @throws ConfigurationException
 	 */
 	public void createFicheConcours() throws ConfigurationException, IOException {
+		createFicheConcours(null);
+	}
+	
+	/**
+	 * Création d'une nouvelle fiche concours ayant les parametres fournit
+	 * 
+	 * @param parametre les parametres du concours
+	 * @throws ConfigurationException
+	 */
+	public void createFicheConcours(Parametre parametre) throws ConfigurationException, IOException {
 		if (configuration == null)
 			throw new ConfigurationException("la configuration est null"); //$NON-NLS-1$
 
-		FicheConcours ficheConcours = new FicheConcours();
+		FicheConcours ficheConcours = new FicheConcours(parametre);
 		fichesConcours.add(ficheConcours);
 		configuration.getMetaDataFichesConcours().add(ficheConcours.getMetaDataFicheConcours());
 

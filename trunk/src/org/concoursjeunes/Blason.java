@@ -347,7 +347,50 @@ public class Blason {
     	this.ancrages = ancrages;
     }
 	
-
+	public Ancrage getAncrage(int position) {
+		int ancrageKey = -1;
+		switch(nbArcher) {
+			case 2:
+				if(position == 0 || position == 2)
+					ancrageKey = Ancrage.POSITION_AC;
+				else
+					ancrageKey = Ancrage.POSITION_BD;
+				break;
+			case 1:
+				ancrageKey = position;
+				break;
+			default:
+				ancrageKey = Ancrage.POSITION_ABCD;
+		}
+		return ancrages.get(ancrageKey);
+	}
+	
+	public boolean isOver(int positionBlason, Blason blason2, int positionBlason2) {
+		Ancrage ancrageBlason = getAncrage(positionBlason);
+		Ancrage ancrageBlason2 = getAncrage(positionBlason2);
+		
+		boolean axeX = true;
+		boolean axeY = true;
+		//verification sur l'axe X
+		if(ancrageBlason.getX() < ancrageBlason2.getX()) { //b1 se trouve à gauche de b2
+			if(ancrageBlason.getX() + horizontalRatio > ancrageBlason2.getX())
+				axeX = false;
+		} else { //b1 se trouve à gauche de b2
+			if(ancrageBlason2.getX() + blason2.getHorizontalRatio() > ancrageBlason.getX())
+				axeX = false;
+		}
+		
+		//verification sur l'axe Y
+		if(ancrageBlason.getY() < ancrageBlason2.getY()) { //b1 se trouve au desssu de b2
+			if(ancrageBlason.getY() + verticalRatio > ancrageBlason2.getY())
+				axeY = false;
+		} else { //b1 se trouve au dessous de b2
+			if(ancrageBlason2.getY() + blason2.getVerticalRatio() > ancrageBlason.getY())
+				axeY = false;
+		}
+		
+		return !axeX && !axeY;
+	}
 	/**
 	 * Sauvegarde l'objet dans la base en créant une nouvelle ligne si le numero de blason est à 0
 	 * ou en mettant à jour la ligne existante dans la base et identifié par le numero de blason

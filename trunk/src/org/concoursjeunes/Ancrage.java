@@ -94,8 +94,8 @@ public class Ancrage {
 	public static final int POSITION_C = 2;
 	public static final int POSITION_D = 3;
 	public static final int POSITION_ABCD = 4;
-	public static final int POSITION_AB = 5;
-	public static final int POSITION_CD = 6;
+	public static final int POSITION_AC = 5;
+	public static final int POSITION_BD = 6;
 	
 	private double x = 0;
 	private double y = 0;

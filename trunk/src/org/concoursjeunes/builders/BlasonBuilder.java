@@ -151,8 +151,8 @@ public class BlasonBuilder {
 			hRatio = 0.5;
 			nbArcher = 2;
 			ancrages.clear();
-			ancrages.put(Ancrage.POSITION_AB, new Ancrage(0, 0));
-			ancrages.put(Ancrage.POSITION_CD, new Ancrage(0, 0.5));
+			ancrages.put(Ancrage.POSITION_AC, new Ancrage(0, 0));
+			ancrages.put(Ancrage.POSITION_BD, new Ancrage(0, 0.5));
 		}
 		if(size <= 40) {
 			vRatio = 0.5;

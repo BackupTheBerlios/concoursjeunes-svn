@@ -108,7 +108,19 @@ public class FicheConcours implements ParametreListener {
 	 * Initialise une nouvelle fiche concours
 	 */
 	public FicheConcours() {
-		parametre.addParametreListener(this);
+		this(null);
+	}
+	
+	/**
+	 * Initialise une nouvelle fiche concours avec les parametres fournit
+	 * 
+	 * @param parametre les parametres du concours ou null si laisser les parametres par défaut
+	 */
+	public FicheConcours(Parametre parametre) {
+		if(parametre != null)
+			this.parametre = parametre;
+		
+		this.parametre.addParametreListener(this);
 		makePasDeTir();
 	}
 

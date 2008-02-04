@@ -244,99 +244,59 @@ public class Cible {
 				DistancesEtBlason concurrentDb = DistancesEtBlason.getDistancesEtBlasonForConcurrent(reglement, concurrent);
 				List<DistancesEtBlason> targetDbs = getDistancesEtBlason();
 				
-				//verifie que la distance soit bonne
+				//verifie que la distance est bonne
 				if(!Arrays.equals(concurrentDb.getDistance(), targetDbs.get(0).getDistance()))
 					throw new PlacementException(PlacementException.Nature.BAD_DISTANCESANDBLASONS);
 				
-				/*
-				 * Verifie qu'un blason peut lui être attrubuer
-				 * Combinaison possible à calculer
-				 * 1 Blason exclusif de 122 ou de 80
-				 * 2 Blason de 60 - Horizontal
-				 * 1 Blason de 60 et 2 de 40
-				 * 1 Blason de 60 et 2 Tri Spot
-				 * 4 Blason de 40
-				 * 2 Blason de 40 et 2 Tri Spot
-				 * 4 Tri Spot 
-				 */
-				for(DistancesEtBlason db : targetDbs) {
+				/*for(DistancesEtBlason db : targetDbs) {
 					double nbBlasonSurDb = Math.floor((double)getNbArcherFor(db) / (double)db.getTargetFace().getNbArcher());
 					
 					double dbVRatio = db.getTargetFace().getVerticalRatio();
 					double dbHRatio = db.getTargetFace().getHorizontalRatio();
-					
-					double nbColonneOccupe = 0;
-					double occupationV = 0;
-					for(int i = 0; i < nbBlasonSurDb; i++) {
-						if(occupationV < 1 && occupationV + dbVRatio <= 1) {
-							occupationV += dbVRatio;
-							if(occupationV == 1) {
-								nbColonneOccupe++;
-								occupationV = 0;
-							}
-						} else {
-							nbColonneOccupe++;
-							occupationV = 0;
-						}
-					}
-					
-					
-				}
+				}*/
 				
-				
-				
-				boolean isTargetFaceCompatible = false;
-				
-				//on valide l'insertion si il n'y a aucun archer sur la cible
-				//OU si les autre archers sont à la même distance
-				if ((nbArcher > 0 && DistancesEtBlason.getDistancesEtBlasonForConcurrent(reglement, concurrent).equals(
-						getDistancesEtBlason()))
-						|| nbArcher == 0) {
-					//si l'archer est handicapé, vérifié que les condition spécifique sont remplis
-					if(concurrent.isHandicape()) {
-						if(nbArcher < concurrents.length - (nbHandicap+1)) {
-							//dans le cas d'un archer handicapé, on boucle sur les emplacements 2 à 2
-							for (int i = 0; i < concurrents.length; i+=2) {
-								if (concurrents[i] == null && concurrents[i+1] == null) {
-									concurrent.setCible(numCible);
-									concurrent.setPosition(i);
-									
-									concurrents[i] = concurrent;
-									nbArcher++;
-									nbHandicap++;
-									
-									fireConcurrentJoined(concurrent);
-									
-									position = i;
-									
-									break;
-								}
-							}
-						} else {
-							throw new PlacementException(PlacementException.Nature.POSITION_AVAILABLE_FOR_VALID_CONCURRENT);
-						}
-					} else {
-						//on boucle sur les emplacements et on remplit le premier qui est libre
-						for (int i = 0; i < concurrents.length; i++) {
-							if (concurrents[i] == null) {
-								if(i > 0 && concurrents[i-1] != null && concurrents[i-1].isHandicape())
-									continue;
+				//si l'archer est handicapé, vérifié que les condition spécifique sont remplis
+				if(concurrent.isHandicape()) {
+					if(nbArcher < concurrents.length - (nbHandicap+1)) {
+						//dans le cas d'un archer handicapé, on boucle sur les emplacements 2 à 2
+						for (int i = 0; i < concurrents.length; i+=2) {
+							if (isSlotAvailable(concurrentDb.getTargetFace(), i) && concurrents[i+1] == null) {
 								concurrent.setCible(numCible);
 								concurrent.setPosition(i);
-		
+								
 								concurrents[i] = concurrent;
 								nbArcher++;
-		
+								nbHandicap++;
+								
 								fireConcurrentJoined(concurrent);
-		
+								
 								position = i;
-		
+								
 								break;
 							}
 						}
+					} else {
+						throw new PlacementException(PlacementException.Nature.POSITION_AVAILABLE_FOR_VALID_CONCURRENT);
 					}
 				} else {
-					throw new PlacementException(PlacementException.Nature.BAD_DISTANCESANDBLASONS);
+					//on boucle sur les emplacements et on remplit le premier qui est libre
+					for (int i = 0; i < concurrents.length; i++) {
+						if (isSlotAvailable(concurrentDb.getTargetFace(), i)) {
+							if(i > 0 && concurrents[i-1] != null && concurrents[i-1].isHandicape())
+								continue;
+							concurrent.setCible(numCible);
+							concurrent.setPosition(i);
+	
+							concurrents[i] = concurrent;
+							nbArcher++;
+	
+							fireConcurrentJoined(concurrent);
+	
+							position = i;
+	
+							break;
+						}
+					}
 				}
 			} else {
 				if(nbHandicap > 0)
@@ -348,6 +308,44 @@ public class Cible {
 		}
 
 		return position;
+	}
+	
+	private boolean isSlotAvailable(Blason blason, int position) {
+		boolean placable = true;
+		
+		if(concurrents[position] != null)
+			return false;
+		
+		//Ancrage ancrage = blason.getAncrage(position);
+		for(Concurrent concurrent : concurrents) {
+			if(concurrent != null) {
+				//int otherPosition = concurrent.getPosition();
+				DistancesEtBlason db = DistancesEtBlason.getDistancesEtBlasonForConcurrent(reglement, concurrent);
+				Blason otherBlason = db.getTargetFace();
+				
+				if(blason.getNbArcher() > 2 || otherBlason.getNbArcher() > 2) {
+					if(!otherBlason.equals(blason)) {
+						placable = false;
+						break;
+					}
+				} else if(blason.getNbArcher() > 1) {
+					if((concurrent.getPosition() + 2) % 4 == position && !otherBlason.equals(blason)) {
+						placable = false;
+						break;
+					} else if(blason.isOver(position, otherBlason, concurrent.getPosition())) {
+						placable = false;
+						break;
+					}
+				} else {
+					if(blason.isOver(position, otherBlason, concurrent.getPosition())) {
+						placable = false;
+						break;
+					}
+				}
+			}
+		}
+		
+		return placable;
 	}
 
 	/**

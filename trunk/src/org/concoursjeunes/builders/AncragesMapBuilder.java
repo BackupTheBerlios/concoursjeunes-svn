@@ -62,8 +62,8 @@ public class AncragesMapBuilder {
 		if(nbArcher > 2) {
 			ancrages.put(Ancrage.POSITION_ABCD, new Ancrage(0, 0));
 		} else if(nbArcher > 1) {
-			ancrages.put(Ancrage.POSITION_AB, new Ancrage(0, 0));
-			ancrages.put(Ancrage.POSITION_CD, new Ancrage(0, 0.5));
+			ancrages.put(Ancrage.POSITION_AC, new Ancrage(0, 0));
+			ancrages.put(Ancrage.POSITION_BD, new Ancrage(0, 0.5));
 		} else {
 			ancrages.put(Ancrage.POSITION_A, new Ancrage(0, 0));
 			ancrages.put(Ancrage.POSITION_B, new Ancrage(0, 0.5));

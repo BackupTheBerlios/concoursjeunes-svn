@@ -24,11 +24,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.naming.ConfigurationException;
-import javax.swing.JEditorPane;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.HyperlinkEvent;
@@ -37,12 +33,7 @@ import javax.swing.text.DefaultCaret;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 
-import org.concoursjeunes.ConcoursJeunes;
-import org.concoursjeunes.Configuration;
-import org.concoursjeunes.FicheConcours;
-import org.concoursjeunes.MetaDataFicheConcours;
-import org.concoursjeunes.MetaDataFichesConcours;
-import org.concoursjeunes.Reglement;
+import org.concoursjeunes.*;
 import org.concoursjeunes.builders.ReglementBuilder;
 import org.concoursjeunes.event.ConcoursJeunesEvent;
 import org.concoursjeunes.event.ConcoursJeunesListener;
@@ -52,12 +43,7 @@ import org.concoursjeunes.plugins.PluginEntry;
 import org.concoursjeunes.plugins.PluginLoader;
 import org.concoursjeunes.plugins.PluginMetadata;
 import org.concoursjeunes.plugins.Plugin.Type;
-import org.concoursjeunes.ui.dialog.ChangeLogDialog;
-import org.concoursjeunes.ui.dialog.ConfigurationDialog;
-import org.concoursjeunes.ui.dialog.DisablePluginDialog;
-import org.concoursjeunes.ui.dialog.EntiteListDialog;
-import org.concoursjeunes.ui.dialog.InstallPluginDialog;
-import org.concoursjeunes.ui.dialog.ReglementDialog;
+import org.concoursjeunes.ui.dialog.*;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
@@ -719,28 +705,35 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 						displayHome();
 					}
 				} else if (e.getURL().getHost().equals("new_concours")) { //$NON-NLS-1$
-					Thread launchFiche = new Thread() {
-						@Override
-						public void run() {
-							try {
-								concoursJeunes.createFicheConcours();
-							} catch (ConfigurationException e1) {
-								JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
-										null, null, e1, Level.SEVERE, null));
-								e1.printStackTrace();
-							} catch (IOException e1) {
-								JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
-										null, null, e1, Level.SEVERE, null));
-								e1.printStackTrace();
-							}
-							ConcoursJeunesFrame.this.jepHome.setEnabled(true);
-							ConcoursJeunesFrame.this.setCursor(Cursor.getDefaultCursor());
-						}
-					};
+					final Parametre parametre = new Parametre(ConcoursJeunes.getConfiguration());
 					this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 					this.jepHome.setEnabled(false);
 					Thread.yield();
-					launchFiche.start();
+					
+					ParametreDialog parametreDialog = new ParametreDialog(this, null);
+					parametreDialog.showParametreDialog(parametre);
+					if(parametre.isReglementLock()) {
+						SwingUtilities.invokeLater(new Runnable() {
+							@Override
+							public void run() {
+								try {
+									concoursJeunes.createFicheConcours(parametre);
+								} catch (ConfigurationException e1) {
+									JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+											null, null, e1, Level.SEVERE, null));
+									e1.printStackTrace();
+								} catch (IOException e1) {
+									JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+											null, null, e1, Level.SEVERE, null));
+									e1.printStackTrace();
+								}
+								ConcoursJeunesFrame.this.jepHome.setEnabled(true);
+								ConcoursJeunesFrame.this.setCursor(Cursor.getDefaultCursor());
+							}
+						});
+					} else {
+						this.jepHome.setEnabled(true);
+					}
 				} else if (e.getURL().getHost().equals("change_profile")) { //$NON-NLS-1$
 					showConfigurationDialog();
 				} else if(e.getURL().getProtocol().equals("http")) { //$NON-NLS-1$
