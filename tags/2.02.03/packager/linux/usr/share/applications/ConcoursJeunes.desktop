@@ -1,0 +1,14 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=@version.name@
+Name[fr]=@version.name@
+GenericName=@version.name@
+GenericName[fr]=@version.name@
+Comment=@en.summary@
+Comment[fr]=@fr.summary@
+Exec=/usr/bin/ConcoursJeunes
+Icon=/usr/share/pixmaps/ConcoursJeunes.xpm
+Terminal=false
+Type=Application
+Categories=Application;Archery;Other
+Version=@version.numero@
