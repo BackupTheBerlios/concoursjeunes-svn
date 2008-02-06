@@ -165,5 +165,26 @@
     </void> 
    </object> 
   </void> 
+  <void method="add"> 
+   <object class="ajinteractive.standard.utilities.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurelien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction script de mise à jour de base de données</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1202337935148</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.02.04</string> 
+    </void> 
+   </object> 
+  </void> 
  </object> 
 </java> 
