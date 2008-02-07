@@ -320,7 +320,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 			jtPlugins.getColumnModel().getColumn(4).setPreferredWidth(200);
 			jtPlugins.getColumnModel().removeColumn(jtPlugins.getColumnModel().getColumn(3));
 			
-			jlCategorie.add("Tous");
+			jlCategorie.add(ConcoursJeunes.ajrLibelle.getResourceString("installplugindialog.category.all")); //$NON-NLS-1$
 			for(String category : categories) {
 				jlCategorie.add(categoriesLibelle.get(categories.indexOf(category)));
 			}
@@ -348,7 +348,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						GlassPanePanel panel = new GlassPanePanel();
-						panel.setMessage("Service indisponible pour le moment");
+						panel.setMessage(ConcoursJeunes.ajrLibelle.getResourceString("installplugindialog.temporary.disable")); //$NON-NLS-1$
 						setGlassPane(panel);
 						panel.setVisible(true);
 					}
@@ -385,7 +385,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 	 */
 	public void showInstallPluginDialog() {
 		final GlassPanePanel panel = new GlassPanePanel();
-		panel.setMessage("En cours de chargement");
+		panel.setMessage(ConcoursJeunes.ajrLibelle.getResourceString("installplugindialog.loading")); //$NON-NLS-1$
 		setGlassPane(panel);
 		panel.setVisible(true);
 		SwingUtilities.invokeLater(new Runnable() {
@@ -421,7 +421,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 			}
 			try {
 				GlassPanePanel panel = new GlassPanePanel();
-				panel.setMessage("En cours de chargement");
+				panel.setMessage(ConcoursJeunes.ajrLibelle.getResourceString("installplugindialog.loading")); //$NON-NLS-1$
 				setGlassPane(panel);
 				panel.setVisible(true);
 				ajUpdater.checkUpdate();

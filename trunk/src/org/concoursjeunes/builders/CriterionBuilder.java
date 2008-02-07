@@ -133,6 +133,7 @@ public class CriterionBuilder {
 				criterion.setClassement(rs.getBoolean("CLASSEMENT")); //$NON-NLS-1$
 				criterion.setClassementEquipe(rs.getBoolean("CLASSEMENTEQUIPE")); //$NON-NLS-1$
 				criterion.setPlacement(rs.getBoolean("PLACEMENT")); //$NON-NLS-1$
+				criterion.setNumordre(rs.getInt("NUMORDRE")); //$NON-NLS-1$
 				criterion.setReglementParent(reglement);
 
 				criterion.setCriterionElements(CriterionElement.getAllCriterionElementsFor(criterion, hashReglement));

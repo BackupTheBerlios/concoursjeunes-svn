@@ -339,7 +339,7 @@ public class ParametreDialog extends JDialog implements ActionListener {
 				int placelibre = parametre.getNbCible();
 				for (int i = 0; i < parametre.getNbDepart(); i++) {
 					// ficheConcours.getPasDeTir(i).getOccupationCibles();
-					int placelibre_tmp = ficheConcours.getPasDeTir(i).getNbCiblesLibre((Integer) jcbNombreTireurParCible.getSelectedItem());
+					int placelibre_tmp = ficheConcours.getPasDeTir(i).getNbFreeTargets((Integer) jcbNombreTireurParCible.getSelectedItem());
 					if (placelibre_tmp < placelibre)
 						placelibre = placelibre_tmp;
 				}

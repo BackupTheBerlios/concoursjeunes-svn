@@ -204,7 +204,7 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 				if(e.getMessage().equals("Proxy Authentification required")) { //$NON-NLS-1$
 					proxyAuthRequired = true;
 				} else {
-					System.out.println("Mise à jour impossible"); //$NON-NLS-1$
+					System.out.println("update enable"); //$NON-NLS-1$
 					e.printStackTrace();
 				}
 			}
@@ -219,8 +219,8 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 					}
 				};
 				JXLoginPane loginPanel = new JXLoginPane(loginService);
-				loginPanel.setBannerText("Authentification Proxy");
-				loginPanel.setMessage("<html>Autentification au serveur proxy nécessaire pour vérifier<br>les mises à jours</html>");
+				loginPanel.setBannerText(pluginLocalisation.getResourceString("update.proxy.auth.title")); //$NON-NLS-1$
+				loginPanel.setMessage(pluginLocalisation.getResourceString("update.proxy.auth.message")); //$NON-NLS-1$
 				//loginPanel.setP
 				org.jdesktop.swingx.JXLoginPane.Status status = JXLoginPane.showLoginDialog(null, loginPanel);
 				if(status == JXLoginPane.Status.SUCCEEDED)

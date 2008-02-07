@@ -187,7 +187,7 @@ public class ReglementBuilder {
 				rs.close();
 				
 				ArrayList<Criterion> criteria = new ArrayList<Criterion>();
-				rs = stmt.executeQuery("select CODECRITERE from CRITERE where NUMREGLEMENT=" + numreglment); //$NON-NLS-1$
+				rs = stmt.executeQuery("select CODECRITERE from CRITERE where NUMREGLEMENT=" + numreglment + " order by NUMORDRE"); //$NON-NLS-1$ //$NON-NLS-2$
 				while(rs.next()) {
 					criteria.add(CriterionBuilder.getCriterion(rs.getString("CODECRITERE"), reglement, numreglment)); //$NON-NLS-1$
 				}

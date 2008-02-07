@@ -136,8 +136,8 @@ import org.concoursjeunes.CriterionElement;
 import org.concoursjeunes.DistancesEtBlason;
 import org.concoursjeunes.Entite;
 import org.concoursjeunes.FicheConcours;
-import org.concoursjeunes.TargetsOccupation;
 import org.concoursjeunes.TargetPosition;
+import org.concoursjeunes.TargetsOccupation;
 import org.concoursjeunes.event.AutoCompleteDocumentEvent;
 import org.concoursjeunes.event.AutoCompleteDocumentListener;
 import org.concoursjeunes.ui.ConcoursJeunesFrame;
@@ -664,9 +664,9 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 				": " + ficheConcours.getConcurrentList().countArcher() + "<br><br>"; //$NON-NLS-1$ //$NON-NLS-2$
 
 		// recupere la table d'occupation des cibles
-		Hashtable<DistancesEtBlason, TargetsOccupation> occupationCibles = ficheConcours.getPasDeTir(concurrent.getDepart()).getOccupationCibles(ficheConcours.getParametre().getNbTireur());
+		Hashtable<DistancesEtBlason, TargetsOccupation> occupationCibles = ficheConcours.getPasDeTir(concurrent.getDepart()).getTargetsOccupation(ficheConcours.getParametre().getNbTireur());
 
-		ArrayList<DistancesEtBlason> tableCorresp = ficheConcours.getParametre().getReglement().getListDistancesEtBlason();
+		List<DistancesEtBlason> tableCorresp = ficheConcours.getParametre().getReglement().getListDistancesEtBlason();
 
 		// en extrait les jeux de critères de placement
 		CriteriaSet[] criteriaSetPlacement = new CriteriaSet[tableCorresp.size()];
@@ -699,7 +699,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		}
 
 		strPlaceLibre += "<br>" + ConcoursJeunes.ajrLibelle.getResourceString("concurrent.placelibre.ciblelibre") + //$NON-NLS-1$ //$NON-NLS-2$
-				" " + ficheConcours.getPasDeTir(concurrent.getDepart()).getNbCiblesLibre(ficheConcours.getParametre().getNbTireur()) + "</html>"; //$NON-NLS-1$ //$NON-NLS-2$
+				" " + ficheConcours.getPasDeTir(concurrent.getDepart()).getNbFreeTargets(ficheConcours.getParametre().getNbTireur()) + "</html>"; //$NON-NLS-1$ //$NON-NLS-2$
 
 		return strPlaceLibre;
 	}

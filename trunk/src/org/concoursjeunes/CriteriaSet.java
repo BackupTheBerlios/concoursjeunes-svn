@@ -19,6 +19,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map.Entry;
 
 /**
@@ -133,7 +134,7 @@ public class CriteriaSet {
 	 * @param differentiationCriteriaTable
 	 * @param listCriteria
 	 */
-	public static void sortCriteriaSet(CriteriaSet[] differentiationCriteriaTable, ArrayList<Criterion> listCriteria) {
+	public static void sortCriteriaSet(CriteriaSet[] differentiationCriteriaTable, List<Criterion> listCriteria) {
 
 		//boucle sur a liste des critères disponible dans l'ordre d'affichage
 		for(int i = 0; i < listCriteria.size(); i++) {

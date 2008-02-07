@@ -470,16 +470,11 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 			if (reglement.getDistancesEtBlasonFor(differentiationCriteria[i]) != null)
 				row[reglement.getNbSerie() + 1] = reglement.getDistancesEtBlasonFor(differentiationCriteria[i]).getTargetFace();
 			else {
-				//TODO Hack à retravailler
 				Blason defaultBlason = Blason.NULL;
 				try {
 					List<Blason> availableTargetFace = Blason.listAvailableTargetFace();
-					for(Blason blason : availableTargetFace) {
-						if(blason.equals(Blason.NULL)) {
-							defaultBlason = blason;
-							break;
-						}
-					}
+					if(availableTargetFace.size() > 0)
+						defaultBlason = availableTargetFace.get(0);
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}

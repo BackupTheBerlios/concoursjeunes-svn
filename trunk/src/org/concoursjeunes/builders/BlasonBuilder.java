@@ -124,7 +124,8 @@ public class BlasonBuilder {
 		blason.setName(rs.getString("NOMBLASON")); //$NON-NLS-1$
 		blason.setHorizontalRatio(rs.getDouble("HORIZONTAL_RATIO")); //$NON-NLS-1$
 		blason.setVerticalRatio(rs.getDouble("VERTICAL_RATIO")); //$NON-NLS-1$
-		blason.setNbArcher(rs.getInt("NUMORDRE")); //$NON-NLS-1$
+		blason.setNbArcher(rs.getInt("NBARCHER")); //$NON-NLS-1$
+		blason.setNumordre(rs.getInt("NUMORDRE")); //$NON-NLS-1$
 		
 		blason.setAncrages(AncragesMapBuilder.getAncragesMap(blason));
 		

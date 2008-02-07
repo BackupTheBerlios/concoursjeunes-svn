@@ -245,15 +245,8 @@ public class Cible {
 				List<DistancesEtBlason> targetDbs = getDistancesEtBlason();
 				
 				//verifie que la distance est bonne
-				if(!Arrays.equals(concurrentDb.getDistance(), targetDbs.get(0).getDistance()))
+				if(targetDbs.size() > 0 && !Arrays.equals(concurrentDb.getDistance(), targetDbs.get(0).getDistance()))
 					throw new PlacementException(PlacementException.Nature.BAD_DISTANCESANDBLASONS);
-				
-				/*for(DistancesEtBlason db : targetDbs) {
-					double nbBlasonSurDb = Math.floor((double)getNbArcherFor(db) / (double)db.getTargetFace().getNbArcher());
-					
-					double dbVRatio = db.getTargetFace().getVerticalRatio();
-					double dbHRatio = db.getTargetFace().getHorizontalRatio();
-				}*/
 				
 				//si l'archer est handicapé, vérifié que les condition spécifique sont remplis
 				if(concurrent.isHandicape()) {
@@ -275,6 +268,8 @@ public class Cible {
 								break;
 							}
 						}
+						if(position == -1)
+							throw new PlacementException(PlacementException.Nature.BAD_DISTANCESANDBLASONS);
 					} else {
 						throw new PlacementException(PlacementException.Nature.POSITION_AVAILABLE_FOR_VALID_CONCURRENT);
 					}
@@ -297,6 +292,8 @@ public class Cible {
 							break;
 						}
 					}
+					if(position == -1)
+						throw new PlacementException(PlacementException.Nature.BAD_DISTANCESANDBLASONS);
 				}
 			} else {
 				if(nbHandicap > 0)
@@ -417,8 +414,11 @@ public class Cible {
 			} else if (position >= 0 && position < concurrents.length && !isReservedPosition(position)) {
 				DistancesEtBlason dbConcurrent = DistancesEtBlason.getDistancesEtBlasonForConcurrent(
 						reglement, concurrent);
-				if ((nbArcher > 0 && dbConcurrent.equals(getDistancesEtBlason().get(0)))
-						|| nbArcher == 0) {
+				
+				if(getDistancesEtBlason().size() > 0 && !Arrays.equals(dbConcurrent.getDistance(), getDistancesEtBlason().get(0).getDistance()))
+					throw new PlacementException(PlacementException.Nature.BAD_DISTANCESANDBLASONS);
+				
+				if (isSlotAvailable(dbConcurrent.getTargetFace(), position)) {
 					if(concurrent.isHandicape() && position % 2 != 0)
 						throw new PlacementException(PlacementException.Nature.POSITION_AVAILABLE_FOR_VALID_CONCURRENT);
 					concurrent.setCible(numCible);
@@ -495,7 +495,7 @@ public class Cible {
 
 	/**
 	 * Donne la disposition de la cible
-	 * FIXME Verifier l'utilisation de la methode
+	 * 
 	 * @return DistancesEtBlason - la disposition de la cible
 	 */
 	public List<DistancesEtBlason> getDistancesEtBlason() {
@@ -550,7 +550,7 @@ public class Cible {
 					if (i == 0 || (i > 0 && !dbs.get(i).getTargetFace().equals(dbs.get(i - 1).getTargetFace()))) {
 						if (i > 0)
 							strCibleLibelle += "/"; //$NON-NLS-1$
-						strCibleLibelle += dbs.get(i).getTargetFace().getName() + "m"; //$NON-NLS-1$
+						strCibleLibelle += dbs.get(i).getTargetFace().getName();
 					}
 				}
 			}
@@ -582,20 +582,6 @@ public class Cible {
 		strCibleLibelle += "</html>"; //$NON-NLS-1$
 
 		return strCibleLibelle;
-	}
-
-	/**
-	 * Donne un libelle textuel pour une position
-	 * 
-	 * @param cible -
-	 *            la cible de la position
-	 * @param position -
-	 *            l'index de la position
-	 * @return String - le libelle de la position
-	 */
-	@Deprecated
-	public static String getCibleLibelle(int cible, int position) {
-		return new TargetPosition(cible, position).toString();
 	}
 
 	private void fireConcurrentJoined(Concurrent concurrent) {

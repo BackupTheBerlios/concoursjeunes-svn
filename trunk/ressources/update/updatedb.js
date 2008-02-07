@@ -1,28 +1,58 @@
 //mapping:
 // int dbVersion
-// SqlManager sql - moteur de base de donnï¿½e
+// SqlManager sql - moteur de base de données
 
 if(dbVersion == 0) {
+	//passe l'ensemble des scripts de base
 	sql.executeScript("01-create_db.sql");
 	sql.executeScript("02-defaut.sql");
 	sql.executeScript("02-federal.sql");
 	sql.executeScript("02-savoie.sql");
 	sql.executeScript("04-insertclub.sql");
 	sql.executeScript("99-updatedbver.sql");
-} else if(dbVersion < 8) {
+} else if(dbVersion < 10) {
 	var rowSet;
 	
-	rowSet = sql.executeQuery("SELECT * FROM REGLEMENT where NUMREGLEMENT=-909407998");
+	//correction de l'enregistrement des réglements
+	rowSet = sql.executeQuery("SELECT * FROM REGLEMENT where NUMREGLEMENT=-909407998;");
 	if(!rowSet.first()) {
 		sql.executeScript("05-patch01.sql");
 	}
 	
+	//ajout d'une colonne pour le classement par équipe
 	rowSet = sql.executeQuery("SELECT * FROM INFORMATION_SCHEMA.COLUMNS " 
 		+ "WHERE TABLE_SCHEMA='PUBLIC' AND TABLE_NAME='CRITERE' AND COLUMN_NAME='CLASSEMENTEQUIPE';");
 	if(!rowSet.first()) {
 		sql.executeUpdate("ALTER TABLE CRITERE ADD CLASSEMENTEQUIPE BOOLEAN DEFAULT FALSE BEFORE PLACEMENT;");
 	}
 	
+	//ajout d'un numero d'ordre de critere
+	rowSet = sql.executeQuery("SELECT * FROM INFORMATION_SCHEMA.COLUMNS " 
+		+ "WHERE TABLE_SCHEMA='PUBLIC' AND TABLE_NAME='CRITERE' AND COLUMN_NAME='NUMORDRE';");
+	if(!rowSet.first()) {
+		sql.executeUpdate("ALTER TABLE CRITERE ADD NUMORDRE INTEGER NOT NULL DEFAULT 1;");
+		rowSet = sql.executeQuery("SELECT * FROM CRITERE ORDER BY NUMREGLEMENT;");
+		while(rowSet.next()) {
+			sql.executeUpdate("UPDATE CRITERE SET NUMORDRE=(SELECT MAX(NUMORDRE) + 1 FROM CRITERE WHERE NUMREGLEMENT="
+				+ rowSet.getInt("NUMREGLEMENT") + ") WHERE NUMREGLEMENT=" + rowSet.getInt("NUMREGLEMENT") 
+				+ " AND CODECRITERE='" + rowSet.getInt("CODECRITERE") + "';");
+		}
+	}
+	
+	//ajout d'un numero d'ordre d'element de critere
+	rowSet = sql.executeQuery("SELECT * FROM INFORMATION_SCHEMA.COLUMNS " 
+		+ "WHERE TABLE_SCHEMA='PUBLIC' AND TABLE_NAME='CRITEREELEMENT' AND COLUMN_NAME='NUMORDRE';");
+	if(!rowSet.first()) {
+		sql.executeUpdate("ALTER TABLE CRITEREELEMENT ADD NUMORDRE INTEGER NOT NULL DEFAULT 1;");
+		rowSet = sql.executeQuery("SELECT * FROM CRITEREELEMENT ORDER BY NUMREGLEMENT, CODECRITERE;");
+		while(rowSet.next()) {
+			sql.executeUpdate("UPDATE CRITERE SET NUMORDRE=(SELECT MAX(NUMORDRE) + 1 FROM CRITERE WHERE NUMREGLEMENT="
+				+ rowSet.getInt("NUMREGLEMENT") + " AND CODECRITERE=" + rowSet.getInt("CODECRITERE") + ") WHERE NUMREGLEMENT=" + rowSet.getInt("NUMREGLEMENT") 
+				+ " AND CODECRITERE='" + rowSet.getInt("CODECRITERE") + "' AND CODECRITEREELEMENT='" + rowSet.getInt("CODECRITEREELEMENT") + "';");
+		}
+	}
+	
+	//ajout de la gestion des blasons
 	rowSet = sql.executeQuery("SELECT * FROM INFORMATION_SCHEMA.TABLES "
 		+ "WHERE TABLE_SCHEMA='PUBLIC' AND TABLE_NAME='BLASONS'");
 	if(!rowSet.first()) {
@@ -37,24 +67,33 @@ if(dbVersion == 0) {
 		sql.executeUpdate("ALTER TABLE DISTANCESBLASONS ADD NUMBLASON INTEGER NOT NULL DEFAULT 1;");
 
 		sql.executeUpdate("INSERT INTO BLASONS (NOMBLASON, HORIZONTAL_RATIO, VERTICAL_RATIO, NBARCHER, NUMORDRE) "
-			+ "SELECT DISTINCT CONCAT(BLASONS, 'cm') AS NOMBLASON, 1, 1, 4, BLASONS FROM DISTANCESBLASONS WHERE BLASONS > 60 ORDER BY BLASONS DESC");
+			+ "SELECT DISTINCT CONCAT(BLASONS, 'cm') AS NOMBLASON, 1, 1, 4, BLASONS FROM DISTANCESBLASONS WHERE BLASONS > 60 ORDER BY BLASONS DESC;");
 		sql.executeUpdate("INSERT INTO BLASONS (NOMBLASON, HORIZONTAL_RATIO, VERTICAL_RATIO, NBARCHER, NUMORDRE) "
-			+ "SELECT DISTINCT CONCAT(BLASONS, 'cm') AS NOMBLASON, 0.5, 1, 2, BLASONS FROM DISTANCESBLASONS WHERE BLASONS > 40 AND BLASONS <= 60 ORDER BY BLASONS DESC");
+			+ "SELECT DISTINCT CONCAT(BLASONS, 'cm') AS NOMBLASON, 0.5, 1, 2, BLASONS FROM DISTANCESBLASONS WHERE BLASONS > 40 AND BLASONS <= 60 ORDER BY BLASONS DESC;");
 		sql.executeUpdate("INSERT INTO BLASONS (NOMBLASON, HORIZONTAL_RATIO, VERTICAL_RATIO, NBARCHER, NUMORDRE) "
-			+ "SELECT DISTINCT CONCAT(BLASONS, 'cm') AS NOMBLASON, 0.5, 0.5, 1, BLASONS FROM DISTANCESBLASONS WHERE BLASONS <= 40 ORDER BY BLASONS DESC");
+			+ "SELECT DISTINCT CONCAT(BLASONS, 'cm') AS NOMBLASON, 0.5, 0.5, 1, BLASONS FROM DISTANCESBLASONS WHERE BLASONS <= 40 ORDER BY BLASONS DESC;");
 		sql.executeUpdate("UPDATE DISTANCESBLASONS A SET NUMBLASON=(SELECT DISTINCT NUMBLASON FROM BLASONS B WHERE B.NUMORDRE = A.BLASONS);");
 		
 		sql.executeUpdate("INSERT INTO BLASONS (NOMBLASON, HORIZONTAL_RATIO, VERTICAL_RATIO, NBARCHER, NUMORDRE) VALUES ('Tri Spot \"Vegas\"', 0.5, 0.5, 1, 39);");
 		sql.executeUpdate("INSERT INTO BLASONS (NOMBLASON, HORIZONTAL_RATIO, VERTICAL_RATIO, NBARCHER, NUMORDRE) VALUES ('Tri Spot Vertical', 0.25, 1, 1, 24);");
 		
-		sql.executeUpdate("ALTER TABLE DISTANCESBLASONS ADD FOREIGN KEY (NUMBLASON) REFERENCES BLASONS (NUMBLASON) ON UPDATE CASCADE ON DELETE CASCADE");
+		sql.executeUpdate("ALTER TABLE DISTANCESBLASONS ADD FOREIGN KEY (NUMBLASON) REFERENCES BLASONS (NUMBLASON) ON UPDATE CASCADE ON DELETE CASCADE;");
 	}
 	
+	//ajout des ancrages de blasons
+	rowSet = sql.executeQuery("SELECT * FROM INFORMATION_SCHEMA.TABLES "
+		+ "WHERE TABLE_SCHEMA='PUBLIC' AND TABLE_NAME='ANCRAGES_BLASONS';");
+	if(!rowSet.first()) {
+		sql.executeScript("05-patch02.sql");
+	}
+	
+	//ajout du réglement de référence
 	rowSet = sql.executeQuery("SELECT * FROM REGLEMENT WHERE NUMREGLEMENT=0;");
 	if(!rowSet.first()) {
 		sql.executeScript("02-defaut.sql");
 	}
 	
+	//ajout d'arcs supplémentaire sur les 2 réglements de base
 	rowSet = sql.executeQuery("SELECT * FROM CRITEREELEMENT WHERE CODECRITEREELEMENT='AD' and CODECRITERE='arc' and NUMREGLEMENT in(-1825540830, -180676679);");
 	if(!rowSet.first()) {
 		sql.executeUpdate("MERGE INTO PUBLIC.CRITEREELEMENT(CODECRITEREELEMENT, CODECRITERE, NUMREGLEMENT, LIBELLECRITEREELEMENT, ACTIF) VALUES('AD', 'arc', -1825540830, 'Arc droit', TRUE);");
@@ -70,10 +109,6 @@ if(dbVersion == 0) {
 }
 
 if(dbVersion > 0) {
-	rowSet = sql.executeQuery("SELECT * FROM INFORMATION_SCHEMA.TABLES "
-		+ "WHERE TABLE_SCHEMA='PUBLIC' AND TABLE_NAME='ANCRAGES_BLASONS'");
-	if(!rowSet.first()) {
-		sql.executeScript("05-patch02.sql");
-	}
+	//mise à jour du numero de version de la base
 	sql.executeScript("99-updatedbver.sql");
 }

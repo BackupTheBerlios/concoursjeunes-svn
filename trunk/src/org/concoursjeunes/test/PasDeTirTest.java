@@ -1,7 +1,7 @@
 /*
- * Créer le 29 déc. 07 à 12:57:24 pour ConcoursJeunes
+ * Créer le 4 févr. 08 à 23:16:38 pour ConcoursJeunes
  *
- * Copyright 2002-2007 - Aurélien JEOFFRAY
+ * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
  *
@@ -88,24 +88,80 @@
  */
 package org.concoursjeunes.test;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import junit.framework.TestCase;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @author Aurélien JEOFFRAY
  *
  */
-public class AllTests {
+public class PasDeTirTest extends TestCase{
 
-	public static Test suite() {
-		TestSuite suite = new TestSuite("Test for org.concoursjeunes.test"); //$NON-NLS-1$
-		//$JUnit-BEGIN$
-		suite.addTestSuite(ConfigurationManagerTest.class);
-		suite.addTestSuite(FicheConcoursTest.class);
-		suite.addTestSuite(ConcoursJeunesTest.class);
-		suite.addTestSuite(PasDeTirTest.class);
-		//$JUnit-END$
-		return suite;
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Override
+    @Before
+	public void setUp() throws Exception {
+	}
+
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Override
+    @After
+	public void tearDown() throws Exception {
+	}
+
+	/**
+	 * Test method for {@link org.concoursjeunes.PasDeTir#getTargetsOccupation(int)}.
+	 */
+	@Test
+	public void testGetOccupationCibles() {
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link org.concoursjeunes.PasDeTir#getNbFreeTargets(int)}.
+	 */
+	@Test
+	public void testGetNbCiblesLibre() {
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link org.concoursjeunes.PasDeTir#havePlaceForConcurrent(org.concoursjeunes.Concurrent)}.
+	 */
+	@Test
+	public void testHavePlaceForConcurrent() {
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link org.concoursjeunes.PasDeTir#placementConcurrents()}.
+	 */
+	@Test
+	public void testPlacementConcurrents() {
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link org.concoursjeunes.PasDeTir#placementConcurrent(org.concoursjeunes.Concurrent, org.concoursjeunes.Cible, int)}.
+	 */
+	@Test
+	public void testPlacementConcurrent() {
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for {@link org.concoursjeunes.PasDeTir#retraitConcurrent(org.concoursjeunes.Concurrent)}.
+	 */
+	@Test
+	public void testRetraitConcurrent() {
+		fail("Not yet implemented");
 	}
 
 }

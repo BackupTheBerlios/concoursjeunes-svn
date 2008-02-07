@@ -177,7 +177,7 @@ public class ConcoursJeunes {
 	/**
 	 * Numero de version de la base de donnée nécessaire au fonctionnement du programme
 	 */
-	public static final int DB_RELEASE_REQUIRED = 9;
+	public static final int DB_RELEASE_REQUIRED = 10;
 	
 	// Chaine de ressources
 	private static final String RES_LIBELLE = "libelle"; //$NON-NLS-1$
@@ -311,7 +311,10 @@ public class ConcoursJeunes {
 				try {
 					scriptEngine.put("dbVersion", dbVersion); //$NON-NLS-1$
 					scriptEngine.put("sql", new SqlManager(stmt, updatePath)); //$NON-NLS-1$
-					scriptEngine.eval(new FileReader(new File(updatePath, "updatedb.js"))); //$NON-NLS-1$
+					
+					List<File> scripts = FileUtil.listAllFiles(updatePath, ".*\\.js"); //$NON-NLS-1$
+					for(File script : scripts)
+						scriptEngine.eval(new FileReader(script));
 				} catch (ScriptException e1) {
 					e1.printStackTrace();
 				} catch (FileNotFoundException e1) {

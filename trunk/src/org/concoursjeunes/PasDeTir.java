@@ -150,7 +150,7 @@ public class PasDeTir {
 	 * @param depart - le départ pour lequelle tester la place dispo
 	 * @return la table d'occupation pour le depart
 	 */
-	private Hashtable<DistancesEtBlason, TargetsOccupation> calculatePlaceDisponible(int nbtireurparcible) {
+	private Hashtable<DistancesEtBlason, TargetsOccupation> calculateAvailablePlace(int nbtireurparcible) {
 		Hashtable<DistancesEtBlason, TargetsOccupation> occupationCibles = new Hashtable<DistancesEtBlason, TargetsOccupation>();
 
 		//recupere le nombre d'archer total possible
@@ -158,7 +158,7 @@ public class PasDeTir {
 		int[] nbParDistanceBlason;
 
 		//recupere dans la configuration la correspondance Critères de distinction/Distance-Blason
-		ArrayList<DistancesEtBlason> distancesEtBlasons = ficheConcours.getParametre().getReglement().getListDistancesEtBlason();
+		List<DistancesEtBlason> distancesEtBlasons = ficheConcours.getParametre().getReglement().getListDistancesEtBlason();
 		//liste le nombre d'acher par distances/blason différents
 		//pour chaque distance/blason
 		nbParDistanceBlason = new int[distancesEtBlasons.size()];
@@ -176,15 +176,20 @@ public class PasDeTir {
 		return occupationCibles;
 	}
 	
+	/**
+	 * defini le nombre de tireur par cible en fonction du nombre de tireurs
+	 * max acceptés et du nombre de tireur présent
+	 * 
+	 * @param lDB la liste des DistancesEtBlason utilisé sur le pas de ti
+	 * @return le nombre de tireur par cible à utiliser
+	 */
 	private int getOptimalRythme(List<DistancesEtBlason> lDB) {
-		//defini le nombre de tireur par cible en fonction du nombre de tireurs
-		//max acceptés et du nombre de tireur présent
 		int nbArcherModule = 0;
 		int nbTireurParCible = 0;
 		for(int i = 2; i <= ficheConcours.getParametre().getNbTireur(); i+=2) {
 			nbArcherModule = 0;
 			for(DistancesEtBlason distancesEtBlason : lDB) {
-				TargetsOccupation occupationCibles = getOccupationCibles(ficheConcours.getParametre().getNbTireur()).get(distancesEtBlason);
+				TargetsOccupation occupationCibles = getTargetsOccupation(ficheConcours.getParametre().getNbTireur()).get(distancesEtBlason);
 				nbArcherModule += occupationCibles.getPlaceOccupe() % i + occupationCibles.getPlaceOccupe();
 			}
 			if(nbArcherModule <= ficheConcours.getParametre().getNbCible() * i) {
@@ -203,8 +208,8 @@ public class PasDeTir {
 	 * @param nbtireurparcible le nombre de tireur par cible servant de base au calcul de la table d'occupation
 	 * @return la table d'occupation des cibles
 	 */
-	public Hashtable<DistancesEtBlason, TargetsOccupation> getOccupationCibles(int nbtireurparcible) {
-		return calculatePlaceDisponible(nbtireurparcible);
+	public Hashtable<DistancesEtBlason, TargetsOccupation> getTargetsOccupation(int nbtireurparcible) {
+		return calculateAvailablePlace(nbtireurparcible);
 	}
 	
 	/**
@@ -213,10 +218,10 @@ public class PasDeTir {
 	 * @param nbtireurparcible le nombre de tireur par cible servant de base au calcul de la table d'occupation
 	 * @return le nombre de cible libre
 	 */
-	public int getNbCiblesLibre(int nbtireurparcible) {
+	public int getNbFreeTargets(int nbtireurparcible) {
 		int nbCibleOccupe = 0;
 		//deduit le nombre de cible libre de la table d'ocupation des cibles
-		Hashtable<DistancesEtBlason, TargetsOccupation> occupationCibles = getOccupationCibles(nbtireurparcible);
+		Hashtable<DistancesEtBlason, TargetsOccupation> occupationCibles = getTargetsOccupation(nbtireurparcible);
 		//decompte les cibles occupés
 		Enumeration<TargetsOccupation> ocEnum = occupationCibles.elements();
 		while(ocEnum.hasMoreElements()) {
@@ -237,10 +242,10 @@ public class PasDeTir {
 	public boolean havePlaceForConcurrent(Concurrent concurrent) {
 		TargetsOccupation place = null;
 		if(!ficheConcours.getConcurrentList().contains(concurrent, concurrent.getDepart())) {
-			place = getOccupationCibles(ficheConcours.getParametre().getNbTireur()).get(
+			place = getTargetsOccupation(ficheConcours.getParametre().getNbTireur()).get(
 					DistancesEtBlason.getDistancesEtBlasonForConcurrent(ficheConcours.getParametre().getReglement(), concurrent));
 
-			return place.getPlaceLibre() > (concurrent.isHandicape()?1:0) || getNbCiblesLibre(ficheConcours.getParametre().getNbTireur()) > 0;
+			return place.getPlaceLibre() > (concurrent.isHandicape()?1:0) || getNbFreeTargets(ficheConcours.getParametre().getNbTireur()) > 0;
 		}
 
 		int index = ficheConcours.getConcurrentList().getArchList().indexOf(concurrent);
@@ -256,13 +261,13 @@ public class PasDeTir {
 		}
 
 		//si il reste de la place dans la nouvelle categorie pas de pb
-		place = getOccupationCibles(ficheConcours.getParametre().getNbTireur()).get(db1);
-		if(place.getPlaceLibre() > (concurrent.isHandicape()?1:0) || getNbCiblesLibre(ficheConcours.getParametre().getNbTireur()) > 0) {
+		place = getTargetsOccupation(ficheConcours.getParametre().getNbTireur()).get(db1);
+		if(place.getPlaceLibre() > (concurrent.isHandicape()?1:0) || getNbFreeTargets(ficheConcours.getParametre().getNbTireur()) > 0) {
 			return true;
 		}
 
 		//si le retrait du concurrent libere une cible ok
-		place = getOccupationCibles(ficheConcours.getParametre().getNbTireur()).get(db2);
+		place = getTargetsOccupation(ficheConcours.getParametre().getNbTireur()).get(db2);
 		if(place.getPlaceOccupe() % ficheConcours.getParametre().getNbTireur() == (concurrent.isHandicape()?2:1)) {
 			return true;
 		}
@@ -347,6 +352,7 @@ public class PasDeTir {
 			else {
 				curTarget = startTarget;
 			}
+			//FIXME: s'assurer qu'on ne parte pas dans une boucle infini
 			//si on arrive pas à placer l'archer sur la position (place reservé handicapé),
 			//alors on passe à la position suivante
 		} while(position == -1);

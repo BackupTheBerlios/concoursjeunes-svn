@@ -94,6 +94,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 /**
  * <p>
@@ -128,8 +129,8 @@ public class Reglement {
 	private int nbMembresEquipe = 4;
 	private int nbMembresRetenu = 3;
 
-	private ArrayList<Criterion> listCriteria = new ArrayList<Criterion>();
-	private ArrayList<DistancesEtBlason> listDistancesEtBlason = new ArrayList<DistancesEtBlason>();
+	private List<Criterion> listCriteria = new ArrayList<Criterion>();
+	private List<DistancesEtBlason> listDistancesEtBlason = new ArrayList<DistancesEtBlason>();
 
 	private boolean officialReglement = false;
 
@@ -180,7 +181,7 @@ public class Reglement {
 	 * 
 	 * @return la liste des critéres de distinction utilisé pour le réglement
 	 */
-	public ArrayList<Criterion> getListCriteria() {
+	public List<Criterion> getListCriteria() {
 		return listCriteria;
 	}
 
@@ -193,14 +194,14 @@ public class Reglement {
 	 * @param listCriteria
 	 *            the listCriteria to set
 	 */
-	public void setListCriteria(ArrayList<Criterion> listCriteria) {
+	public void setListCriteria(List<Criterion> listCriteria) {
 		this.listCriteria = listCriteria;
 	}
 
 	/**
 	 * @return listDistancesEtBlason
 	 */
-	public ArrayList<DistancesEtBlason> getListDistancesEtBlason() {
+	public List<DistancesEtBlason> getListDistancesEtBlason() {
 		return listDistancesEtBlason;
 	}
 
@@ -208,7 +209,7 @@ public class Reglement {
 	 * @param listDistancesEtBlason
 	 *            listDistancesEtBlason à définir
 	 */
-	public void setListDistancesEtBlason(ArrayList<DistancesEtBlason> listDistancesEtBlason) {
+	public void setListDistancesEtBlason(List<DistancesEtBlason> listDistancesEtBlason) {
 		this.listDistancesEtBlason = listDistancesEtBlason;
 	}
 
@@ -411,7 +412,9 @@ public class Reglement {
 	}
 
 	private void saveCriteria() throws SQLException {
+		int numordre = 1;
 		for (Criterion criterion : listCriteria) {
+			criterion.setNumordre(numordre++);
 			criterion.save();
 		}
 	}
