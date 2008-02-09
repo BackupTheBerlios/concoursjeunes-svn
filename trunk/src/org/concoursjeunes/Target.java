@@ -96,8 +96,8 @@ import java.util.Map.Entry;
 
 import javax.swing.event.EventListenerList;
 
-import org.concoursjeunes.event.CibleEvent;
-import org.concoursjeunes.event.CibleListener;
+import org.concoursjeunes.event.TargetEvent;
+import org.concoursjeunes.event.TargetListener;
 import org.concoursjeunes.exceptions.PlacementException;
 
 /**
@@ -107,7 +107,12 @@ import org.concoursjeunes.exceptions.PlacementException;
  * @author Aurelien Jeoffray
  * @version 2.2
  */
-public class Cible {
+public class Target {
+	
+	public enum Repartition {
+		ABCD,
+		ACBD
+	}
 
 	private int numCible = 0; // le numero de la cible
 	private final Concurrent[] concurrents; // le liste des concurrents présents
@@ -129,7 +134,7 @@ public class Cible {
 	 * @param ficheConcours -
 	 *            La fiche concours associé à la cible
 	 */
-	public Cible(int numCible, PasDeTir pasDeTir) {
+	public Target(int numCible, PasDeTir pasDeTir) {
 		this.numCible = numCible;
 		this.reglement = pasDeTir.getFicheConcours().getParametre().getReglement();
 		
@@ -143,8 +148,8 @@ public class Cible {
 	 *            l'auditeur devant être mis au courrant des évenements de la
 	 *            cible
 	 */
-	public void addCibleListener(CibleListener cibleListener) {
-		listeners.add(CibleListener.class, cibleListener);
+	public void addCibleListener(TargetListener cibleListener) {
+		listeners.add(TargetListener.class, cibleListener);
 	}
 
 	/**
@@ -153,8 +158,8 @@ public class Cible {
 	 * @param cibleListener -
 	 *            l'auditeur devant être supprimé de la liste de notification
 	 */
-	public void removeCibleListener(CibleListener cibleListener) {
-		listeners.remove(CibleListener.class, cibleListener);
+	public void removeCibleListener(TargetListener cibleListener) {
+		listeners.remove(TargetListener.class, cibleListener);
 	}
 
 	/**
@@ -213,6 +218,34 @@ public class Cible {
 	}
 	
 	/**
+	 * Retourne le nombre de position disponible pour l'objet DistancesEtBlason
+	 * fournit en parametre
+	 * 
+	 * @param distancesEtBlason l'objet DistancesEtBlason permettant de déterminer
+	 * le nombre de position disponible
+	 * 
+	 * @return le nombre de slot disponible pour le DistancesEtBlason
+	 */
+	public int getNbAvailableSlotsFor(DistancesEtBlason distancesEtBlason) {
+		if(nbArcher > 0) {
+			if(Arrays.equals(getDistancesEtBlason().get(0).getDistance(), distancesEtBlason.getDistance())) {
+				int availableSlots = 0;
+				for(int i = 0; i < concurrents.length; i++) {
+					if(concurrents[i] == null && !isReservedPosition(i) && isSlotAvailable(distancesEtBlason.getTargetFace(), i)) {
+						availableSlots++;
+					}
+				}
+				return availableSlots;
+			} else {
+				return 0;
+			}
+		} else {
+			return concurrents.length;
+		}
+		
+	}
+	
+	/**
 	 * Determine si une position est reservé pour un archer handicape
 	 * ou non
 	 * 
@@ -225,16 +258,18 @@ public class Cible {
 		return false;
 	}
 
+	//public int
 	/**
 	 * insere un concurrent à la premiere position libre et retourne cette
 	 * position ou produit une exception PlacementException en cas d'echec
 	 * 
 	 * @param concurrent le concurrent à inserer
+	 * @param repartition le mode de distribution des archers sur la cible
 	 * 
 	 * @return la position de concurrent ou -1 si echec
 	 * @throws PlacementException si l'insertion du concurrent est impossible
 	 */
-	public int insertConcurrent(Concurrent concurrent)
+	public int insertConcurrent(Concurrent concurrent, Repartition repartition)
 			throws PlacementException {
 		int position = -1;
 
@@ -274,22 +309,61 @@ public class Cible {
 						throw new PlacementException(PlacementException.Nature.POSITION_AVAILABLE_FOR_VALID_CONCURRENT);
 					}
 				} else {
-					//on boucle sur les emplacements et on remplit le premier qui est libre
-					for (int i = 0; i < concurrents.length; i++) {
-						if (isSlotAvailable(concurrentDb.getTargetFace(), i)) {
-							if(i > 0 && concurrents[i-1] != null && concurrents[i-1].isHandicape())
-								continue;
-							concurrent.setCible(numCible);
-							concurrent.setPosition(i);
-	
-							concurrents[i] = concurrent;
-							nbArcher++;
-	
-							fireConcurrentJoined(concurrent);
-	
-							position = i;
-	
-							break;
+					if(repartition == Repartition.ABCD) {
+						//on boucle sur les emplacements et on remplit le premier qui est libre
+						for (int i = 0; i < concurrents.length; i++) {
+							if (isSlotAvailable(concurrentDb.getTargetFace(), i)) {
+								if(isReservedPosition(i)) //la position est libre mais reservé pour un archer handicapé
+									continue;
+								concurrent.setCible(numCible);
+								concurrent.setPosition(i);
+		
+								concurrents[i] = concurrent;
+								nbArcher++;
+		
+								fireConcurrentJoined(concurrent);
+		
+								position = i;
+		
+								break;
+							}
+						}
+					} else {
+						//tente le placement en AC
+						for (int i = 0; i < concurrents.length; i+=2) {
+							if (isSlotAvailable(concurrentDb.getTargetFace(), i)) {
+								concurrent.setCible(numCible);
+								concurrent.setPosition(i);
+		
+								concurrents[i] = concurrent;
+								nbArcher++;
+		
+								fireConcurrentJoined(concurrent);
+		
+								position = i;
+		
+								break;
+							}
+						}
+						//si AC en echec tente en BD
+						if(position == -1) {
+							for (int i = 1; i < concurrents.length; i+=2) {
+								if (isSlotAvailable(concurrentDb.getTargetFace(), i)) {
+									if(isReservedPosition(i)) //la position est libre mais reservé pour un archer handicapé
+										continue;
+									concurrent.setCible(numCible);
+									concurrent.setPosition(i);
+			
+									concurrents[i] = concurrent;
+									nbArcher++;
+			
+									fireConcurrentJoined(concurrent);
+			
+									position = i;
+			
+									break;
+								}
+							}
 						}
 					}
 					if(position == -1)
@@ -408,7 +482,10 @@ public class Cible {
 			throws PlacementException {
 		if (concurrent != null) {
 			if (position == -1) {
-				insertConcurrent(concurrent);
+				Repartition repartition = Repartition.ACBD;
+				if(concurrents.length == 2)
+					repartition = Repartition.ABCD;
+				insertConcurrent(concurrent, repartition);
 				
 				return;
 			} else if (position >= 0 && position < concurrents.length && !isReservedPosition(position)) {
@@ -585,14 +662,14 @@ public class Cible {
 	}
 
 	private void fireConcurrentJoined(Concurrent concurrent) {
-		for (CibleListener cibleListener : listeners.getListeners(CibleListener.class)) {
-			cibleListener.concurrentJoined(new CibleEvent(concurrent, this));
+		for (TargetListener cibleListener : listeners.getListeners(TargetListener.class)) {
+			cibleListener.concurrentJoined(new TargetEvent(concurrent, this));
 		}
 	}
 
 	private void fireConcurrentQuit(Concurrent concurrent) {
-		for (CibleListener cibleListener : listeners.getListeners(CibleListener.class)) {
-			cibleListener.concurrentQuit(new CibleEvent(concurrent, this));
+		for (TargetListener cibleListener : listeners.getListeners(TargetListener.class)) {
+			cibleListener.concurrentQuit(new TargetEvent(concurrent, this));
 		}
 	}
 }

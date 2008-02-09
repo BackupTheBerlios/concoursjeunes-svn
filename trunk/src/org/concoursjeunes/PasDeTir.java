@@ -93,6 +93,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.concoursjeunes.Target.Repartition;
 import org.concoursjeunes.exceptions.PlacementException;
 
 /**
@@ -112,7 +113,7 @@ import org.concoursjeunes.exceptions.PlacementException;
  *
  */
 public class PasDeTir {
-	private ArrayList<Cible> targets = new ArrayList<Cible>();
+	private ArrayList<Target> targets = new ArrayList<Target>();
 	//private ArrayList<Concurrent> archersWithNoTarget = new ArrayList<Concurrent>();
 	private FicheConcours ficheConcours;
 	private int depart = 0;
@@ -129,7 +130,7 @@ public class PasDeTir {
 		
 		//construit l'arbre de cible lié au pas de tir
 		for(int j = 0; j < ficheConcours.getParametre().getNbCible(); j++) {
-			Cible cible = new Cible(j+1, this);
+			Target cible = new Target(j+1, this);
 			//dans le cas d'une ouverture de concours existant, place les archers réferencé
 			//sur leurs cible
 			if(ficheConcours.getConcurrentList().countArcher(depart) > 0) {
@@ -153,24 +154,15 @@ public class PasDeTir {
 	private Hashtable<DistancesEtBlason, TargetsOccupation> calculateAvailablePlace(int nbtireurparcible) {
 		Hashtable<DistancesEtBlason, TargetsOccupation> occupationCibles = new Hashtable<DistancesEtBlason, TargetsOccupation>();
 
-		//recupere le nombre d'archer total possible
-		int placeLibreSurCible = 0;
-		int[] nbParDistanceBlason;
-
 		//recupere dans la configuration la correspondance Critères de distinction/Distance-Blason
 		List<DistancesEtBlason> distancesEtBlasons = ficheConcours.getParametre().getReglement().getListDistancesEtBlason();
 		//liste le nombre d'acher par distances/blason différents
 		//pour chaque distance/blason
-		nbParDistanceBlason = new int[distancesEtBlasons.size()];
-		int i = 0;
 		for(DistancesEtBlason distblas : distancesEtBlasons) {
-			nbParDistanceBlason[i] = ficheConcours.getConcurrentList().countArcher(ficheConcours.getParametre().getReglement(), distblas, depart, true);
+			int nbArcher = ficheConcours.getConcurrentList().countArcher(ficheConcours.getParametre().getReglement(), distblas, depart, true);
+			int placeLibre = (nbtireurparcible - nbArcher % nbtireurparcible) % nbtireurparcible;
 
-			placeLibreSurCible = (nbtireurparcible - nbParDistanceBlason[i] % nbtireurparcible)  % nbtireurparcible;
-
-			occupationCibles.put(distblas, new TargetsOccupation(placeLibreSurCible, nbParDistanceBlason[i]));
-
-			i++;
+			occupationCibles.put(distblas, new TargetsOccupation(placeLibre, nbArcher));
 		}
 
 		return occupationCibles;
@@ -289,7 +281,7 @@ public class PasDeTir {
 		//max acceptés et du nombre de tireur présent
 		int nbTireurParCible = getOptimalRythme(lDB);
 		
-		for(Cible cible : targets) {
+		for(Target cible : targets) {
 			cible.removeAll();
 		}
 		
@@ -309,8 +301,20 @@ public class PasDeTir {
 					distancesEtBlason, depart, true);
 			//calcul le nombre et la position des cibles qui vont être occupé pour la distance
 			int startCible = curCible;
-			int endCible = curCible + (nbConcurrent / nbTireurParCible) 
-					+ (((nbConcurrent % nbTireurParCible) > 0) ? 0 : -1);
+			int endCible = curCible + (int)Math.floor((double)nbConcurrent / (double)nbTireurParCible) - 1;
+			
+			//calcul le nombre de slot à occuper sur la dernière cible
+			int nbArcherOnFirstTarget = (targets.get(startCible - 1).getNbArcher() + targets.get(startCible - 1).getNbHandicap());
+			if(nbArcherOnFirstTarget > 0) {
+				int nbArcherOnLastTarget = nbConcurrent % nbTireurParCible;
+				int maxAvailableFreeTarget = nbTireurParCible - nbArcherOnFirstTarget;
+				int availableFreeTarget = targets.get(startCible - 1).getNbAvailableSlotsFor(distancesEtBlason);
+				if(availableFreeTarget > maxAvailableFreeTarget)
+					availableFreeTarget = maxAvailableFreeTarget;
+				nbArcherOnLastTarget = nbArcherOnLastTarget - availableFreeTarget;
+				if(nbArcherOnLastTarget > 0)
+					endCible += 1;
+			}
 			
 			if(nbConcurrent > concurrents.length) { //si on a des archers handicapé dans le groupe
 				//extraire les archers handicapé pour les placer en premier
@@ -324,38 +328,40 @@ public class PasDeTir {
 				
 				//place les archers handicapé
 				for(Concurrent concurrent : concurrentsHandicape) {
-					curCible = placementConcurrent(concurrent, startCible, curCible, endCible);
+					curCible = placementConcurrent(concurrent, startCible, curCible, endCible, nbTireurParCible);
 				}
 			}
 			
 			//place les archers valide
 			for(Concurrent concurrent : concurrents) {
 				if(!concurrent.isHandicape()) {
-					curCible = placementConcurrent(concurrent, startCible, curCible, endCible);
+					curCible = placementConcurrent(concurrent, startCible, curCible, endCible, nbTireurParCible);
 				}
 			}
 
+			//int occupation = targets.get(endCible - 1).getNbArcher() + targets.get(endCible - 1).getNbHandicap();
+			
 			//passe au bloc suivant
-			curCible = endCible + 1;
+			curCible = endCible;
 		}
 	}
 	
-	private int placementConcurrent(Concurrent concurrent, int startTarget, int curTarget, int endTarget) {
+	private int placementConcurrent(Concurrent concurrent, int startTarget, int curTarget, int endTarget, int nbTireurParCible) {
 		int position = -1;
 		do {
-			try {
-				position = targets.get(curTarget - 1).insertConcurrent(concurrent);
-			} catch (PlacementException e) { }
-			
+			if(targets.get(curTarget - 1).getNbArcher() + targets.get(curTarget - 1).getNbHandicap() < nbTireurParCible) {
+				try {
+					Repartition repartition;
+					if(nbTireurParCible == 2)
+						repartition = Repartition.ABCD;
+					else
+						repartition = Repartition.ACBD;
+					position = targets.get(curTarget - 1).insertConcurrent(concurrent, repartition);
+				} catch (PlacementException e) { }
+			}
 			if(curTarget < endTarget)
 				curTarget++;
-			else {
-				curTarget = startTarget;
-			}
-			//FIXME: s'assurer qu'on ne parte pas dans une boucle infini
-			//si on arrive pas à placer l'archer sur la position (place reservé handicapé),
-			//alors on passe à la position suivante
-		} while(position == -1);
+		} while(position == -1 && curTarget < endTarget + 1);
 		
 		return curTarget;
 	}
@@ -369,7 +375,7 @@ public class PasDeTir {
 	 * @param cible - la cible sur laquelle placer le concurrent
 	 * @param position - la position du concurrent sur la cible
 	 */
-	public void placementConcurrent(Concurrent concurrent, Cible cible, int position) 
+	public void placementConcurrent(Concurrent concurrent, Target cible, int position) 
 			throws PlacementException {
 
 		//si le concurrent était déjà placé sur le pas de tir aupparavant le retirer
@@ -395,7 +401,7 @@ public class PasDeTir {
 	 * 
 	 * @return la liste des cibles lié au pas de tir
 	 */
-	public ArrayList<Cible> getTargets() {
+	public ArrayList<Target> getTargets() {
 		return targets;
 	}
 
@@ -404,7 +410,7 @@ public class PasDeTir {
 	 * 
 	 * @param targets targets à définir
 	 */
-	public void setTargets(ArrayList<Cible> targets) {
+	public void setTargets(ArrayList<Target> targets) {
 		this.targets = targets;
 	}
 

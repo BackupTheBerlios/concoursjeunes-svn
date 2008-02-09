@@ -45,7 +45,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
-import org.concoursjeunes.Cible;
+import org.concoursjeunes.Target;
 import org.concoursjeunes.ConcoursJeunes;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.ConcurrentList;
@@ -420,18 +420,18 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 		if (destPath == null || concurrent == null)
 			return;
 
-		Cible cible;
+		Target cible;
 		int position = -1;
 
 		// selectionne la destination
 		treeTarget.setSelectionPath(destPath);
 
-		if (destPath.getLastPathComponent() instanceof Cible) {
-			cible = (Cible) destPath.getLastPathComponent();
+		if (destPath.getLastPathComponent() instanceof Target) {
+			cible = (Target) destPath.getLastPathComponent();
 		} else if (destPath.getLastPathComponent() instanceof TargetPosition) {
 			// recupere le noeud destination
-			if (destPath.getParentPath() != null && destPath.getParentPath().getLastPathComponent() instanceof Cible) {
-				cible = (Cible) destPath.getParentPath().getLastPathComponent();
+			if (destPath.getParentPath() != null && destPath.getParentPath().getLastPathComponent() instanceof Target) {
+				cible = (Target) destPath.getParentPath().getLastPathComponent();
 				TargetPosition targetPosition = (TargetPosition) destPath.getLastPathComponent();
 				position = targetPosition.getPosition();
 			} else {
@@ -633,8 +633,8 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 
 					if (selectedTreeNode instanceof Concurrent) {
 						ficheConcoursPane.openConcurrentDialog((Concurrent) selectedTreeNode);
-					} else if (selectedTreeNode instanceof Cible) {
-						ficheConcoursPane.index = ((Cible) selectedTreeNode).getNumCible();
+					} else if (selectedTreeNode instanceof Target) {
+						ficheConcoursPane.index = ((Target) selectedTreeNode).getNumCible();
 						if (ficheConcours.getConcurrentList().list(ficheConcoursPane.index, ficheConcours.getCurrentDepart()).length > 0) {
 							ficheConcoursPane.openResultatDialog();
 						}
@@ -722,9 +722,9 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 					if (dragObject instanceof Concurrent) {
 						placementManuelConcurrent((Concurrent) dragObject, tp);
 					}
-				} else if (tp.getLastPathComponent() instanceof Cible) {
-					if (dragObject instanceof Cible) {
-						Cible tmpcbl = (Cible) dragObject;
+				} else if (tp.getLastPathComponent() instanceof Target) {
+					if (dragObject instanceof Target) {
+						Target tmpcbl = (Target) dragObject;
 
 						for (int i = 0; i < ficheConcours.getParametre().getNbTireur(); i++) {
 							if (tmpcbl.getConcurrentAt(i) != null) {
@@ -788,7 +788,7 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 		} else if (e.getSource() == treeTarget) {
 			GhostGlassPane glassPane = (GhostGlassPane) ficheConcoursPane.getParentframe().getGlassPane();
 			if (!onDrag) {
-				if (dragObject instanceof Concurrent || dragObject instanceof Cible) {
+				if (dragObject instanceof Concurrent || dragObject instanceof Target) {
 					// Rectangle rect = treeTarget.getPathBounds(getTreePathForConcurrent(tmpconc));
 					// dragObject = tp.getLastPathComponent();
 
@@ -876,8 +876,8 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 				Object node = treeTarget.getSelectionPath().getLastPathComponent();
 				if (node instanceof Concurrent)
 					ficheConcoursPane.openConcurrentDialog((Concurrent) node);
-				if (node instanceof Cible) {
-					ficheConcoursPane.index = ((Cible) node).getNumCible();
+				if (node instanceof Target) {
+					ficheConcoursPane.index = ((Target) node).getNumCible();
 					ficheConcoursPane.openResultatDialog();
 				}
 			}

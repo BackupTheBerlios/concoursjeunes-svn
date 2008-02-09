@@ -11,28 +11,28 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
-import org.concoursjeunes.Cible;
+import org.concoursjeunes.Target;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.TargetPosition;
-import org.concoursjeunes.event.CibleEvent;
-import org.concoursjeunes.event.CibleListener;
+import org.concoursjeunes.event.TargetEvent;
+import org.concoursjeunes.event.TargetListener;
 
 /**
  * @author Aurélien JEOFFRAY
  * 
  */
-public class TargetTreeModel implements TreeModel, CibleListener {
+public class TargetTreeModel implements TreeModel, TargetListener {
 
 	private final EventListenerList listeners = new EventListenerList();
 
 	private String rootLabel = ""; //$NON-NLS-1$
-	private ArrayList<Cible> targetChilds = new ArrayList<Cible>();
+	private ArrayList<Target> targetChilds = new ArrayList<Target>();
 
 	public TargetTreeModel() {
 
 	}
 
-	public TargetTreeModel(String rootLabel, ArrayList<Cible> targetChilds) {
+	public TargetTreeModel(String rootLabel, ArrayList<Target> targetChilds) {
 		this.rootLabel = rootLabel;
 		this.targetChilds = targetChilds;
 	}
@@ -57,7 +57,7 @@ public class TargetTreeModel implements TreeModel, CibleListener {
 	/**
 	 * @return targetChild
 	 */
-	public ArrayList<Cible> getTargetChilds() {
+	public ArrayList<Target> getTargetChilds() {
 		return targetChilds;
 	}
 
@@ -65,22 +65,22 @@ public class TargetTreeModel implements TreeModel, CibleListener {
 	 * @param targetChilds
 	 *            targetChild à définir
 	 */
-	public void setTargetChilds(ArrayList<Cible> targetChilds) {
+	public void setTargetChilds(ArrayList<Target> targetChilds) {
 		if (this.targetChilds != null)
-			for (Cible cible : this.targetChilds) {
+			for (Target cible : this.targetChilds) {
 				cible.removeCibleListener(this);
 			}
 
 		this.targetChilds = targetChilds;
 
-		for (Cible cible : targetChilds) {
+		for (Target cible : targetChilds) {
 			cible.addCibleListener(this);
 		}
 
 		fireTreeStructureChanged(new TreePath(new Object[] { rootLabel }));
 	}
 
-	public void addTargetChild(Cible cible) {
+	public void addTargetChild(Target cible) {
 		targetChilds.add(cible);
 
 		cible.addCibleListener(this);
@@ -88,7 +88,7 @@ public class TargetTreeModel implements TreeModel, CibleListener {
 		fireTreeNodesInserted(cible);
 	}
 
-	public void removeTargetChild(Cible cible) {
+	public void removeTargetChild(Target cible) {
 		targetChilds.remove(cible);
 
 		cible.removeCibleListener(this);
@@ -113,8 +113,8 @@ public class TargetTreeModel implements TreeModel, CibleListener {
 	public Object getChild(Object parent, int index) {
 		if (parent == rootLabel)
 			return targetChilds.get(index);
-		else if (parent instanceof Cible) {
-			Cible cibleParent = (Cible) parent;
+		else if (parent instanceof Target) {
+			Target cibleParent = (Target) parent;
 			Concurrent concurrent = cibleParent.getConcurrentAt(index);
 			if (concurrent == null)
 				return new TargetPosition(cibleParent.getNumCible(), index);
@@ -131,8 +131,8 @@ public class TargetTreeModel implements TreeModel, CibleListener {
 	public int getChildCount(Object parent) {
 		if (parent == rootLabel)
 			return targetChilds.size();
-		else if (parent instanceof Cible) {
-			Cible cibleParent = (Cible) parent;
+		else if (parent instanceof Target) {
+			Target cibleParent = (Target) parent;
 			return cibleParent.getNbMaxArchers();
 		}
 		return 0;
@@ -146,8 +146,8 @@ public class TargetTreeModel implements TreeModel, CibleListener {
 	public int getIndexOfChild(Object parent, Object child) {
 		if (parent == rootLabel)
 			return targetChilds.indexOf(child);
-		else if (parent instanceof Cible) {
-			Cible cibleParent = (Cible) parent;
+		else if (parent instanceof Target) {
+			Target cibleParent = (Target) parent;
 			if (child instanceof Concurrent) {
 				return cibleParent.indexOf((Concurrent) child);
 			}
@@ -169,12 +169,12 @@ public class TargetTreeModel implements TreeModel, CibleListener {
 	public TreePath getTreePathForNode(Object node) {
 		if (node == rootLabel)
 			return new TreePath(rootLabel);
-		else if (node instanceof Cible)
+		else if (node instanceof Target)
 			return new TreePath(new Object[] { rootLabel, node });
 		else if (node instanceof Concurrent) {
 			Concurrent concurrent = (Concurrent) node;
 			if (concurrent.getCible() > 0) {
-				Cible cible = targetChilds.get(concurrent.getCible() - 1);
+				Target cible = targetChilds.get(concurrent.getCible() - 1);
 
 				return new TreePath(new Object[] { rootLabel, cible, concurrent });
 			}
@@ -183,7 +183,7 @@ public class TargetTreeModel implements TreeModel, CibleListener {
 
 			String posLabel = (String) node;
 
-			Cible cible = targetChilds.get(Integer.parseInt(posLabel.substring(0, posLabel.length() - 1)));
+			Target cible = targetChilds.get(Integer.parseInt(posLabel.substring(0, posLabel.length() - 1)));
 
 			return new TreePath(new Object[] { rootLabel, cible, posLabel });
 		}
@@ -223,7 +223,7 @@ public class TargetTreeModel implements TreeModel, CibleListener {
 	 * 
 	 * @see org.concoursjeunes.CibleListener#concurrentJoined(org.concoursjeunes.CibleEvent)
 	 */
-	public void concurrentJoined(CibleEvent e) {
+	public void concurrentJoined(TargetEvent e) {
 		fireTreeNodesChanged(getTreePathForNode(e.getCible()));
 	}
 
@@ -232,7 +232,7 @@ public class TargetTreeModel implements TreeModel, CibleListener {
 	 * 
 	 * @see org.concoursjeunes.CibleListener#concurrentQuit(org.concoursjeunes.CibleEvent)
 	 */
-	public void concurrentQuit(CibleEvent e) {
+	public void concurrentQuit(TargetEvent e) {
 		fireTreeNodesChanged(getTreePathForNode(e.getCible()));
 		// fireTreeNodesChanged(getTreePathForNode(Cible.getCibleLibelle(
 		// e.getConcurrent().getCible()-1, e.getConcurrent().getPosition())));
@@ -256,14 +256,14 @@ public class TargetTreeModel implements TreeModel, CibleListener {
 		}
 	}
 
-	private void fireTreeNodesInserted(Cible cible) {
+	private void fireTreeNodesInserted(Target cible) {
 		TreeModelEvent treeModelEvent = new TreeModelEvent(this, new Object[] { rootLabel, cible });
 		for (TreeModelListener tml : listeners.getListeners(TreeModelListener.class)) {
 			tml.treeNodesInserted(treeModelEvent);
 		}
 	}
 
-	private void fireTreeNodesRemoved(Cible cible) {
+	private void fireTreeNodesRemoved(Target cible) {
 		TreeModelEvent treeModelEvent = new TreeModelEvent(this, new Object[] { rootLabel, cible });
 		for (TreeModelListener tml : listeners.getListeners(TreeModelListener.class)) {
 			tml.treeNodesRemoved(treeModelEvent);

@@ -86,8 +86,8 @@
  */
 package org.concoursjeunes.event;
 
-import org.concoursjeunes.Cible;
 import org.concoursjeunes.Concurrent;
+import org.concoursjeunes.Target;
 
 /**
  * Evenement transmit par l'objet Cible lorsqu'un concurrent la rejoint
@@ -96,15 +96,15 @@ import org.concoursjeunes.Concurrent;
  * @author Aurélien JEOFFRAY
  *
  */
-public class CibleEvent {
+public class TargetEvent {
 	private Concurrent concurrent;
-	private Cible cible;
+	private Target cible;
 	
 	/**
 	 * @param concurrent le concurrent qui rejoint ou quitte la cible
 	 * @param cible la cible concerné
 	 */
-	public CibleEvent(Concurrent concurrent, Cible cible) {
+	public TargetEvent(Concurrent concurrent, Target cible) {
 		this.concurrent = concurrent;
 		this.cible = cible;
 	}
@@ -132,7 +132,7 @@ public class CibleEvent {
 	 * 
 	 * @return cible la cible à l'origine de l'événement
 	 */
-	public Cible getCible() {
+	public Target getCible() {
 		return cible;
 	}
 
@@ -141,7 +141,7 @@ public class CibleEvent {
 	 * 
 	 * @param cible la cible à l'origine de l'événement
 	 */
-	public void setCible(Cible cible) {
+	public void setCible(Target cible) {
 		this.cible = cible;
 	}
 }

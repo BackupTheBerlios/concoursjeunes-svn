@@ -94,18 +94,18 @@ import java.util.EventListener;
  * @author Aurélien JEOFFRAY
  *
  */
-public interface CibleListener extends EventListener {
+public interface TargetListener extends EventListener {
 	/**
 	 * Invoqué lorsqu'un concurrent rejoint la cible
 	 * 
 	 * @param e l'objet CibleEvent contenant les détails de l'evenement
 	 */
-	public void concurrentJoined(CibleEvent e);
+	public void concurrentJoined(TargetEvent e);
 	
 	/**
 	 * Invoqué lorsqu'un concurrent quitte la cible
 	 * 
 	 * @param e l'objet CibleEvent contenant les détails de l'evenement
 	 */
-	public void concurrentQuit(CibleEvent e);
+	public void concurrentQuit(TargetEvent e);
 }

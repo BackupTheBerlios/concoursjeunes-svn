@@ -10,23 +10,23 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 
-import org.concoursjeunes.Cible;
+import org.concoursjeunes.Target;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.TargetPosition;
-import org.concoursjeunes.event.CibleEvent;
-import org.concoursjeunes.event.CibleListener;
+import org.concoursjeunes.event.TargetEvent;
+import org.concoursjeunes.event.TargetListener;
 
 /**
  * @author Aurélien JEOFFRAY
  *
  */
-public class CibleMutableTreeNode implements MutableTreeNode, CibleListener {
+public class CibleMutableTreeNode implements MutableTreeNode, TargetListener {
 	
-	private Cible cible;
+	private Target cible;
 	private MutableTreeNode parent;
 	private Vector<TreeNode> childrens = new Vector<TreeNode>();
 
-	public CibleMutableTreeNode(Cible cible) {
+	public CibleMutableTreeNode(Target cible) {
 		this.cible = cible;
 		
 		if(cible != null)
@@ -38,14 +38,14 @@ public class CibleMutableTreeNode implements MutableTreeNode, CibleListener {
 	/**
 	 * @return cible
 	 */
-	public Cible getCible() {
+	public Target getCible() {
 		return cible;
 	}
 
 	/**
 	 * @param cible cible à définir
 	 */
-	public void setCible(Cible cible) {
+	public void setCible(Target cible) {
 		if(cible != null) {
 			cible.removeCibleListener(this);
 			childrens.removeAllElements();
@@ -109,8 +109,8 @@ public class CibleMutableTreeNode implements MutableTreeNode, CibleListener {
 	 * @see javax.swing.tree.MutableTreeNode#setUserObject(java.lang.Object)
 	 */
 	public void setUserObject(Object object) {
-		if(object instanceof Cible) {
-			setCible((Cible)object);
+		if(object instanceof Target) {
+			setCible((Target)object);
 		}
 	}
 
@@ -166,7 +166,7 @@ public class CibleMutableTreeNode implements MutableTreeNode, CibleListener {
 	/* (non-Javadoc)
 	 * @see org.concoursjeunes.CibleListener#concurrentJoined(org.concoursjeunes.CibleEvent)
 	 */
-	public void concurrentJoined(CibleEvent e) {
+	public void concurrentJoined(TargetEvent e) {
 		DefaultMutableTreeNode concurrentNode = (DefaultMutableTreeNode)childrens.get(e.getConcurrent().getPosition());
 		concurrentNode.setUserObject(e.getConcurrent());
 	}
@@ -174,7 +174,7 @@ public class CibleMutableTreeNode implements MutableTreeNode, CibleListener {
 	/* (non-Javadoc)
 	 * @see org.concoursjeunes.CibleListener#concurrentQuit(org.concoursjeunes.CibleEvent)
 	 */
-	public void concurrentQuit(CibleEvent e) {
+	public void concurrentQuit(TargetEvent e) {
 		DefaultMutableTreeNode concurrentNode = (DefaultMutableTreeNode)childrens.get(e.getConcurrent().getPosition());
 		concurrentNode.setUserObject(new TargetPosition(cible.getNumCible(), e.getConcurrent().getPosition()));
 	}

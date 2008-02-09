@@ -7,7 +7,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
-import org.concoursjeunes.Cible;
+import org.concoursjeunes.Target;
 import org.concoursjeunes.ConcoursJeunes;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.PasDeTir;
@@ -92,7 +92,7 @@ public class CibleRenderer extends DefaultTreeCellRenderer {
 	 * @return boolean - true si c'est une cible, false dans le cas contraire
 	 */
 	protected boolean isCible(Object value) {
-		if(value instanceof Cible) {
+		if(value instanceof Target) {
 			return true;
 		} 
 		return false;
