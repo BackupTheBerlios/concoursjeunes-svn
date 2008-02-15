@@ -236,13 +236,10 @@ public class Target {
 					}
 				}
 				return availableSlots;
-			} else {
-				return 0;
 			}
-		} else {
-			return concurrents.length;
+			return 0;
 		}
-		
+		return concurrents.length;
 	}
 	
 	/**

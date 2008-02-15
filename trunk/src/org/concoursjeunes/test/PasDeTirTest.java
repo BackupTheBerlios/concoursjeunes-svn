@@ -121,7 +121,7 @@ public class PasDeTirTest extends TestCase{
 	 */
 	@Test
 	public void testGetOccupationCibles() {
-		fail("Not yet implemented");
+		fail("Not yet implemented"); //$NON-NLS-1$
 	}
 
 	/**
@@ -129,7 +129,7 @@ public class PasDeTirTest extends TestCase{
 	 */
 	@Test
 	public void testGetNbCiblesLibre() {
-		fail("Not yet implemented");
+		fail("Not yet implemented"); //$NON-NLS-1$
 	}
 
 	/**
@@ -137,7 +137,7 @@ public class PasDeTirTest extends TestCase{
 	 */
 	@Test
 	public void testHavePlaceForConcurrent() {
-		fail("Not yet implemented");
+		fail("Not yet implemented"); //$NON-NLS-1$
 	}
 
 	/**
@@ -145,7 +145,7 @@ public class PasDeTirTest extends TestCase{
 	 */
 	@Test
 	public void testPlacementConcurrents() {
-		fail("Not yet implemented");
+		fail("Not yet implemented"); //$NON-NLS-1$
 	}
 
 	/**
@@ -153,7 +153,7 @@ public class PasDeTirTest extends TestCase{
 	 */
 	@Test
 	public void testPlacementConcurrent() {
-		fail("Not yet implemented");
+		fail("Not yet implemented"); //$NON-NLS-1$
 	}
 
 	/**
@@ -161,7 +161,7 @@ public class PasDeTirTest extends TestCase{
 	 */
 	@Test
 	public void testRetraitConcurrent() {
-		fail("Not yet implemented");
+		fail("Not yet implemented"); //$NON-NLS-1$
 	}
 
 }

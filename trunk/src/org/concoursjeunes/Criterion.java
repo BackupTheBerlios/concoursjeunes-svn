@@ -45,6 +45,7 @@ public class Criterion {
     private boolean classementEquipe = false;
     private boolean placement = false;
     private String codeffta = ""; //$NON-NLS-1$
+    private int numordre = 0;
     
     private List<CriterionElement> criterionElements = new ArrayList<CriterionElement>();
     
@@ -109,6 +110,14 @@ public class Criterion {
 	 */
     public void setSortOrder(int sortOrder) {
         this.sortOrder = sortOrder;
+    }
+
+    public int getNumordre() {
+    	return numordre;
+    }
+
+	public void setNumordre(int numordre) {
+    	this.numordre = numordre;
     }
 
     /**
@@ -262,14 +271,16 @@ public class Criterion {
 		Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 		
 		stmt.executeUpdate("merge into CRITERE (CODECRITERE,NUMREGLEMENT,LIBELLECRITERE,SORTORDERCRITERE," + //$NON-NLS-1$
-				"CLASSEMENT,CLASSEMENTEQUIPE,PLACEMENT,CODEFFTA) VALUES ('" + code + "'," +  //$NON-NLS-1$ //$NON-NLS-2$
+				"CLASSEMENT,CLASSEMENTEQUIPE,PLACEMENT,CODEFFTA,NUMORDRE) VALUES ('" + code + "'," +  //$NON-NLS-1$ //$NON-NLS-2$
 				reglementParent.hashCode() + ",'" + libelle + "'," +  //$NON-NLS-1$ //$NON-NLS-2$
 				sortOrder + "," + //$NON-NLS-1$
 				Boolean.toString(classement).toUpperCase() + "," + //$NON-NLS-1$
 				Boolean.toString(classementEquipe).toUpperCase() + "," + //$NON-NLS-1$
 				Boolean.toString(placement).toUpperCase() + ",'" + //$NON-NLS-1$
-				codeffta + "')"); //$NON-NLS-1$
+				codeffta + "', " + numordre +")"); //$NON-NLS-1$ //$NON-NLS-2$
+		int numordre = 1;
 		for(CriterionElement criterionElement : criterionElements) {
+			criterionElement.setNumordre(numordre++);
 			criterionElement.save();
 		}
 	}
