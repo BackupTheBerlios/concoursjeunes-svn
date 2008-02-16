@@ -255,7 +255,6 @@ public class Target {
 		return false;
 	}
 
-	//public int
 	/**
 	 * insere un concurrent à la premiere position libre et retourne cette
 	 * position ou produit une exception PlacementException en cas d'echec
@@ -263,10 +262,35 @@ public class Target {
 	 * @param concurrent le concurrent à inserer
 	 * @param repartition le mode de distribution des archers sur la cible
 	 * 
-	 * @return la position de concurrent ou -1 si echec
+	 * @return la position de concurrent
 	 * @throws PlacementException si l'insertion du concurrent est impossible
 	 */
-	public int insertConcurrent(Concurrent concurrent, Repartition repartition)
+	public int insertConcurrent(Concurrent concurrent, Repartition repartition) 
+	throws PlacementException {
+		return insertConcurrent(concurrent, repartition, false);
+	}
+	
+	/**
+	 * <p>
+	 * insere un concurrent à la premiere position libre et retourne cette
+	 * position ou produit une exception PlacementException en cas d'echec
+	 * </p>
+	 * <p>
+	 * L'insertion peut se dérouler en mode <i>réel</i> auquel cas, les informations
+	 * de placement seront ajouté au concurrent ou en mode </i>simulation</i> si l'on
+	 * souhaite simplement voir si l'on peut placer les archers sur la cible sans
+	 * affecter les valeurs de placement au concurrent.
+	 * </p>
+	 * 
+	 * @param concurrent le concurrent à inserer
+	 * @param repartition le mode de distribution des archers sur la cible
+	 * @param simulationMode <i>true</i> si l'on souhaite une insertion en mode simulation,
+	 * 	<i>false</i> sinon
+	 * 
+	 * @return la position de concurrent
+	 * @throws PlacementException si l'insertion du concurrent est impossible
+	 */
+	protected int insertConcurrent(Concurrent concurrent, Repartition repartition, boolean simulationMode)
 			throws PlacementException {
 		int position = -1;
 
@@ -278,7 +302,7 @@ public class Target {
 				
 				//verifie que la distance est bonne
 				if(targetDbs.size() > 0 && !Arrays.equals(concurrentDb.getDistance(), targetDbs.get(0).getDistance()))
-					throw new PlacementException(PlacementException.Nature.BAD_DISTANCESANDBLASONS);
+					throw new PlacementException(PlacementException.Nature.BAD_DISTANCES);
 				
 				//si l'archer est handicapé, vérifié que les condition spécifique sont remplis
 				if(concurrent.isHandicape()) {
@@ -286,14 +310,8 @@ public class Target {
 						//dans le cas d'un archer handicapé, on boucle sur les emplacements 2 à 2
 						for (int i = 0; i < concurrents.length; i+=2) {
 							if (isSlotAvailable(concurrentDb.getTargetFace(), i) && concurrents[i+1] == null) {
-								concurrent.setCible(numCible);
-								concurrent.setPosition(i);
-								
-								concurrents[i] = concurrent;
-								nbArcher++;
+								placeConcurrent(concurrent, i, simulationMode);
 								nbHandicap++;
-								
-								fireConcurrentJoined(concurrent);
 								
 								position = i;
 								
@@ -301,7 +319,7 @@ public class Target {
 							}
 						}
 						if(position == -1)
-							throw new PlacementException(PlacementException.Nature.BAD_DISTANCESANDBLASONS);
+							throw new PlacementException(PlacementException.Nature.BAD_TARGETFACE);
 					} else {
 						throw new PlacementException(PlacementException.Nature.POSITION_AVAILABLE_FOR_VALID_CONCURRENT);
 					}
@@ -312,13 +330,7 @@ public class Target {
 							if (isSlotAvailable(concurrentDb.getTargetFace(), i)) {
 								if(isReservedPosition(i)) //la position est libre mais reservé pour un archer handicapé
 									continue;
-								concurrent.setCible(numCible);
-								concurrent.setPosition(i);
-		
-								concurrents[i] = concurrent;
-								nbArcher++;
-		
-								fireConcurrentJoined(concurrent);
+								placeConcurrent(concurrent, i, simulationMode);
 		
 								position = i;
 		
@@ -329,13 +341,7 @@ public class Target {
 						//tente le placement en AC
 						for (int i = 0; i < concurrents.length; i+=2) {
 							if (isSlotAvailable(concurrentDb.getTargetFace(), i)) {
-								concurrent.setCible(numCible);
-								concurrent.setPosition(i);
-		
-								concurrents[i] = concurrent;
-								nbArcher++;
-		
-								fireConcurrentJoined(concurrent);
+								placeConcurrent(concurrent, i, simulationMode);
 		
 								position = i;
 		
@@ -348,13 +354,7 @@ public class Target {
 								if (isSlotAvailable(concurrentDb.getTargetFace(), i)) {
 									if(isReservedPosition(i)) //la position est libre mais reservé pour un archer handicapé
 										continue;
-									concurrent.setCible(numCible);
-									concurrent.setPosition(i);
-			
-									concurrents[i] = concurrent;
-									nbArcher++;
-			
-									fireConcurrentJoined(concurrent);
+									placeConcurrent(concurrent, i, simulationMode);
 			
 									position = i;
 			
@@ -364,7 +364,7 @@ public class Target {
 						}
 					}
 					if(position == -1)
-						throw new PlacementException(PlacementException.Nature.BAD_DISTANCESANDBLASONS);
+						throw new PlacementException(PlacementException.Nature.BAD_TARGETFACE);
 				}
 			} else {
 				if(nbHandicap > 0)
@@ -378,7 +378,15 @@ public class Target {
 		return position;
 	}
 	
-	private boolean isSlotAvailable(Blason blason, int position) {
+	/**
+	 * Détermine si une position est ou non disponible en fonction d'un
+	 * blason donné
+	 * 
+	 * @param blason le blason que l'on cherche à placer sur la position
+	 * @param position la position ou placer ce blason
+	 * @return <i>true</i> si l'on arrive à placer le blason sur la position, <i>false</i> sinon
+	 */
+	public boolean isSlotAvailable(Blason blason, int position) {
 		boolean placable = true;
 		
 		if(concurrents[position] != null)
@@ -414,6 +422,18 @@ public class Target {
 		}
 		
 		return placable;
+	}
+	
+	private void placeConcurrent(Concurrent concurrent, int pos, boolean simulationMode) {
+		if(!simulationMode) {
+			concurrent.setCible(numCible);
+			concurrent.setPosition(pos);
+		}
+		
+		concurrents[pos] = concurrent;
+		nbArcher++;
+		
+		fireConcurrentJoined(concurrent);
 	}
 
 	/**
@@ -490,7 +510,7 @@ public class Target {
 						reglement, concurrent);
 				
 				if(getDistancesEtBlason().size() > 0 && !Arrays.equals(dbConcurrent.getDistance(), getDistancesEtBlason().get(0).getDistance()))
-					throw new PlacementException(PlacementException.Nature.BAD_DISTANCESANDBLASONS);
+					throw new PlacementException(PlacementException.Nature.BAD_DISTANCES);
 				
 				if (isSlotAvailable(dbConcurrent.getTargetFace(), position)) {
 					if(concurrent.isHandicape() && position % 2 != 0)
@@ -511,7 +531,7 @@ public class Target {
 					
 					return;
 				}
-				throw new PlacementException(PlacementException.Nature.BAD_DISTANCESANDBLASONS);
+				throw new PlacementException(PlacementException.Nature.BAD_TARGETFACE);
 			} else {
 				if(isReservedPosition(position))
 					throw new PlacementException(PlacementException.Nature.POSITION_RESERVED_FOR_HANDICAP);
@@ -529,11 +549,23 @@ public class Target {
 	 *            la position du concurrent à supprimer
 	 */
 	public void removeConcurrentAt(int position) {
+		removeConcurrentAt(position, false);
+	}
+	
+	/**
+	 * Supprime un concurrent à la position donnée
+	 * 
+	 * @param position -
+	 *            la position du concurrent à supprimer
+	 * @param simulationMode ne fait pas rééllement la suppression en mode simulation
+	 */
+	private void removeConcurrentAt(int position, boolean simulationMode) {
 		if (position < concurrents.length && concurrents[position] != null) {
 			nbArcher--;
 
 			Concurrent removedConcurrent = concurrents[position];
-			removedConcurrent.setCible(0);
+			if(!simulationMode)
+				removedConcurrent.setCible(0);
 			if(removedConcurrent.isHandicape())
 				nbHandicap--;
 
@@ -563,8 +595,17 @@ public class Target {
 	 * 
 	 */
 	public void removeAll() {
+		removeAll(false);
+	}
+	
+	/**
+	 * Retire tous les concurrents de la cible en mode simulation
+	 * 
+	 * @param simulationMode passe en mode de simulation de suppression
+	 */
+	protected void removeAll(boolean simulationMode) {
 		for (int i = 0; i < concurrents.length; i++)
-			removeConcurrentAt(i);
+			removeConcurrentAt(i, simulationMode);
 	}
 
 	/**

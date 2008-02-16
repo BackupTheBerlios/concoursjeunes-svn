@@ -45,11 +45,11 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
-import org.concoursjeunes.Target;
 import org.concoursjeunes.ConcoursJeunes;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.ConcurrentList;
 import org.concoursjeunes.FicheConcours;
+import org.concoursjeunes.Target;
 import org.concoursjeunes.TargetPosition;
 import org.concoursjeunes.event.FicheConcoursEvent;
 import org.concoursjeunes.event.FicheConcoursListener;
@@ -453,8 +453,11 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 					case ANY_AVAILABLE_POSITION:
 						message = ConcoursJeunes.ajrLibelle.getResourceString("erreur.noplacement.anyplace"); //$NON-NLS-1$
 						break;
-					case BAD_DISTANCESANDBLASONS:
+					case BAD_DISTANCES:
 						message = ConcoursJeunes.ajrLibelle.getResourceString("erreur.noplacement.baddistance"); //$NON-NLS-1$
+						break;
+					case BAD_TARGETFACE:
+						message = ConcoursJeunes.ajrLibelle.getResourceString("erreur.noplacement.badtargetface"); //$NON-NLS-1$
 						break;
 					case NULL_CONCURRENT:
 						message = ConcoursJeunes.ajrLibelle.getResourceString("erreur.noplacement.nullconcurrent"); //$NON-NLS-1$

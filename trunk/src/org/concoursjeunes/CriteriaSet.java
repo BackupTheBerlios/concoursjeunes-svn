@@ -201,7 +201,7 @@ public class CriteriaSet {
 
 			if(criteriaFilter.get(key)) {
 				for(int i = 0; i < referents.length; i++) {
-					ArrayList<CriteriaSet> childList = getChildrenPopulation(reglement, referents[i], key);
+					List<CriteriaSet> childList = getChildrenPopulation(reglement, referents[i], key);
 					children[i] = childList.toArray(new CriteriaSet[childList.size()]);
 				}
 				referents = new CriteriaSet[children[0].length*referents.length];
@@ -211,11 +211,11 @@ public class CriteriaSet {
 						referents[inc++] = children[i][j];
 					}
 				}
-			} else {
+			} /*else {
 				for(int i = 0; i < referents.length; i++) {
 					referents[i].setCriterionElement(key, null);
 				}
-			}
+			}*/
 		}
 
 		return referents;
@@ -229,9 +229,9 @@ public class CriteriaSet {
 	 * @param criterion - le critère de reference
 	 * @return les enfants
 	 */
-	private static ArrayList<CriteriaSet> getChildrenPopulation(Reglement reglement, CriteriaSet referent, Criterion criterion) {
+	private static List<CriteriaSet> getChildrenPopulation(Reglement reglement, CriteriaSet referent, Criterion criterion) {
 		//cré la table des enfants
-		ArrayList<CriteriaSet> children = new ArrayList<CriteriaSet>();
+		List<CriteriaSet> children = new ArrayList<CriteriaSet>();
 
 		for(int i = 0; i < criterion.getCriterionElements().size(); i++) {
 			if(criterion.getCriterionElements().get(i).isActive()) {

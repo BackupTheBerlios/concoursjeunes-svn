@@ -4,6 +4,7 @@
 package org.concoursjeunes.ui;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.event.EventListenerList;
 import javax.swing.event.TreeModelEvent;
@@ -11,8 +12,8 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
-import org.concoursjeunes.Target;
 import org.concoursjeunes.Concurrent;
+import org.concoursjeunes.Target;
 import org.concoursjeunes.TargetPosition;
 import org.concoursjeunes.event.TargetEvent;
 import org.concoursjeunes.event.TargetListener;
@@ -26,13 +27,13 @@ public class TargetTreeModel implements TreeModel, TargetListener {
 	private final EventListenerList listeners = new EventListenerList();
 
 	private String rootLabel = ""; //$NON-NLS-1$
-	private ArrayList<Target> targetChilds = new ArrayList<Target>();
+	private List<Target> targetChilds = new ArrayList<Target>();
 
 	public TargetTreeModel() {
 
 	}
 
-	public TargetTreeModel(String rootLabel, ArrayList<Target> targetChilds) {
+	public TargetTreeModel(String rootLabel, List<Target> targetChilds) {
 		this.rootLabel = rootLabel;
 		this.targetChilds = targetChilds;
 	}
@@ -57,7 +58,7 @@ public class TargetTreeModel implements TreeModel, TargetListener {
 	/**
 	 * @return targetChild
 	 */
-	public ArrayList<Target> getTargetChilds() {
+	public List<Target> getTargetChilds() {
 		return targetChilds;
 	}
 
@@ -65,7 +66,7 @@ public class TargetTreeModel implements TreeModel, TargetListener {
 	 * @param targetChilds
 	 *            targetChild à définir
 	 */
-	public void setTargetChilds(ArrayList<Target> targetChilds) {
+	public void setTargetChilds(List<Target> targetChilds) {
 		if (this.targetChilds != null)
 			for (Target cible : this.targetChilds) {
 				cible.removeCibleListener(this);
