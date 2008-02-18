@@ -56,6 +56,7 @@ public class Concurrent extends Archer implements Cloneable {
 	private int manque                  = 0;
 
 	private int inscription             = UNINIT;
+	private boolean	presence			= false;
 
 	/**
 	 * Constructeur vide obligatoire pour java beans
@@ -224,6 +225,20 @@ public class Concurrent extends Archer implements Cloneable {
 	 */
 	public void setInscription(int inscription) {
 		this.inscription = inscription;
+	}
+
+	/**
+	 * @return presence
+	 */
+	public boolean isPresence() {
+		return presence;
+	}
+
+	/**
+	 * @param presence presence à définir
+	 */
+	public void setPresence(boolean presence) {
+		this.presence = presence;
 	}
 
 	/**

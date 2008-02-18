@@ -539,34 +539,34 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 			curConcurrent = getConcurrentAtRow(rowIndex);
 
 			switch (columnIndex) {
-			case 0:
-				return curConcurrent.getNumLicenceArcher();
-			case 1:
-				return curConcurrent.getNomArcher();
-			case 2:
-				return curConcurrent.getPrenomArcher();
-			case 3:
-				return curConcurrent.getClub().getNom();
-			case 4:
-				String noplacementcritere = ""; //$NON-NLS-1$
-				for (Criterion key : reglement.getListCriteria()) {
-					if (!key.isPlacement()) {
-						CriterionElement criterionElement = curConcurrent.getCriteriaSet().getCriterionElement(key);
-						if (criterionElement != null)
-							noplacementcritere += criterionElement.getCode();
+				case 0:
+					return curConcurrent.getNumLicenceArcher();
+				case 1:
+					return curConcurrent.getNomArcher();
+				case 2:
+					return curConcurrent.getPrenomArcher();
+				case 3:
+					return curConcurrent.getClub().getNom();
+				case 4:
+					String noplacementcritere = ""; //$NON-NLS-1$
+					for (Criterion key : reglement.getListCriteria()) {
+						if (!key.isPlacement()) {
+							CriterionElement criterionElement = curConcurrent.getCriteriaSet().getCriterionElement(key);
+							if (criterionElement != null)
+								noplacementcritere += criterionElement.getCode();
+						}
 					}
-				}
-				return noplacementcritere;
-			case 5:
-				String placementcritere = ""; //$NON-NLS-1$
-				for (Criterion key : reglement.getListCriteria()) {
-					if (key.isPlacement()) {
-						placementcritere += curConcurrent.getCriteriaSet().getCriterionElement(key).getCode();
+					return noplacementcritere;
+				case 5:
+					String placementcritere = ""; //$NON-NLS-1$
+					for (Criterion key : reglement.getListCriteria()) {
+						if (key.isPlacement()) {
+							placementcritere += curConcurrent.getCriteriaSet().getCriterionElement(key).getCode();
+						}
 					}
-				}
-				return placementcritere;
-			default:
-				return null;
+					return placementcritere;
+				default:
+					return null;
 			}
 
 		}

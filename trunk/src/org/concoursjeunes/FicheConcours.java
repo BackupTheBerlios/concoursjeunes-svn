@@ -1077,6 +1077,7 @@ public class FicheConcours implements ParametreListener {
 	 */
 	public boolean printPasDeTir() {
 		Document document = new Document(PageSize.A4.rotate(), 5, 5, 5, 5);
+		//document.
 		return ConcoursJeunes.printDocument(document, getXMLPasDeTir(currentDepart));
 	}
 

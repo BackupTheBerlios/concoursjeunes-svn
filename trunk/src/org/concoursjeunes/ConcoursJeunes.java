@@ -117,15 +117,12 @@ import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 import javax.swing.JOptionPane;
 import javax.swing.event.EventListenerList;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 import org.concoursjeunes.builders.FicheConcoursBuilder;
 import org.concoursjeunes.event.ConcoursJeunesEvent;
 import org.concoursjeunes.event.ConcoursJeunesListener;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
-import org.xml.sax.InputSource;
 
 import ajinteractive.standard.common.AjResourcesReader;
 import ajinteractive.standard.common.PluginClassLoader;
@@ -133,7 +130,10 @@ import ajinteractive.standard.utilities.io.FileUtil;
 import ajinteractive.standard.utilities.sql.SqlManager;
 
 import com.lowagie.text.Document;
+import com.lowagie.text.HeaderFooter;
+import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfWriter;
+import com.lowagie.text.xml.XmlParser;
 
 /**
  * Class principal de ConcoursJeunes, gére l'ensemble des ressources commune de l'application tel que
@@ -373,31 +373,31 @@ public class ConcoursJeunes {
 	public static boolean printDocument(Document document, String xmlcontent) {
 		boolean printOK = true;
 		
-		if(xmlcontent.isEmpty())
-			return false;
-		
 		try {
 			// cré un document pdf temporaire
 			File tmpFile = File.createTempFile("cta", ajrParametreAppli.getResourceString("extention.pdf")); //$NON-NLS-1$ //$NON-NLS-2$
 			String filePath = tmpFile.getCanonicalPath();
 			tmpFile.deleteOnExit();
 
-			
-			//HeaderFooter footer = new HeaderFooter(new Phrase("page "), new Phrase(".")); document.setFooter(footer);
-			 
-
 			// genere le pdf
 			PdfWriter.getInstance(document, new FileOutputStream(filePath));
+			HeaderFooter footer = new HeaderFooter(new Phrase("page "), new Phrase(".")); //$NON-NLS-1$ //$NON-NLS-2$
+			footer.setBorder(0);
+			footer.setAlignment(HeaderFooter.ALIGN_RIGHT);
+			document.setFooter(footer);
 
-			SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
-			InputSource is = new InputSource(new StringReader(xmlcontent));
-			parser.parse(is, new com.lowagie.text.xml.SAXiTextHandler(document));
-
+			if(!xmlcontent.isEmpty()) {
+				XmlParser.parse(document, new StringReader(xmlcontent));
+			} else {
+				document.close();
+			}
+			
 			// affiche le pdf avec le reader pdf standard du systeme
 			if (Desktop.isDesktopSupported()) {
-				Desktop.getDesktop().open(new File(tmpFile.getAbsolutePath()));
+				Desktop.getDesktop().open(tmpFile);
 			} else {
 				if (configuration != null) {
+					
 					String NAV = configuration.getPdfReaderPath();
 
 					System.out.println(NAV + " " + tmpFile.getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$

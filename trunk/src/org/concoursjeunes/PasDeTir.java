@@ -388,6 +388,8 @@ public class PasDeTir {
 			}
 			if(curTarget < endTarget)
 				curTarget++;
+			else
+				curTarget = startTarget;
 		} while(position == -1 && curTarget < endTarget + 1);
 		
 		return curTarget;

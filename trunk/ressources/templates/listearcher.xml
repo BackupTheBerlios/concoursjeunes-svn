@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE ITEXT SYSTEM "ressources/templates/itext.dtd">
-<itext creationdate="{CURRENT_TIME}" producer="iTextXML by lowagie.com">
+<itext creationdate="{CURRENT_TIME}" producer="iTextXML by lowagie.com" footer="test" title="Liste des concurrents par ordre alpha">
 	<paragraph leading="18.0" font="unknown" align="Center" indentationleft="10.0">
 		<chunk size="18.0">LISTE DES CONCURRENTS PAR ORDRE ALPHABETIQUE</chunk>
 	</paragraph>

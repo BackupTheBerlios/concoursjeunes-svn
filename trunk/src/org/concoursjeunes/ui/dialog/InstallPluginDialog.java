@@ -457,12 +457,12 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
 		if(e.getSource() instanceof DefaultListSelectionModel) {
-			if(e.getFirstIndex() > -1)
-				jtpDescription.setText(pluginsDetail.get(e.getFirstIndex()).getLongDescription());
+			if(((DefaultListSelectionModel)e.getSource()).getMinSelectionIndex() > -1)
+				jtpDescription.setText(pluginsDetail.get(((DefaultListSelectionModel)e.getSource()).getMinSelectionIndex()).getLongDescription());
 		} else if(e.getSource() == jlCategorie) {
 			List<RowFilter<DefaultTableModel, Integer>> filters = new ArrayList<RowFilter<DefaultTableModel, Integer>>();
 			filters.add(RowFilter.<DefaultTableModel, Integer>regexFilter("(?i)" + jtfSearch.getText())); //$NON-NLS-1$
-			if(e.getFirstIndex() > 0)
+			if(jlCategorie.getSelectedIndex() > 0)
 				filters.add(RowFilter.<DefaultTableModel, Integer>regexFilter((String)jlCategorie.getSelectedValue()));
 			sorter.setRowFilter(RowFilter.<DefaultTableModel, Integer>andFilter((Iterable<RowFilter<DefaultTableModel, Integer>>)filters));
 			jtPlugins.setRowSorter(sorter);
