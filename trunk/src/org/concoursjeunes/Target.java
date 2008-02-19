@@ -393,10 +393,10 @@ public class Target {
 			return false;
 		
 		//Ancrage ancrage = blason.getAncrage(position);
-		for(Concurrent concurrent : concurrents) {
-			if(concurrent != null) {
+		for(int i = 0; i < concurrents.length; i++) {
+			if(concurrents[i] != null) {
 				//int otherPosition = concurrent.getPosition();
-				DistancesEtBlason db = DistancesEtBlason.getDistancesEtBlasonForConcurrent(reglement, concurrent);
+				DistancesEtBlason db = DistancesEtBlason.getDistancesEtBlasonForConcurrent(reglement, concurrents[i]);
 				Blason otherBlason = db.getTargetFace();
 				
 				if(blason.getNbArcher() > 2 || otherBlason.getNbArcher() > 2) {
@@ -405,15 +405,13 @@ public class Target {
 						break;
 					}
 				} else if(blason.getNbArcher() > 1) {
-					if((concurrent.getPosition() + 2) % 4 == position && !otherBlason.equals(blason)) {
-						placable = false;
-						break;
-					} else if(blason.isOver(position, otherBlason, concurrent.getPosition())) {
+					if(!((!otherBlason.equals(blason) && !blason.isOver(position, otherBlason, i))
+							|| (otherBlason.equals(blason) && blason.isOver(position, otherBlason, i)))) {
 						placable = false;
 						break;
 					}
 				} else {
-					if(blason.isOver(position, otherBlason, concurrent.getPosition())) {
+					if(blason.isOver(position, otherBlason, i)) {
 						placable = false;
 						break;
 					}

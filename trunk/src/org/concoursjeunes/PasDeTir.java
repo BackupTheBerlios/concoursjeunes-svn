@@ -332,7 +332,7 @@ public class PasDeTir {
 				int availableFreeTarget = currentTargetsTable.get(startCible - 1).getNbAvailableSlotsFor(distancesEtBlason);
 				if(availableFreeTarget > maxAvailableFreeTarget)
 					availableFreeTarget = maxAvailableFreeTarget;
-				nbArcherOnLastTarget = nbArcherOnLastTarget - availableFreeTarget;
+				nbArcherOnLastTarget = ((nbArcherOnLastTarget==0) ? nbTireurParCible : nbArcherOnLastTarget) - availableFreeTarget;
 				if(nbArcherOnLastTarget > 0)
 					endCible += 1;
 			}
@@ -369,6 +369,7 @@ public class PasDeTir {
 	
 	private int placementConcurrent(Concurrent concurrent, int startTarget, int curTarget, int endTarget, int nbTireurParCible, boolean simulationMode) {
 		int position = -1;
+		int origCurTarget = curTarget;
 		List<Target> currentTargetsTable;
 		if(simulationMode)
 			currentTargetsTable = simulationTargets;
@@ -388,9 +389,13 @@ public class PasDeTir {
 			}
 			if(curTarget < endTarget)
 				curTarget++;
-			else
+			else if(origCurTarget > startTarget) {
+				origCurTarget = startTarget;
 				curTarget = startTarget;
-		} while(position == -1 && curTarget < endTarget + 1);
+			} else {
+				break;
+			}
+		} while(position == -1 && curTarget <= endTarget);
 		
 		return curTarget;
 	}
