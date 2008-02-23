@@ -52,7 +52,7 @@ public class Equipe implements Cloneable, Comparable<Equipe> {
 	 * 
 	 * @return les concurrents composant l'équipe
 	 */
-    public List<Concurrent> getMembresEquipe() {
+    public ArrayList<Concurrent> getMembresEquipe() {
         return this.membresEquipe;
     }
     

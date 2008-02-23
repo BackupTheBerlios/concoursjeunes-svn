@@ -131,6 +131,7 @@ import org.concoursjeunes.webservices.PluginDescriptionArray;
 import org.concoursjeunes.webservices.PluginsWebService;
 import org.concoursjeunes.webservices.PluginsWebServiceService;
 import org.jdesktop.swingx.JXLoginPane;
+import org.jdesktop.swingx.JXLoginPane.Status;
 import org.jdesktop.swingx.auth.LoginService;
 
 import ajinteractive.standard.ui.AJList;
@@ -251,6 +252,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 	}
 	
 	private void completePanel() {
+		boolean retry = false;
 		if(ConcoursJeunes.getConfiguration().isUseProxy()) {
 			System.setProperty("http.proxyHost", ConcoursJeunes.getConfiguration().getProxy().getProxyServerAddress()); //$NON-NLS-1$
 			System.setProperty("http.proxyPort",Integer.toString(ConcoursJeunes.getConfiguration().getProxy().getProxyServerPort())); //$NON-NLS-1$
@@ -261,20 +263,6 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 			}
 		}
 		try {
-			/*try {
-				Thread.currentThread().setContextClassLoader(new URLClassLoader(new URL[] {
-						//new URL("http://webservices.concoursjeunes.org/ConcoursJeunes-webservices.jar")
-						new URL("file:///data/developpement/projets/ConcoursJeunes/pack/ConcoursJeunes-webservices.jar")
-				}));
-			
-				Class.forName("org.concoursjeunes.webservices.PluginsWebServiceService", false, new URLClassLoader(new URL[] {
-							new URL("file:///data/developpement/projets/ConcoursJeunes/pack/ConcoursJeunes-webservices.jar")
-					}));
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			}*/
 			PluginsWebService services = new PluginsWebServiceService().getPluginsWebServicePort();
 			
 			PluginDescriptionArray pluginDescriptionArray = services.getAvailablePluginsForVersion(ConcoursJeunes.VERSION);
@@ -327,21 +315,21 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 			jlCategorie.setSelectedIndex(0);
 		} catch(WebServiceException e1) {
 			
-			//e1.printStackTrace();
 			if(e1.getCause() != null && e1.getCause() instanceof IOException) {
 				IOException ioe = (IOException)e1.getCause();
 				if(ioe.getMessage().indexOf("HTTP response code: 407") > -1) { //$NON-NLS-1$
-					LoginService loginService = new LoginService() {
-						@Override
-						public boolean authenticate(String user , char[] password, String server) {
-							Authenticator.setDefault(new SimpleAuthenticator(
-									user,
-									new String(password)));
-							return true;
+					retry = true;
+				} else {
+					e1.printStackTrace();
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							GlassPanePanel panel = new GlassPanePanel();
+							
+							panel.setMessage(ConcoursJeunes.ajrLibelle.getResourceString("installplugindialog.temporary.disable")); //$NON-NLS-1$
+							setGlassPane(panel);
+							panel.setVisible(true);
 						}
-					};
-					JXLoginPane.showLoginDialog(this, loginService);
-					completePanel();
+					});
 				}
 			} else {
 				e1.printStackTrace();
@@ -354,7 +342,21 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 					}
 				});
 			}
-			//e1.getCause().printStackTrace();
+		}
+		
+		if(retry) {
+			LoginService loginService = new LoginService() {
+				@Override
+				public boolean authenticate(String user , char[] password, String server) {
+					Authenticator.setDefault(new SimpleAuthenticator(
+							user,
+							new String(password)));
+					return true;
+				}
+			};
+			Status status = JXLoginPane.showLoginDialog(this, loginService);
+			if(status == Status.SUCCEEDED)
+				completePanel();
 		}
 	}
 	
@@ -408,26 +410,32 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == jbValider) {
-			AjUpdater ajUpdater = new AjUpdater(ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
-					"."); //$NON-NLS-1$
-			ajUpdater.addAjUpdaterListener(this);
-			
 			DefaultTableModel dtm = (DefaultTableModel)jtPlugins.getModel();
-			
+			List<String> pluginsRepos = new ArrayList<String>();
 			for(int i = 0; i < dtm.getRowCount(); i++) {
 				if((Boolean)dtm.getValueAt(i, 0) == true) {
-					ajUpdater.addRepositoryURL(pluginsDetail.get(i).getReposURL());
+					pluginsRepos.add(pluginsDetail.get(i).getReposURL());
 				}
 			}
-			try {
-				GlassPanePanel panel = new GlassPanePanel();
-				panel.setMessage(ConcoursJeunes.ajrLibelle.getResourceString("installplugindialog.loading")); //$NON-NLS-1$
-				setGlassPane(panel);
-				panel.setVisible(true);
-				ajUpdater.checkUpdate();
-			} catch (UpdateException e1) {
-				System.out.println("Mise à jour impossible"); //$NON-NLS-1$
-				e1.printStackTrace();
+			
+			if(pluginsRepos.size() > 0) {
+				AjUpdater ajUpdater = new AjUpdater(ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
+						"."); //$NON-NLS-1$
+				ajUpdater.addAjUpdaterListener(this);
+				
+				for(String repos : pluginsRepos) {
+					ajUpdater.addRepositoryURL(repos);
+				}
+				try {
+					GlassPanePanel panel = new GlassPanePanel();
+					panel.setMessage(ConcoursJeunes.ajrLibelle.getResourceString("installplugindialog.loading")); //$NON-NLS-1$
+					setGlassPane(panel);
+					panel.setVisible(true);
+					ajUpdater.checkUpdate();
+				} catch (UpdateException e1) {
+					System.out.println("Mise à jour impossible"); //$NON-NLS-1$
+					e1.printStackTrace();
+				}
 			}
 			setVisible(false);
 		} else if(e.getSource() == jbAnnuler) {
@@ -476,77 +484,58 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 	 */
 	@Override
 	public void updaterStatusChanged(AjUpdaterEvent event) {
+		GlassPanePanel panel;
 		switch (event.getStatus()) {
-		case CONNECTED:
-			/*if (SystemTray.isSupported() && tray == null) {
-				tray = SystemTray.getSystemTray();
-				// load an image
-				Dimension dimension = tray.getTrayIconSize();
-				Image image = Toolkit.getDefaultToolkit().getImage(
-						ajrParametreAppli.getResourceString("path.ressources") + File.separator + ajrParametreAppli.getResourceString("file.icon.application")).getScaledInstance(dimension.width, //$NON-NLS-1$ //$NON-NLS-2$
-						dimension.height, Image.SCALE_SMOOTH);
-
-				// create a popup menu
-				trayIcon = new TrayIcon(image, pluginLocalisation.getResourceString("tray.name")); //$NON-NLS-1$
-				trayIcon.addMouseListener(this);
-
-				try {
-					tray.add(trayIcon);
-				} catch (AWTException e) {
-					System.err.println(e);
+			case CONNECTED:
+				break;
+			case UPDATE_AVAILABLE:
+				AjUpdaterFrame ajUpdaterFrame = new AjUpdaterFrame(ajUpdater, ConcoursJeunes.VERSION);
+				
+				if(ajUpdaterFrame.showAjUpdaterFrame() == AjUpdaterFrame.ReturnCode.OK) {
+					ajUpdater.downloadFiles(event.getUpdateFiles());
 				}
-			}*/
-			break;
-		case UPDATE_AVAILABLE:
-			AjUpdaterFrame ajUpdaterFrame = new AjUpdaterFrame(ajUpdater, ConcoursJeunes.VERSION);
-			
-			if(ajUpdaterFrame.showAjUpdaterFrame() == AjUpdaterFrame.ReturnCode.OK) {
-				ajUpdater.downloadFiles(event.getUpdateFiles());
-			}
-
-			break;
-		case CONNECTION_INTERRUPTED:
-			/*if (trayIcon != null) {
-				trayIcon.displayMessage(pluginLocalisation.getResourceString("update.interrupt.title"), pluginLocalisation.getResourceString("update.interrupt"), TrayIcon.MessageType.ERROR); //$NON-NLS-1$ //$NON-NLS-2$
-			}*/
-			break;
-		case FILE_ERROR:
-			/*if (trayIcon != null) {
-				trayIcon.displayMessage(pluginLocalisation.getResourceString("update.downloaderror.title"), pluginLocalisation.getResourceString("update.downloaderror"), //$NON-NLS-1$ //$NON-NLS-2$
-						TrayIcon.MessageType.ERROR);
-			}*/
-			break;
-		case FILES_DOWNLOADED:
-			if (JOptionPane.showConfirmDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("update.confirminstall"), ConcoursJeunes.ajrLibelle.getResourceString("update.confirminstall.title"), //$NON-NLS-1$ //$NON-NLS-2$
-					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-				try {
-					Process process = Runtime.getRuntime().exec(new String[] { "concoursjeunes-applyupdate", //$NON-NLS-1$
-							ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
-							System.getProperty("user.dir") }); //$NON-NLS-1$
-					process.waitFor();
-					
+	
+				break;
+			case CONNECTION_INTERRUPTED:
+				panel = new GlassPanePanel();
+				panel.setMessage(ConcoursJeunes.ajrLibelle.getResourceString("installplugindialog.temporary.disable")); //$NON-NLS-1$
+				setGlassPane(panel);
+				panel.setVisible(true);
+				break;
+			case FILE_ERROR:
+				panel = new GlassPanePanel();
+				panel.setMessage(ConcoursJeunes.ajrLibelle.getResourceString("installplugindialog.temporary.disable")); //$NON-NLS-1$
+				setGlassPane(panel);
+				panel.setVisible(true);
+				break;
+			case FILES_DOWNLOADED:
+				if (JOptionPane.showConfirmDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("update.confirminstall"), ConcoursJeunes.ajrLibelle.getResourceString("update.confirminstall.title"), //$NON-NLS-1$ //$NON-NLS-2$
+						JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 					try {
-						ConcoursJeunes.getInstance().saveAllFichesConcours();
+						Process process = Runtime.getRuntime().exec(new String[] { "concoursjeunes-applyupdate", //$NON-NLS-1$
+								ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
+								System.getProperty("user.dir") }); //$NON-NLS-1$
+						process.waitFor();
 						
-						ConcoursJeunes.dbConnection.close();
-					} catch (ConfigurationException e) {
-						e.printStackTrace();
-					} catch (SQLException e) {
-						e.printStackTrace();
+						try {
+							ConcoursJeunes.getInstance().saveAllFichesConcours();
+							
+							ConcoursJeunes.dbConnection.close();
+						} catch (ConfigurationException e) {
+							e.printStackTrace();
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+	
+						System.exit(3);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					} catch (InterruptedException e1) {
+						e1.printStackTrace();
 					}
-
-					System.exit(3);
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				} catch (InterruptedException e1) {
-					e1.printStackTrace();
 				}
-			}
-			break;
-		case NO_UPDATE_AVAILABLE:
-			/*if (trayIcon != null) {
-				tray.remove(trayIcon);
-			}*/
+				break;
+			case NO_UPDATE_AVAILABLE:
 		}
 	}
 }

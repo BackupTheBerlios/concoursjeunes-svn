@@ -5,6 +5,9 @@ package org.concoursjeunes.debug;
 
 //import java.util.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.concoursjeunes.*;
 
 
@@ -15,10 +18,13 @@ import org.concoursjeunes.*;
 public class Debug {
     
     public static void attributePoints(ConcurrentList archerList, int depart) {
-        for(Concurrent concurrent : archerList.list(depart)) {
-            for(int i = 0; i < concurrent.getScore().size(); i++) {
-            	concurrent.getScore().set(i, (int)(100 + Math.random() * 80));
+    	
+        for(Concurrent concurrent : archerList.list(-1)) {
+        	List<Integer> points = new ArrayList<Integer>();
+            for(int i = 0; i < archerList.getParametre().getReglement().getNbSerie(); i++) {
+            	points.add((int)(100 + Math.random() * 80));
             }
+            concurrent.setScore(points);
         }
     }
     

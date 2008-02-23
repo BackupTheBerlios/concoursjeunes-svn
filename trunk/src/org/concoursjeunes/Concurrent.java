@@ -87,7 +87,7 @@ public class Concurrent extends Archer implements Cloneable {
 	 * 
 	 * @param points - la grille des scores du concurrent
 	 */
-	public void setScore(ArrayList<Integer> points) {
+	public void setScore(List<Integer> points) {
 		this.points = points;
 	}
 

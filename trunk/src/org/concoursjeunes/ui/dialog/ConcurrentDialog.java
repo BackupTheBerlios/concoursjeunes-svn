@@ -698,9 +698,6 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 					" " + occupationCibles.get(distAndBlas).getPlaceLibre() + "</font><br>"; //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
-		strPlaceLibre += "<br>" + ConcoursJeunes.ajrLibelle.getResourceString("concurrent.placelibre.ciblelibre") + //$NON-NLS-1$ //$NON-NLS-2$
-				" " + ficheConcours.getPasDeTir(concurrent.getDepart()).getNbFreeTargets(ficheConcours.getParametre().getNbTireur()) + "</html>"; //$NON-NLS-1$ //$NON-NLS-2$
-
 		return strPlaceLibre;
 	}
 

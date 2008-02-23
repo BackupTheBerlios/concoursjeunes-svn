@@ -244,7 +244,7 @@ public class EquipeList implements Cloneable {
 	 * Pour la sérialisation, la table des équipes
 	 * @param equipeList  equipeList à définir.
 	 */
-    public void setEquipeList(ArrayList<Equipe> equipeList) {
+    public void setEquipeList(List<Equipe> equipeList) {
         this.equipeList = equipeList;
     }
     
