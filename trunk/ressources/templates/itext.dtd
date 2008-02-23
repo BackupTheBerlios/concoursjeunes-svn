@@ -26,13 +26,14 @@
  size     CDATA   #IMPLIED
  style    CDATA   #IMPLIED
  color    CDATA   #IMPLIED
+ fontstyle	CDATA	#IMPLIED
  %color.attributes;"
 >
 <!ENTITY % phrase.attributes
 "leading  CDATA   #IMPLIED"
 >
 <!ENTITY % paragraph.attributes
-"align    		CDATA   #IMPLIED
+"align    		CDATA	#IMPLIED
  keeptogether	CDATA	#IMPLIED"
 >
 <!ENTITY % indentation.attributes
@@ -42,7 +43,7 @@
 <!ENTITY % section.attributes
 "depth              CDATA   #IMPLIED
  numberdepth        CDATA   #IMPLIED
- number		    CDATA   #IMPLIED
+ number		  CDATA   #IMPLIED
  indent             CDATA   #IMPLIED"
 >
 <!ENTITY % rectangle.attributes
@@ -63,9 +64,9 @@
 <!ELEMENT itext (%chunk.content; | %phrase.content; | chapter | paragraph)*>
 <!ATTLIST itext
 	title			CDATA	#IMPLIED
-	subject			CDATA	#IMPLIED
+	subject		CDATA	#IMPLIED
 	keywords		CDATA	#IMPLIED
-	author			CDATA	#IMPLIED
+	author		CDATA	#IMPLIED
 	creationdate	CDATA	#IMPLIED
 	producer		CDATA	#IMPLIED
 >
@@ -77,13 +78,13 @@
 		  
 <!ELEMENT chunk (%chunk.content;)*> 
 <!ATTLIST chunk
-    %font.attributes;
-    subsupscript        CDATA   #IMPLIED
-    localgoto           CDATA   #IMPLIED
-    localdestination    CDATA   #IMPLIED
-    generictag          CDATA   #IMPLIED
-	encoding			CDATA	#IMPLIED
-	embedded			CDATA	#IMPLIED
+	%font.attributes;
+	subsupscript	CDATA	#IMPLIED
+	localgoto		CDATA	#IMPLIED
+	localdestination	CDATA	#IMPLIED
+	generictag		CDATA	#IMPLIED
+	encoding		CDATA	#IMPLIED
+	embedded		CDATA	#IMPLIED
 >
 
 <!ELEMENT phrase (%chunk.content; | %phrase.content;)*> 
@@ -149,7 +150,7 @@
 
 <!ELEMENT sectioncontent (%chunk.content; | %phrase.content; | section | paragraph | image)*>
 
-<!ELEMENT table (cell*)>
+<!ELEMENT table (row*)>
 <!ATTLIST table
     %color.attributes;
     %paragraph.attributes;
