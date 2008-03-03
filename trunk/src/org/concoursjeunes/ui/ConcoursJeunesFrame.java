@@ -430,11 +430,6 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			if (jif != null)
 				jif.openParametreDialog();
 
-			// affiche la boite de dialogue de configuartion
-		} else if (cmd.equals("menubar.edition.configuration")) { //$NON-NLS-1$
-			showConfigurationDialog();
-			
-			// imprime la liste des concurrents par ordre alphabetique
 		} else if (cmd.equals("menubar.impression.listeconcurrent.ordrealpha")) { //$NON-NLS-1$
 			if (jif != null) {
 				if(!jif.getFicheConcours().printArcherList(FicheConcours.ALPHA)) {
@@ -498,7 +493,8 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 		} else if (cmd.equals("menubar.tools.installplugins")) { //$NON-NLS-1$
 			InstallPluginDialog installPluginDialog = new InstallPluginDialog(this);
 			installPluginDialog.showInstallPluginDialog();
-
+		} else if (cmd.equals("menubar.tools.configuration")) { //$NON-NLS-1$
+			showConfigurationDialog();
 			// affiche la boite de dialogie "A propos"
 		} else if (cmd.equals("menubar.aide.apropos")) { //$NON-NLS-1$
 			

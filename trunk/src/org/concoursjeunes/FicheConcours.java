@@ -91,9 +91,9 @@ public class FicheConcours implements ParametreListener {
 
 	private int currentDepart = 0;
 
-	private static AJTemplate templateClassementXML = new AJTemplate();
+	private static AJTemplate templateClassementXML = new AJTemplate(ConcoursJeunes.ajrLibelle);
 	private static AJTemplate templateClassementEquipeXML = new AJTemplate();
-	private static AJTemplate templateClassementHTML = new AJTemplate();
+	private static AJTemplate templateClassementHTML = new AJTemplate(ConcoursJeunes.ajrLibelle);
 	private static AJTemplate templateClassementEquipeHTML = new AJTemplate();
 	private static AJTemplate templateListeArcherXML = new AJTemplate();
 	private static AJTemplate templateListeGreffeXML = new AJTemplate();
@@ -478,8 +478,7 @@ public class FicheConcours implements ParametreListener {
 			tplClassement.parse("ARBITRES_ASSISTANT", XmlUtils.sanitizeText(strArbitresAss)); //$NON-NLS-1$
 			tplClassement.parse("NB_CLUB", "" + concurrentList.countCompagnie()); //$NON-NLS-1$ //$NON-NLS-2$
 			tplClassement.parse("NB_TIREURS", "" + concurrentList.countArcher()); //$NON-NLS-1$ //$NON-NLS-2$
-			tplClassement.parse("TYPE_CLASSEMENT", ConcoursJeunes.ajrLibelle.getResourceString("classement.individuel")); //$NON-NLS-1$ //$NON-NLS-2$
-
+			
 			// Entete de categorie
 			Enumeration<CriteriaSet> scnalst = concurrentsClasse.keys();
 

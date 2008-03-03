@@ -119,11 +119,7 @@ import ajinteractive.standard.common.AJToolKit;
 import ajinteractive.standard.common.AjResourcesReader;
 import ajinteractive.standard.utilities.app.AppSerializer;
 import ajinteractive.standard.utilities.net.SimpleAuthenticator;
-import ajinteractive.standard.utilities.updater.AjUpdater;
-import ajinteractive.standard.utilities.updater.AjUpdaterEvent;
-import ajinteractive.standard.utilities.updater.AjUpdaterFrame;
-import ajinteractive.standard.utilities.updater.AjUpdaterListener;
-import ajinteractive.standard.utilities.updater.UpdateException;
+import ajinteractive.standard.utilities.updater.*;
 
 @Plugin(type = Plugin.Type.STARTUP)
 public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, MouseListener {
@@ -134,7 +130,7 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 
 	private AjUpdater ajUpdater;
 
-	Hashtable<String, ArrayList<String>> updateFiles = new Hashtable<String, ArrayList<String>>();
+	Hashtable<String, ArrayList<FileMetaData>> updateFiles = new Hashtable<String, ArrayList<FileMetaData>>();
 
 	private final AjResourcesReader pluginRessources = new AjResourcesReader("properties.ConcoursJeunesUpdate"); //$NON-NLS-1$
 

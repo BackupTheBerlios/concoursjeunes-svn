@@ -17,7 +17,7 @@
 				<paragraph leading="36.0" size="18.0" fontstyle="normal">
 					<chunk size="18.0" fontstyle="normal">{INTITULE_CONCOURS}</chunk>
 					<newline />
-					<chunk size="18.0" fontstyle="normal">{VILLE_CLUB} Le {DATE_CONCOURS}</chunk>
+					<chunk size="18.0" fontstyle="normal">{VILLE_CLUB} %classement.part_date% {DATE_CONCOURS}</chunk>
 				</paragraph>
 			</cell>
 		</row>
@@ -27,11 +27,11 @@
 		<row>
 			<cell>
 				<phrase leading="18.0" font="unknown" align="Default" indentationleft="10.0">
-					<chunk fontstyle="bold">Arbitre responsable: </chunk>{ARBITRE_RESPONSABLE}
+					<chunk fontstyle="bold">%classement.arbitreresponsable% </chunk>{ARBITRE_RESPONSABLE}
 				</phrase>
 				<newline />
 				<phrase leading="18.0" font="unknown" align="Default">
-					<chunk fontstyle="bold">Arbitre assistant: </chunk>{ARBITRES_ASSISTANT}
+					<chunk fontstyle="bold">%classement.arbitres% </chunk>{ARBITRES_ASSISTANT}
 				</phrase>
 				<newline /><chunk color="#FFFFFF">_</chunk>
 			</cell>
@@ -41,16 +41,16 @@
 	<table columns="2" width="100.0%" widths="50.0;50.0" top="true">
 		<row>
 			<cell>
-				<phrase style="bold">{NB_CLUB} clubs ou compagnies enregistrées</phrase>
+				<phrase style="bold">{NB_CLUB} %classement.registerclub%</phrase>
 			</cell>
 			<cell horizontalalign="Right">
-				<phrase style="bold">{NB_TIREURS} tireurs inscrits</phrase>
+				<phrase style="bold">{NB_TIREURS} %classement.registerconcurrent%</phrase>
 			</cell>
 		</row>
 		<row>
 			<cell colspan="2" horizontalalign="Center" leading="24.0">
 				<paragraph leading="24.0" size="20.0" fontstyle="normal">
-					<chunk size="20.0" fontstyle="normal">{TYPE_CLASSEMENT}</chunk>
+					<chunk size="20.0" fontstyle="normal">%classement.individuel%</chunk>
 				</paragraph>
 			</cell>
 		</row>
@@ -63,24 +63,24 @@
 				<phrase style="bold">{CATEGORIE}</phrase>
 			</cell>
 			<cell colspan="{NB_TIREUR_COLS}" horizontalalign="Right">
-				<phrase style="bold">{NB_TIREURS} tireur(s)</phrase>
+				<phrase style="bold">{NB_TIREURS} %classement.tireurs%</phrase>
 			</cell>
 		</row>
 		<row>
 			<cell header="true" horizontalalign="Center" verticalalign="Middle" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
-				<phrase size="10.0" style="bold">Clt</phrase>
+				<phrase size="10.0" style="bold">%classement.classement%</phrase>
 			</cell>
 			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
-				<phrase size="10.0" style="bold">Nom et prénom</phrase>
+				<phrase size="10.0" style="bold">%classement.namefirstname%</phrase>
 			</cell>
 			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
-				<phrase size="10.0" style="bold">Club ou compagnie</phrase>
+				<phrase size="10.0" style="bold">%classement.club%</phrase>
 			</cell>
 			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
-				<phrase size="10.0" style="bold">N°licence</phrase>
+				<phrase size="10.0" style="bold">%classement.licence%</phrase>
 			</cell>
 			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
-				<phrase size="10.0" style="bold">Catégorie</phrase>
+				<phrase size="10.0" style="bold">%classement.category%</phrase>
 			</cell>
 			<bloc::distances>
 			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
@@ -88,7 +88,7 @@
 			</cell>
 			</bloc::distances>
 			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
-				<phrase size="10.0" style="bold">Score</phrase>
+				<phrase size="10.0" style="bold">%classement.score%</phrase>
 			</cell>
 			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
 				<phrase size="10.0" style="bold">0-10-9</phrase>

@@ -105,19 +105,7 @@ import java.util.Locale;
 import java.util.logging.Level;
 
 import javax.naming.ConfigurationException;
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
 import org.concoursjeunes.AutoCompleteDocument;
@@ -151,79 +139,81 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	// private boolean runInitDialog = true;
 
 	private Configuration workConfiguration;
-	private final JTabbedPane tabbedpane = new JTabbedPane();
-	private final TitledBorder tbProfil = new TitledBorder(""); //$NON-NLS-1$
-	private final JLabel jlNomProfil = new JLabel();
-	private final JComboBox jcbProfil = new JComboBox();
-	private final JButton jbRenameProfile = new JButton();
+	private JTabbedPane tabbedpane = new JTabbedPane();
+	private TitledBorder tbProfil = new TitledBorder(""); //$NON-NLS-1$
+	private JLabel jlNomProfil = new JLabel();
+	private JComboBox jcbProfil = new JComboBox();
+	private JButton jbRenameProfile = new JButton();
 
 	// Ecran general personnalisation
-	private final TitledBorder tbParamGeneral = new TitledBorder(""); //$NON-NLS-1$
-	private final JLabel jlNomClub = new JLabel();
-	private final JLabel jlAgremClub = new JLabel();
-	private final JLabel jlIntituleConcours = new JLabel();
-	private final JLabel jlLangue = new JLabel();
-	private final JLabel jlPathPdf = new JLabel();
-	private final JLabel jlLogoPath = new JLabel();
-	private final JTextField jtfNomClub = new JTextField(20);
-	private final JTextField jtfAgrClub = new JTextField(new NumberDocument(false, false), "", 5); //$NON-NLS-1$
-	private final JButton jbParcourir = new JButton();
-	private final JButton jbDetail = new JButton();
-	private final JTextField jtfIntConc = new JTextField(20);
-	private final JComboBox jcbLangue = new JComboBox();
-	private final JComboBox jcbPathPdf = new JComboBox();
-	private final JButton jbParcourirPdf = new JButton("..."); //$NON-NLS-1$
-	private final JButton jbLogoPath = new JButton();
+	private TitledBorder tbParamGeneral = new TitledBorder(""); //$NON-NLS-1$
+	private JLabel jlNomClub = new JLabel();
+	private JLabel jlAgremClub = new JLabel();
+	private JLabel jlIntituleConcours = new JLabel();
+	private JLabel jlLangue = new JLabel();
+	private JLabel jlPathPdf = new JLabel();
+	private JLabel jlLogoPath = new JLabel();
+	private JTextField jtfNomClub = new JTextField(20);
+	private JTextField jtfAgrClub = new JTextField(new NumberDocument(false, false), "", 5); //$NON-NLS-1$
+	private JButton jbParcourir = new JButton();
+	private JButton jbDetail = new JButton();
+	private JTextField jtfIntConc = new JTextField(20);
+	private JComboBox jcbLangue = new JComboBox();
+	private JComboBox jcbPathPdf = new JComboBox();
+	private JButton jbParcourirPdf = new JButton("..."); //$NON-NLS-1$
+	private JButton jbLogoPath = new JButton();
 
 	// Ecran concours/pas de tir
-	private final JLabel jlReglement = new JLabel();
-	private final JLabel jlNbCible = new JLabel();
-	private final JLabel jlNbTireur = new JLabel();
-	private final JLabel jlNbDepart = new JLabel();
-	private final JComboBox jcbReglement = new JComboBox();
-	private final JTextField jtfNbCible = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
-	private final JTextField jtfNbTireur = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
-	private final JTextField jtfNbDepart = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
+	private JLabel jlReglement = new JLabel();
+	private JLabel jlNbCible = new JLabel();
+	private JLabel jlNbTireur = new JLabel();
+	private JLabel jlNbDepart = new JLabel();
+	private JComboBox jcbReglement = new JComboBox();
+	private JTextField jtfNbCible = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
+	private JTextField jtfNbTireur = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
+	private JTextField jtfNbDepart = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
 
 	// Ecran etiquette
-	private final JLabel jlFormatPapier = new JLabel();
-	private final JLabel jlNbEtiquettes = new JLabel();
-	private final JLabel jlColonnes = new JLabel("x"); //$NON-NLS-1$
-	private final JLabel jlMarges = new JLabel();
-	private final JLabel jlMargesH = new JLabel();
-	private final JLabel jlMargesB = new JLabel();
-	private final JLabel jlMargesG = new JLabel();
-	private final JLabel jlMargesD = new JLabel();
-	private final JLabel jlEspacements = new JLabel();
-	private final JLabel jlEspacementsH = new JLabel();
-	private final JLabel jlEspacementsV = new JLabel();
-	private final JComboBox jcbFormatPapier = new JComboBox();
-	private final JComboBox jcbOrientation = new JComboBox();
-	private final JTextField jtfLignes = new JTextField(new NumberDocument(false, false), "", 5); //$NON-NLS-1$
-	private final JTextField jtfColonnes = new JTextField(new NumberDocument(false, false), "", 5); //$NON-NLS-1$
-	private final JTextField jtfMargesH = new JTextField(new NumberDocument(true, false), "", 5); //$NON-NLS-1$
-	private final JTextField jtfMargesB = new JTextField(new NumberDocument(true, false), "", 5); //$NON-NLS-1$
-	private final JTextField jtfMargesG = new JTextField(new NumberDocument(true, false), "", 5); //$NON-NLS-1$
-	private final JTextField jtfMargesD = new JTextField(new NumberDocument(true, false), "", 5); //$NON-NLS-1$
-	private final JTextField jtfEspacementsH = new JTextField(new NumberDocument(true, false), "", 5); //$NON-NLS-1$
-	private final JTextField jtfEspacementsV = new JTextField(new NumberDocument(true, false), "", 5); //$NON-NLS-1$
+	private JLabel jlFormatPapier = new JLabel();
+	private JLabel jlNbEtiquettes = new JLabel();
+	private JLabel jlColonnes = new JLabel("x"); //$NON-NLS-1$
+	private JLabel jlMarges = new JLabel();
+	private JLabel jlMargesH = new JLabel();
+	private JLabel jlMargesB = new JLabel();
+	private JLabel jlMargesG = new JLabel();
+	private JLabel jlMargesD = new JLabel();
+	private JLabel jlEspacements = new JLabel();
+	private JLabel jlEspacementsH = new JLabel();
+	private JLabel jlEspacementsV = new JLabel();
+	private JComboBox jcbFormatPapier = new JComboBox();
+	private JComboBox jcbOrientation = new JComboBox();
+	private JTextField jtfLignes = new JTextField(new NumberDocument(false, false), "", 5); //$NON-NLS-1$
+	private JTextField jtfColonnes = new JTextField(new NumberDocument(false, false), "", 5); //$NON-NLS-1$
+	private JTextField jtfMargesH = new JTextField(new NumberDocument(true, false), "", 5); //$NON-NLS-1$
+	private JTextField jtfMargesB = new JTextField(new NumberDocument(true, false), "", 5); //$NON-NLS-1$
+	private JTextField jtfMargesG = new JTextField(new NumberDocument(true, false), "", 5); //$NON-NLS-1$
+	private JTextField jtfMargesD = new JTextField(new NumberDocument(true, false), "", 5); //$NON-NLS-1$
+	private JTextField jtfEspacementsH = new JTextField(new NumberDocument(true, false), "", 5); //$NON-NLS-1$
+	private JTextField jtfEspacementsV = new JTextField(new NumberDocument(true, false), "", 5); //$NON-NLS-1$
 
 	// Ecran avancé
-	private final JLabel jlURLImport = new JLabel();
-	private final JLabel jlURLExport = new JLabel();
-	private final JLabel jlResultats = new JLabel();
-	private final JLabel jlAffResultats = new JLabel();
+	private JLabel jlURLImport = new JLabel();
+	private JLabel jlURLExport = new JLabel();
+	private JLabel jlResultats = new JLabel();
+	private JLabel jlAffResultats = new JLabel();
 
 	// private TitledBorder tbPath = new TitledBorder(""); //$NON-NLS-1$
-	private final JCheckBox jcbAvanceResultatCumul = new JCheckBox();
-	private final JCheckBox jcbAvanceResultatSupl = new JCheckBox();
-	private final JCheckBox jcbAvanceAffResultatExEquo = new JCheckBox();
-	private final TitledBorder tbProxy = new TitledBorder(""); //$NON-NLS-1$
-	private final JLabel jlAdresseProxy = new JLabel();
-	private final JLabel jlPortProxy = new JLabel();
-	private final JLabel jlUserProxy = new JLabel();
-	private final JLabel jlPasswordProxy = new JLabel();
-	private final JCheckBox jcbUseProxy = new JCheckBox();
+	private JCheckBox jcbAvanceResultatCumul = new JCheckBox();
+	private JCheckBox jcbAvanceResultatSupl = new JCheckBox();
+	private JCheckBox jcbAvanceAffResultatExEquo = new JCheckBox();
+	private TitledBorder tbProxy = new TitledBorder(""); //$NON-NLS-1$
+	private JLabel jlAdresseProxy = new JLabel();
+	private JLabel jlPortProxy = new JLabel();
+	private JLabel jlUserProxy = new JLabel();
+	private JLabel jlPasswordProxy = new JLabel();
+	//private JCheckBox jcbUseProxy = new JCheckBox();
+	private JRadioButton jrbUseSystemConfig = new JRadioButton();
+	private JRadioButton jrbUseSpecificConfig = new JRadioButton();
 	private final JTextField jtfAdresseProxy = new JTextField(20);
 	private final JTextField jtfPortProxy = new JTextField(new NumberDocument(false, false), "", 5); //$NON-NLS-1$
 	private final JCheckBox jcbAuthentificationProxy = new JCheckBox();
@@ -257,7 +247,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		tabbedpane.addTab("configuration.onglet.genral", null, initEcranGeneral()); //$NON-NLS-1$
 		tabbedpane.addTab("configuration.onglet.concours", null, initEcranConcours()); //$NON-NLS-1$
 		tabbedpane.addTab("configuration.onglet.etiquettes", null, initEcranEtiquette()); //$NON-NLS-1$
-		tabbedpane.addTab("configuration.onglet.interface", null, initEcranInterface()); //$NON-NLS-1$
+		tabbedpane.addTab("configuration.onglet.interface", null, initEcranAdvanced()); //$NON-NLS-1$
 
 		affectLibelle();
 
@@ -483,7 +473,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		return jpEcranEtiquette;
 	}
 
-	private JPanel initEcranInterface() {
+	private JPanel initEcranAdvanced() {
 		JPanel jpEcranInterface = new JPanel();
 
 		GridBagConstraints c = new GridBagConstraints();
@@ -493,18 +483,33 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		JPanel panelProxy = new JPanel();
 		panelProxy.setBorder(tbProxy);
 
-		jcbUseProxy.addActionListener(this);
+		ButtonGroup bg = new ButtonGroup();
+		bg.add(jrbUseSystemConfig);
+		bg.add(jrbUseSpecificConfig);
+		jrbUseSystemConfig.setSelected(true);
+		jrbUseSystemConfig.addActionListener(this);
+		jrbUseSpecificConfig.addActionListener(this);
 		jcbAuthentificationProxy.addActionListener(this);
+		jlAdresseProxy.setEnabled(false);
+		jlPortProxy.setEnabled(false);
+		jlUserProxy.setEnabled(false);
+		jlPasswordProxy.setEnabled(false);
 
 		gridbagComposer.setParentPanel(panelProxy);
 		c.gridy = 0;
 		c.anchor = GridBagConstraints.WEST;
+		c.gridwidth = 4;
+		gridbagComposer.addComponentIntoGrid(jrbUseSystemConfig, c);
+		c.gridy++;
+		gridbagComposer.addComponentIntoGrid(jrbUseSpecificConfig, c);
+		c.gridy++;
+		c.gridwidth = 1;
 		gridbagComposer.addComponentIntoGrid(jlAdresseProxy, c);
 		gridbagComposer.addComponentIntoGrid(jtfAdresseProxy, c);
 		gridbagComposer.addComponentIntoGrid(jlPortProxy, c);
 		gridbagComposer.addComponentIntoGrid(jtfPortProxy, c);
 		c.gridy++;
-		c.gridwidth = 2;
+		c.gridwidth = 4;
 		gridbagComposer.addComponentIntoGrid(jcbAuthentificationProxy, c);
 		c.gridy++;
 		c.gridwidth = 1;
@@ -531,9 +536,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 			c.gridy++;
 			gridbagComposer.addComponentIntoGrid(jcbFirstBoot, c);
 		}
-		c.gridy++;
-		gridbagComposer.addComponentIntoGrid(jcbUseProxy, c);
-		c.gridy++;
+		c.gridy++; c.fill = GridBagConstraints.HORIZONTAL;
 		gridbagComposer.addComponentIntoGrid(panelProxy, c);
 
 		JPanel jpEcranInterface2 = new JPanel();
@@ -558,7 +561,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		affectLibelleGeneral();
 		affectLibelleConcours();
 		affectLibelleEtiquette();
-		affectLibelleInterface();
+		affectLibelleAdvanced();
 	}
 
 	private void affectLibelleGeneral() {
@@ -575,6 +578,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 
 		jbRenameProfile.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.general.renameprofile")); //$NON-NLS-1$
 		jbParcourir.setText("..."); //$NON-NLS-1$
+		jbParcourir.setToolTipText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.general.browseclub")); //$NON-NLS-1$
 		jbDetail.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.detail")); //$NON-NLS-1$
 		if (jbLogoPath.getText().equals("")) //$NON-NLS-1$
 			jbLogoPath.setText(ConcoursJeunes.ajrLibelle.getResourceString("parametre.logo")); //$NON-NLS-1$
@@ -600,21 +604,19 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		jlEspacementsV.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.etiquettes.vertical")); //$NON-NLS-1$
 	}
 
-	private void affectLibelleInterface() {
+	private void affectLibelleAdvanced() {
 		jlResultats.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.interface.resultat")); //$NON-NLS-1$
 		jlAffResultats.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.interface.affresultat")); //$NON-NLS-1$
 		jlURLImport.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.interface.urlimport")); //$NON-NLS-1$
 		jlURLExport.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.interface.urlexport")); //$NON-NLS-1$
 		jcbFirstBoot.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.interface.firstboot")); //$NON-NLS-1$
 
-		// tbPath.setTitle(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.interface.titre1"));
-		// //$NON-NLS-1$
-
 		jcbAvanceResultatCumul.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.interface.resultatcumul")); //$NON-NLS-1$
 		jcbAvanceResultatSupl.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.interface.resultatdnm")); //$NON-NLS-1$
 		jcbAvanceAffResultatExEquo.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.interface.resultataffexequo")); //$NON-NLS-1$
 
-		jcbUseProxy.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.avance.utilisationproxy")); //$NON-NLS-1$
+		jrbUseSystemConfig.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.avance.utilisationproxysystem")); //$NON-NLS-1$
+		jrbUseSpecificConfig.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.avance.utilisationproxycustom")); //$NON-NLS-1$
 		tbProxy.setTitle(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.avance.configurationproxy")); //$NON-NLS-1$
 		jlAdresseProxy.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.avance.adresseproxy")); //$NON-NLS-1$
 		jlPortProxy.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.avance.portproxy")); //$NON-NLS-1$
@@ -627,11 +629,11 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		completeGeneralPanel(configuration);
 		completeConcoursPanel(configuration);
 		completeEtiquettePanel(configuration);
-		completeInterfacePanel(configuration);
+		completeAdvancedPanel(configuration);
 	}
 
 	private void completeGeneralPanel(Configuration configuration) {
-		String[] libelleLangues = getPossibleLanguages();
+		String[] libelleLangues = getAvailableLanguages();
 
 		jtfNomClub.setText(configuration.getClub().getNom());
 		((AutoCompleteDocument) jtfAgrClub.getDocument()).setText(configuration.getClub().getAgrement());
@@ -703,23 +705,26 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		jtfEspacementsV.setText("" + configuration.getEspacements()[1]); //$NON-NLS-1$
 	}
 
-	private void completeInterfacePanel(Configuration configuration) {
+	private void completeAdvancedPanel(Configuration configuration) {
 		jcbAvanceResultatCumul.setSelected(configuration.isInterfaceResultatCumul());
 		jcbAvanceResultatSupl.setSelected(configuration.isInterfaceResultatSupl());
 		jcbAvanceAffResultatExEquo.setSelected(configuration.isInterfaceAffResultatExEquo());
 
-		jcbUseProxy.setSelected(configuration.isUseProxy());
+		jrbUseSpecificConfig.setSelected(configuration.isUseProxy());
+		jlAdresseProxy.setEnabled(configuration.isUseProxy());
+		jtfAdresseProxy.setEnabled(configuration.isUseProxy());
+		jlPortProxy.setEnabled(configuration.isUseProxy());
+		jtfPortProxy.setEnabled(configuration.isUseProxy());
 		if (configuration.getProxy() != null) {
 			jtfAdresseProxy.setText(configuration.getProxy().getProxyServerAddress());
-			jtfAdresseProxy.setEnabled(configuration.isUseProxy());
 			jtfPortProxy.setText(configuration.getProxy().getProxyServerPort() + ""); //$NON-NLS-1$
-			jtfPortProxy.setEnabled(configuration.isUseProxy());
 			jcbAuthentificationProxy.setSelected(configuration.getProxy().isUseProxyAuthentification());
-			jcbAuthentificationProxy.setEnabled(configuration.isUseProxy());
+			jlUserProxy.setEnabled(configuration.getProxy().isUseProxyAuthentification());
 			jtfUserProxy.setText(configuration.getProxy().getProxyAuthLogin());
-			jtfUserProxy.setEnabled(configuration.isUseProxy() && configuration.getProxy().isUseProxyAuthentification());
+			jtfUserProxy.setEnabled(configuration.getProxy().isUseProxyAuthentification());
+			jlPasswordProxy.setEnabled(configuration.getProxy().isUseProxyAuthentification());
 			jpfPasswordProxy.setText(configuration.getProxy().getProxyAuthPassword());
-			jpfPasswordProxy.setEnabled(configuration.isUseProxy() && configuration.getProxy().isUseProxyAuthentification());
+			jpfPasswordProxy.setEnabled(configuration.getProxy().isUseProxyAuthentification());
 		}
 	}
 
@@ -762,7 +767,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		return pdfPath;
 	}
 
-	private String[] getPossibleLanguages() {
+	private String[] getAvailableLanguages() {
 		// liste les langues disponible
 		String[] langues = listLangue();
 		Locale[] locales = new Locale[langues.length];
@@ -918,7 +923,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		workConfiguration.setInterfaceResultatSupl(jcbAvanceResultatSupl.isSelected());
 		workConfiguration.setInterfaceAffResultatExEquo(jcbAvanceAffResultatExEquo.isSelected());
 
-		workConfiguration.setUseProxy(jcbUseProxy.isSelected());
+		workConfiguration.setUseProxy(jrbUseSpecificConfig.isSelected());
 		Proxy proxy = new Proxy(jtfAdresseProxy.getText(), Integer.parseInt("0" + jtfPortProxy.getText()), jtfUserProxy.getText(), new String(jpfPasswordProxy.getPassword())); //$NON-NLS-1$
 		proxy.setUseProxyAuthentification(jcbAuthentificationProxy.isSelected());
 		workConfiguration.setProxy(proxy);
@@ -1031,13 +1036,14 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 
 				renameProfile = false;
 			}
-		} else if (source == jcbUseProxy) {
-			jtfAdresseProxy.setEnabled(jcbUseProxy.isSelected());
-			jtfPortProxy.setEnabled(jcbUseProxy.isSelected());
-			jcbAuthentificationProxy.setEnabled(jcbUseProxy.isSelected());
-			jtfUserProxy.setEnabled(jcbUseProxy.isSelected() && jcbAuthentificationProxy.isSelected());
-			jpfPasswordProxy.setEnabled(jcbUseProxy.isSelected() && jcbAuthentificationProxy.isSelected());
+		} else if (source == jrbUseSpecificConfig || source == jrbUseSystemConfig) {
+			jlAdresseProxy.setEnabled(jrbUseSpecificConfig.isSelected());
+			jlPortProxy.setEnabled(jrbUseSpecificConfig.isSelected());
+			jtfAdresseProxy.setEnabled(jrbUseSpecificConfig.isSelected());
+			jtfPortProxy.setEnabled(jrbUseSpecificConfig.isSelected());
 		} else if (source == jcbAuthentificationProxy) {
+			jlUserProxy.setEnabled(jcbAuthentificationProxy.isSelected());
+			jlPasswordProxy.setEnabled(jcbAuthentificationProxy.isSelected());
 			jtfUserProxy.setEnabled(jcbAuthentificationProxy.isSelected());
 			jpfPasswordProxy.setEnabled(jcbAuthentificationProxy.isSelected());
 		}

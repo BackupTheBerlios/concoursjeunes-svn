@@ -35,7 +35,6 @@
 					<menu id="reglement" name="mi.reglements">
 						<label>menubar.edition.reglement</label>
 					</menu>
-					<menuitem>menubar.edition.configuration</menuitem>
 				</menuitems>
 			</menu>
 			<menu id="print" name="mi.print" visible="false">
@@ -58,6 +57,8 @@
 				<menuitems>
 					<menuitem>menubar.tools.disableplugins</menuitem>
 					<menuitem>menubar.tools.installplugins</menuitem>
+					<separator />
+					<menuitem>menubar.tools.configuration</menuitem>
 				</menuitems>
 			</menu>
 			<menu id="help">
