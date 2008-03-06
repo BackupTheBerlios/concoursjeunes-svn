@@ -24,7 +24,12 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.naming.ConfigurationException;
-import javax.swing.*;
+import javax.swing.JEditorPane;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.HyperlinkEvent;
@@ -33,7 +38,13 @@ import javax.swing.text.DefaultCaret;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 
-import org.concoursjeunes.*;
+import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.Configuration;
+import org.concoursjeunes.FicheConcours;
+import org.concoursjeunes.MetaDataFicheConcours;
+import org.concoursjeunes.MetaDataFichesConcours;
+import org.concoursjeunes.Parametre;
+import org.concoursjeunes.Reglement;
 import org.concoursjeunes.builders.ReglementBuilder;
 import org.concoursjeunes.event.ConcoursJeunesEvent;
 import org.concoursjeunes.event.ConcoursJeunesListener;
@@ -43,7 +54,13 @@ import org.concoursjeunes.plugins.PluginEntry;
 import org.concoursjeunes.plugins.PluginLoader;
 import org.concoursjeunes.plugins.PluginMetadata;
 import org.concoursjeunes.plugins.Plugin.Type;
-import org.concoursjeunes.ui.dialog.*;
+import org.concoursjeunes.ui.dialog.ChangeLogDialog;
+import org.concoursjeunes.ui.dialog.ConfigurationDialog;
+import org.concoursjeunes.ui.dialog.DisablePluginDialog;
+import org.concoursjeunes.ui.dialog.EntiteListDialog;
+import org.concoursjeunes.ui.dialog.InstallPluginDialog;
+import org.concoursjeunes.ui.dialog.ParametreDialog;
+import org.concoursjeunes.ui.dialog.ReglementDialog;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
@@ -664,6 +681,10 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 											null, null, e, Level.SEVERE, null));
 									e.printStackTrace();
 								} catch (IOException e) {
+									JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+											null, null, e, Level.SEVERE, null));
+									e.printStackTrace();
+								} catch (NullPointerException e) {
 									JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 											null, null, e, Level.SEVERE, null));
 									e.printStackTrace();

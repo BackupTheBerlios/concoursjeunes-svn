@@ -507,6 +507,8 @@ public class Target {
 				DistancesEtBlason dbConcurrent = DistancesEtBlason.getDistancesEtBlasonForConcurrent(
 						reglement, concurrent);
 				
+				assert dbConcurrent != null : "un concururrent doit toujours avoir un DistancesEtBlason associé"; //$NON-NLS-1$
+				
 				if(getDistancesEtBlason().size() > 0 && !Arrays.equals(dbConcurrent.getDistance(), getDistancesEtBlason().get(0).getDistance()))
 					throw new PlacementException(PlacementException.Nature.BAD_DISTANCES);
 				

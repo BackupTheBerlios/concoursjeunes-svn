@@ -333,6 +333,8 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 		//attribue l'ancienne valeur au champ distances
 		for(Concurrent concurrent : concurrents) {
 			List<Integer> p = concurrent.getScore();
+			while(p.size() < parametres.getReglement().getNbSerie())
+				p.add(0);
 			
 			for(int j = 0; j < parametres.getReglement().getNbSerie(); j++) {
 				oldPoints[concurrent.getPosition()][j].setText(p.get(j)+""); //$NON-NLS-1$

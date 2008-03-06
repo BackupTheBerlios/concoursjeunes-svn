@@ -372,7 +372,7 @@ public class Reglement {
 	 *            le tableau de score à validé
 	 * @return true si le score est valide, false dans le cas contraire
 	 */
-	public boolean isValidScore(ArrayList<Integer> scores) {
+	public boolean isValidScore(List<Integer> scores) {
 		boolean valid = true;
 		for (int score : scores) {
 			if (score > nbVoleeParSerie * nbFlecheParVolee * 10) {

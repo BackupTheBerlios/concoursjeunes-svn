@@ -317,7 +317,7 @@ public class FicheConcours implements ParametreListener {
 		for(DistancesEtBlason distancesEtBlason : reglement.getListDistancesEtBlason()) {
 			
 			//si le blason n'est pas initialiser 
-			if(distancesEtBlason.getTargetFace().equals(Blason.NULL)) {
+			if(distancesEtBlason.getTargetFace() == null || distancesEtBlason.getTargetFace().equals(Blason.NULL)) {
 				if(distancesEtBlason.getNumdistancesblason() > 0) { //si le reglement est dans la base
 					distancesEtBlason.setTargetFace(BlasonManager.findBlasonAssociateToDistancesEtBlason(distancesEtBlason));
 				} else {
