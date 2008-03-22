@@ -92,7 +92,12 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import javax.swing.event.EventListenerList;
+
 import org.concoursjeunes.Target.Repartition;
+import org.concoursjeunes.event.FicheConcoursEvent;
+import org.concoursjeunes.event.FicheConcoursListener;
+import org.concoursjeunes.event.PasDeTirListener;
 import org.concoursjeunes.exceptions.PlacementException;
 
 /**
@@ -111,12 +116,14 @@ import org.concoursjeunes.exceptions.PlacementException;
  * @version 1.0
  *
  */
-public class PasDeTir {
+public class PasDeTir implements FicheConcoursListener {
 	private List<Target> targets = new ArrayList<Target>();
 	private List<Target> simulationTargets = new ArrayList<Target>();
 
 	private FicheConcours ficheConcours;
 	private int depart = 0;
+	
+	private EventListenerList listeners = new EventListenerList();
 	
 	/**
 	 * Construit un nouveau pas de tir pour le concours et le dépar donné
@@ -128,9 +135,11 @@ public class PasDeTir {
 		this.ficheConcours = ficheConcours;
 		this.depart = depart;
 		
+		ficheConcours.addFicheConcoursListener(this);
+		
 		//construit l'arbre de cible lié au pas de tir
 		for(int j = 0; j < ficheConcours.getParametre().getNbCible(); j++) {
-			Target cible = new Target(j+1, this);
+			Target cible = new Target(j+1, ficheConcours.getParametre().getReglement(), ficheConcours.getParametre().getNbTireur());
 			//dans le cas d'une ouverture de concours existant, place les archers réferencé
 			//sur leurs cible
 			if(ficheConcours.getConcurrentList().countArcher(depart) > 0) {
@@ -142,8 +151,16 @@ public class PasDeTir {
 					}
 			}
 			targets.add(cible);
-			simulationTargets.add(new Target(j+1, this));
+			simulationTargets.add(new Target(j+1, ficheConcours.getParametre().getReglement(), ficheConcours.getParametre().getNbTireur()));
 		}
+	}
+	
+	public void addPasDeTirListener(PasDeTirListener listener) {
+		listeners.add(PasDeTirListener.class, listener);
+	}
+	
+	public void removePasDeTirListener(PasDeTirListener listener) {
+		listeners.remove(PasDeTirListener.class, listener);
 	}
 	
 	/**
@@ -268,7 +285,9 @@ public class PasDeTir {
 	/**
 	 * Place les archers sur le pas de tir
 	 * La methode de placement utilisé permet d'éviter, dans la mesure du possible,
-	 * de placer les archers d'un même club sur la même cible 
+	 * de placer les archers d'un même club sur la même cible
+	 * 
+	 * TODO Ajouter la couche evenementiel
 	 */
 	public void placementConcurrents() {
 		placementConcurrents(ficheConcours.getParametre().getNbTireur(), false);
@@ -365,6 +384,8 @@ public class PasDeTir {
 			//passe au bloc suivant
 			curCible = endCible;
 		}
+		
+		firePasDeTirChanged();
 	}
 	
 	private int placementConcurrent(Concurrent concurrent, int startTarget, int curTarget, int endTarget, int nbTireurParCible, boolean simulationMode) {
@@ -403,8 +424,6 @@ public class PasDeTir {
 	/**
 	 * Place un concurrent sur une cible donné à une place donnée
 	 * 
-	 * TODO Renvoyer une exception expicit en lieu et place d'un simple boolean
-	 * 
 	 * @param concurrent - le concurrent à placer
 	 * @param cible - la cible sur laquelle placer le concurrent
 	 * @param position - la position du concurrent sur la cible
@@ -412,12 +431,26 @@ public class PasDeTir {
 	public void placementConcurrent(Concurrent concurrent, Target cible, int position) 
 			throws PlacementException {
 
+		int oldTarget = -1;
+		int oldPosition = -1;
 		//si le concurrent était déjà placé sur le pas de tir aupparavant le retirer
-		if(concurrent.getCible() > 0)
-			targets.get(concurrent.getCible()-1).removeConcurrent(concurrent);
+		if(concurrent.getCible() > 0) {
+			oldTarget = concurrent.getCible()-1;
+			oldPosition = concurrent.getPosition();
+			targets.get(oldTarget).removeConcurrent(concurrent);
+		}
 
 		//tenter le placement
-		cible.setConcurrentAt(concurrent, position);
+		try {
+			cible.setConcurrentAt(concurrent, position);
+		} catch (PlacementException e) {
+			//replace le concurrent à son emplacement d'origine en cas d'échec
+			if(oldTarget > -1 && oldPosition > -1)
+				targets.get(oldTarget).setConcurrentAt(concurrent, oldPosition);
+			throw e;
+		}
+		
+		firePasDeTirChanged();
 	}
 	
 	/**
@@ -426,8 +459,11 @@ public class PasDeTir {
 	 * @param concurrent le concurrent à retirer
 	 */
 	public void retraitConcurrent(Concurrent concurrent) {
-		if(concurrent.getCible() > 0)
+		if(concurrent.getCible() > 0) {
 			targets.get(concurrent.getCible()-1).removeConcurrent(concurrent);
+			
+			firePasDeTirChanged();
+		}
 	}
 
 	/**
@@ -440,25 +476,41 @@ public class PasDeTir {
 	}
 
 	/**
-	 * Définit la liste des cibles lié au pas de tir
-	 * 
-	 * @param targets targets à définir
-	 */
-	public void setTargets(List<Target> targets) {
-		this.targets = targets;
-	}
-
-	/**
 	 * @return ficheConcours
 	 */
 	public FicheConcours getFicheConcours() {
 		return ficheConcours;
 	}
-
+	
 	/**
-	 * @param ficheConcours ficheConcours à définir
+	 * @return depart
 	 */
-	public void setFicheConcours(FicheConcours ficheConcours) {
-		this.ficheConcours = ficheConcours;
+	public int getDepart() {
+		return depart;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.concoursjeunes.event.FicheConcoursListener#listConcurrentChanged(org.concoursjeunes.event.FicheConcoursEvent)
+	 */
+	@Override
+	public void listConcurrentChanged(FicheConcoursEvent e) {
+		if(e.getEvent() == FicheConcoursEvent.REMOVE_CONCURRENT) {
+			if(e.getConcurrent().getDepart() == depart)
+				retraitConcurrent(e.getConcurrent());
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.concoursjeunes.event.FicheConcoursListener#pasDeTirChanged(org.concoursjeunes.event.FicheConcoursEvent)
+	 */
+	@Override
+	public void pasDeTirChanged(FicheConcoursEvent e) {
+		
+	}
+	
+	private void firePasDeTirChanged() {
+		for(PasDeTirListener listener : listeners.getListeners(PasDeTirListener.class)) {
+			listener.pasdetirChanged();
+		}
 	}
 }

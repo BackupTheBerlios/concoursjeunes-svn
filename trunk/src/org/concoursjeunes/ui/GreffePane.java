@@ -133,7 +133,7 @@ public class GreffePane extends JPanel implements
 	private JTextField jtfPrenom = new JTextField(10);
 	private JTextField jtfClub = new JTextField(10);
 	private JTextField jtfLicence = new JTextField(7);
-	private final ThreeCheckBox jcbPayee = new ThreeCheckBox();
+	private ThreeCheckBox jcbPayee = new ThreeCheckBox();
 	
 	private FicheConcoursPane ficheConcoursPane;
 	private Concurrent[] concurrents;
@@ -195,7 +195,7 @@ public class GreffePane extends JPanel implements
 			
 			concurrents = concurrentList.list(-1);
 			
-			for(Concurrent concurrent : concurrentList.list(-1)) {
+			for(Concurrent concurrent : concurrents) {
 				String categorie = ""; //$NON-NLS-1$
 				for (Criterion key : ficheConcoursPane.getFicheConcours().getParametre().getReglement().getListCriteria()) {
 					CriterionElement criterionElement = concurrent.getCriteriaSet().getCriterionElement(key);
@@ -324,9 +324,12 @@ public class GreffePane extends JPanel implements
 	 */
 	@Override
 	public void tableChanged(TableModelEvent e) {
+		if(e.getType() != TableModelEvent.UPDATE)
+			return;
+		
 		int changedRow = e.getFirstRow();
 		DefaultTableModel model = (DefaultTableModel)jtConcurrents.getModel();
-		if(model.getRowCount() > 0 && concurrents.length > 0 && changedRow > -1 && changedRow < concurrents.length) {
+		if(changedRow > -1 && model.getRowCount() > 0 && concurrents.length > 0 && changedRow < model.getRowCount() && changedRow < concurrents.length) {
 			concurrents[changedRow].setCertificat((Boolean)jtConcurrents.getModel().getValueAt(changedRow, 8));
 			concurrents[changedRow].setInscription((Boolean)jtConcurrents.getModel().getValueAt(changedRow, 7) ? Concurrent.PAYEE : Concurrent.RESERVEE);
 			concurrents[changedRow].setPresence((Boolean)jtConcurrents.getModel().getValueAt(changedRow, 9));

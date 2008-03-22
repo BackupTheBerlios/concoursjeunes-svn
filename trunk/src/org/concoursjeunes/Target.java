@@ -129,16 +129,15 @@ public class Target {
 	 * Initialise une cible avec son numero et son nombre max d'archer<br>
 	 * la numerotation est de type 1 à n et non de 0 à n-1
 	 * 
-	 * @param numCible -
-	 *            le numero de la cible
-	 * @param ficheConcours -
-	 *            La fiche concours associé à la cible
+	 * @param numCible le numero de la cible
+	 * @param reglement le reglement régissant la cible
+	 * @param le nombre de tireur maximum pouvant être présent sur la cible
 	 */
-	public Target(int numCible, PasDeTir pasDeTir) {
+	public Target(int numCible, Reglement reglement, int nbTireurMaxparCible) {
 		this.numCible = numCible;
-		this.reglement = pasDeTir.getFicheConcours().getParametre().getReglement();
+		this.reglement = reglement;
 		
-		this.concurrents = new Concurrent[pasDeTir.getFicheConcours().getParametre().getNbTireur()];
+		this.concurrents = new Concurrent[nbTireurMaxparCible];
 	}
 
 	/**
@@ -265,8 +264,8 @@ public class Target {
 	 * @return la position de concurrent
 	 * @throws PlacementException si l'insertion du concurrent est impossible
 	 */
-	public int insertConcurrent(Concurrent concurrent, Repartition repartition) 
-	throws PlacementException {
+	protected int insertConcurrent(Concurrent concurrent, Repartition repartition) 
+			throws PlacementException {
 		return insertConcurrent(concurrent, repartition, false);
 	}
 	
@@ -493,7 +492,7 @@ public class Target {
 	 * @throws PlacementException invoqué en cas d'echec
 	 * d'insertion du concurrent
 	 */
-	public void setConcurrentAt(Concurrent concurrent, int position) 
+	protected void setConcurrentAt(Concurrent concurrent, int position) 
 			throws PlacementException {
 		if (concurrent != null) {
 			if (position == -1) {
@@ -548,7 +547,7 @@ public class Target {
 	 * @param position -
 	 *            la position du concurrent à supprimer
 	 */
-	public void removeConcurrentAt(int position) {
+	protected void removeConcurrentAt(int position) {
 		removeConcurrentAt(position, false);
 	}
 	
@@ -581,7 +580,7 @@ public class Target {
 	 * @param concurrent -
 	 *            le concurrent à supprimer
 	 */
-	public void removeConcurrent(Concurrent concurrent) {
+	protected void removeConcurrent(Concurrent concurrent) {
 		for (int i = 0; i < concurrents.length; i++) {
 			if (concurrents[i] == concurrent) {
 				removeConcurrentAt(i);
@@ -594,7 +593,7 @@ public class Target {
 	 * Retire tous les concurrents de la cible
 	 * 
 	 */
-	public void removeAll() {
+	protected void removeAll() {
 		removeAll(false);
 	}
 	

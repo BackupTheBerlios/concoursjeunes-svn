@@ -103,10 +103,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
-import javax.naming.ConfigurationException;
 import javax.swing.JOptionPane;
 
 import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.exceptions.NullConfigurationException;
 import org.concoursjeunes.plugins.Plugin;
 import org.concoursjeunes.plugins.PluginEntry;
 import org.concoursjeunes.plugins.PluginLoader;
@@ -294,7 +294,7 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 						ConcoursJeunes.getInstance().saveAllFichesConcours();
 						
 						ConcoursJeunes.dbConnection.close();
-					} catch (ConfigurationException e) {
+					} catch (NullConfigurationException e) {
 						e.printStackTrace();
 					} catch (SQLException e) {
 						e.printStackTrace();

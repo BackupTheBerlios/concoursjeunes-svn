@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry excluding="start.sh|web/" kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="lib" path="lang"/>
 	<classpathentry kind="lib" path="lib"/>
 	<classpathentry kind="lib" path="plugins"/>

@@ -1,7 +1,7 @@
 /*
  * Créer le 17 déc. 2004 pour ConcoursJeunes
  *
- * Copyright 2002-2007 - Aurélien JEOFFRAY
+ * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
  *
@@ -109,7 +109,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 
-import javax.naming.ConfigurationException;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -121,12 +120,13 @@ import javax.swing.event.EventListenerList;
 import org.concoursjeunes.builders.FicheConcoursBuilder;
 import org.concoursjeunes.event.ConcoursJeunesEvent;
 import org.concoursjeunes.event.ConcoursJeunesListener;
+import org.concoursjeunes.exceptions.NullConfigurationException;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
 import ajinteractive.standard.common.AjResourcesReader;
 import ajinteractive.standard.common.PluginClassLoader;
-import ajinteractive.standard.utilities.io.FileUtil;
+import ajinteractive.standard.utilities.io.FileUtils;
 import ajinteractive.standard.utilities.sql.SqlManager;
 
 import com.lowagie.text.Document;
@@ -312,7 +312,7 @@ public class ConcoursJeunes {
 					scriptEngine.put("dbVersion", dbVersion); //$NON-NLS-1$
 					scriptEngine.put("sql", new SqlManager(stmt, updatePath)); //$NON-NLS-1$
 					
-					List<File> scripts = FileUtil.listAllFiles(updatePath, ".*\\.js"); //$NON-NLS-1$
+					List<File> scripts = FileUtils.listAllFiles(updatePath, ".*\\.js"); //$NON-NLS-1$
 					for(File script : scripts)
 						scriptEngine.eval(new FileReader(script));
 				} catch (ScriptException e1) {
@@ -321,7 +321,7 @@ public class ConcoursJeunes {
 					e1.printStackTrace();
 				} finally {
 					//Supprime les fichiers du repertoire update après une mise à jour
-					for(File file : FileUtil.listAllFiles(updatePath, ".*")) { //$NON-NLS-1$
+					for(File file : FileUtils.listAllFiles(updatePath, ".*")) { //$NON-NLS-1$
 						boolean success = file.delete();
 						System.out.println("delete: " + file.getName() + ": " //$NON-NLS-1$ //$NON-NLS-2$
 								+ success);
@@ -493,7 +493,7 @@ public class ConcoursJeunes {
 	 * 
 	 * @throws ConfigurationException
 	 */
-	public void createFicheConcours() throws ConfigurationException, IOException {
+	public void createFicheConcours() throws NullConfigurationException, IOException {
 		createFicheConcours(null);
 	}
 	
@@ -503,9 +503,9 @@ public class ConcoursJeunes {
 	 * @param parametre les parametres du concours
 	 * @throws ConfigurationException
 	 */
-	public void createFicheConcours(Parametre parametre) throws ConfigurationException, IOException {
+	public void createFicheConcours(Parametre parametre) throws NullConfigurationException, IOException {
 		if (configuration == null)
-			throw new ConfigurationException("la configuration est null"); //$NON-NLS-1$
+			throw new NullConfigurationException("la configuration est null"); //$NON-NLS-1$
 
 		FicheConcours ficheConcours = new FicheConcours(parametre);
 		fichesConcours.add(ficheConcours);
@@ -525,9 +525,9 @@ public class ConcoursJeunes {
 	 * 
 	 * @throws ConfigurationException
 	 */
-	public void deleteFicheConcours(MetaDataFicheConcours metaDataFicheConcours) throws ConfigurationException {
+	public void deleteFicheConcours(MetaDataFicheConcours metaDataFicheConcours) throws NullConfigurationException {
 		if (configuration == null)
-			throw new ConfigurationException("la configuration est null"); //$NON-NLS-1$
+			throw new NullConfigurationException("la configuration est null"); //$NON-NLS-1$
 
 		configuration.getMetaDataFichesConcours().remove(metaDataFicheConcours);
 
@@ -545,9 +545,9 @@ public class ConcoursJeunes {
 	 * 
 	 * @throws ConfigurationException
 	 */
-	public void closeFicheConcours(FicheConcours ficheConcours) throws ConfigurationException, IOException {
+	public void closeFicheConcours(FicheConcours ficheConcours) throws NullConfigurationException, IOException {
 		if (configuration == null)
-			throw new ConfigurationException("la configuration est null"); //$NON-NLS-1$
+			throw new NullConfigurationException("la configuration est null"); //$NON-NLS-1$
 
 		ficheConcours.save();
 		configuration.saveAsDefault();
@@ -561,7 +561,7 @@ public class ConcoursJeunes {
 	 * 
 	 * @throws ConfigurationException
 	 */
-	public void closeAllFichesConcours() throws ConfigurationException, IOException {
+	public void closeAllFichesConcours() throws NullConfigurationException, IOException {
 		saveAllFichesConcours();
 
 		ArrayList<FicheConcours> tmpList = new ArrayList<FicheConcours>();
@@ -585,9 +585,9 @@ public class ConcoursJeunes {
 	 * @throws IOException
 	 */
 	public void restoreFicheConcours(MetaDataFicheConcours metaDataFicheConcours)
-			throws ConfigurationException, IOException {
+			throws NullConfigurationException, IOException {
 		if (configuration == null)
-			throw new ConfigurationException("la configuration est null"); //$NON-NLS-1$
+			throw new NullConfigurationException("la configuration est null"); //$NON-NLS-1$
 
 		FicheConcours ficheConcours = FicheConcoursBuilder.getFicheConcours(metaDataFicheConcours);
 
@@ -602,9 +602,9 @@ public class ConcoursJeunes {
 	 * 
 	 * @exception ConfigurationException
 	 */
-	public void saveAllFichesConcours() throws ConfigurationException, IOException {
+	public void saveAllFichesConcours() throws NullConfigurationException, IOException {
 		if (configuration == null)
-			throw new ConfigurationException("la configuration est null"); //$NON-NLS-1$
+			throw new NullConfigurationException("la configuration est null"); //$NON-NLS-1$
 
 		for (FicheConcours fiche : fichesConcours) {
 			fiche.save();

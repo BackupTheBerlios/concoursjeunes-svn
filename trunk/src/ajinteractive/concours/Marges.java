@@ -93,7 +93,7 @@ package ajinteractive.concours;
  * @version 1.1
  */
 @Deprecated
-public class Marges extends org.concoursjeunes.Marges {
+public class Marges extends org.concoursjeunes.Margin {
 
     /**
      * 

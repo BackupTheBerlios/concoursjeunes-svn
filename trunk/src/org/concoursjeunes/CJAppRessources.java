@@ -1,7 +1,7 @@
 /*
  * Créé le 21/02/2006 à 14:01 pour ConcoursJeunes
  *
- * Copyright 2002-2007 - Aurélien JEOFFRAY
+ * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
  *
@@ -94,7 +94,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 
 import ajinteractive.standard.utilities.app.AppRessources;
-import ajinteractive.standard.utilities.io.FileUtil;
+import ajinteractive.standard.utilities.io.FileUtils;
 
 /**
  * Crée et donne le chemin des ressources utilisateur pour le programme
@@ -144,7 +144,7 @@ public class CJAppRessources extends AppRessources {
 				File configPath = new File(getUserPath());
 				if (!new File(configPath.getPath(), file.getName()).exists()) {
 					try {
-						FileUtil.copyFile(file, configPath);
+						FileUtils.copyFile(file, configPath);
 					} catch (FileNotFoundException e) {
 						e.printStackTrace();
 					} catch (IOException e) {
@@ -171,7 +171,7 @@ public class CJAppRessources extends AppRessources {
 
 		for (File file : fileForCopy) {
 			try {
-				FileUtil.copyFile(file, new File(getAllusersDataPath() + File.separator + "update")); //$NON-NLS-1$
+				FileUtils.copyFile(file, new File(getAllusersDataPath() + File.separator + "update")); //$NON-NLS-1$
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {

@@ -104,7 +104,6 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.logging.Level;
 
-import javax.naming.ConfigurationException;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
@@ -113,10 +112,11 @@ import org.concoursjeunes.ConcoursJeunes;
 import org.concoursjeunes.Configuration;
 import org.concoursjeunes.ConfigurationManager;
 import org.concoursjeunes.Entite;
-import org.concoursjeunes.Marges;
+import org.concoursjeunes.Margin;
 import org.concoursjeunes.Reglement;
 import org.concoursjeunes.event.AutoCompleteDocumentEvent;
 import org.concoursjeunes.event.AutoCompleteDocumentListener;
+import org.concoursjeunes.exceptions.NullConfigurationException;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
@@ -917,7 +917,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		workConfiguration.setFormatPapier((String) this.jcbFormatPapier.getSelectedItem());
 		workConfiguration.setOrientation((String) this.jcbOrientation.getSelectedItem());
 		workConfiguration.setColonneAndLigne(new int[] { nbLigne, nbColonne });
-		workConfiguration.setMarges(new Marges(margeHaut, margeBas, margeGauche, margeDroite));
+		workConfiguration.setMarges(new Margin(margeHaut, margeBas, margeGauche, margeDroite));
 		workConfiguration.setEspacements(new double[] { espacementHorizontal, espacementVertical });
 		workConfiguration.setInterfaceResultatCumul(jcbAvanceResultatCumul.isSelected());
 		workConfiguration.setInterfaceResultatSupl(jcbAvanceResultatSupl.isSelected());
@@ -1007,7 +1007,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 				
 				try {
 					renamedProfile = ConfigurationManager.renameConfiguration(workConfiguration.getCurProfil(), strP);
-				} catch (ConfigurationException e1) {
+				} catch (NullConfigurationException e1) {
 					renamedProfile = false;
 					e1.printStackTrace();
 				} catch (IOException e1) {

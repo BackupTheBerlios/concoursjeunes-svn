@@ -103,7 +103,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.logging.Level;
 
 import javax.swing.Box;
@@ -136,6 +135,7 @@ import org.concoursjeunes.Target;
 import org.concoursjeunes.TargetPosition;
 import org.concoursjeunes.event.FicheConcoursEvent;
 import org.concoursjeunes.event.FicheConcoursListener;
+import org.concoursjeunes.exceptions.FicheConcoursException;
 import org.concoursjeunes.exceptions.PlacementException;
 import org.concoursjeunes.ui.dialog.ConcurrentDialog;
 import org.concoursjeunes.ui.dialog.EquipeDialog;
@@ -356,7 +356,7 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 		treeTarget.addMouseMotionListener(this);
 		treeTarget.addKeyListener(this);
 		treeTarget.addTreeSelectionListener(this);
-		treeTarget.setCellRenderer(new CibleRenderer(ficheConcours.getPasDeTir(depart)));
+		treeTarget.setCellRenderer(new TargetRenderer());
 		treeTarget.setToggleClickCount(3);
 		treeTarget.setShowsRootHandles(false);
 
@@ -445,7 +445,7 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 
 				try {
 					ficheConcours.addConcurrent(ficheConcoursPane.concDialog.getConcurrent(), depart);
-				} catch (IOException e) {
+				} catch (FicheConcoursException e) {
 					JXErrorPane.showDialog(ficheConcoursPane.getParentframe(), new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 							null, null, e, Level.SEVERE, null));
 					e.printStackTrace();
@@ -467,7 +467,7 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 	
 			try {
 				ficheConcours.removeConcurrent(removedConcurrent);
-			} catch (IOException e) {
+			} catch (FicheConcoursException e) {
 				JXErrorPane.showDialog(ficheConcoursPane.getParentframe(), new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 						null, null, e, Level.SEVERE, null));
 				e.printStackTrace();

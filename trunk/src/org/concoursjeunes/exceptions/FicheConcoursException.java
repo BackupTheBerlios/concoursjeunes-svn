@@ -1,4 +1,6 @@
 /*
+ * Créer le 21 mars 08 à 21:36:38 pour ConcoursJeunes
+ *
  * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
@@ -84,93 +86,64 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes;
+package org.concoursjeunes.exceptions;
 
 /**
- * Représente les marges de tour de page à utiliser sur les éditions pdf.<br>
- * Les dimensions sont représentées en centimetres
- * 
  * @author Aurélien JEOFFRAY
  *
  */
-public class Marges {
-	double top = 0.0;
-	double bottom = 0.0;
-	double right = 0.0;
-	double left = 0.0;
-	
-	public Marges() {
-		
+public class FicheConcoursException extends Exception {
+
+	public enum Nature {
+		ALREADY_EXISTS,
+		NO_SLOT_AVAILABLE,
+		SAVE_IO_ERROR,
+		UNKNOWN
 	}
+	
+	private Nature nature = Nature.UNKNOWN;
 	/**
-	 * Initialise un nouvel objet marge en specifiant celle ci pour les
-	 * 4 dimensions
 	 * 
-	 * @param top marge de haut de page
-	 * @param bottom marge de bas de page
-	 * @param right marge de droite
-	 * @param left marge de gauche
 	 */
-	public Marges(double top, double bottom, double right, double left) {
-		this.top = top;
-		this.bottom = bottom;
-		this.right = right;
-		this.left = left;
+	public FicheConcoursException() {
+		super();
+	}
+
+	/**
+	 * @param message
+	 * @param cause
+	 */
+	public FicheConcoursException(String message, Throwable cause) {
+		super(message, cause);
 	}
 	
+	public FicheConcoursException(Nature nature, String message, Throwable cause) {
+		super(message, cause);
+	}
+
 	/**
-	 * @return bottom
+	 * @param message
 	 */
-	public double getBottom() {
-		return bottom;
+	public FicheConcoursException(String message) {
+		super(message);
 	}
 	
+	public FicheConcoursException(Nature nature, String message) {
+		super(message);
+	}
+
 	/**
-	 * @param bottom bottom à définir
+	 * @param cause
 	 */
-	public void setBottom(double bottom) {
-		this.bottom = bottom;
+	public FicheConcoursException(Throwable cause) {
+		super(cause);
+	}
+
+	/**
+	 * @return nature
+	 */
+	public Nature getNature() {
+		return nature;
 	}
 	
-	/**
-	 * @return left
-	 */
-	public double getLeft() {
-		return left;
-	}
-	
-	/**
-	 * @param left left à définir
-	 */
-	public void setLeft(double left) {
-		this.left = left;
-	}
-	
-	/**
-	 * @return right
-	 */
-	public double getRight() {
-		return right;
-	}
-	
-	/**
-	 * @param right right à définir
-	 */
-	public void setRight(double right) {
-		this.right = right;
-	}
-	
-	/**
-	 * @return top
-	 */
-	public double getTop() {
-		return top;
-	}
-	
-	/**
-	 * @param top top à définir
-	 */
-	public void setTop(double top) {
-		this.top = top;
-	}
 }

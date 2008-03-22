@@ -100,7 +100,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.ConfigurationException;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -124,6 +123,7 @@ import javax.swing.table.TableRowSorter;
 import javax.xml.ws.WebServiceException;
 
 import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.exceptions.NullConfigurationException;
 import org.concoursjeunes.plugins.PluginLoader;
 import org.concoursjeunes.ui.GlassPanePanel;
 import org.concoursjeunes.webservices.PluginDescription;
@@ -521,7 +521,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 							ConcoursJeunes.getInstance().saveAllFichesConcours();
 							
 							ConcoursJeunes.dbConnection.close();
-						} catch (ConfigurationException e) {
+						} catch (NullConfigurationException e) {
 							e.printStackTrace();
 						} catch (SQLException e) {
 							e.printStackTrace();

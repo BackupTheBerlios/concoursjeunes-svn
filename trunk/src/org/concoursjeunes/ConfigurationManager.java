@@ -95,13 +95,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.naming.ConfigurationException;
 import javax.xml.bind.JAXBException;
 
 import org.concoursjeunes.builders.ConfigurationBuilder;
+import org.concoursjeunes.exceptions.NullConfigurationException;
 
 import ajinteractive.standard.common.AJToolKit;
-import ajinteractive.standard.utilities.io.FileUtil;
+import ajinteractive.standard.utilities.io.FileUtils;
 
 /**
  * Gére le chargement de la configuration du programme
@@ -202,7 +202,7 @@ public class ConfigurationManager {
 	 * @throws IOException
 	 */
 	public static boolean renameConfiguration(String currentName, String newName) 
-			throws ConfigurationException, IOException {
+			throws NullConfigurationException, IOException {
 		
 		boolean success = false;
 		
@@ -235,7 +235,7 @@ public class ConfigurationManager {
 		
 		if(success && f.exists() && !f.renameTo(fNew)) {
 			try {
-				FileUtil.deleteFilesPath(fNew);
+				FileUtils.deleteFilesPath(fNew);
 				fNew.delete();
 				success = f.renameTo(fNew);
 			} catch (IOException e1) {

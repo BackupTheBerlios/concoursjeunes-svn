@@ -99,7 +99,6 @@ import java.util.jar.Pack200.Unpacker;
 import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 
-import javax.naming.ConfigurationException;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -108,6 +107,7 @@ import org.concoursjeunes.ConcoursJeunes;
 import org.concoursjeunes.Configuration;
 import org.concoursjeunes.ConfigurationManager;
 import org.concoursjeunes.MetaDataFicheConcours;
+import org.concoursjeunes.exceptions.NullConfigurationException;
 import org.concoursjeunes.plugins.Plugin;
 import org.concoursjeunes.plugins.PluginEntry;
 import org.jdesktop.swingx.JXErrorPane;
@@ -190,7 +190,7 @@ public class RestorePlugin {
 								ConcoursJeunes.getInstance().closeAllFichesConcours();
 								
 								//ConcoursJeunes.configuration.save();
-							} catch (ConfigurationException e1) {
+							} catch (NullConfigurationException e1) {
 								JXErrorPane.showDialog(parentframe, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 										null, null, e1, Level.SEVERE, null));
 								e1.printStackTrace();

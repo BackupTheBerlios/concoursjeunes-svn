@@ -35,10 +35,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.concoursjeunes.builders.AncragesMapBuilder;
 import org.concoursjeunes.builders.BlasonBuilder;
 import org.concoursjeunes.builders.EquipeListBuilder;
-import org.concoursjeunes.event.FicheConcoursEvent;
-import org.concoursjeunes.event.FicheConcoursListener;
-import org.concoursjeunes.event.ParametreEvent;
-import org.concoursjeunes.event.ParametreListener;
+import org.concoursjeunes.event.*;
+import org.concoursjeunes.exceptions.FicheConcoursException;
+import org.concoursjeunes.exceptions.FicheConcoursException.Nature;
+import org.concoursjeunes.state.PasDeTirState;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
@@ -56,7 +56,7 @@ import com.lowagie.text.Rectangle;
  * @author Aurélien Jeoffray
  */
 @XmlRootElement
-public class FicheConcours implements ParametreListener {
+public class FicheConcours implements ParametreListener, PasDeTirListener {
 
 	/**
 	 * Edition par ordre alphabetique
@@ -183,25 +183,31 @@ public class FicheConcours implements ParametreListener {
 	/**
 	 * Ajoute un concurrent au concours
 	 * 
+	 * TODO ajouter une verification que le jeux de critère du concurrent est valide sur le concours
+	 * 
 	 * @param concurrent -
 	 *            le concurrent à ajouter au concours
-	 * @return true si ajout avec succès, false sinon
+	 * 
+	 * @throws IOException
+	 * @throws FicheConcoursException
 	 */
-	public boolean addConcurrent(Concurrent concurrent, int depart) throws IOException {
+	public void addConcurrent(Concurrent concurrent, int depart) throws FicheConcoursException {
 		concurrent.setDepart(depart);
 
 		if (concurrentList.contains(concurrent, depart))
-			return false;
+			throw new FicheConcoursException(Nature.ALREADY_EXISTS, "Le concurrent est déjà présent"); //$NON-NLS-1$
 
 		if (!pasDeTir.get(depart).havePlaceForConcurrent(concurrent))
-			return false;
+			throw new FicheConcoursException(Nature.NO_SLOT_AVAILABLE, "Il n'y a pas de place pour le concurrent"); //$NON-NLS-1$
 
 		concurrentList.add(concurrent);
 
 		fireConcurrentAdded(concurrent);
-		save();
-
-		return true;
+		try {
+			save();
+		} catch (IOException e) {
+			throw new FicheConcoursException(Nature.SAVE_IO_ERROR, "Une erreur est survenue au moment de la sauvegarde", e); //$NON-NLS-1$
+		}
 	}
 
 	/**
@@ -210,17 +216,18 @@ public class FicheConcours implements ParametreListener {
 	 * @param removedConcurrent -
 	 *            Le concurrent à supprimer
 	 */
-	public void removeConcurrent(Concurrent removedConcurrent) throws IOException {
-		// retire le concurrent du pas de tir si present
-		if (removedConcurrent.getCible() > 0)
-			pasDeTir.get(removedConcurrent.getDepart()).getTargets().get(removedConcurrent.getCible() - 1).removeConcurrent(removedConcurrent);
-		// suppression dans la liste
+	public void removeConcurrent(Concurrent removedConcurrent) throws FicheConcoursException {
 		// suppression dans l'equipe si presence dans equipe
 		equipes.removeConcurrent(removedConcurrent);
+		// suppression dans la liste
 		if (concurrentList.remove(removedConcurrent) != null)
 			fireConcurrentRemoved(removedConcurrent);
 
-		save();
+		try {
+			save();
+		} catch (IOException e) {
+			throw new FicheConcoursException(Nature.SAVE_IO_ERROR, "Une erreur est survenue au moment de la sauvegarde", e); //$NON-NLS-1$
+		}
 	}
 
 	/**
@@ -295,7 +302,7 @@ public class FicheConcours implements ParametreListener {
 	}
 
 	/**
-	 * sauvegarde "silencieuse" en arriere plan de la fiche concours
+	 * sauvegarde de la fiche concours
 	 * 
 	 */
 	public void save() throws IOException {
@@ -361,7 +368,9 @@ public class FicheConcours implements ParametreListener {
 
 	private void makePasDeTir() {
 		for (int i = 0; i < parametre.getNbDepart(); i++) {
-			pasDeTir.put(i, new PasDeTir(this, i));
+			PasDeTir pdt = new PasDeTir(this, i);
+			pdt.addPasDeTirListener(this);
+			pasDeTir.put(i, pdt);
 		}
 
 		firePasDeTirChanged();
@@ -945,62 +954,6 @@ public class FicheConcours implements ParametreListener {
 	}
 
 	/**
-	 * genere la sortie XML du pas de tir
-	 * 
-	 * @return la sortie XML du pas de tir
-	 */
-	private String getXMLPasDeTir(int depart) {
-		
-		if(concurrentList.countArcher(depart) == 0)
-			return ""; //$NON-NLS-1$
-
-		templatePasDeTirXML.reset();
-
-		templatePasDeTirXML.parse("producer", ConcoursJeunes.NOM + " " + ConcoursJeunes.VERSION); //$NON-NLS-1$ //$NON-NLS-2$
-
-		int colonne = 0;
-
-		double nbseq = 10.0 * Math.ceil(parametre.getNbCible() / 10.0);
-		for (int i = 1; i <= nbseq; i++) {
-			// Cible cible = null;
-
-			Concurrent[] concurrents = concurrentList.list(i, depart);
-			if (concurrents != null && concurrents.length > 0) {
-				CriteriaSet dci = concurrents[0].getCriteriaSet();
-				DistancesEtBlason db = parametre.getReglement().getDistancesEtBlasonFor(dci.getFilteredCriteriaSet(parametre.getReglement().getPlacementFilter()));
-
-				templatePasDeTirXML.parse("ligne.numcible.nc.numcible", "" + i); //$NON-NLS-1$ //$NON-NLS-2$
-				templatePasDeTirXML.parse("ligne.imgcible.ic.url_img_blason", //$NON-NLS-1$
-						ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + "/cible.jpg"); //$NON-NLS-1$ //$NON-NLS-2$
-				templatePasDeTirXML.parse("ligne.detail.dc.distance", "" + db.getDistance()[0]); //$NON-NLS-1$ //$NON-NLS-2$
-				templatePasDeTirXML.parse("ligne.detail.dc.blason", "" + db.getTargetFace().getName()); //$NON-NLS-1$ //$NON-NLS-2$
-			} else {
-				templatePasDeTirXML.parseBloc("ligne.numcible.nc", ""); //$NON-NLS-1$ //$NON-NLS-2$
-				templatePasDeTirXML.parseBloc("ligne.imgcible.ic", ""); //$NON-NLS-1$ //$NON-NLS-2$
-				templatePasDeTirXML.parseBloc("ligne.detail.dc", ""); //$NON-NLS-1$ //$NON-NLS-2$
-			}
-
-			templatePasDeTirXML.loopBloc("ligne.numcible"); //$NON-NLS-1$
-			templatePasDeTirXML.loopBloc("ligne.imgcible"); //$NON-NLS-1$
-			templatePasDeTirXML.loopBloc("ligne.detail"); //$NON-NLS-1$
-
-			if (colonne == 9) {
-				templatePasDeTirXML.loopBloc("ligne"); //$NON-NLS-1$
-				colonne = 0;
-			} else {
-				colonne++;
-			}
-		}
-
-		if (colonne != 0) {
-			templatePasDeTirXML.loopBloc("ligne"); //$NON-NLS-1$
-		}
-
-		// System.out.println(templatePasDeTirXML.output());
-		return templatePasDeTirXML.output();
-	}
-
-	/**
 	 * Genere l'etat classement pour la fiche en parametre
 	 * 
 	 * @return true si impression avec succe, false sinon
@@ -1075,9 +1028,9 @@ public class FicheConcours implements ParametreListener {
 	 * @return true si impression avec succe, false sinon
 	 */
 	public boolean printPasDeTir() {
-		Document document = new Document(PageSize.A4.rotate(), 5, 5, 5, 5);
-		//document.
-		return ConcoursJeunes.printDocument(document, getXMLPasDeTir(currentDepart));
+		new PasDeTirState(pasDeTir.get(currentDepart));
+
+		return true;
 	}
 
 	/*
@@ -1112,6 +1065,14 @@ public class FicheConcours implements ParametreListener {
 			}
 		} else if(parametreEvent.getParametre().getNbDepart() != pasDeTir.size())
 			makePasDeTir();
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.concoursjeunes.event.PasDeTirListener#pasdetirChanged()
+	 */
+	@Override
+	public void pasdetirChanged() {
+		firePasDeTirChanged();
 	}
 
 	private void fireConcurrentAdded(Concurrent concurrent) {

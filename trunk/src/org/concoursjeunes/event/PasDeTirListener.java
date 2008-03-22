@@ -1,7 +1,7 @@
 /*
- * Créer le 29 déc. 07 à 12:57:24 pour ConcoursJeunes
+ * Créer le 20 mars 08 à 14:17:23 pour ConcoursJeunes
  *
- * Copyright 2002-2007 - Aurélien JEOFFRAY
+ * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
  *
@@ -86,26 +86,18 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes.test;
+package org.concoursjeunes.event;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import java.util.EventListener;
 
 /**
  * @author Aurélien JEOFFRAY
  *
  */
-public class AllTests {
-
-	public static Test suite() {
-		TestSuite suite = new TestSuite("Test for org.concoursjeunes.test"); //$NON-NLS-1$
-		//$JUnit-BEGIN$
-		suite.addTestSuite(ConfigurationManagerTest.class);
-		suite.addTestSuite(FicheConcoursTest.class);
-		suite.addTestSuite(ConcoursJeunesTest.class);
-		suite.addTestSuite(PasDeTirTest.class);
-		//$JUnit-END$
-		return suite;
-	}
-
+public interface PasDeTirListener extends EventListener {
+	/**
+	 * Invoqué lorsque le pas de tir change suite à l'arrivé, le départ
+	 * ou le déplacement d'un archer
+	 */
+	public void pasdetirChanged();
 }

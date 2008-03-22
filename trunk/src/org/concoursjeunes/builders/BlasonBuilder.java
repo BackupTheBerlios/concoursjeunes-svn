@@ -126,6 +126,7 @@ public class BlasonBuilder {
 		blason.setVerticalRatio(rs.getDouble("VERTICAL_RATIO")); //$NON-NLS-1$
 		blason.setNbArcher(rs.getInt("NBARCHER")); //$NON-NLS-1$
 		blason.setNumordre(rs.getInt("NUMORDRE")); //$NON-NLS-1$
+		blason.setTargetFaceImage(rs.getString("IMAGE")); //$NON-NLS-1$
 		
 		blason.setAncrages(AncragesMapBuilder.getAncragesMap(blason));
 		

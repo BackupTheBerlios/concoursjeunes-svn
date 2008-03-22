@@ -46,7 +46,8 @@ public class DistancesEtBlason {
 	/**
 	 * Cree un distance et blason avec les bon param
 	 * 
-	 * @param distances
+	 * @param distances tableau des distances représenté. 1 distance par série.
+	 * 	Les distances sont représenté en metre
 	 * @param blason
 	 */
 	public DistancesEtBlason(int[] distances, Blason targetFace) {
@@ -261,6 +262,10 @@ public class DistancesEtBlason {
 		return true;
 	}
 
-	
+	@SuppressWarnings("nls")
+	@Override
+	public String toString() {
+		return "{" + targetFace.toString() + "," + distances.toString() + "}";
+	}
 
 }

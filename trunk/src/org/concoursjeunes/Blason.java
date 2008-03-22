@@ -118,6 +118,7 @@ public class Blason {
 	private double verticalRatio = 1;
 	private int nbArcher = 4;
 	private int numordre = 0;
+	private String targetFaceImage = ""; //$NON-NLS-1$
 	private ConcurrentMap<Integer, Ancrage> ancrages = new ConcurrentHashMap<Integer, Ancrage>();
 	
 	private int numblason = 0;
@@ -466,5 +467,19 @@ public class Blason {
 	@Override
 	public String toString() {
 		return name;
+	}
+
+	/**
+	 * @return targetFaceImage
+	 */
+	public String getTargetFaceImage() {
+		return targetFaceImage;
+	}
+
+	/**
+	 * @param targetFaceImage targetFaceImage à définir
+	 */
+	public void setTargetFaceImage(String targetFaceImage) {
+		this.targetFaceImage = targetFaceImage;
 	}
 }

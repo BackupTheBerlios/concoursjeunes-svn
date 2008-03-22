@@ -298,4 +298,9 @@ public class CriteriaSet {
 		result = PRIME * result + ((criteria == null) ? 0 : criteria.hashCode());
 		return result;
 	}
+	
+	@Override
+	public String toString() {
+		return criteria.toString();
+	}
 }

@@ -1,6 +1,4 @@
 /*
- * Créer le 4 févr. 08 à 23:16:38 pour ConcoursJeunes
- *
  * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
@@ -86,82 +84,188 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes.test;
+package org.concoursjeunes.ui;
 
-import junit.framework.TestCase;
+import java.util.Enumeration;
+import java.util.Vector;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeNode;
+
+import org.concoursjeunes.Concurrent;
+import org.concoursjeunes.Target;
+import org.concoursjeunes.TargetPosition;
+import org.concoursjeunes.event.TargetEvent;
+import org.concoursjeunes.event.TargetListener;
 
 /**
  * @author Aurélien JEOFFRAY
  *
  */
-public class PasDeTirTest extends TestCase{
+public class TargetMutableTreeNode implements MutableTreeNode, TargetListener {
+	
+	private Target cible;
+	private MutableTreeNode parent;
+	private Vector<TreeNode> childrens = new Vector<TreeNode>();
+
+	public TargetMutableTreeNode(Target cible) {
+		this.cible = cible;
+		
+		if(cible != null)
+			cible.addCibleListener(this);
+		
+		createChildren();
+	}
+	
+	/**
+	 * @return cible
+	 */
+	public Target getCible() {
+		return cible;
+	}
 
 	/**
-	 * @throws java.lang.Exception
+	 * @param cible cible à définir
 	 */
+	public void setCible(Target cible) {
+		if(cible != null) {
+			cible.removeCibleListener(this);
+			childrens.removeAllElements();
+			
+			cible.addCibleListener(this);
+		}
+		this.cible = cible;
+		
+		createChildren();
+	}
+	
+	private void createChildren() {
+		if(cible != null) {
+			for(int i = 0; i < cible.getNbMaxArchers(); i++) {
+				Concurrent concurrent = cible.getConcurrentAt(i);
+				if(concurrent == null)
+					insert(new DefaultMutableTreeNode(new TargetPosition(cible.getNumCible(), i)), i);
+				else
+					insert(new DefaultMutableTreeNode(concurrent), i);
+			}
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.tree.MutableTreeNode#insert(javax.swing.tree.MutableTreeNode, int)
+	 */
+	public void insert(MutableTreeNode child, int index) {
+		child.setParent(this);
+		childrens.add(index, child);
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.tree.MutableTreeNode#remove(int)
+	 */
+	public void remove(int index) {
+		childrens.remove(index);
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.tree.MutableTreeNode#remove(javax.swing.tree.MutableTreeNode)
+	 */
+	public void remove(MutableTreeNode node) {
+		childrens.remove(node);
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.tree.MutableTreeNode#removeFromParent()
+	 */
+	public void removeFromParent() {
+		parent.remove(this);
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.tree.MutableTreeNode#setParent(javax.swing.tree.MutableTreeNode)
+	 */
+	public void setParent(MutableTreeNode newParent) {
+		parent = newParent;
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.tree.MutableTreeNode#setUserObject(java.lang.Object)
+	 */
+	public void setUserObject(Object object) {
+		if(object instanceof Target) {
+			setCible((Target)object);
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.tree.TreeNode#children()
+	 */
+	public Enumeration<TreeNode> children() {
+		return childrens.elements();
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.tree.TreeNode#getAllowsChildren()
+	 */
+	public boolean getAllowsChildren() {
+		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.tree.TreeNode#getChildAt(int)
+	 */
+	public TreeNode getChildAt(int childIndex) {
+		return childrens.get(childIndex);
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.tree.TreeNode#getChildCount()
+	 */
+	public int getChildCount() {
+		return childrens.size();
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.tree.TreeNode#getIndex(javax.swing.tree.TreeNode)
+	 */
+	public int getIndex(TreeNode node) {
+		return childrens.indexOf(node);
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.tree.TreeNode#getParent()
+	 */
+	public TreeNode getParent() {
+		return parent;
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.tree.TreeNode#isLeaf()
+	 */
+	public boolean isLeaf() {
+		return childrens.size() == 0;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.concoursjeunes.CibleListener#concurrentJoined(org.concoursjeunes.CibleEvent)
+	 */
+	public void concurrentJoined(TargetEvent e) {
+		DefaultMutableTreeNode concurrentNode = (DefaultMutableTreeNode)childrens.get(e.getConcurrent().getPosition());
+		concurrentNode.setUserObject(e.getConcurrent());
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.concoursjeunes.CibleListener#concurrentQuit(org.concoursjeunes.CibleEvent)
+	 */
+	public void concurrentQuit(TargetEvent e) {
+		DefaultMutableTreeNode concurrentNode = (DefaultMutableTreeNode)childrens.get(e.getConcurrent().getPosition());
+		concurrentNode.setUserObject(new TargetPosition(cible.getNumCible(), e.getConcurrent().getPosition()));
+	}
+	
 	@Override
-    @Before
-	public void setUp() throws Exception {
+	public String toString() {
+		if(cible != null)
+			return cible.toString();
+		return ""; //$NON-NLS-1$
 	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Override
-    @After
-	public void tearDown() throws Exception {
-	}
-
-	/**
-	 * Test method for {@link org.concoursjeunes.PasDeTir#getTargetsOccupation(int)}.
-	 */
-	@Test
-	public void testGetOccupationCibles() {
-		fail("Not yet implemented"); //$NON-NLS-1$
-	}
-
-	/**
-	 * Test method for {@link org.concoursjeunes.PasDeTir#getNbFreeTargets(int)}.
-	 */
-	@Test
-	public void testGetNbCiblesLibre() {
-		fail("Not yet implemented"); //$NON-NLS-1$
-	}
-
-	/**
-	 * Test method for {@link org.concoursjeunes.PasDeTir#havePlaceForConcurrent(org.concoursjeunes.Concurrent)}.
-	 */
-	@Test
-	public void testHavePlaceForConcurrent() {
-		fail("Not yet implemented"); //$NON-NLS-1$
-	}
-
-	/**
-	 * Test method for {@link org.concoursjeunes.PasDeTir#placementConcurrents()}.
-	 */
-	@Test
-	public void testPlacementConcurrents() {
-		fail("Not yet implemented"); //$NON-NLS-1$
-	}
-
-	/**
-	 * Test method for {@link org.concoursjeunes.PasDeTir#placementConcurrent(org.concoursjeunes.Concurrent, org.concoursjeunes.Cible, int)}.
-	 */
-	@Test
-	public void testPlacementConcurrent() {
-		fail("Not yet implemented"); //$NON-NLS-1$
-	}
-
-	/**
-	 * Test method for {@link org.concoursjeunes.PasDeTir#retraitConcurrent(org.concoursjeunes.Concurrent)}.
-	 */
-	@Test
-	public void testRetraitConcurrent() {
-		fail("Not yet implemented"); //$NON-NLS-1$
-	}
-
 }

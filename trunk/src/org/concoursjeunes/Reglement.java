@@ -493,4 +493,9 @@ public class Reglement {
 
 		return result;
 	}
+	
+	@Override
+	public String toString() {
+		return name;
+	}
 }

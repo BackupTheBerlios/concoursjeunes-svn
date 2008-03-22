@@ -120,7 +120,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	private String formatPapier     = "A4";             //$NON-NLS-1$
 	private String orientation      = "portrait";       //$NON-NLS-1$
 	private int[] colonneAndLigne   = new int[] {9, 3}; 
-	private Marges marges           = new Marges(0, 0, 0, 0);
+	private Margin marges           = new Margin(0, 0, 0, 0);
 	private double[] espacements    = new double[] {0.5, 0.5};
 
 	private boolean interfaceResultatCumul = false;     //noreboot
@@ -227,7 +227,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	 * Marge d'impression des étiquettes
 	 * @return  Returns the marges.
 	 */
-	public Marges getMarges() {
+	public Margin getMarges() {
 		return this.marges;
 	}
 
@@ -267,7 +267,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	 * Définit les marges d'impression du papier étiquettes
 	 * @param marges  The marges to set.
 	 */
-	public void setMarges(Marges marges) {
+	public void setMarges(Margin marges) {
 		this.marges = marges;
 	}
 

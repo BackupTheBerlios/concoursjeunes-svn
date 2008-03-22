@@ -84,94 +84,93 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes.test;
-
-import java.io.IOException;
-
-import junit.framework.TestCase;
-
-import org.concoursjeunes.ConcoursJeunes;
-import org.concoursjeunes.Concurrent;
-import org.concoursjeunes.FicheConcours;
-import org.concoursjeunes.event.ConcoursJeunesEvent;
-import org.concoursjeunes.event.ConcoursJeunesListener;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+package org.concoursjeunes;
 
 /**
+ * Représente les marges de tour de page à utiliser sur les éditions pdf.<br>
+ * Les dimensions sont représentées en centimetres
+ * 
  * @author Aurélien JEOFFRAY
- * TODO revoir les test avec creation de concours
+ *
  */
-public class FicheConcoursTest extends TestCase {
+public class Margin {
+	double top = 0.0;
+	double bottom = 0.0;
+	double right = 0.0;
+	double left = 0.0;
 	
-	private ConcoursJeunes concoursJeunes;
-	private FicheConcours ficheConcours;
-
+	public Margin() {
+		
+	}
 	/**
-	 * @throws java.lang.Exception
+	 * Initialise un nouvel objet marge en specifiant celle ci pour les
+	 * 4 dimensions
+	 * 
+	 * @param top marge de haut de page
+	 * @param bottom marge de bas de page
+	 * @param right marge de droite
+	 * @param left marge de gauche
 	 */
-	@Before
-	@Override
-	public void setUp() throws Exception {
-		concoursJeunes = ConcoursJeunes.getInstance();
-		
-		concoursJeunes.addConcoursJeunesListener(new ConcoursJeunesListener() {
-
-			public void ficheConcoursClosed(ConcoursJeunesEvent concoursJeunesEvent) {}
-			/* (non-Javadoc)
-			 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursCreated(org.concoursjeunes.ConcoursJeunesEvent)
-			 */
-			public void ficheConcoursCreated(ConcoursJeunesEvent concoursJeunesEvent) {
-				ficheConcours = concoursJeunesEvent.getFicheConcours();
-			}
-			public void ficheConcoursDeleted(ConcoursJeunesEvent concoursJeunesEvent) {}
-			public void ficheConcoursRestored(ConcoursJeunesEvent concoursJeunesEvent) {}
-			public void configurationChanged(ConcoursJeunesEvent concoursJeunesEvent) {}
-			
-		});
-		
-		concoursJeunes.createFicheConcours();
+	public Margin(double top, double bottom, double right, double left) {
+		this.top = top;
+		this.bottom = bottom;
+		this.right = right;
+		this.left = left;
 	}
 	
-	@Test
-	public void testFicheConcours() {
-		
-	}
-
 	/**
-	 * Méthode de test pour {@link org.concoursjeunes.FicheConcours#addConcurrent(org.concoursjeunes.Concurrent)}.
+	 * @return bottom
 	 */
-	@Test
-	public void testAddConcurrent() {
-		Concurrent concurrent = new Concurrent();
-		//concurrent.setDifferentiationCriteria();
-		try {
-			assertTrue(ficheConcours.addConcurrent(concurrent, 0));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public double getBottom() {
+		return bottom;
 	}
-
+	
 	/**
-	 * Méthode de test pour {@link org.concoursjeunes.FicheConcours#removeConcurrent(org.concoursjeunes.Concurrent)}.
+	 * @param bottom bottom à définir
 	 */
-	@Test
-	public void testRemoveConcurrent() {
-		fail("Non implémenté actuellement"); //$NON-NLS-1$
+	public void setBottom(double bottom) {
+		this.bottom = bottom;
 	}
-
+	
 	/**
-	 * Méthode de test pour {@link org.concoursjeunes.FicheConcours#getPasDeTir(int)}.
+	 * @return left
 	 */
-	@Test
-	public void testGetPasDeTir() {
-		fail("Non implémenté actuellement"); //$NON-NLS-1$
+	public double getLeft() {
+		return left;
 	}
-
-	@After
-	@Override
-	public void tearDown() {
-		//concoursJeunes.deleteFicheConcours(ficheConcours.getParametre().getSaveName());
+	
+	/**
+	 * @param left left à définir
+	 */
+	public void setLeft(double left) {
+		this.left = left;
+	}
+	
+	/**
+	 * @return right
+	 */
+	public double getRight() {
+		return right;
+	}
+	
+	/**
+	 * @param right right à définir
+	 */
+	public void setRight(double right) {
+		this.right = right;
+	}
+	
+	/**
+	 * @return top
+	 */
+	public double getTop() {
+		return top;
+	}
+	
+	/**
+	 * @param top top à définir
+	 */
+	public void setTop(double top) {
+		this.top = top;
 	}
 }
