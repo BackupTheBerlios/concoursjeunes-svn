@@ -269,7 +269,7 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 		treeTarget.addMouseMotionListener(this);
 		treeTarget.addKeyListener(this);
 		treeTarget.addTreeSelectionListener(this);
-		treeTarget.setCellRenderer(new CibleRenderer(ficheConcours.getPasDeTir(depart)));
+		treeTarget.setCellRenderer(new CibleRenderer());
 		treeTarget.setToggleClickCount(3);
 		treeTarget.setShowsRootHandles(false);
 

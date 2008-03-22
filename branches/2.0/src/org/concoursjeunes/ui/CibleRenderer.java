@@ -10,7 +10,6 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import org.concoursjeunes.Cible;
 import org.concoursjeunes.ConcoursJeunes;
 import org.concoursjeunes.Concurrent;
-import org.concoursjeunes.PasDeTir;
 import org.concoursjeunes.TargetPosition;
 
 /**
@@ -26,8 +25,6 @@ public class CibleRenderer extends DefaultTreeCellRenderer {
 	private final ImageIcon archerHandicapIcon;
 	private final ImageIcon cibleIcon;
 	private final ImageIcon disableIcon;
-	
-	private final PasDeTir pasDeTir;
 
 	/**
 	 * Constructeur, initialise les icone à afficher
@@ -35,9 +32,7 @@ public class CibleRenderer extends DefaultTreeCellRenderer {
 	 * @param archerIcon - Icone de representation des archers
 	 * @param cibleIcon - Icone de representation des cibles
 	 */
-	public CibleRenderer(PasDeTir pasDeTir) {
-		this.pasDeTir = pasDeTir;
-		
+	public CibleRenderer() {
 		archerIcon = new ImageIcon(
 				ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
 				ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.archer.normal")); //$NON-NLS-1$
@@ -77,7 +72,8 @@ public class CibleRenderer extends DefaultTreeCellRenderer {
 				setIcon(archerIcon);
 		} else if (value instanceof TargetPosition) {
 			TargetPosition targetPosition = (TargetPosition) value;
-			if(pasDeTir.getTargets().get(targetPosition.getTarget() - 1).isReservedPosition(targetPosition.getPosition()))
+			TargetTreeModel targetTreeModel = (TargetTreeModel)tree.getModel();
+			if(targetTreeModel.getTargetChilds().get(targetPosition.getTarget() - 1).isReservedPosition(targetPosition.getPosition()))
 				setIcon(disableIcon);
 			else
 				setIcon(archerIcon);

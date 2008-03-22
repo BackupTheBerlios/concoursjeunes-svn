@@ -186,5 +186,26 @@
     </void> 
    </object> 
   </void> 
+  <void method="add"> 
+   <object class="ajinteractive.standard.utilities.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurelien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction erreur arbre des cibles suite à ajout d&apos;une cible supplémentaire sur un concours</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1206216289424</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.02.05</string> 
+    </void> 
+   </object> 
+  </void> 
  </object> 
 </java> 

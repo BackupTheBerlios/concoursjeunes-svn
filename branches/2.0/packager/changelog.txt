@@ -1,3 +1,9 @@
+concoursjeunes (2.02.05) stable; urgency=low
+
+  * Correction erreur arbre des cibles suite à ajout d'une cible supplémentaire sur un concours
+
+ -- Aurelien JEOFFRAY <aurelien.jeoffray@gmail.com>  Sat, 22 Mar 2008 21:04:49 +0100
+
 concoursjeunes (2.02.04) stable; urgency=low
 
   * Correction script de mise à jour de base de données
