@@ -253,6 +253,13 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 	
 	private void completePanel() {
 		boolean retry = false;
+		
+		DefaultTableModel dtm = createTableModel();
+		PluginLoader pl = new PluginLoader();
+		List<String> categories = new ArrayList<String>();
+		List<String> categoriesLibelle = new ArrayList<String>();
+		
+		
 		if(ConcoursJeunes.getConfiguration().isUseProxy()) {
 			System.setProperty("http.proxyHost", ConcoursJeunes.getConfiguration().getProxy().getProxyServerAddress()); //$NON-NLS-1$
 			System.setProperty("http.proxyPort",Integer.toString(ConcoursJeunes.getConfiguration().getProxy().getProxyServerPort())); //$NON-NLS-1$
@@ -262,18 +269,13 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 						ConcoursJeunes.getConfiguration().getProxy().getProxyAuthPassword()));
 			}
 		}
+		
 		try {
+			List<PluginDescription> alreadyInstalledPlugins = new ArrayList<PluginDescription>();
 			PluginsWebService services = new PluginsWebServiceService().getPluginsWebServicePort();
 			
 			PluginDescriptionArray pluginDescriptionArray = services.getAvailablePluginsForVersion(ConcoursJeunes.VERSION);
-	
-			DefaultTableModel dtm = createTableModel();
-			
-			PluginLoader pl = new PluginLoader();
-			List<String> categories = new ArrayList<String>();
-			List<String> categoriesLibelle = new ArrayList<String>();
-			List<PluginDescription> alreadyInstalledPlugins = new ArrayList<PluginDescription>();
-			
+
 			pluginsDetail = pluginDescriptionArray.getItem();
 			for(PluginDescription pluginDescription : pluginsDetail) {
 				if(!pl.isInstalled(pluginDescription.getLogicalName())) {
@@ -299,6 +301,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 			for(PluginDescription pluginDescription : alreadyInstalledPlugins) {
 				pluginsDetail.remove(pluginDescription);
 			}
+			
 			sorter = new TableRowSorter<DefaultTableModel>(dtm);
 			jtPlugins.setModel(dtm);
 			jtPlugins.getColumnModel().getColumn(0).setMaxWidth(20);
@@ -317,7 +320,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 			
 			if(e1.getCause() != null && e1.getCause() instanceof IOException) {
 				IOException ioe = (IOException)e1.getCause();
-				if(ioe.getMessage().indexOf("HTTP response code: 407") > -1) { //$NON-NLS-1$
+				if(ioe.getMessage().indexOf("HTTP response code: 407") > -1) { //Erreur authentification serveur proxy //$NON-NLS-1$
 					retry = true;
 				} else {
 					e1.printStackTrace();

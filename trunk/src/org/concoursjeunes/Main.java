@@ -152,7 +152,7 @@ public class Main {
 
 					// rend l'ensemble des fichier de la base accessible en lecture/ecriture pour permettre
 					// le multiutilisateur
-					File[] dbfiles = new File(ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "base").listFiles(); //$NON-NLS-1$
+					File[] dbfiles = new File(ConcoursJeunes.userRessources.getAllusersDataPath(), "base").listFiles(); //$NON-NLS-1$
 					for (File dbfile : dbfiles) {
 						if (dbfile.isFile()) {
 							dbfile.setWritable(true, false);

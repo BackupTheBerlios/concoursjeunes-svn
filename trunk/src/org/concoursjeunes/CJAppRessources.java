@@ -160,18 +160,17 @@ public class CJAppRessources extends AppRessources {
 	 * le répertoire de mise à jour de l'appli 
 	 */
 	public void copyDefaultUpdateFile() {
-		File[] fileForCopy = new File(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + "update").listFiles(new java.io.FileFilter() { //$NON-NLS-1$
+		File[] fileForCopy = new File(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") , "update").listFiles(new java.io.FileFilter() { //$NON-NLS-1$ //$NON-NLS-2$
 					public boolean accept(File pathname) {
 						return pathname.isFile();
 					}
 				});
 
-		new File(getAllusersDataPath() + File.separator + "update").mkdirs(); //$NON-NLS-1$
+		new File(getAllusersDataPath(), "update").mkdirs(); //$NON-NLS-1$
 
 		for (File file : fileForCopy) {
 			try {
-				FileUtils.copyFile(file, new File(getAllusersDataPath() + File.separator + "update")); //$NON-NLS-1$
+				FileUtils.copyFile(file, new File(getAllusersDataPath(), "update")); //$NON-NLS-1$
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {

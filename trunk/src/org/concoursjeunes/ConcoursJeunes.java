@@ -109,6 +109,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 
+import javax.naming.ConfigurationException;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -244,7 +245,7 @@ public class ConcoursJeunes {
 				System.setOut(new PrintStream(userRessources.getLogPathForProfile(configuration.getCurProfil()) + File.separator + ajrParametreAppli.getResourceString("log.exec"))); //$NON-NLS-1$
 			} catch (FileNotFoundException e) {
 				JXErrorPane.showDialog(null, new ErrorInfo(ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
-						e.toString(), null, null, e, Level.SEVERE, null));
+						e.toString(), null, null, e, Level.WARNING, null));
 				e.printStackTrace();
 			}
 		}
@@ -303,7 +304,7 @@ public class ConcoursJeunes {
 				System.exit(1);
 			}
 			if (dbVersion != DB_RELEASE_REQUIRED) {
-				File updatePath = new File(userRessources.getAllusersDataPath() + File.separator + "update"); //$NON-NLS-1$
+				File updatePath = new File(userRessources.getAllusersDataPath(), "update"); //$NON-NLS-1$
 				
 				ScriptEngineManager se = new ScriptEngineManager();
 				ScriptEngine scriptEngine = se.getEngineByName("JavaScript"); //$NON-NLS-1$
@@ -321,7 +322,7 @@ public class ConcoursJeunes {
 					e1.printStackTrace();
 				} finally {
 					//Supprime les fichiers du repertoire update après une mise à jour
-					for(File file : FileUtils.listAllFiles(updatePath, ".*")) { //$NON-NLS-1$
+					for(File file : FileUtils.listAllFiles(updatePath, ".*",true)) { //$NON-NLS-1$
 						boolean success = file.delete();
 						System.out.println("delete: " + file.getName() + ": " //$NON-NLS-1$ //$NON-NLS-2$
 								+ success);
