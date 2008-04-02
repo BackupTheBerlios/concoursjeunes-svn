@@ -74,7 +74,7 @@ public class Concurrent extends Archer implements Cloneable {
 	}
 
 	/**
-	 * Définit le jeux de critère d'istinguant l'archer
+	 * Définit le jeux de critère distinguant l'archer
 	 * 
 	 * @param criteriaSet le jeux de critères de distinction
 	 */

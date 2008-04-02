@@ -129,7 +129,7 @@ public class BackupPlugin {
 	public void showBackupDialog() {
 		Configuration configuration = ConcoursJeunes.getConfiguration();
 		
-		String concoursPath = ConcoursJeunes.userRessources.getConcoursPathForProfile(configuration.getCurProfil());
+		File concoursPath = ConcoursJeunes.userRessources.getConcoursPathForProfile(configuration.getCurProfil());
 		
 		JFileChooser chooser = new JFileChooser();
 	    FileNameExtensionFilter filter = new FileNameExtensionFilter(
@@ -141,7 +141,7 @@ public class BackupPlugin {
 	    if(returnVal == JFileChooser.APPROVE_OPTION) {       
 
 			try {
-				File[] concoursFiles = new File(concoursPath).listFiles();
+				File[] concoursFiles = concoursPath.listFiles();
 				
 				File tempJar = File.createTempFile("profilecj_", ".jar"); //$NON-NLS-1$ //$NON-NLS-2$
 				

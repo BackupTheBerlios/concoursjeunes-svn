@@ -18,8 +18,6 @@ package org.concoursjeunes;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlTransient;
-
 import ajinteractive.standard.common.ArraysUtils;
 
 /**
@@ -31,36 +29,29 @@ import ajinteractive.standard.common.ArraysUtils;
 public class EquipeList implements Cloneable {
    
     private List<Equipe> equipeList  = new ArrayList<Equipe>();
-    @XmlTransient
-    private FicheConcours ficheConcours;
+    private int nbMembresRetenu = 3;
     
     private boolean limitedByClub = true;
     
     public EquipeList() {
     	
     }
-    public EquipeList(FicheConcours ficheConcours) { 
-    	this.ficheConcours = ficheConcours;
+    public EquipeList(int nbMembresRetenu) { 
+    	this.nbMembresRetenu = nbMembresRetenu;
     }
-    
-    /**
-     * Retourne la fiche concours associé a la liste
-     * 
-     * @return la fiche concours associé a la liste
-     */
-    public FicheConcours getFicheConcours() {
-		return ficheConcours;
-	}
 
-    /**
-     * Definit la fiche concours associé a la liste
-     * 
-     * @param ficheConcours la fiche concours associé a la liste
-     */
-	public void setFicheConcours(FicheConcours ficheConcours) {
-		this.ficheConcours = ficheConcours;
+	/**
+	 * @return nbMembresRetenu
+	 */
+	public int getNbMembresRetenu() {
+		return nbMembresRetenu;
 	}
-
+	/**
+	 * @param nbMembresRetenu nbMembresRetenu à définir
+	 */
+	public void setNbMembresRetenu(int nbMembresRetenu) {
+		this.nbMembresRetenu = nbMembresRetenu;
+	}
 	/**
      * Ajoute une équipe à la liste
      * 
@@ -80,6 +71,12 @@ public class EquipeList implements Cloneable {
         return equipeList.get(index);
     }
     
+    /**
+     * Détermine si l'équipe nommé transmis en paramêtre existe déjà sur le concours
+     * 
+     * @param teamName le nom de l'équipe à tester
+     * @return true si l'équipe existe, false sinon 
+     */
     public boolean contains(String teamName) {
     	for(Equipe equipe : equipeList) {
     		if(equipe.getNomEquipe().equals(teamName))
@@ -87,6 +84,7 @@ public class EquipeList implements Cloneable {
     	}
     	return false;
     }
+    
     /**
      * Retourne l'équipe contenant le concourrent donné ou null si inexistant
      * 
@@ -116,7 +114,7 @@ public class EquipeList implements Cloneable {
             if(equipe.contains(concurrent)) {
                 equipe.removeConcurrent(concurrent);
                 
-                if(equipe.getMembresEquipe().size() < ficheConcours.getParametre().getReglement().getNbMembresRetenu())
+                if(equipe.getMembresEquipe().size() < nbMembresRetenu)
                     remove(equipe);
                 remove = true;
                 break;
@@ -140,7 +138,7 @@ public class EquipeList implements Cloneable {
     public void removeInvalidTeam() {
     	ArrayList<Equipe> deleteList = new ArrayList<Equipe>();
     	for(Equipe equipe : equipeList) {
-            if(equipe.getMembresEquipe().size() < ficheConcours.getParametre().getReglement().getNbMembresRetenu())
+            if(equipe.getMembresEquipe().size() < nbMembresRetenu)
             	deleteList.add(equipe);
         }
     	for(Equipe equipe : deleteList) {
@@ -274,7 +272,6 @@ public class EquipeList implements Cloneable {
     		equipeListClone.add(equipe.clone());
     	}
     	clone.setEquipeList(equipeListClone);
-    	clone.setFicheConcours(ficheConcours);
     	clone.setLimitedByClub(limitedByClub);
     	
     	return clone;

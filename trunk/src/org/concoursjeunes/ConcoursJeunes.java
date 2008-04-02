@@ -241,8 +241,8 @@ public class ConcoursJeunes {
 
 		if (System.getProperty("debug.mode") == null) { //$NON-NLS-1$
 			try {
-				System.setErr(new PrintStream(userRessources.getLogPathForProfile(configuration.getCurProfil()) + File.separator + ajrParametreAppli.getResourceString("log.error"))); //$NON-NLS-1$
-				System.setOut(new PrintStream(userRessources.getLogPathForProfile(configuration.getCurProfil()) + File.separator + ajrParametreAppli.getResourceString("log.exec"))); //$NON-NLS-1$
+				System.setErr(new PrintStream(new File(userRessources.getLogPathForProfile(configuration.getCurProfil()), ajrParametreAppli.getResourceString("log.error")))); //$NON-NLS-1$
+				System.setOut(new PrintStream(new File(userRessources.getLogPathForProfile(configuration.getCurProfil()), ajrParametreAppli.getResourceString("log.exec")))); //$NON-NLS-1$
 			} catch (FileNotFoundException e) {
 				JXErrorPane.showDialog(null, new ErrorInfo(ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
 						e.toString(), null, null, e, Level.WARNING, null));
@@ -272,7 +272,7 @@ public class ConcoursJeunes {
 				if(!e.getMessage().contains("[90020")) { //$NON-NLS-1$
 					if(JOptionPane.showConfirmDialog(null, ajrLibelle.getResourceString("erreur.breakdb")) == JOptionPane.YES_OPTION) { //$NON-NLS-1$
 						erasedb = true;
-						for(File deletefile : new File(userRessources.getBasePath()).listFiles()) {
+						for(File deletefile : userRessources.getBasePath().listFiles()) {
 							deletefile.delete();
 						}
 					} else {

@@ -35,7 +35,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.concoursjeunes.builders.AncragesMapBuilder;
 import org.concoursjeunes.builders.BlasonBuilder;
 import org.concoursjeunes.builders.EquipeListBuilder;
-import org.concoursjeunes.event.*;
+import org.concoursjeunes.event.FicheConcoursEvent;
+import org.concoursjeunes.event.FicheConcoursListener;
+import org.concoursjeunes.event.ParametreEvent;
+import org.concoursjeunes.event.ParametreListener;
+import org.concoursjeunes.event.PasDeTirListener;
 import org.concoursjeunes.exceptions.FicheConcoursException;
 import org.concoursjeunes.exceptions.FicheConcoursException.Nature;
 import org.concoursjeunes.state.PasDeTirState;
@@ -83,7 +87,7 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 	private Parametre parametre = new Parametre(ConcoursJeunes.getConfiguration());
 
 	private ConcurrentList concurrentList = new ConcurrentList(parametre);
-	private EquipeList equipes = new EquipeList(this);
+	private EquipeList equipes = new EquipeList(parametre.getReglement().getNbMembresRetenu());
 
 	private final Hashtable<Integer, PasDeTir> pasDeTir = new Hashtable<Integer, PasDeTir>();
 
@@ -701,7 +705,7 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 
 		String strClassementEquipe = ""; //$NON-NLS-1$
 
-		EquipeList clubList = EquipeListBuilder.getClubEquipeList(concurrentList, this);
+		EquipeList clubList = EquipeListBuilder.getClubEquipeList(concurrentList, parametre.getReglement().getNbMembresRetenu());
 
 		if (clubList != null && clubList.countEquipes() > 0) {
 			AJTemplate tplClassementEquipe = null;

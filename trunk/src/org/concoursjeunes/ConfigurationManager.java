@@ -95,6 +95,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.naming.ConfigurationException;
 import javax.xml.bind.JAXBException;
 
 import org.concoursjeunes.builders.ConfigurationBuilder;
@@ -146,11 +147,6 @@ public class ConfigurationManager {
 			configuration = (Configuration)AJToolKit.loadMarshallStructure(confFile, Configuration.class);
 			if(configuration == null) {
 				configuration = ConfigurationBuilder.getDefaultConfiguration();
-			}
-			
-			//changement suite à la dispartion de la ligue du dauphiné
-			if(configuration.getClub().getAgrement().startsWith("16")) { //$NON-NLS-1$
-				configuration.getClub().setAgrement("33" + configuration.getClub().getAgrement().substring(2)); //$NON-NLS-1$
 			}
 		
 		//si il n'y arrive pas vérifie que ce n'est pas une config 1.1
@@ -221,10 +217,10 @@ public class ConfigurationManager {
 		}
 		
 		//renome le fichier de configuration
-		File f = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + File.separator 
-				+ Configuration.CONFIG_PROFILE + currentName + Configuration.EXT_XML);
-		File fNew = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + File.separator 
-				+ Configuration.CONFIG_PROFILE + newName + Configuration.EXT_XML);
+		File f = new File(ConcoursJeunes.userRessources.getConfigPathForUser(), 
+				Configuration.CONFIG_PROFILE + currentName + Configuration.EXT_XML);
+		File fNew = new File(ConcoursJeunes.userRessources.getConfigPathForUser(),
+				Configuration.CONFIG_PROFILE + newName + Configuration.EXT_XML);
 		if(fNew.exists())
 			return false;
 		success = f.renameTo(fNew);

@@ -121,9 +121,9 @@ public class CJAppRessources extends AppRessources {
 	 * @param profile le nom du profil pour lequelle récuperer le chemin
 	 * @return le chemin absolu du profile
 	 */
-	private String getProfilePath(String profile) {
-		String profilePath = getUserPath() + File.separator + "Profile" + //$NON-NLS-1$
-				File.separator + profile;
+	private File getProfilePath(String profile) {
+		File profilePath = new File(getUserPath(), "Profile" + //$NON-NLS-1$
+				File.separator + profile);
 
 		return profilePath;
 	}
@@ -184,10 +184,10 @@ public class CJAppRessources extends AppRessources {
 	 * 
 	 * @return le chemin des fichiers de configuration
 	 */
-	public String getConfigPathForUser() {
+	public File getConfigPathForUser() {
 		copyDefaultConfigForUser();
 
-		return getUserPath();
+		return new File(getUserPath());
 	}
 
 	/**
@@ -195,10 +195,10 @@ public class CJAppRessources extends AppRessources {
 	 * 
 	 * @return le chemin du répertoire contenant la base de donnée
 	 */
-	public String getBasePath() {
-		String basePath = getAllusersDataPath() + File.separator + "base"; //$NON-NLS-1$
+	public File getBasePath() {
+		File basePath = new File(getAllusersDataPath(), "base"); //$NON-NLS-1$
 
-		new File(basePath).mkdirs();
+		basePath.mkdirs();
 
 		return basePath;
 	}
@@ -211,10 +211,10 @@ public class CJAppRessources extends AppRessources {
 	 *            le nom du profile pour lequel récuperer le chemin des concours
 	 * @return le chemin des concours
 	 */
-	public String getConcoursPathForProfile(String profile) {
-		String concoursPath = getProfilePath(profile) + File.separator + "concours"; //$NON-NLS-1$
+	public File getConcoursPathForProfile(String profile) {
+		File concoursPath = new File(getProfilePath(profile), "concours"); //$NON-NLS-1$
 
-		new File(concoursPath).mkdirs();
+		concoursPath.mkdirs();
 
 		return concoursPath;
 	}
@@ -226,10 +226,10 @@ public class CJAppRessources extends AppRessources {
 	 *            le profil pour lequelle renvouyé le chemin des logs
 	 * @return le chemin des logs du profil
 	 */
-	public String getLogPathForProfile(String profile) {
-		String concoursPath = getProfilePath(profile) + File.separator + "log"; //$NON-NLS-1$
+	public File getLogPathForProfile(String profile) {
+		File concoursPath = new File(getProfilePath(profile), "log"); //$NON-NLS-1$
 
-		new File(concoursPath).mkdirs();
+		concoursPath.mkdirs();
 
 		return concoursPath;
 	}
@@ -240,7 +240,7 @@ public class CJAppRessources extends AppRessources {
 	 * @return la liste des configurations disponibles
 	 */
 	public String[] listAvailableConfigurations() {
-		String[] strConfig = new File(getConfigPathForUser()).list(new FilenameFilter() {
+		String[] strConfig = getConfigPathForUser().list(new FilenameFilter() {
 			public boolean accept(File dir, String name) {
 				if (name.startsWith(CONFIG_PROFILE) && name.endsWith(EXT_XML))
 					return true;

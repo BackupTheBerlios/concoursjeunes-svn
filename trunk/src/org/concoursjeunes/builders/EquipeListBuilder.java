@@ -20,7 +20,6 @@ import org.concoursjeunes.ConcurrentList;
 import org.concoursjeunes.Entite;
 import org.concoursjeunes.Equipe;
 import org.concoursjeunes.EquipeList;
-import org.concoursjeunes.FicheConcours;
 
 /**
  * @author Aurélien JEOFFRAY
@@ -28,20 +27,19 @@ import org.concoursjeunes.FicheConcours;
  */
 public class EquipeListBuilder {
 	
-	public static EquipeList getClubEquipeList(ConcurrentList concurrentList, FicheConcours ficheConcours) {
-		EquipeList equipeList = new EquipeList(ficheConcours);
+	public static EquipeList getClubEquipeList(ConcurrentList concurrentList, int nbMembresRetenu) {
+		EquipeList equipeList = new EquipeList(nbMembresRetenu);
 		
 		for(Entite entite : concurrentList.listCompagnie()) {
 			Concurrent[] concurrents = concurrentList.list(entite, null, null);
-			if(concurrents.length >=
-					ficheConcours.getParametre().getReglement().getNbMembresRetenu()) {
+			if(concurrents.length >= nbMembresRetenu) {
 				Equipe equipe = new Equipe(entite.getNom());
 				
 				concurrents = ConcurrentList.sort(concurrents, ConcurrentList.SortCriteria.SORT_BY_POINTS);
 				
 				int i = 0;
 				for(Concurrent concurrent : concurrents) {
-					if(i < ficheConcours.getParametre().getReglement().getNbMembresRetenu())
+					if(i < nbMembresRetenu)
 						equipe.addConcurrent(concurrent);
 					else
 						break;

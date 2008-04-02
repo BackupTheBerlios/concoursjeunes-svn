@@ -134,7 +134,7 @@ public class RestorePlugin {
 	public void showRestoreDialog() {
 		Configuration configuration = ConcoursJeunes.getConfiguration();
 		
-		String concoursPath = ConcoursJeunes.userRessources.getConcoursPathForProfile(configuration.getCurProfil());
+		File concoursPath = ConcoursJeunes.userRessources.getConcoursPathForProfile(configuration.getCurProfil());
 		
 		JFileChooser chooser = new JFileChooser();
 	    FileNameExtensionFilter filter = new FileNameExtensionFilter(

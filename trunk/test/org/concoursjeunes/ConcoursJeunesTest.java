@@ -92,8 +92,6 @@ import java.sql.SQLException;
 
 import junit.framework.TestCase;
 
-import org.concoursjeunes.ConcoursJeunes;
-import org.concoursjeunes.FicheConcours;
 import org.concoursjeunes.event.ConcoursJeunesEvent;
 import org.concoursjeunes.event.ConcoursJeunesListener;
 import org.concoursjeunes.exceptions.NullConfigurationException;
@@ -154,7 +152,7 @@ public class ConcoursJeunesTest extends TestCase {
 				
 				assertNotNull(e.getFicheConcours());
 				
-				String concourspath = ConcoursJeunes.userRessources.getConcoursPathForProfile(ConcoursJeunes.getConfiguration().getCurProfil());
+				File concourspath = ConcoursJeunes.userRessources.getConcoursPathForProfile(ConcoursJeunes.getConfiguration().getCurProfil());
 				
 				assertTrue(new File(concourspath + File.separator 
 						+ e.getFicheConcours().getParametre().getSaveName()).exists());
@@ -220,10 +218,10 @@ public class ConcoursJeunesTest extends TestCase {
 			public void ficheConcoursDeleted(ConcoursJeunesEvent e) {
 				eventReceived = true;
 
-				String concourspath = ConcoursJeunes.userRessources.getConcoursPathForProfile(ConcoursJeunes.getConfiguration().getCurProfil());
+				File concourspath = ConcoursJeunes.userRessources.getConcoursPathForProfile(ConcoursJeunes.getConfiguration().getCurProfil());
 				
 				assertFalse("Le fichier du concours ne devrait plus exister",  //$NON-NLS-1$
-						new File(concourspath + File.separator + testConcours.getParametre().getSaveName()).exists());
+						new File(concourspath, testConcours.getParametre().getSaveName()).exists());
 			}
 			public void configurationChanged(ConcoursJeunesEvent e) { }
 		};

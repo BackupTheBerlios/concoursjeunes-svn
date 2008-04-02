@@ -802,33 +802,17 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		if (ae.getSource() == jbSuivant || ae.getSource() == jbPrecedent || ae.getSource() == jbValider) {
 
 			filter = null;
-
-			// si il n'y a pas de modification ou si les modifications sont
-			// refuse alors quitter sans sauvegarder
-			
-			if (concurrent == null)
-				concurrent = new Concurrent();
 			
 			//evite de modifier l'objet concurrent avant d'avoir
 			//validé les paramêtres
 			Concurrent tempConcurrent = concurrent.clone();
-			if(tempConcurrent.getCriteriaSet() != null) {
-				DistancesEtBlason db1 = DistancesEtBlason.getDistancesEtBlasonForConcurrent(ficheConcours.getParametre().getReglement(), tempConcurrent);
-				
-				// fixe le jeux de critères definissant le concurrent
-				CriteriaSet differentiationCriteria = readCriteriaSet();
-				tempConcurrent.setCriteriaSet(differentiationCriteria);
-				
-				DistancesEtBlason db2 = DistancesEtBlason.getDistancesEtBlasonForConcurrent(ficheConcours.getParametre().getReglement(), tempConcurrent);
-				
-				if(db1 != null && !db1.equals(db2)) {
-					ficheConcours.getPasDeTir(tempConcurrent.getDepart()).retraitConcurrent(tempConcurrent);
-				}
-			} else {
-				// fixe le jeux de critères definissant le concurrent
-				CriteriaSet differentiationCriteria = readCriteriaSet();
-				tempConcurrent.setCriteriaSet(differentiationCriteria);
-			}
+			DistancesEtBlason db1 = null;
+			if(tempConcurrent.getCriteriaSet() != null)
+				db1 = DistancesEtBlason.getDistancesEtBlasonForConcurrent(ficheConcours.getParametre().getReglement(), tempConcurrent);
+			
+			// fixe le jeux de critères definissant le concurrent
+			tempConcurrent.setCriteriaSet(readCriteriaSet());
+			DistancesEtBlason db2 = DistancesEtBlason.getDistancesEtBlasonForConcurrent(ficheConcours.getParametre().getReglement(), tempConcurrent);
 			
 			tempConcurrent.setHandicape(jcbHandicape.isSelected());
 
@@ -852,6 +836,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 					return;
 				}
 			}
+			
 			try {
 				// verification du score
 				if (!ficheConcours.getParametre().getReglement().isValidScore(readScores())) {
@@ -867,6 +852,10 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 						ConcoursJeunes.ajrLibelle.getResourceString("erreur.erreursaisie.title"), //$NON-NLS-1$
 						JOptionPane.ERROR_MESSAGE);
 				return;
+			}
+			
+			if(db1 != null && !db1.equals(db2)) {
+				ficheConcours.getPasDeTir(tempConcurrent.getDepart()).retraitConcurrent(concurrent);
 			}
 			
 			concurrent.setCriteriaSet(tempConcurrent.getCriteriaSet());

@@ -91,7 +91,11 @@ package org.concoursjeunes.plugins.phoenix;
 import java.io.File;
 import java.io.IOException;
 
-import org.concoursjeunes.*;
+import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.Configuration;
+import org.concoursjeunes.MetaDataFicheConcours;
+import org.concoursjeunes.MetaDataFichesConcours;
+import org.concoursjeunes.Parametre;
 import org.concoursjeunes.event.ConcoursJeunesEvent;
 import org.concoursjeunes.event.ConcoursJeunesListener;
 import org.concoursjeunes.plugins.Plugin;
@@ -121,9 +125,9 @@ public class PhoenixPlugin extends Thread implements ConcoursJeunesListener {
 		
 		MetaDataFichesConcours metaDataFichesConcours = configuration.getMetaDataFichesConcours();
 		
-		String concoursPath = ConcoursJeunes.userRessources.getConcoursPathForProfile(configuration.getCurProfil());
+		File concoursPath = ConcoursJeunes.userRessources.getConcoursPathForProfile(configuration.getCurProfil());
 		
-		File[] concoursFiles = new File(concoursPath).listFiles();
+		File[] concoursFiles = concoursPath.listFiles();
 		
 		if(metaDataFichesConcours.getFiches().size() != concoursFiles.length) {
 			for(File concoursFile : concoursFiles) {
