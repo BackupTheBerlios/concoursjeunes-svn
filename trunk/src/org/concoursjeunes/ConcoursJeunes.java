@@ -257,21 +257,22 @@ public class ConcoursJeunes {
 		System.out.println("Repertoire utilisateur: " + System.getProperty("user.home")); //$NON-NLS-1$ //$NON-NLS-2$
 		System.out.println("Java version:" + System.getProperty("java.version")); //$NON-NLS-1$ //$NON-NLS-2$
 
-		boolean erasedb = false;
+		boolean retry = false;
 		do {
 			try {
 				dbConnection = DriverManager.getConnection(ajrParametreAppli.getResourceString("database.url", userRessources.getBasePath()), //$NON-NLS-1$
 						ajrParametreAppli.getResourceString("database.user"), //$NON-NLS-1$
 						ajrParametreAppli.getResourceString("database.password")); //$NON-NLS-1$
+				retry = false;
 			} catch (SQLException e) {
 				e.printStackTrace();
 				JXErrorPane.showDialog(null,new ErrorInfo( "SQL Error", e.toString(), //$NON-NLS-1$
 						null, null, e, Level.SEVERE, null));
 				
 				//Si ce n'est pas un message db bloqué par un autre processus
-				if(!e.getMessage().contains("[90020")) { //$NON-NLS-1$
+				if(!e.getSQLState().equals("90020")) { //$NON-NLS-1$
 					if(JOptionPane.showConfirmDialog(null, ajrLibelle.getResourceString("erreur.breakdb")) == JOptionPane.YES_OPTION) { //$NON-NLS-1$
-						erasedb = true;
+						retry = true;
 						for(File deletefile : userRessources.getBasePath().listFiles()) {
 							deletefile.delete();
 						}
@@ -282,7 +283,7 @@ public class ConcoursJeunes {
 					System.exit(1);
 				}
 			}
-		} while(erasedb);
+		} while(retry);
 		
 		Statement stmt = null;
 		try {
