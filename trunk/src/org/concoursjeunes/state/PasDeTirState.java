@@ -105,6 +105,7 @@ import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
 
 import static org.concoursjeunes.ConcoursJeunes.ajrParametreAppli;
+import static org.concoursjeunes.ConcoursJeunes.ajrLibelle;
 
 public class PasDeTirState {
 	
@@ -147,26 +148,46 @@ public class PasDeTirState {
 			document.addCreationDate();
 			document.addAuthor(ConcoursJeunes.getConfiguration().getClub().getNom());
 			document.addProducer();
-			document.addTitle("Pas de Tir");
+			document.addTitle(ajrLibelle.getResourceString("state.pasdetir.title")); //$NON-NLS-1$
 			document.open();
 			
 			cb = writer.getDirectContent();
 			Graphics2D g2 = cb.createGraphicsShapes(pageWidth, pageHeight);
+			
+			boolean multiserie = false;
+			for(Target target : pasDeTir.getTargets()) {
+				if(target.getNbArcher() > 0) {
+					int[] distances = target.getDistancesEtBlason().get(0).getDistance();
+					int d1 = distances[0];
+					for(int i = 1; i < distances.length; i++) {
+						if(distances[i] != d1) {
+							multiserie = true;
+							break;
+						}
+					}
+					
+					if(multiserie)
+						break;
+				}
+			}
 
 			// Ligne de Tir
-			printLigneDeTir(g2, page++);
+			printLigneDeTir(g2, page++, multiserie ? 0 : -1, 1);
 			
-			for(Target target : pasDeTir.getTargets()) {
-				if(target.getNumCible() > 1 && (target.getNumCible() - 1) % 10 == 0) {
-					g2.dispose();
+			for(int i = 0; (!multiserie && i < 1) || (multiserie && i < pasDeTir.getFicheConcours().getParametre().getReglement().getNbSerie()); i++) {
+				for(Target target : pasDeTir.getTargets()) {
+					if(target.getNumCible() > 1 && (target.getNumCible() - 1) % 10 == 0) {
+						g2.dispose();
+						
+						document.newPage();
+						g2 = cb.createGraphicsShapes(pageWidth, pageHeight);
+						printLigneDeTir(g2, page++, multiserie ? i : -1, target.getNumCible());
+					}
 					
-					document.newPage();
-					g2 = cb.createGraphicsShapes(pageWidth, pageHeight);
-					printLigneDeTir(g2, page++);
+					if(target.getDistancesEtBlason().size() > 0) {
+						paintTarget(g2, target, i);
+					}
 				}
-				
-				if(target.getDistancesEtBlason().size() > 0)
-					paintTarget(g2, target);
 			}
 			
 			g2.dispose();
@@ -194,10 +215,14 @@ public class PasDeTirState {
 		
 	}
 	
-	private void printLigneDeTir(Graphics2D g2, int page) {
-		String strPasDeTir = "Pas de Tir - Départ n°" + (pasDeTir.getDepart() + 1) + " - Page n°" + page;
+	private void printLigneDeTir(Graphics2D g2, int page, int serie, int firsttarget) {
+		String strSerie = ajrLibelle.getResourceString("state.pasdetir.allseries"); //$NON-NLS-1$
+		if(serie != -1)
+			strSerie = ajrLibelle.getResourceString("state.pasdetir.serie", serie); //$NON-NLS-1$
+		String strPasDeTir = ajrLibelle.getResourceString("state.pasdetir.footer", (pasDeTir.getDepart() + 1), strSerie, page, firsttarget, firsttarget + 9); //$NON-NLS-1$
 		double pasDeTirPos = 20;
 		int sizeStrPasDeTir = g2.getFontMetrics().stringWidth(strPasDeTir);
+		double colSize = (29.7 - (leftMargin + rightMargin)) / 10;
 		
 		g2.drawLine(
 				AJToolKit.centimeterToDpi(rightMargin),
@@ -207,16 +232,26 @@ public class PasDeTirState {
 		g2.drawString(strPasDeTir,
 				pageWidth / 2f - sizeStrPasDeTir / 2f,
 				AJToolKit.centimeterToDpi(pasDeTirPos + 0.5));
+		for(int i = 0; i < 10; i++) {
+			g2.drawString((firsttarget + i) + "", //$NON-NLS-1$
+					AJToolKit.centimeterToDpi(leftMargin + colSize * i + 0.5),
+					AJToolKit.centimeterToDpi(pasDeTirPos - 0.5));
+			g2.drawLine(
+					AJToolKit.centimeterToDpi(leftMargin + colSize / 2 + colSize * i), 
+					AJToolKit.centimeterToDpi(pasDeTirPos - 0.1),
+					AJToolKit.centimeterToDpi(leftMargin + colSize / 2 + colSize * i),
+					AJToolKit.centimeterToDpi(pasDeTirPos + 0.1));
+		}
 	}
 	
-	private void paintTarget(Graphics2D g2, Target target)
+	private void paintTarget(Graphics2D g2, Target target, int serie)
 			throws BadElementException, MalformedURLException, IOException, DocumentException {
 		double colSize = (29.7 - (leftMargin + rightMargin)) / 10;
 		double pasDeTirPos = 20;
 		double targetSize = colSize - 0.27;
-		double targetPos = (pasDeTirPos - topMargin - targetSize) * (1 - (double)target.getDistancesEtBlason().get(0).getDistance()[0] / (double)maxDistance); //variation possible entre 0 et 19.5 - colSize
+		double targetPos = (pasDeTirPos - topMargin - targetSize) * (1 - (double)target.getDistancesEtBlason().get(0).getDistance()[serie] / (double)maxDistance); //variation possible entre 0 et 19.5 - colSize
 		
-		String distance = target.getDistancesEtBlason().get(0).getDistance()[0] + "m"; //$NON-NLS-1$
+		String distance = target.getDistancesEtBlason().get(0).getDistance()[serie] + "m"; //$NON-NLS-1$
 		
 		double startCol = rightMargin + colSize * ((target.getNumCible() - 1) % 10);
 		double distanceCible = topMargin + targetPos + targetSize;

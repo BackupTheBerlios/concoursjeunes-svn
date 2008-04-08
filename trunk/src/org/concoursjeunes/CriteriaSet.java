@@ -301,6 +301,6 @@ public class CriteriaSet {
 	
 	@Override
 	public String toString() {
-		return criteria.toString();
+		return new CriteriaSetLibelle(this).toString();
 	}
 }

@@ -150,37 +150,47 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 
 	private Reglement reglement;
 
-	private final JLabel jlReglementName = new JLabel();
+	private JLabel jlReglementName = new JLabel();
 
-	private final JLabel jlNbSerie = new JLabel();
-	private final JLabel jlNbVoleeParSerie = new JLabel();
-	private final JLabel jlNbFlecheParVolee = new JLabel();
-	private final JLabel jlNbMembresEquipe = new JLabel();
-	private final JLabel jlNbMembresRetenu = new JLabel();
-	private final JCheckBox jcbOfficialReglement = new JCheckBox();
+	private JLabel jlNbSerie = new JLabel();
+	private JLabel jlNbVoleeParSerie = new JLabel();
+	private JLabel jlNbFlecheParVolee = new JLabel();
+	private JLabel jlNbMembresEquipe = new JLabel();
+	private JLabel jlNbMembresRetenu = new JLabel();
+	private JCheckBox jcbOfficialReglement = new JCheckBox();
 
-	private final JLabel jlNbDB = new JLabel();
-	private final JButton jbAddCriteria = new JButton();
-	private final JButton jbAddCriteriaMember = new JButton();
-	private final JButton jbUpElement = new JButton();
-	private final JButton jbDownElement = new JButton();
-	private final JButton jbRemoveElement = new JButton();
-	private final DefaultMutableTreeNode treeRoot = new DefaultMutableTreeNode("criteres"); //$NON-NLS-1$
-	private final DefaultTreeModel treeModel = new DefaultTreeModel(treeRoot);
-	private final JTree treeCriteria = new JTree(treeModel);
+	private JLabel jlNbDB = new JLabel();
+	private JButton jbAddCriteria = new JButton();
+	private JButton jbAddCriteriaMember = new JButton();
+	private JButton jbUpElement = new JButton();
+	private JButton jbDownElement = new JButton();
+	private JButton jbRemoveElement = new JButton();
+	private DefaultMutableTreeNode treeRoot = new DefaultMutableTreeNode("criteres"); //$NON-NLS-1$
+	private DefaultTreeModel treeModel = new DefaultTreeModel(treeRoot);
+	private JTree treeCriteria = new JTree(treeModel);
 
-	private final JTextField jtfNbSerie = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
-	private final JTextField jtfNbVoleeParSerie = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
-	private final JTextField jtfNbFlecheParVolee = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
-	private final JTextField jtfNbMembresEquipe = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
-	private final JTextField jtfNbMembresRetenu = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
+	private JTextField jtfNbSerie = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
+	private JTextField jtfNbVoleeParSerie = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
+	private JTextField jtfNbFlecheParVolee = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
+	private JTextField jtfNbMembresEquipe = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
+	private JTextField jtfNbMembresRetenu = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
+	
+	private JTable jtCriteriaSet = new JTable() {
+	//  Returning the Class of each column will allow different
+		//  renderers to be used based on Class
+		@Override
+        public Class<?> getColumnClass(int column)	{
+			return getValueAt(0, column).getClass();
+		}
+	};
+	private JComboBox jcbCriteriaSet = new JComboBox(); 
 
-	private final JTable jtDistanceBlason = new JTable();
-	private final JScrollPane jspDistanceBlason = new JScrollPane();
-	private final JComboBox jcbBlasons = new JComboBox();
+	private JTable jtDistanceBlason = new JTable();
+	private JScrollPane jspDistanceBlason = new JScrollPane();
+	private JComboBox jcbBlasons = new JComboBox();
 
-	private final JButton jbValider = new JButton();
-	private final JButton jbAnnuler = new JButton();
+	private JButton jbValider = new JButton();
+	private JButton jbAnnuler = new JButton();
 
 	private CriteriaSet[] differentiationCriteria;
 
@@ -208,7 +218,8 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		JTabbedPane tabbedPane = new JTabbedPane();
 		tabbedPane.addTab(ConcoursJeunes.ajrLibelle.getResourceString("reglement.general.title"), initGeneral()); //$NON-NLS-1$
 		tabbedPane.addTab(ConcoursJeunes.ajrLibelle.getResourceString("reglement.criteres.title"), initCriteria()); //$NON-NLS-1$
-		tabbedPane.addTab(ConcoursJeunes.ajrLibelle.getResourceString("reglement.categories.title"), initCategories()); //$NON-NLS-1$
+		tabbedPane.addTab(ConcoursJeunes.ajrLibelle.getResourceString("reglement.blacklist.title"), initCriteriaSet()); //$NON-NLS-1$
+		tabbedPane.addTab(ConcoursJeunes.ajrLibelle.getResourceString("reglement.categories.title"), initDistancesEtBlasons()); //$NON-NLS-1$
 
 		jpAction.add(jbValider);
 		jpAction.add(jbAnnuler);
@@ -301,25 +312,26 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 
 		return jpDifCriteria;
 	}
+	
+	private JPanel initCriteriaSet() {
+		JPanel jpCriteriaSet = new JPanel();
+		
+		jpCriteriaSet.setLayout(new BorderLayout());
+		jpCriteriaSet.add(BorderLayout.CENTER, new JScrollPane(jtCriteriaSet));
+		
+		return jpCriteriaSet;
+	}
 
-	private JPanel initCategories() {
-		GridBagConstraints c = new GridBagConstraints();
-
-		GridbagComposer gridbagComposer = new GridbagComposer();
-
+	private JPanel initDistancesEtBlasons() {
 		JPanel jpConcours = new JPanel();
 
 		jspDistanceBlason.setPreferredSize(new Dimension(400, 250));
 		jtDistanceBlason.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		jtDistanceBlason.setPreferredScrollableViewportSize(new Dimension(450, 200));
 
-		gridbagComposer.setParentPanel(jpConcours);
-		c.gridy = 0;
-		c.gridwidth = 1;
-		gridbagComposer.addComponentIntoGrid(jlNbDB, c);
-		c.gridy++;
-		c.fill = GridBagConstraints.BOTH;
-		gridbagComposer.addComponentIntoGrid(jspDistanceBlason, c);
+		jpConcours.setLayout(new BorderLayout());
+		jpConcours.add(BorderLayout.NORTH, jlNbDB);
+		jpConcours.add(BorderLayout.CENTER, jspDistanceBlason);
 
 		return jpConcours;
 	}
@@ -358,7 +370,8 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	private void completePanel() {
 		completeGeneral();
 		completeCriteria();
-		completeCategories();
+		completeCriteriaSet();
+		completeDistancesEtBlasons();
 	}
 
 	private void completeGeneral() {
@@ -413,8 +426,22 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		treeModel.reload();
 		jspDistanceBlason.setViewportView(jtDistanceBlason);
 	}
+	
+	private void completeCriteriaSet() {
+		if(reglement != null) {
+			jtCriteriaSet.setModel(createCriteriaSetTablemodel());
+			jtCriteriaSet.getColumnModel().getColumn(0).setMaxWidth(20);
+			
+			jcbCriteriaSet.addItem("");
+			for(CriteriaSet cs : CriteriaSet.listCriteriaSet(reglement, reglement.getClassementFilter())) {
+				jcbCriteriaSet.addItem(cs);
+			}
+			TableColumn cH = jtCriteriaSet.getColumnModel().getColumn(2);
+			cH.setCellEditor(new DefaultCellEditor(jcbCriteriaSet));
+		}
+	}
 
-	private void completeCategories() {
+	private void completeDistancesEtBlasons() {
 		if (reglement != null)
 			jtDistanceBlason.setModel(createTableModel());
 		try {
@@ -432,6 +459,33 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		if (verrou != NO_LOCK) {
 			jtDistanceBlason.setEnabled(false);
 		}
+	}
+	
+	private DefaultTableModel createCriteriaSetTablemodel() {
+		DefaultTableModel dtm = new DefaultTableModel() {
+			@Override
+			public boolean isCellEditable(int row, int col) {
+				if (col == 1 || reglement.isOfficialReglement())
+					return false;
+				return true;
+			}
+		};
+		
+		dtm.addColumn("Activé");
+		dtm.addColumn("Catégories de classement");
+		dtm.addColumn("Surclassement");
+		
+		differentiationCriteria = CriteriaSet.listCriteriaSet(reglement, reglement.getClassementFilter());
+		
+		for (int i = 0; i < differentiationCriteria.length; i++) {
+			dtm.addRow(new Object[] {
+					true,
+					differentiationCriteria[i],
+					""
+				});
+		}
+		
+		return dtm;
 	}
 
 	private DefaultTableModel createTableModel() {

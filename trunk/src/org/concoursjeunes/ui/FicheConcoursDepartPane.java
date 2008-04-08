@@ -121,10 +121,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
+import javax.swing.event.*;
 import javax.swing.tree.TreePath;
 
 import org.concoursjeunes.ConcoursJeunes;
@@ -144,6 +141,7 @@ import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
 import ajinteractive.standard.java2.AJList;
+import ajinteractive.standard.ui.AJTree;
 import ajinteractive.standard.ui.GhostGlassPane;
 
 /**
@@ -152,35 +150,42 @@ import ajinteractive.standard.ui.GhostGlassPane;
  * @author Aurélien JEOFFRAY
  * @version 1.0
  */
-public class FicheConcoursDepartPane extends JPanel implements ActionListener, MouseListener, MouseMotionListener, ListSelectionListener, KeyListener, FicheConcoursListener, TreeSelectionListener {
+public class FicheConcoursDepartPane extends JPanel
+		implements ActionListener, MouseListener, MouseMotionListener,
+			ListSelectionListener, KeyListener, FicheConcoursListener,
+			TreeSelectionListener {
 
-	private final JButton jbAjouterArcher = new JButton();
-	private final JButton jbSupprimerArcher = new JButton();
-	private final JButton jbEquipe = new JButton();
-	private final JButton jbPlacementArcher = new JButton();
+	//Composants de l'interface
+	private JButton jbAjouterArcher = new JButton();
+	private JButton jbSupprimerArcher = new JButton();
+	private JButton jbEquipe = new JButton();
+	private JButton jbPlacementArcher = new JButton();
 	private ButtonGroup jbgSort;
-	private final JRadioButton jcbSortCible = new JRadioButton("", true); //$NON-NLS-1$
-	private final JRadioButton jcbSortNom = new JRadioButton();
-	private final JRadioButton jcbSortClub = new JRadioButton();
+	private JRadioButton jcbSortCible = new JRadioButton("", true); //$NON-NLS-1$
+	private JRadioButton jcbSortNom = new JRadioButton();
+	private JRadioButton jcbSortClub = new JRadioButton();
 
-	private final JButton jbPrintListConc = new JButton();
-	private final JButton jbPrintEtiquettes = new JButton();
-	private final JButton jbPrintPasDeTir = new JButton();
+	private JButton jbPrintListConc = new JButton();
+	private JButton jbPrintEtiquettes = new JButton();
+	private JButton jbPrintPasDeTir = new JButton();
 
-	private final AJList ajlConcurrent = new AJList();
-	private final JTree treeTarget = new JTree();
-	private final TargetTreeModel treeModel = new TargetTreeModel();
+	private AJList ajlConcurrent = new AJList();
+	private AJTree treeTarget = new AJTree();
+	private TargetTreeModel treeModel = new TargetTreeModel();
 	private JPopupMenu popup;
 
+	//paneau parent
 	private FicheConcoursPane ficheConcoursPane = null;
 
+	//controleur
 	private Object dragObject = null;
-	private int depart = 0;
-
 	private boolean onDrag = false;
+	//private TreeExpansionController treeExpansionController = new TreeExpansionController();
 
-	private final FicheConcours ficheConcours;
-
+	//modele
+	private FicheConcours ficheConcours;
+	private int depart = 0;
+	
 	/**
 	 * Construction du panneau
 	 * 
@@ -351,11 +356,13 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.print") //$NON-NLS-1$
 		));
 
+		treeTarget.setKeepExpansionState(true);
 		treeTarget.setModel(treeModel);
 		treeTarget.addMouseListener(this);
 		treeTarget.addMouseMotionListener(this);
 		treeTarget.addKeyListener(this);
 		treeTarget.addTreeSelectionListener(this);
+		//treeTarget.addTreeExpansionListener(treeExpansionController);
 		treeTarget.setCellRenderer(new TargetRenderer());
 		treeTarget.setToggleClickCount(3);
 		treeTarget.setShowsRootHandles(false);
@@ -608,14 +615,14 @@ public class FicheConcoursDepartPane extends JPanel implements ActionListener, M
 	 */
 	public void listConcurrentChanged(FicheConcoursEvent e) {
 		switch (e.getEvent()) {
-		case FicheConcoursEvent.ADD_CONCURRENT:
-			if (e.getConcurrent().getDepart() == depart)
-				ajlConcurrent.add(e.getConcurrent());
-			break;
-		case FicheConcoursEvent.REMOVE_CONCURRENT:
-			if (e.getConcurrent().getDepart() == depart)
-				ajlConcurrent.remove(e.getConcurrent());
-			break;
+			case FicheConcoursEvent.ADD_CONCURRENT:
+				if (e.getConcurrent().getDepart() == depart)
+					ajlConcurrent.add(e.getConcurrent());
+				break;
+			case FicheConcoursEvent.REMOVE_CONCURRENT:
+				if (e.getConcurrent().getDepart() == depart)
+					ajlConcurrent.remove(e.getConcurrent());
+				break;
 		}
 	}
 
