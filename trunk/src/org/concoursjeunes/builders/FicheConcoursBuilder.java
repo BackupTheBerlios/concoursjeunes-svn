@@ -114,7 +114,7 @@ public class FicheConcoursBuilder {
 			throws IOException {
 		File fFiche = new File(ConcoursJeunes.userRessources.getConcoursPathForProfile(ConcoursJeunes.getConfiguration().getCurProfil()) + File.separator
 				+ metaDataFicheConcours.getFilenameConcours());
-		Object[] savedStructure = (Object[]) AJToolKit.loadXMLStructure(fFiche, true);
+		Object[] savedStructure = AJToolKit.loadXMLStructure(fFiche, true);
 
 		if (savedStructure != null) {
 			// lecture du fichier

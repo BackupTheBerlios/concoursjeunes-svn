@@ -132,9 +132,8 @@ public class PhoenixPlugin extends Thread implements ConcoursJeunesListener {
 		if(metaDataFichesConcours.getFiches().size() != concoursFiles.length) {
 			for(File concoursFile : concoursFiles) {
 				try {
-					Object obj = AJToolKit.loadXMLStructure(concoursFile, true);
-					if(obj != null && obj instanceof Object[]) {
-						Object[] structure = (Object[])obj;
+					Object[] structure = AJToolKit.loadXMLStructure(concoursFile, true);
+					if(structure != null && structure.length == 3) {
 						if(structure[0] instanceof Parametre) {
 							Parametre parametre = (Parametre) structure[0];
 							

@@ -102,7 +102,7 @@ import org.concoursjeunes.FicheConcours;
  */
 public class Debug {
     
-    public static void attributePoints(ConcurrentList archerList, int depart) {
+    public static void attributePoints(ConcurrentList archerList) {
     	
         for(Concurrent concurrent : archerList.list(-1)) {
         	List<Integer> points = new ArrayList<Integer>();

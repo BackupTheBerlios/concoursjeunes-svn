@@ -144,7 +144,7 @@ public class ConfigurationManager {
 		Configuration configuration = null;
 		//tente de charger la configuration
 		try {
-			configuration = (Configuration)AJToolKit.loadMarshallStructure(confFile, Configuration.class);
+			configuration = AJToolKit.loadMarshallStructure(confFile, Configuration.class);
 			if(configuration == null) {
 				configuration = ConfigurationBuilder.getDefaultConfiguration();
 			}
@@ -152,7 +152,7 @@ public class ConfigurationManager {
 		//si il n'y arrive pas vérifie que ce n'est pas une config 1.1
 		} catch (JAXBException e) {
 			//couche de compatibilite avec le XML de la 1.1
-			ajinteractive.concours.Configuration oldConfig = (ajinteractive.concours.Configuration)AJToolKit.loadXMLStructure(confFile, false);
+			ajinteractive.concours.Configuration oldConfig = AJToolKit.loadXMLStructure(confFile, false);
 			configuration = ConfigurationBuilder.getDefaultConfiguration();
 			if(oldConfig != null) {
 				//Etablie la correspondance entre les methodes 2.0+ et les 1.1

@@ -631,7 +631,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			changeLogDialog.showChangeLogDialog();
 		} else if (cmd.equals("menubar.debug.addpoints")) { //$NON-NLS-1$
 			if (jif != null) {
-				org.concoursjeunes.debug.Debug.attributePoints(jif.getFicheConcours().getConcurrentList(), 0);
+				org.concoursjeunes.debug.Debug.attributePoints(jif.getFicheConcours().getConcurrentList());
 			}
 
 			// debugage -> RAZ des points

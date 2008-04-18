@@ -119,6 +119,7 @@ public class FicheConcoursException extends Exception {
 	
 	public FicheConcoursException(Nature nature, String message, Throwable cause) {
 		super(message, cause);
+		this.nature = nature;
 	}
 
 	/**
@@ -130,6 +131,7 @@ public class FicheConcoursException extends Exception {
 	
 	public FicheConcoursException(Nature nature, String message) {
 		super(message);
+		this.nature = nature;
 	}
 
 	/**

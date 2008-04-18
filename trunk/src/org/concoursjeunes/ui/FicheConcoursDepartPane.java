@@ -121,7 +121,10 @@ import javax.swing.JSplitPane;
 import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
-import javax.swing.event.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
 import org.concoursjeunes.ConcoursJeunes;
@@ -140,7 +143,7 @@ import org.concoursjeunes.ui.dialog.TypeListingDialog;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
-import ajinteractive.standard.java2.AJList;
+import ajinteractive.standard.ui.AJList;
 import ajinteractive.standard.ui.AJTree;
 import ajinteractive.standard.ui.GhostGlassPane;
 

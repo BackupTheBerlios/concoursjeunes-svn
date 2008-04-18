@@ -113,9 +113,9 @@ import org.concoursjeunes.builders.ReglementBuilder;
 import org.concoursjeunes.ui.ConcoursJeunesFrame;
 import org.jdesktop.swingx.JXDatePicker;
 
-import ajinteractive.standard.java2.AJList;
 import ajinteractive.standard.java2.GridbagComposer;
 import ajinteractive.standard.java2.NumberDocument;
+import ajinteractive.standard.ui.AJList;
 
 /**
  * Boite de dialogue de gestion des parametre du concours
