@@ -122,7 +122,7 @@ import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
 import org.concoursjeunes.AutoCompleteDocument;
-import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Configuration;
 import org.concoursjeunes.ConfigurationManager;
 import org.concoursjeunes.Entite;
@@ -417,7 +417,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	 */
 	private JPanel initEcranEtiquette() {
 		JPanel jpEcranEtiquette = new JPanel();
-		jpEcranEtiquette.setBorder(new TitledBorder(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.etiquettes.bordertitle"))); //$NON-NLS-1$
+		jpEcranEtiquette.setBorder(new TitledBorder(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.etiquettes.bordertitle"))); //$NON-NLS-1$
 
 		GridBagConstraints c = new GridBagConstraints();
 
@@ -561,15 +561,15 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	}
 
 	private void affectLibelle() {
-		setTitle(ConcoursJeunes.ajrLibelle.getResourceString("configuration.title")); //$NON-NLS-1$
-		jbValider.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
-		jbAnnuler.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
+		setTitle(ApplicationCore.ajrLibelle.getResourceString("configuration.title")); //$NON-NLS-1$
+		jbValider.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
+		jbAnnuler.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
 
 		if (tabbedpane.getTabCount() > 0) {
-			tabbedpane.setTitleAt(0, ConcoursJeunes.ajrLibelle.getResourceString("configuration.onglet.genral")); //$NON-NLS-1$
-			tabbedpane.setTitleAt(1, ConcoursJeunes.ajrLibelle.getResourceString("configuration.onglet.concours")); //$NON-NLS-1$
-			tabbedpane.setTitleAt(2, ConcoursJeunes.ajrLibelle.getResourceString("configuration.onglet.etiquettes")); //$NON-NLS-1$
-			tabbedpane.setTitleAt(3, ConcoursJeunes.ajrLibelle.getResourceString("configuration.onglet.avance")); //$NON-NLS-1$
+			tabbedpane.setTitleAt(0, ApplicationCore.ajrLibelle.getResourceString("configuration.onglet.genral")); //$NON-NLS-1$
+			tabbedpane.setTitleAt(1, ApplicationCore.ajrLibelle.getResourceString("configuration.onglet.concours")); //$NON-NLS-1$
+			tabbedpane.setTitleAt(2, ApplicationCore.ajrLibelle.getResourceString("configuration.onglet.etiquettes")); //$NON-NLS-1$
+			tabbedpane.setTitleAt(3, ApplicationCore.ajrLibelle.getResourceString("configuration.onglet.avance")); //$NON-NLS-1$
 		}
 
 		affectLibelleGeneral();
@@ -579,64 +579,64 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	}
 
 	private void affectLibelleGeneral() {
-		jlNomProfil.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.general.profil")); //$NON-NLS-1$
-		jlNomClub.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.general.nom")); //$NON-NLS-1$
-		jlAgremClub.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.general.agrement")); //$NON-NLS-1$
-		jlIntituleConcours.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.general.intituleconcours")); //$NON-NLS-1$
-		jlLangue.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.general.langue")); //$NON-NLS-1$
-		jlPathPdf.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.general.pdf")); //$NON-NLS-1$
-		jlLogoPath.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.general.logo")); //$NON-NLS-1$
+		jlNomProfil.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.general.profil")); //$NON-NLS-1$
+		jlNomClub.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.general.nom")); //$NON-NLS-1$
+		jlAgremClub.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.general.agrement")); //$NON-NLS-1$
+		jlIntituleConcours.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.general.intituleconcours")); //$NON-NLS-1$
+		jlLangue.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.general.langue")); //$NON-NLS-1$
+		jlPathPdf.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.general.pdf")); //$NON-NLS-1$
+		jlLogoPath.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.general.logo")); //$NON-NLS-1$
 
-		tbProfil.setTitle(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.general.titre0")); //$NON-NLS-1$
-		tbParamGeneral.setTitle(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.general.titre1")); //$NON-NLS-1$
+		tbProfil.setTitle(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.general.titre0")); //$NON-NLS-1$
+		tbParamGeneral.setTitle(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.general.titre1")); //$NON-NLS-1$
 
-		jbRenameProfile.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.general.renameprofile")); //$NON-NLS-1$
+		jbRenameProfile.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.general.renameprofile")); //$NON-NLS-1$
 		jbParcourir.setText("..."); //$NON-NLS-1$
-		jbParcourir.setToolTipText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.general.browseclub")); //$NON-NLS-1$
-		jbDetail.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.detail")); //$NON-NLS-1$
+		jbParcourir.setToolTipText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.general.browseclub")); //$NON-NLS-1$
+		jbDetail.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.detail")); //$NON-NLS-1$
 		if (jbLogoPath.getText().equals("")) //$NON-NLS-1$
-			jbLogoPath.setText(ConcoursJeunes.ajrLibelle.getResourceString("parametre.logo")); //$NON-NLS-1$
+			jbLogoPath.setText(ApplicationCore.ajrLibelle.getResourceString("parametre.logo")); //$NON-NLS-1$
 	}
 
 	private void affectLibelleConcours() {
-		jlReglement.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.concours.reglement")); //$NON-NLS-1$
-		jlNbCible.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.concours.cible")); //$NON-NLS-1$
-		jlNbTireur.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.concours.tireur")); //$NON-NLS-1$
-		jlNbDepart.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.concours.depart")); //$NON-NLS-1$
+		jlReglement.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.concours.reglement")); //$NON-NLS-1$
+		jlNbCible.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.concours.cible")); //$NON-NLS-1$
+		jlNbTireur.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.concours.tireur")); //$NON-NLS-1$
+		jlNbDepart.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.concours.depart")); //$NON-NLS-1$
 	}
 
 	private void affectLibelleEtiquette() {
-		jlFormatPapier.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.etiquettes.formatpapier")); //$NON-NLS-1$
-		jlNbEtiquettes.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.etiquettes.nbetiquettes")); //$NON-NLS-1$
-		jlMarges.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.etiquettes.marges")); //$NON-NLS-1$
-		jlMargesH.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.etiquettes.haut")); //$NON-NLS-1$
-		jlMargesB.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.etiquettes.bas")); //$NON-NLS-1$
-		jlMargesG.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.etiquettes.gauche")); //$NON-NLS-1$
-		jlMargesD.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.etiquettes.droite")); //$NON-NLS-1$
-		jlEspacements.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.etiquettes.espacement")); //$NON-NLS-1$
-		jlEspacementsH.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.etiquettes.horizontal")); //$NON-NLS-1$
-		jlEspacementsV.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.etiquettes.vertical")); //$NON-NLS-1$
+		jlFormatPapier.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.etiquettes.formatpapier")); //$NON-NLS-1$
+		jlNbEtiquettes.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.etiquettes.nbetiquettes")); //$NON-NLS-1$
+		jlMarges.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.etiquettes.marges")); //$NON-NLS-1$
+		jlMargesH.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.etiquettes.haut")); //$NON-NLS-1$
+		jlMargesB.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.etiquettes.bas")); //$NON-NLS-1$
+		jlMargesG.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.etiquettes.gauche")); //$NON-NLS-1$
+		jlMargesD.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.etiquettes.droite")); //$NON-NLS-1$
+		jlEspacements.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.etiquettes.espacement")); //$NON-NLS-1$
+		jlEspacementsH.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.etiquettes.horizontal")); //$NON-NLS-1$
+		jlEspacementsV.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.etiquettes.vertical")); //$NON-NLS-1$
 	}
 
 	private void affectLibelleAdvanced() {
-		jlResultats.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.interface.resultat")); //$NON-NLS-1$
-		jlAffResultats.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.interface.affresultat")); //$NON-NLS-1$
-		jlURLImport.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.interface.urlimport")); //$NON-NLS-1$
-		jlURLExport.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.interface.urlexport")); //$NON-NLS-1$
-		jcbFirstBoot.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.interface.firstboot")); //$NON-NLS-1$
+		jlResultats.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.interface.resultat")); //$NON-NLS-1$
+		jlAffResultats.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.interface.affresultat")); //$NON-NLS-1$
+		jlURLImport.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.interface.urlimport")); //$NON-NLS-1$
+		jlURLExport.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.interface.urlexport")); //$NON-NLS-1$
+		jcbFirstBoot.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.interface.firstboot")); //$NON-NLS-1$
 
-		jcbAvanceResultatCumul.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.interface.resultatcumul")); //$NON-NLS-1$
-		jcbAvanceResultatSupl.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.interface.resultatdnm")); //$NON-NLS-1$
-		jcbAvanceAffResultatExEquo.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.interface.resultataffexequo")); //$NON-NLS-1$
+		jcbAvanceResultatCumul.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.interface.resultatcumul")); //$NON-NLS-1$
+		jcbAvanceResultatSupl.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.interface.resultatdnm")); //$NON-NLS-1$
+		jcbAvanceAffResultatExEquo.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.interface.resultataffexequo")); //$NON-NLS-1$
 
-		jrbUseSystemConfig.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.avance.utilisationproxysystem")); //$NON-NLS-1$
-		jrbUseSpecificConfig.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.avance.utilisationproxycustom")); //$NON-NLS-1$
-		tbProxy.setTitle(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.avance.configurationproxy")); //$NON-NLS-1$
-		jlAdresseProxy.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.avance.adresseproxy")); //$NON-NLS-1$
-		jlPortProxy.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.avance.portproxy")); //$NON-NLS-1$
-		jcbAuthentificationProxy.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.avance.authentificationproxy")); //$NON-NLS-1$
-		jlUserProxy.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.avance.userproxy")); //$NON-NLS-1$
-		jlPasswordProxy.setText(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.avance.passwordproxy")); //$NON-NLS-1$
+		jrbUseSystemConfig.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.avance.utilisationproxysystem")); //$NON-NLS-1$
+		jrbUseSpecificConfig.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.avance.utilisationproxycustom")); //$NON-NLS-1$
+		tbProxy.setTitle(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.avance.configurationproxy")); //$NON-NLS-1$
+		jlAdresseProxy.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.avance.adresseproxy")); //$NON-NLS-1$
+		jlPortProxy.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.avance.portproxy")); //$NON-NLS-1$
+		jcbAuthentificationProxy.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.avance.authentificationproxy")); //$NON-NLS-1$
+		jlUserProxy.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.avance.userproxy")); //$NON-NLS-1$
+		jlPasswordProxy.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.avance.passwordproxy")); //$NON-NLS-1$
 	}
 
 	private void completePanel(Configuration configuration) {
@@ -655,10 +655,10 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 
 		jcbProfil.removeActionListener(this);
 		jcbProfil.removeAllItems();
-		for (String profile : ConcoursJeunes.userRessources.listAvailableConfigurations())
+		for (String profile : ApplicationCore.userRessources.listAvailableConfigurations())
 			jcbProfil.addItem(profile);
 		jcbProfil.addItem("---"); //$NON-NLS-1$
-		jcbProfil.addItem(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.general.addprofile")); //$NON-NLS-1$
+		jcbProfil.addItem(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.general.addprofile")); //$NON-NLS-1$
 
 		jcbProfil.setSelectedItem(configuration.getCurProfil());
 		jcbProfil.addActionListener(this);
@@ -756,7 +756,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		// Recherche d'un lecteur pdf en fonction du syteme
 		if (System.getProperty("os.name").startsWith("Windows")) { //$NON-NLS-1$ //$NON-NLS-2$
 
-			String base_pdfPath = ConcoursJeunes.ajrParametreAppli.getResourceString("path.windows.acrobat"); //$NON-NLS-1$
+			String base_pdfPath = ApplicationCore.ajrParametreAppli.getResourceString("path.windows.acrobat"); //$NON-NLS-1$
 			// tente l'ouverture de acrobat reader
 			File f = new File(base_pdfPath);
 
@@ -773,7 +773,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 
 		} else if (System.getProperty("os.name").contains("Linux")) { //$NON-NLS-1$ //$NON-NLS-2$
 
-			String[] pdfReader = AJToolKit.tokenize(ConcoursJeunes.ajrParametreAppli.getResourceString("path.unix.pdf"), ","); //$NON-NLS-1$ //$NON-NLS-2$
+			String[] pdfReader = AJToolKit.tokenize(ApplicationCore.ajrParametreAppli.getResourceString("path.unix.pdf"), ","); //$NON-NLS-1$ //$NON-NLS-2$
 			for (String reader : pdfReader)
 				pdfPath.add(reader);
 		}
@@ -801,7 +801,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	private void changeLogoPath() {
 		File f;
 		JFileChooser fileDialog = new JFileChooser(workConfiguration.getLogoPath());
-		AJFileFilter filtreimg = new AJFileFilter(new String[] { "jpg", "gif" }, ConcoursJeunes.ajrLibelle.getResourceString("filter.gifjpeg")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		AJFileFilter filtreimg = new AJFileFilter(new String[] { "jpg", "gif" }, ApplicationCore.ajrLibelle.getResourceString("filter.gifjpeg")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		fileDialog.addChoosableFileFilter(filtreimg);
 		fileDialog.setDialogType(JFileChooser.OPEN_DIALOG);
 		fileDialog.showOpenDialog(this);
@@ -893,25 +893,25 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 			if(((margeGauche + (espacementHorizontal*nbColonne-1) + margeDroite) / 2.54 * 72 > pageDimension.getWidth())
 					|| ((margeHaut + (espacementVertical*nbLigne-1) + margeBas) / 2.54 * 72 > pageDimension.getHeight())) {
 				JOptionPane.showMessageDialog(this, 
-						ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.etiquettes.errordimension"), //$NON-NLS-1$
-						ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.etiquettes.errordimension.title"), //$NON-NLS-1$
+						ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.etiquettes.errordimension"), //$NON-NLS-1$
+						ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.etiquettes.errordimension.title"), //$NON-NLS-1$
 						JOptionPane.ERROR_MESSAGE);
 				return false;
 			}
 		} catch (SecurityException e) {
-			JXErrorPane.showDialog(this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+			JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
 					e.toString(), null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
-			JXErrorPane.showDialog(this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+			JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
 					e.toString(), null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		} catch (NoSuchFieldException e) {
-			JXErrorPane.showDialog(this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+			JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
 					e.toString(), null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			JXErrorPane.showDialog(this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+			JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
 					e.toString(), null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		}
@@ -951,10 +951,10 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
 		if (source == this.jbValider) {
-			if(ConcoursJeunes.getInstance().getFichesConcours().size() > 0 
-					&& !workConfiguration.getCurProfil().equals(ConcoursJeunes.getConfiguration().getCurProfil())
+			if(ApplicationCore.getInstance().getFichesConcours().size() > 0 
+					&& !workConfiguration.getCurProfil().equals(ApplicationCore.getConfiguration().getCurProfil())
 					&& JOptionPane.showConfirmDialog(this, 
-					ConcoursJeunes.ajrLibelle.getResourceString("configuration.fermeture.confirmation"), "", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) //$NON-NLS-1$ //$NON-NLS-2$
+					ApplicationCore.ajrLibelle.getResourceString("configuration.fermeture.confirmation"), "", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) //$NON-NLS-1$ //$NON-NLS-2$
 				return;
 
 			if(registerConfig())
@@ -994,12 +994,12 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 					try {
 						loadProfile();
 					} catch (IOException e1) {
-						JXErrorPane.showDialog(null, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+						JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
 								e1.toString(), null, null, e1, Level.SEVERE, null));
 						e1.printStackTrace();
 					}
 				} else if (jcbProfil.getSelectedIndex() == jcbProfil.getItemCount() - 1) {
-					String strP = JOptionPane.showInputDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.general.newprofile")); //$NON-NLS-1$
+					String strP = JOptionPane.showInputDialog(this, ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.general.newprofile")); //$NON-NLS-1$
 					if (strP != null && !strP.equals("")) { //$NON-NLS-1$
 
 						workConfiguration.setCurProfil(strP);
@@ -1012,7 +1012,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 				}
 			}
 		} else if (source == jbRenameProfile) {
-			String strP = JOptionPane.showInputDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.general.newprofile"), //$NON-NLS-1$ 
+			String strP = JOptionPane.showInputDialog(this, ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.general.newprofile"), //$NON-NLS-1$ 
 					workConfiguration.getCurProfil());
 			if (strP != null && !strP.isEmpty()) {
 				renameProfile = true;
@@ -1040,8 +1040,8 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 					renamedProfile = true;
 				} else {
 					JOptionPane.showMessageDialog(this, 
-							ConcoursJeunes.ajrLibelle.getResourceString("erreur.renameprofile"), //$NON-NLS-1$
-							ConcoursJeunes.ajrLibelle.getResourceString("erreur.renameprofile.title"), //$NON-NLS-1$
+							ApplicationCore.ajrLibelle.getResourceString("erreur.renameprofile"), //$NON-NLS-1$
+							ApplicationCore.ajrLibelle.getResourceString("erreur.renameprofile.title"), //$NON-NLS-1$
 							JOptionPane.ERROR_MESSAGE);
 				}
 				/*} else {

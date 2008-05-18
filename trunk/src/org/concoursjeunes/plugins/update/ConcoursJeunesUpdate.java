@@ -86,7 +86,7 @@
  */
 package org.concoursjeunes.plugins.update;
 
-import static org.concoursjeunes.ConcoursJeunes.ajrParametreAppli;
+import static org.concoursjeunes.ApplicationCore.ajrParametreAppli;
 
 import java.awt.AWTException;
 import java.awt.Dimension;
@@ -105,7 +105,7 @@ import java.util.Hashtable;
 
 import javax.swing.JOptionPane;
 
-import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.exceptions.NullConfigurationException;
 import org.concoursjeunes.plugins.Plugin;
 import org.concoursjeunes.plugins.PluginEntry;
@@ -163,15 +163,15 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 		PluginLoader pl = new PluginLoader();
 		
 
-		ajUpdater = new AjUpdater(ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
+		ajUpdater = new AjUpdater(ApplicationCore.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
 				"."); //$NON-NLS-1$
 		ajUpdater.addAjUpdaterListener(this);
 		
 		try {
-			AppSerializer appSerializer = new AppSerializer(ConcoursJeunes.userRessources);
-			ajUpdater.setUserAgent(ConcoursJeunes.NOM + " " + ConcoursJeunes.VERSION //$NON-NLS-1$
-					+ " (" + appSerializer.getSerial() + ";" + ConcoursJeunes.getConfiguration().getClub().getAgrement() //$NON-NLS-1$ //$NON-NLS-2$ 
-					+ " " + ConcoursJeunes.getConfiguration().getClub().getNom() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+			AppSerializer appSerializer = new AppSerializer(ApplicationCore.userRessources);
+			ajUpdater.setUserAgent(ApplicationCore.NOM + " " + ApplicationCore.VERSION //$NON-NLS-1$
+					+ " (" + appSerializer.getSerial() + ";" + ApplicationCore.getConfiguration().getClub().getAgrement() //$NON-NLS-1$ //$NON-NLS-2$ 
+					+ " " + ApplicationCore.getConfiguration().getClub().getNom() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -180,13 +180,13 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 		for (PluginMetadata pm : pl.getPlugins(Type.ALL)) {
 			ajUpdater.addRepositoryURL(pm.getReposURL());
 		}
-		if (ConcoursJeunes.getConfiguration().isUseProxy()) {
-			System.setProperty("http.proxyHost", ConcoursJeunes.getConfiguration().getProxy().getProxyServerAddress()); //$NON-NLS-1$
-			System.setProperty("http.proxyPort",Integer.toString(ConcoursJeunes.getConfiguration().getProxy().getProxyServerPort())); //$NON-NLS-1$
-			if(ConcoursJeunes.getConfiguration().getProxy().isUseProxyAuthentification()) {
+		if (ApplicationCore.getConfiguration().isUseProxy()) {
+			System.setProperty("http.proxyHost", ApplicationCore.getConfiguration().getProxy().getProxyServerAddress()); //$NON-NLS-1$
+			System.setProperty("http.proxyPort",Integer.toString(ApplicationCore.getConfiguration().getProxy().getProxyServerPort())); //$NON-NLS-1$
+			if(ApplicationCore.getConfiguration().getProxy().isUseProxyAuthentification()) {
 				Authenticator.setDefault(new SimpleAuthenticator(
-						ConcoursJeunes.getConfiguration().getProxy().getProxyAuthLogin(),
-						ConcoursJeunes.getConfiguration().getProxy().getProxyAuthPassword()));
+						ApplicationCore.getConfiguration().getProxy().getProxyAuthLogin(),
+						ApplicationCore.getConfiguration().getProxy().getProxyAuthPassword()));
 			}
 		}
 		
@@ -262,7 +262,7 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 			if (trayIcon != null) {
 				trayIcon.displayMessage(pluginLocalisation.getResourceString("update.available.title"), pluginLocalisation.getResourceString("update.available", strSize), TrayIcon.MessageType.INFO); //$NON-NLS-1$ //$NON-NLS-2$
 			} else {
-				AjUpdaterFrame ajUpdaterFrame = new AjUpdaterFrame(ajUpdater, ConcoursJeunes.VERSION);
+				AjUpdaterFrame ajUpdaterFrame = new AjUpdaterFrame(ajUpdater, ApplicationCore.VERSION);
 				
 				if(ajUpdaterFrame.showAjUpdaterFrame() == AjUpdaterFrame.ReturnCode.OK) {
 					ajUpdater.downloadFiles(updateFiles);
@@ -286,14 +286,14 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 				try {
 					Process process = Runtime.getRuntime().exec(new String[] { "concoursjeunes-applyupdate", //$NON-NLS-1$
-							ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
+							ApplicationCore.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
 							System.getProperty("user.dir") }); //$NON-NLS-1$
 					process.waitFor();
 					
 					try {
-						ConcoursJeunes.getInstance().saveAllFichesConcours();
+						ApplicationCore.getInstance().saveAllFichesConcours();
 						
-						ConcoursJeunes.dbConnection.close();
+						ApplicationCore.dbConnection.close();
 					} catch (NullConfigurationException e) {
 						e.printStackTrace();
 					} catch (SQLException e) {
@@ -318,7 +318,7 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 	public void mouseClicked(MouseEvent e) {
 		if (e.getSource() == trayIcon) {
 			if (currentStatus == Status.AVAILABLE) {
-				AjUpdaterFrame ajUpdaterFrame = new AjUpdaterFrame(ajUpdater, ConcoursJeunes.VERSION);
+				AjUpdaterFrame ajUpdaterFrame = new AjUpdaterFrame(ajUpdater, ApplicationCore.VERSION);
 				
 				if(ajUpdaterFrame.showAjUpdaterFrame() == AjUpdaterFrame.ReturnCode.OK) {
 					ajUpdater.downloadFiles(updateFiles);

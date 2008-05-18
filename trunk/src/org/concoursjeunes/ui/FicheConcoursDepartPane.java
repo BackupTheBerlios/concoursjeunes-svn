@@ -127,7 +127,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
-import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.ConcurrentList;
 import org.concoursjeunes.FicheConcours;
@@ -233,7 +233,7 @@ public class FicheConcoursDepartPane extends JPanel
 		northpanePrintButton.add(jbPrintEtiquettes);
 		northpanePrintButton.add(jbPrintPasDeTir);
 		northpaneGestion.add(northpanePrintButton, BorderLayout.NORTH);
-		JLabel jl = new JLabel(ConcoursJeunes.ajrLibelle.getResourceString("interface.aideplacement")); //$NON-NLS-1$
+		JLabel jl = new JLabel(ApplicationCore.ajrLibelle.getResourceString("interface.aideplacement")); //$NON-NLS-1$
 		jl.setHorizontalTextPosition(JLabel.CENTER);
 		JPanel pos = new JPanel();
 		pos.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -270,21 +270,21 @@ public class FicheConcoursDepartPane extends JPanel
 		JScrollPane scrollarcher = new JScrollPane();
 		scrollarcher.setViewportView(ajlConcurrent);
 
-		jbAjouterArcher.setIcon(new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.addarcher") //$NON-NLS-1$
+		jbAjouterArcher.setIcon(new ImageIcon(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + ApplicationCore.ajrParametreAppli.getResourceString("file.icon.addarcher") //$NON-NLS-1$
 		));
 		jbAjouterArcher.setMargin(new Insets(0, 0, 0, 0));
 		jbAjouterArcher.addActionListener(this);
 
-		jbSupprimerArcher.setIcon(new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.removearcher") //$NON-NLS-1$
+		jbSupprimerArcher.setIcon(new ImageIcon(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + ApplicationCore.ajrParametreAppli.getResourceString("file.icon.removearcher") //$NON-NLS-1$
 		));
 		jbSupprimerArcher.setMargin(new Insets(0, 0, 0, 0));
 		jbSupprimerArcher.setEnabled(false);
 		jbSupprimerArcher.addActionListener(this);
 
-		jbEquipe.setIcon(new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$ 
-				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.team"))); //$NON-NLS-1$
+		jbEquipe.setIcon(new ImageIcon(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$ 
+				File.separator + ApplicationCore.ajrParametreAppli.getResourceString("file.icon.team"))); //$NON-NLS-1$
 		jbEquipe.setMargin(new Insets(0, 0, 0, 0));
 		jbEquipe.addActionListener(this);
 
@@ -349,14 +349,14 @@ public class FicheConcoursDepartPane extends JPanel
 		pane.setLayout(new BorderLayout());
 		pane.add(scrollcible, BorderLayout.CENTER);
 
-		jbPrintEtiquettes.setIcon(new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.print") //$NON-NLS-1$
+		jbPrintEtiquettes.setIcon(new ImageIcon(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + ApplicationCore.ajrParametreAppli.getResourceString("file.icon.print") //$NON-NLS-1$
 		));
-		jbPrintListConc.setIcon(new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.print") //$NON-NLS-1$
+		jbPrintListConc.setIcon(new ImageIcon(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + ApplicationCore.ajrParametreAppli.getResourceString("file.icon.print") //$NON-NLS-1$
 		));
-		jbPrintPasDeTir.setIcon(new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.print") //$NON-NLS-1$
+		jbPrintPasDeTir.setIcon(new ImageIcon(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + ApplicationCore.ajrParametreAppli.getResourceString("file.icon.print") //$NON-NLS-1$
 		));
 
 		treeTarget.setKeepExpansionState(true);
@@ -379,19 +379,19 @@ public class FicheConcoursDepartPane extends JPanel
 	private void popup() {
 		popup = new JPopupMenu("Edit"); //$NON-NLS-1$
 
-		JMenuItem mi3 = new JMenuItem(ConcoursJeunes.ajrLibelle.getResourceString("popup.edition")); //$NON-NLS-1$
+		JMenuItem mi3 = new JMenuItem(ApplicationCore.ajrLibelle.getResourceString("popup.edition")); //$NON-NLS-1$
 		mi3.setActionCommand("popup.edition"); //$NON-NLS-1$
 		mi3.addActionListener(this);
 		popup.add(mi3);
 
-		JMenuItem mi1 = new JMenuItem(ConcoursJeunes.ajrLibelle.getResourceString("popup.suppression")); //$NON-NLS-1$
+		JMenuItem mi1 = new JMenuItem(ApplicationCore.ajrLibelle.getResourceString("popup.suppression")); //$NON-NLS-1$
 		mi1.setActionCommand("popup.suppression"); //$NON-NLS-1$
 		mi1.addActionListener(this);
 		popup.add(mi1);
 
 		popup.addSeparator();
 
-		JMenuItem mi2 = new JMenuItem(ConcoursJeunes.ajrLibelle.getResourceString("popup.retrait")); //$NON-NLS-1$
+		JMenuItem mi2 = new JMenuItem(ApplicationCore.ajrLibelle.getResourceString("popup.retrait")); //$NON-NLS-1$
 		mi2.setActionCommand("popup.retrait"); //$NON-NLS-1$
 		mi2.addActionListener(this);
 		popup.add(mi2);
@@ -403,20 +403,20 @@ public class FicheConcoursDepartPane extends JPanel
 	 * Affecte les libellés localisé au composant de l'interface
 	 */
 	private void affectLibelle() {
-		jbPrintListConc.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.printlistconc")); //$NON-NLS-1$
-		jbPrintEtiquettes.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.printetiquettes")); //$NON-NLS-1$
-		jbPrintPasDeTir.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.printpasdetir")); //$NON-NLS-1$
+		jbPrintListConc.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.printlistconc")); //$NON-NLS-1$
+		jbPrintEtiquettes.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.printetiquettes")); //$NON-NLS-1$
+		jbPrintPasDeTir.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.printpasdetir")); //$NON-NLS-1$
 
-		jbAjouterArcher.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.ajouter")); //$NON-NLS-1$
-		jbAjouterArcher.setToolTipText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.ajouter")); //$NON-NLS-1$
-		jbSupprimerArcher.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.supprimer")); //$NON-NLS-1$
-		jbEquipe.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.equipe")); //$NON-NLS-1$
-		jbPlacementArcher.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.placementarcher")); //$NON-NLS-1$
-		jcbSortCible.setText(ConcoursJeunes.ajrLibelle.getResourceString("radiobutton.cible")); //$NON-NLS-1$
-		jcbSortNom.setText(ConcoursJeunes.ajrLibelle.getResourceString("radiobutton.nom")); //$NON-NLS-1$
-		jcbSortClub.setText(ConcoursJeunes.ajrLibelle.getResourceString("radiobutton.club")); //$NON-NLS-1$
+		jbAjouterArcher.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.ajouter")); //$NON-NLS-1$
+		jbAjouterArcher.setToolTipText(ApplicationCore.ajrLibelle.getResourceString("bouton.ajouter")); //$NON-NLS-1$
+		jbSupprimerArcher.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.supprimer")); //$NON-NLS-1$
+		jbEquipe.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.equipe")); //$NON-NLS-1$
+		jbPlacementArcher.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.placementarcher")); //$NON-NLS-1$
+		jcbSortCible.setText(ApplicationCore.ajrLibelle.getResourceString("radiobutton.cible")); //$NON-NLS-1$
+		jcbSortNom.setText(ApplicationCore.ajrLibelle.getResourceString("radiobutton.nom")); //$NON-NLS-1$
+		jcbSortClub.setText(ApplicationCore.ajrLibelle.getResourceString("radiobutton.club")); //$NON-NLS-1$
 
-		treeModel.setRootLabel(ConcoursJeunes.ajrLibelle.getResourceString("treenode.racine")); //$NON-NLS-1$
+		treeModel.setRootLabel(ApplicationCore.ajrLibelle.getResourceString("treenode.racine")); //$NON-NLS-1$
 	}
 
 	/**
@@ -456,7 +456,7 @@ public class FicheConcoursDepartPane extends JPanel
 				try {
 					ficheConcours.addConcurrent(ficheConcoursPane.concDialog.getConcurrent(), depart);
 				} catch (FicheConcoursException e) {
-					JXErrorPane.showDialog(ficheConcoursPane.getParentframe(), new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+					JXErrorPane.showDialog(ficheConcoursPane.getParentframe(), new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 							null, null, e, Level.SEVERE, null));
 					e.printStackTrace();
 				}
@@ -471,14 +471,14 @@ public class FicheConcoursDepartPane extends JPanel
 
 		Concurrent removedConcurrent = (Concurrent) ajlConcurrent.getSelectedValue();
 		if(removedConcurrent != null) {
-			if (JOptionPane.showConfirmDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("confirmation.suppression"), //$NON-NLS-1$
-					ConcoursJeunes.ajrLibelle.getResourceString("confirmation.suppression.titre"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.NO_OPTION) //$NON-NLS-1$
+			if (JOptionPane.showConfirmDialog(this, ApplicationCore.ajrLibelle.getResourceString("confirmation.suppression"), //$NON-NLS-1$
+					ApplicationCore.ajrLibelle.getResourceString("confirmation.suppression.titre"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.NO_OPTION) //$NON-NLS-1$
 				return;
 	
 			try {
 				ficheConcours.removeConcurrent(removedConcurrent);
 			} catch (FicheConcoursException e) {
-				JXErrorPane.showDialog(ficheConcoursPane.getParentframe(), new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+				JXErrorPane.showDialog(ficheConcoursPane.getParentframe(), new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 						null, null, e, Level.SEVERE, null));
 				e.printStackTrace();
 			}
@@ -491,8 +491,8 @@ public class FicheConcoursDepartPane extends JPanel
 	 */
 	private void placementConcurrents() {
 
-		if (JOptionPane.showConfirmDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("confirmation.replacement"), //$NON-NLS-1$
-				ConcoursJeunes.ajrLibelle.getResourceString("confirmation.replacement.titre"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.NO_OPTION) //$NON-NLS-1$
+		if (JOptionPane.showConfirmDialog(this, ApplicationCore.ajrLibelle.getResourceString("confirmation.replacement"), //$NON-NLS-1$
+				ApplicationCore.ajrLibelle.getResourceString("confirmation.replacement.titre"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.NO_OPTION) //$NON-NLS-1$
 			return;
 
 		ficheConcours.getPasDeTir(depart).placementConcurrents();
@@ -535,8 +535,8 @@ public class FicheConcoursDepartPane extends JPanel
 		}
 
 		if (cible == null) {
-			JOptionPane.showMessageDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("erreur.noplacement.notarget"), //$NON-NLS-1$
-					ConcoursJeunes.ajrLibelle.getResourceString("erreur.noplacement.titre"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
+			JOptionPane.showMessageDialog(null, ApplicationCore.ajrLibelle.getResourceString("erreur.noplacement.notarget"), //$NON-NLS-1$
+					ApplicationCore.ajrLibelle.getResourceString("erreur.noplacement.titre"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 		} else {
 			try {
 				ficheConcours.getPasDeTir(depart).placementConcurrent(concurrent, cible, position);
@@ -544,29 +544,29 @@ public class FicheConcoursDepartPane extends JPanel
 				String message;
 				switch (e.getNature()) {
 					case ANY_AVAILABLE_POSITION:
-						message = ConcoursJeunes.ajrLibelle.getResourceString("erreur.noplacement.anyplace"); //$NON-NLS-1$
+						message = ApplicationCore.ajrLibelle.getResourceString("erreur.noplacement.anyplace"); //$NON-NLS-1$
 						break;
 					case BAD_DISTANCES:
-						message = ConcoursJeunes.ajrLibelle.getResourceString("erreur.noplacement.baddistance"); //$NON-NLS-1$
+						message = ApplicationCore.ajrLibelle.getResourceString("erreur.noplacement.baddistance"); //$NON-NLS-1$
 						break;
 					case BAD_TARGETFACE:
-						message = ConcoursJeunes.ajrLibelle.getResourceString("erreur.noplacement.badtargetface"); //$NON-NLS-1$
+						message = ApplicationCore.ajrLibelle.getResourceString("erreur.noplacement.badtargetface"); //$NON-NLS-1$
 						break;
 					case NULL_CONCURRENT:
-						message = ConcoursJeunes.ajrLibelle.getResourceString("erreur.noplacement.nullconcurrent"); //$NON-NLS-1$
+						message = ApplicationCore.ajrLibelle.getResourceString("erreur.noplacement.nullconcurrent"); //$NON-NLS-1$
 						break;
 					case POSITION_AVAILABLE_FOR_VALID_CONCURRENT:
-						message = ConcoursJeunes.ajrLibelle.getResourceString("erreur.noplacement.handicap"); //$NON-NLS-1$
+						message = ApplicationCore.ajrLibelle.getResourceString("erreur.noplacement.handicap"); //$NON-NLS-1$
 						break;
 					case POSITION_RESERVED_FOR_HANDICAP:
-						message = ConcoursJeunes.ajrLibelle.getResourceString("erreur.noplacement.reserved"); //$NON-NLS-1$
+						message = ApplicationCore.ajrLibelle.getResourceString("erreur.noplacement.reserved"); //$NON-NLS-1$
 						break;
 					default:
-						message = ConcoursJeunes.ajrLibelle.getResourceString("erreur.noplacement.unknown"); //$NON-NLS-1$
+						message = ApplicationCore.ajrLibelle.getResourceString("erreur.noplacement.unknown"); //$NON-NLS-1$
 						break;
 				}
 				JOptionPane.showMessageDialog(null, message,
-						ConcoursJeunes.ajrLibelle.getResourceString("erreur.noplacement.titre"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
+						ApplicationCore.ajrLibelle.getResourceString("erreur.noplacement.titre"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 				//e.printStackTrace();
 			}
 		}
@@ -664,21 +664,21 @@ public class FicheConcoursDepartPane extends JPanel
 			int returnType = tld.showTypeListingDialog();
 			if (returnType == TypeListingDialog.ALPHA) {
 				if(!ficheConcours.printArcherList(FicheConcours.ALPHA))
-					JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
+					JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 			} else if (returnType == TypeListingDialog.GREFFE) {
 				if(!ficheConcours.printArcherList(FicheConcours.GREFFE))
-					JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
+					JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 			} else if (returnType == TypeListingDialog.TARGET) {
 				if(!ficheConcours.printArcherList(FicheConcours.TARGET))
-					JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
+					JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 			}
 		} else if (source == jbPrintEtiquettes) {
 			if(!ficheConcours.printEtiquettes()) {
-				JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
+				JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 			}
 		} else if (source == jbPrintPasDeTir) {
 			if(!ficheConcours.printPasDeTir()) {
-				JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
+				JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 			}
 		} else if (source instanceof JRadioButton) {
 			if (source == jcbSortCible)

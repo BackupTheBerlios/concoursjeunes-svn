@@ -103,38 +103,38 @@ import org.junit.Test;
  */
 public class ConcoursJeunesTest extends TestCase {
 	
-	ConcoursJeunes concoursJeunes;
+	ApplicationCore concoursJeunes;
 	
 	private boolean eventReceived = false;
 
 	@Before
 	@Override
 	public void setUp() throws Exception {
-		concoursJeunes = ConcoursJeunes.getInstance();
+		concoursJeunes = ApplicationCore.getInstance();
 	}
 
 	@Test
 	public void testConcoursJeunes() {
 		//test que ConcoursJeunes accédent correctement aux fichiers
 		//ressources
-		assertNotNull(ConcoursJeunes.ajrLibelle);
-		assertEquals(ConcoursJeunes.ajrLibelle.getResourceString("onglet.gestionarcher"), "Gestion des archers"); //$NON-NLS-1$ //$NON-NLS-2$
-		assertNotNull(ConcoursJeunes.ajrParametreAppli);
-		assertEquals(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources"), "./ressources"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertNotNull(ApplicationCore.ajrLibelle);
+		assertEquals(ApplicationCore.ajrLibelle.getResourceString("onglet.gestionarcher"), "Gestion des archers"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertNotNull(ApplicationCore.ajrParametreAppli);
+		assertEquals(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources"), "./ressources"); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		//test l'accès au fichier de config
-		assertNotNull(ConcoursJeunes.getConfiguration());
+		assertNotNull(ApplicationCore.getConfiguration());
 		//test l'accès aux ressources utilisateur
-		assertNotNull(ConcoursJeunes.userRessources);
+		assertNotNull(ApplicationCore.userRessources);
 		if(System.getProperty("os.name").startsWith("Windows")) //$NON-NLS-1$ //$NON-NLS-2$
-			assertEquals(ConcoursJeunes.userRessources.getUserPath(), System.getenv("APPDATA") + File.separator + ConcoursJeunes.NOM); //$NON-NLS-1$
+			assertEquals(ApplicationCore.userRessources.getUserPath(), System.getenv("APPDATA") + File.separator + ApplicationCore.NOM); //$NON-NLS-1$
 		else
-			assertEquals(ConcoursJeunes.userRessources.getUserPath(), System.getProperty("user.home") + File.separator + "." + ConcoursJeunes.NOM); //$NON-NLS-1$ //$NON-NLS-2$
+			assertEquals(ApplicationCore.userRessources.getUserPath(), System.getProperty("user.home") + File.separator + "." + ApplicationCore.NOM); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		//test la base de donnée
-		assertNotNull(ConcoursJeunes.dbConnection);
+		assertNotNull(ApplicationCore.dbConnection);
 		try {
-			assertFalse(ConcoursJeunes.dbConnection.isClosed());
+			assertFalse(ApplicationCore.dbConnection.isClosed());
 		} catch (SQLException e) {
 			fail(e.getLocalizedMessage());
 			e.printStackTrace();
@@ -152,7 +152,7 @@ public class ConcoursJeunesTest extends TestCase {
 				
 				assertNotNull(e.getFicheConcours());
 				
-				File concourspath = ConcoursJeunes.userRessources.getConcoursPathForProfile(ConcoursJeunes.getConfiguration().getCurProfil());
+				File concourspath = ApplicationCore.userRessources.getConcoursPathForProfile(ApplicationCore.getConfiguration().getCurProfil());
 				
 				assertTrue(new File(concourspath + File.separator 
 						+ e.getFicheConcours().getParametre().getSaveName()).exists());
@@ -218,7 +218,7 @@ public class ConcoursJeunesTest extends TestCase {
 			public void ficheConcoursDeleted(ConcoursJeunesEvent e) {
 				eventReceived = true;
 
-				File concourspath = ConcoursJeunes.userRessources.getConcoursPathForProfile(ConcoursJeunes.getConfiguration().getCurProfil());
+				File concourspath = ApplicationCore.userRessources.getConcoursPathForProfile(ApplicationCore.getConfiguration().getCurProfil());
 				
 				assertFalse("Le fichier du concours ne devrait plus exister",  //$NON-NLS-1$
 						new File(concourspath, testConcours.getParametre().getSaveName()).exists());

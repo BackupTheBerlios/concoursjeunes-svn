@@ -18,11 +18,8 @@ package org.concoursjeunes;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.concoursjeunes.builders.ConcurrentBuilder;
 
 /**
  * Objet de Base de stockage des Information sur un concurrent:
@@ -270,7 +267,7 @@ public class Concurrent extends Archer implements Cloneable {
 		aComparant.setNomArcher(getNomArcher());
 		aComparant.setPrenomArcher(getPrenomArcher());
 
-		List<Concurrent> homonyme = getArchersInDatabase(aComparant, null, ""); //$NON-NLS-1$
+		List<Concurrent> homonyme = ConcurrentManager.getArchersInDatabase(aComparant, null, ""); //$NON-NLS-1$
 
 		return (homonyme.size() > 1);
 	}
@@ -285,7 +282,7 @@ public class Concurrent extends Archer implements Cloneable {
 			criteriaSet.save();
 			try {
 				String sql = "select * from ARCHERS where NUMLICENCEARCHER=?"; //$NON-NLS-1$
-				PreparedStatement pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
+				PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
 				pstmt.setString(1, getNumLicenceArcher());
 				
 				ResultSet rs = pstmt.executeQuery();
@@ -296,7 +293,7 @@ public class Concurrent extends Archer implements Cloneable {
 							"NUMCRITERIASET) KEY (NUMLICENCEARCHER, NUMREGLEMENT)" + //$NON-NLS-1$
 							"VALUES (?, ?, ?)"; //$NON-NLS-1$
 					//NUMREGLEMENT
-					pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
+					pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
 					
 					pstmt.setString(1, getNumLicenceArcher());
 					pstmt.setInt(2, reglement.hashCode());
@@ -309,90 +306,6 @@ public class Concurrent extends Archer implements Cloneable {
 				e.printStackTrace();
 			}
 		}
-	}
-
-	/**
-	 * Retourne une liste d'archer en provenance de la base de données en fonction
-	 * des critères de recherche fournit en parametres
-	 * 
-	 * @param aGeneric objet Archer generique servant de filtre de recherche (la recherche se
-	 * fait sur les champs renseigné, le caractères genérique (%, ?) sont accepté
-	 * 
-	 * @param reglement le reglement à appliqué aux objets archers retourné
-	 * 
-	 * @param orderfield l'ordre de trie des objets retourné. Doivent être listé dans 
-	 * l'ordre les champs de la base de données (table ARCHERS) servant au trie.
-	 * 
-	 * @return la liste des archers correspondant aux critères de recherche
-	 */
-	public static List<Concurrent> getArchersInDatabase(Archer aGeneric, Reglement reglement, String orderfield) {
-		return getArchersInDatabase(aGeneric, reglement, orderfield, -1);
-	}
-	
-	/**
-	 * Retourne une liste d'archer en provenance de la base de données en fonction
-	 * des critères de recherche fournit en parametres
-	 * 
-	 * @param aGeneric objet Archer generique servant de filtre de recherche (la recherche se
-	 * fait sur les champs renseigné, le caractères genérique (%, ?) sont accepté
-	 * 
-	 * @param reglement le reglement à appliqué aux objets archers retourné
-	 * 
-	 * @param orderfield l'ordre de trie des objets retourné. Doivent être listé dans 
-	 * l'ordre les champs de la base de données (table ARCHERS) servant au trie.
-	 * 
-	 * @return la liste des archers correspondant aux critères de recherche
-	 */
-	public static ArrayList<Concurrent> getArchersInDatabase(Archer aGeneric, Reglement reglement, String orderfield, int nbmaxenreg) {
-		ArrayList<Concurrent> concurrents = new ArrayList<Concurrent>();
-		Statement stmt = null;
-		try {
-			stmt = ConcoursJeunes.dbConnection.createStatement();
-
-			String sql = "select * from archers "; //$NON-NLS-1$
-
-			if(aGeneric != null) {
-				sql += "where "; //$NON-NLS-1$
-				ArrayList<String> filters = new ArrayList<String>();
-
-				if(aGeneric.getNumLicenceArcher().length() > 0) {
-					filters.add("NUMLICENCEARCHER like '" + aGeneric.getNumLicenceArcher() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
-				}
-				if(aGeneric.getNomArcher().length() > 0) {
-					filters.add("NOMARCHER like '" + aGeneric.getNomArcher().replaceAll("'", "''") + "'"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-				}
-				if(aGeneric.getPrenomArcher().length() > 0) {
-					filters.add("UPPER(PRENOMARCHER) like '" + aGeneric.getPrenomArcher().toUpperCase().replaceAll("'", "''") + "'"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-				}
-				if(aGeneric.getClub().getAgrement().length() > 0) {
-					filters.add("AGREMENTENTITE like '" + aGeneric.getClub().getAgrement() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
-				}
-
-				for(String filter : filters) {
-					sql += " and " + filter; //$NON-NLS-1$
-				}
-			}
-			sql = sql.replaceFirst(" and ", ""); //$NON-NLS-1$ //$NON-NLS-2$
-			if(orderfield.length() > 0)
-				sql += " order by " + orderfield; //$NON-NLS-1$
-
-			ResultSet rs = stmt.executeQuery(sql);
-
-			int iEnreg = 0;
-			while(rs.next() && (nbmaxenreg == -1 || iEnreg < nbmaxenreg)) {
-				
-				Concurrent concurrent = ConcurrentBuilder.getConcurrent(rs, reglement);
-				if(concurrent != null) {
-					concurrents.add(concurrent);
-					iEnreg++;
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try { if(stmt != null) stmt.close(); } catch(Exception e) { }
-		}
-		return concurrents;
 	}
 	
 	@Override

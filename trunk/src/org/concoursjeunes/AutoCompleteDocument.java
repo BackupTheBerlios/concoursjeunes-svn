@@ -86,7 +86,6 @@
  */
 package org.concoursjeunes;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JTextField;
@@ -311,7 +310,7 @@ public class AutoCompleteDocument extends PlainDocument {
 		searchArcher.setNomArcher(searchString.toUpperCase() + "%"); //$NON-NLS-1$
 		
 		if(getLength() > 0) {
-			ArrayList<Concurrent> concurrents = Concurrent.getArchersInDatabase(searchArcher, reglement, "NOMARCHER", 1); //$NON-NLS-1$
+			List<Concurrent> concurrents = ConcurrentManager.getArchersInDatabase(searchArcher, reglement, "NOMARCHER", 1); //$NON-NLS-1$
 			if(concurrents.size() > 0) {
 				concurrent = concurrents.get(0);
 				autocompleteLicence = false;
@@ -366,7 +365,7 @@ public class AutoCompleteDocument extends PlainDocument {
 			searchArcher.setPrenomArcher(searchString + "%"); //$NON-NLS-1$
 			
 			
-			List<Concurrent> concurrents = Concurrent.getArchersInDatabase(searchArcher, reglement, "PRENOMARCHER"); //$NON-NLS-1$
+			List<Concurrent> concurrents = ConcurrentManager.getArchersInDatabase(searchArcher, reglement, "PRENOMARCHER"); //$NON-NLS-1$
 			if(concurrents.size() > 0) {
 				tempConcurrent = concurrents.get(0);
 				autocompleteLicence = false;
@@ -415,7 +414,7 @@ public class AutoCompleteDocument extends PlainDocument {
 		Archer searchArcher = new Archer();
 		searchArcher.setNumLicenceArcher(searchString + "%"); //$NON-NLS-1$
 		if(getLength() > 0) {
-			List<Concurrent> concurrents = Concurrent.getArchersInDatabase(searchArcher, reglement, "NUMLICENCEARCHER"); //$NON-NLS-1$
+			List<Concurrent> concurrents = ConcurrentManager.getArchersInDatabase(searchArcher, reglement, "NUMLICENCEARCHER"); //$NON-NLS-1$
 			if(concurrents.size() > 0)
 				concurrent = concurrents.get(0);
 			else

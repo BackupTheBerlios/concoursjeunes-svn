@@ -20,7 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.CriteriaSet;
 import org.concoursjeunes.Criterion;
@@ -56,7 +56,7 @@ public class ConcurrentBuilder {
 				CriteriaSet differentiationCriteria = null;
 				String sql = "select * from distinguer where NUMLICENCEARCHER=? and NUMREGLEMENT=?"; //$NON-NLS-1$
 				
-				PreparedStatement pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
+				PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
 				
 				pstmt.setString(1, concurrent.getNumLicenceArcher());
 				pstmt.setInt(2, reglement.hashCode());

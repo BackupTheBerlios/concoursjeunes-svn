@@ -643,7 +643,7 @@ public class Target {
 		String strCouleur = "<font color=\"#00AA00\">"; //$NON-NLS-1$
 		if (concurrents.length == nbArcher + nbHandicap)
 			strCouleur = "<font color=\"#0000FF\">"; //$NON-NLS-1$
-		String strCibleLibelle = "<html>" + strCouleur + "<b>" + ConcoursJeunes.ajrLibelle.getResourceString("treenode.cible") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		String strCibleLibelle = "<html>" + strCouleur + "<b>" + ApplicationCore.ajrLibelle.getResourceString("treenode.cible") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				+ ((this.numCible < 10) ? "0" : "") //$NON-NLS-1$ //$NON-NLS-2$
 				+ this.numCible + "</b> ("; //$NON-NLS-1$
 		if(getDistancesEtBlason().size() > 0) {
@@ -682,13 +682,13 @@ public class Target {
 		}
 		
 		if (nbArcherByClub.size() == 1 && getNbArcher() > 1)
-			strCibleLibelle += ConcoursJeunes.ajrLibelle.getResourceString("target.sameclub"); //$NON-NLS-1$
+			strCibleLibelle += ApplicationCore.ajrLibelle.getResourceString("target.sameclub"); //$NON-NLS-1$
 		else if (getNbArcher() == 1)
-			strCibleLibelle += ConcoursJeunes.ajrLibelle.getResourceString("target.onlyone"); //$NON-NLS-1$
+			strCibleLibelle += ApplicationCore.ajrLibelle.getResourceString("target.onlyone"); //$NON-NLS-1$
 		else {
 			for(Entry<Entite, Integer> nbarch : nbArcherByClub.entrySet()) {
 				if(nbarch.getValue() > 2) {
-					strCibleLibelle += ConcoursJeunes.ajrLibelle.getResourceString("target.morethan2sameclub"); //$NON-NLS-1$
+					strCibleLibelle += ApplicationCore.ajrLibelle.getResourceString("target.morethan2sameclub"); //$NON-NLS-1$
 					break;
 				}
 			}

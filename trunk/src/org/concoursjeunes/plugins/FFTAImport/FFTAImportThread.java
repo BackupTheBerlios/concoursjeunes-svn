@@ -12,7 +12,7 @@ import java.util.logging.Level;
 import javax.swing.JDialog;
 import javax.swing.event.EventListenerList;
 
-import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.ApplicationCore;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
@@ -125,7 +125,7 @@ public class FFTAImportThread extends Thread {
 			sFiclub = null;
 			// FIN HACK
 
-			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+			Statement stmt = ApplicationCore.dbConnection.createStatement();
 
 			Hashtable<String, String> ht = new Hashtable<String, String>();
 
@@ -139,25 +139,25 @@ public class FFTAImportThread extends Thread {
 			stmt.close();
 
 		} catch (InterruptedException e1) {
-			JXErrorPane.showDialog(parentframe, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
+			JXErrorPane.showDialog(parentframe, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
 					null, null, e1, Level.SEVERE, null));
 			e1.printStackTrace();
 
 		} catch (IOException io) {
-			JXErrorPane.showDialog(parentframe, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), io.getLocalizedMessage(), //$NON-NLS-1$
+			JXErrorPane.showDialog(parentframe, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), io.getLocalizedMessage(), //$NON-NLS-1$
 					null, null, io, Level.SEVERE, null));
 			io.printStackTrace();
 
 		} catch (NullPointerException npe) {
-			JXErrorPane.showDialog(parentframe, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), npe.getLocalizedMessage(), //$NON-NLS-1$
+			JXErrorPane.showDialog(parentframe, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), npe.getLocalizedMessage(), //$NON-NLS-1$
 					null, null, npe, Level.SEVERE, null));
 			npe.printStackTrace();
 		} catch (OutOfMemoryError oome) {
-			JXErrorPane.showDialog(parentframe, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), oome.getLocalizedMessage(), //$NON-NLS-1$
+			JXErrorPane.showDialog(parentframe, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), oome.getLocalizedMessage(), //$NON-NLS-1$
 					null, null, oome, Level.SEVERE, null));
 			oome.printStackTrace();
 		} catch (SQLException e) {
-			JXErrorPane.showDialog(parentframe, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
+			JXErrorPane.showDialog(parentframe, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
 					null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		}

@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.concoursjeunes.Ancrage;
 import org.concoursjeunes.Blason;
-import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.ApplicationCore;
 
 /**
  * Construit la table des ancrages possible d'un blason sur une cible 
@@ -30,7 +30,7 @@ public class AncragesMapBuilder {
 		
 		String sql = "select * from ANCRAGES_BLASONS where NUMBLASON=?"; //$NON-NLS-1$
 		
-		PreparedStatement pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
+		PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
 		
 		pstmt.setInt(1, blason.getNumblason());
 		

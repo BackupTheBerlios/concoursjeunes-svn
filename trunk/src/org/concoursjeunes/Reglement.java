@@ -88,13 +88,8 @@
  */
 package org.concoursjeunes;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
+import java.sql.*;
+import java.util.*;
 
 /**
  * <p>
@@ -130,6 +125,7 @@ public class Reglement {
 	private int nbMembresRetenu = 3;
 
 	private List<Criterion> listCriteria = new ArrayList<Criterion>();
+	private Map<CriteriaSet, CriteriaSet> surclassement = new HashMap<CriteriaSet, CriteriaSet>();
 	private List<DistancesEtBlason> listDistancesEtBlason = new ArrayList<DistancesEtBlason>();
 
 	private boolean officialReglement = false;
@@ -196,6 +192,20 @@ public class Reglement {
 	 */
 	public void setListCriteria(List<Criterion> listCriteria) {
 		this.listCriteria = listCriteria;
+	}
+
+	/**
+	 * @return surclassement
+	 */
+	public Map<CriteriaSet, CriteriaSet> getSurclassement() {
+		return surclassement;
+	}
+
+	/**
+	 * @param surclassement surclassement à définir
+	 */
+	public void setSurclassement(Map<CriteriaSet, CriteriaSet> surclassement) {
+		this.surclassement = surclassement;
 	}
 
 	/**
@@ -394,7 +404,7 @@ public class Reglement {
 				"VALUES (?, ?, ?, ?, ?, ?, ?, ?)"; //$NON-NLS-1$
 
 		// Statement stmt = ConcoursJeunes.dbConnection.createStatement();
-		PreparedStatement pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
+		PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
 		pstmt.setInt(1, hashCode());
 		pstmt.setString(2, name);
 		pstmt.setInt(3, nbSerie);
@@ -405,10 +415,12 @@ public class Reglement {
 		pstmt.setBoolean(8, officialReglement);
 
 		pstmt.executeUpdate();
+		pstmt.close();
 
 		// sauvegarde les tableaux de crières et correspondance
 		saveCriteria();
 		saveDistancesAndBlasons();
+		saveSurclassement();
 	}
 
 	private void saveCriteria() throws SQLException {
@@ -417,6 +429,28 @@ public class Reglement {
 			criterion.setNumordre(numordre++);
 			criterion.save();
 		}
+	}
+	
+	private void saveSurclassement() throws SQLException {
+		Statement stmt = ApplicationCore.dbConnection.createStatement();
+		stmt.executeUpdate("delete from SURCLASSEMENT where NUMREGLEMENT=" + hashCode()); //$NON-NLS-1$
+		stmt.close();
+		
+		String sql = "insert into SURCLASSEMENT (NUMCRITERIASET, NUMREGLEMENT, NUMCRITERIASET_SURCLASSE) " + //$NON-NLS-1$
+				"values (?, ?, ?)"; //$NON-NLS-1$
+		PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
+		for(Map.Entry<CriteriaSet, CriteriaSet> row : surclassement.entrySet()) {
+			row.getKey().save();
+			pstmt.setInt(1, row.getKey().hashCode());
+			pstmt.setInt(2, hashCode());
+			if(row.getValue() != null) {
+				row.getValue().save();
+				pstmt.setInt(3, row.getValue().hashCode());
+			} else
+				pstmt.setNull(3, Types.INTEGER);
+			pstmt.executeUpdate();
+		}
+		pstmt.close();
 	}
 
 	private void saveDistancesAndBlasons() throws SQLException {
@@ -436,7 +470,7 @@ public class Reglement {
 
 		if (!officialReglement) {
 			try {
-				Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+				Statement stmt = ApplicationCore.dbConnection.createStatement();
 
 				stmt.executeUpdate("delete from REGLEMENT where NUMREGLEMENT=" + hashCode()); //$NON-NLS-1$
 
@@ -465,7 +499,7 @@ public class Reglement {
 	public static String[] listAvailableReglements() {
 		ArrayList<String> availableReglements = new ArrayList<String>();
 		try {
-			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+			Statement stmt = ApplicationCore.dbConnection.createStatement();
 
 			ResultSet rs = stmt.executeQuery("select NOMREGLEMENT from REGLEMENT where NUMREGLEMENT <> 0"); //$NON-NLS-1$
 

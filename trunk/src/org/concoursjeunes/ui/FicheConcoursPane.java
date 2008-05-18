@@ -115,7 +115,7 @@ import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 
-import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.Criterion;
 import org.concoursjeunes.FicheConcours;
@@ -214,14 +214,14 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		printClassementIndiv.addActionListener(this);
 		printClassementEquipe.addActionListener(this);
 		printClassementClub.addActionListener(this);
-		printClassementIndiv.setIcon(new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.print") //$NON-NLS-1$
+		printClassementIndiv.setIcon(new ImageIcon(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + ApplicationCore.ajrParametreAppli.getResourceString("file.icon.print") //$NON-NLS-1$
 		));
-		printClassementEquipe.setIcon(new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.print") //$NON-NLS-1$
+		printClassementEquipe.setIcon(new ImageIcon(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + ApplicationCore.ajrParametreAppli.getResourceString("file.icon.print") //$NON-NLS-1$
 		));
-		printClassementClub.setIcon(new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.print") //$NON-NLS-1$
+		printClassementClub.setIcon(new ImageIcon(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + ApplicationCore.ajrParametreAppli.getResourceString("file.icon.print") //$NON-NLS-1$
 		));
 
 		//classement individuel
@@ -282,14 +282,14 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		jtbClassement.addChangeListener(this);
 		jtbClassement.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		jtbClassement.setTabPlacement(JTabbedPane.LEFT);
-		jtbClassement.addTab("onglet.classementindividuel", new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$ //$NON-NLS-2$ 
-				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.archer")), //$NON-NLS-1$
+		jtbClassement.addTab("onglet.classementindividuel", new ImageIcon(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$ //$NON-NLS-2$ 
+				File.separator + ApplicationCore.ajrParametreAppli.getResourceString("file.icon.archer")), //$NON-NLS-1$
 				ficheI);
-		jtbClassement.addTab("onglet.classementequipe",new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$ //$NON-NLS-2$ 
-				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.team")), //$NON-NLS-1$
+		jtbClassement.addTab("onglet.classementequipe",new ImageIcon(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$ //$NON-NLS-2$ 
+				File.separator + ApplicationCore.ajrParametreAppli.getResourceString("file.icon.team")), //$NON-NLS-1$
 				ficheE);
-		jtbClassement.addTab("onglet.classementclub",new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$ //$NON-NLS-2$ 
-				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.team")), //$NON-NLS-1$
+		jtbClassement.addTab("onglet.classementclub",new ImageIcon(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$ //$NON-NLS-2$ 
+				File.separator + ApplicationCore.ajrParametreAppli.getResourceString("file.icon.team")), //$NON-NLS-1$
 				ficheC);
 
 		//panneau global
@@ -297,15 +297,15 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		tabbedpane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		tabbedpane.addTab("onglet.gestionarcher", null, fichesDepart); //$NON-NLS-1$
 		tabbedpane.setTabComponentAt(0, getGestArchersTabComponent());
-		tabbedpane.addTab("onglet.pointage.greffe", new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$ //$NON-NLS-2$
-				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.desktop")), //$NON-NLS-1$
+		tabbedpane.addTab("onglet.pointage.greffe", new ImageIcon(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$ //$NON-NLS-2$
+				File.separator + ApplicationCore.ajrParametreAppli.getResourceString("file.icon.desktop")), //$NON-NLS-1$
 				new GreffePane(this));
 		tabbedpane.addTab("onglet.classement", //$NON-NLS-1$
-				new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
-						File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.team")), //$NON-NLS-1$
+				new ImageIcon(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
+						File.separator + ApplicationCore.ajrParametreAppli.getResourceString("file.icon.team")), //$NON-NLS-1$
 						jtbClassement);
-		tabbedpane.addTab("onglet.edition", new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$ //$NON-NLS-2$
-				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.print")), //$NON-NLS-1$
+		tabbedpane.addTab("onglet.edition", new ImageIcon(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$ //$NON-NLS-2$
+				File.separator + ApplicationCore.ajrParametreAppli.getResourceString("file.icon.print")), //$NON-NLS-1$
 		new JPanel());
 
 		//integration
@@ -324,7 +324,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 
 		for(int i = 1; i <= ficheConcours.getParametre().getNbDepart(); i++)
 			comboBox.addItem(
-					ConcoursJeunes.ajrLibelle.getResourceString("onglet.gestionarcher.depart") + i); //$NON-NLS-1$
+					ApplicationCore.ajrLibelle.getResourceString("onglet.gestionarcher.depart") + i); //$NON-NLS-1$
 		//comboBox.addItem("---"); //$NON-NLS-1$
 		panel.setLayout(new BorderLayout());
 		panel.setOpaque(false);
@@ -338,19 +338,19 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	 *
 	 */
 	private void affectLibelle() {
-		jbResultat.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.saisieresultats")); //$NON-NLS-1$
-		printClassementIndiv.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.impressionresultats")); //$NON-NLS-1$
-		printClassementEquipe.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.impressionresultats")); //$NON-NLS-1$
-		printClassementClub.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.impressionresultats")); //$NON-NLS-1$
-		jlCritClassement.setText(ConcoursJeunes.ajrLibelle.getResourceString("interface.critereclassement")); //$NON-NLS-1$
-		tabbedpane.setTitleAt(0, ConcoursJeunes.ajrLibelle.getResourceString("onglet.gestionarcher")); //$NON-NLS-1$
+		jbResultat.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.saisieresultats")); //$NON-NLS-1$
+		printClassementIndiv.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.impressionresultats")); //$NON-NLS-1$
+		printClassementEquipe.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.impressionresultats")); //$NON-NLS-1$
+		printClassementClub.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.impressionresultats")); //$NON-NLS-1$
+		jlCritClassement.setText(ApplicationCore.ajrLibelle.getResourceString("interface.critereclassement")); //$NON-NLS-1$
+		tabbedpane.setTitleAt(0, ApplicationCore.ajrLibelle.getResourceString("onglet.gestionarcher")); //$NON-NLS-1$
 		tabbedpane.setTabComponentAt(0, getGestArchersTabComponent());
-		tabbedpane.setTitleAt(1, ConcoursJeunes.ajrLibelle.getResourceString("onglet.pointage.greffe")); //$NON-NLS-1$
-		tabbedpane.setTitleAt(2, ConcoursJeunes.ajrLibelle.getResourceString("onglet.classement")); //$NON-NLS-1$
-		tabbedpane.setTitleAt(3, ConcoursJeunes.ajrLibelle.getResourceString("onglet.edition")); //$NON-NLS-1$
-		jtbClassement.setTitleAt(0, ConcoursJeunes.ajrLibelle.getResourceString("onglet.classementindividuel")); //$NON-NLS-1$
-		jtbClassement.setTitleAt(1, ConcoursJeunes.ajrLibelle.getResourceString("onglet.classementequipe")); //$NON-NLS-1$
-		jtbClassement.setTitleAt(2, ConcoursJeunes.ajrLibelle.getResourceString("onglet.classementclub")); //$NON-NLS-1$
+		tabbedpane.setTitleAt(1, ApplicationCore.ajrLibelle.getResourceString("onglet.pointage.greffe")); //$NON-NLS-1$
+		tabbedpane.setTitleAt(2, ApplicationCore.ajrLibelle.getResourceString("onglet.classement")); //$NON-NLS-1$
+		tabbedpane.setTitleAt(3, ApplicationCore.ajrLibelle.getResourceString("onglet.edition")); //$NON-NLS-1$
+		jtbClassement.setTitleAt(0, ApplicationCore.ajrLibelle.getResourceString("onglet.classementindividuel")); //$NON-NLS-1$
+		jtbClassement.setTitleAt(1, ApplicationCore.ajrLibelle.getResourceString("onglet.classementequipe")); //$NON-NLS-1$
+		jtbClassement.setTitleAt(2, ApplicationCore.ajrLibelle.getResourceString("onglet.classementclub")); //$NON-NLS-1$
 	}
 
 	/**
@@ -460,17 +460,17 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 				openResultatDialog();
 				jepClassIndiv.setText(ficheConcours.getClassement(FicheConcours.OUT_HTML));
 			} else {
-				JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("ficheconcours.target.empty")); //$NON-NLS-1$
+				JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.target.empty")); //$NON-NLS-1$
 			}
 		} else if(source == printClassementIndiv) {
 			if(!ficheConcours.printClassement())
-				JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
+				JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 		} else if(source == printClassementEquipe) {
 			if(!ficheConcours.printClassementEquipe())
-				JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
+				JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 		} else if(source == printClassementClub) {
 			if(!ficheConcours.printClassementClub())
-				JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
+				JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 		} else if(source instanceof JCheckBox) {
 			for(Criterion criterion : ficheConcours.getParametre().getReglement().getListCriteria()) {
 				criterion.setClassement(classmentCriteriaCB.get(criterion.getCode()).isSelected());
@@ -493,8 +493,8 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 				for(Concurrent concurrent : listConcurrents) {
 					if(concurrent.getCible() == 0) {
 						JOptionPane.showMessageDialog(this,
-								ConcoursJeunes.ajrLibelle.getResourceString("erreur.nocible"), //$NON-NLS-1$ 
-								ConcoursJeunes.ajrLibelle.getResourceString("erreur.nocible.titre"),JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
+								ApplicationCore.ajrLibelle.getResourceString("erreur.nocible"), //$NON-NLS-1$ 
+								ApplicationCore.ajrLibelle.getResourceString("erreur.nocible.titre"),JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 						break;
 					}
 				}
@@ -515,8 +515,8 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 			for(Concurrent concurrent : listConcurrents) {
 				if(concurrent.getCible() == 0) {
 					JOptionPane.showMessageDialog(this,
-							ConcoursJeunes.ajrLibelle.getResourceString("erreur.nocible"), //$NON-NLS-1$ 
-							ConcoursJeunes.ajrLibelle.getResourceString("erreur.nocible.titre"),JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
+							ApplicationCore.ajrLibelle.getResourceString("erreur.nocible"), //$NON-NLS-1$ 
+							ApplicationCore.ajrLibelle.getResourceString("erreur.nocible.titre"),JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 					break;
 				}
 			}

@@ -127,7 +127,7 @@ import javax.swing.text.PlainDocument;
 
 import org.concoursjeunes.Archer;
 import org.concoursjeunes.AutoCompleteDocument;
-import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.CriteriaSet;
 import org.concoursjeunes.CriteriaSetLibelle;
@@ -429,31 +429,31 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	 * affecte les libellé localisé à l'interface
 	 */
 	private void affectLibelle() {
-		setTitle(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.titre.edition")); //$NON-NLS-1$
+		setTitle(ApplicationCore.ajrLibelle.getResourceString("concurrent.titre.edition")); //$NON-NLS-1$
 
-		((TitledBorder) jpConcurrent.getBorder()).setTitle(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.panel.tireur")); //$NON-NLS-1$
-		((TitledBorder) jpClub.getBorder()).setTitle(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.panel.club")); //$NON-NLS-1$
-		((TitledBorder) jpCible.getBorder()).setTitle(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.panel.cible")); //$NON-NLS-1$
-		((TitledBorder) jpInscription.getBorder()).setTitle(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.inscription.titre")); //$NON-NLS-1$
-		((TitledBorder) jpPlaceLibre.getBorder()).setTitle(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.placelibre.titre")); //$NON-NLS-1$
+		((TitledBorder) jpConcurrent.getBorder()).setTitle(ApplicationCore.ajrLibelle.getResourceString("concurrent.panel.tireur")); //$NON-NLS-1$
+		((TitledBorder) jpClub.getBorder()).setTitle(ApplicationCore.ajrLibelle.getResourceString("concurrent.panel.club")); //$NON-NLS-1$
+		((TitledBorder) jpCible.getBorder()).setTitle(ApplicationCore.ajrLibelle.getResourceString("concurrent.panel.cible")); //$NON-NLS-1$
+		((TitledBorder) jpInscription.getBorder()).setTitle(ApplicationCore.ajrLibelle.getResourceString("concurrent.inscription.titre")); //$NON-NLS-1$
+		((TitledBorder) jpPlaceLibre.getBorder()).setTitle(ApplicationCore.ajrLibelle.getResourceString("concurrent.placelibre.titre")); //$NON-NLS-1$
 
-		jlDescription.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.description")); // Description //$NON-NLS-1$
+		jlDescription.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.description")); // Description //$NON-NLS-1$
 		jlDescription.setBackground(new Color(255, 255, 225));
-		jlNom.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.identite")); // Nom et prénom du Tireur //$NON-NLS-1$
-		jlLicence.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.numlicence")); // N° de Licence //$NON-NLS-1$
-		jcbHandicape.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.handicap")); // Archer handicapé? //$NON-NLS-1$
-		jlClub.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.nomclub")); // nom du club //$NON-NLS-1$
-		jlAgrement.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.agrementclub")); // n°agrement du club //$NON-NLS-1$
-		jlCible.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.cible")); // cible attribué //$NON-NLS-1$
-		jlPoints.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.points")); //$NON-NLS-1$
-		jlDixNeufM.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.dix")); //$NON-NLS-1$
+		jlNom.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.identite")); // Nom et prénom du Tireur //$NON-NLS-1$
+		jlLicence.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.numlicence")); // N° de Licence //$NON-NLS-1$
+		jcbHandicape.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.handicap")); // Archer handicapé? //$NON-NLS-1$
+		jlClub.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.nomclub")); // nom du club //$NON-NLS-1$
+		jlAgrement.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.agrementclub")); // n°agrement du club //$NON-NLS-1$
+		jlCible.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.cible")); // cible attribué //$NON-NLS-1$
+		jlPoints.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.points")); //$NON-NLS-1$
+		jlDixNeufM.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.dix")); //$NON-NLS-1$
 
-		jbSelectionArcher.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.selectionarcher")); //$NON-NLS-1$
-		jbEditerArcher.setToolTipText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.editer")); //$NON-NLS-1$
-		jbValider.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
-		jbPrecedent.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.precedent")); //$NON-NLS-1$
-		jbSuivant.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.suivant")); //$NON-NLS-1$
-		jbAnnuler.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
+		jbSelectionArcher.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.selectionarcher")); //$NON-NLS-1$
+		jbEditerArcher.setToolTipText(ApplicationCore.ajrLibelle.getResourceString("bouton.editer")); //$NON-NLS-1$
+		jbValider.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
+		jbPrecedent.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.precedent")); //$NON-NLS-1$
+		jbSuivant.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.suivant")); //$NON-NLS-1$
+		jbAnnuler.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
 
 		for (Criterion key : ficheConcours.getParametre().getReglement().getListCriteria()) {
 			jlCategrieTable.get(key).setText(key.getLibelle());
@@ -464,7 +464,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			}
 		}
 
-		String[] lInscription = AJToolKit.tokenize(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.inscription"), ","); //$NON-NLS-1$ //$NON-NLS-2$
+		String[] lInscription = AJToolKit.tokenize(ApplicationCore.ajrLibelle.getResourceString("concurrent.inscription"), ","); //$NON-NLS-1$ //$NON-NLS-2$
 		jcbInscription.removeAllItems();
 		for (String status : lInscription) {
 			jcbInscription.addItem(status);
@@ -480,12 +480,12 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		jbSelectionArcher.setEnabled(!isinit);
 		jbEditerArcher.setEnabled(isinit);
 		if (isinit) {
-			jbEditerArcher.setIcon(new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
-					File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.lock") //$NON-NLS-1$
+			jbEditerArcher.setIcon(new ImageIcon(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
+					File.separator + ApplicationCore.ajrParametreAppli.getResourceString("file.icon.lock") //$NON-NLS-1$
 			));
 		} else {
-			jbEditerArcher.setIcon(new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
-					File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.open") //$NON-NLS-1$
+			jbEditerArcher.setIcon(new ImageIcon(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
+					File.separator + ApplicationCore.ajrParametreAppli.getResourceString("file.icon.open") //$NON-NLS-1$
 			));
 		}
 
@@ -605,7 +605,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	 */
 	public int showConcurrentDialog(Concurrent concurrent) {
 
-		jlDescription.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.description")); //$NON-NLS-1$
+		jlDescription.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.description")); //$NON-NLS-1$
 		jlDescription.setBackground(new Color(255, 255, 225));
 
 		AutoCompleteDocument acdClub = new AutoCompleteDocument(jtfClub, AutoCompleteDocument.SearchType.CLUB_SEARCH, ficheConcours.getParametre().getReglement());
@@ -660,7 +660,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		String strPlaceLibre = "<html>"; //$NON-NLS-1$
 
 		// affiche le nombre de concurrent total sur le pas de tir
-		strPlaceLibre += ConcoursJeunes.ajrLibelle.getResourceString("concurrent.placelibre.nbarcher") + //$NON-NLS-1$
+		strPlaceLibre += ApplicationCore.ajrLibelle.getResourceString("concurrent.placelibre.nbarcher") + //$NON-NLS-1$
 				": " + ficheConcours.getConcurrentList().countArcher() + "<br><br>"; //$NON-NLS-1$ //$NON-NLS-2$
 
 		// recupere la table d'occupation des cibles
@@ -691,10 +691,10 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 					distAndBlas.getDistance()[0] + "m/" + //$NON-NLS-1$
 					distAndBlas.getTargetFace().getName() + ")</i><br>\n"; //$NON-NLS-1$
 			strPlaceLibre += "&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\">" + //$NON-NLS-1$
-					ConcoursJeunes.ajrLibelle.getResourceString("concurrent.placelibre.occupee") + //$NON-NLS-1$
+					ApplicationCore.ajrLibelle.getResourceString("concurrent.placelibre.occupee") + //$NON-NLS-1$
 					" " + occupationCibles.get(distAndBlas).getPlaceOccupe() + "</font>"; //$NON-NLS-1$ //$NON-NLS-2$
 			strPlaceLibre += ", <font color=\"green\">" + //$NON-NLS-1$
-					ConcoursJeunes.ajrLibelle.getResourceString("concurrent.placelibre.libre") + //$NON-NLS-1$
+					ApplicationCore.ajrLibelle.getResourceString("concurrent.placelibre.libre") + //$NON-NLS-1$
 					" " + occupationCibles.get(distAndBlas).getPlaceLibre() + "</font><br>"; //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
@@ -738,10 +738,10 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		}
 		
 		if (concurrent.haveHomonyme()) {
-			jlDescription.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.homonyme")); //$NON-NLS-1$
+			jlDescription.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.homonyme")); //$NON-NLS-1$
 			jlDescription.setBackground(Color.ORANGE);
 		} else {
-			jlDescription.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.description")); //$NON-NLS-1$
+			jlDescription.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.description")); //$NON-NLS-1$
 			jlDescription.setBackground(new Color(255, 255, 225));
 		}
 
@@ -769,7 +769,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 
 		setConcurrent(newConcurrent);
 
-		jlDescription.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.noconcurrent")); //$NON-NLS-1$
+		jlDescription.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.noconcurrent")); //$NON-NLS-1$
 		jlDescription.setBackground(Color.ORANGE);
 	}
 
@@ -819,20 +819,20 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			if (tempConcurrent.getInscription() == Concurrent.UNINIT) {
 				// si il n'y a plus de place alors retourner une erreur
 				if (!ficheConcours.getPasDeTir(tempConcurrent.getDepart()).havePlaceForConcurrent(tempConcurrent)) {
-					JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur.maxcible"), //$NON-NLS-1$
-							ConcoursJeunes.ajrLibelle.getResourceString("erreur.maxcible.titre"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
+					JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("erreur.maxcible"), //$NON-NLS-1$
+							ApplicationCore.ajrLibelle.getResourceString("erreur.maxcible.titre"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 					return;
 					// si le concurrent existe déjà alors retourner une
 					// erreur
 				} else if (ficheConcours.getConcurrentList().contains(tempConcurrent)) {
-					JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur.alreadyexist"), //$NON-NLS-1$
-							ConcoursJeunes.ajrLibelle.getResourceString("erreur.alreadyexist.titre"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
+					JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("erreur.alreadyexist"), //$NON-NLS-1$
+							ApplicationCore.ajrLibelle.getResourceString("erreur.alreadyexist.titre"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 					return;
 				}
 			} else {
 				if (!ficheConcours.getPasDeTir(tempConcurrent.getDepart()).havePlaceForConcurrent(tempConcurrent)) {
-					JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("erreur.maxcible"), //$NON-NLS-1$
-							ConcoursJeunes.ajrLibelle.getResourceString("erreur.maxcible.titre"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
+					JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("erreur.maxcible"), //$NON-NLS-1$
+							ApplicationCore.ajrLibelle.getResourceString("erreur.maxcible.titre"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 					return;
 				}
 			}
@@ -840,16 +840,16 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			try {
 				// verification du score
 				if (!ficheConcours.getParametre().getReglement().isValidScore(readScores())) {
-					JOptionPane.showMessageDialog(new JDialog(), ConcoursJeunes.ajrLibelle.getResourceString("erreur.impscore"), //$NON-NLS-1$
-							ConcoursJeunes.ajrLibelle.getResourceString("erreur"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
+					JOptionPane.showMessageDialog(new JDialog(), ApplicationCore.ajrLibelle.getResourceString("erreur.impscore"), //$NON-NLS-1$
+							ApplicationCore.ajrLibelle.getResourceString("erreur"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 					return;
 				}
 			
 				concurrent.setScore(readScores());
 			} catch (NumberFormatException e) {
 				JOptionPane.showMessageDialog(this, 
-						ConcoursJeunes.ajrLibelle.getResourceString("erreur.erreursaisie"), //$NON-NLS-1$
-						ConcoursJeunes.ajrLibelle.getResourceString("erreur.erreursaisie.title"), //$NON-NLS-1$
+						ApplicationCore.ajrLibelle.getResourceString("erreur.erreursaisie"), //$NON-NLS-1$
+						ApplicationCore.ajrLibelle.getResourceString("erreur.erreursaisie.title"), //$NON-NLS-1$
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
@@ -866,8 +866,8 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 				concurrent.setManque(Integer.parseInt(tfpdM.getText()));
 			} catch (NumberFormatException e) {
 				JOptionPane.showMessageDialog(this, 
-						ConcoursJeunes.ajrLibelle.getResourceString("erreur.erreursaisie"), //$NON-NLS-1$
-						ConcoursJeunes.ajrLibelle.getResourceString("erreur.erreursaisie.title"), //$NON-NLS-1$
+						ApplicationCore.ajrLibelle.getResourceString("erreur.erreursaisie"), //$NON-NLS-1$
+						ApplicationCore.ajrLibelle.getResourceString("erreur.erreursaisie.title"), //$NON-NLS-1$
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
@@ -910,15 +910,15 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 					setConcurrent(concurrent);
 				}
             } catch (InterruptedException e) {
-            	JXErrorPane.showDialog(this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+            	JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
             			null, null, e, Level.SEVERE, null));
 	            e.printStackTrace();
             } catch (ExecutionException e) {
-            	JXErrorPane.showDialog(this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+            	JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
             			null, null, e, Level.SEVERE, null));
 	            e.printStackTrace();
             } catch (TimeoutException e) {
-            	JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("concurrent.info.listing.wait")); //$NON-NLS-1$
+            	JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("concurrent.info.listing.wait")); //$NON-NLS-1$
             }
 		} else if (ae.getSource() == jbDetailClub) {
 			if (!jtfAgrement.getText().equals("")) { //$NON-NLS-1$
@@ -948,8 +948,8 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 
 			jbEditerArcher.setEnabled(false);
 
-			jbEditerArcher.setIcon(new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
-					File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.open") //$NON-NLS-1$
+			jbEditerArcher.setIcon(new ImageIcon(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
+					File.separator + ApplicationCore.ajrParametreAppli.getResourceString("file.icon.open") //$NON-NLS-1$
 			));
 
 		}

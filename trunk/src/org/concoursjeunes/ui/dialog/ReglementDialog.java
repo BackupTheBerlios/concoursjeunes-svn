@@ -86,11 +86,7 @@
  */
 package org.concoursjeunes.ui.dialog;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -100,23 +96,9 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 
-import javax.swing.Box;
-import javax.swing.DefaultCellEditor;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.JTree;
+import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -124,25 +106,20 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
-import org.concoursjeunes.Blason;
-import org.concoursjeunes.ConcoursJeunes;
-import org.concoursjeunes.CriteriaSet;
-import org.concoursjeunes.CriteriaSetLibelle;
-import org.concoursjeunes.Criterion;
-import org.concoursjeunes.CriterionElement;
-import org.concoursjeunes.DistancesEtBlason;
-import org.concoursjeunes.Reglement;
+import org.concoursjeunes.*;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
 import ajinteractive.standard.java2.GridbagComposer;
 import ajinteractive.standard.java2.NumberDocument;
+import ajinteractive.standard.ui.AJTree;
+import ajinteractive.standard.ui.ToolTipHeader;
 
 /**
  * @author Aurélien JEOFFRAY
  * 
  */
-public class ReglementDialog extends JDialog implements ActionListener, MouseListener {
+public class ReglementDialog extends JDialog implements ActionListener, MouseListener, TableModelListener {
 
 	public static final int NO_LOCK = 0;
 	public static final int LOCK_CHANGE_L1 = 1;
@@ -167,7 +144,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	private JButton jbRemoveElement = new JButton();
 	private DefaultMutableTreeNode treeRoot = new DefaultMutableTreeNode("criteres"); //$NON-NLS-1$
 	private DefaultTreeModel treeModel = new DefaultTreeModel(treeRoot);
-	private JTree treeCriteria = new JTree(treeModel);
+	private AJTree treeCriteria = new AJTree(treeModel);
 
 	private JTextField jtfNbSerie = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
 	private JTextField jtfNbVoleeParSerie = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
@@ -180,7 +157,10 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		//  renderers to be used based on Class
 		@Override
         public Class<?> getColumnClass(int column)	{
-			return getValueAt(0, column).getClass();
+			Object value = getValueAt(0, column);
+			if(value !=null)
+				return value.getClass();
+			return String.class;
 		}
 	};
 	private JComboBox jcbCriteriaSet = new JComboBox(); 
@@ -216,10 +196,10 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		jbAnnuler.addActionListener(this);
 
 		JTabbedPane tabbedPane = new JTabbedPane();
-		tabbedPane.addTab(ConcoursJeunes.ajrLibelle.getResourceString("reglement.general.title"), initGeneral()); //$NON-NLS-1$
-		tabbedPane.addTab(ConcoursJeunes.ajrLibelle.getResourceString("reglement.criteres.title"), initCriteria()); //$NON-NLS-1$
-		tabbedPane.addTab(ConcoursJeunes.ajrLibelle.getResourceString("reglement.blacklist.title"), initCriteriaSet()); //$NON-NLS-1$
-		tabbedPane.addTab(ConcoursJeunes.ajrLibelle.getResourceString("reglement.categories.title"), initDistancesEtBlasons()); //$NON-NLS-1$
+		tabbedPane.addTab(ApplicationCore.ajrLibelle.getResourceString("reglement.general.title"), initGeneral()); //$NON-NLS-1$
+		tabbedPane.addTab(ApplicationCore.ajrLibelle.getResourceString("reglement.criteres.title"), initCriteria()); //$NON-NLS-1$
+		tabbedPane.addTab(ApplicationCore.ajrLibelle.getResourceString("reglement.surclassement.title"), initCriteriaSet()); //$NON-NLS-1$
+		tabbedPane.addTab(ApplicationCore.ajrLibelle.getResourceString("reglement.categories.title"), initDistancesEtBlasons()); //$NON-NLS-1$
 
 		jpAction.add(jbValider);
 		jpAction.add(jbAnnuler);
@@ -285,6 +265,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 
 		treeCriteria.addMouseListener(this);
 		treeCriteria.setToggleClickCount(3);
+		treeCriteria.setKeepExpansionState(true);
 
 		jpDifCriteria.setLayout(new BorderLayout());
 
@@ -316,6 +297,8 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	private JPanel initCriteriaSet() {
 		JPanel jpCriteriaSet = new JPanel();
 		
+		//jtCriteriaSet.add
+		
 		jpCriteriaSet.setLayout(new BorderLayout());
 		jpCriteriaSet.add(BorderLayout.CENTER, new JScrollPane(jtCriteriaSet));
 		
@@ -337,34 +320,34 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	}
 
 	private void affectLibelle() {
-		setTitle(ConcoursJeunes.ajrLibelle.getResourceString("reglement.titre")); //$NON-NLS-1$
+		setTitle(ApplicationCore.ajrLibelle.getResourceString("reglement.titre")); //$NON-NLS-1$
 
-		jbValider.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
-		jbAnnuler.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
+		jbValider.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
+		jbAnnuler.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
 
-		jlReglementName.setText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.name")); //$NON-NLS-1$
-		jlNbSerie.setText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.serie")); //$NON-NLS-1$
-		jlNbVoleeParSerie.setText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.voleeparserie")); //$NON-NLS-1$
-		jlNbFlecheParVolee.setText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.flecheparvolee")); //$NON-NLS-1$
-		jlNbMembresEquipe.setText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.membresmax")); //$NON-NLS-1$
-		jlNbMembresRetenu.setText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.selectionmax")); //$NON-NLS-1$
-		jcbOfficialReglement.setText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.official")); //$NON-NLS-1$
+		jlReglementName.setText(ApplicationCore.ajrLibelle.getResourceString("reglement.name")); //$NON-NLS-1$
+		jlNbSerie.setText(ApplicationCore.ajrLibelle.getResourceString("reglement.serie")); //$NON-NLS-1$
+		jlNbVoleeParSerie.setText(ApplicationCore.ajrLibelle.getResourceString("reglement.voleeparserie")); //$NON-NLS-1$
+		jlNbFlecheParVolee.setText(ApplicationCore.ajrLibelle.getResourceString("reglement.flecheparvolee")); //$NON-NLS-1$
+		jlNbMembresEquipe.setText(ApplicationCore.ajrLibelle.getResourceString("reglement.membresmax")); //$NON-NLS-1$
+		jlNbMembresRetenu.setText(ApplicationCore.ajrLibelle.getResourceString("reglement.selectionmax")); //$NON-NLS-1$
+		jcbOfficialReglement.setText(ApplicationCore.ajrLibelle.getResourceString("reglement.official")); //$NON-NLS-1$
 
-		jbAddCriteria.setIcon(new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$ 
-				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.addcriteria"))); //$NON-NLS-1$
-		jbAddCriteria.setToolTipText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.addcriteria")); //$NON-NLS-1$
-		jbAddCriteriaMember.setIcon(new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.addcriteriamember"))); //$NON-NLS-1$
-		jbAddCriteriaMember.setToolTipText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.addcriteriamember")); //$NON-NLS-1$
-		jbUpElement.setIcon(new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.upelement"))); //$NON-NLS-1$
-		jbUpElement.setToolTipText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.upelement")); //$NON-NLS-1$
-		jbDownElement.setIcon(new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.downelement"))); //$NON-NLS-1$
-		jbDownElement.setToolTipText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.downelement")); //$NON-NLS-1$
-		jbRemoveElement.setIcon(new ImageIcon(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.removeelement"))); //$NON-NLS-1$
-		jbRemoveElement.setToolTipText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.removeelement")); //$NON-NLS-1$
+		jbAddCriteria.setIcon(new ImageIcon(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$ 
+				File.separator + ApplicationCore.ajrParametreAppli.getResourceString("file.icon.addcriteria"))); //$NON-NLS-1$
+		jbAddCriteria.setToolTipText(ApplicationCore.ajrLibelle.getResourceString("reglement.addcriteria")); //$NON-NLS-1$
+		jbAddCriteriaMember.setIcon(new ImageIcon(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + ApplicationCore.ajrParametreAppli.getResourceString("file.icon.addcriteriamember"))); //$NON-NLS-1$
+		jbAddCriteriaMember.setToolTipText(ApplicationCore.ajrLibelle.getResourceString("reglement.addcriteriamember")); //$NON-NLS-1$
+		jbUpElement.setIcon(new ImageIcon(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + ApplicationCore.ajrParametreAppli.getResourceString("file.icon.upelement"))); //$NON-NLS-1$
+		jbUpElement.setToolTipText(ApplicationCore.ajrLibelle.getResourceString("reglement.upelement")); //$NON-NLS-1$
+		jbDownElement.setIcon(new ImageIcon(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + ApplicationCore.ajrParametreAppli.getResourceString("file.icon.downelement"))); //$NON-NLS-1$
+		jbDownElement.setToolTipText(ApplicationCore.ajrLibelle.getResourceString("reglement.downelement")); //$NON-NLS-1$
+		jbRemoveElement.setIcon(new ImageIcon(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + ApplicationCore.ajrParametreAppli.getResourceString("file.icon.removeelement"))); //$NON-NLS-1$
+		jbRemoveElement.setToolTipText(ApplicationCore.ajrLibelle.getResourceString("reglement.removeelement")); //$NON-NLS-1$
 	}
 
 	private void completePanel() {
@@ -394,7 +377,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 				jtfNbFlecheParVolee.setEditable(false);
 		}
 
-		jlReglementName.setText(ConcoursJeunes.ajrLibelle.getResourceString("reglement.name") + " " + reglement.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+		jlReglementName.setText(ApplicationCore.ajrLibelle.getResourceString("reglement.name") + " " + reglement.getName()); //$NON-NLS-1$ //$NON-NLS-2$
 
 		jtfNbSerie.setText(reglement.getNbSerie() + ""); //$NON-NLS-1$
 		jtfNbVoleeParSerie.setText(reglement.getNbVoleeParSerie() + ""); //$NON-NLS-1$
@@ -432,12 +415,33 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 			jtCriteriaSet.setModel(createCriteriaSetTablemodel());
 			jtCriteriaSet.getColumnModel().getColumn(0).setMaxWidth(20);
 			
-			jcbCriteriaSet.addItem("");
-			for(CriteriaSet cs : CriteriaSet.listCriteriaSet(reglement, reglement.getClassementFilter())) {
-				jcbCriteriaSet.addItem(cs);
-			}
+			ToolTipHeader header = new ToolTipHeader(jtCriteriaSet.getColumnModel());
+		    header.setToolTipStrings(new String[] { 
+		    		ApplicationCore.ajrLibelle.getResourceString("reglement.surclassement.enable"), "", ""} );  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+		    jtCriteriaSet.setTableHeader(header);
+			
 			TableColumn cH = jtCriteriaSet.getColumnModel().getColumn(2);
-			cH.setCellEditor(new DefaultCellEditor(jcbCriteriaSet));
+			cH.setCellEditor(new DefaultCellEditor(jcbCriteriaSet) {
+				/* (non-Javadoc)
+				 * @see javax.swing.DefaultCellEditor#getTableCellEditorComponent(javax.swing.JTable, java.lang.Object, boolean, int, int)
+				 */
+				@Override
+				public Component getTableCellEditorComponent(JTable table,
+						Object value, boolean isSelected, int row, int column) {
+					
+					jcbCriteriaSet.removeAllItems();
+					jcbCriteriaSet.addItem(""); //$NON-NLS-1$
+					CriteriaSet tmpCs = (CriteriaSet)table.getValueAt(row, 1);
+					
+					if(!reglement.getSurclassement().containsValue(tmpCs)) {
+						for(CriteriaSet cs : CriteriaSet.listCriteriaSet(reglement, reglement.getClassementFilter())) {
+							if(!tmpCs.equals(cs) && !reglement.getSurclassement().containsKey(cs))
+								jcbCriteriaSet.addItem(cs);
+						}
+					}
+					return super.getTableCellEditorComponent(table, value, isSelected, row, column);
+				}
+			});
 		}
 	}
 
@@ -451,7 +455,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 			TableColumn cH = jtDistanceBlason.getColumnModel().getColumn(jtDistanceBlason.getColumnModel().getColumnCount() - 1);
 			cH.setCellEditor(new DefaultCellEditor(jcbBlasons));
 		} catch (SQLException e) {
-			JXErrorPane.showDialog(this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+			JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 					null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		}
@@ -471,17 +475,23 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 			}
 		};
 		
-		dtm.addColumn("Activé");
-		dtm.addColumn("Catégories de classement");
-		dtm.addColumn("Surclassement");
+		dtm.addColumn(ApplicationCore.ajrLibelle.getResourceString("reglement.surclassement.enable")); //$NON-NLS-1$
+		dtm.addColumn(ApplicationCore.ajrLibelle.getResourceString("reglement.surclassement.categories")); //$NON-NLS-1$
+		dtm.addColumn(ApplicationCore.ajrLibelle.getResourceString("reglement.surclassement.surclassement")); //$NON-NLS-1$
+		dtm.addTableModelListener(this);
 		
+		//on liste toutes les catégorie de classement
 		differentiationCriteria = CriteriaSet.listCriteriaSet(reglement, reglement.getClassementFilter());
 		
 		for (int i = 0; i < differentiationCriteria.length; i++) {
+			CriteriaSet criteriaSet = reglement.getSurclassement().get(differentiationCriteria[i]);
+			boolean enable = true;
+			if(criteriaSet == null && reglement.getSurclassement().containsKey(differentiationCriteria[i]))
+				enable = false;
 			dtm.addRow(new Object[] {
-					true,
+					enable,
 					differentiationCriteria[i],
-					""
+					(criteriaSet != null) ? criteriaSet : "" //$NON-NLS-1$
 				});
 		}
 		
@@ -503,14 +513,17 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		//s'assure que le nombre de serie est corect
 		reglement.setNbSerie(Integer.parseInt(jtfNbSerie.getText()));
 
-		dtm.addColumn(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.concours.scna")); //$NON-NLS-1$
+		dtm.addColumn(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.concours.scna")); //$NON-NLS-1$
 		for (int i = 0; i < reglement.getNbSerie(); i++)
-			dtm.addColumn(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.concours.distance") + " " + (i + 1)); //$NON-NLS-1$ //$NON-NLS-2$
-		dtm.addColumn(ConcoursJeunes.ajrLibelle.getResourceString("configuration.ecran.concours.blason")); //$NON-NLS-1$
+			dtm.addColumn(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.concours.distance") + " " + (i + 1)); //$NON-NLS-1$ //$NON-NLS-2$
+		dtm.addColumn(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.concours.blason")); //$NON-NLS-1$
 
 		differentiationCriteria = CriteriaSet.listCriteriaSet(reglement, reglement.getPlacementFilter());
 
 		for (int i = 0; i < differentiationCriteria.length; i++) {
+			if(reglement.getSurclassement().containsKey(differentiationCriteria[i]))
+				continue;
+			
 			Object[] row = new Object[reglement.getNbSerie() + 2];
 			CriteriaSetLibelle scnaLib = new CriteriaSetLibelle(differentiationCriteria[i]);
 			row[0] = scnaLib.toString();
@@ -667,8 +680,8 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 							//generateSCNA_DBRow();
 						}
 					} else {
-						JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("reglement.message.criteria.noelement"), //$NON-NLS-1$
-								ConcoursJeunes.ajrLibelle.getResourceString("reglement.message.criteria.noelement.title"), //$NON-NLS-1$
+						JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("reglement.message.criteria.noelement"), //$NON-NLS-1$
+								ApplicationCore.ajrLibelle.getResourceString("reglement.message.criteria.noelement.title"), //$NON-NLS-1$
 								JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
@@ -847,5 +860,23 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	 * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
 	 */
 	public void mouseReleased(MouseEvent e) {
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.event.TableModelListener#tableChanged(javax.swing.event.TableModelEvent)
+	 */
+	@Override
+	public void tableChanged(TableModelEvent e) {
+		DefaultTableModel dtm = (DefaultTableModel)e.getSource();
+		CriteriaSet criteriaSet = (CriteriaSet)dtm.getValueAt(e.getFirstRow(), 1);
+		boolean active = (Boolean)dtm.getValueAt(e.getFirstRow(), 0);
+		Object oSurclasse = dtm.getValueAt(e.getFirstRow(), 2);
+		
+		if(active && oSurclasse instanceof CriteriaSet)
+			reglement.getSurclassement().put(criteriaSet, (CriteriaSet)oSurclasse);
+		else if(!active)
+			reglement.getSurclassement().put(criteriaSet, null);
+		else
+			reglement.getSurclassement().remove(criteriaSet);
 	}
 }

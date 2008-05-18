@@ -111,7 +111,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.Parametre;
 
@@ -177,7 +177,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowActivated(WindowEvent arg0) {
-				if (ConcoursJeunes.getConfiguration().isInterfaceResultatCumul()) {
+				if (ApplicationCore.getConfiguration().isInterfaceResultatCumul()) {
 					oldPoints[0][0].requestFocus(true);
 				} else {
 					points[0][0].requestFocus(true);
@@ -210,7 +210,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 				pointsCum2V[i][j].setEnabled(false);
 
 				points[i][j] = new JTextField(new NumberDocument(false, false), "0",3); //$NON-NLS-1$
-				if(ConcoursJeunes.getConfiguration().isInterfaceResultatCumul()) {
+				if(ApplicationCore.getConfiguration().isInterfaceResultatCumul()) {
 					points[i][j].setEditable(false);
 					points[i][j].setFocusable(false);
 				} else {
@@ -275,7 +275,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 
 		gridbagComposer.setParentPanel(pane1);
 		c.anchor = GridBagConstraints.WEST; c.weightx = 1.0;
-		c.gridy = 0; c.gridwidth = 4 + (ConcoursJeunes.getConfiguration().isInterfaceResultatCumul() ? nbSerie*3 : nbSerie);
+		c.gridy = 0; c.gridwidth = 4 + (ApplicationCore.getConfiguration().isInterfaceResultatCumul() ? nbSerie*3 : nbSerie);
 		gridbagComposer.addComponentIntoGrid(jlCible, c);
 		c.gridy++; c.gridwidth = 1;
 		gridbagComposer.addComponentIntoGrid(jlDistance, c);
@@ -283,7 +283,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 			c.gridx = i+1;
 			gridbagComposer.addComponentIntoGrid(jlDistances[i], c);
 		}
-		if(ConcoursJeunes.getConfiguration().isInterfaceResultatSupl()) {
+		if(ApplicationCore.getConfiguration().isInterfaceResultatSupl()) {
 			c.gridx++;
 			gridbagComposer.addComponentIntoGrid(ldix, c);
 			c.gridx++;
@@ -300,7 +300,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 
 			for(int j = 0; j < nbSerie; j++) {
 				ppoints[i][j] = new JPanel();
-				if(ConcoursJeunes.getConfiguration().isInterfaceResultatCumul()) {
+				if(ApplicationCore.getConfiguration().isInterfaceResultatCumul()) {
 					ppoints[i][j].add(oldPoints[i][j]);
 					ppoints[i][j].add(new JLabel("+")); //$NON-NLS-1$
 					ppoints[i][j].add(pointsCum2V[i][j]);
@@ -309,7 +309,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 				ppoints[i][j].add(points[i][j]);
 				gridbagComposer.addComponentIntoGrid(ppoints[i][j], c);
 			}
-			if(ConcoursJeunes.getConfiguration().isInterfaceResultatSupl()) {
+			if(ApplicationCore.getConfiguration().isInterfaceResultatSupl()) {
 				gridbagComposer.addComponentIntoGrid(dix[i], c);
 				gridbagComposer.addComponentIntoGrid(neuf[i], c);
 				gridbagComposer.addComponentIntoGrid(manque[i], c);
@@ -345,7 +345,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 				points[concurrent.getPosition()][j].setEnabled(true);
 				lPoints[concurrent.getPosition()].setEnabled(true);
 				
-				if(ConcoursJeunes.getConfiguration().isInterfaceResultatSupl()) {
+				if(ApplicationCore.getConfiguration().isInterfaceResultatSupl()) {
 					dix[concurrent.getPosition()].setText(concurrent.getDix()+""); //$NON-NLS-1$
 					dix[concurrent.getPosition()].setEnabled(true);
 					neuf[concurrent.getPosition()].setText(concurrent.getNeuf()+""); //$NON-NLS-1$
@@ -358,20 +358,20 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 	}
 	
 	private void affectLibelle() {
-		setTitle(ConcoursJeunes.ajrLibelle.getResourceString("resultats.titre")); //$NON-NLS-1$
+		setTitle(ApplicationCore.ajrLibelle.getResourceString("resultats.titre")); //$NON-NLS-1$
 		
-		jlCible.setText("<html><font size=\"+1\">" + ConcoursJeunes.ajrLibelle.getResourceString("resultats.cible") + " " + concurrents[0].getCible() + "</font></html>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		jlDistance.setText(ConcoursJeunes.ajrLibelle.getResourceString("resultats.distances")); //$NON-NLS-1$
+		jlCible.setText("<html><font size=\"+1\">" + ApplicationCore.ajrLibelle.getResourceString("resultats.cible") + " " + concurrents[0].getCible() + "</font></html>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		jlDistance.setText(ApplicationCore.ajrLibelle.getResourceString("resultats.distances")); //$NON-NLS-1$
 		for(int i = 0; i < jlDistances.length; i++) {
 			jlDistances[i].setText((i==0) ?
-					ConcoursJeunes.ajrLibelle.getResourceString("resultats.distance1") + " " //$NON-NLS-1$ //$NON-NLS-2$
-					: (i+1) + ConcoursJeunes.ajrLibelle.getResourceString("resultats.distancen") + " "); //$NON-NLS-1$ //$NON-NLS-2$
+					ApplicationCore.ajrLibelle.getResourceString("resultats.distance1") + " " //$NON-NLS-1$ //$NON-NLS-2$
+					: (i+1) + ApplicationCore.ajrLibelle.getResourceString("resultats.distancen") + " "); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		
-		jbValider.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
-		jbSuivant.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.suivant")); //$NON-NLS-1$
-		jbPrecedent.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.precedent")); //$NON-NLS-1$
-		jbAnnuler.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
+		jbValider.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
+		jbSuivant.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.suivant")); //$NON-NLS-1$
+		jbPrecedent.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.precedent")); //$NON-NLS-1$
+		jbAnnuler.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
 	}
 	
 	public int showResultatDialog() {
@@ -395,7 +395,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 					ArrayList<Integer> concPoints = new ArrayList<Integer>();
 					//récupere les points du concurrent
 					for(int i = 0; i < parametres.getReglement().getNbSerie(); i++) {
-						if(ConcoursJeunes.getConfiguration().isInterfaceResultatCumul())
+						if(ApplicationCore.getConfiguration().isInterfaceResultatCumul())
 							points[concurrent.getPosition()][i].setText(
 									Integer.parseInt(oldPoints[concurrent.getPosition()][i].getText())
 									+ Integer.parseInt(pointsCum2V[concurrent.getPosition()][i].getText())
@@ -410,15 +410,15 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 					//vérifie que le score soit valide et affiche un message d'erreur dans le cas contraire 
 					if(!parametres.getReglement().isValidScore(concPoints)) {
 						JOptionPane.showMessageDialog(new JDialog(),
-								ConcoursJeunes.ajrLibelle.getResourceString("erreur.impscore") + "<br>" + concurrent.getNomArcher(), //$NON-NLS-1$ //$NON-NLS-2$
-								ConcoursJeunes.ajrLibelle.getResourceString("erreur"),JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
+								ApplicationCore.ajrLibelle.getResourceString("erreur.impscore") + "<br>" + concurrent.getNomArcher(), //$NON-NLS-1$ //$NON-NLS-2$
+								ApplicationCore.ajrLibelle.getResourceString("erreur"),JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 						return;
 					}
 					
 					//si c'est bon affecte le score à l'archer
 					concurrent.setScore(concPoints);
 					//intégre les 10/9/M si nécessaire
-					if(ConcoursJeunes.getConfiguration().isInterfaceResultatSupl()) {
+					if(ApplicationCore.getConfiguration().isInterfaceResultatSupl()) {
 						concurrent.setDix(Integer.parseInt(dix[concurrent.getPosition()].getText()));
 						concurrent.setNeuf(Integer.parseInt(neuf[concurrent.getPosition()].getText()));
 						concurrent.setManque(Integer.parseInt(manque[concurrent.getPosition()].getText()));
@@ -443,8 +443,8 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 				setVisible(false);
 			} catch(NumberFormatException e) {
 				JOptionPane.showMessageDialog(this, 
-						ConcoursJeunes.ajrLibelle.getResourceString("erreur.erreursaisie"), //$NON-NLS-1$
-						ConcoursJeunes.ajrLibelle.getResourceString("erreur.erreursaisie.title"), //$NON-NLS-1$
+						ApplicationCore.ajrLibelle.getResourceString("erreur.erreursaisie"), //$NON-NLS-1$
+						ApplicationCore.ajrLibelle.getResourceString("erreur.erreursaisie.title"), //$NON-NLS-1$
 						JOptionPane.ERROR_MESSAGE);
 			}
 		} else if(source == jbAnnuler) {
@@ -456,7 +456,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 	}
 	
 	public void keyReleased(KeyEvent e) {
-		if(ConcoursJeunes.getConfiguration().isInterfaceResultatCumul()) {
+		if(ApplicationCore.getConfiguration().isInterfaceResultatCumul()) {
 			char key = e.getKeyChar();
 			if(Character.isDigit(key)) {
 				for(int i = 0; i < parametres.getNbTireur(); i++) {
@@ -526,7 +526,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 					} else if (aComponent == manque[i]) {
 						if (i + 1 < parametres.getNbTireur() && dix[i + 1].isEnabled())
 							nextComp = dix[i + 1];
-						else if (ConcoursJeunes.getConfiguration().isInterfaceResultatCumul())
+						else if (ApplicationCore.getConfiguration().isInterfaceResultatCumul())
 							nextComp = oldPoints[0][0];
 						else
 							nextComp = jbSuivant;
@@ -596,7 +596,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 					} else if (aComponent == dix[i]) {
 						if (i - 1 >= 0)
 							nextComp = manque[i - 1];
-						else if (ConcoursJeunes.getConfiguration().isInterfaceResultatCumul())
+						else if (ApplicationCore.getConfiguration().isInterfaceResultatCumul())
 							nextComp = oldPoints[nbConc - 1][parametres.getReglement().getNbSerie() - 1];
 						else
 							nextComp = points[nbConc - 1][parametres.getReglement().getNbSerie() - 1];

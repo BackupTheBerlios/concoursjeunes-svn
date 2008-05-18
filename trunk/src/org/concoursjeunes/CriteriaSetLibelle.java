@@ -49,7 +49,7 @@ public class CriteriaSetLibelle {
         strSCNA = strSCNA.trim();
         
         //si la chaine est vide (filtre *false) afficher tous le monde
-        if(strSCNA.equals("")) strSCNA = ConcoursJeunes.ajrLibelle.getResourceString("equipe.categorie.tous"); //$NON-NLS-1$ //$NON-NLS-2$
+        if(strSCNA.equals("")) strSCNA = ApplicationCore.ajrLibelle.getResourceString("equipe.categorie.tous"); //$NON-NLS-1$ //$NON-NLS-2$
         
         this.libelle = strSCNA.trim();
     }

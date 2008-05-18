@@ -114,7 +114,7 @@ public class CriterionElement {
 	 */
 	public void save() {
 		try {
-			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+			Statement stmt = ApplicationCore.dbConnection.createStatement();
 			
 			stmt.executeUpdate("merge into CRITEREELEMENT (CODECRITEREELEMENT," + //$NON-NLS-1$
 					"CODECRITERE,NUMREGLEMENT,LIBELLECRITEREELEMENT,ACTIF,NUMORDRE) values (" + //$NON-NLS-1$
@@ -131,7 +131,7 @@ public class CriterionElement {
 	 */
 	public void delete() {
 		try {
-			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+			Statement stmt = ApplicationCore.dbConnection.createStatement();
 			
 			stmt.executeUpdate("delete from CRITEREELEMENT where CODECRITEREELEMENT='" + code + //$NON-NLS-1$
 					"' and CODECRITERE='" + criterionParent.getCode() + "' and " + //$NON-NLS-1$ //$NON-NLS-2$
@@ -191,7 +191,7 @@ public class CriterionElement {
     	List<CriterionElement> elements = new ArrayList<CriterionElement>();
     	
     	try {
-			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+			Statement stmt = ApplicationCore.dbConnection.createStatement();
 			
 			String sql = "select CODECRITEREELEMENT from critereelement where " + //$NON-NLS-1$
 					"codecritere='" + criterion.getCode() + "' " + //$NON-NLS-1$ //$NON-NLS-2$

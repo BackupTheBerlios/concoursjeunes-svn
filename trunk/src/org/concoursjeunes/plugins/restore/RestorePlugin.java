@@ -103,7 +103,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Configuration;
 import org.concoursjeunes.ConfigurationManager;
 import org.concoursjeunes.MetaDataFicheConcours;
@@ -132,9 +132,9 @@ public class RestorePlugin {
 	
 	@PluginEntry
 	public void showRestoreDialog() {
-		Configuration configuration = ConcoursJeunes.getConfiguration();
+		Configuration configuration = ApplicationCore.getConfiguration();
 		
-		File concoursPath = ConcoursJeunes.userRessources.getConcoursPathForProfile(configuration.getCurProfil());
+		File concoursPath = ApplicationCore.userRessources.getConcoursPathForProfile(configuration.getCurProfil());
 		
 		JFileChooser chooser = new JFileChooser();
 	    FileNameExtensionFilter filter = new FileNameExtensionFilter(
@@ -187,11 +187,11 @@ public class RestorePlugin {
 					if(restoredConfiguration != null) {
 						if(restoredConfiguration.getCurProfil().equals(configuration.getCurProfil())) {
 							try {
-								ConcoursJeunes.getInstance().closeAllFichesConcours();
+								ApplicationCore.getInstance().closeAllFichesConcours();
 								
 								//ConcoursJeunes.configuration.save();
 							} catch (NullConfigurationException e1) {
-								JXErrorPane.showDialog(parentframe, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+								JXErrorPane.showDialog(parentframe, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 										null, null, e1, Level.SEVERE, null));
 								e1.printStackTrace();
 							}
@@ -201,7 +201,7 @@ public class RestorePlugin {
 									restoredConfiguration.getMetaDataFichesConcours().add(metaDataFicheConcours);
 							}
 							
-							ConcoursJeunes.setConfiguration(restoredConfiguration);
+							ApplicationCore.setConfiguration(restoredConfiguration);
 							restoredConfiguration.saveAsDefault();
 						}
 						
@@ -209,7 +209,7 @@ public class RestorePlugin {
 					}
 				}
 			} catch (IOException e) {
-				JXErrorPane.showDialog(parentframe, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+				JXErrorPane.showDialog(parentframe, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 						null, null, e, Level.SEVERE, null));
 				e.printStackTrace();
 			}

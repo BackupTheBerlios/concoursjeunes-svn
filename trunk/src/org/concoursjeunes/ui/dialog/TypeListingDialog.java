@@ -98,7 +98,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
-import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.ApplicationCore;
 
 import ajinteractive.standard.java2.GridbagComposer;
 
@@ -126,7 +126,7 @@ public class TypeListingDialog extends JDialog implements ActionListener {
     public TypeListingDialog(JFrame parentframe) {
         super(parentframe);
         
-        setTitle(ConcoursJeunes.ajrLibelle.getResourceString("typelisting.titre")); //$NON-NLS-1$
+        setTitle(ApplicationCore.ajrLibelle.getResourceString("typelisting.titre")); //$NON-NLS-1$
         setModal(true);
         
         init();
@@ -141,12 +141,12 @@ public class TypeListingDialog extends JDialog implements ActionListener {
         JPanel exportPane = new JPanel();
         JPanel boutonPane = new JPanel();
         
-        jrbAlpha = new JRadioButton(ConcoursJeunes.ajrLibelle.getResourceString("typelisting.alpha"), true); //$NON-NLS-1$
-        jrbGreffe = new JRadioButton(ConcoursJeunes.ajrLibelle.getResourceString("typelisting.greffe")); //$NON-NLS-1$
-        jrbTarget = new JRadioButton(ConcoursJeunes.ajrLibelle.getResourceString("typelisting.target")); //$NON-NLS-1$
+        jrbAlpha = new JRadioButton(ApplicationCore.ajrLibelle.getResourceString("typelisting.alpha"), true); //$NON-NLS-1$
+        jrbGreffe = new JRadioButton(ApplicationCore.ajrLibelle.getResourceString("typelisting.greffe")); //$NON-NLS-1$
+        jrbTarget = new JRadioButton(ApplicationCore.ajrLibelle.getResourceString("typelisting.target")); //$NON-NLS-1$
         
-        jbValider = new JButton(ConcoursJeunes.ajrLibelle.getResourceString("typelisting.imprimer")); //$NON-NLS-1$
-        jbAnnuler = new JButton(ConcoursJeunes.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
+        jbValider = new JButton(ApplicationCore.ajrLibelle.getResourceString("typelisting.imprimer")); //$NON-NLS-1$
+        jbAnnuler = new JButton(ApplicationCore.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
         
         jrbAlpha.addActionListener(this);
         jrbGreffe.addActionListener(this);

@@ -86,41 +86,27 @@
  */
 package org.concoursjeunes.ui.dialog;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Window;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
-import javax.swing.RowFilter;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
-import javax.swing.event.TableModelListener;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
-import org.concoursjeunes.Archer;
-import org.concoursjeunes.ConcoursJeunes;
-import org.concoursjeunes.Concurrent;
-import org.concoursjeunes.Criterion;
-import org.concoursjeunes.CriterionElement;
-import org.concoursjeunes.Entite;
-import org.concoursjeunes.Reglement;
+import org.concoursjeunes.*;
+import org.jdesktop.swingx.JXBusyLabel;
+
+import ajinteractive.standard.java2.GridbagComposer;
 
 /**
  * La liste des personnes présente daans la base des archers
@@ -144,6 +130,8 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	private JTable jTable = null;
 	private JScrollPane jScrollPane = null;
 	private JPanel jPanel = null;
+	private JXBusyLabel loading = new JXBusyLabel();
+	private JLabel loadingProgressLabel = new JLabel();
 	private JButton jbValider = null;
 	private JButton jbAnnuler = null;
 
@@ -156,16 +144,21 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	 *            la fenetre principal de l'application (pour le point modal)
 	 */
 	public ConcurrentListDialog(Window parentframe, Reglement reglement, Archer filter) {
-		super(parentframe, ConcoursJeunes.ajrLibelle.getResourceString("concurrent.nouveau.titre"), ModalityType.APPLICATION_MODAL); //$NON-NLS-1$
+		super(parentframe, ApplicationCore.ajrLibelle.getResourceString("concurrent.nouveau.titre"), ModalityType.APPLICATION_MODAL); //$NON-NLS-1$
 		this.reglement = reglement;
 
-		if (filter == null && ConcoursJeunes.getConfiguration().getClub().getAgrement().length() > 0) {
+		if (filter == null && ApplicationCore.getConfiguration().getClub().getAgrement().length() > 0) {
 			filter = new Archer();
 			Entite entite = new Entite();
-			entite.setAgrement(ConcoursJeunes.getConfiguration().getClub().getAgrement().substring(0, 2) + "%"); //$NON-NLS-1$
+			entite.setAgrement(ApplicationCore.getConfiguration().getClub().getAgrement().substring(0, 2) + "%"); //$NON-NLS-1$
 			filter.setClub(entite);
 		}
-		dtm = new ArchersTableModel(filter);
+		//dtm = new ArchersTableModel(filter);
+		dtm = new ArchersTableModel();
+		ArchersTableLoader loader = new ArchersTableLoader(filter);
+		loadingProgress(loader);
+		loader.execute();
+		loading.setBusy(true);
 
 		init();
 
@@ -186,7 +179,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		jlFilterClub = new JLabel();
 
 		moreResult.addActionListener(this);
-		moreResult.setToolTipText(ConcoursJeunes.ajrLibelle.getResourceString("listeconcurrent.moreresult")); //$NON-NLS-1$
+		moreResult.setToolTipText(ApplicationCore.ajrLibelle.getResourceString("listeconcurrent.moreresult")); //$NON-NLS-1$
 
 		jpEntete.add(jlFilterLicence);
 		jpEntete.add(getJtfFilterLicence());
@@ -210,9 +203,9 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	}
 
 	private void affectLibelle() {
-		jlFilterLicence.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.nouveau.licence")); //$NON-NLS-1$
-		jlFilterNom.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.nouveau.nom")); //$NON-NLS-1$
-		jlFilterClub.setText(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.nouveau.club")); //$NON-NLS-1$
+		jlFilterLicence.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.nouveau.licence")); //$NON-NLS-1$
+		jlFilterNom.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.nouveau.nom")); //$NON-NLS-1$
+		jlFilterClub.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.nouveau.club")); //$NON-NLS-1$
 	}
 
 	/**
@@ -273,6 +266,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 			this.jTable.setPreferredScrollableViewportSize(new Dimension(640, 480));
 			this.jTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			this.jTable.addMouseListener(this);
+			this.jTable.getRowSorter().toggleSortOrder(1);
 
 			TableColumn column = jTable.getColumnModel().getColumn(0);
 			column.setPreferredWidth(65);
@@ -306,12 +300,25 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	 */
 	private JPanel getJPanel() {
 		if (this.jPanel == null) {
-			FlowLayout flowLayout1 = new FlowLayout();
 			this.jPanel = new JPanel();
-			this.jPanel.setLayout(flowLayout1);
-			flowLayout1.setAlignment(java.awt.FlowLayout.RIGHT);
-			this.jPanel.add(getJButton(), null);
-			this.jPanel.add(getJButton1(), null);
+			
+			GridBagConstraints c = new GridBagConstraints();
+			GridbagComposer gridbagComposer = new GridbagComposer();
+					
+			gridbagComposer.setParentPanel(this.jPanel);
+			c.anchor = GridBagConstraints.WEST;
+			gridbagComposer.addComponentIntoGrid(loading, c);
+			c.insets = new Insets(0, 5, 0, 0);
+			gridbagComposer.addComponentIntoGrid(loadingProgressLabel, c);
+			c.fill = GridBagConstraints.HORIZONTAL;
+			c.weightx = 1.0;
+			c.insets = new Insets(0, 0, 0, 0);
+			gridbagComposer.addComponentIntoGrid(Box.createHorizontalGlue(), c);
+			c.anchor = GridBagConstraints.EAST;
+			c.fill = GridBagConstraints.NONE;
+			c.weightx = 0;
+			gridbagComposer.addComponentIntoGrid(getJButton(), c);
+			gridbagComposer.addComponentIntoGrid(getJButton1(), c);
 		}
 		return this.jPanel;
 	}
@@ -324,7 +331,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	private JButton getJButton() {
 		if (this.jbValider == null) {
 			this.jbValider = new JButton();
-			this.jbValider.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
+			this.jbValider.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
 			this.jbValider.setActionCommand("bouton.valider"); //$NON-NLS-1$
 			this.jbValider.addActionListener(this);
 		}
@@ -339,11 +346,28 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	private JButton getJButton1() {
 		if (this.jbAnnuler == null) {
 			this.jbAnnuler = new JButton();
-			this.jbAnnuler.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
+			this.jbAnnuler.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
 			this.jbAnnuler.setActionCommand("bouton.annuler"); //$NON-NLS-1$
 			this.jbAnnuler.addActionListener(this);
 		}
 		return this.jbAnnuler;
+	}
+	
+	private void loadingProgress(ArchersTableLoader loader) {
+		loader.addPropertyChangeListener(new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent event) {
+                if (event.getPropertyName().equals("progress")) { //$NON-NLS-1$
+                    int progress = ((Integer) event.getNewValue()).intValue();
+                    //progressBar.setValue(progress);
+                    loadingProgressLabel.setText(ApplicationCore.ajrLibelle.getResourceString("listeconcurrent.loading", progress)); //$NON-NLS-1$
+
+                    if (progress == 100) {
+                    	loading.setBusy(false);
+                    	 loadingProgressLabel.setText(ApplicationCore.ajrLibelle.getResourceString("listeconcurrent.loadingended")); //$NON-NLS-1$
+                    }
+                }
+            }
+        });
 	}
 
 	public void setFilter(Archer filter) {
@@ -409,8 +433,15 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
 					dtm = new ArchersTableModel();
+					
+					ArchersTableLoader loader = new ArchersTableLoader(null);
+					loadingProgress(loader);
+					loader.execute();
+					loading.setBusy(true);
+					
 					sorter = new TableRowSorter<ArchersTableModel>(dtm);
 					jTable.setModel(dtm);
+					sorter.toggleSortOrder(1);
 
 					Thread.yield();
 
@@ -467,9 +498,8 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	/**
 	 * @author aurelien
 	 */
-	private class ArchersTableModel implements TableModel {
+	private class ArchersTableModel extends AbstractTableModel {
 
-		private final ArrayList<TableModelListener> tmListeners = new ArrayList<TableModelListener>();
 		private final ArrayList<String> columnsName = new ArrayList<String>();
 		private List<Concurrent> rows = new ArrayList<Concurrent>();
 		// private ArrayList<SoftReference<Concurrent>> softRows = new ArrayList<SoftReference<Concurrent>>();
@@ -487,26 +517,28 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		public ArchersTableModel(Archer filter) {
 
 
-			rows = Concurrent.getArchersInDatabase(filter, reglement, "NOMARCHER"); //$NON-NLS-1$
+			//rows = ConcurrentManager.getArchersInDatabase(filter, reglement, "NOMARCHER"); //$NON-NLS-1$
+			//rows = ConcurrentManager.getArchersInDatabase(filter, reglement, ""); //$NON-NLS-1$
 
-			columnsName.add(ConcoursJeunes.ajrLibelle.getResourceString("listeconcurrent.numlicence")); //$NON-NLS-1$
-			columnsName.add(ConcoursJeunes.ajrLibelle.getResourceString("listeconcurrent.nom")); //$NON-NLS-1$
-			columnsName.add(ConcoursJeunes.ajrLibelle.getResourceString("listeconcurrent.prenom")); //$NON-NLS-1$
-			columnsName.add(ConcoursJeunes.ajrLibelle.getResourceString("listeconcurrent.club")); //$NON-NLS-1$
-			columnsName.add(ConcoursJeunes.ajrLibelle.getResourceString("listeconcurrent.categorie")); //$NON-NLS-1$
-			columnsName.add(ConcoursJeunes.ajrLibelle.getResourceString("listeconcurrent.niveau")); //$NON-NLS-1$
+			columnsName.add(ApplicationCore.ajrLibelle.getResourceString("listeconcurrent.numlicence")); //$NON-NLS-1$
+			columnsName.add(ApplicationCore.ajrLibelle.getResourceString("listeconcurrent.nom")); //$NON-NLS-1$
+			columnsName.add(ApplicationCore.ajrLibelle.getResourceString("listeconcurrent.prenom")); //$NON-NLS-1$
+			columnsName.add(ApplicationCore.ajrLibelle.getResourceString("listeconcurrent.club")); //$NON-NLS-1$
+			columnsName.add(ApplicationCore.ajrLibelle.getResourceString("listeconcurrent.categorie")); //$NON-NLS-1$
+			columnsName.add(ApplicationCore.ajrLibelle.getResourceString("listeconcurrent.niveau")); //$NON-NLS-1$
 		}
-
-		/**
-		 * @see javax.swing.table.TableModel#addTableModelListener(javax.swing.event.TableModelListener)
-		 */
-		public void addTableModelListener(TableModelListener l) {
-			tmListeners.add(l);
+		
+		public void add(List<Concurrent> concurrents) {
+			int first = rows.size();
+			int last = first + concurrents.size() - 1;
+			rows.addAll(concurrents);
+			fireTableRowsInserted(first, last);
 		}
 
 		/**
 		 * @see javax.swing.table.TableModel#getColumnClass(int)
 		 */
+		@Override
 		public Class<?> getColumnClass(int columnIndex) {
 			return String.class;
 		}
@@ -521,6 +553,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		/**
 		 * @see javax.swing.table.TableModel#getColumnName(int)
 		 */
+		@Override
 		public String getColumnName(int columnIndex) {
 			return columnsName.get(columnIndex);
 		}
@@ -574,20 +607,15 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		/**
 		 * @see javax.swing.table.TableModel#isCellEditable(int, int)
 		 */
+		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
 			return false;
 		}
 
 		/**
-		 * @see javax.swing.table.TableModel#removeTableModelListener(javax.swing.event.TableModelListener)
-		 */
-		public void removeTableModelListener(TableModelListener l) {
-			tmListeners.remove(l);
-		}
-
-		/**
 		 * @see javax.swing.table.TableModel#setValueAt(java.lang.Object, int, int)
 		 */
+		@Override
 		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 		}
 
@@ -599,6 +627,57 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		public void finalize() throws Throwable {
 			System.out.println("ConcurrentListDialog.TableModel detruit"); //$NON-NLS-1$
 			super.finalize();
+		}
+	}
+	
+	private class ArchersTableLoader extends SwingWorker<List<Concurrent>, Concurrent> {
+
+		private Archer filter;
+		private int nbConcurrent = 0;
+		private List<Concurrent> concurrents = new ArrayList<Concurrent>();
+		/**
+		 * 
+		 */
+		public ArchersTableLoader(Archer filter) {
+			this.filter = filter;
+		}
+		/* (non-Javadoc)
+		 * @see javax.swing.SwingWorker#doInBackground()
+		 */
+		@Override
+		protected List<Concurrent> doInBackground() throws Exception {			
+			return ConcurrentManager.getArchersInDatabase(filter, reglement, "", new ConcurrentManagerProgress() { //$NON-NLS-1$
+
+				@Override
+				public void setConcurrentCount(int concurrentCount) {
+					nbConcurrent = concurrentCount;
+				}
+
+				@Override
+				public void setCurrentConcurrent(Concurrent concurrent) {
+					concurrents.add(concurrent);
+					publish(concurrent);
+					setProgress(100 * concurrents.size() / nbConcurrent);
+				}
+				
+			});
+		}
+		
+		/* (non-Javadoc)
+		 * @see javax.swing.SwingWorker#process(java.util.List)
+		 */
+		@Override
+		protected void process(List<Concurrent> chunks) {
+			dtm.add(chunks);
+		}
+		
+		/* (non-Javadoc)
+		 * @see javax.swing.SwingWorker#done()
+		 */
+		@Override
+		protected void done() {
+			setProgress(100);
+			super.done();
 		}
 	}
 	

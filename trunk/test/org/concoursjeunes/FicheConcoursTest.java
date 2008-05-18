@@ -88,7 +88,7 @@ package org.concoursjeunes;
 
 import junit.framework.TestCase;
 
-import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.FicheConcours;
 import org.concoursjeunes.builders.ConcurrentBuilder;
@@ -106,7 +106,7 @@ import org.junit.Test;
  */
 public class FicheConcoursTest extends TestCase {
 	
-	private ConcoursJeunes concoursJeunes;
+	private ApplicationCore concoursJeunes;
 	private FicheConcours ficheConcours;
 
 	/**
@@ -115,7 +115,7 @@ public class FicheConcoursTest extends TestCase {
 	@Before
 	@Override
 	public void setUp() throws Exception {
-		concoursJeunes = ConcoursJeunes.getInstance();
+		concoursJeunes = ApplicationCore.getInstance();
 		
 		concoursJeunes.addConcoursJeunesListener(new ConcoursJeunesListener() {
 
@@ -132,7 +132,7 @@ public class FicheConcoursTest extends TestCase {
 			
 		});
 		
-		Parametre parametre = new Parametre(ConcoursJeunes.getConfiguration());
+		Parametre parametre = new Parametre(ApplicationCore.getConfiguration());
 		concoursJeunes.createFicheConcours(parametre);
 	}
 	

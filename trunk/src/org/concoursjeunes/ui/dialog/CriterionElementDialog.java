@@ -99,7 +99,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Criterion;
 import org.concoursjeunes.CriterionElement;
 
@@ -143,7 +143,7 @@ public class CriterionElementDialog extends JDialog implements ActionListener {
      * @param criterionIndividu l'element à manipuler
      */
     public CriterionElementDialog(ReglementDialog parent, Criterion criterion, CriterionElement criterionIndividu) {
-        super(parent, ConcoursJeunes.ajrLibelle.getResourceString("criterion.titre"), true); //$NON-NLS-1$
+        super(parent, ApplicationCore.ajrLibelle.getResourceString("criterion.titre"), true); //$NON-NLS-1$
         
         this.parent = parent;
         this.criterion = criterion;
@@ -192,12 +192,12 @@ public class CriterionElementDialog extends JDialog implements ActionListener {
     }
     
     private void affectLibelle() {
-        jlCode.setText(ConcoursJeunes.ajrLibelle.getResourceString("criterion.code")); //$NON-NLS-1$
-        jlLibelle.setText(ConcoursJeunes.ajrLibelle.getResourceString("criterion.libelle")); //$NON-NLS-1$
-        jcbActive.setText(ConcoursJeunes.ajrLibelle.getResourceString("criterion.active")); //$NON-NLS-1$
+        jlCode.setText(ApplicationCore.ajrLibelle.getResourceString("criterion.code")); //$NON-NLS-1$
+        jlLibelle.setText(ApplicationCore.ajrLibelle.getResourceString("criterion.libelle")); //$NON-NLS-1$
+        jcbActive.setText(ApplicationCore.ajrLibelle.getResourceString("criterion.active")); //$NON-NLS-1$
         
-        jbValider.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
-        jbAnnuler.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
+        jbValider.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
+        jbAnnuler.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
     }
     
     private void completePanel() {

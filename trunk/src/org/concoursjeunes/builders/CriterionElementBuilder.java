@@ -92,7 +92,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Criterion;
 import org.concoursjeunes.CriterionElement;
 
@@ -116,7 +116,7 @@ public class CriterionElementBuilder {
 			String sql = "select * from CRITEREELEMENT where CODECRITEREELEMENT=?" + //$NON-NLS-1$
 					" and CODECRITERE=? and NUMREGLEMENT=?"; //$NON-NLS-1$
 			
-			PreparedStatement pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
+			PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
 
 			pstmt.setString(1, codeElement);
 			pstmt.setString(2, criterion.getCode());

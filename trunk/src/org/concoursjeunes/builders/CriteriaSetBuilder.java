@@ -93,7 +93,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Hashtable;
 
-import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.CriteriaSet;
 import org.concoursjeunes.Criterion;
 import org.concoursjeunes.CriterionElement;
@@ -120,7 +120,7 @@ public class CriteriaSetBuilder {
 		try {
 			String sql = "select * from POSSEDE where NUMCRITERIASET=? and NUMREGLEMENT=?"; //$NON-NLS-1$
 			
-			PreparedStatement pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
+			PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
 			
 			pstmt.setInt(1, numCriteriaSet);
 			pstmt.setInt(2, hashReglement);

@@ -91,7 +91,7 @@ package org.concoursjeunes.builders;
 import java.io.File;
 import java.io.IOException;
 
-import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.FicheConcours;
 import org.concoursjeunes.MetaDataFicheConcours;
 
@@ -112,7 +112,7 @@ public class FicheConcoursBuilder {
 	 */
 	public static FicheConcours getFicheConcours(MetaDataFicheConcours metaDataFicheConcours) 
 			throws IOException {
-		File fFiche = new File(ConcoursJeunes.userRessources.getConcoursPathForProfile(ConcoursJeunes.getConfiguration().getCurProfil()) + File.separator
+		File fFiche = new File(ApplicationCore.userRessources.getConcoursPathForProfile(ApplicationCore.getConfiguration().getCurProfil()) + File.separator
 				+ metaDataFicheConcours.getFilenameConcours());
 		Object[] savedStructure = AJToolKit.loadXMLStructure(fFiche, true);
 

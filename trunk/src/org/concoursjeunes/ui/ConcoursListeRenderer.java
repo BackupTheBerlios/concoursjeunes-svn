@@ -96,7 +96,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
-import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Concurrent;
 
 /**
@@ -117,17 +117,17 @@ public class ConcoursListeRenderer extends JLabel implements ListCellRenderer {
 	 */
 	public ConcoursListeRenderer() {
 		archerIcon = new ImageIcon(
-				ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
-				ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.archer.normal")); //$NON-NLS-1$
+				ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
+				ApplicationCore.ajrParametreAppli.getResourceString("file.icon.archer.normal")); //$NON-NLS-1$
 		archerHandicapIcon = new ImageIcon(
-				ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
-				ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.archer.handicap")); //$NON-NLS-1$
+				ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
+				ApplicationCore.ajrParametreAppli.getResourceString("file.icon.archer.handicap")); //$NON-NLS-1$
 		archerRedIcon = new ImageIcon(
-				ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
-				ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.archer.notarget")); //$NON-NLS-1$
+				ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
+				ApplicationCore.ajrParametreAppli.getResourceString("file.icon.archer.notarget")); //$NON-NLS-1$
 		archerHandicapRedIcon = new ImageIcon(
-				ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
-				ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.archer.handicap.notarget")); //$NON-NLS-1$
+				ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
+				ApplicationCore.ajrParametreAppli.getResourceString("file.icon.archer.handicap.notarget")); //$NON-NLS-1$
 	}
 
 	/**

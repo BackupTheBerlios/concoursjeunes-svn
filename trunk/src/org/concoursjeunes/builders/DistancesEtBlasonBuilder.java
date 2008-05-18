@@ -94,7 +94,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import org.concoursjeunes.BlasonManager;
-import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.DistancesEtBlason;
 import org.concoursjeunes.Reglement;
 
@@ -121,7 +121,7 @@ public class DistancesEtBlasonBuilder {
 			String sql = "select * from DISTANCESBLASONS where " + //$NON-NLS-1$
 					"NUMDISTANCESBLASONS=? and NUMREGLEMENT=?"; //$NON-NLS-1$
 			
-			pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
+			pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
 			
 			pstmt.setInt(1, numdistancesblason);
 			pstmt.setInt(2, hashReglement);
@@ -139,7 +139,7 @@ public class DistancesEtBlasonBuilder {
 				
 				sql = "select * from ASSOCIER where " + //$NON-NLS-1$
 						"NUMDISTANCESBLASONS=? and NUMREGLEMENT=?"; //$NON-NLS-1$
-				pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
+				pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
 				
 				pstmt.setInt(1, numdistancesblason);
 				pstmt.setInt(2, hashReglement);
@@ -156,7 +156,7 @@ public class DistancesEtBlasonBuilder {
 				
 				sql = "select * from distances where " + //$NON-NLS-1$
 						"NUMDISTANCESBLASONS=? and NUMREGLEMENT=?"; //$NON-NLS-1$
-				pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
+				pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
 				
 				pstmt.setInt(1, numdistancesblason);
 				pstmt.setInt(2, hashReglement);

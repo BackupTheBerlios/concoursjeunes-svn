@@ -93,12 +93,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.concoursjeunes.ConcoursJeunes;
-import org.concoursjeunes.CriteriaSet;
-import org.concoursjeunes.Criterion;
-import org.concoursjeunes.DistancesEtBlason;
-import org.concoursjeunes.Reglement;
+import org.concoursjeunes.*;
 
 /**
  * <p>
@@ -164,7 +162,7 @@ public class ReglementBuilder {
 		Reglement reglement = new Reglement();
 		
 		try {
-			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+			Statement stmt = ApplicationCore.dbConnection.createStatement();
 			
 			String sql = null;
 			if(numreglement > -1)
@@ -210,6 +208,23 @@ public class ReglementBuilder {
 				}
 				rs.close();
 				reglement.setListDistancesEtBlason(listDistancesEtBlason);
+				
+				Map<CriteriaSet, CriteriaSet> surclassement = new HashMap<CriteriaSet, CriteriaSet>();
+				rs = stmt.executeQuery("select * from SURCLASSEMENT where NUMREGLEMENT=" + numreglment); //$NON-NLS-1$
+				while (rs.next()) {
+					int numCriteriaSet = rs.getInt("NUMCRITERIASET"); //$NON-NLS-1$
+					int numCriteriaSetSurClasse = rs.getInt("NUMCRITERIASET_SURCLASSE"); //$NON-NLS-1$
+					
+					CriteriaSet criteriaSet = CriteriaSetBuilder.getCriteriaSet(numCriteriaSet, reglement, numreglment);
+					CriteriaSet criteriaSetSurClasse = null;
+					if(!rs.wasNull()) {
+						criteriaSetSurClasse = CriteriaSetBuilder.getCriteriaSet(numCriteriaSetSurClasse, reglement, numreglment);;
+					}
+					
+					surclassement.put(criteriaSet, criteriaSetSurClasse);
+				}
+				rs.close();
+				reglement.setSurclassement(surclassement);
 			}
 			
 			stmt.close();

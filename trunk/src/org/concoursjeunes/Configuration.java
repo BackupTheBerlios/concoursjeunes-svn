@@ -425,7 +425,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	 *
 	 */
 	public void save() {
-		File f = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + 
+		File f = new File(ApplicationCore.userRessources.getConfigPathForUser() + 
 				File.separator + 
 				CONFIG_PROFILE + curProfil + EXT_XML);
 		try {
@@ -442,9 +442,9 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	 */
 	public void saveAsDefault() {
 		try {
-			File f = new File(ConcoursJeunes.userRessources.getConfigPathForUser() + 
+			File f = new File(ApplicationCore.userRessources.getConfigPathForUser() + 
 					File.separator + 
-					ConcoursJeunes.ajrParametreAppli.getResourceString("file.configuration")); //$NON-NLS-1$
+					ApplicationCore.ajrParametreAppli.getResourceString("file.configuration")); //$NON-NLS-1$
 			try {
 				AJToolKit.saveMarshallStructure(f, this);
 			} catch (FileNotFoundException e) {

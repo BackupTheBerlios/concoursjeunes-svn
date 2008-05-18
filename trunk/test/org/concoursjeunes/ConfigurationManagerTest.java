@@ -156,7 +156,7 @@ public class ConfigurationManagerTest extends TestCase {
 	@Test
 	public void testLoadConfigurationFile() {
 		try {
-			assertNotNull(ConfigurationManager.loadConfiguration(new File(ConcoursJeunes.userRessources.getConfigPathForUser() 
+			assertNotNull(ConfigurationManager.loadConfiguration(new File(ApplicationCore.userRessources.getConfigPathForUser() 
 					+ File.separator + "configuration_defaut.xml"))); //$NON-NLS-1$
 		} catch (IOException e) {
 			fail(e.toString());
@@ -173,13 +173,13 @@ public class ConfigurationManagerTest extends TestCase {
 		configuration.setCurProfil("test_rename_orig"); //$NON-NLS-1$
 		configuration.save();
 		
-		ConcoursJeunes concoursJeunes = ConcoursJeunes.getInstance();
+		ApplicationCore concoursJeunes = ApplicationCore.getInstance();
 		
-		String actualProfile = ConcoursJeunes.getConfiguration().getCurProfil();
-		ConcoursJeunes.getConfiguration().save();
+		String actualProfile = ApplicationCore.getConfiguration().getCurProfil();
+		ApplicationCore.getConfiguration().save();
 		
 		configuration.saveAsDefault();
-		ConcoursJeunes.setConfiguration(configuration);
+		ApplicationCore.setConfiguration(configuration);
 		
 		
 		/*concoursJeunes.addConcoursJeunesListener(new ConcoursJeunesListener() {
@@ -197,15 +197,15 @@ public class ConfigurationManagerTest extends TestCase {
 			
 			assertFalse("Il est interdit de renommer le profil par defaut", ConfigurationManager.renameConfiguration("defaut", "test_rename")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			//test l'absence d'erreur dans l'etat d'origine
-			assertTrue(new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "Profile/test_rename_orig").exists()); //$NON-NLS-1$
+			assertTrue(new File(ApplicationCore.userRessources.getConfigPathForUser(), "Profile/test_rename_orig").exists()); //$NON-NLS-1$
 			
 			assertTrue(ConfigurationManager.renameConfiguration("test_rename_orig", "test_rename")); //$NON-NLS-1$ //$NON-NLS-2$
-			assertTrue(new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "configuration_test_rename.xml").exists()); //$NON-NLS-1$
-			assertFalse(new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "configuration_test_rename_orig.xml").exists()); //$NON-NLS-1$
+			assertTrue(new File(ApplicationCore.userRessources.getConfigPathForUser(), "configuration_test_rename.xml").exists()); //$NON-NLS-1$
+			assertFalse(new File(ApplicationCore.userRessources.getConfigPathForUser(), "configuration_test_rename_orig.xml").exists()); //$NON-NLS-1$
 			
-			assertTrue(new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "Profile/test_rename").exists()); //$NON-NLS-1$
-			assertFalse(new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "Profile/test_rename_orig").exists()); //$NON-NLS-1$
-			assertTrue(new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "Profile/test_rename").listFiles().length > 0); //$NON-NLS-1$
+			assertTrue(new File(ApplicationCore.userRessources.getConfigPathForUser(), "Profile/test_rename").exists()); //$NON-NLS-1$
+			assertFalse(new File(ApplicationCore.userRessources.getConfigPathForUser(), "Profile/test_rename_orig").exists()); //$NON-NLS-1$
+			assertTrue(new File(ApplicationCore.userRessources.getConfigPathForUser(), "Profile/test_rename").listFiles().length > 0); //$NON-NLS-1$
 		} catch (NullConfigurationException e) {
 			fail(e.toString());
 			e.printStackTrace();
@@ -216,16 +216,16 @@ public class ConfigurationManagerTest extends TestCase {
 		
 		try {
 			configuration = ConfigurationManager.loadConfiguration(actualProfile);
-			ConcoursJeunes.setConfiguration(configuration);
+			ApplicationCore.setConfiguration(configuration);
 		} catch (IOException e) {
 			fail(e.toString());
 			e.printStackTrace();
 		}
 		
-		assertTrue(new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "configuration_test_rename.xml").delete()); //$NON-NLS-1$
+		assertTrue(new File(ApplicationCore.userRessources.getConfigPathForUser(), "configuration_test_rename.xml").delete()); //$NON-NLS-1$
 		try {
-			FileUtils.deleteFilesPath(new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "Profile/test_rename")); //$NON-NLS-1$
-			assertTrue(new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "Profile/test_rename").delete()); //$NON-NLS-1$
+			FileUtils.deleteFilesPath(new File(ApplicationCore.userRessources.getConfigPathForUser(), "Profile/test_rename")); //$NON-NLS-1$
+			assertTrue(new File(ApplicationCore.userRessources.getConfigPathForUser(), "Profile/test_rename").delete()); //$NON-NLS-1$
 		} catch (IOException e) {
 			fail(e.toString());
 			e.printStackTrace();

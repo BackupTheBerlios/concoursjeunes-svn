@@ -87,7 +87,7 @@
 
 package org.concoursjeunes;
 
-import static org.concoursjeunes.ConcoursJeunes.ajrParametreAppli;
+import static org.concoursjeunes.ApplicationCore.ajrParametreAppli;
 
 import java.util.ArrayList;
 import java.util.Date;

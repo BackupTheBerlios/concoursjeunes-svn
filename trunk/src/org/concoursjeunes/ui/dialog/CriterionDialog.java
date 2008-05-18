@@ -102,7 +102,7 @@ import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Criterion;
 
 import ajinteractive.standard.common.AJToolKit;
@@ -220,26 +220,26 @@ public class CriterionDialog extends JDialog implements ActionListener, ChangeLi
      *
      */
     private void affectLibelle() {
-        setTitle(ConcoursJeunes.ajrLibelle.getResourceString("criterion.titre")); //$NON-NLS-1$
+        setTitle(ApplicationCore.ajrLibelle.getResourceString("criterion.titre")); //$NON-NLS-1$
         
-        jlCode.setText(ConcoursJeunes.ajrLibelle.getResourceString("criterion.code")); //$NON-NLS-1$
-        jlLibelle.setText(ConcoursJeunes.ajrLibelle.getResourceString("criterion.libelle")); //$NON-NLS-1$
-        jlSortOrder.setText(ConcoursJeunes.ajrLibelle.getResourceString("criterion.ordretri")); //$NON-NLS-1$
+        jlCode.setText(ApplicationCore.ajrLibelle.getResourceString("criterion.code")); //$NON-NLS-1$
+        jlLibelle.setText(ApplicationCore.ajrLibelle.getResourceString("criterion.libelle")); //$NON-NLS-1$
+        jlSortOrder.setText(ApplicationCore.ajrLibelle.getResourceString("criterion.ordretri")); //$NON-NLS-1$
         jcbSortOrder.removeAllItems();
-        jcbSortOrder.addItem(ConcoursJeunes.ajrLibelle.getResourceString("criterion.ordretri.asc")); //$NON-NLS-1$
-        jcbSortOrder.addItem(ConcoursJeunes.ajrLibelle.getResourceString("criterion.ordretri.desc")); //$NON-NLS-1$
-        jcbPlacementCriterion.setText(ConcoursJeunes.ajrLibelle.getResourceString("criterion.placement")); //$NON-NLS-1$
-        jcbClassementCriterion.setText(ConcoursJeunes.ajrLibelle.getResourceString("criterion.classement")); //$NON-NLS-1$
-        jcbClassementEquipeCriterion.setText(ConcoursJeunes.ajrLibelle.getResourceString("criterion.classementequipe")); //$NON-NLS-1$
-        jlWinFFTACode.setText(ConcoursJeunes.ajrLibelle.getResourceString("criterion.winfftacode.libelle")); //$NON-NLS-1$
+        jcbSortOrder.addItem(ApplicationCore.ajrLibelle.getResourceString("criterion.ordretri.asc")); //$NON-NLS-1$
+        jcbSortOrder.addItem(ApplicationCore.ajrLibelle.getResourceString("criterion.ordretri.desc")); //$NON-NLS-1$
+        jcbPlacementCriterion.setText(ApplicationCore.ajrLibelle.getResourceString("criterion.placement")); //$NON-NLS-1$
+        jcbClassementCriterion.setText(ApplicationCore.ajrLibelle.getResourceString("criterion.classement")); //$NON-NLS-1$
+        jcbClassementEquipeCriterion.setText(ApplicationCore.ajrLibelle.getResourceString("criterion.classementequipe")); //$NON-NLS-1$
+        jlWinFFTACode.setText(ApplicationCore.ajrLibelle.getResourceString("criterion.winfftacode.libelle")); //$NON-NLS-1$
         jcbWinFFTACode.removeAllItems();
         jcbWinFFTACode.addItem(""); //$NON-NLS-1$
-        for(String critere : AJToolKit.tokenize(ConcoursJeunes.ajrLibelle.getResourceString("criterion.winfftacode.code"), ",")) { //$NON-NLS-1$ //$NON-NLS-2$
+        for(String critere : AJToolKit.tokenize(ApplicationCore.ajrLibelle.getResourceString("criterion.winfftacode.code"), ",")) { //$NON-NLS-1$ //$NON-NLS-2$
             jcbWinFFTACode.addItem(critere);
         }
         
-        jbValider.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
-        jbAnnuler.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
+        jbValider.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
+        jbAnnuler.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
     }
     
     /**

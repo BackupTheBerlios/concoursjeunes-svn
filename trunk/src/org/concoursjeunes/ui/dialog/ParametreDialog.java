@@ -105,7 +105,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.FicheConcours;
 import org.concoursjeunes.Parametre;
 import org.concoursjeunes.Reglement;
@@ -297,24 +297,24 @@ public class ParametreDialog extends JDialog implements ActionListener {
 	 * 
 	 */
 	public void affectLibelle() {
-		setTitle(ConcoursJeunes.ajrLibelle.getResourceString("parametre.titre")); //$NON-NLS-1$
+		setTitle(ApplicationCore.ajrLibelle.getResourceString("parametre.titre")); //$NON-NLS-1$
 
-		jlIntituleConcours.setText(ConcoursJeunes.ajrLibelle.getResourceString("parametre.intituleconcours")); //$NON-NLS-1$
-		jlLieuConcours.setText(ConcoursJeunes.ajrLibelle.getResourceString("parametre.lieuconcours")); //$NON-NLS-1$
-		jlDateConcours.setText(ConcoursJeunes.ajrLibelle.getResourceString("parametre.dateconcours")); //$NON-NLS-1$
-		jlReglement.setText(ConcoursJeunes.ajrLibelle.getResourceString("parametre.reglement")); //$NON-NLS-1$
-		jlNombreCible.setText(ConcoursJeunes.ajrLibelle.getResourceString("parametre.nombrecible")); //$NON-NLS-1$
-		jlNombreTireurParCible.setText(ConcoursJeunes.ajrLibelle.getResourceString("parametre.nombretireurparcible")); //$NON-NLS-1$
-		jlNombreDepart.setText(ConcoursJeunes.ajrLibelle.getResourceString("parametre.nombredepart")); //$NON-NLS-1$
-		jlbArbitres.setText(ConcoursJeunes.ajrLibelle.getResourceString("parametre.arbitres")); //$NON-NLS-1$
+		jlIntituleConcours.setText(ApplicationCore.ajrLibelle.getResourceString("parametre.intituleconcours")); //$NON-NLS-1$
+		jlLieuConcours.setText(ApplicationCore.ajrLibelle.getResourceString("parametre.lieuconcours")); //$NON-NLS-1$
+		jlDateConcours.setText(ApplicationCore.ajrLibelle.getResourceString("parametre.dateconcours")); //$NON-NLS-1$
+		jlReglement.setText(ApplicationCore.ajrLibelle.getResourceString("parametre.reglement")); //$NON-NLS-1$
+		jlNombreCible.setText(ApplicationCore.ajrLibelle.getResourceString("parametre.nombrecible")); //$NON-NLS-1$
+		jlNombreTireurParCible.setText(ApplicationCore.ajrLibelle.getResourceString("parametre.nombretireurparcible")); //$NON-NLS-1$
+		jlNombreDepart.setText(ApplicationCore.ajrLibelle.getResourceString("parametre.nombredepart")); //$NON-NLS-1$
+		jlbArbitres.setText(ApplicationCore.ajrLibelle.getResourceString("parametre.arbitres")); //$NON-NLS-1$
 
 		jbDetail.setText("+"); //$NON-NLS-1$
 
-		jbAjouterArbitre.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.ajouter")); //$NON-NLS-1$
-		jbSupprimerArbitre.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.supprimer")); //$NON-NLS-1$
-		jbArbitreResponsable.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.arbitreresponsable")); //$NON-NLS-1$
-		jbValider.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
-		jbAnnuler.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
+		jbAjouterArbitre.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.ajouter")); //$NON-NLS-1$
+		jbSupprimerArbitre.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.supprimer")); //$NON-NLS-1$
+		jbArbitreResponsable.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.arbitreresponsable")); //$NON-NLS-1$
+		jbValider.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
+		jbAnnuler.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
 	}
 
 	public void completePanel() {
@@ -345,7 +345,7 @@ public class ParametreDialog extends JDialog implements ActionListener {
 				}
 	
 				if (placelibre < 0 || parametre.getNbCible() - placelibre > Integer.parseInt(jtfNombreCible.getText())) {
-					JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("parametre.toomany"), ConcoursJeunes.ajrLibelle.getResourceString("parametre.toomany.title"), //$NON-NLS-1$ //$NON-NLS-2$
+					JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("parametre.toomany"), ApplicationCore.ajrLibelle.getResourceString("parametre.toomany.title"), //$NON-NLS-1$ //$NON-NLS-2$
 							JOptionPane.ERROR_MESSAGE);
 					return;
 				}
@@ -354,7 +354,7 @@ public class ParametreDialog extends JDialog implements ActionListener {
 				if (Integer.parseInt(jtfNombreDepart.getText()) < parametre.getNbDepart()) {
 					for (int i = Integer.parseInt(jtfNombreDepart.getText()); i < parametre.getNbDepart(); i++) {
 						if (ficheConcours.getConcurrentList().countArcher(i) > 0) {
-							JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("parametre.enablereducestart"), ConcoursJeunes.ajrLibelle //$NON-NLS-1$
+							JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("parametre.enablereducestart"), ApplicationCore.ajrLibelle //$NON-NLS-1$
 									.getResourceString("parametre.enablereducestart.title"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 							return;
 						}

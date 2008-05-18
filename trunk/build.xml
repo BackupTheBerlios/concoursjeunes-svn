@@ -82,7 +82,7 @@
 		<mkdir dir="${projet.pack.dir}/bin" />
 		
 		<replace 
-		    file="${projet.pack.dir}/src/org/concoursjeunes/ConcoursJeunes.java"
+		    file="${projet.pack.dir}/src/org/concoursjeunes/ApplicationCore.java"
 			propertyFile="packager/version.properties"
 			encoding="UTF-8" >
 			<replacefilter 
@@ -105,7 +105,7 @@
 			    property="version.copyr" />
 		</replace>
 
-		<javac srcdir="${projet.pack.dir}/src/" destdir="${projet.pack.dir}/bin"
+		<javac srcdir="src/" destdir="${projet.pack.dir}/bin"
 			optimize="on"
 			encoding="UTF-8"
 			nowarn="on"

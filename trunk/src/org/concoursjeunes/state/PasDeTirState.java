@@ -104,8 +104,8 @@ import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
 
-import static org.concoursjeunes.ConcoursJeunes.ajrParametreAppli;
-import static org.concoursjeunes.ConcoursJeunes.ajrLibelle;
+import static org.concoursjeunes.ApplicationCore.ajrParametreAppli;
+import static org.concoursjeunes.ApplicationCore.ajrLibelle;
 
 public class PasDeTirState {
 	
@@ -146,7 +146,7 @@ public class PasDeTirState {
 			writer.setFullCompression();
 
 			document.addCreationDate();
-			document.addAuthor(ConcoursJeunes.getConfiguration().getClub().getNom());
+			document.addAuthor(ApplicationCore.getConfiguration().getClub().getNom());
 			document.addProducer();
 			document.addTitle(ajrLibelle.getResourceString("state.pasdetir.title")); //$NON-NLS-1$
 			document.open();
@@ -197,9 +197,9 @@ public class PasDeTirState {
 			if (Desktop.isDesktopSupported()) {
 				Desktop.getDesktop().open(tmpFile);
 			} else {
-				if (ConcoursJeunes.getConfiguration() != null) {
+				if (ApplicationCore.getConfiguration() != null) {
 					
-					String NAV = ConcoursJeunes.getConfiguration().getPdfReaderPath();
+					String NAV = ApplicationCore.getConfiguration().getPdfReaderPath();
 
 					System.out.println(NAV + " " + tmpFile.getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
 					Runtime.getRuntime().exec(NAV + " " + tmpFile.getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
@@ -304,7 +304,7 @@ public class PasDeTirState {
 			double vr = db.getTargetFace().getVerticalRatio();
 			
 			Image image = Image.getInstance(
-					ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources")  //$NON-NLS-1$
+					ApplicationCore.ajrParametreAppli.getResourceString("path.ressources")  //$NON-NLS-1$
 					+ File.separator + db.getTargetFace().getTargetFaceImage());
 			
 			image.setAbsolutePosition(AJToolKit.centimeterToDpi(startCol + 0.135 + ancrage.getX() * (2.6 * hr)),

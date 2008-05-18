@@ -93,7 +93,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
-import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.Target;
 import org.concoursjeunes.TargetPosition;
@@ -121,17 +121,17 @@ public class TargetRenderer extends DefaultTreeCellRenderer {
 	public TargetRenderer() {
 		
 		archerIcon = new ImageIcon(
-				ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
-				ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.archer.normal")); //$NON-NLS-1$
+				ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
+				ApplicationCore.ajrParametreAppli.getResourceString("file.icon.archer.normal")); //$NON-NLS-1$
 		archerHandicapIcon = new ImageIcon(
-				ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
-				ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.archer.handicap")); //$NON-NLS-1$
+				ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
+				ApplicationCore.ajrParametreAppli.getResourceString("file.icon.archer.handicap")); //$NON-NLS-1$
 		cibleIcon = new ImageIcon(
-				ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
-				ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.target")); //$NON-NLS-1$
+				ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
+				ApplicationCore.ajrParametreAppli.getResourceString("file.icon.target")); //$NON-NLS-1$
 		disableIcon = new ImageIcon(
-				ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
-				ConcoursJeunes.ajrParametreAppli.getResourceString("file.icon.disable")); //$NON-NLS-1$
+				ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
+				ApplicationCore.ajrParametreAppli.getResourceString("file.icon.disable")); //$NON-NLS-1$
 	}
 
 	/**

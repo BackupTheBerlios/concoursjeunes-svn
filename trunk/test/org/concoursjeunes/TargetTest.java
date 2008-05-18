@@ -90,7 +90,7 @@ package org.concoursjeunes;
 
 import junit.framework.TestCase;
 
-import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Reglement;
 import org.concoursjeunes.Target;
 import org.concoursjeunes.Target.Repartition;
@@ -117,7 +117,7 @@ public class TargetTest extends TestCase {
 	@Override
 	public void setUp() throws Exception {
 		@SuppressWarnings("unused")
-		ConcoursJeunes concoursJeunes = ConcoursJeunes.getInstance(); // initialise le noyau
+		ApplicationCore concoursJeunes = ApplicationCore.getInstance(); // initialise le noyau
 		reglement = ReglementBuilder.createReglement("Savoie"); //charge le réglement savoie //$NON-NLS-1$
 		Concurrent concurrent = ConcurrentBuilder.getConcurrent(reglement);
 		

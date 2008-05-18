@@ -176,7 +176,7 @@ public class DistancesEtBlason {
 	 * @throws SQLException
 	 */
 	public void save() throws SQLException {
-		Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+		Statement stmt = ApplicationCore.dbConnection.createStatement();
 
 		if (numdistancesblason == 0) {
 			stmt.executeUpdate("insert into DISTANCESBLASONS (NUMREGLEMENT, NUMBLASON) VALUES (" + //$NON-NLS-1$

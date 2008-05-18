@@ -179,12 +179,12 @@ public class GreffePane extends JPanel implements
 	}
 	
 	private void affectLibelle() {
-		jlDepart.setText(ConcoursJeunes.ajrLibelle.getResourceString("greffepane.start")); //$NON-NLS-1$
-		jlNom.setText(ConcoursJeunes.ajrLibelle.getResourceString("greffepane.name")); //$NON-NLS-1$
-		jlPrenom.setText(ConcoursJeunes.ajrLibelle.getResourceString("greffepane.firstname")); //$NON-NLS-1$
-		jlClub.setText(ConcoursJeunes.ajrLibelle.getResourceString("greffepane.club")); //$NON-NLS-1$
-		jlLicence.setText(ConcoursJeunes.ajrLibelle.getResourceString("greffepane.licence")); //$NON-NLS-1$
-		jcbPayee.setText(ConcoursJeunes.ajrLibelle.getResourceString("greffepane.paid")); //$NON-NLS-1$
+		jlDepart.setText(ApplicationCore.ajrLibelle.getResourceString("greffepane.start")); //$NON-NLS-1$
+		jlNom.setText(ApplicationCore.ajrLibelle.getResourceString("greffepane.name")); //$NON-NLS-1$
+		jlPrenom.setText(ApplicationCore.ajrLibelle.getResourceString("greffepane.firstname")); //$NON-NLS-1$
+		jlClub.setText(ApplicationCore.ajrLibelle.getResourceString("greffepane.club")); //$NON-NLS-1$
+		jlLicence.setText(ApplicationCore.ajrLibelle.getResourceString("greffepane.licence")); //$NON-NLS-1$
+		jcbPayee.setText(ApplicationCore.ajrLibelle.getResourceString("greffepane.paid")); //$NON-NLS-1$
 	}
 	
 	private void completePanel() {
@@ -243,16 +243,16 @@ public class GreffePane extends JPanel implements
 			}
 		};
 		
-		dtm.addColumn(ConcoursJeunes.ajrLibelle.getResourceString("greffepane.start")); //$NON-NLS-1$
-		dtm.addColumn(ConcoursJeunes.ajrLibelle.getResourceString("greffepane.name")); //$NON-NLS-1$
-		dtm.addColumn(ConcoursJeunes.ajrLibelle.getResourceString("greffepane.firstname")); //$NON-NLS-1$
-		dtm.addColumn(ConcoursJeunes.ajrLibelle.getResourceString("greffepane.club")); //$NON-NLS-1$
-		dtm.addColumn(ConcoursJeunes.ajrLibelle.getResourceString("greffepane.licence")); //$NON-NLS-1$
-		dtm.addColumn(ConcoursJeunes.ajrLibelle.getResourceString("greffepane.category")); //$NON-NLS-1$
-		dtm.addColumn(ConcoursJeunes.ajrLibelle.getResourceString("greffepane.target")); //$NON-NLS-1$
-		dtm.addColumn(ConcoursJeunes.ajrLibelle.getResourceString("greffepane.paid")); //$NON-NLS-1$
-		dtm.addColumn(ConcoursJeunes.ajrLibelle.getResourceString("greffepane.medic")); //$NON-NLS-1$
-		dtm.addColumn(ConcoursJeunes.ajrLibelle.getResourceString("greffepane.presence")); //$NON-NLS-1$
+		dtm.addColumn(ApplicationCore.ajrLibelle.getResourceString("greffepane.start")); //$NON-NLS-1$
+		dtm.addColumn(ApplicationCore.ajrLibelle.getResourceString("greffepane.name")); //$NON-NLS-1$
+		dtm.addColumn(ApplicationCore.ajrLibelle.getResourceString("greffepane.firstname")); //$NON-NLS-1$
+		dtm.addColumn(ApplicationCore.ajrLibelle.getResourceString("greffepane.club")); //$NON-NLS-1$
+		dtm.addColumn(ApplicationCore.ajrLibelle.getResourceString("greffepane.licence")); //$NON-NLS-1$
+		dtm.addColumn(ApplicationCore.ajrLibelle.getResourceString("greffepane.category")); //$NON-NLS-1$
+		dtm.addColumn(ApplicationCore.ajrLibelle.getResourceString("greffepane.target")); //$NON-NLS-1$
+		dtm.addColumn(ApplicationCore.ajrLibelle.getResourceString("greffepane.paid")); //$NON-NLS-1$
+		dtm.addColumn(ApplicationCore.ajrLibelle.getResourceString("greffepane.medic")); //$NON-NLS-1$
+		dtm.addColumn(ApplicationCore.ajrLibelle.getResourceString("greffepane.presence")); //$NON-NLS-1$
 		
 		dtm.addTableModelListener(this);
 		

@@ -15,7 +15,7 @@
  */
 package org.concoursjeunes;
 
-import static org.concoursjeunes.ConcoursJeunes.ajrParametreAppli;
+import static org.concoursjeunes.ApplicationCore.ajrParametreAppli;
 
 import java.io.File;
 import java.io.IOException;
@@ -84,7 +84,7 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 	 */
 	public static final int OUT_HTML = 1; // Sortie HTML
 
-	private Parametre parametre = new Parametre(ConcoursJeunes.getConfiguration());
+	private Parametre parametre = new Parametre(ApplicationCore.getConfiguration());
 
 	private ConcurrentList concurrentList = new ConcurrentList(parametre);
 	private EquipeList equipes = new EquipeList(parametre.getReglement().getNbMembresRetenu());
@@ -95,9 +95,9 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 
 	private int currentDepart = 0;
 
-	private static AJTemplate templateClassementXML = new AJTemplate(ConcoursJeunes.ajrLibelle);
+	private static AJTemplate templateClassementXML = new AJTemplate(ApplicationCore.ajrLibelle);
 	private static AJTemplate templateClassementEquipeXML = new AJTemplate();
-	private static AJTemplate templateClassementHTML = new AJTemplate(ConcoursJeunes.ajrLibelle);
+	private static AJTemplate templateClassementHTML = new AJTemplate(ApplicationCore.ajrLibelle);
 	private static AJTemplate templateClassementEquipeHTML = new AJTemplate();
 	private static AJTemplate templateListeArcherXML = new AJTemplate();
 	private static AJTemplate templateListeGreffeXML = new AJTemplate();
@@ -310,7 +310,7 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 	 * 
 	 */
 	public void save() throws IOException {
-		File f = new File(ConcoursJeunes.userRessources.getConcoursPathForProfile(ConcoursJeunes.getConfiguration().getCurProfil()) + File.separator + parametre.getSaveName());
+		File f = new File(ApplicationCore.userRessources.getConcoursPathForProfile(ApplicationCore.getConfiguration().getCurProfil()) + File.separator + parametre.getSaveName());
 		AJToolKit.saveXMLStructure(f, getFiche(), true);
 	}
 	
@@ -471,7 +471,7 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 			tplClassement.reset();
 
 			tplClassement.parse("CURRENT_TIME", DateFormat.getDateInstance(DateFormat.FULL).format(new Date())); //$NON-NLS-1$
-			tplClassement.parse("LOGO_CLUB_URI", ConcoursJeunes.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			tplClassement.parse("LOGO_CLUB_URI", ApplicationCore.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			tplClassement.parse("INTITULE_CLUB", parametre.getClub().getNom()); //$NON-NLS-1$
 			tplClassement.parse("INTITULE_CONCOURS", parametre.getIntituleConcours()); //$NON-NLS-1$
 			tplClassement.parse("VILLE_CLUB", parametre.getLieuConcours()); //$NON-NLS-1$
@@ -535,8 +535,8 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 							if (sortList[j].getTotalScore() > 0) {
 								row_exist = true;
 								// test d'ex-Eaquo
-								if ((j < sortList.length - 1 && sortList[j].getTotalScore() == sortList[j + 1].getTotalScore() && ConcoursJeunes.getConfiguration().isInterfaceAffResultatExEquo())
-										|| (j > 0 && sortList[j].getTotalScore() == sortList[j - 1].getTotalScore() && ConcoursJeunes.getConfiguration().isInterfaceAffResultatExEquo())) {
+								if ((j < sortList.length - 1 && sortList[j].getTotalScore() == sortList[j + 1].getTotalScore() && ApplicationCore.getConfiguration().isInterfaceAffResultatExEquo())
+										|| (j > 0 && sortList[j].getTotalScore() == sortList[j - 1].getTotalScore() && ApplicationCore.getConfiguration().isInterfaceAffResultatExEquo())) {
 
 									if ((sortList[j].getManque() == 0 && sortList[j].getDix() == 0 && sortList[j].getNeuf() == 0)
 											|| (j < sortList.length - 2 && sortList[j].getManque() == sortList[j + 1].getManque() && sortList[j].getDix() == sortList[j + 1].getDix() && sortList[j]
@@ -624,7 +624,7 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 
 			// classement sortie XML
 			tplClassementEquipe.parse("CURRENT_TIME", DateFormat.getDateInstance(DateFormat.MEDIUM).format(new Date())); //$NON-NLS-1$
-			tplClassementEquipe.parse("LOGO_CLUB_URI", ConcoursJeunes.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			tplClassementEquipe.parse("LOGO_CLUB_URI", ApplicationCore.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			tplClassementEquipe.parse("INTITULE_CLUB", XmlUtils.sanitizeText(parametre.getClub().getNom())); //$NON-NLS-1$
 			tplClassementEquipe.parse("INTITULE_CONCOURS", XmlUtils.sanitizeText(parametre.getIntituleConcours())); //$NON-NLS-1$
 			tplClassementEquipe.parse("VILLE_CLUB", XmlUtils.sanitizeText(parametre.getLieuConcours())); //$NON-NLS-1$
@@ -647,7 +647,7 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 			tplClassementEquipe.parse("ARBITRES_ASSISTANT", XmlUtils.sanitizeText(strArbitresAss)); //$NON-NLS-1$
 			tplClassementEquipe.parse("NB_CLUB", "" + concurrentList.countCompagnie()); //$NON-NLS-1$ //$NON-NLS-2$
 			tplClassementEquipe.parse("NB_TIREURS", "" + concurrentList.countArcher()); //$NON-NLS-1$ //$NON-NLS-2$
-			tplClassementEquipe.parse("TYPE_CLASSEMENT", ConcoursJeunes.ajrLibelle.getResourceString("classement.equipe")); //$NON-NLS-1$ //$NON-NLS-2$
+			tplClassementEquipe.parse("TYPE_CLASSEMENT", ApplicationCore.ajrLibelle.getResourceString("classement.equipe")); //$NON-NLS-1$ //$NON-NLS-2$
 
 			
 			List<CriteriaSet> teamCriteriaSet = equipes.listCriteriaSet();
@@ -724,7 +724,7 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 
 			// classement sortie XML
 			tplClassementEquipe.parse("CURRENT_TIME", DateFormat.getDateInstance(DateFormat.FULL).format(new Date())); //$NON-NLS-1$
-			tplClassementEquipe.parse("LOGO_CLUB_URI", ConcoursJeunes.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			tplClassementEquipe.parse("LOGO_CLUB_URI", ApplicationCore.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			tplClassementEquipe.parse("INTITULE_CLUB", parametre.getClub().getNom()); //$NON-NLS-1$
 			tplClassementEquipe.parse("INTITULE_CONCOURS", parametre.getIntituleConcours()); //$NON-NLS-1$
 			tplClassementEquipe.parse("VILLE_CLUB", parametre.getLieuConcours()); //$NON-NLS-1$
@@ -747,9 +747,9 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 			tplClassementEquipe.parse("ARBITRES_ASSISTANT", strArbitresAss); //$NON-NLS-1$
 			tplClassementEquipe.parse("NB_CLUB", "" + concurrentList.countCompagnie()); //$NON-NLS-1$ //$NON-NLS-2$
 			tplClassementEquipe.parse("NB_TIREURS", "" + concurrentList.countArcher()); //$NON-NLS-1$ //$NON-NLS-2$
-			tplClassementEquipe.parse("TYPE_CLASSEMENT", ConcoursJeunes.ajrLibelle.getResourceString("classement.club")); //$NON-NLS-1$ //$NON-NLS-2$
+			tplClassementEquipe.parse("TYPE_CLASSEMENT", ApplicationCore.ajrLibelle.getResourceString("classement.club")); //$NON-NLS-1$ //$NON-NLS-2$
 
-			tplClassementEquipe.parse("categories.CATEGORIE", ConcoursJeunes.ajrLibelle.getResourceString("equipe.composition")); //$NON-NLS-1$ //$NON-NLS-2$
+			tplClassementEquipe.parse("categories.CATEGORIE", ApplicationCore.ajrLibelle.getResourceString("equipe.composition")); //$NON-NLS-1$ //$NON-NLS-2$
 			tplClassementEquipe.parse("categories.NB_EQUIPES", "" + equipes.countEquipes()); //$NON-NLS-1$ //$NON-NLS-2$
 
 			Equipe[] sortEquipes = EquipeList.sort(clubList.list());
@@ -824,8 +824,8 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 						concurrent.getCriteriaSet().getCriterionElement(key).getCode());
 			}
 
-			listeArcherXML.parse("lignes.PAYEE", AJToolKit.tokenize(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.impression.inscription"), ",")[concurrent.getInscription()]); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			listeArcherXML.parse("lignes.CERTIFICAT", AJToolKit.tokenize(ConcoursJeunes.ajrLibelle.getResourceString("concurrent.certificat"), ",")[concurrent.isCertificat() ? 0 : 1]); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			listeArcherXML.parse("lignes.PAYEE", AJToolKit.tokenize(ApplicationCore.ajrLibelle.getResourceString("concurrent.impression.inscription"), ",")[concurrent.getInscription()]); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			listeArcherXML.parse("lignes.CERTIFICAT", AJToolKit.tokenize(ApplicationCore.ajrLibelle.getResourceString("concurrent.certificat"), ",")[concurrent.isCertificat() ? 0 : 1]); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			listeArcherXML.parse("lignes.CIBLE", new TargetPosition(concurrent.getCible(), concurrent.getPosition()).toString()); //$NON-NLS-1$
 
 			listeArcherXML.loopBloc("lignes"); //$NON-NLS-1$
@@ -850,16 +850,16 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 			return ""; //$NON-NLS-1$
 		
 		try {
-			double marge_gauche = ConcoursJeunes.getConfiguration().getMarges().left; // la marge gauche
-			double marge_droite = ConcoursJeunes.getConfiguration().getMarges().right; // la marge droite
-			double marge_haut = ConcoursJeunes.getConfiguration().getMarges().top; // la marge haut
-			double marge_bas = ConcoursJeunes.getConfiguration().getMarges().bottom; // la marge bas
-			double espacement_cellule_h = ConcoursJeunes.getConfiguration().getEspacements()[0]; // l'espacement horizontal entre cellule
-			double espacement_cellule_v = ConcoursJeunes.getConfiguration().getEspacements()[1]; // l'espacement vertical entre cellule
+			double marge_gauche = ApplicationCore.getConfiguration().getMarges().left; // la marge gauche
+			double marge_droite = ApplicationCore.getConfiguration().getMarges().right; // la marge droite
+			double marge_haut = ApplicationCore.getConfiguration().getMarges().top; // la marge haut
+			double marge_bas = ApplicationCore.getConfiguration().getMarges().bottom; // la marge bas
+			double espacement_cellule_h = ApplicationCore.getConfiguration().getEspacements()[0]; // l'espacement horizontal entre cellule
+			double espacement_cellule_v = ApplicationCore.getConfiguration().getEspacements()[1]; // l'espacement vertical entre cellule
 			double cellule_x;
 			double cellule_y;
-			Rectangle pageDimension = (Rectangle)PageSize.class.getField(ConcoursJeunes.getConfiguration().getFormatPapier()).get(null);
-			if(ConcoursJeunes.getConfiguration().getOrientation().equals("landscape")) //$NON-NLS-1$
+			Rectangle pageDimension = (Rectangle)PageSize.class.getField(ApplicationCore.getConfiguration().getFormatPapier()).get(null);
+			if(ApplicationCore.getConfiguration().getOrientation().equals("landscape")) //$NON-NLS-1$
 				pageDimension = pageDimension.rotate();
 			
 			espacement_cellule_h = AJToolKit.centimeterToDpi(espacement_cellule_h);
@@ -885,14 +885,14 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 			templateEtiquettesXML.reset();
 	
 			templateEtiquettesXML.parse("CURRENT_TIME", DateFormat.getDateInstance(DateFormat.FULL).format(new Date())); //$NON-NLS-1$
-			templateEtiquettesXML.parse("producer", ConcoursJeunes.NOM + " " + ConcoursJeunes.VERSION); //$NON-NLS-1$ //$NON-NLS-2$
-			templateEtiquettesXML.parse("author", ConcoursJeunes.getConfiguration().getClub().getNom()); //$NON-NLS-1$
-			templateEtiquettesXML.parse("pagesize", ConcoursJeunes.getConfiguration().getFormatPapier()); //$NON-NLS-1$
-			templateEtiquettesXML.parse("orientation", ConcoursJeunes.getConfiguration().getOrientation()); //$NON-NLS-1$
-			templateEtiquettesXML.parse("top", "" + AJToolKit.centimeterToDpi(ConcoursJeunes.getConfiguration().getMarges().top)); //$NON-NLS-1$ //$NON-NLS-2$
-			templateEtiquettesXML.parse("bottom", "" + AJToolKit.centimeterToDpi(ConcoursJeunes.getConfiguration().getMarges().bottom)); //$NON-NLS-1$ //$NON-NLS-2$
-			templateEtiquettesXML.parse("left", "" + AJToolKit.centimeterToDpi(ConcoursJeunes.getConfiguration().getMarges().left)); //$NON-NLS-1$ //$NON-NLS-2$
-			templateEtiquettesXML.parse("right", "" + AJToolKit.centimeterToDpi(ConcoursJeunes.getConfiguration().getMarges().right)); //$NON-NLS-1$ //$NON-NLS-2$
+			templateEtiquettesXML.parse("producer", ApplicationCore.NOM + " " + ApplicationCore.VERSION); //$NON-NLS-1$ //$NON-NLS-2$
+			templateEtiquettesXML.parse("author", ApplicationCore.getConfiguration().getClub().getNom()); //$NON-NLS-1$
+			templateEtiquettesXML.parse("pagesize", ApplicationCore.getConfiguration().getFormatPapier()); //$NON-NLS-1$
+			templateEtiquettesXML.parse("orientation", ApplicationCore.getConfiguration().getOrientation()); //$NON-NLS-1$
+			templateEtiquettesXML.parse("top", "" + AJToolKit.centimeterToDpi(ApplicationCore.getConfiguration().getMarges().top)); //$NON-NLS-1$ //$NON-NLS-2$
+			templateEtiquettesXML.parse("bottom", "" + AJToolKit.centimeterToDpi(ApplicationCore.getConfiguration().getMarges().bottom)); //$NON-NLS-1$ //$NON-NLS-2$
+			templateEtiquettesXML.parse("left", "" + AJToolKit.centimeterToDpi(ApplicationCore.getConfiguration().getMarges().left)); //$NON-NLS-1$ //$NON-NLS-2$
+			templateEtiquettesXML.parse("right", "" + AJToolKit.centimeterToDpi(ApplicationCore.getConfiguration().getMarges().right)); //$NON-NLS-1$ //$NON-NLS-2$
 			templateEtiquettesXML.parse("page.columns", "" + (nblarg * 3)); //$NON-NLS-1$ //$NON-NLS-2$
 			templateEtiquettesXML.parse("page.widths", tailles_x); //$NON-NLS-1$
 	
@@ -937,19 +937,19 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 				templateEtiquettesXML.loopBloc("page"); //$NON-NLS-1$
 			}
 		} catch (SecurityException e) {
-			JXErrorPane.showDialog(null, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+			JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
 					e.toString(), null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
-			JXErrorPane.showDialog(null, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+			JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
 					e.toString(), null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		} catch (NoSuchFieldException e) {
-			JXErrorPane.showDialog(null, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+			JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
 					e.toString(), null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			JXErrorPane.showDialog(null, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+			JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
 					e.toString(), null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		}
@@ -968,7 +968,7 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 		String classement = getClassement(OUT_XML);
 
 		if (!classement.equals("")) { //$NON-NLS-1$
-			return ConcoursJeunes.printDocument(document, classement);
+			return ApplicationCore.printDocument(document, classement);
 		}
 		return false;
 	}
@@ -982,7 +982,7 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 		Document document = new Document(PageSize.A4, 10, 10, 10, 65);
 		String classementEquipe = getClassementEquipe(OUT_XML);
 		if (!classementEquipe.isEmpty())
-			return ConcoursJeunes.printDocument(document, classementEquipe);
+			return ApplicationCore.printDocument(document, classementEquipe);
 		return false;
 	}
 	
@@ -995,7 +995,7 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 		Document document = new Document(PageSize.A4, 10, 10, 10, 65);
 		String classementClub = getClassementClub(OUT_XML);
 		if (!classementClub.equals("")) //$NON-NLS-1$
-			return ConcoursJeunes.printDocument(document, classementClub);
+			return ApplicationCore.printDocument(document, classementClub);
 		return false;
 	}
 
@@ -1009,7 +1009,7 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 	 */
 	public boolean printArcherList(int mode) {
 		Document document = new Document(PageSize.A4, 10, 10, 10, 65);
-		return ConcoursJeunes.printDocument(document, getXMLListeArcher(mode, currentDepart));
+		return ApplicationCore.printDocument(document, getXMLListeArcher(mode, currentDepart));
 	}
 
 	/**
@@ -1018,12 +1018,12 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 	 * @return true si impression avec succe, false sinon
 	 */
 	public boolean printEtiquettes() {
-		float marge_gauche = AJToolKit.centimeterToDpi(ConcoursJeunes.getConfiguration().getMarges().left); // la marge gauche
-		float marge_droite = AJToolKit.centimeterToDpi(ConcoursJeunes.getConfiguration().getMarges().right); // la marge droite
-		float marge_haut = AJToolKit.centimeterToDpi(ConcoursJeunes.getConfiguration().getMarges().top); // la marge haut
-		float marge_bas = AJToolKit.centimeterToDpi(ConcoursJeunes.getConfiguration().getMarges().bottom); // la marge bas
+		float marge_gauche = AJToolKit.centimeterToDpi(ApplicationCore.getConfiguration().getMarges().left); // la marge gauche
+		float marge_droite = AJToolKit.centimeterToDpi(ApplicationCore.getConfiguration().getMarges().right); // la marge droite
+		float marge_haut = AJToolKit.centimeterToDpi(ApplicationCore.getConfiguration().getMarges().top); // la marge haut
+		float marge_bas = AJToolKit.centimeterToDpi(ApplicationCore.getConfiguration().getMarges().bottom); // la marge bas
 		Document document = new Document(PageSize.A4, marge_gauche, marge_droite, marge_haut, marge_bas);
-		return ConcoursJeunes.printDocument(document, getXMLEtiquettes(ConcoursJeunes.getConfiguration().getColonneAndLigne()[1], ConcoursJeunes.getConfiguration().getColonneAndLigne()[0], currentDepart));
+		return ApplicationCore.printDocument(document, getXMLEtiquettes(ApplicationCore.getConfiguration().getColonneAndLigne()[1], ApplicationCore.getConfiguration().getColonneAndLigne()[0], currentDepart));
 	}
 
 	/**

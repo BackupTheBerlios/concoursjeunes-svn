@@ -215,7 +215,7 @@ public class Entite {
 	 */
 	public void save() {
 		try {
-			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+			Statement stmt = ApplicationCore.dbConnection.createStatement();
 			
 			stmt.executeUpdate("MERGE INTO Entite (AGREMENTENTITE, NOMENTITE, " + //$NON-NLS-1$
 					"ADRESSEENTITE, CODEPOSTALENTITE, VILLEENTITE, NOTEENTITE, TYPEENTITE) " + //$NON-NLS-1$
@@ -249,7 +249,7 @@ public class Entite {
 		Statement stmt = null;
 		
 		try {
-			stmt = ConcoursJeunes.dbConnection.createStatement();
+			stmt = ApplicationCore.dbConnection.createStatement();
 			
 			String sql = "select * from Entite "; //$NON-NLS-1$
 			if(eGeneric != null) {

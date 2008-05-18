@@ -1,5 +1,5 @@
 /*
- * Créer le 01 fev. 08 pour ConcoursJeunes
+ * Créer le 10 mai 08 à 13:24:05 pour ConcoursJeunes
  *
  * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
@@ -86,76 +86,88 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes;
+package org.concoursjeunes.ui.dialog;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
 
-import org.concoursjeunes.builders.BlasonBuilder;
+import javax.swing.*;
 
-public class BlasonManager {
-	
+import org.concoursjeunes.ApplicationCore;
+import org.jdesktop.swingx.JXLabel;
+
+/**
+ * @author Aurélien JEOFFRAY
+ *
+ */
+public class AboutDialog extends JDialog implements ActionListener {
+	private JButton jbFermer = new JButton();
+	private JXLabel jlAbout = new JXLabel();
+
+	MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
 	/**
-	 * Retourne le blason associé à une ligne distance/blason d'un réglement donnée
 	 * 
-	 * @param distancesEtBlason l'objet distanceEtBlason dont le blason fait partie
-	 * @return le blason associé à la ligne d/b du réglement donnée
 	 */
-	public static Blason findBlasonAssociateToDistancesEtBlason(DistancesEtBlason distancesEtBlason) {
-		return findBlasonAssociateToDistancesEtBlason(distancesEtBlason, distancesEtBlason.getReglement().hashCode());
+	public AboutDialog(JFrame parentframe) {
+		super(parentframe, true);
+		init();
+		affectLibelle();
+	}
+	
+	private void init() {
+		JPanel jpAction = new JPanel();
+		
+		jbFermer.addActionListener(this);
+		
+		jpAction.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		jpAction.add(jbFermer);
+		
+		setLayout(new BorderLayout());
+		add(jlAbout, BorderLayout.CENTER);
+		add(jpAction, BorderLayout.SOUTH);
 	}
 	
 	/**
-	 * Retourne le blason associé à une ligne distance/blason d'un réglement donnée
 	 * 
-	 * @param distancesEtBlason l'objet distanceEtBlason dont le blason fait partie
-	 * @param numreglement le numrero de reglement
-	 * @return le blason associé à la ligne d/b du réglement donnée
 	 */
-	public static Blason findBlasonAssociateToDistancesEtBlason(DistancesEtBlason distancesEtBlason, int numreglement) {
-		try {
-			String sql = "select BLASONS.* from DISTANCESBLASONS,BLASONS " //$NON-NLS-1$
-				+ "where DISTANCESBLASONS.NUMBLASON=BLASONS.NUMBLASON AND NUMDISTANCESBLASONS=? and NUMREGLEMENT=? order by NUMORDRE DESC"; //$NON-NLS-1$
-			
-			PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
-			
-			pstmt.setInt(1, distancesEtBlason.getNumdistancesblason());
-			pstmt.setInt(2, numreglement);
-			
-			ResultSet rs = pstmt.executeQuery();
-			
-			if(rs.first()) {		
-				return BlasonBuilder.getBlason(rs);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+	private void affectLibelle() {
+		setTitle(ApplicationCore.ajrLibelle.getResourceString("apropos.titre")); //$NON-NLS-1$
+		
+		jlAbout.setText("<html>" + ApplicationCore.NOM + "<br>" + //$NON-NLS-1$ //$NON-NLS-2$
+				ApplicationCore.ajrLibelle.getResourceString("apropos.description") + "<br><br>" + //$NON-NLS-1$ //$NON-NLS-2$
+				ApplicationCore.ajrLibelle.getResourceString("apropos.version") + "<br>" + ApplicationCore.VERSION + "<br>" + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				ApplicationCore.COPYR + " " + ApplicationCore.AUTEURS + "<br>" + //$NON-NLS-1$ //$NON-NLS-2$
+				"version base: " + ApplicationCore.dbVersion + "<br><br>" //$NON-NLS-1$ //$NON-NLS-2$
+				+ "mémoire utilisé: " + ((memoryBean.getHeapMemoryUsage().getUsed() + memoryBean.getNonHeapMemoryUsage().getUsed()) / 1024 / 1024) + "Mo<br>" //$NON-NLS-1$ //$NON-NLS-2$
+				+ "mémoire réservé: " + ((memoryBean.getHeapMemoryUsage().getCommitted() + memoryBean.getNonHeapMemoryUsage().getCommitted()) / 1024 / 1024) + "Mo<br><br>" //$NON-NLS-1$ //$NON-NLS-2$
+				+ ApplicationCore.ajrLibelle.getResourceString("apropos.liens") + "<br></html>"); //$NON-NLS-1$ //$NON-NLS-2$
+		
+		jbFermer.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.fermer")); //$NON-NLS-1$
+	}
+	
+	public void showAboutDialog() {
+		//completePane();
+		
+		//setSize(new Dimension(640, 480));
+		pack();
+		setLocationRelativeTo(null);
+		setVisible(true);
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() == jbFermer) {
+			setVisible(false);
 		}
-		
-		return null;
 	}
 	
-	/**
-	 * Recherche dans la base le blason correspondant au nom donnée en parametre
-	 * 
-	 * @param name le nom du blason à trouver
-	 * 
-	 * @return l'objet Blason trouvé ou null si inexistant
-	 * @throws SQLException
-	 */
-	public static Blason findBlasonByName(String name) throws SQLException {
-		Blason blason = null;
-		
-		String sql = "select * from BLASONS where NOMBLASON=?"; //$NON-NLS-1$
-		PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
-		
-		pstmt.setString(1, name);
-		
-		ResultSet rs = pstmt.executeQuery();
-		if(rs.first()) {
-			blason = BlasonBuilder.getBlason(rs);
-		}
-		
-		return blason;
-	}
+	
 }

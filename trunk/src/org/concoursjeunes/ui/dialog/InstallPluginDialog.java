@@ -122,7 +122,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import javax.xml.ws.WebServiceException;
 
-import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.exceptions.NullConfigurationException;
 import org.concoursjeunes.plugins.PluginLoader;
 import org.concoursjeunes.ui.GlassPanePanel;
@@ -243,12 +243,12 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 	}
 	
 	private void affectLibelle() {
-		jllCategorie.setText(ConcoursJeunes.ajrLibelle.getResourceString("installplugindialog.category")); //$NON-NLS-1$
-		jlPlugins.setText(ConcoursJeunes.ajrLibelle.getResourceString("installplugindialog.plugins")); //$NON-NLS-1$
-		jlSearch.setText(ConcoursJeunes.ajrLibelle.getResourceString("installplugindialog.search")); //$NON-NLS-1$
+		jllCategorie.setText(ApplicationCore.ajrLibelle.getResourceString("installplugindialog.category")); //$NON-NLS-1$
+		jlPlugins.setText(ApplicationCore.ajrLibelle.getResourceString("installplugindialog.plugins")); //$NON-NLS-1$
+		jlSearch.setText(ApplicationCore.ajrLibelle.getResourceString("installplugindialog.search")); //$NON-NLS-1$
 		
-		jbValider.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
-		jbAnnuler.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
+		jbValider.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
+		jbAnnuler.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
 	}
 	
 	private void completePanel() {
@@ -260,13 +260,13 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 		List<String> categoriesLibelle = new ArrayList<String>();
 		
 		
-		if(ConcoursJeunes.getConfiguration().isUseProxy()) {
-			System.setProperty("http.proxyHost", ConcoursJeunes.getConfiguration().getProxy().getProxyServerAddress()); //$NON-NLS-1$
-			System.setProperty("http.proxyPort",Integer.toString(ConcoursJeunes.getConfiguration().getProxy().getProxyServerPort())); //$NON-NLS-1$
-			if(ConcoursJeunes.getConfiguration().getProxy().isUseProxyAuthentification()) {
+		if(ApplicationCore.getConfiguration().isUseProxy()) {
+			System.setProperty("http.proxyHost", ApplicationCore.getConfiguration().getProxy().getProxyServerAddress()); //$NON-NLS-1$
+			System.setProperty("http.proxyPort",Integer.toString(ApplicationCore.getConfiguration().getProxy().getProxyServerPort())); //$NON-NLS-1$
+			if(ApplicationCore.getConfiguration().getProxy().isUseProxyAuthentification()) {
 				Authenticator.setDefault(new SimpleAuthenticator(
-						ConcoursJeunes.getConfiguration().getProxy().getProxyAuthLogin(),
-						ConcoursJeunes.getConfiguration().getProxy().getProxyAuthPassword()));
+						ApplicationCore.getConfiguration().getProxy().getProxyAuthLogin(),
+						ApplicationCore.getConfiguration().getProxy().getProxyAuthPassword()));
 			}
 		}
 		
@@ -274,14 +274,14 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 			List<PluginDescription> alreadyInstalledPlugins = new ArrayList<PluginDescription>();
 			PluginsWebService services = new PluginsWebServiceService().getPluginsWebServicePort();
 			
-			PluginDescriptionArray pluginDescriptionArray = services.getAvailablePluginsForVersion(ConcoursJeunes.VERSION);
+			PluginDescriptionArray pluginDescriptionArray = services.getAvailablePluginsForVersion(ApplicationCore.VERSION);
 
 			pluginsDetail = pluginDescriptionArray.getItem();
 			for(PluginDescription pluginDescription : pluginsDetail) {
 				if(!pl.isInstalled(pluginDescription.getLogicalName())) {
 					if(!categories.contains(pluginDescription.getCategory())) {
 						categories.add(pluginDescription.getCategory());
-						categoriesLibelle.add(services.getLibelleCategory(pluginDescription.getCategory(), ConcoursJeunes.getConfiguration().getLangue()));
+						categoriesLibelle.add(services.getLibelleCategory(pluginDescription.getCategory(), ApplicationCore.getConfiguration().getLangue()));
 					}
 					Object[] row = new Object[] {
 							new Boolean(false),
@@ -311,7 +311,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 			jtPlugins.getColumnModel().getColumn(4).setPreferredWidth(200);
 			jtPlugins.getColumnModel().removeColumn(jtPlugins.getColumnModel().getColumn(3));
 			
-			jlCategorie.add(ConcoursJeunes.ajrLibelle.getResourceString("installplugindialog.category.all")); //$NON-NLS-1$
+			jlCategorie.add(ApplicationCore.ajrLibelle.getResourceString("installplugindialog.category.all")); //$NON-NLS-1$
 			for(String category : categories) {
 				jlCategorie.add(categoriesLibelle.get(categories.indexOf(category)));
 			}
@@ -328,7 +328,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 						public void run() {
 							GlassPanePanel panel = new GlassPanePanel();
 							
-							panel.setMessage(ConcoursJeunes.ajrLibelle.getResourceString("installplugindialog.temporary.disable")); //$NON-NLS-1$
+							panel.setMessage(ApplicationCore.ajrLibelle.getResourceString("installplugindialog.temporary.disable")); //$NON-NLS-1$
 							setGlassPane(panel);
 							panel.setVisible(true);
 						}
@@ -339,7 +339,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						GlassPanePanel panel = new GlassPanePanel();
-						panel.setMessage(ConcoursJeunes.ajrLibelle.getResourceString("installplugindialog.temporary.disable")); //$NON-NLS-1$
+						panel.setMessage(ApplicationCore.ajrLibelle.getResourceString("installplugindialog.temporary.disable")); //$NON-NLS-1$
 						setGlassPane(panel);
 						panel.setVisible(true);
 					}
@@ -377,10 +377,10 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 		};
 		
 		dtm.addColumn(""); //$NON-NLS-1$
-		dtm.addColumn(ConcoursJeunes.ajrLibelle.getResourceString("installplugindialog.plugins.name")); //$NON-NLS-1$
-		dtm.addColumn(ConcoursJeunes.ajrLibelle.getResourceString("installplugindialog.plugins.version")); //$NON-NLS-1$
+		dtm.addColumn(ApplicationCore.ajrLibelle.getResourceString("installplugindialog.plugins.name")); //$NON-NLS-1$
+		dtm.addColumn(ApplicationCore.ajrLibelle.getResourceString("installplugindialog.plugins.version")); //$NON-NLS-1$
 		dtm.addColumn("category_hide"); //$NON-NLS-1$
-		dtm.addColumn(ConcoursJeunes.ajrLibelle.getResourceString("installplugindialog.plugins.description")); //$NON-NLS-1$
+		dtm.addColumn(ApplicationCore.ajrLibelle.getResourceString("installplugindialog.plugins.description")); //$NON-NLS-1$
 		
 		return dtm;
 	}
@@ -390,7 +390,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 	 */
 	public void showInstallPluginDialog() {
 		final GlassPanePanel panel = new GlassPanePanel();
-		panel.setMessage(ConcoursJeunes.ajrLibelle.getResourceString("installplugindialog.loading")); //$NON-NLS-1$
+		panel.setMessage(ApplicationCore.ajrLibelle.getResourceString("installplugindialog.loading")); //$NON-NLS-1$
 		setGlassPane(panel);
 		panel.setVisible(true);
 		SwingUtilities.invokeLater(new Runnable() {
@@ -422,7 +422,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 			}
 			
 			if(pluginsRepos.size() > 0) {
-				AjUpdater ajUpdater = new AjUpdater(ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
+				AjUpdater ajUpdater = new AjUpdater(ApplicationCore.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
 						"."); //$NON-NLS-1$
 				ajUpdater.addAjUpdaterListener(this);
 				
@@ -431,7 +431,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 				}
 				try {
 					GlassPanePanel panel = new GlassPanePanel();
-					panel.setMessage(ConcoursJeunes.ajrLibelle.getResourceString("installplugindialog.loading")); //$NON-NLS-1$
+					panel.setMessage(ApplicationCore.ajrLibelle.getResourceString("installplugindialog.loading")); //$NON-NLS-1$
 					setGlassPane(panel);
 					panel.setVisible(true);
 					ajUpdater.checkUpdate();
@@ -492,7 +492,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 			case CONNECTED:
 				break;
 			case UPDATE_AVAILABLE:
-				AjUpdaterFrame ajUpdaterFrame = new AjUpdaterFrame(ajUpdater, ConcoursJeunes.VERSION);
+				AjUpdaterFrame ajUpdaterFrame = new AjUpdaterFrame(ajUpdater, ApplicationCore.VERSION);
 				
 				if(ajUpdaterFrame.showAjUpdaterFrame() == AjUpdaterFrame.ReturnCode.OK) {
 					ajUpdater.downloadFiles(event.getUpdateFiles());
@@ -501,29 +501,29 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 				break;
 			case CONNECTION_INTERRUPTED:
 				panel = new GlassPanePanel();
-				panel.setMessage(ConcoursJeunes.ajrLibelle.getResourceString("installplugindialog.temporary.disable")); //$NON-NLS-1$
+				panel.setMessage(ApplicationCore.ajrLibelle.getResourceString("installplugindialog.temporary.disable")); //$NON-NLS-1$
 				setGlassPane(panel);
 				panel.setVisible(true);
 				break;
 			case FILE_ERROR:
 				panel = new GlassPanePanel();
-				panel.setMessage(ConcoursJeunes.ajrLibelle.getResourceString("installplugindialog.temporary.disable")); //$NON-NLS-1$
+				panel.setMessage(ApplicationCore.ajrLibelle.getResourceString("installplugindialog.temporary.disable")); //$NON-NLS-1$
 				setGlassPane(panel);
 				panel.setVisible(true);
 				break;
 			case FILES_DOWNLOADED:
-				if (JOptionPane.showConfirmDialog(null, ConcoursJeunes.ajrLibelle.getResourceString("update.confirminstall"), ConcoursJeunes.ajrLibelle.getResourceString("update.confirminstall.title"), //$NON-NLS-1$ //$NON-NLS-2$
+				if (JOptionPane.showConfirmDialog(null, ApplicationCore.ajrLibelle.getResourceString("update.confirminstall"), ApplicationCore.ajrLibelle.getResourceString("update.confirminstall.title"), //$NON-NLS-1$ //$NON-NLS-2$
 						JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 					try {
 						Process process = Runtime.getRuntime().exec(new String[] { "concoursjeunes-applyupdate", //$NON-NLS-1$
-								ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
+								ApplicationCore.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
 								System.getProperty("user.dir") }); //$NON-NLS-1$
 						process.waitFor();
 						
 						try {
-							ConcoursJeunes.getInstance().saveAllFichesConcours();
+							ApplicationCore.getInstance().saveAllFichesConcours();
 							
-							ConcoursJeunes.dbConnection.close();
+							ApplicationCore.dbConnection.close();
 						} catch (NullConfigurationException e) {
 							e.printStackTrace();
 						} catch (SQLException e) {

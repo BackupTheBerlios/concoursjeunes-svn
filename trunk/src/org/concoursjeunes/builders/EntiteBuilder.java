@@ -19,7 +19,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Entite;
 
 /**
@@ -37,7 +37,7 @@ public class EntiteBuilder {
 	public static Entite getEntite(String numAgrement) {
 		Entite entite = new Entite();
 		try {
-			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+			Statement stmt = ApplicationCore.dbConnection.createStatement();
 
 			ResultSet rs = stmt.executeQuery("select * from Entite where AgrementEntite = '" + numAgrement + "'"); //$NON-NLS-1$ //$NON-NLS-2$
 

@@ -116,7 +116,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
-import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Entite;
 
 /**
@@ -156,9 +156,9 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		JPanel jpEntete = new JPanel();
 		JPanel jpPied = new JPanel();
 
-		JLabel jlNom = new JLabel(ConcoursJeunes.ajrLibelle.getResourceString("listeentite.nom") + ":"); //$NON-NLS-1$ //$NON-NLS-2$
-		JLabel jlAgrement = new JLabel(ConcoursJeunes.ajrLibelle.getResourceString("listeentite.agrement") + ":"); //$NON-NLS-1$ //$NON-NLS-2$
-		JLabel jlVille = new JLabel(ConcoursJeunes.ajrLibelle.getResourceString("listeentite.ville") + ":"); //$NON-NLS-1$ //$NON-NLS-2$
+		JLabel jlNom = new JLabel(ApplicationCore.ajrLibelle.getResourceString("listeentite.nom") + ":"); //$NON-NLS-1$ //$NON-NLS-2$
+		JLabel jlAgrement = new JLabel(ApplicationCore.ajrLibelle.getResourceString("listeentite.agrement") + ":"); //$NON-NLS-1$ //$NON-NLS-2$
+		JLabel jlVille = new JLabel(ApplicationCore.ajrLibelle.getResourceString("listeentite.ville") + ":"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		jtfNom = new JTextField(10);
 		jtfAgrement = new JTextField(10);
@@ -166,8 +166,8 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 
 		jScrollPane = new JScrollPane();
 
-		jbValider = new JButton(ConcoursJeunes.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
-		jbAnnuler = new JButton(ConcoursJeunes.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
+		jbValider = new JButton(ApplicationCore.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
+		jbAnnuler = new JButton(ApplicationCore.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
 
 		//jtfNom.addFocusListener(this);
 		jtfNom.addCaretListener(this);
@@ -299,17 +299,17 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		public EntiteTableModel() {
 			try {
 				
-				Statement stmt = ConcoursJeunes.dbConnection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+				Statement stmt = ApplicationCore.dbConnection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 				rs = stmt.executeQuery("select * from Entite order by VilleEntite"); //$NON-NLS-1$
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 
-			columnName.add(ConcoursJeunes.ajrLibelle.getResourceString("listeentite.nom")); //$NON-NLS-1$
-			columnName.add(ConcoursJeunes.ajrLibelle.getResourceString("listeentite.agrement")); //$NON-NLS-1$
-			columnName.add(ConcoursJeunes.ajrLibelle.getResourceString("listeentite.adresse")); //$NON-NLS-1$
-			columnName.add(ConcoursJeunes.ajrLibelle.getResourceString("listeentite.ville")); //$NON-NLS-1$
+			columnName.add(ApplicationCore.ajrLibelle.getResourceString("listeentite.nom")); //$NON-NLS-1$
+			columnName.add(ApplicationCore.ajrLibelle.getResourceString("listeentite.agrement")); //$NON-NLS-1$
+			columnName.add(ApplicationCore.ajrLibelle.getResourceString("listeentite.adresse")); //$NON-NLS-1$
+			columnName.add(ApplicationCore.ajrLibelle.getResourceString("listeentite.ville")); //$NON-NLS-1$
 		}
 
 		/**
@@ -345,7 +345,7 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		 */
 		public int getRowCount() {
 			try {
-				Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+				Statement stmt = ApplicationCore.dbConnection.createStatement();
 
 				ResultSet rs = stmt.executeQuery("SELECT COUNT(*) as NbRows from Entite"); //$NON-NLS-1$
 

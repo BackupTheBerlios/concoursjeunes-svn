@@ -88,8 +88,8 @@
  */
 package org.concoursjeunes;
 
-import static org.concoursjeunes.ConcoursJeunes.ajrParametreAppli;
-import static org.concoursjeunes.ConcoursJeunes.userRessources;
+import static org.concoursjeunes.ApplicationCore.ajrParametreAppli;
+import static org.concoursjeunes.ApplicationCore.userRessources;
 
 import java.io.File;
 import java.io.IOException;
@@ -130,7 +130,7 @@ public class ConfigurationManager {
 	 * @return la configuration nommé
 	 */
 	public static Configuration loadConfiguration(String profilename) throws IOException {
-		return loadConfiguration(new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "configuration_" + profilename + ".xml")); //$NON-NLS-1$ //$NON-NLS-2$
+		return loadConfiguration(new File(ApplicationCore.userRessources.getConfigPathForUser(), "configuration_" + profilename + ".xml")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
 	/**
@@ -205,29 +205,29 @@ public class ConfigurationManager {
 		if(currentName.equals("defaut")) //$NON-NLS-1$
 			return false;
 		
-		ConcoursJeunes concoursJeunes = ConcoursJeunes.getInstance();
+		ApplicationCore concoursJeunes = ApplicationCore.getInstance();
 		ArrayList<MetaDataFicheConcours> openedFichesConcours = new ArrayList<MetaDataFicheConcours>();
 		
-		if(ConcoursJeunes.getConfiguration().getCurProfil().equals(currentName) && concoursJeunes.getFichesConcours().size() > 0) {
+		if(ApplicationCore.getConfiguration().getCurProfil().equals(currentName) && concoursJeunes.getFichesConcours().size() > 0) {
 			for(FicheConcours ficheConcours : concoursJeunes.getFichesConcours()) {
 				openedFichesConcours.add(ficheConcours.getMetaDataFicheConcours());
 			}
 			concoursJeunes.closeAllFichesConcours();
-			ConcoursJeunes.getConfiguration().save();
+			ApplicationCore.getConfiguration().save();
 		}
 		
 		//renome le fichier de configuration
-		File f = new File(ConcoursJeunes.userRessources.getConfigPathForUser(), 
+		File f = new File(ApplicationCore.userRessources.getConfigPathForUser(), 
 				Configuration.CONFIG_PROFILE + currentName + Configuration.EXT_XML);
-		File fNew = new File(ConcoursJeunes.userRessources.getConfigPathForUser(),
+		File fNew = new File(ApplicationCore.userRessources.getConfigPathForUser(),
 				Configuration.CONFIG_PROFILE + newName + Configuration.EXT_XML);
 		if(fNew.exists())
 			return false;
 		success = f.renameTo(fNew);
 		
 		//renome le dossier du profil
-		f = new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "Profile" + File.separator + currentName); //$NON-NLS-1$
-		fNew = new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "Profile" + File.separator + newName); //$NON-NLS-1$
+		f = new File(ApplicationCore.userRessources.getConfigPathForUser(), "Profile" + File.separator + currentName); //$NON-NLS-1$
+		fNew = new File(ApplicationCore.userRessources.getConfigPathForUser(), "Profile" + File.separator + newName); //$NON-NLS-1$
 		
 		if(success && f.exists() && !f.renameTo(fNew)) {
 			try {
@@ -242,8 +242,8 @@ public class ConfigurationManager {
 			if(!success) {
 				//si le renomage du dossier echoue (pouvant avoir pour seul cause
 				//une erreur système) revenir en arrière
-				f = new File(ConcoursJeunes.userRessources.getConfigPathForUser(), Configuration.CONFIG_PROFILE + currentName + Configuration.EXT_XML);
-				fNew = new File(ConcoursJeunes.userRessources.getConfigPathForUser(), Configuration.CONFIG_PROFILE + newName + Configuration.EXT_XML);
+				f = new File(ApplicationCore.userRessources.getConfigPathForUser(), Configuration.CONFIG_PROFILE + currentName + Configuration.EXT_XML);
+				fNew = new File(ApplicationCore.userRessources.getConfigPathForUser(), Configuration.CONFIG_PROFILE + newName + Configuration.EXT_XML);
 				fNew.renameTo(f);
 			}
 		}
@@ -255,9 +255,9 @@ public class ConfigurationManager {
 			configuration.save();
 		}
 		
-		if(ConcoursJeunes.getConfiguration().getCurProfil().equals(currentName) && openedFichesConcours.size() > 0) {
+		if(ApplicationCore.getConfiguration().getCurProfil().equals(currentName) && openedFichesConcours.size() > 0) {
 			if(success && configuration != null) {
-				ConcoursJeunes.setConfiguration(configuration);
+				ApplicationCore.setConfiguration(configuration);
 				configuration.saveAsDefault();
 			}
 			

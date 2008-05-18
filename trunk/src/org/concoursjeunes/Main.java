@@ -127,7 +127,7 @@ public class Main {
 			public void uncaughtException(Thread t, final Throwable e) {
 				EventQueue.invokeLater(new Runnable() {
 			         public void run() {
-						JXErrorPane.showDialog(null, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+						JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
 								e.toString(),
 								null, null, e, Level.SEVERE, null));
 			        	//JXErrorPane.showDialog(e);
@@ -139,7 +139,7 @@ public class Main {
 		
 		Thread.setDefaultUncaughtExceptionHandler(handlerException);
 		Toolkit.getDefaultToolkit().getSystemEventQueue().push(new ExceptionHandlingEventQueue());
-		ConcoursJeunes concoursJeunes = ConcoursJeunes.getInstance();
+		ApplicationCore core = ApplicationCore.getInstance();
 		if(System.getProperty("noplugin") == null) { //$NON-NLS-1$
 			loadStartupPlugin();
 		}
@@ -152,19 +152,20 @@ public class Main {
 
 					// rend l'ensemble des fichier de la base accessible en lecture/ecriture pour permettre
 					// le multiutilisateur
-					File[] dbfiles = new File(ConcoursJeunes.userRessources.getAllusersDataPath(), "base").listFiles(); //$NON-NLS-1$
+					File[] dbfiles = new File(ApplicationCore.userRessources.getAllusersDataPath(), "base").listFiles(); //$NON-NLS-1$
 					for (File dbfile : dbfiles) {
 						if (dbfile.isFile()) {
 							dbfile.setWritable(true, false);
 						}
 					}
+					//TODO faire un backup de base à la fermeture
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		});
 		System.out.println("core loaded"); //$NON-NLS-1$
-		new ConcoursJeunesFrame(concoursJeunes);
+		new ConcoursJeunesFrame(core);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -174,7 +175,7 @@ public class Main {
 		List<String> disablePlugin = null;
 		try {
 			disablePlugin = (List<String>)AJToolKit.loadXMLStructure(
-					new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "disable_plugins.xml"), false); //$NON-NLS-1$
+					new File(ApplicationCore.userRessources.getConfigPathForUser(), "disable_plugins.xml"), false); //$NON-NLS-1$
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -195,19 +196,19 @@ public class Main {
 					}
 				}
 			} catch (InstantiationException e1) {
-				JXErrorPane.showDialog(null, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+				JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 						null, null, e1, Level.SEVERE, null));
 				e1.printStackTrace();
 			} catch (IllegalAccessException e1) {
-				JXErrorPane.showDialog(null, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+				JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 						null, null, e1, Level.SEVERE, null));
 				e1.printStackTrace();
 			} catch (SecurityException e1) {
-				JXErrorPane.showDialog(null, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+				JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 						null, null, e1, Level.SEVERE, null));
 				e1.printStackTrace();
 			} catch (InvocationTargetException e1) {
-				JXErrorPane.showDialog(null, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+				JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 						null, null, e1, Level.SEVERE, null));
 				e1.printStackTrace();
 			}

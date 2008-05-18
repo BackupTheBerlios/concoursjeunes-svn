@@ -110,7 +110,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.plugins.PluginLoader;
 import org.concoursjeunes.plugins.PluginMetadata;
 import org.concoursjeunes.plugins.Plugin.Type;
@@ -194,11 +194,11 @@ public class DisablePluginDialog extends JDialog implements ActionListener {
 	}
 	
 	private void affectLibelle() {
-		jlColumnName.setText(ConcoursJeunes.ajrLibelle.getResourceString("disableplugin.columnname")); //$NON-NLS-1$
-		jlColumnState.setText(ConcoursJeunes.ajrLibelle.getResourceString("disableplugin.columnstate")); //$NON-NLS-1$
+		jlColumnName.setText(ApplicationCore.ajrLibelle.getResourceString("disableplugin.columnname")); //$NON-NLS-1$
+		jlColumnState.setText(ApplicationCore.ajrLibelle.getResourceString("disableplugin.columnstate")); //$NON-NLS-1$
 		
-		jbValider.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
-		jbAnnuler.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
+		jbValider.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
+		jbAnnuler.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -206,10 +206,10 @@ public class DisablePluginDialog extends JDialog implements ActionListener {
 		List<String> disablePlugin = null;
 		try {
 			disablePlugin = (List<String>)AJToolKit.loadXMLStructure(
-					new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "disable_plugins.xml"), false); //$NON-NLS-1$
+					new File(ApplicationCore.userRessources.getConfigPathForUser(), "disable_plugins.xml"), false); //$NON-NLS-1$
 		} catch (IOException e) {
 			JXErrorPane.showDialog(this, 
-					new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+					new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 							null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		}
@@ -242,10 +242,10 @@ public class DisablePluginDialog extends JDialog implements ActionListener {
 
 			try {
 				AJToolKit.saveXMLStructure(
-						new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "disable_plugins.xml"), disablePlugin, false); //$NON-NLS-1$
+						new File(ApplicationCore.userRessources.getConfigPathForUser(), "disable_plugins.xml"), disablePlugin, false); //$NON-NLS-1$
 				setVisible(false);
 			} catch (IOException e1) {
-				JXErrorPane.showDialog(this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+				JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 						null, null, e1, Level.SEVERE, null));
 				e1.printStackTrace();
 			}

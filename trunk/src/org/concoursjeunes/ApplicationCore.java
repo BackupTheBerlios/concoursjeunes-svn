@@ -137,7 +137,7 @@ import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.xml.XmlParser;
 
 /**
- * Class principal de ConcoursJeunes, gére l'ensemble des ressources commune de l'application tel que
+ * Class principal de l'application, gére l'ensemble des ressources commune tel que
  * <ul>
  * <li>Le chargement du fichier de configuration</li>
  * <li>L'accès aux fichiers de parametrage et libellés</li>
@@ -145,12 +145,12 @@ import com.lowagie.text.xml.XmlParser;
  * <li>La connexion à la base de données</li>
  * </ul>
  * 
- * En outre la class ConcoursJeunes gére l'ensemble des fiches concours du logiciel (création, ouverture, fermeture, suppression)
+ * En outre la class ApplicationCore gére l'ensemble des fiches concours du logiciel (création, ouverture, fermeture, suppression)
  * 
  * @author Aurelien Jeoffray
  * @version 2.0
  */
-public class ConcoursJeunes {
+public class ApplicationCore {
 
 	// UID: 1.Major(2).Minor(2).Correctif(2).Build(3).Type(1,Alpha,Beta,RC(1->6),Release)
 	public static final long serialVersionUID = 10205000011l;
@@ -179,25 +179,21 @@ public class ConcoursJeunes {
 	 * Numero de version de la base de donnée nécessaire au fonctionnement du programme
 	 */
 	public static final int DB_RELEASE_REQUIRED = 10;
-	
-	// Chaine de ressources
-	private static final String RES_LIBELLE = "libelle"; //$NON-NLS-1$
-	private static final String RES_PARAMETRE = "parametre"; //$NON-NLS-1$
 
 	/**
 	 * Chargement des Libelle de l'application
 	 */
-	public static AjResourcesReader ajrLibelle = new AjResourcesReader(RES_LIBELLE);
+	public static AjResourcesReader ajrLibelle = new AjResourcesReader("libelle"); //$NON-NLS-1$
 
 	/**
 	 * Chargement des parametrages statiques
 	 */
-	public static AjResourcesReader ajrParametreAppli = new AjResourcesReader(RES_PARAMETRE);
+	public static AjResourcesReader ajrParametreAppli = new AjResourcesReader("parametre"); //$NON-NLS-1$
 
 	/**
 	 * ressources utilisateurs
 	 */
-	public static CJAppRessources userRessources = new CJAppRessources(NOM);
+	public static AppRessources userRessources = new AppRessources(NOM);
 	/**
 	 * version de la base de donnée
 	 */
@@ -211,12 +207,12 @@ public class ConcoursJeunes {
 	private static Configuration configuration = new Configuration();
 	private final ArrayList<FicheConcours> fichesConcours = new ArrayList<FicheConcours>();
 	private final EventListenerList listeners = new EventListenerList();
-	private static ConcoursJeunes instance;
+	private static ApplicationCore instance;
 
 	/**
 	 * constructeur, création de la fenetre principale
 	 */
-	private ConcoursJeunes() {
+	private ApplicationCore() {
 		// tente de recuperer la configuration générale du programme
 		try {
 			configuration = ConfigurationManager.loadCurrentConfiguration();
@@ -347,9 +343,9 @@ public class ConcoursJeunes {
 	 * 
 	 * @return l'instance de ConcoursJeunes
 	 */
-	public synchronized static ConcoursJeunes getInstance() {
+	public synchronized static ApplicationCore getInstance() {
 		if (null == instance) { // Premier appel
-			instance = new ConcoursJeunes();
+			instance = new ApplicationCore();
 		}
 		return instance;
 	}
@@ -359,7 +355,7 @@ public class ConcoursJeunes {
 	 */
 	public static void reloadLibelle() {
 		AjResourcesReader.setLocale(Locale.getDefault());
-		ajrLibelle = new AjResourcesReader(RES_LIBELLE);
+		ajrLibelle = new AjResourcesReader("libelle"); //$NON-NLS-1$
 	}
 	
 	/**

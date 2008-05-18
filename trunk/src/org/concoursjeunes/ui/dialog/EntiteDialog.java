@@ -105,7 +105,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.text.MaskFormatter;
 
-import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Entite;
 
 import ajinteractive.standard.java2.GridbagComposer;
@@ -148,13 +148,13 @@ public class EntiteDialog extends JDialog implements ActionListener {
 		JPanel entitePane = new JPanel();
 		JPanel buttonPane = new JPanel();
 
-		JLabel jlNom = new JLabel(ConcoursJeunes.ajrLibelle.getResourceString("entite.nom")); //$NON-NLS-1$
-		JLabel jlAgrement = new JLabel(ConcoursJeunes.ajrLibelle.getResourceString("entite.agrement")); //$NON-NLS-1$
-		JLabel jlAdresse = new JLabel(ConcoursJeunes.ajrLibelle.getResourceString("entite.adresse")); //$NON-NLS-1$
-		JLabel jlCodePostal = new JLabel(ConcoursJeunes.ajrLibelle.getResourceString("entite.codepostal")); //$NON-NLS-1$
-		JLabel jlVille = new JLabel(ConcoursJeunes.ajrLibelle.getResourceString("entite.ville")); //$NON-NLS-1$
-		JLabel jlType = new JLabel(ConcoursJeunes.ajrLibelle.getResourceString("entite.type")); //$NON-NLS-1$
-		JLabel jlNote = new JLabel(ConcoursJeunes.ajrLibelle.getResourceString("entite.note")); //$NON-NLS-1$
+		JLabel jlNom = new JLabel(ApplicationCore.ajrLibelle.getResourceString("entite.nom")); //$NON-NLS-1$
+		JLabel jlAgrement = new JLabel(ApplicationCore.ajrLibelle.getResourceString("entite.agrement")); //$NON-NLS-1$
+		JLabel jlAdresse = new JLabel(ApplicationCore.ajrLibelle.getResourceString("entite.adresse")); //$NON-NLS-1$
+		JLabel jlCodePostal = new JLabel(ApplicationCore.ajrLibelle.getResourceString("entite.codepostal")); //$NON-NLS-1$
+		JLabel jlVille = new JLabel(ApplicationCore.ajrLibelle.getResourceString("entite.ville")); //$NON-NLS-1$
+		JLabel jlType = new JLabel(ApplicationCore.ajrLibelle.getResourceString("entite.type")); //$NON-NLS-1$
+		JLabel jlNote = new JLabel(ApplicationCore.ajrLibelle.getResourceString("entite.note")); //$NON-NLS-1$
 
 		jtfNom = new JTextField("", 30); //$NON-NLS-1$
 		jtfNom.setEditable(false);
@@ -205,9 +205,9 @@ public class EntiteDialog extends JDialog implements ActionListener {
 
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
-		jbValider = new JButton(ConcoursJeunes.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
+		jbValider = new JButton(ApplicationCore.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
 		jbValider.addActionListener(this);
-		jbAnnuler = new JButton(ConcoursJeunes.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
+		jbAnnuler = new JButton(ApplicationCore.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
 		jbAnnuler.addActionListener(this);
 
 		buttonPane.add(jbValider);

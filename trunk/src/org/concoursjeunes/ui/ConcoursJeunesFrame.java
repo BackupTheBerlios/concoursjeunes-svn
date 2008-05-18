@@ -86,7 +86,7 @@
  */
 package org.concoursjeunes.ui;
 
-import static org.concoursjeunes.ConcoursJeunes.ajrParametreAppli;
+import static org.concoursjeunes.ApplicationCore.ajrParametreAppli;
 
 import java.awt.Component;
 import java.awt.Cursor;
@@ -98,8 +98,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
-import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryMXBean;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -123,7 +121,7 @@ import javax.swing.text.DefaultCaret;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 
-import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Configuration;
 import org.concoursjeunes.FicheConcours;
 import org.concoursjeunes.MetaDataFicheConcours;
@@ -140,13 +138,7 @@ import org.concoursjeunes.plugins.PluginEntry;
 import org.concoursjeunes.plugins.PluginLoader;
 import org.concoursjeunes.plugins.PluginMetadata;
 import org.concoursjeunes.plugins.Plugin.Type;
-import org.concoursjeunes.ui.dialog.ChangeLogDialog;
-import org.concoursjeunes.ui.dialog.ConfigurationDialog;
-import org.concoursjeunes.ui.dialog.DisablePluginDialog;
-import org.concoursjeunes.ui.dialog.EntiteListDialog;
-import org.concoursjeunes.ui.dialog.InstallPluginDialog;
-import org.concoursjeunes.ui.dialog.ParametreDialog;
-import org.concoursjeunes.ui.dialog.ReglementDialog;
+import org.concoursjeunes.ui.dialog.*;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
@@ -169,7 +161,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	private AJTabbedPane tabbedpane;
 	private JEditorPane jepHome;
 
-	private ConcoursJeunes concoursJeunes;
+	private ApplicationCore concoursJeunes;
 
 	private final AJTemplate ajtHome = new AJTemplate();
 
@@ -178,7 +170,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	 * 
 	 * @param concoursJeunes
 	 */
-	public ConcoursJeunesFrame(ConcoursJeunes concoursJeunes) {
+	public ConcoursJeunesFrame(ApplicationCore concoursJeunes) {
 		this.concoursJeunes = concoursJeunes;
 
 		if (this.concoursJeunes != null) {
@@ -187,7 +179,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			// affiche la boite de dialogue si le fichier de configuration
 			// n'existe pas ou si il est
 			// configurer pour un affichage
-			if (ConcoursJeunes.getConfiguration().isFirstboot()) {
+			if (ApplicationCore.getConfiguration().isFirstboot()) {
 				showConfigurationDialog();
 			}
 			init();
@@ -195,7 +187,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 
 			displayHome();
 		} else {
-			JXErrorPane.showDialog(this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), "Moteur non initialiser", //$NON-NLS-1$ //$NON-NLS-2$
+			JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), "Moteur non initialiser", //$NON-NLS-1$ //$NON-NLS-2$
 					"concoursJeunes pointe sur une référence null. Elle devrait pointer sur l'instance de l'objet ConcoursJeunes", //$NON-NLS-1$
 					null, null, Level.SEVERE, null)); 
 			System.exit(1);
@@ -209,8 +201,8 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	private void init() {
 		FrameCreator frameCreator = new FrameCreator(this);
 
-		frameCreator.formatTitle(ConcoursJeunes.NOM, ConcoursJeunes.VERSION);
-		frameCreator.setLibelleAjResourcesReader(ConcoursJeunes.ajrLibelle);
+		frameCreator.formatTitle(ApplicationCore.NOM, ApplicationCore.VERSION);
+		frameCreator.setLibelleAjResourcesReader(ApplicationCore.ajrLibelle);
 		frameCreator.addActionListener(this);
 		frameCreator.getFrame().addWindowListener(new WindowAdapter() {
 			@Override
@@ -219,7 +211,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			}
 		});
 
-		frameCreator.createFrame(new File(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
+		frameCreator.createFrame(new File(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
 				+ "/gui/ConcoursJeunes.xml")); //$NON-NLS-1$
 
 		ajtHome.loadTemplate(ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
@@ -284,23 +276,23 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 							}
 						}
 					} catch (InstantiationException e1) {
-						JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+						JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 								null, null, e1, Level.SEVERE, null));
 						e1.printStackTrace();
 					} catch (IllegalAccessException e1) {
-						JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+						JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 								null, null, e1, Level.SEVERE, null));
 						e1.printStackTrace();
 					}  catch (SecurityException e1) {
-						JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+						JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 								null, null, e1, Level.SEVERE, null));
 						e1.printStackTrace();
 					} catch (NoSuchMethodException e1) {
-						JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+						JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 								null, null, e1, Level.SEVERE, null));
 						e1.printStackTrace();
 					} catch (InvocationTargetException e1) {
-						JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+						JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 								null, null, e1, Level.SEVERE, null));
 						e1.printStackTrace();
 					}
@@ -328,7 +320,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 							try {
 								reglement.save();
 							} catch(SQLException e1) {
-								JXErrorPane.showDialog(null, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
+								JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
 										null, null, e1, Level.SEVERE, null));
 								e1.printStackTrace();
 							}
@@ -339,10 +331,10 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			}
 			reglementMenu.addSeparator();
 		}
-		JMenuItem jmiNewReglement = new JMenuItem(ConcoursJeunes.ajrLibelle.getResourceString("menubar.edition.reglement.new")); //$NON-NLS-1$
+		JMenuItem jmiNewReglement = new JMenuItem(ApplicationCore.ajrLibelle.getResourceString("menubar.edition.reglement.new")); //$NON-NLS-1$
 		jmiNewReglement.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String reglementName = JOptionPane.showInputDialog(ConcoursJeunes.ajrLibelle.getResourceString("reglement.general.addreglement")); //$NON-NLS-1$
+				String reglementName = JOptionPane.showInputDialog(ApplicationCore.ajrLibelle.getResourceString("reglement.general.addreglement")); //$NON-NLS-1$
 				if (reglementName != null) {
 					//Reglement reglement = new Reglement(reglementName);
 					Reglement reglement = ReglementBuilder.createReglement();
@@ -354,7 +346,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 						try {
 							reglement.save();
 						} catch(SQLException e1) {
-							JXErrorPane.showDialog(null, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
+							JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
 									null, null, e1, Level.SEVERE, null));
 							e1.printStackTrace();
 						}
@@ -369,25 +361,25 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 
 	private void showConfigurationDialog() {	
 		ConfigurationDialog configurationDialog = new ConfigurationDialog(this);
-		Configuration configuration = configurationDialog.showConfigurationDialog(ConcoursJeunes.getConfiguration().clone());
+		Configuration configuration = configurationDialog.showConfigurationDialog(ApplicationCore.getConfiguration().clone());
 
 		if (configuration != null) {
 			//si le nom du profile à changer tous fermer
-			if (!configuration.getCurProfil().equals(ConcoursJeunes.getConfiguration().getCurProfil()) && !configurationDialog.isRenamedProfile()) {
+			if (!configuration.getCurProfil().equals(ApplicationCore.getConfiguration().getCurProfil()) && !configurationDialog.isRenamedProfile()) {
 				try {
 					concoursJeunes.closeAllFichesConcours();
 				} catch (NullConfigurationException e) {
-					JXErrorPane.showDialog(this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+					JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 							null, null, e, Level.SEVERE, null));
 					e.printStackTrace();
 				} catch (IOException e) {
-					JXErrorPane.showDialog(this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+					JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 							null, null, e, Level.SEVERE, null));
 					e.printStackTrace();
 				}
 			}
 
-			ConcoursJeunes.setConfiguration(configuration);
+			ApplicationCore.setConfiguration(configuration);
 			
 			configuration.save();
 			configuration.saveAsDefault();
@@ -403,16 +395,16 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	private void displayHome() {
 		if (jepHome != null) {
 			ajtHome.reset();
-			ajtHome.parse("lib_active_profile", ConcoursJeunes.ajrLibelle.getResourceString("home.activeprofile")); //$NON-NLS-1$ //$NON-NLS-2$
-			ajtHome.parse("lib_gest_competion", ConcoursJeunes.ajrLibelle.getResourceString("home.gestcompet")); //$NON-NLS-1$ //$NON-NLS-2$
-			ajtHome.parse("lib_new", ConcoursJeunes.ajrLibelle.getResourceString("home.new")); //$NON-NLS-1$ //$NON-NLS-2$
-			ajtHome.parse("lib_delete", ConcoursJeunes.ajrLibelle.getResourceString("home.delete")); //$NON-NLS-1$ //$NON-NLS-2$
-			ajtHome.parse("lib_info", ConcoursJeunes.ajrLibelle.getResourceString("home.info")); //$NON-NLS-1$ //$NON-NLS-2$
-			ajtHome.parse("LOGO_CLUB_URI", ConcoursJeunes.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			ajtHome.parse("INTITULE_CLUB", ConcoursJeunes.getConfiguration().getClub().getNom()); //$NON-NLS-1$
-			ajtHome.parse("PROFILE_NAME", ConcoursJeunes.getConfiguration().getCurProfil()); //$NON-NLS-1$
+			ajtHome.parse("lib_active_profile", ApplicationCore.ajrLibelle.getResourceString("home.activeprofile")); //$NON-NLS-1$ //$NON-NLS-2$
+			ajtHome.parse("lib_gest_competion", ApplicationCore.ajrLibelle.getResourceString("home.gestcompet")); //$NON-NLS-1$ //$NON-NLS-2$
+			ajtHome.parse("lib_new", ApplicationCore.ajrLibelle.getResourceString("home.new")); //$NON-NLS-1$ //$NON-NLS-2$
+			ajtHome.parse("lib_delete", ApplicationCore.ajrLibelle.getResourceString("home.delete")); //$NON-NLS-1$ //$NON-NLS-2$
+			ajtHome.parse("lib_info", ApplicationCore.ajrLibelle.getResourceString("home.info")); //$NON-NLS-1$ //$NON-NLS-2$
+			ajtHome.parse("LOGO_CLUB_URI", ApplicationCore.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			ajtHome.parse("INTITULE_CLUB", ApplicationCore.getConfiguration().getClub().getNom()); //$NON-NLS-1$
+			ajtHome.parse("PROFILE_NAME", ApplicationCore.getConfiguration().getCurProfil()); //$NON-NLS-1$
 
-			MetaDataFichesConcours metaDataFichesConcours = ConcoursJeunes.getConfiguration().getMetaDataFichesConcours();
+			MetaDataFichesConcours metaDataFichesConcours = ApplicationCore.getConfiguration().getMetaDataFichesConcours();
 			if (metaDataFichesConcours.getFiches().size() > 0) {
 				int i = 0;
 				for (MetaDataFicheConcours metaDataFicheConcours : metaDataFichesConcours.getFiches()) {
@@ -460,11 +452,11 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			concoursJeunes.closeFicheConcours(jif.getFicheConcours());
 			jif.dispose();
 		} catch (NullConfigurationException e) {
-			JXErrorPane.showDialog(this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+			JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 					null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		} catch (IOException e) {
-			JXErrorPane.showDialog(this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+			JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 					null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		}
@@ -475,19 +467,19 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 		try {
 			concoursJeunes.saveAllFichesConcours();
 			
-			ConcoursJeunes.dbConnection.close();
+			ApplicationCore.dbConnection.close();
 		} catch (NullConfigurationException e) {
-			JXErrorPane.showDialog(this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+			JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 					null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 			System.exit(1);
 		} catch (SQLException e) {
-			JXErrorPane.showDialog(this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+			JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 					null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 			System.exit(1);
 		} catch (IOException e) {
-			JXErrorPane.showDialog(this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+			JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 					null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		}
@@ -497,7 +489,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	/**
 	 * @return concoursJeunes
 	 */
-	public ConcoursJeunes getConcoursJeunes() {
+	public ApplicationCore getConcoursJeunes() {
 		return concoursJeunes;
 	}
 
@@ -505,7 +497,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	 * @param concoursJeunes
 	 *            concoursJeunes à définir
 	 */
-	public void setConcoursJeunes(ConcoursJeunes concoursJeunes) {
+	public void setConcoursJeunes(ApplicationCore concoursJeunes) {
 		this.concoursJeunes = concoursJeunes;
 	}
 
@@ -536,7 +528,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 		} else if (cmd.equals("menubar.impression.listeconcurrent.ordrealpha")) { //$NON-NLS-1$
 			if (jif != null) {
 				if(!jif.getFicheConcours().printArcherList(FicheConcours.ALPHA)) {
-					JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
+					JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 				}
 			}
 
@@ -545,14 +537,14 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 		} else if (cmd.equals("menubar.impression.listeconcurrent.greffe")) { //$NON-NLS-1$
 			if (jif != null)
 				if(!jif.getFicheConcours().printArcherList(FicheConcours.GREFFE)) {
-					JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
+					JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 				}
 
 			// imprime la liste des concurrents par ordre sur le pas de tir
 		} else if (cmd.equals("menubar.impression.listeconcurrent.bytarget")) { //$NON-NLS-1$
 			if (jif != null)
 				if(!jif.getFicheConcours().printArcherList(FicheConcours.TARGET)) {
-					JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
+					JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 				}
 			
 			// imprime les etiquettes concurrent
@@ -560,35 +552,35 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 
 			if (jif != null)
 				if(!jif.getFicheConcours().printEtiquettes()) {
-					JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
+					JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 				}
 
 			// imprime la vu du pas de tir
 		} else if (cmd.equals("menubar.impression.pasdetir")) { //$NON-NLS-1$
 			if (jif != null)
 				if(!jif.getFicheConcours().printPasDeTir()) {
-					JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
+					JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 				}
 
 			// imprime le classement individuel
 		} else if (cmd.equals("menubar.impression.classement.individuel")) { //$NON-NLS-1$
 			if (jif != null)
 				if(!jif.getFicheConcours().printClassement()) {
-					JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
+					JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 				}
 
 			// imprime le classement par equipe
 		} else if (cmd.equals("menubar.impression.classement.equipe")) { //$NON-NLS-1$
 			if (jif != null)
 				if(!jif.getFicheConcours().printClassementEquipe()) {
-					JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
+					JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 				}
 
 			// aimprime le classement par club
 		} else if (cmd.equals("menubar.impression.classement.club")) { //$NON-NLS-1$
 			if (jif != null)
 				if(!jif.getFicheConcours().printClassementClub()) {
-					JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
+					JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 				}
 		} else if (cmd.equals("menubar.tools.disableplugins")) { //$NON-NLS-1$
 			DisablePluginDialog disablePluginDialog = new DisablePluginDialog(this);
@@ -600,29 +592,20 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			showConfigurationDialog();
 			// affiche la boite de dialogie "A propos"
 		} else if (cmd.equals("menubar.aide.apropos")) { //$NON-NLS-1$
-			
-			MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
-			JOptionPane.showMessageDialog(this, "<html>ConcoursJeunes<br>" + //$NON-NLS-1$
-					ConcoursJeunes.ajrLibelle.getResourceString("apropos.description") + "<br><br>" + //$NON-NLS-1$ //$NON-NLS-2$
-					ConcoursJeunes.ajrLibelle.getResourceString("apropos.version") + "<br>" + ConcoursJeunes.VERSION + "<br>" + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-					ConcoursJeunes.COPYR + " " + ConcoursJeunes.AUTEURS + "<br>" + //$NON-NLS-1$ //$NON-NLS-2$
-					"version base: " + ConcoursJeunes.dbVersion + "<br><br>" //$NON-NLS-1$ //$NON-NLS-2$
-					+ "mémoire utilisé: " + ((memoryBean.getHeapMemoryUsage().getUsed() + memoryBean.getNonHeapMemoryUsage().getUsed()) / 1024 / 1024) + "Mo<br>" //$NON-NLS-1$ //$NON-NLS-2$
-					+ "mémoire réservé: " + ((memoryBean.getHeapMemoryUsage().getCommitted() + memoryBean.getNonHeapMemoryUsage().getCommitted()) / 1024 / 1024) + "Mo<br><br>" //$NON-NLS-1$ //$NON-NLS-2$
-					+ ConcoursJeunes.ajrLibelle.getResourceString("apropos.liens") + "<br></html>", //$NON-NLS-1$ //$NON-NLS-2$
-					ConcoursJeunes.ajrLibelle.getResourceString("apropos.titre"), JOptionPane.INFORMATION_MESSAGE); //$NON-NLS-1$
+			AboutDialog aboutDialog = new AboutDialog(this);
+			aboutDialog.showAboutDialog();
 		} else if (cmd.equals("menubar.aide.aide")) { //$NON-NLS-1$
 			// affiche le pdf avec le reader pdf standard du systeme
 			try {
 				if (Desktop.isDesktopSupported()) {
-					Desktop.getDesktop().open(new File("documentation/Documentation ConcoursJeunes.pdf")); //$NON-NLS-1$
+					Desktop.getDesktop().open(new File(ajrParametreAppli.getResourceString("path.documentation"))); //$NON-NLS-1$
 				} else {
-					String NAV = ConcoursJeunes.getConfiguration().getPdfReaderPath();
+					String NAV = ApplicationCore.getConfiguration().getPdfReaderPath();
 
-					Runtime.getRuntime().exec(NAV, new String[] { "documentation/Documentation ConcoursJeunes.pdf" }); //$NON-NLS-1$ 
+					Runtime.getRuntime().exec(NAV, new String[] { ajrParametreAppli.getResourceString("path.documentation") }); //$NON-NLS-1$ 
 				}
 			} catch (IOException e1) {
-				JXErrorPane.showDialog(this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+				JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 						null, null, e1, Level.SEVERE, null));
 				e1.printStackTrace();
 			}
@@ -750,7 +733,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 				if (e.getURL().getHost().equals("open_concours")) { //$NON-NLS-1$
 					final String concref = e.getURL().getRef();
 					
-					final MetaDataFicheConcours metaDataFicheConcours = ConcoursJeunes.getConfiguration().getMetaDataFichesConcours().get(Integer.parseInt(concref));
+					final MetaDataFicheConcours metaDataFicheConcours = ApplicationCore.getConfiguration().getMetaDataFichesConcours().get(Integer.parseInt(concref));
 					if(!concoursJeunes.isOpenFicheConcours(metaDataFicheConcours)) {
 						Thread launchFiche = new Thread() {
 							@Override
@@ -759,19 +742,19 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 								try {
 									concoursJeunes.restoreFicheConcours(metaDataFicheConcours);
 								} catch (NumberFormatException e) {
-									JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+									JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 											null, null, e, Level.SEVERE, null));
 									e.printStackTrace();
 								} catch (NullConfigurationException e) {
-									JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+									JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 											null, null, e, Level.SEVERE, null));
 									e.printStackTrace();
 								} catch (IOException e) {
-									JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+									JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 											null, null, e, Level.SEVERE, null));
 									e.printStackTrace();
 								} catch (NullPointerException e) {
-									JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+									JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 											null, null, e, Level.SEVERE, null));
 									e.printStackTrace();
 								}
@@ -787,28 +770,28 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 						launchFiche.start();
 					} else {
 						JOptionPane.showMessageDialog(this, 
-								ConcoursJeunes.ajrLibelle.getResourceString("home.warning.alreadyopen"), //$NON-NLS-1$
-								ConcoursJeunes.ajrLibelle.getResourceString("home.warning.alreadyopen.title"), //$NON-NLS-1$
+								ApplicationCore.ajrLibelle.getResourceString("home.warning.alreadyopen"), //$NON-NLS-1$
+								ApplicationCore.ajrLibelle.getResourceString("home.warning.alreadyopen.title"), //$NON-NLS-1$
 								JOptionPane.WARNING_MESSAGE);
 					}
 				} else if (e.getURL().getHost().equals("delete_concours")) { //$NON-NLS-1$
-					if (JOptionPane.showConfirmDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("confirmation.suppression.concours"), //$NON-NLS-1$
-							ConcoursJeunes.ajrLibelle.getResourceString("confirmation.suppression.concours.titre"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) { //$NON-NLS-1$
+					if (JOptionPane.showConfirmDialog(this, ApplicationCore.ajrLibelle.getResourceString("confirmation.suppression.concours"), //$NON-NLS-1$
+							ApplicationCore.ajrLibelle.getResourceString("confirmation.suppression.concours.titre"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) { //$NON-NLS-1$
 						try {
-							concoursJeunes.deleteFicheConcours(ConcoursJeunes.getConfiguration().getMetaDataFichesConcours().get(Integer.parseInt(e.getURL().getRef())));
+							concoursJeunes.deleteFicheConcours(ApplicationCore.getConfiguration().getMetaDataFichesConcours().get(Integer.parseInt(e.getURL().getRef())));
 						} catch (NumberFormatException e1) {
-							JXErrorPane.showDialog(this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+							JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 									null, null, e1, Level.SEVERE, null));
 							e1.printStackTrace();
 						} catch (NullConfigurationException e1) {
-							JXErrorPane.showDialog(this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+							JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 									null, null, e1, Level.SEVERE, null));
 							e1.printStackTrace();
 						}
 						displayHome();
 					}
 				} else if (e.getURL().getHost().equals("new_concours")) { //$NON-NLS-1$
-					final Parametre parametre = new Parametre(ConcoursJeunes.getConfiguration());
+					final Parametre parametre = new Parametre(ApplicationCore.getConfiguration());
 					this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 					this.jepHome.setEnabled(false);
 					Thread.yield();
@@ -822,11 +805,11 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 								try {
 									concoursJeunes.createFicheConcours(parametre);
 								} catch (NullConfigurationException e1) {
-									JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+									JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 											null, null, e1, Level.SEVERE, null));
 									e1.printStackTrace();
 								} catch (IOException e1) {
-									JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+									JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 											null, null, e1, Level.SEVERE, null));
 									e1.printStackTrace();
 								}
@@ -845,11 +828,11 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 							Desktop.getDesktop().browse(e.getURL().toURI());
 						}
 					} catch (IOException e1) {
-						JXErrorPane.showDialog(this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+						JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 								null, null, e1, Level.SEVERE, null));
 						e1.printStackTrace();
 					} catch (URISyntaxException e1) {
-						JXErrorPane.showDialog(this, new ErrorInfo(ConcoursJeunes.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+						JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 								null, null, e1, Level.SEVERE, null));
 						e1.printStackTrace();
 					}

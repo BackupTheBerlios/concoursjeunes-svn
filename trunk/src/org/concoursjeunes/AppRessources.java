@@ -93,7 +93,6 @@ import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 
-import ajinteractive.standard.utilities.app.AppRessources;
 import ajinteractive.standard.utilities.io.FileUtils;
 
 /**
@@ -101,7 +100,7 @@ import ajinteractive.standard.utilities.io.FileUtils;
  * 
  * @author Aurélien Jeoffray
  */
-public class CJAppRessources extends AppRessources {
+public class AppRessources extends ajinteractive.standard.utilities.app.AppRessources {
 	private static String CONFIG_PROFILE = "configuration_"; //$NON-NLS-1$
 	private static String EXT_XML = ".xml"; //$NON-NLS-1$
 
@@ -111,7 +110,7 @@ public class CJAppRessources extends AppRessources {
 	 * @param progname
 	 *            nom du programme
 	 */
-	public CJAppRessources(String progname) {
+	public AppRessources(String progname) {
 		super(progname);
 	}
 
@@ -160,7 +159,7 @@ public class CJAppRessources extends AppRessources {
 	 * le répertoire de mise à jour de l'appli 
 	 */
 	public void copyDefaultUpdateFile() {
-		File[] fileForCopy = new File(ConcoursJeunes.ajrParametreAppli.getResourceString("path.ressources") , "update").listFiles(new java.io.FileFilter() { //$NON-NLS-1$ //$NON-NLS-2$
+		File[] fileForCopy = new File(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") , "update").listFiles(new java.io.FileFilter() { //$NON-NLS-1$ //$NON-NLS-2$
 					public boolean accept(File pathname) {
 						return pathname.isFile();
 					}

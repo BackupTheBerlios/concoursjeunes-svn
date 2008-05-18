@@ -86,7 +86,7 @@
  */
 package org.concoursjeunes.ui.dialog;
 
-import static org.concoursjeunes.ConcoursJeunes.ajrLibelle;
+import static org.concoursjeunes.ApplicationCore.ajrLibelle;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -119,7 +119,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
-import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.ConcurrentList;
 import org.concoursjeunes.CriteriaSet;
@@ -496,7 +496,7 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 		}
 
 		do {
-			strEquipeName = JOptionPane.showInputDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("equipe.saisinom"), strEquipeName); //$NON-NLS-1$
+			strEquipeName = JOptionPane.showInputDialog(this, ApplicationCore.ajrLibelle.getResourceString("equipe.saisinom"), strEquipeName); //$NON-NLS-1$
 			if(strEquipeName == null)
 				return false;
 		} while (strEquipeName.isEmpty() || tempEquipes.contains(strEquipeName));
@@ -542,8 +542,8 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 
 		// test si le nombre de concurrent n'est pas trop important pour l'équipe
 		if (equipe.getMembresEquipe().size() + selectionConc.length > ficheConcours.getParametre().getReglement().getNbMembresEquipe()) {
-			JOptionPane.showMessageDialog(this, ConcoursJeunes.ajrLibelle.getResourceString("equipe.taille.max"), //$NON-NLS-1$
-					ConcoursJeunes.ajrLibelle.getResourceString("equipe.warning"), JOptionPane.WARNING_MESSAGE); //$NON-NLS-1$
+			JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("equipe.taille.max"), //$NON-NLS-1$
+					ApplicationCore.ajrLibelle.getResourceString("equipe.warning"), JOptionPane.WARNING_MESSAGE); //$NON-NLS-1$
 			return false;
 		}
 		
@@ -587,8 +587,8 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 			for(Equipe equipe : tempEquipes.list()) {
 	            if(equipe.getMembresEquipe().size() < ficheConcours.getParametre().getReglement().getNbMembresRetenu()) {
 	                if(JOptionPane.showConfirmDialog(this, 
-	                		ConcoursJeunes.ajrLibelle.getResourceString("equipe.warning.incomplete"), //$NON-NLS-1$
-	                		ConcoursJeunes.ajrLibelle.getResourceString("equipe.warning.incomplete.title"), //$NON-NLS-1$
+	                		ApplicationCore.ajrLibelle.getResourceString("equipe.warning.incomplete"), //$NON-NLS-1$
+	                		ApplicationCore.ajrLibelle.getResourceString("equipe.warning.incomplete.title"), //$NON-NLS-1$
 	                		JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
 	                	return;
 	                }

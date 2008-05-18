@@ -106,7 +106,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 
-import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.ApplicationCore;
 
 /**
  * @author Aurélien JEOFFRAY
@@ -138,8 +138,8 @@ public class ChangeLogDialog extends JDialog implements ActionListener {
 	}
 	
 	private void affectLibelle() {
-		setTitle(ConcoursJeunes.ajrLibelle.getResourceString("changelog.title")); //$NON-NLS-1$
-		jbFermer.setText(ConcoursJeunes.ajrLibelle.getResourceString("bouton.fermer")); //$NON-NLS-1$
+		setTitle(ApplicationCore.ajrLibelle.getResourceString("changelog.title")); //$NON-NLS-1$
+		jbFermer.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.fermer")); //$NON-NLS-1$
 	}
 	
 	private void completePane() {

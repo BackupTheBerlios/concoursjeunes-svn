@@ -268,7 +268,7 @@ public class Criterion {
 	 */
 	public void save() throws SQLException {
 
-		Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+		Statement stmt = ApplicationCore.dbConnection.createStatement();
 		
 		stmt.executeUpdate("merge into CRITERE (CODECRITERE,NUMREGLEMENT,LIBELLECRITERE,SORTORDERCRITERE," + //$NON-NLS-1$
 				"CLASSEMENT,CLASSEMENTEQUIPE,PLACEMENT,CODEFFTA,NUMORDRE) VALUES ('" + code + "'," +  //$NON-NLS-1$ //$NON-NLS-2$
@@ -290,7 +290,7 @@ public class Criterion {
 	 */
 	public void delete() {
 		try {
-			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+			Statement stmt = ApplicationCore.dbConnection.createStatement();
 			
 			stmt.executeUpdate("delete from CRITERE where CODECRITERE='" + code + "' and " + //$NON-NLS-1$ //$NON-NLS-2$
 					"NUMREGLEMENT=" + reglementParent.hashCode()); //$NON-NLS-1$

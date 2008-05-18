@@ -189,7 +189,7 @@ public class Blason {
 		
 		String sql = "select * from BLASONS order by NUMORDRE desc"; //$NON-NLS-1$
 		
-		Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+		Statement stmt = ApplicationCore.dbConnection.createStatement();
 		ResultSet rs = stmt.executeQuery(sql);
 		while(rs.next()) {
 			blasons.add(BlasonBuilder.getBlason(rs));
@@ -405,7 +405,7 @@ public class Blason {
 		else
 			sql = "insert into BLASONS (NOMBLASON, HORIZONTAL_RATIO, VERTICAL_RATIO) values (?, ?, ?)"; //$NON-NLS-1$
 		
-		PreparedStatement pstmt = ConcoursJeunes.dbConnection.prepareStatement(sql);
+		PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
 		
 		pstmt.setString(1, name);
 		pstmt.setDouble(2, horizontalRatio);
@@ -429,7 +429,7 @@ public class Blason {
 	public void delete() throws SQLException {
 		String sql = "delete from BLASONS where numblason=" + numblason; //$NON-NLS-1$
 		
-		Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+		Statement stmt = ApplicationCore.dbConnection.createStatement();
 		stmt.executeUpdate(sql);
 	}
 

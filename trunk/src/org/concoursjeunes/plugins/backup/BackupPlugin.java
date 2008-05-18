@@ -103,7 +103,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import org.concoursjeunes.ConcoursJeunes;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Configuration;
 import org.concoursjeunes.plugins.Plugin;
 import org.concoursjeunes.plugins.PluginEntry;
@@ -127,9 +127,9 @@ public class BackupPlugin {
 	
 	@PluginEntry
 	public void showBackupDialog() {
-		Configuration configuration = ConcoursJeunes.getConfiguration();
+		Configuration configuration = ApplicationCore.getConfiguration();
 		
-		File concoursPath = ConcoursJeunes.userRessources.getConcoursPathForProfile(configuration.getCurProfil());
+		File concoursPath = ApplicationCore.userRessources.getConcoursPathForProfile(configuration.getCurProfil());
 		
 		JFileChooser chooser = new JFileChooser();
 	    FileNameExtensionFilter filter = new FileNameExtensionFilter(
@@ -151,7 +151,7 @@ public class BackupPlugin {
 					addEntryToJar(concoursFile, jos);
 				}
 				
-				addEntryToJar(new File(ConcoursJeunes.userRessources.getConfigPathForUser(), "configuration.xml"), jos); //$NON-NLS-1$
+				addEntryToJar(new File(ApplicationCore.userRessources.getConfigPathForUser(), "configuration.xml"), jos); //$NON-NLS-1$
 				
 				jos.close();
 				

@@ -105,7 +105,7 @@ public class CriteriaSet {
 	 */
 	public void save() {
 		try {
-			Statement stmt = ConcoursJeunes.dbConnection.createStatement();
+			Statement stmt = ApplicationCore.dbConnection.createStatement();
 			
 			stmt.executeUpdate("merge into CRITERIASET VALUES (" + hashCode() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
 
@@ -278,6 +278,8 @@ public class CriteriaSet {
 	 */
 	@Override
 	public boolean equals(Object obj) {
+		if(obj == null)
+			return false;
 		if (this == obj)
 			return true;
 		if (getClass() != obj.getClass())
