@@ -99,28 +99,18 @@ public class BlasonManager {
 	/**
 	 * Retourne le blason associé à une ligne distance/blason d'un réglement donnée
 	 * 
-	 * @param distancesEtBlason l'objet distanceEtBlason dont le blason fait partie
-	 * @return le blason associé à la ligne d/b du réglement donnée
-	 */
-	public static Blason findBlasonAssociateToDistancesEtBlason(DistancesEtBlason distancesEtBlason) {
-		return findBlasonAssociateToDistancesEtBlason(distancesEtBlason, distancesEtBlason.getReglement().hashCode());
-	}
-	
-	/**
-	 * Retourne le blason associé à une ligne distance/blason d'un réglement donnée
-	 * 
-	 * @param distancesEtBlason l'objet distanceEtBlason dont le blason fait partie
+	 * @param numdistanceblason le numero de l'objet distanceEtBlason dont le blason fait partie
 	 * @param numreglement le numrero de reglement
 	 * @return le blason associé à la ligne d/b du réglement donnée
 	 */
-	public static Blason findBlasonAssociateToDistancesEtBlason(DistancesEtBlason distancesEtBlason, int numreglement) {
+	public static Blason findBlasonAssociateToDistancesEtBlason(int numdistanceblason, int numreglement) {
 		try {
 			String sql = "select BLASONS.* from DISTANCESBLASONS,BLASONS " //$NON-NLS-1$
 				+ "where DISTANCESBLASONS.NUMBLASON=BLASONS.NUMBLASON AND NUMDISTANCESBLASONS=? and NUMREGLEMENT=? order by NUMORDRE DESC"; //$NON-NLS-1$
 			
 			PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
 			
-			pstmt.setInt(1, distancesEtBlason.getNumdistancesblason());
+			pstmt.setInt(1, numdistanceblason);
 			pstmt.setInt(2, numreglement);
 			
 			ResultSet rs = pstmt.executeQuery();

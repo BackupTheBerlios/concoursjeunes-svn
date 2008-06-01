@@ -93,11 +93,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Hashtable;
 
-import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.CriteriaSet;
-import org.concoursjeunes.Criterion;
-import org.concoursjeunes.CriterionElement;
-import org.concoursjeunes.Reglement;
+import org.concoursjeunes.*;
 
 /**
  * Construit un jeux de critères à partir des données en base
@@ -129,10 +125,12 @@ public class CriteriaSetBuilder {
 			
 			Hashtable<Criterion, CriterionElement> criteria = new Hashtable<Criterion, CriterionElement>();
 			while(rs.next()) {
-				Criterion criterion = CriterionBuilder.getCriterion(rs.getString("CODECRITERE"), reglement, hashReglement); //$NON-NLS-1$
+				//Criterion criterion = CriterionBuilder.getCriterion(rs.getString("CODECRITERE"), reglement, hashReglement); //$NON-NLS-1$
+				Criterion criterion = reglement.getListCriteria().get(reglement.getListCriteria().indexOf(new Criterion(rs.getString("CODECRITERE")))); //$NON-NLS-1$
 				criteria.put(
 						criterion,
-						CriterionElementBuilder.getCriterionElement(rs.getString("CODECRITEREELEMENT"), criterion, hashReglement));//$NON-NLS-1$
+						criterion.getCriterionElements().get(criterion.getCriterionElements().indexOf(new CriterionElement(rs.getString("CODECRITEREELEMENT"))))); //$NON-NLS-1$
+						//CriterionElementBuilder.getCriterionElement(rs.getString("CODECRITEREELEMENT"), criterion, hashReglement));//$NON-NLS-1$
 			}
 			CriteriaSet criteriaSet = new CriteriaSet();
 			criteriaSet.setCriteria(criteria);

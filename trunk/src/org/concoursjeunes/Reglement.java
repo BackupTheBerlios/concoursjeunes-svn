@@ -91,6 +91,8 @@ package org.concoursjeunes;
 import java.sql.*;
 import java.util.*;
 
+import ajinteractive.standard.common.NullablePersistantObject;
+
 /**
  * <p>
  * Représentation d'un réglement de concours. Un réglement fixe les régles
@@ -125,7 +127,7 @@ public class Reglement {
 	private int nbMembresRetenu = 3;
 
 	private List<Criterion> listCriteria = new ArrayList<Criterion>();
-	private Map<CriteriaSet, CriteriaSet> surclassement = new HashMap<CriteriaSet, CriteriaSet>();
+	private Map<CriteriaSet, NullablePersistantObject<CriteriaSet>> surclassement = new HashMap<CriteriaSet, NullablePersistantObject<CriteriaSet>>();
 	private List<DistancesEtBlason> listDistancesEtBlason = new ArrayList<DistancesEtBlason>();
 
 	private boolean officialReglement = false;
@@ -197,14 +199,14 @@ public class Reglement {
 	/**
 	 * @return surclassement
 	 */
-	public Map<CriteriaSet, CriteriaSet> getSurclassement() {
+	public Map<CriteriaSet, NullablePersistantObject<CriteriaSet>> getSurclassement() {
 		return surclassement;
 	}
 
 	/**
 	 * @param surclassement surclassement à définir
 	 */
-	public void setSurclassement(Map<CriteriaSet, CriteriaSet> surclassement) {
+	public void setSurclassement(Map<CriteriaSet, NullablePersistantObject<CriteriaSet>> surclassement) {
 		this.surclassement = surclassement;
 	}
 
@@ -271,6 +273,50 @@ public class Reglement {
 		}
 
 		return filterCriteria;
+	}
+	
+	/**
+	 * Retourne la liste des critères de classement valide sur le réglement,
+	 * sont donc exclue de la liste les jeux de critères surclassé ou interdit
+	 * 
+	 * @return liste des critères de classement valide sur le réglement
+	 */
+	public CriteriaSet[] getValidClassementCriteriaSet() {
+		CriteriaSet[] lccs = CriteriaSet.listCriteriaSet(this, getClassementFilter());
+		List<CriteriaSet> validCS = new ArrayList<CriteriaSet>();
+		
+		for(CriteriaSet cs : lccs) {
+			if(!surclassement.containsKey(cs))
+				validCS.add(cs);
+		}
+		
+		return validCS.toArray(new CriteriaSet[validCS.size()]);
+	}
+	
+	/**
+	 * Retourne la liste des critères de placement valide sur le réglement,
+	 * sont donc exclue de la liste les jeux de critères surclassé ou interdit
+	 * 
+	 * @return liste des critères de placement valide sur le réglement
+	 */
+	public CriteriaSet[] getValidPlacementCriteriaSet() {
+		List<CriteriaSet> validCS = new ArrayList<CriteriaSet>();
+		List<CriteriaSet> placementCS = new ArrayList<CriteriaSet>();
+		CriteriaSet[] lccs = CriteriaSet.listCriteriaSet(this, getClassementFilter());
+		CriteriaSet[] lpcs = CriteriaSet.listCriteriaSet(this, getPlacementFilter());
+
+		for(CriteriaSet cs : lccs) {
+			if(!surclassement.containsKey(cs) && !validCS.contains(cs.getFilteredCriteriaSet(getPlacementFilter())))
+				validCS.add(cs.getFilteredCriteriaSet(getPlacementFilter()));
+		}
+		
+		//permet de conserver l'ordre des critères de placements
+		for(CriteriaSet cs : lpcs) {
+			if(validCS.contains(cs))
+				placementCS.add(cs);
+		}
+		
+		return placementCS.toArray(new CriteriaSet[placementCS.size()]);
 	}
 
 	/**
@@ -427,7 +473,7 @@ public class Reglement {
 		int numordre = 1;
 		for (Criterion criterion : listCriteria) {
 			criterion.setNumordre(numordre++);
-			criterion.save();
+			criterion.save(hashCode());
 		}
 	}
 	
@@ -439,12 +485,12 @@ public class Reglement {
 		String sql = "insert into SURCLASSEMENT (NUMCRITERIASET, NUMREGLEMENT, NUMCRITERIASET_SURCLASSE) " + //$NON-NLS-1$
 				"values (?, ?, ?)"; //$NON-NLS-1$
 		PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
-		for(Map.Entry<CriteriaSet, CriteriaSet> row : surclassement.entrySet()) {
-			row.getKey().save();
+		for(Map.Entry<CriteriaSet, NullablePersistantObject<CriteriaSet>> row : surclassement.entrySet()) {
+			row.getKey().save(hashCode());
 			pstmt.setInt(1, row.getKey().hashCode());
 			pstmt.setInt(2, hashCode());
-			if(row.getValue() != null) {
-				row.getValue().save();
+			if(row.getValue().get() != null) {
+				row.getValue().get().save(hashCode());
 				pstmt.setInt(3, row.getValue().hashCode());
 			} else
 				pstmt.setNull(3, Types.INTEGER);
@@ -455,7 +501,7 @@ public class Reglement {
 
 	private void saveDistancesAndBlasons() throws SQLException {
 		for (DistancesEtBlason distancesEtBlason : listDistancesEtBlason) {
-			distancesEtBlason.save();
+			distancesEtBlason.save(hashCode());
 		}
 	}
 

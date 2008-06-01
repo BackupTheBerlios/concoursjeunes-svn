@@ -20,6 +20,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 /**
@@ -33,7 +34,6 @@ public class CriteriaSet {
 	private Hashtable<Criterion, CriterionElement> criteria = new Hashtable<Criterion, CriterionElement>();
 
 	public CriteriaSet() {
-
 	}
 
 	public CriteriaSet(Hashtable<Criterion, CriterionElement> criteria) {
@@ -103,7 +103,8 @@ public class CriteriaSet {
 	/**
 	 * Sauvegarde en base le jeux de critère
 	 */
-	public void save() {
+	public void save(int numReglement) {
+		String sql;
 		try {
 			Statement stmt = ApplicationCore.dbConnection.createStatement();
 			
@@ -114,12 +115,12 @@ public class CriteriaSet {
 				Criterion criterion = entry.getKey();
 				CriterionElement criterionElement = entry.getValue();
 
-				String sql =  "merge into POSSEDE (NUMCRITERIASET, CODECRITEREELEMENT, " + //$NON-NLS-1$
+				sql =  "merge into POSSEDE (NUMCRITERIASET, CODECRITEREELEMENT, " + //$NON-NLS-1$
 						"CODECRITERE, NUMREGLEMENT) KEY (NUMCRITERIASET, CODECRITERE, NUMREGLEMENT) VALUES (" + //$NON-NLS-1$
 						hashCode() + ", '" +  //$NON-NLS-1$
 						criterionElement.getCode() + "', '" + //$NON-NLS-1$ 
 						criterion.getCode() + "', " +  //$NON-NLS-1$
-						criterion.getReglementParent().hashCode() + ")"; //$NON-NLS-1$
+						numReglement + ")"; //$NON-NLS-1$
 				//System.out.println(sql);
 				stmt.executeUpdate(sql);
 			}
@@ -297,7 +298,9 @@ public class CriteriaSet {
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
-		result = PRIME * result + ((criteria == null) ? 0 : criteria.hashCode());
+		for(Map.Entry<Criterion, CriterionElement> entry : criteria.entrySet()) {
+			result = PRIME * result + (entry.getKey().getCode() + ":" + entry.getValue().getCode()).hashCode(); //$NON-NLS-1$
+		}
 		return result;
 	}
 	

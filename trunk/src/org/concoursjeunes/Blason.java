@@ -111,8 +111,6 @@ public class Blason {
 	/**
 	 * Représente le blason par défaut
 	 */
-	public static Blason NULL = new Blason();
-	
 	private String name = ""; //$NON-NLS-1$
 	private double horizontalRatio = 1;
 	private double verticalRatio = 1;

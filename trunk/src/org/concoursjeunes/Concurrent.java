@@ -54,6 +54,7 @@ public class Concurrent extends Archer implements Cloneable {
 
 	private int inscription             = UNINIT;
 	private boolean	presence			= false;
+	private boolean surclassement		= false;
 
 	/**
 	 * Constructeur vide obligatoire pour java beans
@@ -239,6 +240,20 @@ public class Concurrent extends Archer implements Cloneable {
 	}
 
 	/**
+	 * @return surclassement
+	 */
+	public boolean isSurclassement() {
+		return surclassement;
+	}
+
+	/**
+	 * @param surclassement surclassement à définir
+	 */
+	public void setSurclassement(boolean surclassement) {
+		this.surclassement = surclassement;
+	}
+
+	/**
 	 * Libelle court du concurrent
 	 * 
 	 * @return String
@@ -279,7 +294,7 @@ public class Concurrent extends Archer implements Cloneable {
 	 */
 	public void saveCriteriaSet(Reglement reglement) {
 		if(!getNumLicenceArcher().equals("")) { //$NON-NLS-1$
-			criteriaSet.save();
+			criteriaSet.save(reglement.hashCode());
 			try {
 				String sql = "select * from ARCHERS where NUMLICENCEARCHER=?"; //$NON-NLS-1$
 				PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);

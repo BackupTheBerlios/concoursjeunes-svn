@@ -91,6 +91,7 @@ import static org.concoursjeunes.ApplicationCore.ajrParametreAppli;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.event.EventListenerList;
 
@@ -105,9 +106,9 @@ import org.concoursjeunes.event.ParametreListener;
  * @version 3.1
  */
 public class Parametre extends DefaultParameters {
-	private String lieuConcours		= null;
+	private String lieuConcours		= ""; //$NON-NLS-1$
 	private Date dDateConcours		= new Date();
-	private ArrayList<String> vArbitres = new ArrayList<String>();
+	private List<String> vArbitres = new ArrayList<String>();
 	private Reglement reglement		= new Reglement();
 
 	private String saveName         = System.currentTimeMillis()
@@ -192,7 +193,7 @@ public class Parametre extends DefaultParameters {
 	 * 
 	 * @return la liste des arbitres
 	 */
-	public ArrayList<String> getArbitres() {
+	public List<String> getArbitres() {
 		return vArbitres;
 	}
 
@@ -220,7 +221,7 @@ public class Parametre extends DefaultParameters {
 	 * 
 	 * @param vArbitres
 	 */
-	public void setArbitres(ArrayList<String> vArbitres) {
+	public void setArbitres(List<String> vArbitres) {
 		this.vArbitres = vArbitres;
 		fireParametreChanged();
 	}

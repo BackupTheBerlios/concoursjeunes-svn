@@ -49,8 +49,6 @@ public class Criterion {
     
     private List<CriterionElement> criterionElements = new ArrayList<CriterionElement>();
     
-    private Reglement reglementParent = new Reglement();
-    
     public Criterion() {
         
     }
@@ -242,37 +240,19 @@ public class Criterion {
 	public void setCriterionElements(List<CriterionElement> criterionElements) {
 		this.criterionElements = criterionElements;
 	}
-
-	/**
-	 * Retourne le réglement auquel appartient le critère
-	 * 
-	 * @return le reglement parent du critère
-	 */
-	public Reglement getReglementParent() {
-		return reglementParent;
-	}
-
-	/**
-	 * Définit le réglement parent du critère
-	 * 
-	 * @param reglementParent le reglement parent du critère
-	 */
-	public void setReglementParent(Reglement reglementParent) {
-		this.reglementParent = reglementParent;
-	}
 	
 	/**
 	 * Sauvegarde le critère en base
 	 * 
 	 * @throws SQLException si une erreur d'integration en base se produit
 	 */
-	public void save() throws SQLException {
+	public void save(int numReglement) throws SQLException {
 
 		Statement stmt = ApplicationCore.dbConnection.createStatement();
 		
 		stmt.executeUpdate("merge into CRITERE (CODECRITERE,NUMREGLEMENT,LIBELLECRITERE,SORTORDERCRITERE," + //$NON-NLS-1$
 				"CLASSEMENT,CLASSEMENTEQUIPE,PLACEMENT,CODEFFTA,NUMORDRE) VALUES ('" + code + "'," +  //$NON-NLS-1$ //$NON-NLS-2$
-				reglementParent.hashCode() + ",'" + libelle + "'," +  //$NON-NLS-1$ //$NON-NLS-2$
+				numReglement + ",'" + libelle + "'," +  //$NON-NLS-1$ //$NON-NLS-2$
 				sortOrder + "," + //$NON-NLS-1$
 				Boolean.toString(classement).toUpperCase() + "," + //$NON-NLS-1$
 				Boolean.toString(classementEquipe).toUpperCase() + "," + //$NON-NLS-1$
@@ -281,19 +261,19 @@ public class Criterion {
 		int numordre = 1;
 		for(CriterionElement criterionElement : criterionElements) {
 			criterionElement.setNumordre(numordre++);
-			criterionElement.save();
+			criterionElement.save(numReglement, code);
 		}
 	}
 	
 	/**
 	 * Supprime le critère de la base
 	 */
-	public void delete() {
+	public void delete(int numReglement) {
 		try {
 			Statement stmt = ApplicationCore.dbConnection.createStatement();
 			
 			stmt.executeUpdate("delete from CRITERE where CODECRITERE='" + code + "' and " + //$NON-NLS-1$ //$NON-NLS-2$
-					"NUMREGLEMENT=" + reglementParent.hashCode()); //$NON-NLS-1$
+					"NUMREGLEMENT=" + numReglement); //$NON-NLS-1$
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

@@ -410,6 +410,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 			concurrent.setClub(dtm.getConcurrentAtRow(rowIndex).getClub());
 			concurrent.setCriteriaSet(dtm.getConcurrentAtRow(rowIndex).getCriteriaSet());
 			concurrent.setCertificat(dtm.getConcurrentAtRow(rowIndex).isCertificat());
+			concurrent.setSurclassement(dtm.getConcurrentAtRow(rowIndex).isSurclassement());
 		}
 	}
 
@@ -582,6 +583,8 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 					return curConcurrent.getClub().getNom();
 				case 4:
 					String noplacementcritere = ""; //$NON-NLS-1$
+					if(curConcurrent.isSurclassement())
+						noplacementcritere = "<html><font color=red>"; //$NON-NLS-1$
 					for (Criterion key : reglement.getListCriteria()) {
 						if (!key.isPlacement()) {
 							CriterionElement criterionElement = curConcurrent.getCriteriaSet().getCriterionElement(key);
@@ -589,14 +592,20 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 								noplacementcritere += criterionElement.getCode();
 						}
 					}
+					if(curConcurrent.isSurclassement())
+						noplacementcritere += "</font></html>"; //$NON-NLS-1$
 					return noplacementcritere;
 				case 5:
 					String placementcritere = ""; //$NON-NLS-1$
+					if(curConcurrent.isSurclassement())
+						placementcritere = "<html><font color=red>"; //$NON-NLS-1$
 					for (Criterion key : reglement.getListCriteria()) {
 						if (key.isPlacement()) {
 							placementcritere += curConcurrent.getCriteriaSet().getCriterionElement(key).getCode();
 						}
 					}
+					if(curConcurrent.isSurclassement())
+						placementcritere += "</font></html>"; //$NON-NLS-1$
 					return placementcritere;
 				default:
 					return null;

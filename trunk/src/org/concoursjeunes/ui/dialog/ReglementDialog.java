@@ -93,6 +93,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -110,6 +111,7 @@ import org.concoursjeunes.*;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
+import ajinteractive.standard.common.NullablePersistantObject;
 import ajinteractive.standard.java2.GridbagComposer;
 import ajinteractive.standard.java2.NumberDocument;
 import ajinteractive.standard.ui.AJTree;
@@ -172,7 +174,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	private JButton jbValider = new JButton();
 	private JButton jbAnnuler = new JButton();
 
-	private CriteriaSet[] differentiationCriteria;
+	//private CriteriaSet[] differentiationCriteria;
 
 	private int verrou = NO_LOCK;
 
@@ -433,7 +435,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 					jcbCriteriaSet.addItem(""); //$NON-NLS-1$
 					CriteriaSet tmpCs = (CriteriaSet)table.getValueAt(row, 1);
 					
-					if(!reglement.getSurclassement().containsValue(tmpCs)) {
+					if(!reglement.getSurclassement().containsValue(new NullablePersistantObject<CriteriaSet>(tmpCs))) {
 						for(CriteriaSet cs : CriteriaSet.listCriteriaSet(reglement, reglement.getClassementFilter())) {
 							if(!tmpCs.equals(cs) && !reglement.getSurclassement().containsKey(cs))
 								jcbCriteriaSet.addItem(cs);
@@ -442,6 +444,10 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 					return super.getTableCellEditorComponent(table, value, isSelected, row, column);
 				}
 			});
+		}
+		
+		if (verrou != NO_LOCK) {
+			jtCriteriaSet.setEnabled(false);
 		}
 	}
 
@@ -481,10 +487,11 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		dtm.addTableModelListener(this);
 		
 		//on liste toutes les catégorie de classement
-		differentiationCriteria = CriteriaSet.listCriteriaSet(reglement, reglement.getClassementFilter());
+		CriteriaSet[] differentiationCriteria = CriteriaSet.listCriteriaSet(reglement, reglement.getClassementFilter());
 		
 		for (int i = 0; i < differentiationCriteria.length; i++) {
-			CriteriaSet criteriaSet = reglement.getSurclassement().get(differentiationCriteria[i]);
+			NullablePersistantObject<CriteriaSet> npo = reglement.getSurclassement().get(differentiationCriteria[i]);
+			CriteriaSet criteriaSet = (npo != null) ? npo.get() : null;
 			boolean enable = true;
 			if(criteriaSet == null && reglement.getSurclassement().containsKey(differentiationCriteria[i]))
 				enable = false;
@@ -518,26 +525,23 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 			dtm.addColumn(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.concours.distance") + " " + (i + 1)); //$NON-NLS-1$ //$NON-NLS-2$
 		dtm.addColumn(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.concours.blason")); //$NON-NLS-1$
 
-		differentiationCriteria = CriteriaSet.listCriteriaSet(reglement, reglement.getPlacementFilter());
-
-		for (int i = 0; i < differentiationCriteria.length; i++) {
-			if(reglement.getSurclassement().containsKey(differentiationCriteria[i]))
-				continue;
-			
+		CriteriaSet[] differentiationCriteria = reglement.getValidPlacementCriteriaSet();
+		
+		for (CriteriaSet plCS : differentiationCriteria) {
+			//System.out.println(plCS.toString() + ":" + plCS.hashCode());
 			Object[] row = new Object[reglement.getNbSerie() + 2];
-			CriteriaSetLibelle scnaLib = new CriteriaSetLibelle(differentiationCriteria[i]);
-			row[0] = scnaLib.toString();
+			row[0] = plCS;
 
 			for (int j = 1; j < reglement.getNbSerie() + 1; j++) {
-				if (reglement.getDistancesEtBlasonFor(differentiationCriteria[i]) != null)
-					row[j] = "" + reglement.getDistancesEtBlasonFor(differentiationCriteria[i]).getDistance()[j - 1]; //$NON-NLS-1$
+				if (reglement.getDistancesEtBlasonFor(plCS) != null)
+					row[j] = "" + reglement.getDistancesEtBlasonFor(plCS).getDistance()[j - 1]; //$NON-NLS-1$
 				else
 					row[j] = "0"; //$NON-NLS-1$
 			}
-			if (reglement.getDistancesEtBlasonFor(differentiationCriteria[i]) != null)
-				row[reglement.getNbSerie() + 1] = reglement.getDistancesEtBlasonFor(differentiationCriteria[i]).getTargetFace();
+			if (reglement.getDistancesEtBlasonFor(plCS) != null)
+				row[reglement.getNbSerie() + 1] = reglement.getDistancesEtBlasonFor(plCS).getTargetFace();
 			else {
-				Blason defaultBlason = Blason.NULL;
+				Blason defaultBlason = new Blason();
 				try {
 					List<Blason> availableTargetFace = Blason.listAvailableTargetFace();
 					if(availableTargetFace.size() > 0)
@@ -553,6 +557,10 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		return dtm;
 	}
 
+	private void reloadTablesModel() {
+		completeCriteriaSet();
+		completeDistancesEtBlasons();
+	}
 	/**
 	 * @return reglement
 	 */
@@ -617,12 +625,14 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 					else
 						distances[j] = 0;
 				}
-				DistancesEtBlason db = reglement.getDistancesEtBlasonFor(differentiationCriteria[i]);
+				
+				//reglement.getListDistancesEtBlason().clear();
+				DistancesEtBlason db = reglement.getDistancesEtBlasonFor((CriteriaSet)jtDistanceBlason.getModel().getValueAt(i, 0));
 				if (db == null) {
-					db = new DistancesEtBlason(distances, (Blason) this.jtDistanceBlason.getModel().getValueAt(i, jtDistanceBlason.getModel().getColumnCount() - 1));
+					db = new DistancesEtBlason(distances, (Blason) jtDistanceBlason.getModel().getValueAt(i, jtDistanceBlason.getModel().getColumnCount() - 1));
 
-					db.setCriteriaSet(differentiationCriteria[i]);
-					db.setReglement(reglement);
+					db.setCriteriaSet((CriteriaSet)jtDistanceBlason.getModel().getValueAt(i, 0));
+					//db.setReglement(reglement);
 
 					reglement.addDistancesEtBlason(db);
 				} else {
@@ -634,6 +644,16 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 					reglement.getListDistancesEtBlason().set(updateDbIndex, db);
 				}
 			}
+			
+			//supprime du reglement les D/B qui ne sont plus valide
+			List<DistancesEtBlason> activeDB = new ArrayList<DistancesEtBlason>();
+			//removeDB.addAll(reglement.getListDistancesEtBlason());
+			for (int i = 0; i < jtDistanceBlason.getRowCount(); i++) {
+				DistancesEtBlason db = reglement.getDistancesEtBlasonFor((CriteriaSet)jtDistanceBlason.getModel().getValueAt(i, 0));
+				activeDB.add(db);
+			}
+			reglement.getListDistancesEtBlason().clear();
+			reglement.getListDistancesEtBlason().addAll(activeDB);
 
 			reglement.setOfficialReglement(jcbOfficialReglement.isSelected());
 
@@ -663,7 +683,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 					Criterion criterion = (Criterion) dmtnObj;
 
 					if (!(criterion.isPlacement() && verrou != NO_LOCK)) {
-						TreePath selectedPath = treeCriteria.getSelectionPath();
+						//TreePath selectedPath = treeCriteria.getSelectionPath();
 						CriterionElementDialog cpd = new CriterionElementDialog(this, criterion);
 
 						if (cpd.getCriterionIndividu() != null) {
@@ -672,12 +692,10 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 							dmtn.add(dmtnIndiv);
 
 							treeModel.reload(dmtn);
-							treeCriteria.expandPath(selectedPath);
-							treeCriteria.setSelectionPath(selectedPath);
-							// treeCriteria.expandPath(selectedPath);
+							/*treeCriteria.expandPath(selectedPath);
+							treeCriteria.setSelectionPath(selectedPath);*/
 
-							jtDistanceBlason.setModel(createTableModel());
-							//generateSCNA_DBRow();
+							reloadTablesModel();
 						}
 					} else {
 						JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("reglement.message.criteria.noelement"), //$NON-NLS-1$
@@ -703,8 +721,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 
 					treeModel.reload();
 
-					jtDistanceBlason.setModel(createTableModel());
-					//generateSCNA_DBRow();
+					reloadTablesModel();
 				} else if (dmtnObj instanceof CriterionElement) {
 					TreePath selectedPath = treeCriteria.getSelectionPath();
 					DefaultMutableTreeNode dmtnParent = (DefaultMutableTreeNode) selectedPath.getParentPath().getLastPathComponent();
@@ -726,8 +743,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 
 					treeModel.reload();
 
-					jtDistanceBlason.setModel(createTableModel());
-					//generateSCNA_DBRow();
+					reloadTablesModel();
 				}
 			}
 		} else if (source == jbDownElement) {
@@ -747,8 +763,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 
 					treeModel.reload();
 
-					jtDistanceBlason.setModel(createTableModel());
-					//generateSCNA_DBRow();
+					reloadTablesModel();
 				} else if (dmtnObj instanceof CriterionElement) {
 					TreePath selectedPath = treeCriteria.getSelectionPath();
 					DefaultMutableTreeNode dmtnParent = (DefaultMutableTreeNode) selectedPath.getParentPath().getLastPathComponent();
@@ -766,8 +781,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 
 					treeModel.reload();
 
-					jtDistanceBlason.setModel(createTableModel());
-					//generateSCNA_DBRow();
+					reloadTablesModel();
 				}
 			}
 		} else if (source == jbRemoveElement) {
@@ -776,24 +790,22 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 				Object dmtnObj = dmtn.getUserObject();
 				if (dmtnObj instanceof Criterion) {
 					reglement.getListCriteria().remove(dmtnObj);
-					((Criterion) dmtnObj).delete();
+					((Criterion) dmtnObj).delete(reglement.hashCode());
 
 					treeModel.removeNodeFromParent(dmtn);
 
-					jtDistanceBlason.setModel(createTableModel());
-					//generateSCNA_DBRow();
+					reloadTablesModel();
 				} else if (dmtnObj instanceof CriterionElement) {
 					TreePath selectedPath = treeCriteria.getSelectionPath();
 					DefaultMutableTreeNode dmtnParent = (DefaultMutableTreeNode) selectedPath.getParentPath().getLastPathComponent();
 
 					Criterion curCriterion = (Criterion) dmtnParent.getUserObject();
 					curCriterion.getCriterionElements().remove(dmtnObj);
-					((CriterionElement) dmtnObj).delete();
+					((CriterionElement) dmtnObj).delete(reglement.hashCode(), curCriterion.getCode());
 
 					treeModel.removeNodeFromParent(dmtn);
 
-					jtDistanceBlason.setModel(createTableModel());
-					//generateSCNA_DBRow();
+					reloadTablesModel();
 				}
 			}
 		}
@@ -814,8 +826,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 				treeModel.reload((TreeNode) treeCriteria.getSelectionPath().getLastPathComponent());
 				treeCriteria.setSelectionPath(selectedPath);
 
-				jtDistanceBlason.setModel(createTableModel());
-				//generateSCNA_DBRow();
+				reloadTablesModel();
 			} else if (dmtnObj instanceof CriterionElement) {
 				TreePath selectedPath = treeCriteria.getSelectionPath();
 				DefaultMutableTreeNode dmtnParent = (DefaultMutableTreeNode) selectedPath.getParentPath().getLastPathComponent();
@@ -824,8 +835,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 				treeModel.reload((TreeNode) treeCriteria.getSelectionPath().getLastPathComponent());
 				treeCriteria.setSelectionPath(selectedPath);
 
-				jtDistanceBlason.setModel(createTableModel());
-				//generateSCNA_DBRow();
+				reloadTablesModel();
 			}
 		}
 	}
@@ -873,10 +883,23 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		Object oSurclasse = dtm.getValueAt(e.getFirstRow(), 2);
 		
 		if(active && oSurclasse instanceof CriteriaSet)
-			reglement.getSurclassement().put(criteriaSet, (CriteriaSet)oSurclasse);
+			reglement.getSurclassement().put(criteriaSet, new NullablePersistantObject<CriteriaSet>((CriteriaSet)oSurclasse));
 		else if(!active)
-			reglement.getSurclassement().put(criteriaSet, null);
+			reglement.getSurclassement().put(criteriaSet, new NullablePersistantObject<CriteriaSet>(null));
 		else
 			reglement.getSurclassement().remove(criteriaSet);
+		
+		jtDistanceBlason.setModel(createTableModel());
+		try {
+			List<Blason> blasons = Blason.listAvailableTargetFace();
+			for(Blason blason : blasons)
+				jcbBlasons.addItem(blason);
+			TableColumn cH = jtDistanceBlason.getColumnModel().getColumn(jtDistanceBlason.getColumnModel().getColumnCount() - 1);
+			cH.setCellEditor(new DefaultCellEditor(jcbBlasons));
+		} catch (SQLException e1) {
+			JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+					null, null, e1, Level.SEVERE, null));
+			e1.printStackTrace();
+		}
 	}
 }

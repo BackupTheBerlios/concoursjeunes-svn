@@ -20,12 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.Concurrent;
-import org.concoursjeunes.CriteriaSet;
-import org.concoursjeunes.Criterion;
-import org.concoursjeunes.CriterionElement;
-import org.concoursjeunes.Reglement;
+import org.concoursjeunes.*;
 
 /**
  * Fabrique d'archer en se basant sur les données en base
@@ -91,6 +86,16 @@ public class ConcurrentBuilder {
 								return null;
 						}
 					}
+				}
+				
+				//régle de surclassement de l'archer
+				if(reglement.getSurclassement().containsKey(differentiationCriteria)) {
+					CriteriaSet tmpCS = reglement.getSurclassement().get(differentiationCriteria).get();
+					
+					if(tmpCS == null) //si la categorie est invalide alors ne pas renvoyer l'archer
+						return null;
+					differentiationCriteria = tmpCS; //sinon retourner sa catégorie de surclassement
+					concurrent.setSurclassement(true);
 				}
 
 				concurrent.setCriteriaSet(differentiationCriteria);

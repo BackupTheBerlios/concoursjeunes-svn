@@ -34,10 +34,12 @@ public class CriterionElement {
     private boolean active = true;
     private int numordre = 0;
     
-    private Criterion criterionParent = new Criterion();
-    
     public CriterionElement() {
         
+    }
+    
+    public CriterionElement(String code) {
+        this.code = code;
     }
 
     /**
@@ -96,30 +98,30 @@ public class CriterionElement {
     	this.numordre = numordre;
     }
 
-	public Criterion getCriterionParent() {
+	/*public Criterion getCriterionParent() {
 		return criterionParent;
-	}
+	}*/
 
     /**
      * Définit le critère parent de l'élément
      * 
      * @param criterionParent le critère parent
      */
-	public void setCriterionParent(Criterion criterionParent) {
+	/*public void setCriterionParent(Criterion criterionParent) {
 		this.criterionParent = criterionParent;
-	}
+	}*/
 	
 	/**
 	 * Sauvegarde l'élement de critére dans la base
 	 */
-	public void save() {
+	public void save(int numReglement, String codeCriterionParent) {
 		try {
 			Statement stmt = ApplicationCore.dbConnection.createStatement();
 			
 			stmt.executeUpdate("merge into CRITEREELEMENT (CODECRITEREELEMENT," + //$NON-NLS-1$
 					"CODECRITERE,NUMREGLEMENT,LIBELLECRITEREELEMENT,ACTIF,NUMORDRE) values (" + //$NON-NLS-1$
-					"'" + code + "', '" + criterionParent.getCode() + "'," + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-					"" + criterionParent.getReglementParent().hashCode() + ", '" + libelle + "'," + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+					"'" + code + "', '" + codeCriterionParent + "'," + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+					"" + numReglement + ", '" + libelle + "'," + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 					Boolean.toString(active).toUpperCase() + "," + numordre + ")"); //$NON-NLS-1$ //$NON-NLS-2$
 		} catch(SQLException e) {
 			
@@ -129,13 +131,13 @@ public class CriterionElement {
 	/**
 	 * Supprime de la base le présent élément
 	 */
-	public void delete() {
+	public void delete(int numReglement, String codeCriterionParent) {
 		try {
 			Statement stmt = ApplicationCore.dbConnection.createStatement();
 			
 			stmt.executeUpdate("delete from CRITEREELEMENT where CODECRITEREELEMENT='" + code + //$NON-NLS-1$
-					"' and CODECRITERE='" + criterionParent.getCode() + "' and " + //$NON-NLS-1$ //$NON-NLS-2$
-					"NUMREGLEMENT=" + criterionParent.getReglementParent().hashCode()); //$NON-NLS-1$
+					"' and CODECRITERE='" + codeCriterionParent + "' and " + //$NON-NLS-1$ //$NON-NLS-2$
+					"NUMREGLEMENT=" + numReglement); //$NON-NLS-1$
 		} catch(SQLException e) {
 			
 		}

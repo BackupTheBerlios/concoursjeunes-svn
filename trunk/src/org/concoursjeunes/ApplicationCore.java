@@ -89,32 +89,14 @@
 package org.concoursjeunes;
 
 import java.awt.Desktop;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.StringReader;
+import java.io.*;
 import java.net.MalformedURLException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
+import java.sql.*;
+import java.util.*;
 import java.util.logging.Level;
 
 import javax.naming.ConfigurationException;
-import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
-import javax.script.SimpleBindings;
+import javax.script.*;
 import javax.swing.JOptionPane;
 import javax.swing.event.EventListenerList;
 
@@ -122,6 +104,7 @@ import org.concoursjeunes.builders.FicheConcoursBuilder;
 import org.concoursjeunes.event.ConcoursJeunesEvent;
 import org.concoursjeunes.event.ConcoursJeunesListener;
 import org.concoursjeunes.exceptions.NullConfigurationException;
+import org.h2.constant.ErrorCode;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
@@ -266,7 +249,7 @@ public class ApplicationCore {
 						null, null, e, Level.SEVERE, null));
 				
 				//Si ce n'est pas un message db bloqué par un autre processus
-				if(!e.getSQLState().equals("90020")) { //$NON-NLS-1$
+				if(!e.getSQLState().equals("" + ErrorCode.DATABASE_ALREADY_OPEN_1)) { //$NON-NLS-1$
 					if(JOptionPane.showConfirmDialog(null, ajrLibelle.getResourceString("erreur.breakdb")) == JOptionPane.YES_OPTION) { //$NON-NLS-1$
 						retry = true;
 						for(File deletefile : userRessources.getBasePath().listFiles()) {

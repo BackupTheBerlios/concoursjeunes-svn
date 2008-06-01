@@ -92,12 +92,7 @@ import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Criterion;
@@ -235,7 +230,6 @@ public class CriterionElementDialog extends JDialog implements ActionListener {
         if(e.getSource() == jbValider) {
             if(criterionIndividu == null) {
                 criterionIndividu = new CriterionElement();
-                criterionIndividu.setCriterionParent(criterion);
                 
                 criterion.getCriterionElements().add(criterionIndividu);
             }

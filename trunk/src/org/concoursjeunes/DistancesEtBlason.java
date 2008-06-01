@@ -29,11 +29,10 @@ import java.util.Arrays;
 public class DistancesEtBlason {
 	private int[] distances = new int[] { 18, 18 };
 	private int blason = 80;
-	private Blason targetFace = Blason.NULL;
+	private Blason targetFace = new Blason();
 
 	private CriteriaSet criteriaSet = new CriteriaSet();
 
-	private Reglement reglement = new Reglement();
 	private int numdistancesblason = 0;
 
 	/**
@@ -154,55 +153,38 @@ public class DistancesEtBlason {
 	}
 
 	/**
-	 * @return reglement
-	 */
-	public Reglement getReglement() {
-		return reglement;
-	}
-
-	/**
-	 * Définit le réglement associé au couple distances/blasons
-	 * 
-	 * @param reglement
-	 *            reglement à définir
-	 */
-	public void setReglement(Reglement reglement) {
-		this.reglement = reglement;
-	}
-
-	/**
 	 * Sauvegarde le couple distances/blasons en base
 	 * 
 	 * @throws SQLException
 	 */
-	public void save() throws SQLException {
+	public void save(int numReglement) throws SQLException {
 		Statement stmt = ApplicationCore.dbConnection.createStatement();
 
 		if (numdistancesblason == 0) {
 			stmt.executeUpdate("insert into DISTANCESBLASONS (NUMREGLEMENT, NUMBLASON) VALUES (" + //$NON-NLS-1$
-					reglement.hashCode() + ", " + targetFace.getNumblason() + ")", Statement.RETURN_GENERATED_KEYS); //$NON-NLS-1$ //$NON-NLS-2$
+					numReglement + ", " + targetFace.getNumblason() + ")", Statement.RETURN_GENERATED_KEYS); //$NON-NLS-1$ //$NON-NLS-2$
 			ResultSet clefs = stmt.getGeneratedKeys();
 			if (clefs.first()) {
 				numdistancesblason = (Integer) clefs.getObject(1);
 			}
 		} else {
 			stmt.executeUpdate("update DISTANCESBLASONS set NUMBLASON=" + //$NON-NLS-1$
-					targetFace.getNumblason() + " where NUMREGLEMENT=" + reglement.hashCode() + " and NUMDISTANCESBLASONS=" + numdistancesblason); //$NON-NLS-1$ //$NON-NLS-2$
+					targetFace.getNumblason() + " where NUMREGLEMENT=" + numReglement + " and NUMDISTANCESBLASONS=" + numdistancesblason); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
-		criteriaSet.save();
+		criteriaSet.save(numReglement);
 
 		String sql = "merge into ASSOCIER (NUMDISTANCESBLASONS, " + //$NON-NLS-1$
 				"NUMREGLEMENT, NUMCRITERIASET) " + //$NON-NLS-1$
 				"VALUES (" + numdistancesblason + ", " + //$NON-NLS-1$ //$NON-NLS-2$
-				reglement.hashCode() + "," + //$NON-NLS-1$
+				numReglement + "," + //$NON-NLS-1$
 				criteriaSet.hashCode() + ")"; //$NON-NLS-1$
 		stmt.executeUpdate(sql); 
 		
-		stmt.executeUpdate("delete from DISTANCES where NUMDISTANCESBLASONS=" + numdistancesblason + " and NUMREGLEMENT=" + reglement.hashCode()); //$NON-NLS-1$ //$NON-NLS-2$
+		stmt.executeUpdate("delete from DISTANCES where NUMDISTANCESBLASONS=" + numdistancesblason + " and NUMREGLEMENT=" + numReglement); //$NON-NLS-1$ //$NON-NLS-2$
 		for(int distance : distances) {
 			stmt.executeUpdate("insert into DISTANCES (NUMDISTANCESBLASONS, NUMREGLEMENT, DISTANCE) " + //$NON-NLS-1$
-					"VALUES (" + numdistancesblason + ", " + reglement.hashCode() +", " + distance + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+					"VALUES (" + numdistancesblason + ", " + numReglement +", " + distance + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		}
 	}
 

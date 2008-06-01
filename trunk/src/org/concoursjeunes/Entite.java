@@ -131,6 +131,8 @@ public class Entite {
 	 * @param adresse l'adresse de l'entite
 	 */
     public void setAdresse(String adresse) {
+    	if(adresse == null)
+    		adresse = ""; //$NON-NLS-1$
         this.adresse = adresse;
     }
     
@@ -151,6 +153,8 @@ public class Entite {
 	 * @param codePostal le code postal
 	 */
     public void setCodePostal(String codePostal) {
+    	if(codePostal == null)
+    		codePostal = ""; //$NON-NLS-1$
         this.codePostal = codePostal;
     }
     
@@ -207,6 +211,8 @@ public class Entite {
 	 * @param note une note sur l'entite
 	 */
 	public void setNote(String note) {
+		if(note == null)
+			note = ""; //$NON-NLS-1$
 		this.note = note;
 	}
 	

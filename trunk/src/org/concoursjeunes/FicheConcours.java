@@ -21,11 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 
@@ -35,11 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.concoursjeunes.builders.AncragesMapBuilder;
 import org.concoursjeunes.builders.BlasonBuilder;
 import org.concoursjeunes.builders.EquipeListBuilder;
-import org.concoursjeunes.event.FicheConcoursEvent;
-import org.concoursjeunes.event.FicheConcoursListener;
-import org.concoursjeunes.event.ParametreEvent;
-import org.concoursjeunes.event.ParametreListener;
-import org.concoursjeunes.event.PasDeTirListener;
+import org.concoursjeunes.event.*;
 import org.concoursjeunes.exceptions.FicheConcoursException;
 import org.concoursjeunes.exceptions.FicheConcoursException.Nature;
 import org.concoursjeunes.state.PasDeTirState;
@@ -121,8 +113,10 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 	 * @param parametre les parametres du concours ou null si laisser les parametres par défaut
 	 */
 	public FicheConcours(Parametre parametre) {
-		if(parametre != null)
+		if(parametre != null) {
 			this.parametre = parametre;
+			concurrentList.setParametre(parametre);
+		}
 		
 		this.parametre.addParametreListener(this);
 		makePasDeTir();
@@ -281,8 +275,14 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 	 *            la fiche à restaurer
 	 */
 	public void setFiche(Object[] fiche, MetaDataFicheConcours metaDataFicheConcours) {
+		
 		parametre = (Parametre) fiche[0];
 		concurrentList = (ConcurrentList) fiche[1];
+		//if(fiche[0] instanceof Parametre) {
+			
+			concurrentList.setParametre(parametre);
+		/*} else
+			parametre = concurrentList.getParametre();*/
 		equipes = (EquipeList) fiche[2];
 		
 		checkFiche();
@@ -328,9 +328,9 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 		for(DistancesEtBlason distancesEtBlason : reglement.getListDistancesEtBlason()) {
 			
 			//si le blason n'est pas initialiser 
-			if(distancesEtBlason.getTargetFace() == null || distancesEtBlason.getTargetFace().equals(Blason.NULL)) {
+			if(distancesEtBlason.getTargetFace() == null || distancesEtBlason.getTargetFace().equals(new Blason())) {
 				if(distancesEtBlason.getNumdistancesblason() > 0) { //si le reglement est dans la base
-					distancesEtBlason.setTargetFace(BlasonManager.findBlasonAssociateToDistancesEtBlason(distancesEtBlason));
+					distancesEtBlason.setTargetFace(BlasonManager.findBlasonAssociateToDistancesEtBlason(distancesEtBlason.getNumdistancesblason(), reglement.hashCode()));
 				} else {
 					Blason targetFace = null;
 					try { //on tente de retrouver une correspondance pour le blason dans la base

@@ -115,6 +115,7 @@ public class CriterionBuilder {
 	 * @return le critère correspondant
 	 */
 	public static Criterion getCriterion(String codeCritere, Reglement reglement, int hashReglement) {
+		
 		try {
 			String sql = "select * from critere where CODECRITERE=? and NUMREGLEMENT=?"; //$NON-NLS-1$
 			
@@ -134,7 +135,6 @@ public class CriterionBuilder {
 				criterion.setClassementEquipe(rs.getBoolean("CLASSEMENTEQUIPE")); //$NON-NLS-1$
 				criterion.setPlacement(rs.getBoolean("PLACEMENT")); //$NON-NLS-1$
 				criterion.setNumordre(rs.getInt("NUMORDRE")); //$NON-NLS-1$
-				criterion.setReglementParent(reglement);
 
 				criterion.setCriterionElements(CriterionElement.getAllCriterionElementsFor(criterion, hashReglement));
 				
