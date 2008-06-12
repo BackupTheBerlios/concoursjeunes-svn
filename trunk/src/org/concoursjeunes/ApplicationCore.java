@@ -386,6 +386,7 @@ public class ApplicationCore {
 				}
 			}
 		} catch (Exception e) {
+			//TODO reprendre le message d'erreur en cas d'association non trouvé
 			e.printStackTrace();
 			printOK = false;
 		} finally {
