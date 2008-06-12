@@ -88,6 +88,8 @@
  */
 package org.concoursjeunes.state;
 
+import static org.concoursjeunes.ApplicationCore.ajrLibelle;
+
 import java.awt.Desktop;
 import java.awt.Graphics2D;
 import java.io.File;
@@ -95,6 +97,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.text.DateFormat;
+import java.util.Date;
 
 import org.concoursjeunes.*;
 
@@ -104,10 +108,7 @@ import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
 
-import static org.concoursjeunes.ApplicationCore.ajrParametreAppli;
-import static org.concoursjeunes.ApplicationCore.ajrLibelle;
-
-public class PasDeTirState {
+public class ShootingLineState {
 	
 	private static final double topMargin = 0.5;
 	private static final double bottomMargin = 0.5;
@@ -128,7 +129,7 @@ public class PasDeTirState {
 	private float pageHeight = document.getPageSize().getHeight();
 	private int maxDistance = 0;
 	
-	public PasDeTirState(PasDeTir pasDeTir) {
+	public ShootingLineState(PasDeTir pasDeTir) {
 		this.pasDeTir = pasDeTir;
 		this.maxDistance = getMaxDistance(0);
 		
@@ -138,9 +139,15 @@ public class PasDeTirState {
 	public void paint() {
 		int page = 1;
 		try {
-			File tmpFile = File.createTempFile("cta", ajrParametreAppli.getResourceString("extention.pdf")); //$NON-NLS-1$ //$NON-NLS-2$
-			String filePath = tmpFile.getCanonicalPath();
-			tmpFile.deleteOnExit();
+			String concoursFileName = pasDeTir.getFicheConcours().getParametre().getSaveName();
+			String concoursDirectory = concoursFileName.substring(0, concoursFileName.length() - 4);
+			
+			File pdfFile = new File(
+					ApplicationCore.userRessources.getConcoursPathForProfile(ApplicationCore.getConfiguration().getCurProfil()), 
+					concoursDirectory + File.separator + ajrLibelle.getResourceString("state.pasdetir.title")  //$NON-NLS-1$
+					+ " - " + DateFormat.getDateInstance().format(new Date()) + " " + DateFormat.getTimeInstance().format(new Date()) + ".pdf"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			pdfFile.getParentFile().mkdirs();
+			String filePath = pdfFile.getCanonicalPath();
 			
 			PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filePath));
 			writer.setFullCompression();
@@ -195,14 +202,14 @@ public class PasDeTirState {
 			document.close();
 			
 			if (Desktop.isDesktopSupported()) {
-				Desktop.getDesktop().open(tmpFile);
+				Desktop.getDesktop().open(pdfFile);
 			} else {
 				if (ApplicationCore.getConfiguration() != null) {
 					
 					String NAV = ApplicationCore.getConfiguration().getPdfReaderPath();
 
-					System.out.println(NAV + " " + tmpFile.getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
-					Runtime.getRuntime().exec(NAV + " " + tmpFile.getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
+					System.out.println(NAV + " " + pdfFile.getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
+					Runtime.getRuntime().exec(NAV + " " + pdfFile.getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 			}
 		} catch (FileNotFoundException e) {

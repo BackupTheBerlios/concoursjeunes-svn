@@ -86,60 +86,26 @@
  */
 package org.concoursjeunes.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.Graphics;
-import java.awt.Insets;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
+import java.awt.*;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.logging.Level;
 
-import javax.swing.Box;
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTree;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
-import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.Concurrent;
-import org.concoursjeunes.ConcurrentList;
-import org.concoursjeunes.FicheConcours;
-import org.concoursjeunes.Target;
-import org.concoursjeunes.TargetPosition;
+import org.concoursjeunes.*;
 import org.concoursjeunes.event.FicheConcoursEvent;
 import org.concoursjeunes.event.FicheConcoursListener;
 import org.concoursjeunes.exceptions.FicheConcoursException;
 import org.concoursjeunes.exceptions.PlacementException;
 import org.concoursjeunes.ui.dialog.ConcurrentDialog;
 import org.concoursjeunes.ui.dialog.EquipeDialog;
-import org.concoursjeunes.ui.dialog.TypeListingDialog;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
@@ -167,10 +133,6 @@ public class FicheConcoursDepartPane extends JPanel
 	private JRadioButton jcbSortCible = new JRadioButton("", true); //$NON-NLS-1$
 	private JRadioButton jcbSortNom = new JRadioButton();
 	private JRadioButton jcbSortClub = new JRadioButton();
-
-	private JButton jbPrintListConc = new JButton();
-	private JButton jbPrintEtiquettes = new JButton();
-	private JButton jbPrintPasDeTir = new JButton();
 
 	private AJList ajlConcurrent = new AJList();
 	private AJTree treeTarget = new AJTree();
@@ -218,20 +180,9 @@ public class FicheConcoursDepartPane extends JPanel
 		JPanel northpanePrintButton = new JPanel();
 		JPanel ficheG = new JPanel();
 
-		// enregistre les auditeurs d'évenement
-		jbPrintListConc.addActionListener(this);
-		jbPrintListConc.setMargin(new Insets(0, 0, 0, 0));
-		jbPrintEtiquettes.addActionListener(this);
-		jbPrintEtiquettes.setMargin(new Insets(0, 0, 0, 0));
-		jbPrintPasDeTir.addActionListener(this);
-		jbPrintPasDeTir.setMargin(new Insets(0, 0, 0, 0));
-
 		// option d'affichage du classement
 		northpaneGestion.setLayout(new BorderLayout());
 		northpanePrintButton.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
-		northpanePrintButton.add(jbPrintListConc);
-		northpanePrintButton.add(jbPrintEtiquettes);
-		northpanePrintButton.add(jbPrintPasDeTir);
 		northpaneGestion.add(northpanePrintButton, BorderLayout.NORTH);
 		JLabel jl = new JLabel(ApplicationCore.ajrLibelle.getResourceString("interface.aideplacement")); //$NON-NLS-1$
 		jl.setHorizontalTextPosition(JLabel.CENTER);
@@ -349,16 +300,6 @@ public class FicheConcoursDepartPane extends JPanel
 		pane.setLayout(new BorderLayout());
 		pane.add(scrollcible, BorderLayout.CENTER);
 
-		jbPrintEtiquettes.setIcon(new ImageIcon(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ApplicationCore.ajrParametreAppli.getResourceString("file.icon.print") //$NON-NLS-1$
-		));
-		jbPrintListConc.setIcon(new ImageIcon(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ApplicationCore.ajrParametreAppli.getResourceString("file.icon.print") //$NON-NLS-1$
-		));
-		jbPrintPasDeTir.setIcon(new ImageIcon(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ApplicationCore.ajrParametreAppli.getResourceString("file.icon.print") //$NON-NLS-1$
-		));
-
 		treeTarget.setKeepExpansionState(true);
 		treeTarget.setModel(treeModel);
 		treeTarget.addMouseListener(this);
@@ -403,9 +344,6 @@ public class FicheConcoursDepartPane extends JPanel
 	 * Affecte les libellés localisé au composant de l'interface
 	 */
 	private void affectLibelle() {
-		jbPrintListConc.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.printlistconc")); //$NON-NLS-1$
-		jbPrintEtiquettes.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.printetiquettes")); //$NON-NLS-1$
-		jbPrintPasDeTir.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.printpasdetir")); //$NON-NLS-1$
 
 		jbAjouterArcher.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.ajouter")); //$NON-NLS-1$
 		jbAjouterArcher.setToolTipText(ApplicationCore.ajrLibelle.getResourceString("bouton.ajouter")); //$NON-NLS-1$
@@ -659,27 +597,6 @@ public class FicheConcoursDepartPane extends JPanel
 			}
 		} else if (source == jbPlacementArcher) {
 			placementConcurrents();
-		} else if (source == jbPrintListConc) {
-			TypeListingDialog tld = new TypeListingDialog(ficheConcoursPane.getParentframe());
-			int returnType = tld.showTypeListingDialog();
-			if (returnType == TypeListingDialog.ALPHA) {
-				if(!ficheConcours.printArcherList(FicheConcours.ALPHA))
-					JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
-			} else if (returnType == TypeListingDialog.GREFFE) {
-				if(!ficheConcours.printArcherList(FicheConcours.GREFFE))
-					JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
-			} else if (returnType == TypeListingDialog.TARGET) {
-				if(!ficheConcours.printArcherList(FicheConcours.TARGET))
-					JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
-			}
-		} else if (source == jbPrintEtiquettes) {
-			if(!ficheConcours.printEtiquettes()) {
-				JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
-			}
-		} else if (source == jbPrintPasDeTir) {
-			if(!ficheConcours.printPasDeTir()) {
-				JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
-			}
 		} else if (source instanceof JRadioButton) {
 			if (source == jcbSortCible)
 				ajlConcurrent.setListData(ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), ConcurrentList.SortCriteria.SORT_BY_TARGETS));

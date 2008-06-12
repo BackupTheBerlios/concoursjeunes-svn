@@ -34,7 +34,7 @@ import org.concoursjeunes.builders.EquipeListBuilder;
 import org.concoursjeunes.event.*;
 import org.concoursjeunes.exceptions.FicheConcoursException;
 import org.concoursjeunes.exceptions.FicheConcoursException.Nature;
-import org.concoursjeunes.state.PasDeTirState;
+import org.concoursjeunes.state.ShootingLineState;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
@@ -1032,7 +1032,7 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 	 * @return true si impression avec succe, false sinon
 	 */
 	public boolean printPasDeTir() {
-		new PasDeTirState(pasDeTir.get(currentDepart));
+		new ShootingLineState(pasDeTir.get(currentDepart));
 
 		return true;
 	}

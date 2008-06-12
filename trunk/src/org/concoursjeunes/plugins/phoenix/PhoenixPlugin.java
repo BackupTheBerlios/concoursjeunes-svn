@@ -91,11 +91,7 @@ package org.concoursjeunes.plugins.phoenix;
 import java.io.File;
 import java.io.IOException;
 
-import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.Configuration;
-import org.concoursjeunes.MetaDataFicheConcours;
-import org.concoursjeunes.MetaDataFichesConcours;
-import org.concoursjeunes.Parametre;
+import org.concoursjeunes.*;
 import org.concoursjeunes.event.ConcoursJeunesEvent;
 import org.concoursjeunes.event.ConcoursJeunesListener;
 import org.concoursjeunes.plugins.Plugin;
@@ -131,23 +127,25 @@ public class PhoenixPlugin extends Thread implements ConcoursJeunesListener {
 		
 		if(metaDataFichesConcours.getFiches().size() != concoursFiles.length) {
 			for(File concoursFile : concoursFiles) {
-				try {
-					Object[] structure = AJToolKit.loadXMLStructure(concoursFile, true);
-					if(structure != null && structure.length == 3) {
-						if(structure[0] instanceof Parametre) {
-							Parametre parametre = (Parametre) structure[0];
-							
-							MetaDataFicheConcours metaDataFicheConcours = new MetaDataFicheConcours(
-									parametre.getDate(), parametre.getIntituleConcours(), parametre.getSaveName());
-							if(!metaDataFichesConcours.contains(metaDataFicheConcours)) {
-								metaDataFichesConcours.add(metaDataFicheConcours);
+				if(concoursFile.isFile()) {
+					try {
+						Object[] structure = AJToolKit.loadXMLStructure(concoursFile, true);
+						if(structure != null && structure.length == 3) {
+							if(structure[0] instanceof Parametre) {
+								Parametre parametre = (Parametre) structure[0];
+								
+								MetaDataFicheConcours metaDataFicheConcours = new MetaDataFicheConcours(
+										parametre.getDate(), parametre.getIntituleConcours(), parametre.getSaveName());
+								if(!metaDataFichesConcours.contains(metaDataFicheConcours)) {
+									metaDataFichesConcours.add(metaDataFicheConcours);
+								}
 							}
+						} else {
+							//concoursFile.delete(); //Fichier verolé on supprime
 						}
-					} else {
-						//concoursFile.delete(); //Fichier verolé on supprime
+					} catch (IOException e) {
+						e.printStackTrace();
 					}
-				} catch (IOException e) {
-					e.printStackTrace();
 				}
 			}
 		}

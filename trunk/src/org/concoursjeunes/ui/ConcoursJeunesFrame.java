@@ -107,12 +107,7 @@ import java.text.DateFormat;
 import java.util.List;
 import java.util.logging.Level;
 
-import javax.swing.JEditorPane;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.HyperlinkEvent;
@@ -121,13 +116,7 @@ import javax.swing.text.DefaultCaret;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 
-import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.Configuration;
-import org.concoursjeunes.FicheConcours;
-import org.concoursjeunes.MetaDataFicheConcours;
-import org.concoursjeunes.MetaDataFichesConcours;
-import org.concoursjeunes.Parametre;
-import org.concoursjeunes.Reglement;
+import org.concoursjeunes.*;
 import org.concoursjeunes.builders.ReglementBuilder;
 import org.concoursjeunes.event.ConcoursJeunesEvent;
 import org.concoursjeunes.event.ConcoursJeunesListener;
@@ -143,11 +132,7 @@ import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
 import ajinteractive.standard.common.AJTemplate;
-import ajinteractive.standard.ui.AJTabbedPane;
-import ajinteractive.standard.ui.AJTabbedPaneListener;
-import ajinteractive.standard.ui.FrameCreator;
-import ajinteractive.standard.ui.GhostGlassPane;
-import ajinteractive.standard.ui.MenuBarTools;
+import ajinteractive.standard.ui.*;
 
 /**
  * TODO Afficher status bar avec nb archers enregistre, place restante
@@ -157,7 +142,6 @@ import ajinteractive.standard.ui.MenuBarTools;
 public class ConcoursJeunesFrame extends JFrame implements ActionListener, HyperlinkListener, ConcoursJeunesListener, ParametreListener, AJTabbedPaneListener, ChangeListener {
 	private JMenuItem jmiParametres;
 	private JMenu jmReglements;
-	private JMenu jmImpression;
 	private AJTabbedPane tabbedpane;
 	private JEditorPane jepHome;
 
@@ -225,8 +209,6 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 		fillReglementItem(jmReglements);
 
 		jmiParametres = (JMenuItem) frameCreator.getNamedComponent("mi.parametres"); //$NON-NLS-1$
-
-		jmImpression = (JMenu) frameCreator.getNamedComponent("mi.print"); //$NON-NLS-1$
 
 		if (System.getProperty("debug.mode") != null) { //$NON-NLS-1$
 			((JMenu) frameCreator.getNamedComponent("mi.debug")).setVisible(true); //$NON-NLS-1$
@@ -525,63 +507,6 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			if (jif != null)
 				jif.openParametreDialog();
 
-		} else if (cmd.equals("menubar.impression.listeconcurrent.ordrealpha")) { //$NON-NLS-1$
-			if (jif != null) {
-				if(!jif.getFicheConcours().printArcherList(FicheConcours.ALPHA)) {
-					JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
-				}
-			}
-
-			// imprime la liste des concurrents par ordre alphabetique avec
-			// information greffe
-		} else if (cmd.equals("menubar.impression.listeconcurrent.greffe")) { //$NON-NLS-1$
-			if (jif != null)
-				if(!jif.getFicheConcours().printArcherList(FicheConcours.GREFFE)) {
-					JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
-				}
-
-			// imprime la liste des concurrents par ordre sur le pas de tir
-		} else if (cmd.equals("menubar.impression.listeconcurrent.bytarget")) { //$NON-NLS-1$
-			if (jif != null)
-				if(!jif.getFicheConcours().printArcherList(FicheConcours.TARGET)) {
-					JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
-				}
-			
-			// imprime les etiquettes concurrent
-		} else if (cmd.equals("menubar.impression.listeconcurrent.etiquette")) { //$NON-NLS-1$
-
-			if (jif != null)
-				if(!jif.getFicheConcours().printEtiquettes()) {
-					JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
-				}
-
-			// imprime la vu du pas de tir
-		} else if (cmd.equals("menubar.impression.pasdetir")) { //$NON-NLS-1$
-			if (jif != null)
-				if(!jif.getFicheConcours().printPasDeTir()) {
-					JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
-				}
-
-			// imprime le classement individuel
-		} else if (cmd.equals("menubar.impression.classement.individuel")) { //$NON-NLS-1$
-			if (jif != null)
-				if(!jif.getFicheConcours().printClassement()) {
-					JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
-				}
-
-			// imprime le classement par equipe
-		} else if (cmd.equals("menubar.impression.classement.equipe")) { //$NON-NLS-1$
-			if (jif != null)
-				if(!jif.getFicheConcours().printClassementEquipe()) {
-					JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
-				}
-
-			// aimprime le classement par club
-		} else if (cmd.equals("menubar.impression.classement.club")) { //$NON-NLS-1$
-			if (jif != null)
-				if(!jif.getFicheConcours().printClassementClub()) {
-					JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
-				}
 		} else if (cmd.equals("menubar.tools.disableplugins")) { //$NON-NLS-1$
 			DisablePluginDialog disablePluginDialog = new DisablePluginDialog(this);
 			disablePluginDialog.showDisablePluginDialog();
@@ -634,10 +559,8 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			int i = tabbedpane.getSelectedIndex();
 			if (i > 0) {
 				jmiParametres.setEnabled(true);
-				jmImpression.setVisible(true);
 			} else {
 				jmiParametres.setEnabled(false);
-				jmImpression.setVisible(false);
 			}
 		}
 	}

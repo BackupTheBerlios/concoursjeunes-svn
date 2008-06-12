@@ -459,17 +459,17 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	}
 
 	public void caretUpdate(CaretEvent e) {
-		if (e.getSource() == jtfFilterLicence) {
+		if (e.getSource() == jtfFilterLicence && !jtfFilterLicence.getText().isEmpty()) {
 			sorter.setRowFilter(RowFilter.regexFilter("^" + jtfFilterLicence.getText().toUpperCase(), 0)); //$NON-NLS-1$
 			jTable.setRowSorter(sorter);
 			jtfFilterNom.setText(""); //$NON-NLS-1$
 			jtfFilterClub.setText(""); //$NON-NLS-1$
-		} else if (e.getSource() == jtfFilterNom) {
+		} else if (e.getSource() == jtfFilterNom && !jtfFilterNom.getText().isEmpty()) {
 			sorter.setRowFilter(RowFilter.regexFilter("^" + jtfFilterNom.getText().toUpperCase(), 1)); //$NON-NLS-1$
 			jTable.setRowSorter(sorter);
 			jtfFilterLicence.setText(""); //$NON-NLS-1$
 			jtfFilterClub.setText(""); //$NON-NLS-1$
-		} else if (e.getSource() == jtfFilterClub) {
+		} else if (e.getSource() == jtfFilterClub && !jtfFilterClub.getText().isEmpty()) {
 			sorter.setRowFilter(RowFilter.regexFilter(jtfFilterClub.getText().toUpperCase(), 3));
 			jTable.setRowSorter(sorter);
 			jtfFilterNom.setText(""); //$NON-NLS-1$

@@ -1,5 +1,7 @@
 /*
- * Copyright 2002-2007 - Aurélien JEOFFRAY
+ * Créer le 7 juin 08 à 17:20:15 pour ConcoursJeunes
+ *
+ * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
  *
@@ -69,7 +71,7 @@
  * knowledge of the CeCILL license and that you accept its terms.
  *
  *  *** GNU GPL Terms *** 
- *
+ * 
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -84,119 +86,107 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes.ui.dialog;
+package org.concoursjeunes.state;
 
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import static org.concoursjeunes.ApplicationCore.ajrLibelle;
+import static org.concoursjeunes.ApplicationCore.ajrParametreAppli;
 
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
+import java.awt.Desktop;
+import java.awt.Graphics2D;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import org.concoursjeunes.ApplicationCore;
+import org.concoursjeunes.Concurrent;
 
-import ajinteractive.standard.java2.GridbagComposer;
+import ajinteractive.standard.common.AJToolKit;
+
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfWriter;
 
 /**
  * @author Aurélien JEOFFRAY
  *
  */
-public class TypeListingDialog extends JDialog implements ActionListener {
-    public static final int ALPHA = 0;
-    public static final int GREFFE = 1;
-    public static final int TARGET = 2;
-    public static final int NONE = 3;
-    
-    private JRadioButton jrbAlpha;
-    private JRadioButton jrbGreffe;
-    private JRadioButton jrbTarget;
-    
-    private JButton jbValider;
-    private JButton jbAnnuler;
-    
-    private ButtonGroup jrbTypeExport;
-    
-    private int returnType = ALPHA;
+public class ScoresheetState {
+	private static final double topMargin = 0.5;
+	private static final double bottomMargin = 0.5;
+	private static final double rightMargin = 0.5;
+	private static final double leftMargin = 0.5;
+	
+	private Document document = new Document(
+			PageSize.A4.rotate(),
+			AJToolKit.centimeterToDpi(leftMargin),
+			AJToolKit.centimeterToDpi(rightMargin),
+			AJToolKit.centimeterToDpi(topMargin),
+			AJToolKit.centimeterToDpi(bottomMargin));
+	
+	private PdfContentByte cb;
+	private float pageWidth = document.getPageSize().getWidth();
+	private float pageHeight = document.getPageSize().getHeight();
+	
+	private Concurrent concurrent;
+	
+	/**
+	 * 
+	 */
+	public ScoresheetState(Concurrent concurrent) {
+		this.concurrent = concurrent;
+		
+		paint();
+	}
+	
+	public void paint() {
+		try {
+			File tmpFile = File.createTempFile("cta", ajrParametreAppli.getResourceString("extention.pdf")); //$NON-NLS-1$ //$NON-NLS-2$
+			String filePath = tmpFile.getCanonicalPath();
+			tmpFile.deleteOnExit();
+			
+			PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filePath));
+			writer.setFullCompression();
 
-    public TypeListingDialog(JFrame parentframe) {
-        super(parentframe);
-        
-        setTitle(ApplicationCore.ajrLibelle.getResourceString("typelisting.titre")); //$NON-NLS-1$
-        setModal(true);
-        
-        init();
-    }
-    
-    private void init() {
-        //Layout Manager
-        GridBagConstraints c = new GridBagConstraints();
-        
-        GridbagComposer gridbagComposer = new GridbagComposer();
-        
-        JPanel exportPane = new JPanel();
-        JPanel boutonPane = new JPanel();
-        
-        jrbAlpha = new JRadioButton(ApplicationCore.ajrLibelle.getResourceString("typelisting.alpha"), true); //$NON-NLS-1$
-        jrbGreffe = new JRadioButton(ApplicationCore.ajrLibelle.getResourceString("typelisting.greffe")); //$NON-NLS-1$
-        jrbTarget = new JRadioButton(ApplicationCore.ajrLibelle.getResourceString("typelisting.target")); //$NON-NLS-1$
-        
-        jbValider = new JButton(ApplicationCore.ajrLibelle.getResourceString("typelisting.imprimer")); //$NON-NLS-1$
-        jbAnnuler = new JButton(ApplicationCore.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
-        
-        jrbAlpha.addActionListener(this);
-        jrbGreffe.addActionListener(this);
-        jrbTarget.addActionListener(this);
-        jbValider.addActionListener(this);
-        jbAnnuler.addActionListener(this);
-        
-        jrbTypeExport = new ButtonGroup();
-        jrbTypeExport.add(jrbAlpha);
-        jrbTypeExport.add(jrbGreffe);
-        jrbTypeExport.add(jrbTarget);
-        
-        boutonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-        boutonPane.add(jbValider);
-        boutonPane.add(jbAnnuler);
-        
-        gridbagComposer.setParentPanel(exportPane);
-        c.gridy = 0; c.anchor = GridBagConstraints.WEST;                       //Défaut,Haut
-        gridbagComposer.addComponentIntoGrid(jrbAlpha, c);
-        c.gridy++;
-        gridbagComposer.addComponentIntoGrid(jrbGreffe, c);
-        c.gridy++;                        
-        gridbagComposer.addComponentIntoGrid(jrbTarget, c);
-        c.gridy++; c.fill = GridBagConstraints.HORIZONTAL;                 
-        gridbagComposer.addComponentIntoGrid(boutonPane, c);
-        
-        getContentPane().add(exportPane);
-    }
-    
-    public int showTypeListingDialog() {
-    	pack();
-        setResizable(false);
-        setLocationRelativeTo(null);
-        setVisible(true);
-        
-        return returnType;
-    }
-    
-    public void actionPerformed(ActionEvent ae) {
-        if(ae.getSource() == jrbAlpha) {
-            returnType = ALPHA;
-        } else if(ae.getSource() == jrbGreffe) {
-            returnType = GREFFE;
-        } else if(ae.getSource() == jrbTarget) {
-            returnType = TARGET;
-        } else if(ae.getSource() == jbValider) {
-            setVisible(false);
-        } else if(ae.getSource() == jbAnnuler) {
-            returnType = NONE;
-            setVisible(false);
-        }
-    }
+			document.addCreationDate();
+			document.addAuthor(ApplicationCore.getConfiguration().getClub().getNom());
+			document.addProducer();
+			document.addTitle(ajrLibelle.getResourceString("state.scoresheet.title")); //$NON-NLS-1$
+			document.open();
+			
+			cb = writer.getDirectContent();
+			Graphics2D g2 = cb.createGraphicsShapes(pageWidth, pageHeight);
+			
+			g2.drawString("<html>" + concurrent.getNomArcher() + " " + concurrent.getPrenomArcher() //$NON-NLS-1$
+					+ "<br>" + concurrent.getNumLicenceArcher() + "\n"
+					+ concurrent.getClub().getNom() + "(" + concurrent.getClub().getVille() + ")\n"
+					+ concurrent.getCriteriaSet().toString() + "</html>", 
+					AJToolKit.centimeterToDpi(leftMargin),
+					AJToolKit.centimeterToDpi(topMargin));
+			
+			g2.dispose();
+			
+			document.close();
+			
+			if (Desktop.isDesktopSupported()) {
+				Desktop.getDesktop().open(tmpFile);
+			} else {
+				if (ApplicationCore.getConfiguration() != null) {
+					
+					String NAV = ApplicationCore.getConfiguration().getPdfReaderPath();
+
+					System.out.println(NAV + " " + tmpFile.getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
+					Runtime.getRuntime().exec(NAV + " " + tmpFile.getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
+				}
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (DocumentException e) {
+			e.printStackTrace();
+		}
+	}
 }

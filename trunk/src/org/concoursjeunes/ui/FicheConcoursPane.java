@@ -86,30 +86,20 @@
  */
 package org.concoursjeunes.ui;
 
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.FlowLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
-import javax.swing.Box;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JEditorPane;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+import javax.swing.filechooser.FileSystemView;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
@@ -122,6 +112,12 @@ import org.concoursjeunes.FicheConcours;
 import org.concoursjeunes.ui.dialog.ConcurrentDialog;
 import org.concoursjeunes.ui.dialog.ParametreDialog;
 import org.concoursjeunes.ui.dialog.ResultatDialog;
+import org.jdesktop.swingx.JXTaskPane;
+import org.jdesktop.swingx.JXTaskPaneContainer;
+
+import ajinteractive.standard.java2.GridbagComposer;
+import ajinteractive.standard.ui.AJList;
+import ajinteractive.standard.utilities.io.FileUtils;
 
 /**
  * fiche concours. cette fiche correspond à la table d'inscrit et de résultats
@@ -141,18 +137,28 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	private CardLayout cl				= new CardLayout();
 	private ArrayList<FicheConcoursDepartPane> departPanels = new ArrayList<FicheConcoursDepartPane>();
 
-	private JEditorPane jepClassIndiv	= new JEditorPane();					//panneau de classement
-	private JEditorPane jepClassTeam	= new JEditorPane();
-	private JEditorPane jepClassClub	= new JEditorPane();
+	//panneau de classements
+	private JEditorPane jepClassIndiv		= new JEditorPane();
+	private JEditorPane jepClassTeam		= new JEditorPane();
+	private JEditorPane jepClassClub		= new JEditorPane();
+	
+	//panneau de classement
 	//bouton d'enregistrement
-	private JButton jbResultat			= new JButton();
-	private JLabel jlCritClassement		= new JLabel();
+	private JButton jbResultat				= new JButton();
+	private JLabel jlCritClassement			= new JLabel();
 	//critere individuel
 	private Hashtable<String, JCheckBox> classmentCriteriaCB = new Hashtable<String, JCheckBox>();
 
 	private JButton printClassementIndiv	= new JButton();
 	private JButton printClassementEquipe	= new JButton();
 	private JButton printClassementClub		= new JButton();
+	
+	//panneau d'édition
+	private JLabel jlDepart = new JLabel();
+	private JLabel jlSerie = new JLabel();
+	private JComboBox jcbDeparts = new JComboBox();
+	private JComboBox jcbSeries = new JComboBox();
+	private AJList ajlDocuments = new AJList();
 
 	public ParametreDialog paramDialog;
 	public ConcurrentDialog concDialog;
@@ -179,6 +185,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		}
 		
 		init();
+		completeListDocuments();
 		concDialog = new ConcurrentDialog(parentframe, ficheConcours);
 	}
 
@@ -291,6 +298,26 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		jtbClassement.addTab("onglet.classementclub",new ImageIcon(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$ //$NON-NLS-2$ 
 				File.separator + ApplicationCore.ajrParametreAppli.getResourceString("file.icon.team")), //$NON-NLS-1$
 				ficheC);
+		
+		JPanel jpEdition = initEditions();
+		ajlDocuments.setCellRenderer(new ListCellRenderer() {
+			protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
+			/* (non-Javadoc)
+			 * @see javax.swing.ListCellRenderer#getListCellRendererComponent(javax.swing.JList, java.lang.Object, int, boolean, boolean)
+			 */
+			@Override
+			public Component getListCellRendererComponent(JList list,
+					Object value, int index, boolean isSelected,
+					boolean cellHasFocus) {
+				JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, value, index,
+				        isSelected, cellHasFocus);
+				Icon fileIcon = FileSystemView.getFileSystemView().getSystemIcon((File)value);
+				renderer.setText(((File)value).getName());
+				renderer.setIcon(fileIcon);
+				
+				return renderer;
+			}
+		});
 
 		//panneau global
 		tabbedpane.addChangeListener(this);
@@ -306,7 +333,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 						jtbClassement);
 		tabbedpane.addTab("onglet.edition", new ImageIcon(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$ //$NON-NLS-2$
 				File.separator + ApplicationCore.ajrParametreAppli.getResourceString("file.icon.print")), //$NON-NLS-1$
-		new JPanel());
+				jpEdition);
 
 		//integration
 		setLayout(new BorderLayout());
@@ -314,6 +341,101 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		//add(statusbar, BorderLayout.SOUTH);
 
 		affectLibelle();
+	}
+	
+	private JPanel initEditions() {
+		JPanel panel = new JPanel();
+		
+		JXTaskPaneContainer taskPaneContainer = new JXTaskPaneContainer();
+		
+		JXTaskPane jxtpPreparation = new JXTaskPane();
+		jxtpPreparation.setTitle("Préparation du concours");
+		
+		jxtpPreparation.add(printShootingLineAction());
+		
+		JXTaskPane jxtpMarque = new JXTaskPane();
+		jxtpMarque.setTitle("Feuilles de marques");
+
+		/*jxtpMarque.add(makeAction("Feuille de marque individuelle vierge", "", ""));
+		jxtpMarque.add(makeAction("Contremarque cible vierge", "", ""));
+		jxtpMarque.add(makeAction("Feuille de marque individuelle nominative", "", ""));
+		jxtpMarque.add(makeAction("Contremarque cible nominative", "", ""));*/
+		jxtpMarque.add(printLabelsAction());
+		
+		JXTaskPane jxtpListing = new JXTaskPane();
+		jxtpListing.setTitle("Liste pour le greffe");
+		
+		jxtpListing.add(printListConcurrentAlphaAction());
+		jxtpListing.add(printListConcurrentGreffeAction());
+		jxtpListing.add(printListConcurrentTargetAction());
+		
+		JXTaskPane jxtpResultats = new JXTaskPane();
+		jxtpResultats.setTitle("Résultats");
+		
+		jxtpResultats.add(printClassementIndivAction());
+		jxtpResultats.add(printClassementEquipesAction());
+		jxtpResultats.add(printClassementClubAction());
+		
+		/*JXTaskPane jxtpAutres = new JXTaskPane();
+		jxtpAutres.setTitle("Autres");*/
+		
+		//jxtpAutres.add(makeAction("Statistiques", "", ""));
+		
+		taskPaneContainer.add(jxtpPreparation);
+		taskPaneContainer.add(jxtpMarque);
+		taskPaneContainer.add(jxtpListing);
+		taskPaneContainer.add(jxtpResultats);
+		/*taskPaneContainer.add(jxtpAutres);*/
+		
+		panel.setLayout(new BorderLayout());
+		
+		panel.add(taskPaneContainer, BorderLayout.WEST);
+		panel.add(initOptions(), BorderLayout.CENTER);
+		//panel.add(printFeuilleMarque);
+		
+		return panel;
+	}
+	
+	private JPanel initOptions() {
+		JPanel panel = new JPanel();
+		
+		JPanel jpOptions = new JPanel();
+		jpOptions.setBorder(new TitledBorder("Option d'impressions"));
+		
+		GridbagComposer composer = new GridbagComposer();
+		GridBagConstraints c = new GridBagConstraints();
+		
+		jlDepart.setText("Départ:");
+		jlSerie.setText("Série:");
+		
+		for(int i = 1; i <= ficheConcours.getParametre().getNbDepart(); i++)
+			jcbDeparts.addItem(
+					ApplicationCore.ajrLibelle.getResourceString("onglet.gestionarcher.depart") + i); //$NON-NLS-1$
+		for(int i = 1; i <= ficheConcours.getParametre().getReglement().getNbSerie(); i++)
+			jcbSeries.addItem("Série n°" + i);
+		
+		composer.setParentPanel(jpOptions);
+		c.gridy = 0;
+		c.anchor = GridBagConstraints.WEST;
+		composer.addComponentIntoGrid(jlDepart, c);
+		c.weightx = 1.0;
+		composer.addComponentIntoGrid(jcbDeparts, c);
+		c.gridy++;
+		c.weightx = 0;
+		composer.addComponentIntoGrid(jlSerie, c);
+		c.weightx = 1.0;
+		composer.addComponentIntoGrid(jcbSeries, c);
+		
+		JPanel jpDocuments = new JPanel();
+		jpDocuments.setBorder(new TitledBorder("Documents généré"));
+		jpDocuments.setLayout(new BorderLayout());
+		jpDocuments.add(new JScrollPane(ajlDocuments), BorderLayout.CENTER);
+		
+		panel.setLayout(new BorderLayout());
+		panel.add(jpOptions, BorderLayout.NORTH);
+		panel.add(jpDocuments, BorderLayout.CENTER);
+		
+		return panel;
 	}
 
 	private JPanel getGestArchersTabComponent() {
@@ -331,6 +453,18 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		panel.add(label, BorderLayout.CENTER);
 		panel.add(comboBox, BorderLayout.EAST);
 		return panel;
+	}
+	
+	private void completeListDocuments() {
+		String concoursFileName = ficheConcours.getParametre().getSaveName();
+		String concoursDirectory = concoursFileName.substring(0, concoursFileName.length() - 4);
+		
+		File docsPathFile = new File(
+				ApplicationCore.userRessources.getConcoursPathForProfile(ApplicationCore.getConfiguration().getCurProfil()), 
+				concoursDirectory);
+		File[] files = docsPathFile.listFiles();
+		FileUtils.sortFilesListByDate(files, 1);
+		ajlDocuments.setListData(files);
 	}
 
 	/**
@@ -415,8 +549,129 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 			index = 1;
 		}
 	}
-
-
+	
+	private Action printShootingLineAction() {
+        Action action = new AbstractAction(ApplicationCore.ajrLibelle.getResourceString("bouton.printpasdetir")) { //$NON-NLS-1$
+            public void actionPerformed(ActionEvent e) {
+            	if(!ficheConcours.printPasDeTir()) {
+    				JOptionPane.showMessageDialog(parentframe, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
+    			} else {
+    				completeListDocuments();
+    			}
+            }
+        };
+        action.putValue(Action.SMALL_ICON, new ImageIcon(
+               ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + "/document-print.png"));  //$NON-NLS-1$//$NON-NLS-2$
+        //action.putValue(Action.SHORT_DESCRIPTION, tooltiptext);
+        
+        return action;
+    }
+	
+	private Action printLabelsAction() {
+        Action action = new AbstractAction(ApplicationCore.ajrLibelle.getResourceString("bouton.printetiquettes")) { //$NON-NLS-1$
+            public void actionPerformed(ActionEvent e) {
+            	if(!ficheConcours.printEtiquettes()) {
+    				JOptionPane.showMessageDialog(parentframe, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
+    			}
+            }
+        };
+        action.putValue(Action.SMALL_ICON, new ImageIcon(
+               ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + "/document-print.png"));  //$NON-NLS-1$//$NON-NLS-2$
+        //action.putValue(Action.SHORT_DESCRIPTION, tooltiptext);
+        
+        return action;
+    }
+	
+	private Action printListConcurrentAlphaAction() {
+        Action action = new AbstractAction(ApplicationCore.ajrLibelle.getResourceString("typelisting.alpha")) { //$NON-NLS-1$
+            public void actionPerformed(ActionEvent e) {
+            	if(!ficheConcours.printArcherList(FicheConcours.ALPHA)) {
+    				JOptionPane.showMessageDialog(parentframe, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
+    			}
+            }
+        };
+        action.putValue(Action.SMALL_ICON, new ImageIcon(
+               ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + "/document-print.png"));  //$NON-NLS-1$//$NON-NLS-2$
+        //action.putValue(Action.SHORT_DESCRIPTION, tooltiptext);
+        
+        return action;
+    }
+	
+	private Action printListConcurrentGreffeAction() {
+        Action action = new AbstractAction(ApplicationCore.ajrLibelle.getResourceString("typelisting.greffe")) { //$NON-NLS-1$
+            public void actionPerformed(ActionEvent e) {
+            	if(!ficheConcours.printArcherList(FicheConcours.GREFFE)) {
+    				JOptionPane.showMessageDialog(parentframe, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
+    			}
+            }
+        };
+        action.putValue(Action.SMALL_ICON, new ImageIcon(
+               ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + "/document-print.png"));  //$NON-NLS-1$//$NON-NLS-2$
+        //action.putValue(Action.SHORT_DESCRIPTION, tooltiptext);
+        
+        return action;
+    }
+	
+	private Action printListConcurrentTargetAction() {
+        Action action = new AbstractAction(ApplicationCore.ajrLibelle.getResourceString("typelisting.target")) { //$NON-NLS-1$
+            public void actionPerformed(ActionEvent e) {
+            	if(!ficheConcours.printArcherList(FicheConcours.TARGET)) {
+    				JOptionPane.showMessageDialog(parentframe, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
+    			}
+            }
+        };
+        action.putValue(Action.SMALL_ICON, new ImageIcon(
+               ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + "/document-print.png"));  //$NON-NLS-1$//$NON-NLS-2$
+        //action.putValue(Action.SHORT_DESCRIPTION, tooltiptext);
+        
+        return action;
+    }
+	
+	private Action printClassementIndivAction() {
+        Action action = new AbstractAction(ApplicationCore.ajrLibelle.getResourceString("onglet.classementindividuel")) { //$NON-NLS-1$
+            public void actionPerformed(ActionEvent e) {
+            	if(!ficheConcours.printClassement()) {
+    				JOptionPane.showMessageDialog(parentframe, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
+    			}
+            }
+        };
+        action.putValue(Action.SMALL_ICON, new ImageIcon(
+               ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + "/document-print.png"));  //$NON-NLS-1$//$NON-NLS-2$
+        //action.putValue(Action.SHORT_DESCRIPTION, tooltiptext);
+        
+        return action;
+    }
+	
+	private Action printClassementEquipesAction() {
+        Action action = new AbstractAction(ApplicationCore.ajrLibelle.getResourceString("onglet.classementequipe")) { //$NON-NLS-1$
+            public void actionPerformed(ActionEvent e) {
+            	if(!ficheConcours.printClassementEquipe()) {
+    				JOptionPane.showMessageDialog(parentframe, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
+    			}
+            }
+        };
+        action.putValue(Action.SMALL_ICON, new ImageIcon(
+               ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + "/document-print.png"));  //$NON-NLS-1$//$NON-NLS-2$
+        //action.putValue(Action.SHORT_DESCRIPTION, tooltiptext);
+        
+        return action;
+    }
+	
+	private Action printClassementClubAction() {
+        Action action = new AbstractAction(ApplicationCore.ajrLibelle.getResourceString("onglet.classementclub")) { //$NON-NLS-1$
+            public void actionPerformed(ActionEvent e) {
+            	if(!ficheConcours.printClassementClub()) {
+    				JOptionPane.showMessageDialog(parentframe, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
+    			}
+            }
+        };
+        action.putValue(Action.SMALL_ICON, new ImageIcon(
+               ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + "/document-print.png"));  //$NON-NLS-1$//$NON-NLS-2$
+        //action.putValue(Action.SHORT_DESCRIPTION, tooltiptext);
+        
+        return action;
+    }
+	
 	/**
 	 * @return  parentframe
 	 */

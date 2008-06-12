@@ -37,21 +37,6 @@
 					</menu>
 				</menuitems>
 			</menu>
-			<menu id="print" name="mi.print" visible="false">
-				<label>menubar.impression</label>
-				<menuitems>
-					<menuitem>menubar.impression.listeconcurrent.ordrealpha</menuitem>
-					<menuitem>menubar.impression.listeconcurrent.greffe</menuitem>
-					<menuitem>menubar.impression.listeconcurrent.bytarget</menuitem>
-					<separator />
-					<menuitem>menubar.impression.listeconcurrent.etiquette</menuitem>
-					<menuitem>menubar.impression.pasdetir</menuitem>
-					<separator />
-					<menuitem>menubar.impression.classement.individuel</menuitem>
-					<menuitem>menubar.impression.classement.equipe</menuitem>
-					<menuitem>menubar.impression.classement.club</menuitem>
-				</menuitems>
-			</menu>
 			<menu id="tools" name="mi.tools">
 				<label>menubar.tools</label>
 				<menuitems>
