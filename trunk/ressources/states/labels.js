@@ -4,28 +4,33 @@
 
 var contexte = JavaImporter(
 					Packages.org.concoursjeunes,
+					Packages.ajinteractive.standard.common,
 					com.lowagie.text.PageSize,
-					ajinteractive.standard.common.AJTemplate,
-					ajinteractive.standard.common.AJToolKit,
+					com.lowagie.text.Document,
+					com.lowagie.text.xml.XmlParser,
 					java.text.DateFormat,
 					Packages.java.util,
 					java.util.logging.Level,
+					java.io.StringReader,
 					org.jdesktop.swingx.error.ErrorInfo,
 					org.jdesktop.swingx.error.JXErrorPane);
 
 with(contexte) {
-	var templateEtiquettesXML = new AJTemplate(template);
+	var templateEtiquettesXML = new AJTemplate();
+	templateEtiquettesXML.loadTemplate(template);
 
 	try {
+		var nblarg = ApplicationCore.getConfiguration().getColonneAndLigne()[1];
+		var nbhaut = ApplicationCore.getConfiguration().getColonneAndLigne()[0];
+		var depart = 0;
+	
 		var marge_gauche = ApplicationCore.getConfiguration().getMarges().left; // la marge gauche
 		var marge_droite = ApplicationCore.getConfiguration().getMarges().right; // la marge droite
 		var marge_haut = ApplicationCore.getConfiguration().getMarges().top; // la marge haut
 		var marge_bas = ApplicationCore.getConfiguration().getMarges().bottom; // la marge bas
 		var espacement_cellule_h = ApplicationCore.getConfiguration().getEspacements()[0]; // l'espacement horizontal entre cellule
 		var espacement_cellule_v = ApplicationCore.getConfiguration().getEspacements()[1]; // l'espacement vertical entre cellule
-		var cellule_x;
-		var cellule_y;
-		var pageDimension = PageSize.class.getField(ApplicationCore.getConfiguration().getFormatPapier()).get(null);
+		var pageDimension = PageSize.A4; //"A4";//PageSize.class.getField(ApplicationCore.getConfiguration().getFormatPapier()).get(null);
 		
 		if(ApplicationCore.getConfiguration().getOrientation().equals("landscape")) //$NON-NLS-1$
 			pageDimension = pageDimension.rotate();
@@ -40,11 +45,11 @@ with(contexte) {
 		var zoneaffichable_x = pageDimension.getWidth() - marge_gauche - marge_droite;
 		var zoneaffichable_y = pageDimension.getHeight() - marge_haut - marge_bas;
 		
-		cellule_x = (zoneaffichable_x - (espacement_cellule_h * (nblarg - 1.0))) / zoneaffichable_x * 100 / nblarg - 7;
-		cellule_y = (zoneaffichable_y - (espacement_cellule_v * (nbhaut - 1.0))) / zoneaffichable_y * 100 / nbhaut;
+		var cellule_x = (zoneaffichable_x - (espacement_cellule_h * (nblarg - 1.0))) / zoneaffichable_x * 100 / nblarg - 7;
+		var cellule_y = (zoneaffichable_y - (espacement_cellule_v * (nbhaut - 1.0))) / zoneaffichable_y * 100 / nbhaut;
 	
 		var tailles_x = 0.1 + ""; //$NON-NLS-1$
-		for (int i = 0; i < nblarg; i++) {
+		for (var i = 0; i < nblarg; i++) {
 			tailles_x += ";" + cellule_x + ";7"; //$NON-NLS-1$ //$NON-NLS-2$
 			if (i < nblarg - 1)
 				tailles_x += ";" + espacement_cellule_h / zoneaffichable_x * 100; //$NON-NLS-1$
@@ -66,17 +71,19 @@ with(contexte) {
 	
 		var colonne = 0;
 		var ligne = 0;
-		for (var concurrent : ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), ConcurrentList.SortCriteria.SORT_BY_TARGETS)) {
+		var concurrents = ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), ConcurrentList.SortCriteria.SORT_BY_TARGETS);
+		
+		for (var i = 0; i < concurrents.length; i++) {
 			
 			if (colonne == 0)
 				if(ligne < nbhaut - 1)
 					templateEtiquettesXML.parse("page.ligne.leading", "" + (zoneaffichable_y * (cellule_y / 100.0) + espacement_cellule_v)); //$NON-NLS-1$ //$NON-NLS-2$
 				else
 					templateEtiquettesXML.parse("page.ligne.leading", "" + (zoneaffichable_y * (cellule_y / 100.0) - 1)); //$NON-NLS-1$ //$NON-NLS-2$
-			templateEtiquettesXML.parse("page.ligne.colonne.cid", concurrent.getID()); //$NON-NLS-1$
-			templateEtiquettesXML.parse("page.ligne.colonne.cclub", concurrent.getClub().getNom()); //$NON-NLS-1$
-			templateEtiquettesXML.parse("page.ligne.colonne.clicence", concurrent.getNumLicenceArcher()); //$NON-NLS-1$
-			templateEtiquettesXML.parse("page.ligne.colonne.emplacement", new TargetPosition(concurrent.getCible(), concurrent.getPosition()).toString()); //$NON-NLS-1$
+			templateEtiquettesXML.parse("page.ligne.colonne.cid", concurrents[i].getID()); //$NON-NLS-1$
+			templateEtiquettesXML.parse("page.ligne.colonne.cclub", concurrents[i].getClub().getNom()); //$NON-NLS-1$
+			templateEtiquettesXML.parse("page.ligne.colonne.clicence", concurrents[i].getNumLicenceArcher()); //$NON-NLS-1$
+			templateEtiquettesXML.parse("page.ligne.colonne.emplacement", new TargetPosition(concurrents[i].getCible(), concurrents[i].getPosition()).toString()); //$NON-NLS-1$
 			if (colonne + 1 == nblarg)
 				templateEtiquettesXML.parseBloc("page.ligne.colonne.interbloc", ""); //$NON-NLS-1$ //$NON-NLS-2$
 	
@@ -104,11 +111,17 @@ with(contexte) {
 		if (ligne != 0) {
 			templateEtiquettesXML.loopBloc("page"); //$NON-NLS-1$
 		}
+		
+		/*HeaderFooter footer = new HeaderFooter(new Phrase("page "), new Phrase(".")); //$NON-NLS-1$ //$NON-NLS-2$
+		footer.setBorder(0);
+		footer.setAlignment(HeaderFooter.ALIGN_RIGHT);
+		document.setFooter(footer);*/
+		
+		XmlParser.parse(document, new StringReader(templateEtiquettesXML.output()));
 	} catch (e) {
-		JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
-				e.toString(), null, null, e, Level.SEVERE, null));
-		e.printStackTrace();
+		/*org.jdesktop.swingx.error.JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+				e.toString(), null, null, e, Level.SEVERE, null));*/
+		//e.printStackTrace();
+		print(e);
 	}
-	
-	return templateEtiquettesXML.output();
 }

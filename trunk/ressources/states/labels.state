@@ -2,11 +2,9 @@
 <state>
 	<name>Nom de l'état</name>
 	<category>marque</category>
-	<options>
-		<serie>false</serie>
-		<start>true</start>
-		<save>false</save>
-	</options>
+	<serie>false</serie>
+	<start>true</start>
+	<save>false</save>
 	<type>XML</type>
 	<template>etiquettes.xml</template>
 	<script>labels.js</script>
