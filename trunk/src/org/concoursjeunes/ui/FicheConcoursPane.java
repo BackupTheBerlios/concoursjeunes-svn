@@ -682,7 +682,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	private Action printGenAction(State state) {
 		final State actionState = state;
 		
-        Action action = new AbstractAction(state.getName()) { //$NON-NLS-1$
+        Action action = new AbstractAction(state.getName()) {
             public void actionPerformed(ActionEvent e) {
             	StateProcessor sp = new StateProcessor(actionState, ficheConcours);
             	sp.process();
