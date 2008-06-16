@@ -23,7 +23,6 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentMap;
-import java.util.logging.Level;
 
 import javax.swing.event.EventListenerList;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -34,9 +33,6 @@ import org.concoursjeunes.builders.EquipeListBuilder;
 import org.concoursjeunes.event.*;
 import org.concoursjeunes.exceptions.FicheConcoursException;
 import org.concoursjeunes.exceptions.FicheConcoursException.Nature;
-import org.concoursjeunes.state.ShootingLineState;
-import org.jdesktop.swingx.JXErrorPane;
-import org.jdesktop.swingx.error.ErrorInfo;
 
 import ajinteractive.standard.common.AJTemplate;
 import ajinteractive.standard.common.AJToolKit;
@@ -44,7 +40,6 @@ import ajinteractive.standard.common.XmlUtils;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
-import com.lowagie.text.Rectangle;
 
 /**
  * Represente la fiche concours, regroupe l'ensemble des informations commune à un concours donné
@@ -93,7 +88,7 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 	private static AJTemplate templateClassementEquipeHTML = new AJTemplate();
 	private static AJTemplate templateListeArcherXML = new AJTemplate();
 	private static AJTemplate templateListeGreffeXML = new AJTemplate();
-	private static AJTemplate templateEtiquettesXML = new AJTemplate();
+	//private static AJTemplate templateEtiquettesXML = new AJTemplate();
 	private static AJTemplate templatePasDeTirXML = new AJTemplate();
 
 	static {
@@ -431,8 +426,8 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 		templateListeGreffeXML.loadTemplate(ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
 				+ File.separator + ajrParametreAppli.getResourceString("template.listarcher.greffe")); //$NON-NLS-1$
 
-		templateEtiquettesXML.loadTemplate(ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
-				+ File.separator + ajrParametreAppli.getResourceString("template.etiquettes")); //$NON-NLS-1$
+		/*templateEtiquettesXML.loadTemplate(ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
+				+ File.separator + ajrParametreAppli.getResourceString("template.etiquettes")); //$NON-NLS-1$*/
 
 		templatePasDeTirXML.loadTemplate(ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
 				+ File.separator + ajrParametreAppli.getResourceString("template.pasdetir")); //$NON-NLS-1$
@@ -845,7 +840,7 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 	 *            orientation de la page
 	 * @return String - le XML iText à retourner
 	 */
-	private String getXMLEtiquettes(int nblarg, int nbhaut, int depart) {
+	/*private String getXMLEtiquettes(int nblarg, int nbhaut, int depart) {
 		if(concurrentList.countArcher(depart) == 0)
 			return ""; //$NON-NLS-1$
 		
@@ -955,7 +950,7 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 		}
 
 		return templateEtiquettesXML.output();
-	}
+	}*/
 
 	/**
 	 * Genere l'etat classement pour la fiche en parametre
@@ -1010,31 +1005,6 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 	public boolean printArcherList(int mode) {
 		Document document = new Document(PageSize.A4, 10, 10, 10, 65);
 		return ApplicationCore.printDocument(document, getXMLListeArcher(mode, currentDepart));
-	}
-
-	/**
-	 * genere l'etat d'impression des etiquettes
-	 * 
-	 * @return true si impression avec succe, false sinon
-	 */
-	public boolean printEtiquettes() {
-		float marge_gauche = AJToolKit.centimeterToDpi(ApplicationCore.getConfiguration().getMarges().left); // la marge gauche
-		float marge_droite = AJToolKit.centimeterToDpi(ApplicationCore.getConfiguration().getMarges().right); // la marge droite
-		float marge_haut = AJToolKit.centimeterToDpi(ApplicationCore.getConfiguration().getMarges().top); // la marge haut
-		float marge_bas = AJToolKit.centimeterToDpi(ApplicationCore.getConfiguration().getMarges().bottom); // la marge bas
-		Document document = new Document(PageSize.A4, marge_gauche, marge_droite, marge_haut, marge_bas);
-		return ApplicationCore.printDocument(document, getXMLEtiquettes(ApplicationCore.getConfiguration().getColonneAndLigne()[1], ApplicationCore.getConfiguration().getColonneAndLigne()[0], currentDepart));
-	}
-
-	/**
-	 * genere l'etat d'impression du pas de tir
-	 * 
-	 * @return true si impression avec succe, false sinon
-	 */
-	public boolean printPasDeTir() {
-		new ShootingLineState(pasDeTir.get(currentDepart));
-
-		return true;
 	}
 
 	/*

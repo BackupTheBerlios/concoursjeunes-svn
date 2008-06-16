@@ -92,7 +92,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -113,6 +112,7 @@ import org.concoursjeunes.FicheConcours;
 import org.concoursjeunes.state.State;
 import org.concoursjeunes.state.StateManager;
 import org.concoursjeunes.state.StateProcessor;
+import org.concoursjeunes.state.Categories.Category;
 import org.concoursjeunes.ui.dialog.ConcurrentDialog;
 import org.concoursjeunes.ui.dialog.ParametreDialog;
 import org.concoursjeunes.ui.dialog.ResultatDialog;
@@ -121,6 +121,7 @@ import org.jdesktop.swingx.JXTaskPaneContainer;
 
 import ajinteractive.standard.java2.GridbagComposer;
 import ajinteractive.standard.ui.AJList;
+import ajinteractive.standard.utilities.io.FileUtils;
 
 /**
  * fiche concours. cette fiche correspond à la table d'inscrit et de résultats
@@ -351,19 +352,25 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		
 		JXTaskPaneContainer taskPaneContainer = new JXTaskPaneContainer();
 		
-		JXTaskPane jxtpPreparation = new JXTaskPane();
-		jxtpPreparation.setTitle("Préparation du concours");
+		StateManager sm = new StateManager();
 		
-		jxtpPreparation.add(printShootingLineAction());
+		for(Category categorie : sm.getCategories().getCategorie()) {
+			JXTaskPane taskPane = new JXTaskPane();
+			taskPane.setTitle(categorie.getLocalizedLibelle());
+			
+			for(State state : sm.getStates(categorie.getName()))
+				taskPane.add(printGenAction(state));
+			
+			taskPaneContainer.add(taskPane);
+		}
+		/*
 		
 		JXTaskPane jxtpMarque = new JXTaskPane();
 		jxtpMarque.setTitle("Feuilles de marques");
 
-		/*jxtpMarque.add(makeAction("Feuille de marque individuelle vierge", "", ""));
-		jxtpMarque.add(makeAction("Contremarque cible vierge", "", ""));
-		jxtpMarque.add(makeAction("Feuille de marque individuelle nominative", "", ""));
-		jxtpMarque.add(makeAction("Contremarque cible nominative", "", ""));*/
-		jxtpMarque.add(printLabelsAction());
+		for(State state : sm.getStates("marque")) //$NON-NLS-1$
+			jxtpMarque.add(printGenAction(state));
+
 		
 		JXTaskPane jxtpListing = new JXTaskPane();
 		jxtpListing.setTitle("Liste pour le greffe");
@@ -382,16 +389,16 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		JXTaskPane jxtpAutres = new JXTaskPane();
 		jxtpAutres.setTitle("Autres");
 		
-		StateManager sm = new StateManager();
+		/*StateManager sm = new StateManager();
 		List<State> states = sm.getStates();
 		for(State state : states)
-			jxtpAutres.add(printGenAction(state));
+			jxtpAutres.add(printGenAction(state));*/
 		
-		taskPaneContainer.add(jxtpPreparation);
+		/*taskPaneContainer.add(jxtpPreparation);
 		taskPaneContainer.add(jxtpMarque);
 		taskPaneContainer.add(jxtpListing);
 		taskPaneContainer.add(jxtpResultats);
-		taskPaneContainer.add(jxtpAutres);
+		taskPaneContainer.add(jxtpAutres);*/
 		
 		panel.setLayout(new BorderLayout());
 		
@@ -469,7 +476,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 				ApplicationCore.userRessources.getConcoursPathForProfile(ApplicationCore.getConfiguration().getCurProfil()), 
 				concoursDirectory);
 		File[] files = docsPathFile.listFiles();
-		//TODO FileUtils.sortFilesListByDate(files, 1);
+		FileUtils.sortFilesListByDate(files, 1);
 		if(files != null && files.length > 0)
 			ajlDocuments.setListData(files);
 	}
@@ -557,53 +564,6 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		}
 	}
 	
-	private Action printShootingLineAction() {
-        Action action = new AbstractAction(ApplicationCore.ajrLibelle.getResourceString("bouton.printpasdetir")) { //$NON-NLS-1$
-            public void actionPerformed(ActionEvent e) {
-            	if(!ficheConcours.printPasDeTir()) {
-    				JOptionPane.showMessageDialog(parentframe, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
-    			} else {
-    				completeListDocuments();
-    			}
-            }
-        };
-        action.putValue(Action.SMALL_ICON, new ImageIcon(
-               ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + "/document-print.png"));  //$NON-NLS-1$//$NON-NLS-2$
-        //action.putValue(Action.SHORT_DESCRIPTION, tooltiptext);
-        
-        return action;
-    }
-	
-	private Action printLabelsAction() {
-        Action action = new AbstractAction(ApplicationCore.ajrLibelle.getResourceString("bouton.printetiquettes")) { //$NON-NLS-1$
-            public void actionPerformed(ActionEvent e) {
-            	if(!ficheConcours.printEtiquettes()) {
-    				JOptionPane.showMessageDialog(parentframe, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
-    			}
-            }
-        };
-        action.putValue(Action.SMALL_ICON, new ImageIcon(
-               ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + "/document-print.png"));  //$NON-NLS-1$//$NON-NLS-2$
-        //action.putValue(Action.SHORT_DESCRIPTION, tooltiptext);
-        
-        return action;
-    }
-	
-	private Action printListConcurrentAlphaAction() {
-        Action action = new AbstractAction(ApplicationCore.ajrLibelle.getResourceString("typelisting.alpha")) { //$NON-NLS-1$
-            public void actionPerformed(ActionEvent e) {
-            	if(!ficheConcours.printArcherList(FicheConcours.ALPHA)) {
-    				JOptionPane.showMessageDialog(parentframe, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
-    			}
-            }
-        };
-        action.putValue(Action.SMALL_ICON, new ImageIcon(
-               ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + "/document-print.png"));  //$NON-NLS-1$//$NON-NLS-2$
-        //action.putValue(Action.SHORT_DESCRIPTION, tooltiptext);
-        
-        return action;
-    }
-	
 	private Action printListConcurrentGreffeAction() {
         Action action = new AbstractAction(ApplicationCore.ajrLibelle.getResourceString("typelisting.greffe")) { //$NON-NLS-1$
             public void actionPerformed(ActionEvent e) {
@@ -682,13 +642,11 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	private Action printGenAction(State state) {
 		final State actionState = state;
 		
-        Action action = new AbstractAction(state.getName()) {
+        Action action = new AbstractAction(state.getLocalizedDisplayName()) {
             public void actionPerformed(ActionEvent e) {
             	StateProcessor sp = new StateProcessor(actionState, ficheConcours);
             	sp.process();
-            	/*if(!ficheConcours.printClassementClub()) {
-    				JOptionPane.showMessageDialog(parentframe, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
-    			}*/
+            	completeListDocuments();
             }
         };
         action.putValue(Action.SMALL_ICON, new ImageIcon(

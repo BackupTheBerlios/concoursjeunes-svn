@@ -118,7 +118,6 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		
 		System.setProperty("java.net.useSystemProxies","true"); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		Thread.UncaughtExceptionHandler handlerException = new Thread.UncaughtExceptionHandler() {

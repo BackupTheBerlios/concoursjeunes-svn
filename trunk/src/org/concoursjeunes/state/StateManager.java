@@ -106,20 +106,36 @@ import ajinteractive.standard.utilities.io.FileUtils;
  */
 public class StateManager {
 	
+	//private Lis
 	private List<State> states = new ArrayList<State>();
 	/**
 	 * 
 	 */
 	public StateManager() {
-		File statesPath = new File(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources"), "states");
+		File statesPath = new File(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources"), "states"); //$NON-NLS-1$ //$NON-NLS-2$
 		
-		ArrayList<File> stateFiles = FileUtils.listAllFiles(statesPath, ".*\\.state");
+		ArrayList<File> stateFolders = FileUtils.listAllFiles(statesPath, ".*",true); //$NON-NLS-1$
 		
-		for(File stateFile : stateFiles) {
-			try {
-				states.add(AJToolKit.loadMarshallStructure(stateFile, State.class));
-			} catch (JAXBException e) {
-				e.printStackTrace();
+		for(File stateFolder : stateFolders) {
+			if(stateFolder.isDirectory()) {
+				File stateFile = new File(stateFolder, "state.xml"); //$NON-NLS-1$
+				if(stateFile.exists()) {
+					try {
+						states.add(AJToolKit.loadMarshallStructure(stateFile, State.class));
+					} catch (JAXBException e) {
+						e.printStackTrace();
+					}
+				}
+			//Gestion des états compressé
+			} else if(stateFolder.getName().endsWith(".zip")) { //$NON-NLS-1$
+				/*File stateFile = new File(stateFolder, "state.xml"); //$NON-NLS-1$
+				if(stateFile.exists()) {
+					try {
+						states.add(AJToolKit.loadMarshallStructure(stateFile, State.class));
+					} catch (JAXBException e) {
+						e.printStackTrace();
+					}
+				}*/
 			}
 		}
 	}
@@ -139,5 +155,16 @@ public class StateManager {
 			}
 		}
 		return categoryStates;
+	}
+	
+	public Categories getCategories() {
+		File statesPath = new File(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources"), "states" + File.separator + "categories.xml"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		try {
+			return AJToolKit.loadMarshallStructure(statesPath, Categories.class);
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 }

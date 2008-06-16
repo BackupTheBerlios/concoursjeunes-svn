@@ -88,7 +88,18 @@
  */
 package org.concoursjeunes.state;
 
+import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+
 import javax.xml.bind.annotation.XmlRootElement;
+
+import org.concoursjeunes.ApplicationCore;
 
 /**
  * @author Aurélien JEOFFRAY
@@ -96,14 +107,15 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name="state")
 public class State {
-	private String name = "";
-	private String category = "";
+	private String name = ""; //$NON-NLS-1$
+	private String category = ""; //$NON-NLS-1$
+	private String displayName = ""; //$NON-NLS-1$
 	private boolean serie = false;
 	private boolean start = false;
 	private boolean save = false;
-	private String type = "XML";
-	private String template = "";
-	private String script = "";
+	private String type = "XML"; //$NON-NLS-1$
+	private String template = ""; //$NON-NLS-1$
+	private String script = ""; //$NON-NLS-1$
 	
 	/**
 	 * 
@@ -137,6 +149,45 @@ public class State {
 	 */
 	public void setCategory(String category) {
 		this.category = category;
+	}
+	
+	/**
+	 * @return displayName
+	 */
+	public String getDisplayName() {
+		return displayName;
+	}
+	
+	public String getLocalizedDisplayName() {
+		String actionName = displayName;
+		String statePath = ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
+				+ File.separator + "states" + File.separator + name + File.separator; //$NON-NLS-1$
+		
+		try {
+			ResourceBundle rb = ResourceBundle.getBundle(
+					"lang", //$NON-NLS-1$
+					Locale.getDefault(),
+					new URLClassLoader(new URL[] {new File(statePath).toURI().toURL() })); 
+			try {
+				actionName = rb.getString(displayName);
+				actionName = new String(actionName.getBytes("ISO-8859-1"), "UTF-8"); //$NON-NLS-1$ //$NON-NLS-2$
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			} catch (MissingResourceException e) {
+				actionName = displayName;
+			}
+		} catch (MalformedURLException e1) {
+			e1.printStackTrace();
+		}
+		
+		return actionName;
+	}
+	
+	/**
+	 * @param displayName displayName à définir
+	 */
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
 	}
 
 	/**

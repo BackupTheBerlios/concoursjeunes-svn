@@ -1,4 +1,4 @@
-#Sat Mar 08 00:12:18 CET 2008
+#Sat Jun 14 21:45:02 CEST 2008
 =\=\=\=\=\=\=
 <<<<<<<=.working
 >>>>>>>=.merge-right.r120
@@ -9,6 +9,7 @@ encoding//lang/libelle_en.properties=UTF-8
 encoding//lang/libelle_fr.properties=UTF-8
 encoding//packager/Licence_win.txt=ISO-8859-1
 encoding//packager/version.properties=ISO-8859-1
+encoding//ressources/states/shootingline/script.js=UTF-8
 encoding//src/org/concoursjeunes/plugins/FFTAImport/FFTAImportPlugin_libelle.properties=UTF-8
 encoding//src/org/concoursjeunes/plugins/update/ConcoursJeunesUpdate_libelle.properties=UTF-8
 encoding//src/org/concoursjeunes/plugins/update/ConcoursJeunesUpdate_libelle_en.properties=UTF-8

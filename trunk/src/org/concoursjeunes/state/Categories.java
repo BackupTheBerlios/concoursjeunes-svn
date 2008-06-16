@@ -1,5 +1,5 @@
 /*
- * Créer le 7 juin 08 à 17:20:15 pour ConcoursJeunes
+ * Créer le 15 juin 08 à 14:06:02 pour ConcoursJeunes
  *
  * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
@@ -88,105 +88,100 @@
  */
 package org.concoursjeunes.state;
 
-import static org.concoursjeunes.ApplicationCore.ajrLibelle;
-import static org.concoursjeunes.ApplicationCore.ajrParametreAppli;
-
-import java.awt.Desktop;
-import java.awt.Graphics2D;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.*;
+
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.Concurrent;
-
-import ajinteractive.standard.common.AJToolKit;
-
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfWriter;
 
 /**
  * @author Aurélien JEOFFRAY
  *
  */
-public class ScoresheetState {
-	private static final double topMargin = 0.5;
-	private static final double bottomMargin = 0.5;
-	private static final double rightMargin = 0.5;
-	private static final double leftMargin = 0.5;
-	
-	private Document document = new Document(
-			PageSize.A4.rotate(),
-			AJToolKit.centimeterToDpi(leftMargin),
-			AJToolKit.centimeterToDpi(rightMargin),
-			AJToolKit.centimeterToDpi(topMargin),
-			AJToolKit.centimeterToDpi(bottomMargin));
-	
-	private PdfContentByte cb;
-	private float pageWidth = document.getPageSize().getWidth();
-	private float pageHeight = document.getPageSize().getHeight();
-	
-	private Concurrent concurrent;
+@XmlRootElement(name="categories")
+public class Categories {
+	private List<Category> categorie = new ArrayList<Category>();
 	
 	/**
-	 * 
+	 * @return categorie
 	 */
-	public ScoresheetState(Concurrent concurrent) {
-		this.concurrent = concurrent;
-		
-		paint();
+	public List<Category> getCategorie() {
+		return categorie;
+	}
+
+	/**
+	 * @param categorie categorie à définir
+	 */
+	public void setCategorie(List<Category> categorie) {
+		this.categorie = categorie;
 	}
 	
-	public void paint() {
-		try {
-			File tmpFile = File.createTempFile("cta", ajrParametreAppli.getResourceString("extention.pdf")); //$NON-NLS-1$ //$NON-NLS-2$
-			String filePath = tmpFile.getCanonicalPath();
-			tmpFile.deleteOnExit();
+	public static class Category {
+		private String name = ""; //$NON-NLS-1$
+		private String libelle = ""; //$NON-NLS-1$
+		
+		/**
+		 * 
+		 */
+		public Category() {
+		}
+		
+		/**
+		 * @return name
+		 */
+		public String getName() {
+			return name;
+		}
+		
+		/**
+		 * @param name name à définir
+		 */
+		public void setName(String name) {
+			this.name = name;
+		}
+		
+		/**
+		 * @return libelle
+		 */
+		public String getLibelle() {
+			return libelle;
+		}
+		
+		/**
+		 * @param libelle libelle à définir
+		 */
+		public void setLibelle(String libelle) {
+			this.libelle = libelle;
+		}
+		
+		public String getLocalizedLibelle() {
+			String localizedLibelle = libelle;
+			String statePath = ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
+					+ File.separator + "states" + File.separator; //$NON-NLS-1$
 			
-			PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filePath));
-			writer.setFullCompression();
-
-			document.addCreationDate();
-			document.addAuthor(ApplicationCore.getConfiguration().getClub().getNom());
-			document.addProducer();
-			document.addTitle(ajrLibelle.getResourceString("state.scoresheet.title")); //$NON-NLS-1$
-			document.open();
-			
-			cb = writer.getDirectContent();
-			Graphics2D g2 = cb.createGraphicsShapes(pageWidth, pageHeight);
-			
-			g2.drawString("<html>" + concurrent.getNomArcher() + " " + concurrent.getPrenomArcher() //$NON-NLS-1$
-					+ "<br>" + concurrent.getNumLicenceArcher() + "\n"
-					+ concurrent.getClub().getNom() + "(" + concurrent.getClub().getVille() + ")\n"
-					+ concurrent.getCriteriaSet().toString() + "</html>", 
-					AJToolKit.centimeterToDpi(leftMargin),
-					AJToolKit.centimeterToDpi(topMargin));
-			
-			g2.dispose();
-			
-			document.close();
-			
-			if (Desktop.isDesktopSupported()) {
-				Desktop.getDesktop().open(tmpFile);
-			} else {
-				if (ApplicationCore.getConfiguration() != null) {
-					
-					String NAV = ApplicationCore.getConfiguration().getPdfReaderPath();
-
-					System.out.println(NAV + " " + tmpFile.getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
-					Runtime.getRuntime().exec(NAV + " " + tmpFile.getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
+			try {
+				ResourceBundle rb = ResourceBundle.getBundle(
+						"categories", //$NON-NLS-1$
+						Locale.getDefault(),
+						new URLClassLoader(new URL[] {new File(statePath).toURI().toURL() }));
+				try {
+					localizedLibelle = rb.getString(libelle);
+					localizedLibelle = new String(localizedLibelle.getBytes("ISO-8859-1"), "UTF-8"); //$NON-NLS-1$ //$NON-NLS-2$
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+				} catch (MissingResourceException e) {
+					localizedLibelle = libelle;
 				}
+			} catch (MalformedURLException e1) {
+				e1.printStackTrace();
 			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (DocumentException e) {
-			e.printStackTrace();
+			
+			return localizedLibelle;
 		}
 	}
 }

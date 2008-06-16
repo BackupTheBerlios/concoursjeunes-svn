@@ -1,12 +1,12 @@
 //mapping Java/JS:
 //	template: le chemin du fichier XML de template
 //  ficheConcours: la fiche concours dont dépent l'édition
+//  document: le document pdf � produire
 
 var contexte = JavaImporter(
 					Packages.org.concoursjeunes,
 					Packages.ajinteractive.standard.common,
-					com.lowagie.text.PageSize,
-					com.lowagie.text.Document,
+					Packages.com.lowagie.text,
 					com.lowagie.text.xml.XmlParser,
 					java.text.DateFormat,
 					Packages.java.util,
@@ -30,7 +30,7 @@ with(contexte) {
 		var marge_bas = ApplicationCore.getConfiguration().getMarges().bottom; // la marge bas
 		var espacement_cellule_h = ApplicationCore.getConfiguration().getEspacements()[0]; // l'espacement horizontal entre cellule
 		var espacement_cellule_v = ApplicationCore.getConfiguration().getEspacements()[1]; // l'espacement vertical entre cellule
-		var pageDimension = PageSize.A4; //"A4";//PageSize.class.getField(ApplicationCore.getConfiguration().getFormatPapier()).get(null);
+		eval("var pageDimension = PageSize." + ApplicationCore.getConfiguration().getFormatPapier());
 		
 		if(ApplicationCore.getConfiguration().getOrientation().equals("landscape")) //$NON-NLS-1$
 			pageDimension = pageDimension.rotate();
@@ -54,8 +54,6 @@ with(contexte) {
 			if (i < nblarg - 1)
 				tailles_x += ";" + espacement_cellule_h / zoneaffichable_x * 100; //$NON-NLS-1$
 		}
-	
-		templateEtiquettesXML.reset();
 	
 		templateEtiquettesXML.parse("CURRENT_TIME", DateFormat.getDateInstance(DateFormat.FULL).format(new Date())); //$NON-NLS-1$
 		templateEtiquettesXML.parse("producer", ApplicationCore.NOM + " " + ApplicationCore.VERSION); //$NON-NLS-1$ //$NON-NLS-2$
@@ -91,28 +89,28 @@ with(contexte) {
 	
 			colonne = (++colonne) % nblarg;
 			if (colonne == 0) {
-				templateEtiquettesXML.loopBloc("page.ligne"); //$NON-NLS-1$
+				templateEtiquettesXML.loopBloc("page.ligne");
 				ligne++;
 			}
 	
 			if (ligne == nbhaut) {
-				templateEtiquettesXML.loopBloc("page"); //$NON-NLS-1$
+				templateEtiquettesXML.loopBloc("page");
 	
-				templateEtiquettesXML.parse("page.columns", "" + (nblarg * 3)); //$NON-NLS-1$ //$NON-NLS-2$
-				templateEtiquettesXML.parse("page.widths", tailles_x); //$NON-NLS-1$
+				templateEtiquettesXML.parse("page.columns", "" + (nblarg * 3));
+				templateEtiquettesXML.parse("page.widths", tailles_x);
 	
 				ligne = 0;
 			}
 		}
 	
 		if (colonne != 0) {
-			templateEtiquettesXML.loopBloc("page.ligne"); //$NON-NLS-1$
+			templateEtiquettesXML.loopBloc("page.ligne");
 		}
 		if (ligne != 0) {
-			templateEtiquettesXML.loopBloc("page"); //$NON-NLS-1$
+			templateEtiquettesXML.loopBloc("page");
 		}
 		
-		/*HeaderFooter footer = new HeaderFooter(new Phrase("page "), new Phrase(".")); //$NON-NLS-1$ //$NON-NLS-2$
+		/*var footer = new HeaderFooter(new Phrase("page "), new Phrase("."));
 		footer.setBorder(0);
 		footer.setAlignment(HeaderFooter.ALIGN_RIGHT);
 		document.setFooter(footer);*/

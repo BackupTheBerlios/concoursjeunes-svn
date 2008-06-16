@@ -90,7 +90,9 @@ package org.concoursjeunes.state;
 
 import java.awt.Desktop;
 import java.io.*;
+import java.text.DateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 
 import javax.script.*;
@@ -135,29 +137,44 @@ public class StateProcessor {
 	public void process() {
 		try {
 			Document document = new Document();
+			String filePath;
 			
-			File tmpFile = File.createTempFile("cta", ApplicationCore.ajrParametreAppli.getResourceString("extention.pdf")); //$NON-NLS-1$ //$NON-NLS-2$
-			String filePath = tmpFile.getCanonicalPath();
-			tmpFile.deleteOnExit();
+			if(!state.isSave()) {
+				File tmpFile = File.createTempFile("cta", ApplicationCore.ajrParametreAppli.getResourceString("extention.pdf")); //$NON-NLS-1$ //$NON-NLS-2$
+				filePath = tmpFile.getCanonicalPath();
+				tmpFile.deleteOnExit();
+			} else {
+				String concoursName = ficheConcours.getParametre().getSaveName();
+				concoursName = concoursName.substring(0, concoursName.length() - 4);
+				filePath = ApplicationCore.userRessources.getConcoursPathForProfile(
+						ApplicationCore.getConfiguration().getCurProfil()).getPath() + File.separator
+						+ concoursName + File.separator + state.getLocalizedDisplayName()
+						+ " - " + DateFormat.getDateInstance().format(new Date()) + " " + DateFormat.getTimeInstance().format(new Date()) + ".pdf";   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+			}
 			
 			ScriptEngineManager se = new ScriptEngineManager();
 			ScriptEngine scriptEngine = se.getEngineByName("JavaScript"); //$NON-NLS-1$
 			scriptEngine.setBindings(new SimpleBindings(Collections.synchronizedMap(new HashMap<String, Object>())), ScriptContext.ENGINE_SCOPE);
 			try {
-				scriptEngine.put("template", ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + File.separator + "templates" + File.separator + state.getTemplate()); //$NON-NLS-1$
+				String statePath = ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
+						+ File.separator + "states" + File.separator + state.getName() + File.separator; //$NON-NLS-1$
+				
+				scriptEngine.put("template", statePath + state.getTemplate()); //$NON-NLS-1$
 				scriptEngine.put("ficheConcours", ficheConcours); //$NON-NLS-1$
 				scriptEngine.put("document", document); //$NON-NLS-1$
 				
-				PdfWriter.getInstance(document, new FileOutputStream(filePath));
+				PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filePath));
+				writer.setFullCompression();
+				if(state.getType().equals("Object")) //$NON-NLS-1$
+					scriptEngine.put("writer", writer); //$NON-NLS-1$
 				
-				scriptEngine.eval(
-						new FileReader(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources")
-								+ File.separator + "states" + File.separator + state.getScript()));
-				
+				FileReader reader = new FileReader(statePath + state.getScript());
+				scriptEngine.eval(reader);
+				reader.close();
 				document.close();
 				
 				if (Desktop.isDesktopSupported()) {
-					Desktop.getDesktop().open(tmpFile);
+					Desktop.getDesktop().open(new File(filePath));
 				}
 			} catch (ScriptException e1) {
 				e1.printStackTrace();

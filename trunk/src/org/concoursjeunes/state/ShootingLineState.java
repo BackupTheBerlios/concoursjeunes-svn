@@ -90,15 +90,11 @@ package org.concoursjeunes.state;
 
 import static org.concoursjeunes.ApplicationCore.ajrLibelle;
 
-import java.awt.Desktop;
 import java.awt.Graphics2D;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.text.DateFormat;
-import java.util.Date;
 
 import org.concoursjeunes.*;
 
@@ -117,40 +113,52 @@ public class ShootingLineState {
 	
 	private PasDeTir pasDeTir;
 	
-	private Document document = new Document(
-			PageSize.A4.rotate(),
+	private Document document;
+	private PdfWriter writer;
+	
+	private PdfContentByte cb;
+	private float pageWidth = 0;
+	private float pageHeight = 0;
+	private int maxDistance = 0;
+	
+	public ShootingLineState(PasDeTir pasDeTir, Document document, PdfWriter writer) {
+		this.pasDeTir = pasDeTir;
+		this.maxDistance = getMaxDistance(0);
+		this.document = document;
+		this.writer = writer;
+		
+		document.setPageSize(PageSize.A4.rotate());
+		document.setMargins(
 			AJToolKit.centimeterToDpi(leftMargin),
 			AJToolKit.centimeterToDpi(rightMargin),
 			AJToolKit.centimeterToDpi(topMargin),
 			AJToolKit.centimeterToDpi(bottomMargin));
-	
-	private PdfContentByte cb;
-	private float pageWidth = document.getPageSize().getWidth();
-	private float pageHeight = document.getPageSize().getHeight();
-	private int maxDistance = 0;
-	
-	public ShootingLineState(PasDeTir pasDeTir) {
-		this.pasDeTir = pasDeTir;
-		this.maxDistance = getMaxDistance(0);
+		
+		pageWidth = document.getPageSize().getWidth();
+		pageHeight = document.getPageSize().getHeight();
 		
 		paint();
 	}
 	
+	/*public Document getDocument() {
+		return document;
+	}*/
+	
 	public void paint() {
 		int page = 1;
 		try {
-			String concoursFileName = pasDeTir.getFicheConcours().getParametre().getSaveName();
-			String concoursDirectory = concoursFileName.substring(0, concoursFileName.length() - 4);
+			//String concoursFileName = pasDeTir.getFicheConcours().getParametre().getSaveName();
+			//String concoursDirectory = concoursFileName.substring(0, concoursFileName.length() - 4);
 			
-			File pdfFile = new File(
+			/*File pdfFile = new File(
 					ApplicationCore.userRessources.getConcoursPathForProfile(ApplicationCore.getConfiguration().getCurProfil()), 
 					concoursDirectory + File.separator + ajrLibelle.getResourceString("state.pasdetir.title")  //$NON-NLS-1$
 					+ " - " + DateFormat.getDateInstance().format(new Date()) + " " + DateFormat.getTimeInstance().format(new Date()) + ".pdf"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			pdfFile.getParentFile().mkdirs();
-			String filePath = pdfFile.getCanonicalPath();
+			pdfFile.getParentFile().mkdirs();*/
+			//String filePath = pdfFile.getCanonicalPath();
 			
-			PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filePath));
-			writer.setFullCompression();
+			/*PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filePath));
+			writer.setFullCompression();*/
 
 			document.addCreationDate();
 			document.addAuthor(ApplicationCore.getConfiguration().getClub().getNom());
@@ -198,20 +206,6 @@ public class ShootingLineState {
 			}
 			
 			g2.dispose();
-			
-			document.close();
-			
-			if (Desktop.isDesktopSupported()) {
-				Desktop.getDesktop().open(pdfFile);
-			} else {
-				if (ApplicationCore.getConfiguration() != null) {
-					
-					String NAV = ApplicationCore.getConfiguration().getPdfReaderPath();
-
-					System.out.println(NAV + " " + pdfFile.getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
-					Runtime.getRuntime().exec(NAV + " " + pdfFile.getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
-				}
-			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (DocumentException e) {

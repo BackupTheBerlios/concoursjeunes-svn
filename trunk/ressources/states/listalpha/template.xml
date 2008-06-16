@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE ITEXT SYSTEM "ressources/templates/itext.dtd">
+<itext creationdate="{CURRENT_TIME}" producer="iTextXML by lowagie.com" footer="test" title="Liste des concurrents par ordre alpha">
+	<paragraph leading="18.0" font="unknown" align="Center" indentationleft="10.0">
+		<chunk size="18.0">LISTE DES CONCURRENTS PAR ORDRE ALPHABETIQUE</chunk>
+	</paragraph>
+	<newline />
+	<table columns="6" width="100.0%" cellpadding="1.0" widths="36.0;36.0;10;9.0;9.0;9.0">
+		<row>
+			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" style="bold">Nom et prénom</phrase>
+			</cell>
+			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" style="bold">Club ou compagnie</phrase>
+			</cell>
+			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" style="bold">N°licence</phrase>
+			</cell>
+			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" style="bold">Cat.</phrase>
+			</cell>
+			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" style="bold">Niveau</phrase>
+			</cell>
+			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" style="bold">Cible</phrase>
+			</cell>
+		</row>
+		<bloc::lignes>
+		<row>
+			<cell header="false" horizontalalign="Default" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" >{IDENTITEE}</phrase>
+			</cell>
+			<cell header="false" horizontalalign="Default" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" >{CLUB}</phrase>
+			</cell>
+			<cell header="false" horizontalalign="Center" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" >{NUM_LICENCE}</phrase>
+			</cell>
+			<cell header="false" horizontalalign="Center" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" >{categorie}{genre}{arc}</phrase>
+			</cell>
+			<cell header="false" horizontalalign="Center" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" >{niveau}</phrase>
+			</cell>
+			<cell header="false" horizontalalign="Center" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" >{CIBLE}</phrase>
+			</cell>
+		</row>
+		</bloc::lignes>
+	</table>
+	<paragraph align="Left">
+		<chunk size="10.0">NOMBRE DE PARTICIPANTS: {NB_PARTICIPANTS}</chunk>
+	</paragraph>
+</itext>

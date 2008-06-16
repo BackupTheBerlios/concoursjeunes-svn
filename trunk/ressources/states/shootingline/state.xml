@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<state>
+	<name>shootingline</name>
+	<category>preparation</category>
+	<displayName>state.name</displayName>
+	<serie>true</serie>
+	<start>true</start>
+	<save>false</save>
+	<type>Object</type>
+	<template></template>
+	<script>script.js</script>
+</state>
