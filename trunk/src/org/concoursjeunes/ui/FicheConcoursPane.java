@@ -363,42 +363,6 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 			
 			taskPaneContainer.add(taskPane);
 		}
-		/*
-		
-		JXTaskPane jxtpMarque = new JXTaskPane();
-		jxtpMarque.setTitle("Feuilles de marques");
-
-		for(State state : sm.getStates("marque")) //$NON-NLS-1$
-			jxtpMarque.add(printGenAction(state));
-
-		
-		JXTaskPane jxtpListing = new JXTaskPane();
-		jxtpListing.setTitle("Liste pour le greffe");
-		
-		jxtpListing.add(printListConcurrentAlphaAction());
-		jxtpListing.add(printListConcurrentGreffeAction());
-		jxtpListing.add(printListConcurrentTargetAction());
-		
-		JXTaskPane jxtpResultats = new JXTaskPane();
-		jxtpResultats.setTitle("Résultats");
-		
-		jxtpResultats.add(printClassementIndivAction());
-		jxtpResultats.add(printClassementEquipesAction());
-		jxtpResultats.add(printClassementClubAction());
-		
-		JXTaskPane jxtpAutres = new JXTaskPane();
-		jxtpAutres.setTitle("Autres");
-		
-		/*StateManager sm = new StateManager();
-		List<State> states = sm.getStates();
-		for(State state : states)
-			jxtpAutres.add(printGenAction(state));*/
-		
-		/*taskPaneContainer.add(jxtpPreparation);
-		taskPaneContainer.add(jxtpMarque);
-		taskPaneContainer.add(jxtpListing);
-		taskPaneContainer.add(jxtpResultats);
-		taskPaneContainer.add(jxtpAutres);*/
 		
 		panel.setLayout(new BorderLayout());
 		
@@ -564,81 +528,6 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		}
 	}
 	
-	private Action printListConcurrentGreffeAction() {
-        Action action = new AbstractAction(ApplicationCore.ajrLibelle.getResourceString("typelisting.greffe")) { //$NON-NLS-1$
-            public void actionPerformed(ActionEvent e) {
-            	if(!ficheConcours.printArcherList(FicheConcours.GREFFE)) {
-    				JOptionPane.showMessageDialog(parentframe, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
-    			}
-            }
-        };
-        action.putValue(Action.SMALL_ICON, new ImageIcon(
-               ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + "/document-print.png"));  //$NON-NLS-1$//$NON-NLS-2$
-        //action.putValue(Action.SHORT_DESCRIPTION, tooltiptext);
-        
-        return action;
-    }
-	
-	private Action printListConcurrentTargetAction() {
-        Action action = new AbstractAction(ApplicationCore.ajrLibelle.getResourceString("typelisting.target")) { //$NON-NLS-1$
-            public void actionPerformed(ActionEvent e) {
-            	if(!ficheConcours.printArcherList(FicheConcours.TARGET)) {
-    				JOptionPane.showMessageDialog(parentframe, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
-    			}
-            }
-        };
-        action.putValue(Action.SMALL_ICON, new ImageIcon(
-               ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + "/document-print.png"));  //$NON-NLS-1$//$NON-NLS-2$
-        //action.putValue(Action.SHORT_DESCRIPTION, tooltiptext);
-        
-        return action;
-    }
-	
-	private Action printClassementIndivAction() {
-        Action action = new AbstractAction(ApplicationCore.ajrLibelle.getResourceString("onglet.classementindividuel")) { //$NON-NLS-1$
-            public void actionPerformed(ActionEvent e) {
-            	if(!ficheConcours.printClassement()) {
-    				JOptionPane.showMessageDialog(parentframe, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
-    			}
-            }
-        };
-        action.putValue(Action.SMALL_ICON, new ImageIcon(
-               ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + "/document-print.png"));  //$NON-NLS-1$//$NON-NLS-2$
-        //action.putValue(Action.SHORT_DESCRIPTION, tooltiptext);
-        
-        return action;
-    }
-	
-	private Action printClassementEquipesAction() {
-        Action action = new AbstractAction(ApplicationCore.ajrLibelle.getResourceString("onglet.classementequipe")) { //$NON-NLS-1$
-            public void actionPerformed(ActionEvent e) {
-            	if(!ficheConcours.printClassementEquipe()) {
-    				JOptionPane.showMessageDialog(parentframe, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
-    			}
-            }
-        };
-        action.putValue(Action.SMALL_ICON, new ImageIcon(
-               ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + "/document-print.png"));  //$NON-NLS-1$//$NON-NLS-2$
-        //action.putValue(Action.SHORT_DESCRIPTION, tooltiptext);
-        
-        return action;
-    }
-	
-	private Action printClassementClubAction() {
-        Action action = new AbstractAction(ApplicationCore.ajrLibelle.getResourceString("onglet.classementclub")) { //$NON-NLS-1$
-            public void actionPerformed(ActionEvent e) {
-            	if(!ficheConcours.printClassementClub()) {
-    				JOptionPane.showMessageDialog(parentframe, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
-    			}
-            }
-        };
-        action.putValue(Action.SMALL_ICON, new ImageIcon(
-               ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + "/document-print.png"));  //$NON-NLS-1$//$NON-NLS-2$
-        //action.putValue(Action.SHORT_DESCRIPTION, tooltiptext);
-        
-        return action;
-    }
-	
 	private Action printGenAction(State state) {
 		final State actionState = state;
 		
@@ -697,25 +586,16 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 				index++;
 			if(index < ficheConcours.getParametre().getNbCible()) {
 				openResultatDialog();
-				jepClassIndiv.setText(ficheConcours.getClassement(FicheConcours.OUT_HTML));
+				jepClassIndiv.setText(ficheConcours.getClassement());
 			} else {
 				JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.target.empty")); //$NON-NLS-1$
 			}
-		} else if(source == printClassementIndiv) {
-			if(!ficheConcours.printClassement())
-				JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
-		} else if(source == printClassementEquipe) {
-			if(!ficheConcours.printClassementEquipe())
-				JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
-		} else if(source == printClassementClub) {
-			if(!ficheConcours.printClassementClub())
-				JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 		} else if(source instanceof JCheckBox) {
 			for(Criterion criterion : ficheConcours.getParametre().getReglement().getListCriteria()) {
 				criterion.setClassement(classmentCriteriaCB.get(criterion.getCode()).isSelected());
 			}
 
-			jepClassIndiv.setText(ficheConcours.getClassement(FicheConcours.OUT_HTML));
+			jepClassIndiv.setText(ficheConcours.getClassement());
 		} else if(source instanceof JComboBox) {
 			ficheConcours.setCurrentDepart(((JComboBox)source).getSelectedIndex());
 			cl.show(fichesDepart, "depart." + ficheConcours.getCurrentDepart()); //$NON-NLS-1$
@@ -740,13 +620,13 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 				int index = jtbClassement.getSelectedIndex();
 				switch(index) {
 					case 0:
-						jepClassIndiv.setText(ficheConcours.getClassement(FicheConcours.OUT_HTML));
+						jepClassIndiv.setText(ficheConcours.getClassement());
 						break;
 					case 1:
-						jepClassTeam.setText(ficheConcours.getClassementEquipe(FicheConcours.OUT_HTML));
+						jepClassTeam.setText(ficheConcours.getClassementEquipe());
 						break;
 					case 2:
-						jepClassClub.setText(ficheConcours.getClassementClub(FicheConcours.OUT_HTML));
+						jepClassClub.setText(ficheConcours.getClassementClub());
 				}
 			}
 		} else if(e.getSource() == jtbClassement) {
@@ -761,13 +641,13 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 			}
 			switch(jtbClassement.getSelectedIndex()) {
 				case 0:
-					jepClassIndiv.setText(ficheConcours.getClassement(FicheConcours.OUT_HTML));
+					jepClassIndiv.setText(ficheConcours.getClassement());
 					break;
 				case 1:
-					jepClassTeam.setText(ficheConcours.getClassementEquipe(FicheConcours.OUT_HTML));
+					jepClassTeam.setText(ficheConcours.getClassementEquipe());
 					break;
 				case 2:
-					jepClassClub.setText(ficheConcours.getClassementClub(FicheConcours.OUT_HTML));
+					jepClassClub.setText(ficheConcours.getClassementClub());
 			}
 		}
 	}
@@ -781,7 +661,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 				openConcurrentDialog(ficheConcours.getConcurrentList().getConcurrentAt(ficheConcours.getCurrentDepart(), Integer.parseInt(e.getURL().getRef().substring(1)), 
 						Integer.parseInt(e.getURL().getRef().substring(0,1))));
 
-				jepClassIndiv.setText(ficheConcours.getClassement(FicheConcours.OUT_HTML));
+				jepClassIndiv.setText(ficheConcours.getClassement());
 			} 
 		} 
 	}

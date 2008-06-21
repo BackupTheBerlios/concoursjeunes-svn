@@ -96,6 +96,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 import javax.script.*;
+import javax.swing.JOptionPane;
 
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.FicheConcours;
@@ -159,28 +160,43 @@ public class StateProcessor {
 				String statePath = ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
 						+ File.separator + "states" + File.separator + state.getName() + File.separator; //$NON-NLS-1$
 				
-				scriptEngine.put("template", statePath + state.getTemplate()); //$NON-NLS-1$
-				scriptEngine.put("ficheConcours", ficheConcours); //$NON-NLS-1$
-				scriptEngine.put("document", document); //$NON-NLS-1$
-				
-				PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filePath));
-				writer.setFullCompression();
-				if(state.getType().equals("Object")) //$NON-NLS-1$
-					scriptEngine.put("writer", writer); //$NON-NLS-1$
+				scriptEngine.put("depart", ficheConcours.getCurrentDepart()); //$NON-NLS-1$
 				
 				FileReader reader = new FileReader(statePath + state.getScript());
 				scriptEngine.eval(reader);
 				reader.close();
+				
+				Invocable invocable = (Invocable)scriptEngine;
+				boolean isprintable = (Boolean)invocable.invokeFunction("checkPrintable", ficheConcours); //$NON-NLS-1$
+				
+				if(isprintable) {
+					PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filePath));
+					writer.setFullCompression();
+					
+					invocable.invokeFunction("printState", ficheConcours, statePath + state.getTemplate(), document, writer); //$NON-NLS-1$
+				} else {
+					JOptionPane.showMessageDialog(null, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
+				}
+				
 				document.close();
 				
-				if (Desktop.isDesktopSupported()) {
+				if (isprintable && Desktop.isDesktopSupported()) {
 					Desktop.getDesktop().open(new File(filePath));
+				} else {
+					assert ApplicationCore.getConfiguration() != null;
+					
+					String NAV = ApplicationCore.getConfiguration().getPdfReaderPath();
+
+					System.out.println(NAV + " " + new File(filePath).getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
+					Runtime.getRuntime().exec(NAV + " " + new File(filePath).getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 			} catch (ScriptException e1) {
 				e1.printStackTrace();
 			} catch (FileNotFoundException e1) {
 				e1.printStackTrace();
 			} catch (DocumentException e1) {
+				e1.printStackTrace();
+			} catch (NoSuchMethodException e1) {
 				e1.printStackTrace();
 			}
 		} catch (IOException e) {

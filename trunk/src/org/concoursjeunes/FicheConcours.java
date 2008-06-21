@@ -63,10 +63,6 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 	public static final int TARGET = 3; // par ordre sur le pas de tir
 
 	/**
-	 * Edition au format XML iText
-	 */
-	public static final int OUT_XML = 0; // Sortie XML
-	/**
 	 * Edition au format HTML
 	 */
 	public static final int OUT_HTML = 1; // Sortie HTML
@@ -82,13 +78,10 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 
 	private int currentDepart = 0;
 
-	private static AJTemplate templateClassementXML = new AJTemplate(ApplicationCore.ajrLibelle);
-	private static AJTemplate templateClassementEquipeXML = new AJTemplate();
 	private static AJTemplate templateClassementHTML = new AJTemplate(ApplicationCore.ajrLibelle);
 	private static AJTemplate templateClassementEquipeHTML = new AJTemplate();
 	private static AJTemplate templateListeArcherXML = new AJTemplate();
 	private static AJTemplate templateListeGreffeXML = new AJTemplate();
-	//private static AJTemplate templateEtiquettesXML = new AJTemplate();
 	private static AJTemplate templatePasDeTirXML = new AJTemplate();
 
 	static {
@@ -380,7 +373,7 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 	 * 
 	 * @param depart
 	 */
-	private Hashtable<CriteriaSet, Concurrent[]> classement() {
+	public Hashtable<CriteriaSet, Concurrent[]> classement() {
 
 		Hashtable<CriteriaSet, Concurrent[]> concurrentsClasse = new Hashtable<CriteriaSet, Concurrent[]>();
 
@@ -408,14 +401,8 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 	 * 
 	 */
 	private static void loadTemplates() {
-		templateClassementXML.loadTemplate(ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
-				+ File.separator + ajrParametreAppli.getResourceString("template.classement.xml")); //$NON-NLS-1$
-
 		templateClassementHTML.loadTemplate(ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
 				+ File.separator + ajrParametreAppli.getResourceString("template.classement.html")); //$NON-NLS-1$
-
-		templateClassementEquipeXML.loadTemplate(ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
-				+ File.separator + ajrParametreAppli.getResourceString("template.classement_equipe.xml")); //$NON-NLS-1$
 
 		templateClassementEquipeHTML.loadTemplate(ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
 				+ File.separator + ajrParametreAppli.getResourceString("template.classement_equipe.html")); //$NON-NLS-1$
@@ -425,9 +412,6 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 
 		templateListeGreffeXML.loadTemplate(ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
 				+ File.separator + ajrParametreAppli.getResourceString("template.listarcher.greffe")); //$NON-NLS-1$
-
-		/*templateEtiquettesXML.loadTemplate(ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
-				+ File.separator + ajrParametreAppli.getResourceString("template.etiquettes")); //$NON-NLS-1$*/
 
 		templatePasDeTirXML.loadTemplate(ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
 				+ File.separator + ajrParametreAppli.getResourceString("template.pasdetir")); //$NON-NLS-1$
@@ -439,29 +423,16 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 	 * specifiant le type OUT_XMLen parametre<br>
 	 * ou au format HTML en specifiant OUT_HTML en parametre 
 	 * 
-	 * @param outType le type de sortie à produire.
-	 * 
-	 * @return le XML iText à retourner
+	 * @return le HTML de l'edition
 	 */
-	public String getClassement(int outType) {
+	public String getClassement() {
 		String strClassement = ""; //$NON-NLS-1$
 		if (concurrentList != null && concurrentList.countArcher() > 0) {
 			Hashtable<CriteriaSet, Concurrent[]> concurrentsClasse = classement();
 
-			AJTemplate tplClassement = null;
+			AJTemplate tplClassement = templateClassementHTML;
 			String strArbitreResp = ""; //$NON-NLS-1$
 			String strArbitresAss = ""; //$NON-NLS-1$
-
-			switch (outType) {
-				case OUT_XML:
-					tplClassement = templateClassementXML;
-					break;
-				case OUT_HTML:
-					tplClassement = templateClassementHTML;
-					break;
-				default:
-					return null;
-			}
 
 			tplClassement.reset();
 
@@ -592,28 +563,13 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 	 * specifiant le type OUT_XMLen parametre<br>
 	 * ou au format HTML en specifiant OUT_HTML en parametre 
 	 * 
-	 * @param outType -
-	 *            le type de sortie à produire
-	 * 
 	 * @return le XML iText ou le HTML à retourner
 	 */
-	public String getClassementEquipe(int outType) {
-		System.out.println("Sortie Equipes"); //$NON-NLS-1$
-
+	public String getClassementEquipe() {
 		String strClassementEquipe = ""; //$NON-NLS-1$
 
 		if (equipes != null && equipes.countEquipes() > 0) {
-			AJTemplate tplClassementEquipe = null;
-			switch (outType) {
-			case OUT_XML:
-				tplClassementEquipe = templateClassementEquipeXML;
-				break;
-			case OUT_HTML:
-				tplClassementEquipe = templateClassementEquipeHTML;
-				break;
-			default:
-				return null;
-			}
+			AJTemplate tplClassementEquipe = templateClassementEquipeHTML;
 
 			tplClassementEquipe.reset();
 
@@ -664,13 +620,8 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 					String idsXML = ""; //$NON-NLS-1$
 					String ptsXML = ""; //$NON-NLS-1$
 					for (Concurrent concurrent : sortEquipes[i].getMembresEquipe()) {
-						if (outType == OUT_XML) {
-							idsXML += XmlUtils.sanitizeText(concurrent.getID()) + "<newline/>"; //$NON-NLS-1$
-							ptsXML += concurrent.getTotalScore() + "<newline/>"; //$NON-NLS-1$
-						} else {
-							idsXML += XmlUtils.sanitizeText(concurrent.getID()) + "<br>"; //$NON-NLS-1$
-							ptsXML += concurrent.getTotalScore() + "<br>"; //$NON-NLS-1$
-						}
+						idsXML += XmlUtils.sanitizeText(concurrent.getID()) + "<br>"; //$NON-NLS-1$
+						ptsXML += concurrent.getTotalScore() + "<br>"; //$NON-NLS-1$
 					}
 					tplClassementEquipe.parse("categories.classement.IDENTITEES", idsXML); //$NON-NLS-1$
 					tplClassementEquipe.parse("categories.classement.NOM_EQUIPE", XmlUtils.sanitizeText(sortEquipes[i].getNomEquipe())); //$NON-NLS-1$
@@ -695,25 +646,13 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 	 * 
 	 * @return l'etat de classment
 	 */
-	public String getClassementClub(int outType) {
-		System.out.println("Sortie Club"); //$NON-NLS-1$
-
+	public String getClassementClub() {
 		String strClassementEquipe = ""; //$NON-NLS-1$
 
 		EquipeList clubList = EquipeListBuilder.getClubEquipeList(concurrentList, parametre.getReglement().getNbMembresRetenu());
 
 		if (clubList != null && clubList.countEquipes() > 0) {
-			AJTemplate tplClassementEquipe = null;
-			switch (outType) {
-			case OUT_XML:
-				tplClassementEquipe = templateClassementEquipeXML;
-				break;
-			case OUT_HTML:
-				tplClassementEquipe = templateClassementEquipeHTML;
-				break;
-			default:
-				return null;
-			}
+			AJTemplate tplClassementEquipe = templateClassementEquipeHTML;
 
 			tplClassementEquipe.reset();
 
@@ -756,13 +695,8 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 				String idsXML = ""; //$NON-NLS-1$
 				String ptsXML = ""; //$NON-NLS-1$
 				for (Concurrent concurrent : sortEquipes[i].getMembresEquipe()) {
-					if (outType == OUT_XML) {
-						idsXML += concurrent.getID() + "<newline/>"; //$NON-NLS-1$
-						ptsXML += concurrent.getTotalScore() + "<newline/>"; //$NON-NLS-1$
-					} else {
-						idsXML += concurrent.getID() + "<br>"; //$NON-NLS-1$
-						ptsXML += concurrent.getTotalScore() + "<br>"; //$NON-NLS-1$
-					}
+					idsXML += concurrent.getID() + "<br>"; //$NON-NLS-1$
+					ptsXML += concurrent.getTotalScore() + "<br>"; //$NON-NLS-1$
 				}
 				tplClassementEquipe.parse("categories.classement.IDENTITEES", idsXML); //$NON-NLS-1$
 				tplClassementEquipe.parse("categories.classement.NOM_EQUIPE", sortEquipes[i].getNomEquipe()); //$NON-NLS-1$
@@ -827,171 +761,6 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 		}
 
 		return listeArcherXML.output();
-	}
-
-	/**
-	 * Donne le XML de l'etat d'impression des étiquettes
-	 * 
-	 * @param nblarg -
-	 *            nombre de cellule sur la largeur
-	 * @param nbhaut -
-	 *            nombre de cellule sur la hauteur
-	 * @param orientation -
-	 *            orientation de la page
-	 * @return String - le XML iText à retourner
-	 */
-	/*private String getXMLEtiquettes(int nblarg, int nbhaut, int depart) {
-		if(concurrentList.countArcher(depart) == 0)
-			return ""; //$NON-NLS-1$
-		
-		try {
-			double marge_gauche = ApplicationCore.getConfiguration().getMarges().left; // la marge gauche
-			double marge_droite = ApplicationCore.getConfiguration().getMarges().right; // la marge droite
-			double marge_haut = ApplicationCore.getConfiguration().getMarges().top; // la marge haut
-			double marge_bas = ApplicationCore.getConfiguration().getMarges().bottom; // la marge bas
-			double espacement_cellule_h = ApplicationCore.getConfiguration().getEspacements()[0]; // l'espacement horizontal entre cellule
-			double espacement_cellule_v = ApplicationCore.getConfiguration().getEspacements()[1]; // l'espacement vertical entre cellule
-			double cellule_x;
-			double cellule_y;
-			Rectangle pageDimension = (Rectangle)PageSize.class.getField(ApplicationCore.getConfiguration().getFormatPapier()).get(null);
-			if(ApplicationCore.getConfiguration().getOrientation().equals("landscape")) //$NON-NLS-1$
-				pageDimension = pageDimension.rotate();
-			
-			espacement_cellule_h = AJToolKit.centimeterToDpi(espacement_cellule_h);
-			espacement_cellule_v = AJToolKit.centimeterToDpi(espacement_cellule_v);
-			marge_gauche = AJToolKit.centimeterToDpi(marge_gauche);
-			marge_droite = AJToolKit.centimeterToDpi(marge_droite);
-			marge_haut = AJToolKit.centimeterToDpi(marge_haut);
-			marge_bas = AJToolKit.centimeterToDpi(marge_bas);
-
-			double zoneaffichable_x = pageDimension.getWidth() - marge_gauche - marge_droite;
-			double zoneaffichable_y = pageDimension.getHeight() - marge_haut - marge_bas;
-			
-			cellule_x = (zoneaffichable_x - (espacement_cellule_h * (nblarg - 1.0))) / zoneaffichable_x * 100 / nblarg - 7;
-			cellule_y = (zoneaffichable_y - (espacement_cellule_v * (nbhaut - 1.0))) / zoneaffichable_y * 100 / nbhaut;
-	
-			String tailles_x = 0.1 + ""; //$NON-NLS-1$
-			for (int i = 0; i < nblarg; i++) {
-				tailles_x += ";" + cellule_x + ";7"; //$NON-NLS-1$ //$NON-NLS-2$
-				if (i < nblarg - 1)
-					tailles_x += ";" + espacement_cellule_h / zoneaffichable_x * 100; //$NON-NLS-1$
-			}
-	
-			templateEtiquettesXML.reset();
-	
-			templateEtiquettesXML.parse("CURRENT_TIME", DateFormat.getDateInstance(DateFormat.FULL).format(new Date())); //$NON-NLS-1$
-			templateEtiquettesXML.parse("producer", ApplicationCore.NOM + " " + ApplicationCore.VERSION); //$NON-NLS-1$ //$NON-NLS-2$
-			templateEtiquettesXML.parse("author", ApplicationCore.getConfiguration().getClub().getNom()); //$NON-NLS-1$
-			templateEtiquettesXML.parse("pagesize", ApplicationCore.getConfiguration().getFormatPapier()); //$NON-NLS-1$
-			templateEtiquettesXML.parse("orientation", ApplicationCore.getConfiguration().getOrientation()); //$NON-NLS-1$
-			templateEtiquettesXML.parse("top", "" + AJToolKit.centimeterToDpi(ApplicationCore.getConfiguration().getMarges().top)); //$NON-NLS-1$ //$NON-NLS-2$
-			templateEtiquettesXML.parse("bottom", "" + AJToolKit.centimeterToDpi(ApplicationCore.getConfiguration().getMarges().bottom)); //$NON-NLS-1$ //$NON-NLS-2$
-			templateEtiquettesXML.parse("left", "" + AJToolKit.centimeterToDpi(ApplicationCore.getConfiguration().getMarges().left)); //$NON-NLS-1$ //$NON-NLS-2$
-			templateEtiquettesXML.parse("right", "" + AJToolKit.centimeterToDpi(ApplicationCore.getConfiguration().getMarges().right)); //$NON-NLS-1$ //$NON-NLS-2$
-			templateEtiquettesXML.parse("page.columns", "" + (nblarg * 3)); //$NON-NLS-1$ //$NON-NLS-2$
-			templateEtiquettesXML.parse("page.widths", tailles_x); //$NON-NLS-1$
-	
-			int colonne = 0;
-			int ligne = 0;
-			for (Concurrent concurrent : ConcurrentList.sort(concurrentList.list(depart), ConcurrentList.SortCriteria.SORT_BY_TARGETS)) {
-				
-				if (colonne == 0)
-					if(ligne < nbhaut - 1)
-						templateEtiquettesXML.parse("page.ligne.leading", "" + (zoneaffichable_y * (cellule_y / 100.0) + espacement_cellule_v)); //$NON-NLS-1$ //$NON-NLS-2$
-					else
-						templateEtiquettesXML.parse("page.ligne.leading", "" + (zoneaffichable_y * (cellule_y / 100.0) - 1)); //$NON-NLS-1$ //$NON-NLS-2$
-				templateEtiquettesXML.parse("page.ligne.colonne.cid", concurrent.getID()); //$NON-NLS-1$
-				templateEtiquettesXML.parse("page.ligne.colonne.cclub", concurrent.getClub().getNom()); //$NON-NLS-1$
-				templateEtiquettesXML.parse("page.ligne.colonne.clicence", concurrent.getNumLicenceArcher()); //$NON-NLS-1$
-				templateEtiquettesXML.parse("page.ligne.colonne.emplacement", new TargetPosition(concurrent.getCible(), concurrent.getPosition()).toString()); //$NON-NLS-1$
-				if (colonne + 1 == nblarg)
-					templateEtiquettesXML.parseBloc("page.ligne.colonne.interbloc", ""); //$NON-NLS-1$ //$NON-NLS-2$
-	
-				templateEtiquettesXML.loopBloc("page.ligne.colonne"); //$NON-NLS-1$
-	
-				colonne = (++colonne) % nblarg;
-				if (colonne == 0) {
-					templateEtiquettesXML.loopBloc("page.ligne"); //$NON-NLS-1$
-					ligne++;
-				}
-	
-				if (ligne == nbhaut) {
-					templateEtiquettesXML.loopBloc("page"); //$NON-NLS-1$
-	
-					templateEtiquettesXML.parse("page.columns", "" + (nblarg * 3)); //$NON-NLS-1$ //$NON-NLS-2$
-					templateEtiquettesXML.parse("page.widths", tailles_x); //$NON-NLS-1$
-	
-					ligne = 0;
-				}
-			}
-	
-			if (colonne != 0) {
-				templateEtiquettesXML.loopBloc("page.ligne"); //$NON-NLS-1$
-			}
-			if (ligne != 0) {
-				templateEtiquettesXML.loopBloc("page"); //$NON-NLS-1$
-			}
-		} catch (SecurityException e) {
-			JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
-					e.toString(), null, null, e, Level.SEVERE, null));
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
-					e.toString(), null, null, e, Level.SEVERE, null));
-			e.printStackTrace();
-		} catch (NoSuchFieldException e) {
-			JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
-					e.toString(), null, null, e, Level.SEVERE, null));
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
-					e.toString(), null, null, e, Level.SEVERE, null));
-			e.printStackTrace();
-		}
-
-		return templateEtiquettesXML.output();
-	}*/
-
-	/**
-	 * Genere l'etat classement pour la fiche en parametre
-	 * 
-	 * @return true si impression avec succe, false sinon
-	 */
-	public boolean printClassement() {
-		// parametrage d'une page au format A4 avec marges 1cm/1cm/1cm/6.5cm
-		Document document = new Document(PageSize.A4, 10, 10, 10, 65);
-		String classement = getClassement(OUT_XML);
-
-		if (!classement.equals("")) { //$NON-NLS-1$
-			return ApplicationCore.printDocument(document, classement);
-		}
-		return false;
-	}
-
-	/**
-	 * Genere l'etat classement equipe pour la fiche en parametre
-	 * 
-	 * @return true si impression avec succee, false sinon
-	 */
-	public boolean printClassementEquipe() {
-		Document document = new Document(PageSize.A4, 10, 10, 10, 65);
-		String classementEquipe = getClassementEquipe(OUT_XML);
-		if (!classementEquipe.isEmpty())
-			return ApplicationCore.printDocument(document, classementEquipe);
-		return false;
-	}
-	
-	/**
-	 * Genere l'etat classement club pour la fiche en parametre
-	 * 
-	 * @return true si impression avec succé, false sinon
-	 */
-	public boolean printClassementClub() {
-		Document document = new Document(PageSize.A4, 10, 10, 10, 65);
-		String classementClub = getClassementClub(OUT_XML);
-		if (!classementClub.equals("")) //$NON-NLS-1$
-			return ApplicationCore.printDocument(document, classementClub);
-		return false;
 	}
 
 	/**

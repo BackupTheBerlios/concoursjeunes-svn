@@ -1,7 +1,11 @@
 //mapping Java/JS:
-//	template: le chemin du fichier XML de template
-//  ficheConcours: la fiche concours dont dépent l'édition
-//  document: le document pdf à produire
-//  writer: le writer d'ecriture du pdf
+//	depart: le depart selectionné
+function checkPrintable(ficheConcours) {
+	if(ficheConcours.getConcurrentList().countArcher(depart))
+		return true;
+	return false;
+}
 
-new org.concoursjeunes.state.ShootingLineState(ficheConcours.getPasDeTir(ficheConcours.getCurrentDepart()), document, writer);
+function printState(ficheConcours, template, document, writer) {
+	new org.concoursjeunes.state.ShootingLineState(ficheConcours.getPasDeTir(ficheConcours.getCurrentDepart()), document, writer);
+}
