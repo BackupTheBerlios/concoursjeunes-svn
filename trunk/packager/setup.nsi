@@ -97,6 +97,7 @@ Section "Base" SEC0000
     SetOutPath $INSTDIR
     File ConcoursJeunes.jar
     File /r plugins\ConcoursJeunesUpdate\*
+    File /r plugins\PhoenixPlugin\*
     File *.txt
     File windows\concoursjeunes-applyupdate.exe
     File windows\concoursjeunes-applyupdate.exe.manifest

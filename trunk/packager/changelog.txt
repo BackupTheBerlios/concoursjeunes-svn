@@ -1,38 +1,38 @@
 concoursjeunes (2.02.00) stable; urgency=low
 
-  * Correction problÃ¨me d'Ã©crasement de profil
-  * Correction problÃ¨me actualisation de la liste des concours sur suppression
-  * Ajout support des blasons Tri-Spot dans les rÃ©glements
-  * Ajout restriction d'ouverture de concours: un concours ne peut desormais Ãªtre ouvert qu'une fois
-  * Interne: suppression d'un problÃ¨me de lancement de l'application avec Java 6 Update N beta 8
+  * Correction problème d'écrasement de profil
+  * Correction problème actualisation de la liste des concours sur suppression
+  * Ajout support des blasons Tri-Spot dans les réglements
+  * Ajout restriction d'ouverture de concours: un concours ne peut desormais être ouvert qu'une fois
+  * Interne: suppression d'un problème de lancement de l'application avec Java 6 Update N beta 8
 
  -- Aurelien JEOFFRAY <aurelien.jeoffray@gmail.com>  Sun, 23 Dec 2007 15:08:24 +0100
 
 concoursjeunes (2.01.02) stable; urgency=low
 
-  * Correction Ã©crasement de profil sur renommage de profils
+  * Correction écrasement de profil sur renommage de profils
 
  -- Aurelien JEOFFRAY <aurelien.jeoffray@gmail.com>  Wed, 12 Dec 2007 08:21:47 +0100
 
 concoursjeunes (2.01.01) stable; urgency=low
 
-  * Correction problÃ¨me crÃ©ation concours multi-depart avec nombre de cible different de la valeur par dÃ©faut
+  * Correction problème création concours multi-depart avec nombre de cible different de la valeur par défaut
 
  -- Aurelien JEOFFRAY <aurelien.jeoffray@gmail.com>  Wed, 5 Dec 2007 19:17:50 +0100
 
 concoursjeunes (2.01.00) stable; urgency=low
 
-  * Correction problÃ¨me de sauvegarde de profil sur changement de celui-ci
-  * Correction problÃ¨me sur changement de categorie de placement d'un archer
-  * Correction problÃ¨me crÃ©ation concours multi-depart
-  * Correction problÃ¨me ajout concurrent en multi-depart
-  * Correction erreur sur pression du bouton "Arbitre responsable" ou "Suppression arbitre" sans sÃ©lÃ©ction au prealable
-  * Correction erreur sur valeur non numÃ©rique sur les 10/9/M
-  * Support des archers handicapÃ©
-  * AmÃ©lioration des fonctionnalitÃ©es et des performances du systÃ¨me de mise Ã  jour
-  * LÃ©gÃ¨re AmÃ©lioration de la qualitÃ© graphique de l'interface
+  * Correction problème de sauvegarde de profil sur changement de celui-ci
+  * Correction problème sur changement de categorie de placement d'un archer
+  * Correction problème création concours multi-depart
+  * Correction problème ajout concurrent en multi-depart
+  * Correction erreur sur pression du bouton "Arbitre responsable" ou "Suppression arbitre" sans séléction au prealable
+  * Correction erreur sur valeur non numérique sur les 10/9/M
+  * Support des archers handicapé
+  * Amélioration des fonctionnalitées et des performances du système de mise à jour
+  * Légère Amélioration de la qualité graphique de l'interface
   * Message d'erreur plus explicit en cas de nom placement d'un archer
-  * Windows: Installation automatique du Framwork .net et de java en cas d'absence sur le systÃ¨me
+  * Windows: Installation automatique du Framwork .net et de java en cas d'absence sur le système
 
  -- Aurelien JEOFFRAY <aurelien.jeoffray@gmail.com>  Tue, 27 Nov 2007 20:38:19 +0100
 

@@ -439,10 +439,12 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		File docsPathFile = new File(
 				ApplicationCore.userRessources.getConcoursPathForProfile(ApplicationCore.getConfiguration().getCurProfil()), 
 				concoursDirectory);
-		File[] files = docsPathFile.listFiles();
-		FileUtils.sortFilesListByDate(files, 1);
-		if(files != null && files.length > 0)
-			ajlDocuments.setListData(files);
+		if(docsPathFile.exists()) {
+			File[] files = docsPathFile.listFiles();
+			FileUtils.sortFilesListByDate(files, 1);
+			if(files != null && files.length > 0)
+				ajlDocuments.setListData(files);
+		}
 	}
 
 	/**
