@@ -9,6 +9,7 @@
 	<import file="plugins/build-ConcoursJeunesUpdate.xml"/>
 	<import file="plugins/build-FFTAImport.xml"/>
 	<import file="plugins/build-PhoenixPlugin.xml"/>
+	<import file="plugins/build-BackupRestorePlugin.xml"/>
 
 	<!--genere la documentation technique-->
 	<target name="dev_doc" description="genere la documentation développeur">
@@ -18,7 +19,6 @@
 		<javadoc
 			sourcepath="src"
 			destdir="docs"
-			excludepackagenames="org.concoursjeunes.test.*"
 			classpath="${compilclasspath}" >
 			<link href="http://java.sun.com/javase/6/docs/api/" />
 			<!--<packageset dir="src" defaultexcludes="yes">
@@ -45,10 +45,8 @@
 				<include name="documentation/**"/>
 				<include name="ressources/**"/>
 				<include name="src/**"/>
+				<!--exclu les réference subversion -->
 				<exclude name="**/.svn*" />
-				<exclude name="src/org/concoursjeunes/test/**" />
-				<exclude name="plugins/build*.xml" />
-				<exclude name="lib/*-debug.jar"/>
 			</fileset>
 		</copy>
 
@@ -105,7 +103,7 @@
 			    property="version.copyr" />
 		</replace>
 
-		<javac srcdir="src/" destdir="${projet.pack.dir}/bin"
+		<javac srcdir="${projet.pack.dir}/src/" destdir="${projet.pack.dir}/bin"
 			optimize="on"
 			encoding="UTF-8"
 			nowarn="on"
@@ -336,7 +334,7 @@
 	
 
 	<target name="windows" 
-		depends="jar, pack-ConcoursJeunesUpdate, pack-PhoenixPlugin, pack-FFTAImport, revisions, makensissetup" 
+		depends="jar, pack-ConcoursJeunesUpdate, pack-PhoenixPlugin, pack-FFTAImport, pack-BackupRestorePlugin, revisions, makensissetup" 
 		description="Pack Windows" />
 	<target name="linux"
 		depends="jar, pack-ConcoursJeunesUpdate, pack-PhoenixPlugin, revisions, makerpm"

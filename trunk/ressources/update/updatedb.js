@@ -1,6 +1,6 @@
 //mapping:
 // int dbVersion
-// SqlManager sql - moteur de base de données
+// SqlManager sql - moteur de base de donnï¿½es
 
 if(dbVersion == 0) {
 	//passe l'ensemble des scripts de base
@@ -13,13 +13,13 @@ if(dbVersion == 0) {
 } else if(dbVersion < 10) {
 	var rowSet;
 	
-	//correction de l'enregistrement des réglements
+	//correction de l'enregistrement des rï¿½glements
 	rowSet = sql.executeQuery("SELECT * FROM REGLEMENT where NUMREGLEMENT=-909407998;");
 	if(!rowSet.first()) {
 		sql.executeScript("05-patch01.sql");
 	}
 	
-	//ajout d'une colonne pour le classement par équipe
+	//ajout d'une colonne pour le classement par ï¿½quipe
 	rowSet = sql.executeQuery("SELECT * FROM INFORMATION_SCHEMA.COLUMNS " 
 		+ "WHERE TABLE_SCHEMA='PUBLIC' AND TABLE_NAME='CRITERE' AND COLUMN_NAME='CLASSEMENTEQUIPE';");
 	if(!rowSet.first()) {
@@ -82,7 +82,7 @@ if(dbVersion == 0) {
 	}
 	
 	//ajout des images de blason
-	rowSet = sql.execute("SELECT * FROM INFORMATION_SCHEMA.COLUMNS "
+	rowSet = sql.executeQuery("SELECT * FROM INFORMATION_SCHEMA.COLUMNS "
 		+ "WHERE TABLE_SCHEMA='PUBLIC' AND TABLE_NAME='BLASONS' AND COLUMN_NAME='IMAGE';");
 	if(!rowSet.first()) {
 		sql.executeUpdate("ALTER TABLE BLASONS ADD COLUMN IMAGE VARCHAR(64) NOT NULL DEFAULT ''");
@@ -98,13 +98,13 @@ if(dbVersion == 0) {
 		sql.executeScript("05-patch02.sql");
 	}
 	
-	//ajout du réglement de référence
+	//ajout du rï¿½glement de rï¿½fï¿½rence
 	rowSet = sql.executeQuery("SELECT * FROM REGLEMENT WHERE NUMREGLEMENT=0;");
 	if(!rowSet.first()) {
 		sql.executeScript("02-defaut.sql");
 	}
 	
-	//ajout d'arcs supplémentaire sur les 2 réglements de base
+	//ajout d'arcs supplï¿½mentaire sur les 2 rï¿½glements de base
 	rowSet = sql.executeQuery("SELECT * FROM CRITEREELEMENT WHERE CODECRITEREELEMENT='AD' and CODECRITERE='arc' and NUMREGLEMENT in(-1825540830, -180676679);");
 	if(!rowSet.first()) {
 		sql.executeUpdate("MERGE INTO PUBLIC.CRITEREELEMENT(CODECRITEREELEMENT, CODECRITERE, NUMREGLEMENT, LIBELLECRITEREELEMENT, ACTIF) VALUES('AD', 'arc', -1825540830, 'Arc droit', TRUE);");
@@ -133,12 +133,11 @@ if(dbVersion == 0) {
 			+ "PRIMARY KEY (NUMCRITERIASET, NUMREGLEMENT),"
 			+ "FOREIGN KEY (NUMCRITERIASET) REFERENCES CRITERIASET (NUMCRITERIASET) ON UPDATE CASCADE ON DELETE CASCADE,"
 			+ "FOREIGN KEY (NUMREGLEMENT) REFERENCES REGLEMENT (NUMREGLEMENT) ON UPDATE CASCADE ON DELETE CASCADE,"
-			+ "FOREIGN KEY (NUMCRITERIASET_SURCLASSE) REFERENCES CRITERIASET (NUMCRITERIASET) ON UPDATE CASCADE ON DELETE CASCADE;");
-		);
+			+ "FOREIGN KEY (NUMCRITERIASET_SURCLASSE) REFERENCES CRITERIASET (NUMCRITERIASET) ON UPDATE CASCADE ON DELETE CASCADE);");
 	}
 }
 
 if(dbVersion > 0) {
-	//mise à jour du numero de version de la base
+	//mise ï¿½ jour du numero de version de la base
 	sql.executeScript("99-updatedbver.sql");
 }
