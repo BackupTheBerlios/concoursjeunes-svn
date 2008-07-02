@@ -220,7 +220,7 @@ public class ReglementBuilder {
 					CriteriaSet criteriaSet = CriteriaSetBuilder.getCriteriaSet(numCriteriaSet, reglement, numreglment);
 					CriteriaSet criteriaSetSurClasse = null;
 					if(!rs.wasNull()) {
-						criteriaSetSurClasse = CriteriaSetBuilder.getCriteriaSet(numCriteriaSetSurClasse, reglement, numreglment);;
+						criteriaSetSurClasse = CriteriaSetBuilder.getCriteriaSet(numCriteriaSetSurClasse, reglement, numreglment);
 					}
 					
 					surclassement.put(criteriaSet, new NullablePersistantObject<CriteriaSet>(criteriaSetSurClasse));
