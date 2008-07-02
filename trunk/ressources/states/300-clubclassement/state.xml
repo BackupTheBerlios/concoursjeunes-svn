@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <state>
-	<name>listalpha</name>
-	<category>greffe</category>
+	<name>300-clubclassement</name>
+	<category>result</category>
 	<displayName>state.name</displayName>
 	<serie>false</serie>
-	<start>true</start>
-	<save>false</save>
+	<start>false</start>
+	<save>true</save>
 	<type>XML</type>
 	<template>template.xml</template>
 	<script>script.js</script>

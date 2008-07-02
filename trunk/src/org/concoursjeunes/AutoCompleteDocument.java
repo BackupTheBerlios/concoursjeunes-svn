@@ -157,6 +157,7 @@ public class AutoCompleteDocument extends PlainDocument {
 	 * semi automatique
 	 * @param typeSearch - le type de recherche à effectuer (represente
 	 * la nature de la saisi)
+	 * @param reglement permet de formater le concurrent retourné selon le reglement définit
 	 */
 	public AutoCompleteDocument(JTextField textField, SearchType typeSearch, Reglement reglement) {
 		this.textField = textField;

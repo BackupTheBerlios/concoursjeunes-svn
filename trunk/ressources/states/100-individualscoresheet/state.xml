@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <state>
-	<name>clubclassement</name>
-	<category>result</category>
+	<name>100-individualscoresheet</name>
+	<category>marque</category>
 	<displayName>state.name</displayName>
 	<serie>false</serie>
-	<start>false</start>
-	<save>true</save>
+	<start>true</start>
+	<save>false</save>
 	<type>XML</type>
 	<template>template.xml</template>
 	<script>script.js</script>

@@ -89,10 +89,10 @@
 package org.concoursjeunes.ui.dialog;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 
@@ -123,6 +123,10 @@ public class AboutDialog extends JDialog implements ActionListener {
 		JPanel jpAction = new JPanel();
 		
 		jbFermer.addActionListener(this);
+		
+		jlAbout.setIcon(new ImageIcon(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + ApplicationCore.ajrParametreAppli.getResourceString("file.icon.about") //$NON-NLS-1$
+		));
 		
 		jpAction.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		jpAction.add(jbFermer);

@@ -947,8 +947,10 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		if(e.getSource() instanceof JComboBox) {
 			if(e.getStateChange() == ItemEvent.SELECTED) {
 				CriteriaSet currentCS = readCriteriaSet();
-				if(!ArraysUtils.contains(ficheConcours.getParametre().getReglement().getValidClassementCriteriaSet(), currentCS)) {
-					CriteriaSet surclassement = ficheConcours.getParametre().getReglement().getSurclassement().get(currentCS).get();
+				CriteriaSet classementCS = currentCS.getFilteredCriteriaSet(ficheConcours.getParametre().getReglement().getClassementFilter());
+				CriteriaSet[] validClassementCS = ficheConcours.getParametre().getReglement().getValidClassementCriteriaSet();
+				if(!ArraysUtils.contains(validClassementCS, classementCS)) {
+					CriteriaSet surclassement = ficheConcours.getParametre().getReglement().getSurclassement().get(classementCS);
 					if(surclassement == null) {
 						JOptionPane.showMessageDialog(this, 
 								ApplicationCore.ajrLibelle.getResourceString("concurrent.invalidcriteriaset"), //$NON-NLS-1$

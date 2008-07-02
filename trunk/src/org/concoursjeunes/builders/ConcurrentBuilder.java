@@ -90,7 +90,7 @@ public class ConcurrentBuilder {
 				
 				//régle de surclassement de l'archer
 				if(reglement.getSurclassement().containsKey(differentiationCriteria)) {
-					CriteriaSet tmpCS = reglement.getSurclassement().get(differentiationCriteria).get();
+					CriteriaSet tmpCS = reglement.getSurclassement().get(differentiationCriteria);
 					
 					if(tmpCS == null) //si la categorie est invalide alors ne pas renvoyer l'archer
 						return null;

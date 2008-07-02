@@ -38,8 +38,7 @@ import ajinteractive.standard.common.AJTemplate;
 import ajinteractive.standard.common.AJToolKit;
 import ajinteractive.standard.common.XmlUtils;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.PageSize;
+import static org.concoursjeunes.ApplicationCore.ajrLibelle;
 
 /**
  * Represente la fiche concours, regroupe l'ensemble des informations commune à un concours donné
@@ -48,24 +47,6 @@ import com.lowagie.text.PageSize;
  */
 @XmlRootElement
 public class FicheConcours implements ParametreListener, PasDeTirListener {
-
-	/**
-	 * Edition par ordre alphabetique
-	 */
-	public static final int ALPHA = 0; // par ordre alphabetique
-	/**
-	 * Edition pour le greffe
-	 */
-	public static final int GREFFE = 1; // pour le greffe
-	/**
-	 * Edition par positionnement sur cible
-	 */
-	public static final int TARGET = 3; // par ordre sur le pas de tir
-
-	/**
-	 * Edition au format HTML
-	 */
-	public static final int OUT_HTML = 1; // Sortie HTML
 
 	private Parametre parametre = new Parametre(ApplicationCore.getConfiguration());
 
@@ -78,11 +59,8 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 
 	private int currentDepart = 0;
 
-	private static AJTemplate templateClassementHTML = new AJTemplate(ApplicationCore.ajrLibelle);
-	private static AJTemplate templateClassementEquipeHTML = new AJTemplate();
-	private static AJTemplate templateListeArcherXML = new AJTemplate();
-	private static AJTemplate templateListeGreffeXML = new AJTemplate();
-	private static AJTemplate templatePasDeTirXML = new AJTemplate();
+	private static AJTemplate templateClassementHTML = new AJTemplate(ajrLibelle);
+	private static AJTemplate templateClassementEquipeHTML = new AJTemplate(ajrLibelle);
 
 	static {
 		loadTemplates();
@@ -201,6 +179,8 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 	 * 
 	 * @param removedConcurrent -
 	 *            Le concurrent à supprimer
+	 *            
+	 * @throws FicheConcoursException
 	 */
 	public void removeConcurrent(Concurrent removedConcurrent) throws FicheConcoursException {
 		// suppression dans l'equipe si presence dans equipe
@@ -266,11 +246,8 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 		
 		parametre = (Parametre) fiche[0];
 		concurrentList = (ConcurrentList) fiche[1];
-		//if(fiche[0] instanceof Parametre) {
-			
-			concurrentList.setParametre(parametre);
-		/*} else
-			parametre = concurrentList.getParametre();*/
+		concurrentList.setParametre(parametre);
+		
 		equipes = (EquipeList) fiche[2];
 		
 		checkFiche();
@@ -358,6 +335,9 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 		}
 	}
 
+	/**
+	 * Construit le pas de tir
+	 */
 	private void makePasDeTir() {
 		for (int i = 0; i < parametre.getNbDepart(); i++) {
 			PasDeTir pdt = new PasDeTir(this, i);
@@ -406,15 +386,6 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 
 		templateClassementEquipeHTML.loadTemplate(ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
 				+ File.separator + ajrParametreAppli.getResourceString("template.classement_equipe.html")); //$NON-NLS-1$
-
-		templateListeArcherXML.loadTemplate(ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
-				+ File.separator + ajrParametreAppli.getResourceString("template.listarcher")); //$NON-NLS-1$
-
-		templateListeGreffeXML.loadTemplate(ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
-				+ File.separator + ajrParametreAppli.getResourceString("template.listarcher.greffe")); //$NON-NLS-1$
-
-		templatePasDeTirXML.loadTemplate(ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
-				+ File.separator + ajrParametreAppli.getResourceString("template.pasdetir")); //$NON-NLS-1$
 	}
 
 	/**
@@ -558,12 +529,9 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 	}
 
 	/**
-	 * Donne le XML de l'etat de classement par équipe<br>
-	 * L'etat peut être retourné au format XML iText en
-	 * specifiant le type OUT_XMLen parametre<br>
-	 * ou au format HTML en specifiant OUT_HTML en parametre 
+	 * Donne le HTML de l'etat de classement par équipe
 	 * 
-	 * @return le XML iText ou le HTML à retourner
+	 * @return le HTML à retourner
 	 */
 	public String getClassementEquipe() {
 		String strClassementEquipe = ""; //$NON-NLS-1$
@@ -639,10 +607,8 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 	}
 
 	/**
-	 * Retourne, au format html ou xml, l'etat de classement
+	 * Retourne, au format html, l'etat de classement
 	 * par equipe automatique de club 
-	 * 
-	 * @param outType le type (HTML ou XML de sortie)
 	 * 
 	 * @return l'etat de classment
 	 */
@@ -709,71 +675,6 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 		}
 
 		return strClassementEquipe;
-	}
-
-	/**
-	 * Donne le XML de l'etat "Liste des archer"
-	 * 
-	 * @param mode -
-	 *            le mode (ALPHA pour liste alpabétique et GREFFE pour liste pour le greffe)
-	 * @return String - le XML iText à retourner
-	 */
-	private String getXMLListeArcher(int mode, int depart) {
-		AJTemplate listeArcherXML;
-		String strArcherListeXML = ""; //$NON-NLS-1$
-		
-		if(concurrentList.countArcher(depart) == 0)
-			return ""; //$NON-NLS-1$
-
-		if (mode == ALPHA || mode == TARGET)
-			listeArcherXML = templateListeArcherXML;
-		else
-			listeArcherXML = templateListeGreffeXML;
-
-		listeArcherXML.reset();
-
-		listeArcherXML.parse("NB_PARTICIPANTS", "" + concurrentList.countArcher(depart)); //$NON-NLS-1$ //$NON-NLS-2$
-		listeArcherXML.parse("CURRENT_TIME", DateFormat.getDateInstance(DateFormat.FULL).format(new Date())); //$NON-NLS-1$
-
-		listeArcherXML.parse("LISTE", strArcherListeXML); //$NON-NLS-1$
-
-		Concurrent[] concurrents = null;
-		if (mode == ALPHA || mode == GREFFE)
-			concurrents = ConcurrentList.sort(concurrentList.list(depart), ConcurrentList.SortCriteria.SORT_BY_NAME);
-		else
-			concurrents = ConcurrentList.sort(concurrentList.list(depart), ConcurrentList.SortCriteria.SORT_BY_TARGETS);
-
-		for (Concurrent concurrent : concurrents) {
-			listeArcherXML.parse("lignes.IDENTITEE", concurrent.getID()); //$NON-NLS-1$
-			listeArcherXML.parse("lignes.CLUB", concurrent.getClub().getNom()); //$NON-NLS-1$
-			listeArcherXML.parse("lignes.NUM_LICENCE", concurrent.getNumLicenceArcher()); //$NON-NLS-1$
-
-			for (Criterion key : parametre.getReglement().getListCriteria()) {
-				listeArcherXML.parse("lignes." + key.getCode(), //$NON-NLS-1$
-						concurrent.getCriteriaSet().getCriterionElement(key).getCode());
-			}
-
-			listeArcherXML.parse("lignes.PAYEE", AJToolKit.tokenize(ApplicationCore.ajrLibelle.getResourceString("concurrent.impression.inscription"), ",")[concurrent.getInscription()]); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			listeArcherXML.parse("lignes.CERTIFICAT", AJToolKit.tokenize(ApplicationCore.ajrLibelle.getResourceString("concurrent.certificat"), ",")[concurrent.isCertificat() ? 0 : 1]); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			listeArcherXML.parse("lignes.CIBLE", new TargetPosition(concurrent.getCible(), concurrent.getPosition()).toString()); //$NON-NLS-1$
-
-			listeArcherXML.loopBloc("lignes"); //$NON-NLS-1$
-		}
-
-		return listeArcherXML.output();
-	}
-
-	/**
-	 * Genere l'etat "liste des archers"
-	 * 
-	 * @param mode -
-	 *            pour le greffe (GREFFE) ou pour affichage (ALPHA ou TARGET)
-	 * 
-	 * @return true si impression avec succe, false sinon
-	 */
-	public boolean printArcherList(int mode) {
-		Document document = new Document(PageSize.A4, 10, 10, 10, 65);
-		return ApplicationCore.printDocument(document, getXMLListeArcher(mode, currentDepart));
 	}
 
 	/*

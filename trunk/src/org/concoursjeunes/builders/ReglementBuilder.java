@@ -98,8 +98,6 @@ import java.util.Map;
 
 import org.concoursjeunes.*;
 
-import ajinteractive.standard.common.NullablePersistantObject;
-
 /**
  * <p>
  * Les réglements son stoqué dans la base de donnée. La présente fabrique
@@ -211,7 +209,7 @@ public class ReglementBuilder {
 				rs.close();
 				reglement.setListDistancesEtBlason(listDistancesEtBlason);
 				
-				Map<CriteriaSet, NullablePersistantObject<CriteriaSet>> surclassement = new HashMap<CriteriaSet, NullablePersistantObject<CriteriaSet>>();
+				Map<CriteriaSet, CriteriaSet> surclassement = new HashMap<CriteriaSet, CriteriaSet>();
 				rs = stmt.executeQuery("select * from SURCLASSEMENT where NUMREGLEMENT=" + numreglment); //$NON-NLS-1$
 				while (rs.next()) {
 					int numCriteriaSet = rs.getInt("NUMCRITERIASET"); //$NON-NLS-1$
@@ -223,7 +221,7 @@ public class ReglementBuilder {
 						criteriaSetSurClasse = CriteriaSetBuilder.getCriteriaSet(numCriteriaSetSurClasse, reglement, numreglment);
 					}
 					
-					surclassement.put(criteriaSet, new NullablePersistantObject<CriteriaSet>(criteriaSetSurClasse));
+					surclassement.put(criteriaSet, criteriaSetSurClasse);
 				}
 				rs.close();
 				reglement.setSurclassement(surclassement);

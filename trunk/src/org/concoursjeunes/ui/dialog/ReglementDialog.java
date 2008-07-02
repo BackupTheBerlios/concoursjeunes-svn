@@ -111,7 +111,6 @@ import org.concoursjeunes.*;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
-import ajinteractive.standard.common.NullablePersistantObject;
 import ajinteractive.standard.java2.GridbagComposer;
 import ajinteractive.standard.java2.NumberDocument;
 import ajinteractive.standard.ui.AJTree;
@@ -435,7 +434,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 					jcbCriteriaSet.addItem(""); //$NON-NLS-1$
 					CriteriaSet tmpCs = (CriteriaSet)table.getValueAt(row, 1);
 					
-					if(!reglement.getSurclassement().containsValue(new NullablePersistantObject<CriteriaSet>(tmpCs))) {
+					if(!reglement.getSurclassement().containsValue(tmpCs)) {
 						for(CriteriaSet cs : CriteriaSet.listCriteriaSet(reglement, reglement.getClassementFilter())) {
 							if(!tmpCs.equals(cs) && !reglement.getSurclassement().containsKey(cs))
 								jcbCriteriaSet.addItem(cs);
@@ -490,8 +489,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		CriteriaSet[] differentiationCriteria = CriteriaSet.listCriteriaSet(reglement, reglement.getClassementFilter());
 		
 		for (int i = 0; i < differentiationCriteria.length; i++) {
-			NullablePersistantObject<CriteriaSet> npo = reglement.getSurclassement().get(differentiationCriteria[i]);
-			CriteriaSet criteriaSet = (npo != null) ? npo.get() : null;
+			CriteriaSet criteriaSet = reglement.getSurclassement().get(differentiationCriteria[i]);
 			boolean enable = true;
 			if(criteriaSet == null && reglement.getSurclassement().containsKey(differentiationCriteria[i]))
 				enable = false;
@@ -883,9 +881,9 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		Object oSurclasse = dtm.getValueAt(e.getFirstRow(), 2);
 		
 		if(active && oSurclasse instanceof CriteriaSet)
-			reglement.getSurclassement().put(criteriaSet, new NullablePersistantObject<CriteriaSet>((CriteriaSet)oSurclasse));
+			reglement.getSurclassement().put(criteriaSet, (CriteriaSet)oSurclasse);
 		else if(!active)
-			reglement.getSurclassement().put(criteriaSet, new NullablePersistantObject<CriteriaSet>(null));
+			reglement.getSurclassement().put(criteriaSet, null);
 		else
 			reglement.getSurclassement().remove(criteriaSet);
 		

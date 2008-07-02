@@ -137,7 +137,7 @@ if(dbVersion == 0) {
 	}
 }
 
-if(dbVersion > 0) {
+if(dbVersion != org.concoursjeunes.ApplicationCore.DB_RELEASE_REQUIRED) {
 	//mise � jour du numero de version de la base
 	sql.executeScript("99-updatedbver.sql");
 }

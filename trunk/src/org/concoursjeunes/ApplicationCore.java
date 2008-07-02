@@ -105,6 +105,7 @@ import org.concoursjeunes.event.ConcoursJeunesEvent;
 import org.concoursjeunes.event.ConcoursJeunesListener;
 import org.concoursjeunes.exceptions.NullConfigurationException;
 import org.h2.constant.ErrorCode;
+import org.h2.tools.DeleteDbFiles;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
@@ -195,7 +196,29 @@ public class ApplicationCore {
 	 * constructeur, création de la fenetre principale
 	 */
 	private ApplicationCore() {
-		// tente de recuperer la configuration générale du programme
+		loadConfiguration();
+		loadLibelle();
+		debugLogger();
+		openDatabase();
+		checkUpdateDatabase();
+	}
+
+	/**
+	 * Retourne l'instance unique du moteur du logiciel
+	 * 
+	 * @return l'instance de ConcoursJeunes
+	 */
+	public synchronized static ApplicationCore getInstance() {
+		if (null == instance) { // Premier appel
+			instance = new ApplicationCore();
+		}
+		return instance;
+	}
+	
+	/**
+	 * tente de recuperer la configuration générale du programme
+	 */
+	private void loadConfiguration() {
 		try {
 			configuration = ConfigurationManager.loadCurrentConfiguration();
 		} catch (IOException e2) {
@@ -206,9 +229,15 @@ public class ApplicationCore {
 			e2.printStackTrace();
 			System.exit(1);
 		}
-		
+	}
+	
+	/**
+	 * Charge les libelle de l'application en fonction de la locale
+	 */
+	private void loadLibelle() {
 		Locale.setDefault(new Locale(configuration.getLangue()));
 		reloadLibelle();
+		
 		try {
 			AjResourcesReader.setClassLoader(new PluginClassLoader(findParentClassLoader(), new File("plugins"))); //$NON-NLS-1$
 		} catch (MalformedURLException e1) {
@@ -216,7 +245,9 @@ public class ApplicationCore {
 					e1.toString(), null, null, e1, Level.SEVERE, null));
 			e1.printStackTrace();
 		}
-
+	}
+	
+	private void debugLogger() {
 		if (System.getProperty("debug.mode") == null) { //$NON-NLS-1$
 			try {
 				System.setErr(new PrintStream(new File(userRessources.getLogPathForProfile(configuration.getCurProfil()), ajrParametreAppli.getResourceString("log.error")))); //$NON-NLS-1$
@@ -234,7 +265,12 @@ public class ApplicationCore {
 		System.out.println("Version: " + System.getProperty("os.version")); //$NON-NLS-1$ //$NON-NLS-2$
 		System.out.println("Repertoire utilisateur: " + System.getProperty("user.home")); //$NON-NLS-1$ //$NON-NLS-2$
 		System.out.println("Java version:" + System.getProperty("java.version")); //$NON-NLS-1$ //$NON-NLS-2$
-
+	}
+	
+	/**
+	 * Ouvre la base de donné de l'application
+	 */
+	private void openDatabase() {
 		boolean retry = false;
 		do {
 			try {
@@ -251,9 +287,13 @@ public class ApplicationCore {
 				if(!e.getSQLState().equals("" + ErrorCode.DATABASE_ALREADY_OPEN_1)) { //$NON-NLS-1$
 					if(JOptionPane.showConfirmDialog(null, ajrLibelle.getResourceString("erreur.breakdb")) == JOptionPane.YES_OPTION) { //$NON-NLS-1$
 						retry = true;
-						for(File deletefile : userRessources.getBasePath().listFiles()) {
+						try {
+							if(dbConnection != null) dbConnection.close();
+							DeleteDbFiles.execute(userRessources.getBasePath().getPath(), null, true);
+						} catch (SQLException e1) {	e1.printStackTrace(); }
+						/*for(File deletefile : userRessources.getBasePath().listFiles()) {
 							deletefile.delete();
-						}
+						}*/
 					} else {
 						System.exit(1);
 					}
@@ -262,10 +302,14 @@ public class ApplicationCore {
 				}
 			}
 		} while(retry);
-		
+	}
+	
+	private void checkUpdateDatabase() {
 		Statement stmt = null;
 		try {
+			File updatePath = new File(ajrParametreAppli.getResourceString("path.ressources"), "update"); //$NON-NLS-1$ //$NON-NLS-2$
 			stmt = dbConnection.createStatement();
+			SqlManager sqlManager = new SqlManager(stmt, updatePath);
 
 			// test si la base existe déjà et retourne sa révision si c'est le cas
 			ResultSet rs = stmt.executeQuery("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='PARAM'"); //$NON-NLS-1$
@@ -275,40 +319,36 @@ public class ApplicationCore {
 
 			// si la version de la base est différente de la version requise par le programme
 			// copie les fichiers de mise à jour par défaut
-			if (dbVersion < DB_RELEASE_REQUIRED) {
-				userRessources.copyDefaultUpdateFile();
-			} else if (dbVersion > DB_RELEASE_REQUIRED) {
+			if (dbVersion > DB_RELEASE_REQUIRED) {
 				JOptionPane.showMessageDialog(null, ajrLibelle.getResourceString("erreur.dbrelease"), //$NON-NLS-1$
 						ajrLibelle.getResourceString("erreur.dbrelease.title"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 				System.exit(1);
 			}
-			if (dbVersion != DB_RELEASE_REQUIRED) {
-				File updatePath = new File(userRessources.getAllusersDataPath(), "update"); //$NON-NLS-1$
+			
+			ScriptEngine scriptEngine = null;
+			ScriptEngineManager se = new ScriptEngineManager();
+			scriptEngine = se.getEngineByExtension("js"); //$NON-NLS-1$
+			if(scriptEngine != null) {
+				//scriptEngine.setBindings(new SimpleBindings(Collections.synchronizedMap(new HashMap<String, Object>())), ScriptContext.ENGINE_SCOPE);
+				scriptEngine.put("dbVersion", dbVersion); //$NON-NLS-1$
+				scriptEngine.put("sql", sqlManager); //$NON-NLS-1$
 				
-				ScriptEngineManager se = new ScriptEngineManager();
-				ScriptEngine scriptEngine = se.getEngineByName("JavaScript"); //$NON-NLS-1$
-				scriptEngine.setBindings(new SimpleBindings(Collections.synchronizedMap(new HashMap<String, Object>())), ScriptContext.ENGINE_SCOPE);
-				try {
-					scriptEngine.put("dbVersion", dbVersion); //$NON-NLS-1$
-					scriptEngine.put("sql", new SqlManager(stmt, updatePath)); //$NON-NLS-1$
-					
-					List<File> scripts = FileUtils.listAllFiles(updatePath, ".*\\.js"); //$NON-NLS-1$
-					for(File script : scripts)
-						scriptEngine.eval(new FileReader(script));
-				} catch (ScriptException e1) {
-					e1.printStackTrace();
-				} catch (FileNotFoundException e1) {
-					e1.printStackTrace();
-				} finally {
-					//Supprime les fichiers du repertoire update après une mise à jour
-					for(File file : FileUtils.listAllFiles(updatePath, ".*",true)) { //$NON-NLS-1$
-						boolean success = file.delete();
-						System.out.println("delete: " + file.getName() + ": " //$NON-NLS-1$ //$NON-NLS-2$
-								+ success);
-						if(!success)
-							file.deleteOnExit();
+				List<File> scripts = FileUtils.listAllFiles(updatePath, ".*\\.js"); //$NON-NLS-1$
+				for(File script : scripts) {
+					try {		
+						FileReader scriptReader = new FileReader(script);
+						scriptEngine.eval(scriptReader);
+						scriptReader.close();
+					} catch(IOException e) {
+						e.printStackTrace();
+					} catch (ScriptException e) {
+						e.printStackTrace();
 					}
 				}
+			} else {
+				JOptionPane.showMessageDialog(null, "Votre machine virtuel java ne supporte pas javascript,\nl'application risque de ne pas fonctionner correctement", //$NON-NLS-1$
+						ajrLibelle.getResourceString("erreur.dbrelease.title"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
+				
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -318,18 +358,6 @@ public class ApplicationCore {
 			try { if(stmt != null) stmt.close(); } catch (SQLException e) { }
 			dbVersion = getDBVersion();
 		}
-	}
-
-	/**
-	 * Retourne l'instance unique du moteur du logiciel
-	 * 
-	 * @return l'instance de ConcoursJeunes
-	 */
-	public synchronized static ApplicationCore getInstance() {
-		if (null == instance) { // Premier appel
-			instance = new ApplicationCore();
-		}
-		return instance;
 	}
 
 	/**

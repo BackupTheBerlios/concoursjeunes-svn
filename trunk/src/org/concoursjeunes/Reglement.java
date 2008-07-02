@@ -91,8 +91,6 @@ package org.concoursjeunes;
 import java.sql.*;
 import java.util.*;
 
-import ajinteractive.standard.common.NullablePersistantObject;
-
 /**
  * <p>
  * Représentation d'un réglement de concours. Un réglement fixe les régles
@@ -127,7 +125,7 @@ public class Reglement {
 	private int nbMembresRetenu = 3;
 
 	private List<Criterion> listCriteria = new ArrayList<Criterion>();
-	private Map<CriteriaSet, NullablePersistantObject<CriteriaSet>> surclassement = new HashMap<CriteriaSet, NullablePersistantObject<CriteriaSet>>();
+	private Map<CriteriaSet, CriteriaSet> surclassement = new HashMap<CriteriaSet, CriteriaSet>();
 	private List<DistancesEtBlason> listDistancesEtBlason = new ArrayList<DistancesEtBlason>();
 
 	private boolean officialReglement = false;
@@ -199,14 +197,14 @@ public class Reglement {
 	/**
 	 * @return surclassement
 	 */
-	public Map<CriteriaSet, NullablePersistantObject<CriteriaSet>> getSurclassement() {
+	public Map<CriteriaSet, CriteriaSet> getSurclassement() {
 		return surclassement;
 	}
 
 	/**
 	 * @param surclassement surclassement à définir
 	 */
-	public void setSurclassement(Map<CriteriaSet, NullablePersistantObject<CriteriaSet>> surclassement) {
+	public void setSurclassement(Map<CriteriaSet, CriteriaSet> surclassement) {
 		this.surclassement = surclassement;
 	}
 
@@ -485,12 +483,12 @@ public class Reglement {
 		String sql = "insert into SURCLASSEMENT (NUMCRITERIASET, NUMREGLEMENT, NUMCRITERIASET_SURCLASSE) " + //$NON-NLS-1$
 				"values (?, ?, ?)"; //$NON-NLS-1$
 		PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
-		for(Map.Entry<CriteriaSet, NullablePersistantObject<CriteriaSet>> row : surclassement.entrySet()) {
+		for(Map.Entry<CriteriaSet, CriteriaSet> row : surclassement.entrySet()) {
 			row.getKey().save(hashCode());
 			pstmt.setInt(1, row.getKey().hashCode());
 			pstmt.setInt(2, hashCode());
-			if(row.getValue().get() != null) {
-				row.getValue().get().save(hashCode());
+			if(row.getValue() != null) {
+				row.getValue().save(hashCode());
 				pstmt.setInt(3, row.getValue().hashCode());
 			} else
 				pstmt.setNull(3, Types.INTEGER);

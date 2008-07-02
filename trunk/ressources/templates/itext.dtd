@@ -69,6 +69,8 @@
 	author		CDATA	#IMPLIED
 	creationdate	CDATA	#IMPLIED
 	producer		CDATA	#IMPLIED
+	pagesize		CDATA	#IMPLIED
+	orientation		CDATA	#IMPLIED
 >
 
 <!ELEMENT symbol EMPTY>

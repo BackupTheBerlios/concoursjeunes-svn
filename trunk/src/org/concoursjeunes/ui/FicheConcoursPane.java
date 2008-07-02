@@ -121,7 +121,6 @@ import org.jdesktop.swingx.JXTaskPaneContainer;
 
 import ajinteractive.standard.java2.GridbagComposer;
 import ajinteractive.standard.ui.AJList;
-import ajinteractive.standard.utilities.io.FileUtils;
 
 /**
  * fiche concours. cette fiche correspond à la table d'inscrit et de résultats
@@ -162,6 +161,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	private JLabel jlSerie = new JLabel();
 	private JComboBox jcbDeparts = new JComboBox();
 	private JComboBox jcbSeries = new JComboBox();
+	private JButton jbPrint = new JButton();
 	private AJList ajlDocuments = new AJList();
 
 	public ParametreDialog paramDialog;
@@ -384,12 +384,14 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		
 		jlDepart.setText("Départ:");
 		jlSerie.setText("Série:");
+		jbPrint.setText("Imprimer");
 		
 		for(int i = 1; i <= ficheConcours.getParametre().getNbDepart(); i++)
 			jcbDeparts.addItem(
 					ApplicationCore.ajrLibelle.getResourceString("onglet.gestionarcher.depart") + i); //$NON-NLS-1$
 		for(int i = 1; i <= ficheConcours.getParametre().getReglement().getNbSerie(); i++)
 			jcbSeries.addItem("Série n°" + i);
+		
 		
 		composer.setParentPanel(jpOptions);
 		c.gridy = 0;
@@ -402,6 +404,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		composer.addComponentIntoGrid(jlSerie, c);
 		c.weightx = 1.0;
 		composer.addComponentIntoGrid(jcbSeries, c);
+		composer.addComponentIntoGrid(jbPrint, c);
 		
 		JPanel jpDocuments = new JPanel();
 		jpDocuments.setBorder(new TitledBorder("Documents généré"));
@@ -441,7 +444,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 				concoursDirectory);
 		if(docsPathFile.exists()) {
 			File[] files = docsPathFile.listFiles();
-			FileUtils.sortFilesListByDate(files, 1);
+			//FileUtils.sortFilesListByDate(files, 1);
 			if(files != null && files.length > 0)
 				ajlDocuments.setListData(files);
 		}

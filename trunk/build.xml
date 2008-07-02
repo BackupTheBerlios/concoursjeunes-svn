@@ -337,7 +337,7 @@
 		depends="jar, pack-ConcoursJeunesUpdate, pack-PhoenixPlugin, pack-FFTAImport, pack-BackupRestorePlugin, revisions, makensissetup" 
 		description="Pack Windows" />
 	<target name="linux"
-		depends="jar, pack-ConcoursJeunesUpdate, pack-PhoenixPlugin, revisions, makerpm"
+		depends="jar,pack-ConcoursJeunesUpdate,  pack-PhoenixPlugin, revisions, makerpm"
 		description="Pack Linux" />
 	<target name="all-system"
 		depends="jar, pack-ConcoursJeunesUpdate, pack-PhoenixPlugin, pack-FFTAImport, revisions, makensissetup, makerpm, makedeb"

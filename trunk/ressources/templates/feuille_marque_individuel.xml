@@ -10,11 +10,13 @@
 	<!-- entete -->
 	<table columns="3" width="100.0%" widths="20.0;40.0;40.0">
 		<row>
+			<!-- Logo du club -->
 			<cell verticalalign="Middle" rowspan="2">
 				<paragraph leading="18.0" align="Default">
 					<image url="{LOGO_CLUB_URI}" plainwidth="90.0" plainheight="100.0"></image>
 				</paragraph>
 			</cell>
+			<!-- Information club -->
 			<cell verticalalign="Default">
 				<paragraph size="18.0">
 					<chunk fontstyle="italic">{INTITULE_CLUB}</chunk>
@@ -22,10 +24,21 @@
 				<paragraph>
 					<chunk size="18.0" fontstyle="normal">{INTITULE_CONCOURS}</chunk>
 					<newline />
-					<chunk size="18.0" fontstyle="normal">{VILLE_CLUB} Le {DATE_CONCOURS}</chunk>
+					<chunk size="18.0" fontstyle="normal">{VILLE_CLUB} %header.part_date% {DATE_CONCOURS}</chunk>
 				</paragraph>
 			</cell>
+			<!-- Etiquette concurrent -->
 			<cell verticalalign="Default">
+				<paragraph>
+					<chunk size="10">
+						{cid}<newline/>
+						{cclub}<newline/>
+						{clicence}<newline/>
+					</chunk>
+				</paragraph>
+				<paragraph>
+					<chunk size="10">{emplacement}</chunk>
+				</paragraph>
 			</cell>
 		</row>
 	</table>
@@ -56,13 +69,13 @@
 					<row>
 						<cell><phrase>{NUM_VOLEE}</phrase></cell>
 						<bloc::pointsparfleche>
-						<cell></cell>
+						<cell>{PT_FLECHE}</cell>
 						</bloc::pointsparfleche>
-						<cell></cell>
-						<cell></cell>
-						<cell></cell>
-						<cell></cell>
-						<cell></cell>
+						<cell>{TOTAL_VOLEE}</cell>
+						<cell>{TOTAL_CUMULE}</cell>
+						<cell>{MANQUE}</cell>
+						<cell>{DIX}</cell>
+						<cell>{NEUF}</cell>
 					</row>
 					</bloc::volees>
 				</table>

@@ -9,8 +9,8 @@
 	<classpathentry kind="lib" path="lib/h2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="lib/AJPackage.jar" sourcepath="/ClassAJ/src"/>
-	<classpathentry kind="lib" path="lib/itext-2.0.6.jar"/>
-	<classpathentry kind="lib" path="lib/swingx-2008_06_01.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/iText-2.1.2u.jar" sourcepath="/home/Aurelien/Téléchargement/iText-src-2.1.2u.zip"/>
+	<classpathentry kind="lib" path="lib/swingx-0.9.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

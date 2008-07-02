@@ -163,11 +163,12 @@ public class ShootingLineState {
 			document.addCreationDate();
 			document.addAuthor(ApplicationCore.getConfiguration().getClub().getNom());
 			document.addProducer();
+			document.addCreator(ApplicationCore.getConfiguration().getClub().getNom());
 			document.addTitle(ajrLibelle.getResourceString("state.pasdetir.title")); //$NON-NLS-1$
 			document.open();
 			
 			cb = writer.getDirectContent();
-			Graphics2D g2 = cb.createGraphicsShapes(pageWidth, pageHeight);
+			Graphics2D g2 = cb.createGraphics(pageWidth, pageHeight);
 			
 			boolean multiserie = false;
 			for(Target target : pasDeTir.getTargets()) {
