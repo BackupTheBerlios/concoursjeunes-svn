@@ -52,7 +52,7 @@
 				
 				<table width="100.0%" widths="{COLS_SIZE}" cellpadding="1.0">
 					<row>
-						<cell colspan="9">
+						<cell colspan="{SERIE_NB_COL}">
 							<paragraph>
 								<chunk fontstyle="bold" size="10">{INTITULE_SERIE}</chunk>
 							</paragraph>
@@ -90,7 +90,7 @@
 					</row>
 					</bloc::volees>
 					<row>
-						<cell colspan="5" top="true" bottom="true" right="true" left="true"><phrase size="10">Total série:</phrase></cell>
+						<cell colspan="{NB_COL_TOTAL}" top="true" bottom="true" right="true" left="true"><phrase size="10">Total {NUM_DISTANCE} distance:</phrase></cell>
 						<cell top="true" bottom="true" right="true" left="true"></cell>
 						<cell top="true" bottom="true" right="true" left="true"></cell>
 						<cell top="true" bottom="true" right="true" left="true"></cell>
@@ -102,9 +102,51 @@
 			</cell>
 			</bloc::series>
 		</row>
-		<!--<row>
+	</table>
+	<table columns="4" width="100.0%" widths="49.0;1;49.0;1" cellpadding="2.0">
+		<row>
+			<cell>  
+				<sectioncontent>
+				<table columns="5" width="100.0%" widths="{COLS_SIZE}" cellpadding="2.0">
+					<bloc::distances>
+					<row>
+						<cell top="true" bottom="true" right="true" left="true"><phrase size="10">Report total {NUM_DISTANCE} distance:</phrase></cell>
+						<cell top="true" bottom="true" right="true" left="true"></cell>
+						<cell top="true" bottom="true" right="true" left="true"></cell>
+						<cell top="true" bottom="true" right="true" left="true"></cell>
+						<cell top="true" bottom="true" right="true" left="true"></cell> 
+					</row>
+					</bloc::distances>
+					<row>
+						<cell top="true" bottom="true" right="true" left="true"><phrase size="10" fontstyle="bold">Total générale:</phrase></cell>
+						<cell top="true" bottom="true" right="true" left="true"></cell>
+						<cell top="true" bottom="true" right="true" left="true"></cell>
+						<cell top="true" bottom="true" right="true" left="true"></cell>
+						<cell top="true" bottom="true" right="true" left="true"></cell> 
+					</row>
+					<row>
+						<cell colspan="5"></cell>
+					</row>
+				</table>
+				</sectioncontent>
+			</cell>
 			<cell></cell>
-		</row>-->
+			<cell>
+				<sectioncontent>
+				<table columns="2" width="100.0%" widths="50.0;50.0" cellpadding="2.0">
+				<row>
+					<cell horizontalalign="Center" top="true" bottom="true" right="true" left="true" backgroundcolor="#aaaaaa"><phrase size="10" fontstyle="bold">Marqueur</phrase></cell>
+					<cell horizontalalign="Center" top="true" bottom="true" right="true" left="true" backgroundcolor="#aaaaaa"><phrase size="10" fontstyle="bold">Archer</phrase></cell>
+				</row>
+				<row>
+					<cell rowspan="{SIGNATURE_SIZE}" leading="64" top="true" bottom="true" right="true" left="true"><chunk>.</chunk></cell>
+					<cell rowspan="{SIGNATURE_SIZE}" top="true" bottom="true" right="true" left="true"></cell>
+				</row>
+				</table>
+				</sectioncontent>
+			</cell>
+			<cell></cell>
+		</row>
 	</table>
 	<newpage/>
 	</bloc::scoresheet>
