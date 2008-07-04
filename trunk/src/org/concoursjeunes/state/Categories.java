@@ -162,7 +162,7 @@ public class Categories {
 		public String getLocalizedLibelle() {
 			String localizedLibelle = libelle;
 			String statePath = ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
-					+ File.separator + "states" + File.separator; //$NON-NLS-1$
+					+ File.separator + "states"; //$NON-NLS-1$
 			
 			try {
 				ResourceBundle rb = ResourceBundle.getBundle(

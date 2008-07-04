@@ -158,9 +158,10 @@ public class StateProcessor {
 			scriptEngine.setBindings(new SimpleBindings(Collections.synchronizedMap(new HashMap<String, Object>())), ScriptContext.ENGINE_SCOPE);
 			try {
 				String statePath = ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
-						+ File.separator + "states" + File.separator + state.getName() + File.separator; //$NON-NLS-1$
+						+ File.separator + "states" + File.separator + state.getName(); //$NON-NLS-1$
 				
 				scriptEngine.put("depart", ficheConcours.getCurrentDepart()); //$NON-NLS-1$
+				//scriptEngine.put("localeReader", new AjResourcesReader("lang"));
 				
 				FileReader reader = new FileReader(statePath + state.getScript());
 				scriptEngine.eval(reader);

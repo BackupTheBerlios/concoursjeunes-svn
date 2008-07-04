@@ -161,7 +161,7 @@ public class State {
 	public String getLocalizedDisplayName() {
 		String actionName = displayName;
 		String statePath = ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
-				+ File.separator + "states" + File.separator + name + File.separator; //$NON-NLS-1$
+				+ File.separator + "states" + File.separator + name; //$NON-NLS-1$
 		
 		try {
 			ResourceBundle rb = ResourceBundle.getBundle(
