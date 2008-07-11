@@ -9,7 +9,7 @@
 	>
 	<bloc::scoresheet>
 	<!-- entete -->
-	<table columns="3" width="100.0%" widths="20.0;40.0;40.0">
+	<table columns="3" width="100.0\%" widths="20.0;40.0;40.0">
 		<row>
 			<!-- Logo du club -->
 			<cell verticalalign="Middle" rowspan="2">
@@ -45,12 +45,12 @@
 	</table>
 	<newline />
 	<!-- tableau point -->
-	<table columns="{NB_SERIE}" width="100.0%" widths="{PERCENT_SERIES}" cellpadding="2.0">
+	<table columns="{NB_SERIE}" width="100.0\%" widths="{PERCENT_SERIES}" cellpadding="2.0">
 		<row>
 			<bloc::series>
 			<cell>
 				
-				<table width="100.0%" widths="{COLS_SIZE}" cellpadding="1.0">
+				<table width="100.0\%" widths="{COLS_SIZE}" cellpadding="1.0">
 					<row>
 						<cell colspan="{SERIE_NB_COL}">
 							<paragraph>
@@ -59,13 +59,13 @@
 						</cell>
 					</row>
 					<row>
-						<cell rowspan="2" horizontalalign="Center" top="true" bottom="true" right="true" left="true"><phrase size="10">Volée</phrase></cell>
-						<cell colspan="{NB_FLECHE_PAR_VOLEE}" horizontalalign="Center" top="true" bottom="true" right="true" left="true"><phrase size="10">Points par fléche</phrase></cell>
-						<cell rowspan="2" horizontalalign="Center" top="true" bottom="true" right="true" left="true"><phrase size="10">Total volée</phrase></cell>
-						<cell rowspan="2" horizontalalign="Center" top="true" bottom="true" right="true" left="true"><phrase size="10">Total cumulé</phrase></cell>
-						<cell rowspan="2" horizontalalign="Center" top="true" bottom="true" right="true" left="true"><phrase size="10">M</phrase></cell>
-						<cell rowspan="2" horizontalalign="Center" top="true" bottom="true" right="true" left="true"><phrase size="10">10</phrase></cell>
-						<cell rowspan="2" horizontalalign="Center" top="true" bottom="true" right="true" left="true"><phrase size="10">9</phrase></cell>
+						<cell rowspan="2" horizontalalign="Center" top="true" bottom="true" right="true" left="true"><phrase size="10">%template.volee%</phrase></cell>
+						<cell colspan="{NB_FLECHE_PAR_VOLEE}" horizontalalign="Center" top="true" bottom="true" right="true" left="true"><phrase size="10">%template.ppf%</phrase></cell>
+						<cell rowspan="2" horizontalalign="Center" top="true" bottom="true" right="true" left="true"><phrase size="10">%template.total.volee%</phrase></cell>
+						<cell rowspan="2" horizontalalign="Center" top="true" bottom="true" right="true" left="true"><phrase size="10">%template.total.cumule%</phrase></cell>
+						<cell rowspan="2" horizontalalign="Center" top="true" bottom="true" right="true" left="true"><phrase size="10">%template.manque%</phrase></cell>
+						<cell rowspan="2" horizontalalign="Center" top="true" bottom="true" right="true" left="true"><phrase size="10">%template.dix%</phrase></cell>
+						<cell rowspan="2" horizontalalign="Center" top="true" bottom="true" right="true" left="true"><phrase size="10">%template.neuf%</phrase></cell>
 					</row>
 					<row>
 						<bloc::fleches>
@@ -90,7 +90,7 @@
 					</row>
 					</bloc::volees>
 					<row>
-						<cell colspan="{NB_COL_TOTAL}" top="true" bottom="true" right="true" left="true"><phrase size="10">Total {NUM_DISTANCE} distance:</phrase></cell>
+						<cell colspan="{NB_COL_TOTAL}" top="true" bottom="true" right="true" left="true"><phrase size="10">%template.total% {NUM_DISTANCE} %template.distance%:</phrase></cell>
 						<cell top="true" bottom="true" right="true" left="true"></cell>
 						<cell top="true" bottom="true" right="true" left="true"></cell>
 						<cell top="true" bottom="true" right="true" left="true"></cell>
@@ -103,14 +103,14 @@
 			</bloc::series>
 		</row>
 	</table>
-	<table columns="4" width="100.0%" widths="49.0;1;49.0;1" cellpadding="2.0">
+	<table columns="4" width="100.0\%" widths="49.0;1;49.0;1" cellpadding="2.0">
 		<row>
 			<cell>  
 				<sectioncontent>
-				<table columns="5" width="100.0%" widths="{COLS_SIZE}" cellpadding="2.0">
+				<table columns="5" width="100.0\%" widths="{COLS_SIZE}" cellpadding="2.0">
 					<bloc::distances>
 					<row>
-						<cell top="true" bottom="true" right="true" left="true"><phrase size="10">Report total {NUM_DISTANCE} distance:</phrase></cell>
+						<cell top="true" bottom="true" right="true" left="true"><phrase size="10">Report total {NUM_DISTANCE} %template.distance%:</phrase></cell>
 						<cell top="true" bottom="true" right="true" left="true"></cell>
 						<cell top="true" bottom="true" right="true" left="true"></cell>
 						<cell top="true" bottom="true" right="true" left="true"></cell>
@@ -118,7 +118,7 @@
 					</row>
 					</bloc::distances>
 					<row>
-						<cell top="true" bottom="true" right="true" left="true"><phrase size="10" fontstyle="bold">Total générale:</phrase></cell>
+						<cell top="true" bottom="true" right="true" left="true"><phrase size="10" fontstyle="bold">%template.total.generale%:</phrase></cell>
 						<cell top="true" bottom="true" right="true" left="true"></cell>
 						<cell top="true" bottom="true" right="true" left="true"></cell>
 						<cell top="true" bottom="true" right="true" left="true"></cell>
@@ -133,7 +133,7 @@
 			<cell></cell>
 			<cell>
 				<sectioncontent>
-				<table columns="2" width="100.0%" widths="50.0;50.0" cellpadding="2.0">
+				<table columns="2" width="100.0\%" widths="50.0;50.0" cellpadding="2.0">
 				<row>
 					<cell horizontalalign="Center" top="true" bottom="true" right="true" left="true" backgroundcolor="#aaaaaa"><phrase size="10" fontstyle="bold">Marqueur</phrase></cell>
 					<cell horizontalalign="Center" top="true" bottom="true" right="true" left="true" backgroundcolor="#aaaaaa"><phrase size="10" fontstyle="bold">Archer</phrase></cell>

@@ -88,15 +88,17 @@
  */
 package org.concoursjeunes;
 
-import java.awt.Desktop;
 import java.io.*;
-import java.net.MalformedURLException;
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 
 import javax.naming.ConfigurationException;
-import javax.script.*;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import javax.swing.JOptionPane;
 import javax.swing.event.EventListenerList;
 
@@ -110,15 +112,8 @@ import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
 import ajinteractive.standard.common.AjResourcesReader;
-import ajinteractive.standard.common.PluginClassLoader;
 import ajinteractive.standard.utilities.io.FileUtils;
 import ajinteractive.standard.utilities.sql.SqlManager;
-
-import com.lowagie.text.Document;
-import com.lowagie.text.HeaderFooter;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.pdf.PdfWriter;
-import com.lowagie.text.xml.XmlParser;
 
 /**
  * Class principal de l'application, gére l'ensemble des ressources commune tel que
@@ -237,14 +232,6 @@ public class ApplicationCore {
 	private void loadLibelle() {
 		Locale.setDefault(new Locale(configuration.getLangue()));
 		reloadLibelle();
-		
-		try {
-			AjResourcesReader.setClassLoader(new PluginClassLoader(findParentClassLoader(), new File("plugins"))); //$NON-NLS-1$
-		} catch (MalformedURLException e1) {
-			JXErrorPane.showDialog(null, new ErrorInfo(ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
-					e1.toString(), null, null, e1, Level.SEVERE, null));
-			e1.printStackTrace();
-		}
 	}
 	
 	private void debugLogger() {
@@ -369,61 +356,6 @@ public class ApplicationCore {
 	}
 	
 	/**
-	 * genere le pdf à partir des parametres document et du contenu xml
-	 * 
-	 * @param document -
-	 *            parametre du doc
-	 * @param xmlcontent -
-	 *            le contenu formater en xml iText
-	 * 
-	 * @return true si le pdf à correctement été généré, false si une erreur est survenue
-	 */
-	public static boolean printDocument(Document document, String xmlcontent) {
-		boolean printOK = true;
-		
-		try {
-			// cré un document pdf temporaire
-			File tmpFile = File.createTempFile("cta", ajrParametreAppli.getResourceString("extention.pdf")); //$NON-NLS-1$ //$NON-NLS-2$
-			String filePath = tmpFile.getCanonicalPath();
-			tmpFile.deleteOnExit();
-
-			// genere le pdf
-			PdfWriter.getInstance(document, new FileOutputStream(filePath));
-			HeaderFooter footer = new HeaderFooter(new Phrase("page "), new Phrase(".")); //$NON-NLS-1$ //$NON-NLS-2$
-			footer.setBorder(0);
-			footer.setAlignment(HeaderFooter.ALIGN_RIGHT);
-			document.setFooter(footer);
-
-			if(!xmlcontent.isEmpty()) {
-				XmlParser.parse(document, new StringReader(xmlcontent));
-			} else {
-				document.close();
-			}
-			
-			// affiche le pdf avec le reader pdf standard du systeme
-			if (Desktop.isDesktopSupported()) {
-				Desktop.getDesktop().open(tmpFile);
-			} else {
-				if (configuration != null) {
-					
-					String NAV = configuration.getPdfReaderPath();
-
-					System.out.println(NAV + " " + tmpFile.getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
-					Runtime.getRuntime().exec(NAV + " " + tmpFile.getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
-				}
-			}
-		} catch (Exception e) {
-			//TODO reprendre le message d'erreur en cas d'association non trouvé
-			e.printStackTrace();
-			printOK = false;
-		} finally {
-			document.close();
-		}
-
-		return printOK;
-	}
-	
-	/**
 	 * Retourne la configuration courante de l'application
 	 * 
 	 * @return la configuration de l'application
@@ -479,22 +411,6 @@ public class ApplicationCore {
 		}
 
 		return 0;
-	}
-
-	/**
-	 * Locates the best class loader based on context (see class description).
-	 * 
-	 * @return The best parent classloader to use
-	 */
-	private ClassLoader findParentClassLoader() {
-		ClassLoader parent = Thread.currentThread().getContextClassLoader();
-		if (parent == null) {
-			parent = this.getClass().getClassLoader();
-			if (parent == null) {
-				parent = ClassLoader.getSystemClassLoader();
-			}
-		}
-		return parent;
 	}
 
 	/**

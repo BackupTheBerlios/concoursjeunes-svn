@@ -90,6 +90,8 @@ package org.concoursjeunes.state;
 
 import java.awt.Desktop;
 import java.io.*;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.text.DateFormat;
 import java.util.Collections;
 import java.util.Date;
@@ -100,6 +102,8 @@ import javax.swing.JOptionPane;
 
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.FicheConcours;
+
+import ajinteractive.standard.common.AjResourcesReader;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -160,10 +164,12 @@ public class StateProcessor {
 				String statePath = ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
 						+ File.separator + "states" + File.separator + state.getName(); //$NON-NLS-1$
 				
-				scriptEngine.put("depart", ficheConcours.getCurrentDepart()); //$NON-NLS-1$
-				//scriptEngine.put("localeReader", new AjResourcesReader("lang"));
+				AjResourcesReader langReader = new AjResourcesReader("lang", new URLClassLoader(new URL[] { new File(statePath).toURI().toURL() })); //$NON-NLS-1$
 				
-				FileReader reader = new FileReader(statePath + state.getScript());
+				scriptEngine.put("depart", ficheConcours.getCurrentDepart()); //$NON-NLS-1$
+				scriptEngine.put("localeReader", langReader); //$NON-NLS-1$
+				
+				FileReader reader = new FileReader(new File(statePath, state.getScript()));
 				scriptEngine.eval(reader);
 				reader.close();
 				
@@ -174,7 +180,7 @@ public class StateProcessor {
 					PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filePath));
 					writer.setFullCompression();
 					
-					invocable.invokeFunction("printState", ficheConcours, statePath + state.getTemplate(), document, writer); //$NON-NLS-1$
+					invocable.invokeFunction("printState", ficheConcours, statePath + File.separator + state.getTemplate(), document, writer); //$NON-NLS-1$
 				} else {
 					JOptionPane.showMessageDialog(null, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 				}

@@ -21,8 +21,8 @@ function printState(ficheConcours, template, document, writer) {
 	
 	with(contexte) {
 		var templateXML = new AJTemplate();
+		templateXML.setLocalisationReader(localeReader);
 		templateXML.loadTemplate(template);
-		//templateXML.setLocalisationReader(localeReader);
 	
 		try {
 			templateXML.parse("CURRENT_TIME", DateFormat.getDateInstance(DateFormat.FULL).format(new Date())); //$NON-NLS-1$
