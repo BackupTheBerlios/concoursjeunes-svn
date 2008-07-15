@@ -139,12 +139,12 @@ public class StateProcessor {
 		this.state = state;
 	}
 	
-	public void process() {
+	public void process(int depart, int serie, boolean save) {
 		try {
 			Document document = new Document();
 			String filePath;
 			
-			if(!state.isSave()) {
+			if(!save) {
 				File tmpFile = File.createTempFile("cta", ApplicationCore.ajrParametreAppli.getResourceString("extention.pdf")); //$NON-NLS-1$ //$NON-NLS-2$
 				filePath = tmpFile.getCanonicalPath();
 				tmpFile.deleteOnExit();
@@ -166,7 +166,8 @@ public class StateProcessor {
 				
 				AjResourcesReader langReader = new AjResourcesReader("lang", new URLClassLoader(new URL[] { new File(statePath).toURI().toURL() })); //$NON-NLS-1$
 				
-				scriptEngine.put("depart", ficheConcours.getCurrentDepart()); //$NON-NLS-1$
+				scriptEngine.put("depart", depart); //$NON-NLS-1$
+				scriptEngine.put("serie", serie); //$NON-NLS-1$
 				scriptEngine.put("localeReader", langReader); //$NON-NLS-1$
 				
 				FileReader reader = new FileReader(new File(statePath, state.getScript()));
@@ -177,6 +178,7 @@ public class StateProcessor {
 				boolean isprintable = (Boolean)invocable.invokeFunction("checkPrintable", ficheConcours); //$NON-NLS-1$
 				
 				if(isprintable) {
+					new File(filePath).getParentFile().mkdirs();
 					PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filePath));
 					writer.setFullCompression();
 					
@@ -187,15 +189,17 @@ public class StateProcessor {
 				
 				document.close();
 				
-				if (isprintable && Desktop.isDesktopSupported()) {
-					Desktop.getDesktop().open(new File(filePath));
-				} else {
-					assert ApplicationCore.getConfiguration() != null;
-					
-					String NAV = ApplicationCore.getConfiguration().getPdfReaderPath();
-
-					System.out.println(NAV + " " + new File(filePath).getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
-					Runtime.getRuntime().exec(NAV + " " + new File(filePath).getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
+				if (isprintable) {
+					if(Desktop.isDesktopSupported()) {
+						Desktop.getDesktop().open(new File(filePath));
+					} else {
+						assert ApplicationCore.getConfiguration() != null;
+						
+						String NAV = ApplicationCore.getConfiguration().getPdfReaderPath();
+	
+						System.out.println(NAV + " " + new File(filePath).getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
+						Runtime.getRuntime().exec(NAV + " " + new File(filePath).getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
+					}
 				}
 			} catch (ScriptException e1) {
 				e1.printStackTrace();

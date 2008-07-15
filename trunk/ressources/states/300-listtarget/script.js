@@ -20,6 +20,7 @@ function printState(ficheConcours, template, document, writer) {
 		var depart = 0;
 	
 		var listeArcherXML = new AJTemplate();
+		listeArcherXML.setLocalisationReader(localeReader);
 		listeArcherXML.loadTemplate(template);
 		
 		try {

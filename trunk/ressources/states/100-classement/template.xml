@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE ITEXT SYSTEM "ressources/templates/itext.dtd">
-<itext creationdate="{CURRENT_TIME}" producer="iTextXML by lowagie.com" pagesize="A4" orientation="portrait" author="{author}">
-	<table columns="2" width="100.0%" widths="20.0;80.0" bottom="true">
+<itext creationdate="{CURRENT_TIME}"
+		producer="iTextXML by lowagie.com"
+		pagesize="A4"
+		orientation="portrait"
+		author="{author}"
+		title="%classement.individuel%">
+	<table columns="2" width="100.0\%" widths="20.0;80.0" bottom="true">
 		<row>
 			<cell verticalalign="Middle" rowspan="2">
 				<paragraph leading="18.0" font="unknown" align="Default">
@@ -23,7 +28,7 @@
 		</row>
 	</table>
 	<newline />
-	<table columns="1" width="100.0%">
+	<table columns="1" width="100.0\%">
 		<row>
 			<cell>
 				<phrase leading="18.0" font="unknown" align="Default" indentationleft="10.0">
@@ -38,7 +43,7 @@
 		</row>
 	</table>
 	<newline />
-	<table columns="2" width="100.0%" widths="50.0;50.0" top="true">
+	<table columns="2" width="100.0\%" widths="50.0;50.0" top="true">
 		<row>
 			<cell>
 				<phrase style="bold">{NB_CLUB} %classement.registerclub%</phrase>
@@ -57,7 +62,7 @@
 	</table>
 	<newline />
 	<bloc::categories>
-	<table columns="9" width="100.0%" cellpadding="1.0" widths="4.21;24.21;25.7894;9.4737;9.4737;{TAILLE_CHAMPS_DISTANCE}6.8421;9.4737">
+	<table columns="9" width="100.0\%" cellpadding="1.0" widths="4.21;24.21;25.7894;9.4737;9.4737;{TAILLE_CHAMPS_DISTANCE}6.8421;9.4737">
 		<row>
 			<cell colspan="3">
 				<phrase style="bold">{CATEGORIE}</phrase>

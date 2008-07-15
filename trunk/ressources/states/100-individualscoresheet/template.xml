@@ -110,7 +110,7 @@
 				<table columns="5" width="100.0\%" widths="{COLS_SIZE}" cellpadding="2.0">
 					<bloc::distances>
 					<row>
-						<cell top="true" bottom="true" right="true" left="true"><phrase size="10">Report total {NUM_DISTANCE} %template.distance%:</phrase></cell>
+						<cell top="true" bottom="true" right="true" left="true"><phrase size="10">%template.total.report% {NUM_DISTANCE} %template.distance%:</phrase></cell>
 						<cell top="true" bottom="true" right="true" left="true"></cell>
 						<cell top="true" bottom="true" right="true" left="true"></cell>
 						<cell top="true" bottom="true" right="true" left="true"></cell>
@@ -135,8 +135,8 @@
 				<sectioncontent>
 				<table columns="2" width="100.0\%" widths="50.0;50.0" cellpadding="2.0">
 				<row>
-					<cell horizontalalign="Center" top="true" bottom="true" right="true" left="true" backgroundcolor="#aaaaaa"><phrase size="10" fontstyle="bold">Marqueur</phrase></cell>
-					<cell horizontalalign="Center" top="true" bottom="true" right="true" left="true" backgroundcolor="#aaaaaa"><phrase size="10" fontstyle="bold">Archer</phrase></cell>
+					<cell horizontalalign="Center" top="true" bottom="true" right="true" left="true" backgroundcolor="#aaaaaa"><phrase size="10" fontstyle="bold">%template.marqueur%</phrase></cell>
+					<cell horizontalalign="Center" top="true" bottom="true" right="true" left="true" backgroundcolor="#aaaaaa"><phrase size="10" fontstyle="bold">%template.archer%</phrase></cell>
 				</row>
 				<row>
 					<cell rowspan="{SIGNATURE_SIZE}" leading="64" top="true" bottom="true" right="true" left="true"><chunk>.</chunk></cell>

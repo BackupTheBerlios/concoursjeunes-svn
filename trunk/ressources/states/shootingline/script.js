@@ -7,5 +7,5 @@ function checkPrintable(ficheConcours) {
 }
 
 function printState(ficheConcours, template, document, writer) {
-	new org.concoursjeunes.state.ShootingLineState(ficheConcours.getPasDeTir(ficheConcours.getCurrentDepart()), document, writer);
+	new org.concoursjeunes.state.ShootingLineState(ficheConcours.getPasDeTir(depart), document, writer);
 }

@@ -19,10 +19,11 @@ function printState(ficheConcours, template, document, writer) {
 		if (ficheConcours.getConcurrentList() != null && ficheConcours.getConcurrentList().countArcher() > 0) {
 			var concurrentsClasse = ficheConcours.classement();
 
-			var tplClassement = new AJTemplate(ApplicationCore.ajrLibelle);
+			var tplClassement = new AJTemplate();
 			var strArbitreResp = ""; //$NON-NLS-1$
 			var strArbitresAss = ""; //$NON-NLS-1$
 
+			tplClassement.setLocalisationReader(localeReader);
 			tplClassement.loadTemplate(template);
 
 			tplClassement.parse("CURRENT_TIME", DateFormat.getDateInstance(DateFormat.FULL).format(new Date())); //$NON-NLS-1$

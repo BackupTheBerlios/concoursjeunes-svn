@@ -89,7 +89,10 @@ package org.concoursjeunes.ui;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -129,7 +132,7 @@ import ajinteractive.standard.ui.AJList;
  * 
  * TODO passage de niveau
  */
-public class FicheConcoursPane extends JPanel implements ActionListener, ChangeListener, HyperlinkListener {
+public class FicheConcoursPane extends JPanel implements ActionListener, ChangeListener, HyperlinkListener, MouseListener {
 
 	private ConcoursJeunesFrame parentframe;
 
@@ -157,11 +160,15 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	private JButton printClassementClub		= new JButton();
 	
 	//panneau d'édition
+	private JLabel jlCurrentStateName = new JLabel();
 	private JLabel jlDepart = new JLabel();
 	private JLabel jlSerie = new JLabel();
 	private JComboBox jcbDeparts = new JComboBox();
 	private JComboBox jcbSeries = new JComboBox();
+	private JCheckBox jcbSave = new JCheckBox();
 	private JButton jbPrint = new JButton();
+	private JButton jbOpenDocument = new JButton();
+	private JButton jbDeleteDocument = new JButton();
 	private AJList ajlDocuments = new AJList();
 
 	public ParametreDialog paramDialog;
@@ -169,6 +176,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	public int index					= 1;
 	
 	private FicheConcours ficheConcours;
+	private State currentState = null;
 
 	/**
 	 * Création d'une fiche concours
@@ -318,7 +326,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 				Icon fileIcon = FileSystemView.getFileSystemView().getSystemIcon((File)value);
 				renderer.setText(((File)value).getName());
 				renderer.setIcon(fileIcon);
-				
+
 				return renderer;
 			}
 		});
@@ -352,16 +360,21 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		
 		JXTaskPaneContainer taskPaneContainer = new JXTaskPaneContainer();
 		
+		//charge le gestionnaire d'etat
 		StateManager sm = new StateManager();
 		
+		//charge les etats trouvé
 		for(Category categorie : sm.getCategories().getCategorie()) {
-			JXTaskPane taskPane = new JXTaskPane();
-			taskPane.setTitle(categorie.getLocalizedLibelle());
-			
-			for(State state : sm.getStates(categorie.getName()))
-				taskPane.add(printGenAction(state));
-			
-			taskPaneContainer.add(taskPane);
+			java.util.List<State> states = sm.getStates(categorie.getName());
+			if(states.size() > 0) {
+				JXTaskPane taskPane = new JXTaskPane();
+				taskPane.setTitle(categorie.getLocalizedLibelle());
+				
+				for(State state : states)
+					taskPane.add(printGenAction(state));
+				
+				taskPaneContainer.add(taskPane);
+			}
 		}
 		
 		panel.setLayout(new BorderLayout());
@@ -377,38 +390,54 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		JPanel panel = new JPanel();
 		
 		JPanel jpOptions = new JPanel();
-		jpOptions.setBorder(new TitledBorder("Option d'impressions"));
+		jpOptions.setBorder(new TitledBorder(ApplicationCore.ajrLibelle.getResourceString("state.options"))); //$NON-NLS-1$
 		
 		GridbagComposer composer = new GridbagComposer();
 		GridBagConstraints c = new GridBagConstraints();
 		
-		jlDepart.setText("Départ:");
-		jlSerie.setText("Série:");
-		jbPrint.setText("Imprimer");
-		
-		for(int i = 1; i <= ficheConcours.getParametre().getNbDepart(); i++)
-			jcbDeparts.addItem(
-					ApplicationCore.ajrLibelle.getResourceString("onglet.gestionarcher.depart") + i); //$NON-NLS-1$
-		for(int i = 1; i <= ficheConcours.getParametre().getReglement().getNbSerie(); i++)
-			jcbSeries.addItem("Série n°" + i);
-		
-		
+		jbPrint.addActionListener(this);
+		jbPrint.setEnabled(false);
+		ajlDocuments.addMouseListener(this);
+		jbOpenDocument.addActionListener(this);
+		jbOpenDocument.setMargin(new Insets(0,0,0,0));
+		jbOpenDocument.setIcon(new ImageIcon(
+				ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator +
+				ApplicationCore.ajrParametreAppli.getResourceString("file.icon.opendocument"))); //$NON-NLS-1$
+		jbDeleteDocument.addActionListener(this);
+		jbDeleteDocument.setMargin(new Insets(0,0,0,0));
+		jbDeleteDocument.setIcon(new ImageIcon(
+				ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator +
+				ApplicationCore.ajrParametreAppli.getResourceString("file.icon.removeelement"))); //$NON-NLS-1$
+
 		composer.setParentPanel(jpOptions);
 		c.gridy = 0;
 		c.anchor = GridBagConstraints.WEST;
 		composer.addComponentIntoGrid(jlDepart, c);
 		c.weightx = 1.0;
 		composer.addComponentIntoGrid(jcbDeparts, c);
+		composer.addComponentIntoGrid(jlCurrentStateName, c);
 		c.gridy++;
 		c.weightx = 0;
 		composer.addComponentIntoGrid(jlSerie, c);
 		c.weightx = 1.0;
 		composer.addComponentIntoGrid(jcbSeries, c);
+		c.gridy++;
+		c.weightx = 0; c.gridwidth = 2;
+		composer.addComponentIntoGrid(jcbSave, c);
+		c.weightx = 1.0; c.gridwidth = 1;
 		composer.addComponentIntoGrid(jbPrint, c);
 		
+		JPanel docActions = new JPanel();
+		docActions.setLayout(new FlowLayout(FlowLayout.LEFT));
+		docActions.add(jbOpenDocument);
+		docActions.add(jbDeleteDocument);
+		
 		JPanel jpDocuments = new JPanel();
-		jpDocuments.setBorder(new TitledBorder("Documents généré"));
+		jpDocuments.setBorder(new TitledBorder(ApplicationCore.ajrLibelle.getResourceString("state.generareddoc"))); //$NON-NLS-1$
 		jpDocuments.setLayout(new BorderLayout());
+		jpDocuments.add(docActions, BorderLayout.NORTH);
 		jpDocuments.add(new JScrollPane(ajlDocuments), BorderLayout.CENTER);
 		
 		panel.setLayout(new BorderLayout());
@@ -468,6 +497,19 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		jtbClassement.setTitleAt(0, ApplicationCore.ajrLibelle.getResourceString("onglet.classementindividuel")); //$NON-NLS-1$
 		jtbClassement.setTitleAt(1, ApplicationCore.ajrLibelle.getResourceString("onglet.classementequipe")); //$NON-NLS-1$
 		jtbClassement.setTitleAt(2, ApplicationCore.ajrLibelle.getResourceString("onglet.classementclub")); //$NON-NLS-1$
+		
+		jlCurrentStateName.setText(ApplicationCore.ajrLibelle.getResourceString("state.choosestate")); //$NON-NLS-1$
+		jlDepart.setText(ApplicationCore.ajrLibelle.getResourceString("state.start")); //$NON-NLS-1$
+		jlSerie.setText(ApplicationCore.ajrLibelle.getResourceString("state.serie")); //$NON-NLS-1$
+		jcbSave.setText(ApplicationCore.ajrLibelle.getResourceString("state.save")); //$NON-NLS-1$
+		jbPrint.setText(ApplicationCore.ajrLibelle.getResourceString("state.print")); //$NON-NLS-1$
+		for(int i = 1; i <= ficheConcours.getParametre().getNbDepart(); i++)
+			jcbDeparts.addItem(
+					ApplicationCore.ajrLibelle.getResourceString("onglet.gestionarcher.depart") + i); //$NON-NLS-1$
+		for(int i = 1; i <= ficheConcours.getParametre().getReglement().getNbSerie(); i++)
+			jcbSeries.addItem(ApplicationCore.ajrLibelle.getResourceString("state.numserie", i)); //$NON-NLS-1$
+		jbOpenDocument.setToolTipText(ApplicationCore.ajrLibelle.getResourceString("state.opendocument")); //$NON-NLS-1$
+		jbDeleteDocument.setToolTipText(ApplicationCore.ajrLibelle.getResourceString("state.deletedocument")); //$NON-NLS-1$
 	}
 
 	/**
@@ -538,9 +580,12 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		
         Action action = new AbstractAction(state.getLocalizedDisplayName()) {
             public void actionPerformed(ActionEvent e) {
-            	StateProcessor sp = new StateProcessor(actionState, ficheConcours);
-            	sp.process();
-            	completeListDocuments();
+            	jcbDeparts.setEnabled(actionState.isStart());
+            	jcbSeries.setEnabled(actionState.isSerie());
+            	jcbSave.setSelected(actionState.isSave());
+            	jlCurrentStateName.setText("<html><font color=\"blue\" size=\"+1\">" + actionState.getLocalizedDisplayName() + "</font></html>"); //$NON-NLS-1$ //$NON-NLS-2$
+            	currentState = actionState;
+            	jbPrint.setEnabled(true);
             }
         };
         action.putValue(Action.SMALL_ICON, new ImageIcon(
@@ -549,6 +594,31 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
         
         return action;
     }
+	
+	private void printState() {
+		if(currentState != null) {
+			StateProcessor sp = new StateProcessor(currentState, ficheConcours);
+	    	sp.process(jcbDeparts.getSelectedIndex(), jcbSeries.getSelectedIndex(), jcbSave.isSelected());
+	    	completeListDocuments();
+		}
+	}
+	
+	private void openPdf(File file) {
+		try {
+			if(Desktop.isDesktopSupported()) {
+				Desktop.getDesktop().open(file);
+			} else {
+				assert ApplicationCore.getConfiguration() != null;
+				
+				String NAV = ApplicationCore.getConfiguration().getPdfReaderPath();
+
+				System.out.println(NAV + " " + file.getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
+				Runtime.getRuntime().exec(NAV + " " + file.getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
+			}
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+	}
 	
 	/**
 	 * @return  parentframe
@@ -604,6 +674,17 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		} else if(source instanceof JComboBox) {
 			ficheConcours.setCurrentDepart(((JComboBox)source).getSelectedIndex());
 			cl.show(fichesDepart, "depart." + ficheConcours.getCurrentDepart()); //$NON-NLS-1$
+		} else if(source == jbPrint) {
+			printState();
+		} else if(source == jbOpenDocument) {
+			openPdf((File)ajlDocuments.getSelectedValue());
+		} else if(source == jbDeleteDocument) {
+			if (JOptionPane.showConfirmDialog(this, ApplicationCore.ajrLibelle.getResourceString("state.confirmation.suppression"), //$NON-NLS-1$
+					ApplicationCore.ajrLibelle.getResourceString("state.confirmation.suppression.title"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {//$NON-NLS-1$
+				File file = (File)ajlDocuments.getSelectedValue();
+				file.delete();
+				ajlDocuments.remove(file);
+			}
 		}
 	}
 	/**
@@ -683,5 +764,45 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		printClassementIndiv.removeActionListener(this);
 		printClassementEquipe.removeActionListener(this);
 		printClassementClub.removeActionListener(this);
+	}
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
+	 */
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		if(e.getSource() == ajlDocuments && e.getClickCount() == 2) {
+			File openFile = (File)ajlDocuments.getSelectedValue();
+			openPdf(openFile);
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
+	 */
+	@Override
+	public void mouseEntered(MouseEvent e) {	
+	}
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
+	 */
+	@Override
+	public void mouseExited(MouseEvent e) {
+	
+	}
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
+	 */
+	@Override
+	public void mousePressed(MouseEvent e) {
+	}
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
+	 */
+	@Override
+	public void mouseReleased(MouseEvent e) {
 	}
 }

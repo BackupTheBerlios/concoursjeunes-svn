@@ -3,7 +3,7 @@
 	<name>shootingline</name>
 	<category>preparation</category>
 	<displayName>state.name</displayName>
-	<serie>true</serie>
+	<serie>false</serie>
 	<start>true</start>
 	<save>false</save>
 	<type>Object</type>

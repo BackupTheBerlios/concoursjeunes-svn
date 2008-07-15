@@ -53,7 +53,7 @@ function printState(ficheConcours, template, document, writer) {
 				
 				var nbFlecheParVolee = ficheConcours.getParametre().getReglement().getNbFlecheParVolee();
 				for(var j = 0; j < nbSerie; j++) {
-					var strDistance = ((j == 0) ? "1ère" : (j+1) + "ème") + " distance, " + ficheConcours.getParametre().getReglement().getDistancesEtBlasonFor(concurrents[i].getCriteriaSet().getFilteredCriteriaSet(ficheConcours.getParametre().getReglement().getPlacementFilter())).getDistance()[j]+"m";
+					var strDistance = getPosition(j+1) + " distance, " + ficheConcours.getParametre().getReglement().getDistancesEtBlasonFor(concurrents[i].getCriteriaSet().getFilteredCriteriaSet(ficheConcours.getParametre().getReglement().getPlacementFilter())).getDistance()[j]+"m";
 					templateXML.parse("scoresheet.series.SERIE_NB_COL", 6 + nbFlecheParVolee);
 					templateXML.parse("scoresheet.series.INTITULE_SERIE", strDistance);
 					var colsSize = "";
@@ -78,7 +78,7 @@ function printState(ficheConcours, template, document, writer) {
 						templateXML.loopBloc("scoresheet.series.volees");
 					}
 					templateXML.parse("scoresheet.series.NB_COL_TOTAL", 2 + nbFlecheParVolee);
-					templateXML.parse("scoresheet.series.NUM_DISTANCE", (j == 0) ? "1ère" : (j+1) + "ème");
+					templateXML.parse("scoresheet.series.NUM_DISTANCE", getPosition(j+1));
 
 					templateXML.loopBloc("scoresheet.series");
 				}
@@ -88,7 +88,7 @@ function printState(ficheConcours, template, document, writer) {
 				
 				for(var j = 0; j < nbSerie; j++) {
 					templateXML.parse("scoresheet.distances.NB_COL_TOTAL", 2 + nbFlecheParVolee);
-					templateXML.parse("scoresheet.distances.NUM_DISTANCE", (j+1) + ((j==0)?"ère":"ème"));
+					templateXML.parse("scoresheet.distances.NUM_DISTANCE", getPosition(j+1));
 					
 					templateXML.loopBloc("scoresheet.distances");
 				}
@@ -103,5 +103,20 @@ function printState(ficheConcours, template, document, writer) {
 		} catch (e) {
 			print(e);
 		}
+	}
+}
+
+function getPosition(num) {
+	switch(num) {
+		case 1:
+			return localeReader.getResourceString("template.first");
+		case 2:
+			return localeReader.getResourceString("template.second");
+		case 3:
+			return localeReader.getResourceString("template.third");
+		case 4:
+			return localeReader.getResourceString("template.forth");
+		default:
+			return num + localeReader.getResourceString("template.xth");
 	}
 }
