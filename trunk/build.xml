@@ -3,7 +3,17 @@
 	<description>
 		Generation de ConcoursJeunes
 	</description>
-
+	
+	<tstamp>
+		<format property="version.date" pattern="dd/MM/yyyy" />
+	</tstamp>
+	
+	<taskdef resource="net/sf/antcontrib/antlib.xml">
+	  <classpath>
+	    <pathelement location="packager/ant-contrib-1.0b3.jar"/>
+	  </classpath>
+	</taskdef>
+	
 	<property file="packager/version.properties" />
 
 	<import file="plugins/build-ConcoursJeunesUpdate.xml"/>
@@ -47,8 +57,33 @@
 				<include name="src/**"/>
 				<!--exclu les réference subversion -->
 				<exclude name="**/.svn*" />
+				<exclude name="ressources/states/**"/>
 			</fileset>
 		</copy>
+		
+		<!--Copie et commpression des états -->
+		<copy todir="${projet.pack.dir}" >
+			<fileset dir="." >
+				<include name="ressources/states/*.xml"/>
+				<include name="ressources/states/*.properties"/>
+			</fileset>
+		</copy>
+
+		<for param="state">
+		    <dirset dir=".">
+		    	<include name="ressources/states/**"/>
+		    	<exclude name="ressources/states"/>
+		    </dirset>
+			<sequential>
+				<propertyregex override="yes"
+				      property="statename"  input="@{state}"
+				      regexp=".*\\([^\\]*)" replace="\1"/>
+				
+				<zip destfile="${projet.pack.dir}/ressources/states/${statename}.zip"
+					basedir="ressources/states/${statename}" />
+			</sequential>
+		</for>
+
 
 		<!--Ajoute les ressources suplémentaires au pack-->
 		<copy todir="${projet.pack.dir}">
@@ -90,9 +125,6 @@
 			    token="@version.numero@" 
 			    property="version.numero" />
 			<replacefilter 
-			    token="@version.date@" 
-			    property="version.date" />
-			<replacefilter 
 			    token="@version.codename@" 
 			    property="version.codename" />
 			<replacefilter 
@@ -102,6 +134,12 @@
 			    token="@version.copyr@" 
 			    property="version.copyr" />
 		</replace>
+		
+		<replace 
+			file="${projet.pack.dir}/src/org/concoursjeunes/ApplicationCore.java"
+			token="@version.date@" 
+			value="${version.date}"
+			encoding="UTF-8" />
 
 		<javac srcdir="${projet.pack.dir}/src/" destdir="${projet.pack.dir}/bin"
 			optimize="on"
@@ -127,9 +165,6 @@
 				<include name="**/**" />
 				<exclude name="org/concoursjeunes/plugins/**" />
 				<!--<exclude name="org/concoursjeunes/webservices/**" />-->
-			</fileset>
-			<fileset dir="${projet.pack.dir}/bin">
-				<include name="org/concoursjeunes/plugins/*.*" />
 			</fileset>
 		</jar>
 		<!--<jar jarfile="${projet.pack.dir}/ConcoursJeunes-webservices.jar">

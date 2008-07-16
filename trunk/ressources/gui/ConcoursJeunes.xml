@@ -60,6 +60,8 @@
 				<menuitems>
 					<menuitem>menubar.debug.addpoints</menuitem>
 					<menuitem>menubar.debug.resetpoints</menuitem>
+					<separator />
+					<menuitem>menubar.debug.launchsqlconsole</menuitem>
 				</menuitems>
 			</menu>
 		</menubar>

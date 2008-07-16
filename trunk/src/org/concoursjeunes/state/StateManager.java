@@ -128,13 +128,14 @@ public class StateManager {
 				}
 			//Gestion des états compressé
 			} else if(stateFolder.getName().endsWith(".zip")) { //$NON-NLS-1$
-				/*File stateFile = new File(stateFolder, "state.xml"); //$NON-NLS-1$
-				if(stateFile.exists()) {
-					try {
-						states.add(AJToolKit.loadMarshallStructure(stateFile, State.class));
-					} catch (JAXBException e) {
-						e.printStackTrace();
-					}
+				/*try {
+					URL stateFile = new URL(stateFolder.toURI().toURL() + "!/state.xml"); //$NON-NLS-1$
+					
+					states.add(AJToolKit.loadMarshallStructure(stateFile, State.class));
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				} catch (JAXBException e) {
+					e.printStackTrace();
 				}*/
 			}
 		}

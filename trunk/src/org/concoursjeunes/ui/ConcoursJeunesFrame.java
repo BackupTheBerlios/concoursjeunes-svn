@@ -128,6 +128,7 @@ import org.concoursjeunes.plugins.PluginLoader;
 import org.concoursjeunes.plugins.PluginMetadata;
 import org.concoursjeunes.plugins.Plugin.Type;
 import org.concoursjeunes.ui.dialog.*;
+import org.h2.tools.Server;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
@@ -546,6 +547,22 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 		} else if (cmd.equals("menubar.debug.resetpoints")) { //$NON-NLS-1$
 			if (jif != null)
 				org.concoursjeunes.debug.Debug.resetPoints(jif.getFicheConcours());
+		} else if (cmd.equals("menubar.debug.launchsqlconsole")) { //$NON-NLS-1$
+			
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						System.setProperty("java.net.useSystemProxies","false");
+						Server.startWebServer(ApplicationCore.dbConnection);
+						System.setProperty("java.net.useSystemProxies","true");
+					} catch (SQLException e1) {
+						JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+								null, null, e1, Level.SEVERE, null));
+						e1.printStackTrace();
+					}
+				}
+			});
 		}
 	}
 

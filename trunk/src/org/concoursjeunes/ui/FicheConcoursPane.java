@@ -92,10 +92,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.logging.Level;
 
+import javax.script.ScriptException;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
@@ -119,11 +122,15 @@ import org.concoursjeunes.state.Categories.Category;
 import org.concoursjeunes.ui.dialog.ConcurrentDialog;
 import org.concoursjeunes.ui.dialog.ParametreDialog;
 import org.concoursjeunes.ui.dialog.ResultatDialog;
+import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.JXTaskPane;
 import org.jdesktop.swingx.JXTaskPaneContainer;
+import org.jdesktop.swingx.error.ErrorInfo;
 
 import ajinteractive.standard.java2.GridbagComposer;
 import ajinteractive.standard.ui.AJList;
+
+import com.lowagie.text.DocumentException;
 
 /**
  * fiche concours. cette fiche correspond à la table d'inscrit et de résultats
@@ -244,10 +251,15 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		));
 
 		//classement individuel
-		northpane.setLayout(new FlowLayout());
-		northpane.add(jbResultat);
+		GridbagComposer composer = new GridbagComposer();
+		GridBagConstraints c = new GridBagConstraints();
+		
+		composer.setParentPanel(northpane);
+		c.gridy = 0; c.insets = new Insets(5,5,5,5);
+		composer.addComponentIntoGrid(jbResultat, c);
 
-		northpane.add(jlCritClassement);
+		c.insets = new Insets(5,0,5,0);
+		composer.addComponentIntoGrid(jlCritClassement, c);
 		for(Criterion criteria : ficheConcours.getParametre().getReglement().getListCriteria()) {
 			JCheckBox checkBox = new JCheckBox(criteria.getLibelle(), criteria.isClassement());
 
@@ -256,12 +268,14 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 				checkBox.setEnabled(false);
 			else if(criteria.isPlacement())
 				checkBox.setEnabled(false);
-			northpane.add(checkBox);
+			composer.addComponentIntoGrid(checkBox, c);
 			
 			classmentCriteriaCB.put(criteria.getCode(), checkBox);
 		}
-		northpane.add(Box.createHorizontalGlue());
-		northpane.add(printClassementIndiv);
+		c.weightx = 1.0; c.insets = new Insets(5,5,5,5);
+		composer.addComponentIntoGrid(Box.createHorizontalGlue(),c);
+		c.weightx = 0.0;
+		composer.addComponentIntoGrid(printClassementIndiv, c);
 
 		//classement par equipe
 		northpaneEqu.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -597,9 +611,31 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	
 	private void printState() {
 		if(currentState != null) {
-			StateProcessor sp = new StateProcessor(currentState, ficheConcours);
-	    	sp.process(jcbDeparts.getSelectedIndex(), jcbSeries.getSelectedIndex(), jcbSave.isSelected());
-	    	completeListDocuments();
+			try {
+				StateProcessor sp = new StateProcessor(currentState, ficheConcours);
+				sp.process(jcbDeparts.getSelectedIndex(), jcbSeries.getSelectedIndex(), jcbSave.isSelected());
+				completeListDocuments();
+			} catch (FileNotFoundException e) {
+				JXErrorPane.showDialog(parentframe, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+						null, null, e, Level.SEVERE, null));
+				e.printStackTrace();
+			} catch (IOException e) {
+				JXErrorPane.showDialog(parentframe, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+						null, null, e, Level.SEVERE, null));
+				e.printStackTrace();
+			} catch (ScriptException e) {
+				JXErrorPane.showDialog(parentframe, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+						null, null, e, Level.SEVERE, null));
+				e.printStackTrace();
+			} catch (DocumentException e) {
+				JXErrorPane.showDialog(parentframe, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+						null, null, e, Level.SEVERE, null));
+				e.printStackTrace();
+			} catch (NoSuchMethodException e) {
+				JXErrorPane.showDialog(parentframe, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+						null, null, e, Level.SEVERE, null));
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -615,8 +651,10 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 				System.out.println(NAV + " " + file.getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
 				Runtime.getRuntime().exec(NAV + " " + file.getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
 			}
-		} catch (IOException e1) {
-			e1.printStackTrace();
+		} catch (IOException e) {
+			JXErrorPane.showDialog(parentframe, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+					null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
 		}
 	}
 	
@@ -685,6 +723,9 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 				file.delete();
 				ajlDocuments.remove(file);
 			}
+		} else if(source == printClassementIndiv || source == printClassementEquipe ||  source == printClassementClub) {
+			tabbedpane.setSelectedIndex(3);
+			
 		}
 	}
 	/**

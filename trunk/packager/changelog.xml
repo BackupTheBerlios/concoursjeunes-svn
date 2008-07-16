@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?> 
-<java version="1.6.0_03" class="java.beans.XMLDecoder"> 
+<java version="1.6.0_06" class="java.beans.XMLDecoder"> 
  <object class="java.util.ArrayList"> 
   <void method="add"> 
    <object class="ajinteractive.standard.utilities.updater.Version"> 
@@ -96,6 +96,142 @@
     </void> 
     <void property="version"> 
      <string>2.02.00</string> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="add"> 
+   <object class="ajinteractive.standard.utilities.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurelien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction erreur de casting de l&apos;objet Blason sur création d&apos;une nouvelle DistancesBlason</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1199812348417</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.02.01</string> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="add"> 
+   <object class="ajinteractive.standard.utilities.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurelien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction problème d&apos;attribution blason par défaut</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1199920520313</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.02.02</string> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="add"> 
+   <object class="ajinteractive.standard.utilities.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurelien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction parametrage de certain blasons
+  * Correction ordonnancement aléatoire des critères
+  * Correction sortie de zone non validée sur le tableau des Distances et Blason d&apos;un réglement
+  * Correction problème éventuel au niveau de la mise à jour de certaine vielle version</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1201950861209</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.02.03</string> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="add"> 
+   <object class="ajinteractive.standard.utilities.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurelien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction script de mise à jour de base de données</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1202337935148</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.02.04</string> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="add"> 
+   <object class="ajinteractive.standard.utilities.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurelien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction erreur arbre des cibles suite à ajout d&apos;une cible supplémentaire sur un concours</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1206216289424</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.02.05</string> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="add"> 
+   <object class="ajinteractive.standard.utilities.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurelien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Début de support des compétions officiel sur cibles anglaise (2x18, 2x25, Fédéral, Fita, ...)
+  * Meilleurs positionnement des archers sur le pas de tir et une meilleure gestion de la place libre
+  * Réglages plus fin sur les règlements
+  * Nouvelles possibilités de pointage des archers à leurs passages au greffe
+  * Ajout de nouvelles éditions tel que l&apos;impression des feuilles de marque
+  * Ajout système de sauvegarde des concours et profils permettant de sauvegarder les données sur un clé USB par exemple et/ou de transférer les données d&apos;un concours d&apos;un poste à l&apos;autre
+  * Une amélioration et une documentation du système d&apos;extension permettant à tous développeurs d&apos;étendre simplement le logiciel
+  * Amélioration des performances</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1216216993250</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.09.00</string> 
     </void> 
    </object> 
   </void> 

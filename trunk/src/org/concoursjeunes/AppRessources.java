@@ -121,8 +121,9 @@ public class AppRessources extends ajinteractive.standard.utilities.app.AppResso
 	 * @return le chemin absolu du profile
 	 */
 	private File getProfilePath(String profile) {
-		File profilePath = new File(getUserPath(), "Profile" + //$NON-NLS-1$
-				File.separator + profile);
+		File profilePath = new File(
+				ApplicationCore.ajrParametreAppli.getResourceString("path.profile", getUserPath()), //$NON-NLS-1$
+				profile);
 
 		return profilePath;
 	}
@@ -133,9 +134,10 @@ public class AppRessources extends ajinteractive.standard.utilities.app.AppResso
 	 * 
 	 */
 	private void copyDefaultConfigForUser() {
-		File[] fileForCopy = new File("config").listFiles(new java.io.FileFilter() { //$NON-NLS-1$
+		File[] fileForCopy = new File(
+				ApplicationCore.ajrParametreAppli.getResourceString("path.config")).listFiles(new java.io.FileFilter() { //$NON-NLS-1$
 					public boolean accept(File pathname) {
-						return pathname.isFile() && pathname.getName().endsWith(".xml"); //$NON-NLS-1$
+						return pathname.isFile() && pathname.getName().endsWith(EXT_XML);
 					}
 				});
 		if(fileForCopy != null) {
@@ -159,17 +161,20 @@ public class AppRessources extends ajinteractive.standard.utilities.app.AppResso
 	 * le répertoire de mise à jour de l'appli 
 	 */
 	public void copyDefaultUpdateFile() {
-		File[] fileForCopy = new File(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") , "update").listFiles(new java.io.FileFilter() { //$NON-NLS-1$ //$NON-NLS-2$
+		File[] fileForCopy = new File(
+				ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") , "update").listFiles(new java.io.FileFilter() { //$NON-NLS-1$ //$NON-NLS-2$
 					public boolean accept(File pathname) {
 						return pathname.isFile();
 					}
 				});
 
-		new File(getAllusersDataPath(), "update").mkdirs(); //$NON-NLS-1$
+		File updatePath = new File(
+				ApplicationCore.ajrParametreAppli.getResourceString("path.update", getAllusersDataPath()));
+		updatePath.mkdirs(); //$NON-NLS-1$
 
 		for (File file : fileForCopy) {
 			try {
-				FileUtils.copyFile(file, new File(getAllusersDataPath(), "update")); //$NON-NLS-1$
+				FileUtils.copyFile(file, updatePath); //$NON-NLS-1$
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -195,7 +200,8 @@ public class AppRessources extends ajinteractive.standard.utilities.app.AppResso
 	 * @return le chemin du répertoire contenant la base de donnée
 	 */
 	public File getBasePath() {
-		File basePath = new File(getAllusersDataPath(), "base"); //$NON-NLS-1$
+		File basePath = new File(
+				ApplicationCore.ajrParametreAppli.getResourceString("path.base", getAllusersDataPath())); //$NON-NLS-1$
 
 		basePath.mkdirs();
 
@@ -211,7 +217,8 @@ public class AppRessources extends ajinteractive.standard.utilities.app.AppResso
 	 * @return le chemin des concours
 	 */
 	public File getConcoursPathForProfile(String profile) {
-		File concoursPath = new File(getProfilePath(profile), "concours"); //$NON-NLS-1$
+		File concoursPath = new File(
+				ApplicationCore.ajrParametreAppli.getResourceString("path.concours", getProfilePath(profile))); //$NON-NLS-1$
 
 		concoursPath.mkdirs();
 
@@ -226,7 +233,8 @@ public class AppRessources extends ajinteractive.standard.utilities.app.AppResso
 	 * @return le chemin des logs du profil
 	 */
 	public File getLogPathForProfile(String profile) {
-		File concoursPath = new File(getProfilePath(profile), "log"); //$NON-NLS-1$
+		File concoursPath = new File(
+				ApplicationCore.ajrParametreAppli.getResourceString("path.log", getProfilePath(profile))); //$NON-NLS-1$
 
 		concoursPath.mkdirs();
 

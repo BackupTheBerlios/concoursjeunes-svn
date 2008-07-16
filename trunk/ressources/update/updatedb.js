@@ -119,8 +119,8 @@ if(dbVersion == 0) {
 	}
 	
 	//Ajout des index de recherche sur la table entite
-	sql.executeUpdate("CREATE IF NOT EXISTS INDEX I_NOM_ENTITE ON ENTITE (NOMENTITE ASC);");
-	sql.executeUpdate("CREATE IF NOT EXISTS INDEX I_VILLE_ENTITE ON ENTITE (VILLEENTITE ASC);");
+	sql.executeUpdate("CREATE INDEX IF NOT EXISTS I_NOM_ENTITE ON ENTITE (NOMENTITE ASC);");
+	sql.executeUpdate("CREATE INDEX IF NOT EXISTS I_VILLE_ENTITE ON ENTITE (VILLEENTITE ASC);");
 	
 	//Ajout du tableau des surclassements
 	rowSet = sql.executeQuery("SELECT * FROM INFORMATION_SCHEMA.TABLES "

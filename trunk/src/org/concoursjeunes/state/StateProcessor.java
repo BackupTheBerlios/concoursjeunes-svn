@@ -139,79 +139,77 @@ public class StateProcessor {
 		this.state = state;
 	}
 	
-	public void process(int depart, int serie, boolean save) {
-		try {
-			Document document = new Document();
-			String filePath;
+	public void process(int depart, int serie, boolean save)
+			throws IOException, ScriptException, FileNotFoundException, DocumentException, NoSuchMethodException {
+		Document document = new Document();
+		String filePath;
+		boolean isZippedState = false;
+		
+		if(!save) {
+			File tmpFile = File.createTempFile("cta", ApplicationCore.ajrParametreAppli.getResourceString("extention.pdf")); //$NON-NLS-1$ //$NON-NLS-2$
+			filePath = tmpFile.getCanonicalPath();
+			tmpFile.deleteOnExit();
+		} else {
+			String concoursName = ficheConcours.getParametre().getSaveName();
+			concoursName = concoursName.substring(0, concoursName.length() - 4);
+			filePath = ApplicationCore.userRessources.getConcoursPathForProfile(
+					ApplicationCore.getConfiguration().getCurProfil()).getPath() + File.separator
+					+ concoursName + File.separator + state.getLocalizedDisplayName()
+					+ " - " + DateFormat.getDateInstance().format(new Date()) + " " + DateFormat.getTimeInstance().format(new Date()) + ".pdf";   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+		}
+		
+		ScriptEngineManager se = new ScriptEngineManager();
+		ScriptEngine scriptEngine = se.getEngineByName("JavaScript"); //$NON-NLS-1$
+		scriptEngine.setBindings(new SimpleBindings(Collections.synchronizedMap(new HashMap<String, Object>())), ScriptContext.ENGINE_SCOPE);
+
+		String statePath = ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
+				+ File.separator + "states" + File.separator + state.getName(); //$NON-NLS-1$
+		
+		//test si l'état est dans une archive compressé
+		if(!new File(statePath).exists() && new File(statePath + ".zip").exists()) {
+			isZippedState = true;
+			statePath += ".zip";
+		}
+		URL stateURL = new File(statePath).toURI().toURL();
+		
+		AjResourcesReader langReader = new AjResourcesReader("lang", new URLClassLoader(new URL[] { stateURL })); //$NON-NLS-1$
+		
+		scriptEngine.put("depart", depart); //$NON-NLS-1$
+		scriptEngine.put("serie", serie); //$NON-NLS-1$
+		scriptEngine.put("localeReader", langReader); //$NON-NLS-1$
+		
+		Reader reader = new BufferedReader(new InputStreamReader(
+				new URL(stateURL.toString() + ((isZippedState) ? "!" : "") + "/" + state.getScript()).openConnection().getInputStream()));
+		//FileReader reader = new FileReader(new File(statePath, state.getScript()));
+		scriptEngine.eval(reader);
+		reader.close();
+		
+		Invocable invocable = (Invocable)scriptEngine;
+		boolean isprintable = (Boolean)invocable.invokeFunction("checkPrintable", ficheConcours); //$NON-NLS-1$
+		
+		if(isprintable) {
+			new File(filePath).getParentFile().mkdirs();
+			PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filePath));
+			writer.setFullCompression();
 			
-			if(!save) {
-				File tmpFile = File.createTempFile("cta", ApplicationCore.ajrParametreAppli.getResourceString("extention.pdf")); //$NON-NLS-1$ //$NON-NLS-2$
-				filePath = tmpFile.getCanonicalPath();
-				tmpFile.deleteOnExit();
+			invocable.invokeFunction("printState", ficheConcours, new URL(stateURL.toString() + ((isZippedState) ? "!" : "") + "/" + state.getTemplate()), document, writer); //$NON-NLS-1$
+		} else {
+			JOptionPane.showMessageDialog(null, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
+		}
+		
+		document.close();
+		
+		if (isprintable) {
+			if(Desktop.isDesktopSupported()) {
+				Desktop.getDesktop().open(new File(filePath));
 			} else {
-				String concoursName = ficheConcours.getParametre().getSaveName();
-				concoursName = concoursName.substring(0, concoursName.length() - 4);
-				filePath = ApplicationCore.userRessources.getConcoursPathForProfile(
-						ApplicationCore.getConfiguration().getCurProfil()).getPath() + File.separator
-						+ concoursName + File.separator + state.getLocalizedDisplayName()
-						+ " - " + DateFormat.getDateInstance().format(new Date()) + " " + DateFormat.getTimeInstance().format(new Date()) + ".pdf";   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+				assert ApplicationCore.getConfiguration() != null;
+				
+				String NAV = ApplicationCore.getConfiguration().getPdfReaderPath();
+
+				System.out.println(NAV + " " + new File(filePath).getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
+				Runtime.getRuntime().exec(NAV + " " + new File(filePath).getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
 			}
-			
-			ScriptEngineManager se = new ScriptEngineManager();
-			ScriptEngine scriptEngine = se.getEngineByName("JavaScript"); //$NON-NLS-1$
-			scriptEngine.setBindings(new SimpleBindings(Collections.synchronizedMap(new HashMap<String, Object>())), ScriptContext.ENGINE_SCOPE);
-			try {
-				String statePath = ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
-						+ File.separator + "states" + File.separator + state.getName(); //$NON-NLS-1$
-				
-				AjResourcesReader langReader = new AjResourcesReader("lang", new URLClassLoader(new URL[] { new File(statePath).toURI().toURL() })); //$NON-NLS-1$
-				
-				scriptEngine.put("depart", depart); //$NON-NLS-1$
-				scriptEngine.put("serie", serie); //$NON-NLS-1$
-				scriptEngine.put("localeReader", langReader); //$NON-NLS-1$
-				
-				FileReader reader = new FileReader(new File(statePath, state.getScript()));
-				scriptEngine.eval(reader);
-				reader.close();
-				
-				Invocable invocable = (Invocable)scriptEngine;
-				boolean isprintable = (Boolean)invocable.invokeFunction("checkPrintable", ficheConcours); //$NON-NLS-1$
-				
-				if(isprintable) {
-					new File(filePath).getParentFile().mkdirs();
-					PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filePath));
-					writer.setFullCompression();
-					
-					invocable.invokeFunction("printState", ficheConcours, statePath + File.separator + state.getTemplate(), document, writer); //$NON-NLS-1$
-				} else {
-					JOptionPane.showMessageDialog(null, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
-				}
-				
-				document.close();
-				
-				if (isprintable) {
-					if(Desktop.isDesktopSupported()) {
-						Desktop.getDesktop().open(new File(filePath));
-					} else {
-						assert ApplicationCore.getConfiguration() != null;
-						
-						String NAV = ApplicationCore.getConfiguration().getPdfReaderPath();
-	
-						System.out.println(NAV + " " + new File(filePath).getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
-						Runtime.getRuntime().exec(NAV + " " + new File(filePath).getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
-					}
-				}
-			} catch (ScriptException e1) {
-				e1.printStackTrace();
-			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
-			} catch (DocumentException e1) {
-				e1.printStackTrace();
-			} catch (NoSuchMethodException e1) {
-				e1.printStackTrace();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 }
