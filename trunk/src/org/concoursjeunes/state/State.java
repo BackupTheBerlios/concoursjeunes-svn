@@ -98,6 +98,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.concoursjeunes.ApplicationCore;
 
@@ -116,6 +117,8 @@ public class State {
 	private String type = "XML"; //$NON-NLS-1$
 	private String template = ""; //$NON-NLS-1$
 	private String script = ""; //$NON-NLS-1$
+	@XmlTransient
+	private boolean isZipped = false;
 	
 	/**
 	 * 
@@ -161,7 +164,7 @@ public class State {
 	public String getLocalizedDisplayName() {
 		String actionName = displayName;
 		String statePath = ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
-				+ File.separator + "states" + File.separator + name; //$NON-NLS-1$
+				+ File.separator + "states" + File.separator + name + ((isZipped) ? ".zip" : ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		
 		try {
 			ResourceBundle rb = ResourceBundle.getBundle(
@@ -272,5 +275,19 @@ public class State {
 	 */
 	public void setScript(String script) {
 		this.script = script;
+	}
+
+	/**
+	 * @return isZipped
+	 */
+	public boolean isZipped() {
+		return isZipped;
+	}
+
+	/**
+	 * @param isZipped isZipped à définir
+	 */
+	public void setZipped(boolean isZipped) {
+		this.isZipped = isZipped;
 	}
 }

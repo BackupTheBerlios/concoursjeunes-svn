@@ -18,7 +18,9 @@ package org.concoursjeunes;
 import static org.concoursjeunes.ApplicationCore.ajrParametreAppli;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.util.*;
@@ -63,7 +65,15 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 	private static AJTemplate templateClassementEquipeHTML = new AJTemplate(ajrLibelle);
 
 	static {
-		loadTemplates();
+		try {
+			loadTemplates();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -380,7 +390,7 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 	 * Chargement des template de sortie XML
 	 * 
 	 */
-	private static void loadTemplates() {
+	private static void loadTemplates() throws UnsupportedEncodingException, FileNotFoundException, IOException {
 		templateClassementHTML.loadTemplate(ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
 				+ File.separator + ajrParametreAppli.getResourceString("template.classement.html")); //$NON-NLS-1$
 

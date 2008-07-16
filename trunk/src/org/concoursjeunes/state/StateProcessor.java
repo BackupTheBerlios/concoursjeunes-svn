@@ -166,9 +166,9 @@ public class StateProcessor {
 				+ File.separator + "states" + File.separator + state.getName(); //$NON-NLS-1$
 		
 		//test si l'état est dans une archive compressé
-		if(!new File(statePath).exists() && new File(statePath + ".zip").exists()) {
+		if(!new File(statePath).exists() && new File(statePath + ".zip").exists()) { //$NON-NLS-1$
 			isZippedState = true;
-			statePath += ".zip";
+			statePath += ".zip"; //$NON-NLS-1$
 		}
 		URL stateURL = new File(statePath).toURI().toURL();
 		
@@ -179,7 +179,7 @@ public class StateProcessor {
 		scriptEngine.put("localeReader", langReader); //$NON-NLS-1$
 		
 		Reader reader = new BufferedReader(new InputStreamReader(
-				new URL(stateURL.toString() + ((isZippedState) ? "!" : "") + "/" + state.getScript()).openConnection().getInputStream()));
+				new URL(((isZippedState) ? "jar:" : "") + stateURL.toString() + ((isZippedState) ? "!" : "") + "/" + state.getScript()).openStream())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 		//FileReader reader = new FileReader(new File(statePath, state.getScript()));
 		scriptEngine.eval(reader);
 		reader.close();
@@ -192,7 +192,7 @@ public class StateProcessor {
 			PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filePath));
 			writer.setFullCompression();
 			
-			invocable.invokeFunction("printState", ficheConcours, new URL(stateURL.toString() + ((isZippedState) ? "!" : "") + "/" + state.getTemplate()), document, writer); //$NON-NLS-1$
+			invocable.invokeFunction("printState", ficheConcours, new URL(((isZippedState) ? "jar:" : "") + stateURL.toString() + ((isZippedState) ? "!" : "") + "/" + state.getTemplate()), document, writer); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
 		} else {
 			JOptionPane.showMessageDialog(null, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 		}

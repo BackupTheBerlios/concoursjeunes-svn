@@ -89,6 +89,8 @@
 package org.concoursjeunes.state;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -121,22 +123,25 @@ public class StateManager {
 				File stateFile = new File(stateFolder, "state.xml"); //$NON-NLS-1$
 				if(stateFile.exists()) {
 					try {
-						states.add(AJToolKit.loadMarshallStructure(stateFile, State.class));
+						State state = AJToolKit.loadMarshallStructure(stateFile, State.class);
+						states.add(state);
 					} catch (JAXBException e) {
 						e.printStackTrace();
 					}
 				}
 			//Gestion des états compressé
 			} else if(stateFolder.getName().endsWith(".zip")) { //$NON-NLS-1$
-				/*try {
-					URL stateFile = new URL(stateFolder.toURI().toURL() + "!/state.xml"); //$NON-NLS-1$
+				try {
+					URL stateFile = new URL("jar:" + stateFolder.toURI().toURL() + "!/state.xml"); //$NON-NLS-1$ //$NON-NLS-2$
 					
-					states.add(AJToolKit.loadMarshallStructure(stateFile, State.class));
+					State state = AJToolKit.loadMarshallStructure(stateFile, State.class);
+					state.setZipped(true);
+					states.add(state);
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
 				} catch (JAXBException e) {
 					e.printStackTrace();
-				}*/
+				}
 			}
 		}
 	}

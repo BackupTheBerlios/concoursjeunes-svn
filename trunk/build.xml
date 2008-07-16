@@ -75,10 +75,13 @@
 		    	<exclude name="ressources/states"/>
 		    </dirset>
 			<sequential>
+				<!--<propertyregex override="yes"
+				      property="statename"  input="@{state}"
+				      regexp=".*\\([^\\]*)" replace="\1"/>-->
 				<propertyregex override="yes"
 				      property="statename"  input="@{state}"
-				      regexp=".*\\([^\\]*)" replace="\1"/>
-				
+				      regexp=".*/([^/]*)" replace="\1"/>
+				<echo>zip: ${statename}</echo>
 				<zip destfile="${projet.pack.dir}/ressources/states/${statename}.zip"
 					basedir="ressources/states/${statename}" />
 			</sequential>
@@ -165,6 +168,9 @@
 				<include name="**/**" />
 				<exclude name="org/concoursjeunes/plugins/**" />
 				<!--<exclude name="org/concoursjeunes/webservices/**" />-->
+			</fileset>
+			<fileset dir="${projet.pack.dir}/bin">
+				<include name="org/concoursjeunes/plugins/*.*" />
 			</fileset>
 		</jar>
 		<!--<jar jarfile="${projet.pack.dir}/ConcoursJeunes-webservices.jar">

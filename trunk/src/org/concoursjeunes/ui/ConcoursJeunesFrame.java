@@ -97,7 +97,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -199,8 +201,22 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 		frameCreator.createFrame(new File(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
 				+ "/gui/ConcoursJeunes.xml")); //$NON-NLS-1$
 
-		ajtHome.loadTemplate(ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
-				+ File.separator + ajrParametreAppli.getResourceString("template.accueil.html")); //$NON-NLS-1$
+		try {
+			ajtHome.loadTemplate(ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
+					+ File.separator + ajrParametreAppli.getResourceString("template.accueil.html")); //$NON-NLS-1$
+		} catch (UnsupportedEncodingException e1) {
+			JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+					null, null, e1, Level.SEVERE, null));
+			e1.printStackTrace();
+		} catch (FileNotFoundException e1) {
+			JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+					null, null, e1, Level.SEVERE, null));
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+					null, null, e1, Level.SEVERE, null));
+			e1.printStackTrace();
+		}
 
 		if(System.getProperty("noplugin") == null) { //$NON-NLS-1$
 			fillOnDemandPlugin((JMenu) frameCreator.getNamedComponent("mi.import")); //$NON-NLS-1$
@@ -553,9 +569,9 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 				@Override
 				public void run() {
 					try {
-						System.setProperty("java.net.useSystemProxies","false");
+						System.setProperty("java.net.useSystemProxies","false");  //$NON-NLS-1$//$NON-NLS-2$
 						Server.startWebServer(ApplicationCore.dbConnection);
-						System.setProperty("java.net.useSystemProxies","true");
+						System.setProperty("java.net.useSystemProxies","true"); //$NON-NLS-1$ //$NON-NLS-2$
 					} catch (SQLException e1) {
 						JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 								null, null, e1, Level.SEVERE, null));
