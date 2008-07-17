@@ -93,6 +93,7 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -155,7 +156,7 @@ public class StateProcessor {
 			filePath = ApplicationCore.userRessources.getConcoursPathForProfile(
 					ApplicationCore.getConfiguration().getCurProfil()).getPath() + File.separator
 					+ concoursName + File.separator + state.getLocalizedDisplayName()
-					+ " - " + DateFormat.getDateInstance().format(new Date()) + " " + DateFormat.getTimeInstance().format(new Date()) + ".pdf";   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+					+ " - " + DateFormat.getDateInstance().format(new Date()) + " " + new SimpleDateFormat("HH.mm.ss").format(new Date()) + ".pdf";   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
 		}
 		
 		ScriptEngineManager se = new ScriptEngineManager();
@@ -189,7 +190,7 @@ public class StateProcessor {
 		
 		if(isprintable) {
 			new File(filePath).getParentFile().mkdirs();
-			PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filePath));
+			PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(new File(filePath)));
 			writer.setFullCompression();
 			
 			invocable.invokeFunction("printState", ficheConcours, new URL(((isZippedState) ? "jar:" : "") + stateURL.toString() + ((isZippedState) ? "!" : "") + "/" + state.getTemplate()), document, writer); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$

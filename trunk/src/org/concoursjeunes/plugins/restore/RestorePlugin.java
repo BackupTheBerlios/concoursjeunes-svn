@@ -122,7 +122,7 @@ import ajinteractive.standard.common.AjResourcesReader;
 @Plugin(type = Plugin.Type.ON_DEMAND)
 public class RestorePlugin {
 	
-	private AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.restore.RestorePlugin_libelle"); //$NON-NLS-1$
+	private AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.restore.RestorePlugin_libelle", RestorePlugin.class.getClassLoader()); //$NON-NLS-1$
 	
 	private JFrame parentframe;
 	

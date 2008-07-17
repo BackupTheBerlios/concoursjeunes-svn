@@ -96,14 +96,7 @@ import java.awt.event.ActionListener;
 import java.text.DateFormat;
 import java.util.ArrayList;
 
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.FicheConcours;
@@ -192,6 +185,7 @@ public class ParametreDialog extends JDialog implements ActionListener {
 		for (String name : Reglement.listAvailableReglements()) {
 			jcbReglement.addItem(name);
 		}
+		jcbReglement.addActionListener(this);
 		for (int i = 2; i <= 4; i += 2)
 			jcbNombreTireurParCible.addItem(i);
 		jtfArbitres.addActionListener(this);
@@ -318,6 +312,8 @@ public class ParametreDialog extends JDialog implements ActionListener {
 	}
 
 	public void completePanel() {
+		tempReglement = parametre.getReglement();
+		
 		jtfIntituleConcours.setText(parametre.getIntituleConcours());
 		jtfLieuConcours.setText(parametre.getLieuConcours());
 		jtfDateConcours.setDate(parametre.getDate());
@@ -327,8 +323,6 @@ public class ParametreDialog extends JDialog implements ActionListener {
 		jcbNombreTireurParCible.setSelectedIndex((parametre.getNbTireur() / 2) - 1);
 		jtfNombreDepart.setText("" + parametre.getNbDepart()); //$NON-NLS-1$
 		jlArbitres.setListData(parametre.getArbitres().toArray());
-
-		tempReglement = parametre.getReglement();
 	}
 
 	public void actionPerformed(ActionEvent ae) {
@@ -379,10 +373,7 @@ public class ParametreDialog extends JDialog implements ActionListener {
 			parametre.setNbCible(Integer.parseInt(jtfNombreCible.getText()));
 			parametre.setNbTireur((Integer) jcbNombreTireurParCible.getSelectedItem());
 			parametre.setNbDepart(Integer.parseInt(jtfNombreDepart.getText()));
-			if (parametre.isReglementLock())
-				parametre.setReglement(tempReglement);
-			else
-				parametre.setReglement(ReglementBuilder.createReglement((String) jcbReglement.getSelectedItem()));
+			parametre.setReglement(tempReglement);
 			parametre.setReglementLock(true);
 
 			setVisible(false);
@@ -426,6 +417,10 @@ public class ParametreDialog extends JDialog implements ActionListener {
 			Reglement reglement = reglementDialog.showReglementDialog();
 			if (reglement != null)
 				tempReglement = reglement;
+		} else if (ae.getSource() == jcbReglement) {
+			if(tempReglement == null || !tempReglement.getName().equals(jcbReglement.getSelectedItem())) {
+				tempReglement = ReglementBuilder.createReglement((String) jcbReglement.getSelectedItem());
+			}
 		}
 	}
 }

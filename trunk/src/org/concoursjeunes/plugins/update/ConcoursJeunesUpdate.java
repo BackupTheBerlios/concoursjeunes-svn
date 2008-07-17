@@ -88,12 +88,7 @@ package org.concoursjeunes.plugins.update;
 
 import static org.concoursjeunes.ApplicationCore.ajrParametreAppli;
 
-import java.awt.AWTException;
-import java.awt.Dimension;
-import java.awt.Image;
-import java.awt.SystemTray;
-import java.awt.Toolkit;
-import java.awt.TrayIcon;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
@@ -134,7 +129,7 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 
 	private final AjResourcesReader pluginRessources = new AjResourcesReader("properties.ConcoursJeunesUpdate"); //$NON-NLS-1$
 
-	private final AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.update.ConcoursJeunesUpdate_libelle"); //$NON-NLS-1$
+	private final AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.update.ConcoursJeunesUpdate_libelle", ConcoursJeunesUpdate.class.getClassLoader()); //$NON-NLS-1$
 
 	private enum Status {
 		NONE, AVAILABLE, DOWNLODED

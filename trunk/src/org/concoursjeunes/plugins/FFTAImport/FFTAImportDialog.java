@@ -96,15 +96,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.plugins.Plugin;
@@ -128,7 +120,7 @@ public class FFTAImportDialog extends JDialog implements ActionListener, FFTAImp
 
 	private final JButton jbAnnuler = new JButton();
 
-	private final AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.FFTAImport.FFTAImportPlugin_libelle"); //$NON-NLS-1$
+	private final AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.FFTAImport.FFTAImportPlugin_libelle", FFTAImportDialog.class.getClassLoader()); //$NON-NLS-1$
 
 	public FFTAImportDialog(JFrame parentframe) {
 		super(parentframe);

@@ -30,7 +30,7 @@ public class FFTAImportThread extends Thread {
 	private JDialog parentframe;
 
 	private final AjResourcesReader pluginRessources = new AjResourcesReader("properties.FFTAImportPlugin"); //$NON-NLS-1$
-	private final AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.FFTAImport.FFTAImportPlugin_libelle"); //$NON-NLS-1$
+	private final AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.FFTAImport.FFTAImportPlugin_libelle", FFTAImportThread.class.getClassLoader()); //$NON-NLS-1$
 	private final EventListenerList listeners = new EventListenerList();
 
 	private String fftalogpath = ""; //$NON-NLS-1$

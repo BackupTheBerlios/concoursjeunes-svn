@@ -114,6 +114,10 @@ public class AppRessources extends ajinteractive.standard.utilities.app.AppResso
 		super(progname);
 	}
 
+	@Override
+	public String getUserPath() {
+		return ApplicationCore.ajrParametreAppli.getResourceString("path.user", super.getUserPath());
+	}
 	/**
 	 * Retourne le chemin absolu du profile
 	 * 

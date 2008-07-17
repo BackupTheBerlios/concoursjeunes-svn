@@ -123,7 +123,7 @@ public class PluginLoader {
 					
 					Class<?> cla = loadPluginClass(pluginProperties.getResourceString("plugin.class")); //$NON-NLS-1$
 					if(cla != null) {
-						AjResourcesReader pluginLocalInfo = new AjResourcesReader(pluginProperties.getResourceString("plugin.libelle.file")); //$NON-NLS-1$
+						AjResourcesReader pluginLocalInfo = new AjResourcesReader(pluginProperties.getResourceString("plugin.libelle.file"), cla.getClassLoader()); //$NON-NLS-1$
 	
 						PluginMetadata pluginMetadata = new PluginMetadata();
 						pluginMetadata.setName(pluginName);
