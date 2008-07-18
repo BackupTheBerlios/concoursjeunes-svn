@@ -8,18 +8,20 @@ if(dbVersion == 0) {
 	sql.executeScript("02-defaut.sql");
 	sql.executeScript("02-federal.sql");
 	sql.executeScript("02-savoie.sql");
+	sql.executeScript("02-2x18m.sql");
+	sql.executeScript("02-2x25m.sql");
 	sql.executeScript("04-insertclub.sql");
 	sql.executeScript("99-updatedbver.sql");
 } else if(dbVersion < 10) {
 	var rowSet;
 	
-	//correction de l'enregistrement des rï¿½glements
+	//correction de l'enregistrement des réglements
 	rowSet = sql.executeQuery("SELECT * FROM REGLEMENT where NUMREGLEMENT=-909407998;");
 	if(!rowSet.first()) {
 		sql.executeScript("05-patch01.sql");
 	}
 	
-	//ajout d'une colonne pour le classement par ï¿½quipe
+	//ajout d'une colonne pour le classement par équipe
 	rowSet = sql.executeQuery("SELECT * FROM INFORMATION_SCHEMA.COLUMNS " 
 		+ "WHERE TABLE_SCHEMA='PUBLIC' AND TABLE_NAME='CRITERE' AND COLUMN_NAME='CLASSEMENTEQUIPE';");
 	if(!rowSet.first()) {
@@ -98,7 +100,7 @@ if(dbVersion == 0) {
 		sql.executeScript("05-patch02.sql");
 	}
 	
-	//ajout du rï¿½glement de rï¿½fï¿½rence
+	//ajout du réglement de référence
 	rowSet = sql.executeQuery("SELECT * FROM REGLEMENT WHERE NUMREGLEMENT=0;");
 	if(!rowSet.first()) {
 		sql.executeScript("02-defaut.sql");
@@ -135,6 +137,9 @@ if(dbVersion == 0) {
 			+ "FOREIGN KEY (NUMREGLEMENT) REFERENCES REGLEMENT (NUMREGLEMENT) ON UPDATE CASCADE ON DELETE CASCADE,"
 			+ "FOREIGN KEY (NUMCRITERIASET_SURCLASSE) REFERENCES CRITERIASET (NUMCRITERIASET) ON UPDATE CASCADE ON DELETE CASCADE);");
 	}
+	
+	sql.executeScript("02-2x18m.sql");
+	sql.executeScript("02-2x25m.sql");
 }
 
 if(dbVersion != org.concoursjeunes.ApplicationCore.DB_RELEASE_REQUIRED) {

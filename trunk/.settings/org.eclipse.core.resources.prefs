@@ -1,3 +1,4 @@
+#Fri Jul 18 10:32:37 CEST 2008
 eclipse.preferences.version=1
 encoding//config/parametre.properties=UTF-8
 encoding//lang/libelle.properties=UTF-8
@@ -7,6 +8,7 @@ encoding//packager/Licence_win.txt=ISO-8859-1
 encoding//packager/version.properties=ISO-8859-1
 encoding//ressources/states/categories.properties=UTF-8
 encoding//ressources/states/shootingline/script.js=UTF-8
+encoding//ressources/update/updatedb.js=ISO-8859-1
 encoding//src/org/concoursjeunes/plugins/FFTAImport/FFTAImportPlugin_libelle.properties=UTF-8
 encoding//src/org/concoursjeunes/plugins/update/ConcoursJeunesUpdate_libelle.properties=UTF-8
 encoding//src/org/concoursjeunes/plugins/update/ConcoursJeunesUpdate_libelle_en.properties=UTF-8
