@@ -116,7 +116,7 @@ public class AppRessources extends ajinteractive.standard.utilities.app.AppResso
 
 	@Override
 	public String getUserPath() {
-		return ApplicationCore.ajrParametreAppli.getResourceString("path.user", super.getUserPath());
+		return ApplicationCore.ajrParametreAppli.getResourceString("path.user", super.getUserPath()); //$NON-NLS-1$
 	}
 	/**
 	 * Retourne le chemin absolu du profile
@@ -173,12 +173,12 @@ public class AppRessources extends ajinteractive.standard.utilities.app.AppResso
 				});
 
 		File updatePath = new File(
-				ApplicationCore.ajrParametreAppli.getResourceString("path.update", getAllusersDataPath()));
-		updatePath.mkdirs(); //$NON-NLS-1$
+				ApplicationCore.ajrParametreAppli.getResourceString("path.update", getAllusersDataPath())); //$NON-NLS-1$
+		updatePath.mkdirs(); 
 
 		for (File file : fileForCopy) {
 			try {
-				FileUtils.copyFile(file, updatePath); //$NON-NLS-1$
+				FileUtils.copyFile(file, updatePath);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {

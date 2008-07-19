@@ -156,7 +156,7 @@ public class StateProcessor {
 			filePath = ApplicationCore.userRessources.getConcoursPathForProfile(
 					ApplicationCore.getConfiguration().getCurProfil()).getPath() + File.separator
 					+ concoursName + File.separator + state.getLocalizedDisplayName()
-					+ " - " + DateFormat.getDateInstance().format(new Date()) + " " + new SimpleDateFormat("HH.mm.ss").format(new Date()) + ".pdf";   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+					+ " - " + DateFormat.getDateInstance().format(new Date()) + " " + new SimpleDateFormat("HH.mm.ss").format(new Date()) + ".pdf";   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
 		}
 		
 		ScriptEngineManager se = new ScriptEngineManager();

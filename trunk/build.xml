@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="ConcoursJeunes" default="windows">
+<project name="ConcoursJeunes" default="auto-pack">
 	<description>
 		Generation de ConcoursJeunes
 	</description>
@@ -17,6 +17,13 @@
 	<condition property="isWindows">
 		<os family="Windows" />
 	</condition>
+	<condition property="isLinux">
+		<os family="unix" name="Linux" />
+	</condition>
+	<condition property="isMacOS">
+		<os family="mac" />
+	</condition>
+	<available file="/usr/bin/dpkg-buildpackage" property="dpkgAvailable"/>
 	
 	<property file="packager/version.properties" />
 
@@ -211,7 +218,7 @@
 		</revisionscreator>
 	</target>
 
-	<target name="makerpm" depends="jar">
+	<target name="makerpm">
 
 		<mkdir dir="${projet.pack.dir}/linux" />
 		<property name="rpm.pack.path" location="${projet.pack.dir}/linux" />
@@ -316,7 +323,7 @@
 		<rpm specFile="ConcoursJeunes.spec" topDir="${rpm.pack.path}/" cleanBuildDir="true" />
 	</target>
 	
-	<target name="makedeb">
+	<target name="makedeb" if="dpkgAvailable">
 		<exec command="packager/makedeb.sh" os="Linux">
 			<env key="VERSION" value="${version.numero}"/>
 		</exec>
@@ -383,19 +390,53 @@
 		</nsis>
 	</target>
 	
+	<target name="auto-pack"
+		description="Pack en fonction du système">
+		<antcall target="windows" />
+		<antcall target="linux" />
+		<antcall target="MacOSX" />	
+	</target>
+	
 
-	<target name="windows" 
-		depends="jar, pack-ConcoursJeunesUpdate, pack-PhoenixPlugin, pack-FFTAImport, pack-BackupRestorePlugin, revisions, makensissetup" 
-		description="Pack Windows" />
-	<target name="linux"
-		depends="jar,pack-ConcoursJeunesUpdate,  pack-PhoenixPlugin, revisions, makerpm"
-		description="Pack Linux" />
-	<target name="all-system"
-		depends="jar, pack-ConcoursJeunesUpdate, pack-PhoenixPlugin, pack-FFTAImport, revisions, makensissetup, makerpm, makedeb"
-		description="Compilation Multi-systeme" />
-	<target name="MacOSX" 
-		depends="jar, pack-ConcoursJeunesUpdate, pack-PhoenixPlugin, revisions, makemacbundle"
-		description="Pack Mac OS X" />
+	<target name="windows" description="Pack Windows" if="isWindows">
+		<antcall target="jar" />
+		<antcall target="pack-ConcoursJeunesUpdate" />
+		<antcall target="pack-PhoenixPlugin" />
+		<antcall target="pack-FFTAImport" />
+		<antcall target="pack-BackupRestorePlugin" />
+		<antcall target="revisions" />
+		<antcall target="makensissetup" />
+	</target>
+	<target name="linux" description="Pack Linux" if="isLinux">
+		<antcall target="jar" />
+		<antcall target="pack-ConcoursJeunesUpdate" />
+		<antcall target="pack-PhoenixPlugin" />
+		<antcall target="pack-BackupRestorePlugin" />
+		<antcall target="revisions" />
+		<antcall target="makerpm" />
+		<antcall target="makedeb" />
+	</target>
+	<target name="MacOSX" description="Pack Mac OS X" if="isMacOS">
+		<antcall target="jar" />
+		<antcall target="pack-ConcoursJeunesUpdate" />
+		<antcall target="pack-PhoenixPlugin" />
+		<antcall target="pack-BackupRestorePlugin" />
+		<antcall target="revisions" />
+		<antcall target="makemacbundle" />
+	</target>
+	<!-- La target all-system ne peut fonctionner que sur un linux de type debian, ubuntu car c'est le seul à disposer à la fois des
+	outils de construction deb, rpm et nsis. Les sytstème windows ne supporte que nsis, les red-hat like que rpm -->
+	<target name="all-system" description="Compilation Multi-systeme">
+		<antcall target="jar" />
+		<antcall target="pack-ConcoursJeunesUpdate" />
+		<antcall target="pack-PhoenixPlugin" />
+		<antcall target="pack-FFTAImport" />
+		<antcall target="pack-BackupRestorePlugin" />
+		<antcall target="revisions" />
+		<antcall target="makensissetup" />
+		<antcall target="makerpm" />
+		<antcall target="makedeb" />
+	</target>
 	
 	<target name="deploy" description="deploi les fichier sur le serveur de mise à jour">
 		<copy todir="../ConcoursJeunes.org/update/" >
@@ -404,11 +445,11 @@
 				<include name="lang/**"/>
 				<include name="lib/**"/>
 				<include name="plugins/**"/>
+				<include name="documentation/**"/>
 				<include name="ressources/**"/>
 				<include name="ConcoursJeunes.jar"/>
-				<include name="hash.xml.gz"/>
+				<include name="revision.xml.gz"/>
 				<include name="*.txt"/>
-				<include name="*.pack"/>
 			</fileset>
 		</copy>
 	</target>
