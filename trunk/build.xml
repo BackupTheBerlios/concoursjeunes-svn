@@ -24,6 +24,7 @@
 		<os family="mac" />
 	</condition>
 	<available file="/usr/bin/dpkg-buildpackage" property="dpkgAvailable"/>
+	<available file="/usr/bin/rpmbuild" property="rpmAvailable"/>
 	
 	<property file="packager/version.properties" />
 
@@ -217,23 +218,12 @@
 			</fileset>
 		</revisionscreator>
 	</target>
-
-	<target name="makerpm">
-
-		<mkdir dir="${projet.pack.dir}/linux" />
-		<property name="rpm.pack.path" location="${projet.pack.dir}/linux" />
-
-		<mkdir dir="${rpm.pack.path}/SOURCES/" />
-		<mkdir dir="${rpm.pack.path}/BUILD/" />
-		<mkdir dir="${rpm.pack.path}/RPMS/" />
-		<delete includeemptydirs="true">
-			<fileset dir="${rpm.pack.path}/SOURCES/" includes="**/*"/>
-			<fileset dir="${rpm.pack.path}/BUILD/" includes="**/*"/>
-			<fileset dir="${rpm.pack.path}/RPMS/" includes="**/*"/>
-		</delete>
-
-		<copy todir="${rpm.pack.path}/SOURCES/usr/lib/ConcoursJeunes/" >
-			<fileset dir="pack" >
+	
+	<target name="makelinuxtargz">
+		<mkdir dir="${projet.pack.dir}/linux/tar" />
+		
+		<copy todir="${projet.pack.dir}/linux/tar/usr/lib/ConcoursJeunes/" >
+			<fileset dir="${projet.pack.dir}" >
 				<include name="config/**"/>
 				<include name="lang/**"/>
 				<include name="lib/**"/>
@@ -243,22 +233,29 @@
 			</fileset>
 		</copy>
 		
-		<copy todir="${rpm.pack.path}/SOURCES/usr/lib/ConcoursJeunes/plugins" >
-			<fileset dir="pack/plugins/ConcoursJeunesUpdate/plugins" >
-				<include name="**/**"/>
-			</fileset>
-		</copy>
+		<for param="plugin">
+		    <dirset dir="${projet.pack.dir}/plugins/">
+		    	<include name="**/plugins"/>
+		    </dirset>
+			<sequential>
+				<copy todir="${projet.pack.dir}/linux/tar/usr/lib/ConcoursJeunes/plugins" >
+					<fileset dir="@{plugin}" >
+						<include name="**/**"/>
+					</fileset>
+				</copy>
+			</sequential>
+		</for>
 
-		<copy todir="${rpm.pack.path}/SOURCES/">
+		<copy todir="${projet.pack.dir}/linux/tar">
 			<fileset dir="packager/linux/">
 				<include name="**/*" />
 				<exclude name="*.spec" />
 				<exclude name="debian" />
 			</fileset>
 		</copy>
-
+		
 		<replace 
-		    file="${rpm.pack.path}/SOURCES/usr/share/applications/ConcoursJeunes.desktop"
+		    file="${projet.pack.dir}/linux/tar/usr/share/applications/ConcoursJeunes.desktop"
 			propertyFile="packager/version.properties">
 			<replacefilter 
 		    token="@version.name@" 
@@ -273,17 +270,41 @@
 		    token="@en.summary@" 
 		    property="en.summary" />
 		</replace>
-
-		<tar tarfile="${rpm.pack.path}/SOURCES/ConcoursJeunes.tar">
-			<tarfileset dir="${rpm.pack.path}/SOURCES" >
+		
+		<tar tarfile="${projet.pack.dir}/linux/ConcoursJeunes.tar">
+			<tarfileset dir="${projet.pack.dir}/linux/tar" >
 				<include name="usr/**" />
 				<include name="var/**" />
 				<include name="etc/**" />
 				<include name="Makefile" />
 			</tarfileset>
 		</tar>
-		<gzip zipfile="${rpm.pack.path}/SOURCES/ConcoursJeunes.tar.gz" src="${rpm.pack.path}/SOURCES/ConcoursJeunes.tar"/>
-		<delete file="${rpm.pack.path}/SOURCES/ConcoursJeunes.tar" />
+		<gzip zipfile="${projet.pack.dir}/linux/ConcoursJeunes.tar.gz" src="${projet.pack.dir}/linux/ConcoursJeunes.tar"/>
+		<delete file="${projet.pack.dir}/linux/ConcoursJeunes.tar" />
+		<delete includeemptydirs="true">
+			<fileset dir="${projet.pack.dir}/linux/tar" includes="**"/>
+		</delete>
+	</target>
+
+	<target name="makerpm" if="rpmAvailable">
+
+		<mkdir dir="${projet.pack.dir}/linux/rpm" />
+		<property name="rpm.pack.path" location="${projet.pack.dir}/linux/rpm" />
+
+		<mkdir dir="${rpm.pack.path}/SOURCES/" />
+		<mkdir dir="${rpm.pack.path}/BUILD/" />
+		<mkdir dir="${rpm.pack.path}/RPMS/" />
+		<delete includeemptydirs="true">
+			<fileset dir="${rpm.pack.path}/SOURCES/" includes="**/*"/>
+			<fileset dir="${rpm.pack.path}/BUILD/" includes="**/*"/>
+			<fileset dir="${rpm.pack.path}/RPMS/" includes="**/*"/>
+		</delete>
+		
+		<copy todir="${rpm.pack.path}/SOURCES" >
+			<fileset dir="${projet.pack.dir}/linux/">
+				<include name="ConcoursJeunes.tar.gz" />
+			</fileset>
+		</copy>
 
 		<copy todir="${rpm.pack.path}/SPECS" >
 			<fileset dir="packager/linux/">
@@ -370,28 +391,13 @@
 		</nsis>
 	</target>
 	
-	<target name="makensispatch">
-		<taskdef name="nsis" classname="net.sf.nsisant.Task">
-	        <classpath location="packager/nsisant-1.2.jar"/>
-	    </taskdef>
-		
-		<mkdir dir="${projet.pack.dir}/windows" />
-		
-		<copy todir="${projet.pack.dir}/windows/" >
-			<fileset dir="packager/windows" >
-				<include name="**/**"/>
-			</fileset>
-		</copy>
-		
-		<nsis script="packager/setup_independent_update.nsi" verbosity="4">
-			<define name="VERSION" value="${version.numero}"/>
-			<define name="OUT_FILE" value="windows\setup-idep-update-${version.name}-${version.numero}.exe"/>
-			<define name="WORKING_DIR" value="..\${projet.pack.dir}"/>
-		</nsis>
-	</target>
-	
 	<target name="auto-pack"
 		description="Pack en fonction du système">
+		<antcall target="jar" />
+		<antcall target="pack-ConcoursJeunesUpdate" />
+		<antcall target="pack-PhoenixPlugin" />
+		<antcall target="pack-BackupRestorePlugin" />
+		<antcall target="revisions" />
 		<antcall target="windows" />
 		<antcall target="linux" />
 		<antcall target="MacOSX" />	
@@ -399,29 +405,15 @@
 	
 
 	<target name="windows" description="Pack Windows" if="isWindows">
-		<antcall target="jar" />
-		<antcall target="pack-ConcoursJeunesUpdate" />
-		<antcall target="pack-PhoenixPlugin" />
 		<antcall target="pack-FFTAImport" />
-		<antcall target="pack-BackupRestorePlugin" />
-		<antcall target="revisions" />
 		<antcall target="makensissetup" />
 	</target>
 	<target name="linux" description="Pack Linux" if="isLinux">
-		<antcall target="jar" />
-		<antcall target="pack-ConcoursJeunesUpdate" />
-		<antcall target="pack-PhoenixPlugin" />
-		<antcall target="pack-BackupRestorePlugin" />
-		<antcall target="revisions" />
+		<antcall target="makelinuxtargz" />
 		<antcall target="makerpm" />
 		<antcall target="makedeb" />
 	</target>
 	<target name="MacOSX" description="Pack Mac OS X" if="isMacOS">
-		<antcall target="jar" />
-		<antcall target="pack-ConcoursJeunesUpdate" />
-		<antcall target="pack-PhoenixPlugin" />
-		<antcall target="pack-BackupRestorePlugin" />
-		<antcall target="revisions" />
 		<antcall target="makemacbundle" />
 	</target>
 	<!-- La target all-system ne peut fonctionner que sur un linux de type debian, ubuntu car c'est le seul à disposer à la fois des

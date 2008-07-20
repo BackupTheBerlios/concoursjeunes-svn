@@ -211,6 +211,20 @@ public class AppRessources extends ajinteractive.standard.utilities.app.AppResso
 
 		return basePath;
 	}
+	
+	/**
+	 * Donne le chemin du repertoire de stockage temporaire des mises à jours
+	 * 
+	 * @return le chemin du répertoire contenant la base de donnée
+	 */
+	public File getUpdatePath() {
+		File basePath = new File(
+				ApplicationCore.ajrParametreAppli.getResourceString("path.update", getAllusersDataPath())); //$NON-NLS-1$
+
+		basePath.mkdirs();
+
+		return basePath;
+	}
 
 	/**
 	 * Donne le répertoire ou sont stocké les concours pour le profil donné en

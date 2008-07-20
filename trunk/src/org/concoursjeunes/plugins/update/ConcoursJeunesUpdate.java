@@ -158,7 +158,7 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 		PluginLoader pl = new PluginLoader();
 		
 
-		ajUpdater = new AjUpdater(ApplicationCore.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
+		ajUpdater = new AjUpdater(ApplicationCore.userRessources.getUpdatePath().getPath(),
 				"."); //$NON-NLS-1$
 		ajUpdater.addAjUpdaterListener(this);
 		
@@ -197,6 +197,10 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 				} else {
 					System.out.println("update enable"); //$NON-NLS-1$
 					e.printStackTrace();
+					
+					if (trayIcon != null) {
+						tray.remove(trayIcon);
+					}
 				}
 			}
 			if(proxyAuthRequired) {
