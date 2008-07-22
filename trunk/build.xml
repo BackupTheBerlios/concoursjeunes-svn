@@ -25,6 +25,12 @@
 	</condition>
 	<available file="/usr/bin/dpkg-buildpackage" property="dpkgAvailable"/>
 	<available file="/usr/bin/rpmbuild" property="rpmAvailable"/>
+	<condition property="nsisAvailable">
+		<or>
+			<available file="/usr/bin/makensis" property="nsisAvailable"/>
+			<os family="Windows" /><!-- Le chemin est malheureusement trop aléatoire sous windows -->
+		</or>
+	</condition>
 	
 	<property file="packager/version.properties" />
 
@@ -236,6 +242,7 @@
 		<for param="plugin">
 		    <dirset dir="${projet.pack.dir}/plugins/">
 		    	<include name="**/plugins"/>
+		    	<exclude name="FFTAImport/plugins/**"/>
 		    </dirset>
 			<sequential>
 				<copy todir="${projet.pack.dir}/linux/tar/usr/lib/ConcoursJeunes/plugins" >
@@ -271,7 +278,7 @@
 		    property="en.summary" />
 		</replace>
 		
-		<tar tarfile="${projet.pack.dir}/linux/ConcoursJeunes.tar">
+		<tar tarfile="${projet.pack.dir}/linux/${version.name}-${version.numero}.tar">
 			<tarfileset dir="${projet.pack.dir}/linux/tar" >
 				<include name="usr/**" />
 				<include name="var/**" />
@@ -279,8 +286,8 @@
 				<include name="Makefile" />
 			</tarfileset>
 		</tar>
-		<gzip zipfile="${projet.pack.dir}/linux/ConcoursJeunes.tar.gz" src="${projet.pack.dir}/linux/ConcoursJeunes.tar"/>
-		<delete file="${projet.pack.dir}/linux/ConcoursJeunes.tar" />
+		<gzip zipfile="${projet.pack.dir}/linux/${version.name}-${version.numero}.tar.gz" src="${projet.pack.dir}/linux/${version.name}-${version.numero}.tar"/>
+		<delete file="${projet.pack.dir}/linux/${version.name}-${version.numero}.tar" />
 		<delete includeemptydirs="true">
 			<fileset dir="${projet.pack.dir}/linux/tar" includes="**"/>
 		</delete>
@@ -302,7 +309,7 @@
 		
 		<copy todir="${rpm.pack.path}/SOURCES" >
 			<fileset dir="${projet.pack.dir}/linux/">
-				<include name="ConcoursJeunes.tar.gz" />
+				<include name="${version.name}-${version.numero}.tar.gz" />
 			</fileset>
 		</copy>
 
@@ -357,21 +364,44 @@
 			</fileset>
 		</copy>
 		
-		<copy todir="${projet.pack.dir}/macosx/ConcoursJeunes.app/Contents/Resources/Java" >
+		<copy todir="${projet.pack.dir}/macosx/${version.name}.app/Contents/Resources/Java" >
 			<fileset dir="pack" >
 				<include name="config/**"/>
 				<include name="lang/**"/>
 				<include name="lib/**"/>
-				<include name="plugins/**"/>
 				<include name="ressources/**"/>
 				<include name="documentation/**"/>
 				<include name="ConcoursJeunes.jar"/>
 				<include name="*.txt"/>
 			</fileset>
 		</copy>
+		<chmod file="${projet.pack.dir}/macosx/${version.name}.app/Contents/MacOS/JavaApplicationStub" perm="a+x"></chmod>
+		<chmod file="${projet.pack.dir}/macosx/${version.name}.app/Contents/Resources/Java/concoursjeunes-applyupdate" perm="a+x"></chmod>
+		
+		<for param="plugin">
+		    <dirset dir="${projet.pack.dir}/plugins/">
+		    	<include name="**/plugins"/>
+		    	<exclude name="FFTAImport/plugins/**"/>
+		    </dirset>
+			<sequential>
+				<copy todir="${projet.pack.dir}/macosx/${version.name}.app/Contents/Resources/Java/plugins" >
+					<fileset dir="@{plugin}" >
+						<include name="**/**"/>
+					</fileset>
+				</copy>
+			</sequential>
+		</for>
+		
+		<tar tarfile="${projet.pack.dir}/macosx/${version.name}-mac-${version.numero}.tar">
+			<tarfileset dir="${projet.pack.dir}/macosx/" >
+				<include name="ConcoursJeunes.app/**" />
+			</tarfileset>
+		</tar>
+		<gzip zipfile="${projet.pack.dir}/macosx/${version.name}-mac-${version.numero}.tar.gz" src="${projet.pack.dir}/macosx/${version.name}-mac-${version.numero}.tar"/>
+		<delete file="${projet.pack.dir}/macosx/${version.name}-mac-${version.numero}.tar" />
 	</target>
 	
-	<target name="makensissetup">
+	<target name="makensissetup" if="nsisAvailable">
 		<taskdef name="nsis" classname="net.sf.nsisant.Task">
 	        <classpath location="packager/nsisant-1.2.jar"/>
 	    </taskdef>
@@ -426,8 +456,10 @@
 		<antcall target="pack-BackupRestorePlugin" />
 		<antcall target="revisions" />
 		<antcall target="makensissetup" />
+		<antcall target="makelinuxtargz" />
 		<antcall target="makerpm" />
 		<antcall target="makedeb" />
+		<antcall target="makemacbundle" />
 	</target>
 	
 	<target name="deploy" description="deploi les fichier sur le serveur de mise à jour">

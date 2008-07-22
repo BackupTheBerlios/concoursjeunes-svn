@@ -8,7 +8,7 @@ Release: @version.release@
 Group: Applications/Productivity
 #Group(fr): (translated group goes here)
 License: CeCILL, GPL
-Source: ConcoursJeunes.tar.gz
+Source: @version.name@-@version.numero@.tar.gz
 #NoSource: 0
 BuildRoot: %{_tmppath}/%{name}-root
 # Following are optional fields

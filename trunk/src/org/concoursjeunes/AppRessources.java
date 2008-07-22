@@ -150,6 +150,11 @@ public class AppRessources extends ajinteractive.standard.utilities.app.AppResso
 				if (!new File(configPath.getPath(), file.getName()).exists()) {
 					try {
 						FileUtils.copyFile(file, configPath);
+						for (File dbfile : FileUtils.listAllFiles(configPath, ".*\\.xml")) { //$NON-NLS-1$
+							if (dbfile.isFile()) {
+								dbfile.setWritable(true, true);
+							}
+						}
 					} catch (FileNotFoundException e) {
 						e.printStackTrace();
 					} catch (IOException e) {

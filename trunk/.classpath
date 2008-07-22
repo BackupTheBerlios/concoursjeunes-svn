@@ -12,5 +12,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/iText-2.1.2u.jar" sourcepath="/home/Aurelien/Téléchargement/iText-src-2.1.2u.zip"/>
 	<classpathentry kind="lib" path="lib/swingx-0.9.3.jar"/>
+	<classpathentry kind="lib" path="lib/AuthKit.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

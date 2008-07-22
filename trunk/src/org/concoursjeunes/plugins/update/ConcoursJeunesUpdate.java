@@ -88,6 +88,10 @@ package org.concoursjeunes.plugins.update;
 
 import static org.concoursjeunes.ApplicationCore.ajrParametreAppli;
 
+import glguerin.authkit.Authorization;
+import glguerin.authkit.Privilege;
+import glguerin.authkit.imp.macosx.MacOSXAuthorization;
+
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -109,6 +113,7 @@ import org.concoursjeunes.plugins.PluginMetadata;
 import org.concoursjeunes.plugins.Plugin.Type;
 import org.jdesktop.swingx.JXLoginPane;
 import org.jdesktop.swingx.auth.LoginService;
+import org.jdesktop.swingx.util.OS;
 
 import ajinteractive.standard.common.AJToolKit;
 import ajinteractive.standard.common.AjResourcesReader;
@@ -284,10 +289,19 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 			if (JOptionPane.showConfirmDialog(null, pluginLocalisation.getResourceString("update.confirminstall"), pluginLocalisation.getResourceString("update.confirminstall.title"), //$NON-NLS-1$ //$NON-NLS-2$
 					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 				try {
-					Process process = Runtime.getRuntime().exec(new String[] { "concoursjeunes-applyupdate", //$NON-NLS-1$
-							ApplicationCore.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
-							System.getProperty("user.dir") }); //$NON-NLS-1$
-					process.waitFor();
+					if(!OS.isMacOSX()) {
+						Process process = Runtime.getRuntime().exec(new String[] { "concoursjeunes-applyupdate", //$NON-NLS-1$
+								ApplicationCore.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
+								System.getProperty("user.dir") }); //$NON-NLS-1$
+						process.waitFor();
+					} else {
+						Authorization macAuth = new MacOSXAuthorization();
+						macAuth.isAvailable(Privilege.EMPTY);
+						Process process = macAuth.execPrivileged(new String[] { System.getProperty("user.dir") + "/concoursjeunes-applyupdate", //$NON-NLS-1$ //$NON-NLS-2$
+								ApplicationCore.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
+								System.getProperty("user.dir") });//$NON-NLS-1$
+						process.waitFor();
+					}
 					
 					try {
 						ApplicationCore.getInstance().saveAllFichesConcours();
