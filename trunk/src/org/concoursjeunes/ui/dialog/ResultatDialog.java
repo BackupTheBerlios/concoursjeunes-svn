@@ -86,30 +86,12 @@
  */
 package org.concoursjeunes.ui.dialog;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.FlowLayout;
-import java.awt.FocusTraversalPolicy;
-import java.awt.GridBagConstraints;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Concurrent;
@@ -147,7 +129,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 	private JTextField[][] points;
 	private JTextField[] dix;
 	private JTextField[] neuf;
-	private JTextField[] manque;
+	//private JTextField[] manque;
 	
 	private final JButton jbValider = new JButton();
 	private final JButton jbSuivant = new JButton();
@@ -195,7 +177,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 		points = new JTextField[parametres.getNbTireur()][nbSerie];
 		dix = new JTextField[parametres.getNbTireur()];
 		neuf = new JTextField[parametres.getNbTireur()];
-		manque = new JTextField[parametres.getNbTireur()];
+		//manque = new JTextField[parametres.getNbTireur()];
 
 		for(int i = 0; i < parametres.getNbTireur(); i++) {
 			for(int j = 0; j < nbSerie; j++) {
@@ -228,10 +210,10 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 			neuf[i].addKeyListener(this);
 			neuf[i].addFocusListener(this);
 			neuf[i].setEnabled(false);
-			manque[i] = new JTextField(new NumberDocument(false, false),"0",3); //$NON-NLS-1$
+			/*manque[i] = new JTextField(new NumberDocument(false, false),"0",3); //$NON-NLS-1$
 			manque[i].addKeyListener(this);
 			manque[i].addFocusListener(this);
-			manque[i].setEnabled(false);
+			manque[i].setEnabled(false);*/
 		}
 
 		JPanel pane1 = new JPanel();
@@ -250,7 +232,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 		}
 		JLabel ldix = new JLabel("10"); //$NON-NLS-1$
 		JLabel lneuf = new JLabel("9"); //$NON-NLS-1$
-		JLabel lmanque = new JLabel("M"); //$NON-NLS-1$
+		//JLabel lmanque = new JLabel("M"); //$NON-NLS-1$
 
 		lPoints = new JLabel[parametres.getNbTireur()];
 		for(int i = 0; i < parametres.getNbTireur(); i++) {
@@ -288,8 +270,8 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 			gridbagComposer.addComponentIntoGrid(ldix, c);
 			c.gridx++;
 			gridbagComposer.addComponentIntoGrid(lneuf, c);
-			c.gridx++;
-			gridbagComposer.addComponentIntoGrid(lmanque, c);
+		/*	c.gridx++;
+			gridbagComposer.addComponentIntoGrid(lmanque, c);*/
 		}
 
 		c.gridx = GridBagConstraints.RELATIVE;
@@ -312,7 +294,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 			if(ApplicationCore.getConfiguration().isInterfaceResultatSupl()) {
 				gridbagComposer.addComponentIntoGrid(dix[i], c);
 				gridbagComposer.addComponentIntoGrid(neuf[i], c);
-				gridbagComposer.addComponentIntoGrid(manque[i], c);
+				//gridbagComposer.addComponentIntoGrid(manque[i], c);
 			}
 		}
 
@@ -350,8 +332,8 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 					dix[concurrent.getPosition()].setEnabled(true);
 					neuf[concurrent.getPosition()].setText(concurrent.getNeuf()+""); //$NON-NLS-1$
 					neuf[concurrent.getPosition()].setEnabled(true);
-					manque[concurrent.getPosition()].setText(concurrent.getManque()+""); //$NON-NLS-1$
-					manque[concurrent.getPosition()].setEnabled(true);
+					//manque[concurrent.getPosition()].setText(concurrent.getManque()+""); //$NON-NLS-1$
+					//manque[concurrent.getPosition()].setEnabled(true);
 				}
 			}
 		}
@@ -421,7 +403,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 					if(ApplicationCore.getConfiguration().isInterfaceResultatSupl()) {
 						concurrent.setDix(Integer.parseInt(dix[concurrent.getPosition()].getText()));
 						concurrent.setNeuf(Integer.parseInt(neuf[concurrent.getPosition()].getText()));
-						concurrent.setManque(Integer.parseInt(manque[concurrent.getPosition()].getText()));
+						//concurrent.setManque(Integer.parseInt(manque[concurrent.getPosition()].getText()));
 					}
 				}
 		
@@ -521,9 +503,6 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 						nextComp = neuf[i];
 						break;
 					} else if (aComponent == neuf[i]) {
-						nextComp = manque[i];
-						break;
-					} else if (aComponent == manque[i]) {
 						if (i + 1 < parametres.getNbTireur() && dix[i + 1].isEnabled())
 							nextComp = dix[i + 1];
 						else if (ApplicationCore.getConfiguration().isInterfaceResultatCumul())
@@ -562,7 +541,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 							nextComp = oldPoints[i - 1][j];
 						else if (j - 1 >= 0)
 							nextComp = oldPoints[nbConc - 1][j - 1];
-						else if (manque[nbConc - 1].isEnabled())
+						else if (neuf[nbConc - 1].isEnabled())
 							nextComp = jbPrecedent;
 						else
 							nextComp = oldPoints[nbConc - 1][parametres.getReglement().getNbSerie() - 1];
@@ -572,7 +551,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 							nextComp = pointsCum2V[i - 1][j];
 						else if (j - 1 >= 0)
 							nextComp = pointsCum2V[nbConc - 1][j - 1];
-						else if (manque[nbConc - 1].isEnabled())
+						else if (neuf[nbConc - 1].isEnabled())
 							nextComp = jbPrecedent;
 						else
 							nextComp = pointsCum2V[nbConc - 1][parametres.getReglement().getNbSerie() - 1];
@@ -582,27 +561,24 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 							nextComp = points[i - 1][j];
 						else if (j - 1 >= 0)
 							nextComp = points[nbConc - 1][j - 1];
-						else if (manque[nbConc - 1].isEnabled())
+						else if (neuf[nbConc - 1].isEnabled())
 							nextComp = jbPrecedent;
 						else
 							nextComp = points[nbConc - 1][parametres.getReglement().getNbSerie() - 1];
-						break;
-					} else if (aComponent == manque[i]) {
-						nextComp = neuf[i];
 						break;
 					} else if (aComponent == neuf[i]) {
 						nextComp = dix[i];
 						break;
 					} else if (aComponent == dix[i]) {
 						if (i - 1 >= 0)
-							nextComp = manque[i - 1];
+							nextComp = neuf[i - 1];
 						else if (ApplicationCore.getConfiguration().isInterfaceResultatCumul())
 							nextComp = oldPoints[nbConc - 1][parametres.getReglement().getNbSerie() - 1];
 						else
 							nextComp = points[nbConc - 1][parametres.getReglement().getNbSerie() - 1];
 						break;
 					} else if (aComponent == jbSuivant) {
-						nextComp = manque[nbConc - 1];
+						nextComp = neuf[nbConc - 1];
 						break;
 					} else if (aComponent == jbAnnuler) {
 						nextComp = jbSuivant;
@@ -630,7 +606,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 
 		@Override
 		public Component getLastComponent(Container focusCycleRoot) {
-			return manque[3];
+			return neuf[3];
 		}
 
 		@Override

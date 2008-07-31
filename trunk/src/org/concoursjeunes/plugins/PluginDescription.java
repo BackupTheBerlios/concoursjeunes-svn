@@ -91,6 +91,8 @@ package org.concoursjeunes.plugins;
 import javax.xml.bind.annotation.XmlAttribute;
 
 /**
+ * Information de description d'un plugin
+ * 
  * @author Aurélien JEOFFRAY
  *
  */

@@ -96,6 +96,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
+ * Annotation à placer sur la methode représentant le point d'enter de l'execution du plugin
+ * 
  * @author Aurélien JEOFFRAY
  *
  */

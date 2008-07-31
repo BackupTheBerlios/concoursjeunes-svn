@@ -29,7 +29,7 @@ function printState(ficheConcours, template, document, writer) {
 			templateXML.parse("producer", ApplicationCore.NOM + " " + ApplicationCore.VERSION); //$NON-NLS-1$ //$NON-NLS-2$
 			templateXML.parse("author", ApplicationCore.getConfiguration().getClub().getNom()); //$NON-NLS-1$
 			
-			var concurrents = ficheConcours.getConcurrentList().list(depart);
+			var concurrents = ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), ConcurrentList.SortCriteria.SORT_BY_TARGETS);
 			for(var i = 0; i < concurrents.length; i++) {
 				templateXML.parse("scoresheet.LOGO_CLUB_URI", ApplicationCore.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\"));
 				templateXML.parse("scoresheet.INTITULE_CLUB", ficheConcours.getParametre().getClub().getNom()); //$NON-NLS-1$
@@ -54,11 +54,11 @@ function printState(ficheConcours, template, document, writer) {
 				var nbFlecheParVolee = ficheConcours.getParametre().getReglement().getNbFlecheParVolee();
 				for(var j = 0; j < nbSerie; j++) {
 					var strDistance = getPosition(j+1) + " distance, " + ficheConcours.getParametre().getReglement().getDistancesEtBlasonFor(concurrents[i].getCriteriaSet().getFilteredCriteriaSet(ficheConcours.getParametre().getReglement().getPlacementFilter())).getDistance()[j]+"m";
-					templateXML.parse("scoresheet.series.SERIE_NB_COL", 6 + nbFlecheParVolee);
+					templateXML.parse("scoresheet.series.SERIE_NB_COL", 5 + nbFlecheParVolee);
 					templateXML.parse("scoresheet.series.INTITULE_SERIE", strDistance);
 					var colsSize = "";
-					for(var k = 0; k < 6 + nbFlecheParVolee; k++)
-						colsSize += ";" + (100.0 / (6 + nbFlecheParVolee));
+					for(var k = 0; k < 5 + nbFlecheParVolee; k++)
+						colsSize += ";" + (100.0 / (5 + nbFlecheParVolee));
 					colsSize = colsSize.substring(1);
 					templateXML.parse("scoresheet.series.COLS_SIZE", colsSize);
 					templateXML.parse("scoresheet.series.NB_FLECHE_PAR_VOLEE", nbFlecheParVolee);
@@ -83,8 +83,8 @@ function printState(ficheConcours, template, document, writer) {
 					templateXML.loopBloc("scoresheet.series");
 				}
 				
-				var colSize = 100.0 / (6 + nbFlecheParVolee);
-				templateXML.parse("scoresheet.COLS_SIZE", (colSize * (nbFlecheParVolee + 2)) + ";" + colSize + ";" + colSize + ";" + colSize + ";" + colSize);
+				var colSize = 100.0 / (5 + nbFlecheParVolee);
+				templateXML.parse("scoresheet.COLS_SIZE", (colSize * (nbFlecheParVolee + 2)) + ";" + colSize + ";" + colSize + ";" + colSize);
 				
 				for(var j = 0; j < nbSerie; j++) {
 					templateXML.parse("scoresheet.distances.NB_COL_TOTAL", 2 + nbFlecheParVolee);
@@ -93,7 +93,7 @@ function printState(ficheConcours, template, document, writer) {
 					templateXML.loopBloc("scoresheet.distances");
 				}
 				templateXML.parse("scoresheet.NB_COL_TOTAL", 2 + nbFlecheParVolee);
-				templateXML.parse("scoresheet.SIGNATURE_SIZE", nbSerie + 1);
+				templateXML.parse("scoresheet.SIGNATURE_SIZE", nbSerie + 2);
 				
 				templateXML.loopBloc("scoresheet");
 			}

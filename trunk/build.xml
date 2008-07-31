@@ -75,6 +75,7 @@
 				<include name="src/**"/>
 				<!--exclu les réference subversion -->
 				<exclude name="**/.svn*" />
+				<exclude name="lib/AuthKit.jar" />
 				<exclude name="ressources/states/**"/>
 			</fileset>
 		</copy>

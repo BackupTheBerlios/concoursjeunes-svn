@@ -110,10 +110,20 @@ public class Criterion {
         this.sortOrder = sortOrder;
     }
 
+    /**
+     * Retourne le numero d'ordre d'affichage du critère
+     * 
+     * @return le numero d'ordre d'affichage du critère
+     */
     public int getNumordre() {
     	return numordre;
     }
 
+    /**
+     * Définit le numero d'ordre d'affichage du critère
+     * 
+     * @param numordre le numero d'ordre d'affichage du critère
+     */
 	public void setNumordre(int numordre) {
     	this.numordre = numordre;
     }

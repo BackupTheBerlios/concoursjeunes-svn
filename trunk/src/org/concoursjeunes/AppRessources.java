@@ -96,7 +96,9 @@ import java.io.IOException;
 import ajinteractive.standard.utilities.io.FileUtils;
 
 /**
- * Crée et donne le chemin des ressources utilisateur pour le programme
+ * <p>Gére et retourne le chemin des différentes ressources utilisateur pour le programme.</p>
+ * <p>Les chemins retournés sont fonction du sytème d'exploitation de l'utilisateur, ainsi que
+ * de sa session</p>
  * 
  * @author Aurélien Jeoffray
  */
@@ -114,6 +116,9 @@ public class AppRessources extends ajinteractive.standard.utilities.app.AppResso
 		super(progname);
 	}
 
+	/**
+	 * Retourne le chemin du répertoire utilisateur de l'application
+	 */
 	@Override
 	public String getUserPath() {
 		return ApplicationCore.ajrParametreAppli.getResourceString("path.user", super.getUserPath()); //$NON-NLS-1$

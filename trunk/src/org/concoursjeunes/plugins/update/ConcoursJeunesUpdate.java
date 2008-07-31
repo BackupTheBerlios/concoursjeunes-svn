@@ -87,7 +87,6 @@
 package org.concoursjeunes.plugins.update;
 
 import static org.concoursjeunes.ApplicationCore.ajrParametreAppli;
-
 import glguerin.authkit.Authorization;
 import glguerin.authkit.Privilege;
 import glguerin.authkit.imp.macosx.MacOSXAuthorization;
@@ -289,18 +288,29 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 			if (JOptionPane.showConfirmDialog(null, pluginLocalisation.getResourceString("update.confirminstall"), pluginLocalisation.getResourceString("update.confirminstall.title"), //$NON-NLS-1$ //$NON-NLS-2$
 					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 				try {
-					if(!OS.isMacOSX()) {
+					if(!OS.isMacOSX()) { 
+						//sur les systèmes Windows et Linux, invoque le programme "concoursjeunes-applyupdate"
+						//qui s'occupe d'élever les priviléges utilisateur si nécessaire.
 						Process process = Runtime.getRuntime().exec(new String[] { "concoursjeunes-applyupdate", //$NON-NLS-1$
 								ApplicationCore.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
 								System.getProperty("user.dir") }); //$NON-NLS-1$
 						process.waitFor();
 					} else {
+						//sous mac, c'est l'objet MacOSXAuthorization qui à la charge de réaliser
+						//l'élévation de privilége
 						Authorization macAuth = new MacOSXAuthorization();
 						macAuth.isAvailable(Privilege.EMPTY);
 						Process process = macAuth.execPrivileged(new String[] { System.getProperty("user.dir") + "/concoursjeunes-applyupdate", //$NON-NLS-1$ //$NON-NLS-2$
 								ApplicationCore.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
 								System.getProperty("user.dir") });//$NON-NLS-1$
-						process.waitFor();
+						if (macAuth.isCapable(Authorization.HAS_PROCESS_WAITFOR)) {
+							try {
+								process.waitFor();
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+						}
+						
 					}
 					
 					try {

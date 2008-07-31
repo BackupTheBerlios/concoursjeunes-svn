@@ -90,10 +90,20 @@ public class CriterionElement {
         this.libelle = libelle;
     }
 
+    /**
+     * Retourne le numero d'ordre d'affichage de l'élément
+     * 
+     * @return le numero d'ordre d'affichage de l'élément
+     */
     public int getNumordre() {
     	return numordre;
     }
 
+    /**
+     * Définit le numero d'ordre d'affichage de l'élément
+     * 
+     * @param numordre le numero d'ordre d'affichage de l'élément
+     */
 	public void setNumordre(int numordre) {
     	this.numordre = numordre;
     }

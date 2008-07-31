@@ -171,7 +171,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	private JTextField tfpd[];
 	private final JTextField tfpd10 = new JTextField(new NumberDocument(false, false), "0", 4); //$NON-NLS-1$
 	private final JTextField tfpdNeuf = new JTextField(new NumberDocument(false, false), "0", 4); //$NON-NLS-1$
-	private final JTextField tfpdM = new JTextField(new NumberDocument(false, false), "0", 4); //$NON-NLS-1$
+	//private final JTextField tfpdM = new JTextField(new NumberDocument(false, false), "0", 4); //$NON-NLS-1$
 
 	// inscription
 	private final JPanel jpInscription = new JPanel();
@@ -297,7 +297,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 
 		this.tfpd10.addFocusListener(this);
 		this.tfpdNeuf.addFocusListener(this);
-		this.tfpdM.addFocusListener(this);
+		//this.tfpdM.addFocusListener(this);
 
 		// panneau tireur
 		gridbagComposer.setParentPanel(jpConcurrent);
@@ -352,7 +352,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		gridbagComposer.addComponentIntoGrid(jlDixNeufM, c);
 		gridbagComposer.addComponentIntoGrid(tfpd10, c);
 		gridbagComposer.addComponentIntoGrid(tfpdNeuf, c);
-		gridbagComposer.addComponentIntoGrid(tfpdM, c);
+		//gridbagComposer.addComponentIntoGrid(tfpdM, c);
 
 		// panneau action
 		jpActionPane.add(jbValider);
@@ -531,7 +531,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 
 		tfpd10.setText("" + concurrent.getDix()); //$NON-NLS-1$
 		tfpdNeuf.setText("" + concurrent.getNeuf()); //$NON-NLS-1$
-		tfpdM.setText("" + concurrent.getManque()); //$NON-NLS-1$
+		//tfpdM.setText("" + concurrent.getManque()); //$NON-NLS-1$
 
 		if (concurrent.getInscription() == Concurrent.UNINIT)
 			this.jcbInscription.setSelectedIndex(0);
@@ -846,7 +846,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			try {
 				concurrent.setDix(Integer.parseInt(tfpd10.getText()));
 				concurrent.setNeuf(Integer.parseInt(tfpdNeuf.getText()));
-				concurrent.setManque(Integer.parseInt(tfpdM.getText()));
+				//concurrent.setManque(Integer.parseInt(tfpdM.getText()));
 			} catch (NumberFormatException e) {
 				JOptionPane.showMessageDialog(this, 
 						ApplicationCore.ajrLibelle.getResourceString("erreur.erreursaisie"), //$NON-NLS-1$
@@ -992,7 +992,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 				break;
 			}
 		}
-		if (fe.getSource() == tfpd10 || fe.getSource() == tfpdNeuf || fe.getSource() == tfpdM) {
+		if (fe.getSource() == tfpd10 || fe.getSource() == tfpdNeuf) {
 			selectField = -1;
 		}
 		if (fe.getSource() instanceof JTextField) {

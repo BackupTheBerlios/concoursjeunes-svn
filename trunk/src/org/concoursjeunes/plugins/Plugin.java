@@ -88,13 +88,11 @@
  */
 package org.concoursjeunes.plugins;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
+ * Permet d'annoter une class comme etant la class principal d'un plugin
+ * 
  * @author Aurélien JEOFFRAY
  *
  */
@@ -102,7 +100,27 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Plugin {
+	/**
+	 * 
+	 * @return le type de plugin implementer
+	 */
 	Type type();
 	
-	public static enum Type {STARTUP, UI_STARTUP, ON_DEMAND, ALL }
+	public static enum Type {
+		/**
+		 * plugin se lancant au démarrage de l'application
+		 */
+		STARTUP,
+		/**
+		 * plugin se lancant au démarrage de l'interface graphique. <i>non utilisé à ce jour</i>
+		 */
+		UI_STARTUP,
+		/**
+		 * plugin s'executant à la demande de l'utilisateur via un lien dans le menu
+		 */
+		ON_DEMAND,
+		/**
+		 * type générique représantant l'ensemble des plugins
+		 */
+		ALL }
 }

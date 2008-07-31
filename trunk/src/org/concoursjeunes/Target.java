@@ -131,7 +131,7 @@ public class Target {
 	 * 
 	 * @param numCible le numero de la cible
 	 * @param reglement le reglement régissant la cible
-	 * @param le nombre de tireur maximum pouvant être présent sur la cible
+	 * @param nbTireurMaxparCible le nombre de tireur maximum pouvant être présent sur la cible
 	 */
 	public Target(int numCible, Reglement reglement, int nbTireurMaxparCible) {
 		this.numCible = numCible;
@@ -441,7 +441,7 @@ public class Target {
 	 *         si aucun concurrent trouvé
 	 */
 	public Concurrent getConcurrentAt(int position) {
-		if (position < concurrents.length)
+		if (position > -1 && position < concurrents.length)
 			return concurrents[position];
 		return null;
 	}

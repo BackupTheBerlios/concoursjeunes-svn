@@ -88,6 +88,12 @@
  */
 package org.concoursjeunes;
 
+/**
+ * Représente la position physique relative d'un blason
+ * 
+ * @author Aurélien JEOFFRAY
+ *
+ */
 public class Ancrage {
 	public static final int POSITION_A = 0;
 	public static final int POSITION_B = 1;
@@ -109,18 +115,46 @@ public class Ancrage {
 		this.y = y;
 	}
 
+	/**
+	 * Retourne la position relative du blason sur l'axe horizontal<br>
+	 * Les positions sont exprimé en fraction de la taille de la cible
+	 * (valeur comprise entre 0 et 1)
+	 * 
+	 * @return la fraction correspondant à la position du blason sur l'axe X
+	 */
 	public double getX() {
     	return x;
     }
 
+	/**
+	 * Définit la position relative du blason sur l'axe horizontal<br>
+	 * Les positions sont exprimé en fraction de la taille de la cible
+	 * (valeur double comprise entre 0 et 1)
+	 * 
+	 * @param x la fraction d'ancrage sur l'axe X
+	 */
 	public void setX(double x) {
     	this.x = x;
     }
 
+	/**
+	 * Retourne la position relative du blason sur l'axe vertical<br>
+	 * Les positions sont exprimé en fraction de la taille de la cible
+	 * (valeur comprise entre 0 et 1)
+	 * 
+	 * @return la fraction correspondant à la position du blason sur l'axe Y
+	 */
 	public double getY() {
     	return y;
     }
 
+	/**
+	 * Définit la position relative du blason sur l'axe vertical<br>
+	 * Les positions sont exprimé en fraction de la taille de la cible
+	 * (valeur double comprise entre 0 et 1)
+	 * 
+	 * @param y la fraction d'ancrage sur l'axe Y
+	 */
 	public void setY(double y) {
     	this.y = y;
     }

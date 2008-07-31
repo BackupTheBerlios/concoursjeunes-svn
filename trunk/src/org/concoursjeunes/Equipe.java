@@ -106,7 +106,9 @@ public class Equipe implements Cloneable, Comparable<Equipe> {
     
 
     /**
-	 * @return  DifferentiationCriteria - Renvoie Le critère de distinction de l'équipe.
+     * Renvoie Le critère de distinction de l'équipe.
+     *  
+	 * @return  DifferentiationCriteria - Le critère de distinction de l'équipe.
 	 */
     public CriteriaSet getDifferentiationCriteria() {
         if(differentiationCriteria == null)
@@ -116,6 +118,8 @@ public class Equipe implements Cloneable, Comparable<Equipe> {
     }
 
     /**
+     * Définit le critère de distinction de l'équipe.
+     * 
 	 * @param differentiationCriteria  - Le critère de distinction de l'équipe.
 	 */
     public void setDifferentiationCriteria(CriteriaSet differentiationCriteria) {

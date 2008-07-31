@@ -120,7 +120,7 @@ public class ConcoursJeunesTest extends TestCase {
 		assertNotNull(ApplicationCore.ajrLibelle);
 		assertEquals(ApplicationCore.ajrLibelle.getResourceString("onglet.gestionarcher"), "Gestion des archers"); //$NON-NLS-1$ //$NON-NLS-2$
 		assertNotNull(ApplicationCore.ajrParametreAppli);
-		assertEquals(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources"), "./ressources"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources"), "ressources"); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		//test l'accès au fichier de config
 		assertNotNull(ApplicationCore.getConfiguration());

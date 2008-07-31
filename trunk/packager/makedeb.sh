@@ -6,7 +6,7 @@ mkdir deb
 cd deb
 
 # construit le .orig necessaire à la creation du deb
-cp ../ConcoursJeunes_$VERSION.tar.gz concoursjeunes_$VERSION.orig.tar.gz
+cp ../ConcoursJeunes-$VERSION.tar.gz concoursjeunes_$VERSION.orig.tar.gz
 
 # crée le repertoire de version décompressé
 mkdir concoursjeunes-$VERSION

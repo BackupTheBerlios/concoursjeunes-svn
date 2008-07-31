@@ -97,6 +97,8 @@ import java.util.List;
 import org.concoursjeunes.builders.ConcurrentBuilder;
 
 /**
+ * Gére le chargement en mémoire des Concurrents
+ * 
  * @author Aurélien JEOFFRAY
  *
  */

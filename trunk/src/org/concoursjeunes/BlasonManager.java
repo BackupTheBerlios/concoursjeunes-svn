@@ -94,6 +94,12 @@ import java.sql.SQLException;
 
 import org.concoursjeunes.builders.BlasonBuilder;
 
+/**
+ * Gére la construction des blasons à partir des données trouvé en base
+ * 
+ * @author Aurélien JEOFFRAY
+ *
+ */
 public class BlasonManager {
 	
 	/**

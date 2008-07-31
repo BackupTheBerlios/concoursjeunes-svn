@@ -32,16 +32,7 @@
 			</cell>
 			<!-- Etiquette concurrent -->
 			<cell verticalalign="Default">
-				<paragraph>
-					<chunk size="10">{cid}</chunk>
-					<newline/>
-					<chunk size="10">{cclub}</chunk>
-					<newline/>
-					<chunk size="10">{clicence}</chunk>
-				</paragraph>
-				<paragraph>
-					<chunk size="10">{emplacement}</chunk>
-				</paragraph>
+				
 			</cell>
 		</row>
 	</table>
@@ -70,7 +61,7 @@
 					</row>
 					<row>
 						<bloc::fleches>
-						<cell horizontalalign="Center" leading="10" top="true" bottom="true" right="true" left="true"><phrase size="10">{NUM_FLECHE}</phrase></cell>
+						<cell horizontalalign="Center" leading="10" top="true" bottom="true" right="true" left="true"><phrase size="8">{NUM_FLECHE}</phrase></cell>
 						</bloc::fleches>
 					</row>
 					<bloc::volees>
@@ -81,19 +72,19 @@
 							</paragraph>
 						</cell>
 						<bloc::pointsparfleche>
-						<cell leading="10" top="true" bottom="true" right="true" left="true"></cell>
+						<cell top="true" bottom="true" right="true" left="true"></cell>
 						</bloc::pointsparfleche>
-						<cell leading="10" top="true" bottom="true" right="true" left="true"></cell>
-						<cell leading="10" top="true" bottom="true" right="true" left="true"></cell>
-						<cell leading="10" top="true" bottom="true" right="true" left="true"></cell>
-						<cell leading="10" top="true" bottom="true" right="true" left="true"></cell>
+						<cell top="true" bottom="true" right="true" left="true"></cell>
+						<cell top="true" bottom="true" right="true" left="true"></cell>
+						<cell top="true" bottom="true" right="true" left="true"></cell>
+						<cell top="true" bottom="true" right="true" left="true"></cell>
 					</row>
 					</bloc::volees>
 					<row>
 						<cell colspan="{NB_COL_TOTAL}" leading="10" top="true" bottom="true" right="true" left="true"><phrase size="10">%template.total% {NUM_DISTANCE} %template.distance%:</phrase></cell>
-						<cell leading="10" top="true" bottom="true" right="true" left="true"></cell>
-						<cell leading="10" top="true" bottom="true" right="true" left="true"></cell>
-						<cell leading="10" top="true" bottom="true" right="true" left="true"></cell> 
+						<cell top="true" bottom="true" right="true" left="true"></cell>
+						<cell top="true" bottom="true" right="true" left="true"></cell>
+						<cell top="true" bottom="true" right="true" left="true"></cell> 
 					</row>
 				</table>
 			</cell>
@@ -128,7 +119,7 @@
 						<cell horizontalalign="Center" leading="10" top="true" bottom="true" right="true" left="true" backgroundcolor="#aaaaaa"><phrase size="10">3</phrase></cell>
 					</row>
 					<row>
-						<cell top="true" bottom="true" leading="10" right="true" left="true"><phrase size="10" fontstyle="bold">%template.barrage%:</phrase></cell>
+						<cell leading="10" top="true" bottom="true" right="true" left="true"><phrase size="10" fontstyle="bold">%template.barrage%:</phrase></cell>
 						<cell top="true" bottom="true" right="true" left="true"></cell>
 						<cell top="true" bottom="true" right="true" left="true"></cell>
 						<cell top="true" bottom="true" right="true" left="true"></cell> 

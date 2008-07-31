@@ -92,6 +92,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -143,6 +144,8 @@ public class StateManager {
 					e.printStackTrace();
 				}
 			}
+			
+			Collections.sort(states);
 		}
 	}
 	
@@ -161,6 +164,20 @@ public class StateManager {
 			}
 		}
 		return categoryStates;
+	}
+	
+	/**
+	 * Retourne l'état correspondant au nom donnée en parametre
+	 * ou null si non trouvé
+	 * @param stateName le nom de l'etat à retourner
+	 * @return l'etat correspondant ou null si inexistant
+	 */
+	public State getState(String stateName) {
+		for(State state : states) {
+			if(state.getName().equals(stateName))
+				return state;
+		}
+		return null;
 	}
 	
 	public Categories getCategories() {

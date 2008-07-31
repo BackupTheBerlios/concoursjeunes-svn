@@ -120,7 +120,7 @@ public class Debug {
             }
             concurrent.setDix(0);
             concurrent.setNeuf(0);
-            concurrent.setManque(0);
+            //concurrent.setManque(0);
         }
     }
 }

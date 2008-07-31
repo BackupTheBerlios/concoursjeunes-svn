@@ -286,8 +286,6 @@ public class PasDeTir implements FicheConcoursListener {
 	 * Place les archers sur le pas de tir
 	 * La methode de placement utilisé permet d'éviter, dans la mesure du possible,
 	 * de placer les archers d'un même club sur la même cible
-	 * 
-	 * TODO Ajouter la couche evenementiel
 	 */
 	public void placementConcurrents() {
 		placementConcurrents(ficheConcours.getParametre().getNbTireur(), false);
@@ -476,14 +474,18 @@ public class PasDeTir implements FicheConcoursListener {
 	}
 
 	/**
-	 * @return ficheConcours
+	 * Retourne la fiche concours a laquel est lié le pas de tir
+	 * 
+	 * @return ficheConcours la fiche concours a laquel est lié le pas de tir
 	 */
 	public FicheConcours getFicheConcours() {
 		return ficheConcours;
 	}
 	
 	/**
-	 * @return depart
+	 * Retourne le départ représenté par le pas de tir
+	 * 
+	 * @return depart le départ représenté par le pas de tir
 	 */
 	public int getDepart() {
 		return depart;

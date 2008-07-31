@@ -115,8 +115,6 @@ public class TargetRenderer extends DefaultTreeCellRenderer {
 
 	/**
 	 * Constructeur, initialise les icone à afficher
-	 * 
-	 * @param pasDeTir le pas de tir qui doit être rendu visuelement
 	 */
 	public TargetRenderer() {
 		

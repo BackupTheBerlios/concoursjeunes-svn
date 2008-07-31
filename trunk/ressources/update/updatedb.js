@@ -10,6 +10,7 @@ if(dbVersion == 0) {
 	sql.executeScript("02-savoie.sql");
 	sql.executeScript("02-2x18m.sql");
 	sql.executeScript("02-2x25m.sql");
+	sql.executeScript("02-2x50m.sql");
 	sql.executeScript("04-insertclub.sql");
 	sql.executeScript("99-updatedbver.sql");
 } else if(dbVersion < 10) {
@@ -140,6 +141,7 @@ if(dbVersion == 0) {
 	
 	sql.executeScript("02-2x18m.sql");
 	sql.executeScript("02-2x25m.sql");
+	sql.executeScript("02-2x50m.sql");
 }
 
 if(dbVersion != org.concoursjeunes.ApplicationCore.DB_RELEASE_REQUIRED) {

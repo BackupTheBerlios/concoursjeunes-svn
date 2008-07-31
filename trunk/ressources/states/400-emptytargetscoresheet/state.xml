@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<state>
+	<name>400-emptytargetscoresheet</name>
+	<category>marque</category>
+	<displayName>state.name</displayName>
+	<serie>false</serie>
+	<start>false</start>
+	<save>false</save>
+	<type>XML</type>
+	<template>template.xml</template>
+	<script>script.js</script>
+</state>

@@ -1,5 +1,5 @@
 /*
- * Créer le 18 mai 08 à 11:34:20 pour ConcoursJeunes
+ * Créer le 29 juil. 2008 à 17:03:30 pour ConcoursJeunes
  *
  * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
@@ -86,27 +86,17 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes;
+package org.concoursjeunes.state;
+
+import java.lang.annotation.*;
 
 /**
- * Permet à la classe implémentant cet interface de suivre la progression du chargement en mémoire
- * des concurrents recherché par la methode ConcurrentManager.getArchersInDatabase().
- * 
  * @author Aurélien JEOFFRAY
  *
  */
-public interface ConcurrentManagerProgress {
-	/**
-	 * Envoi à le nombre de concurrent à chargé
-	 * 
-	 * @param concurrentCount le nombre de concurrent à charger en mémoire
-	 */
-	public void setConcurrentCount(int concurrentCount);
-	
-	/**
-	 * Revoie le dernier concurrent à être chargé en mémoire
-	 * 
-	 * @param concurrent le dernier concurrent à être chargé
-	 */
-	public void setCurrentConcurrent(Concurrent concurrent);
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface StateSelector {
+	String name();
 }

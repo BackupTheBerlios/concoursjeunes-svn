@@ -107,7 +107,7 @@ import org.concoursjeunes.ApplicationCore;
  *
  */
 @XmlRootElement(name="state")
-public class State {
+public class State implements Comparable<State> {
 	private String name = ""; //$NON-NLS-1$
 	private String category = ""; //$NON-NLS-1$
 	private String displayName = ""; //$NON-NLS-1$
@@ -289,5 +289,13 @@ public class State {
 	 */
 	public void setZipped(boolean isZipped) {
 		this.isZipped = isZipped;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	@Override
+	public int compareTo(State o) {
+		return name.compareTo(o.getName());
 	}
 }

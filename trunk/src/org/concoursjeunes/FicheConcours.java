@@ -15,6 +15,7 @@
  */
 package org.concoursjeunes;
 
+import static org.concoursjeunes.ApplicationCore.ajrLibelle;
 import static org.concoursjeunes.ApplicationCore.ajrParametreAppli;
 
 import java.io.File;
@@ -39,8 +40,6 @@ import org.concoursjeunes.exceptions.FicheConcoursException.Nature;
 import ajinteractive.standard.common.AJTemplate;
 import ajinteractive.standard.common.AJToolKit;
 import ajinteractive.standard.common.XmlUtils;
-
-import static org.concoursjeunes.ApplicationCore.ajrLibelle;
 
 /**
  * Represente la fiche concours, regroupe l'ensemble des informations commune à un concours donné
@@ -360,8 +359,6 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 
 	/**
 	 * methode pour le classement des candidats
-	 * 
-	 * @param depart
 	 */
 	public Hashtable<CriteriaSet, Concurrent[]> classement() {
 
@@ -485,10 +482,10 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 								if ((j < sortList.length - 1 && sortList[j].getTotalScore() == sortList[j + 1].getTotalScore() && ApplicationCore.getConfiguration().isInterfaceAffResultatExEquo())
 										|| (j > 0 && sortList[j].getTotalScore() == sortList[j - 1].getTotalScore() && ApplicationCore.getConfiguration().isInterfaceAffResultatExEquo())) {
 
-									if ((sortList[j].getManque() == 0 && sortList[j].getDix() == 0 && sortList[j].getNeuf() == 0)
-											|| (j < sortList.length - 2 && sortList[j].getManque() == sortList[j + 1].getManque() && sortList[j].getDix() == sortList[j + 1].getDix() && sortList[j]
+									if ((sortList[j].getDix() == 0 && sortList[j].getNeuf() == 0)
+											|| (j < sortList.length - 2 && sortList[j].getDix() == sortList[j + 1].getDix() && sortList[j]
 													.getNeuf() == sortList[j + 1].getNeuf())
-											|| (j > 0 && sortList[j].getManque() == sortList[j - 1].getManque() && sortList[j].getDix() == sortList[j - 1].getDix() && sortList[j].getNeuf() == sortList[j - 1]
+											|| (j > 0 && sortList[j].getDix() == sortList[j - 1].getDix() && sortList[j].getNeuf() == sortList[j - 1]
 													.getNeuf())) {
 
 										tplClassement.parse("categories.classement.COULEUR", //$NON-NLS-1$
@@ -517,8 +514,8 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 									tplClassement.loopBloc("categories.classement.scores"); //$NON-NLS-1$
 								}
 								tplClassement.parse("categories.classement.TOTAL", "" + sortList[j].getTotalScore()); //$NON-NLS-1$ //$NON-NLS-2$
-								tplClassement.parse("categories.classement.0_10_9", sortList[j].getManque() //$NON-NLS-1$
-										+ "-" + sortList[j].getDix() + "-" + sortList[j].getNeuf()); //$NON-NLS-1$ //$NON-NLS-2$
+								tplClassement.parse("categories.classement.0_10_9", //$NON-NLS-1$
+										sortList[j].getDix() + "-" + sortList[j].getNeuf()); //$NON-NLS-1$
 
 								tplClassement.loopBloc("categories.classement"); //$NON-NLS-1$
 							}

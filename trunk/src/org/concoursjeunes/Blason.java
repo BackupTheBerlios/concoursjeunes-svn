@@ -346,6 +346,13 @@ public class Blason {
     	this.ancrages = ancrages;
     }
 	
+	/**
+	 * Retourne l'ancrage relatif du blason en fonction de sa position logique
+	 * 
+	 * @param position la position logique du blason
+	 * 
+	 * @return l'ancrage physique du blason pour sa position logique
+	 */
 	public Ancrage getAncrage(int position) {
 		int ancrageKey = -1;
 		switch(nbArcher) {
@@ -364,6 +371,14 @@ public class Blason {
 		return ancrages.get(ancrageKey);
 	}
 	
+	/**
+	 * Détermine si blason2 se supperpose ou non au blason représenté par l'objet
+	 * 
+	 * @param positionBlason la position logique du blason représenté par l'objet
+	 * @param blason2 le blason à comparer
+	 * @param positionBlason2 la position logique de ce blason
+	 * @return <i>true</i> si les 2 blasons se supperpose, <i>false</i> sinon
+	 */
 	public boolean isOver(int positionBlason, Blason blason2, int positionBlason2) {
 		Ancrage ancrageBlason = getAncrage(positionBlason);
 		Ancrage ancrageBlason2 = getAncrage(positionBlason2);
@@ -390,6 +405,7 @@ public class Blason {
 		
 		return !axeX && !axeY;
 	}
+	
 	/**
 	 * Sauvegarde l'objet dans la base en créant une nouvelle ligne si le numero de blason est à 0
 	 * ou en mettant à jour la ligne existante dans la base et identifié par le numero de blason
@@ -462,20 +478,26 @@ public class Blason {
 		return true;
 	}
 	
+	/**
+	 * Retourne le nom du blason
+	 */
 	@Override
 	public String toString() {
 		return name;
 	}
 
 	/**
-	 * @return targetFaceImage
+	 * Retourne le nom du fichier image représantant le blason
+	 * 
+	 * @return le nom de l'image du blason
 	 */
 	public String getTargetFaceImage() {
 		return targetFaceImage;
 	}
 
 	/**
-	 * @param targetFaceImage targetFaceImage à définir
+	 * Définit le nom du fichier image représantant le blason
+	 * @param targetFaceImage le nom de l'image du blasonr
 	 */
 	public void setTargetFaceImage(String targetFaceImage) {
 		this.targetFaceImage = targetFaceImage;

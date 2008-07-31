@@ -118,6 +118,7 @@ import org.concoursjeunes.FicheConcours;
 import org.concoursjeunes.state.State;
 import org.concoursjeunes.state.StateManager;
 import org.concoursjeunes.state.StateProcessor;
+import org.concoursjeunes.state.StateSelector;
 import org.concoursjeunes.state.Categories.Category;
 import org.concoursjeunes.ui.dialog.ConcurrentDialog;
 import org.concoursjeunes.ui.dialog.ParametreDialog;
@@ -162,8 +163,11 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	//critere individuel
 	private Hashtable<String, JCheckBox> classmentCriteriaCB = new Hashtable<String, JCheckBox>();
 
+	@StateSelector(name="100-classement")
 	private JButton printClassementIndiv	= new JButton();
+	@StateSelector(name="200-teamclassement")
 	private JButton printClassementEquipe	= new JButton();
+	@StateSelector(name="300-clubclassement")
 	private JButton printClassementClub		= new JButton();
 	
 	//panneau d'édition
@@ -184,6 +188,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	
 	private FicheConcours ficheConcours;
 	private State currentState = null;
+	private StateManager stateManager;
 
 	/**
 	 * Création d'une fiche concours
@@ -238,8 +243,11 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		jbResultat.addActionListener(this);
 
 		printClassementIndiv.addActionListener(this);
+		printClassementIndiv.setName("printClassementIndiv"); //$NON-NLS-1$
 		printClassementEquipe.addActionListener(this);
+		printClassementEquipe.setName("printClassementEquipe"); //$NON-NLS-1$
 		printClassementClub.addActionListener(this);
+		printClassementClub.setName("printClassementClub"); //$NON-NLS-1$
 		printClassementIndiv.setIcon(new ImageIcon(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
 				File.separator + ApplicationCore.ajrParametreAppli.getResourceString("file.icon.print") //$NON-NLS-1$
 		));
@@ -375,11 +383,11 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		JXTaskPaneContainer taskPaneContainer = new JXTaskPaneContainer();
 		
 		//charge le gestionnaire d'etat
-		StateManager sm = new StateManager();
+		stateManager = new StateManager();
 		
 		//charge les etats trouvé
-		for(Category categorie : sm.getCategories().getCategorie()) {
-			java.util.List<State> states = sm.getStates(categorie.getName());
+		for(Category categorie : stateManager.getCategories().getCategorie()) {
+			java.util.List<State> states = stateManager.getStates(categorie.getName());
 			if(states.size() > 0) {
 				JXTaskPane taskPane = new JXTaskPane();
 				taskPane.setTitle(categorie.getLocalizedLibelle());
@@ -594,12 +602,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		
         Action action = new AbstractAction(state.getLocalizedDisplayName()) {
             public void actionPerformed(ActionEvent e) {
-            	jcbDeparts.setEnabled(actionState.isStart());
-            	jcbSeries.setEnabled(actionState.isSerie());
-            	jcbSave.setSelected(actionState.isSave());
-            	jlCurrentStateName.setText("<html><font color=\"blue\" size=\"+1\">" + actionState.getLocalizedDisplayName() + "</font></html>"); //$NON-NLS-1$ //$NON-NLS-2$
-            	currentState = actionState;
-            	jbPrint.setEnabled(true);
+            	prepareState(actionState);
             }
         };
         action.putValue(Action.SMALL_ICON, new ImageIcon(
@@ -608,6 +611,15 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
         
         return action;
     }
+	
+	private void prepareState(State state) {
+		jcbDeparts.setEnabled(state.isStart());
+    	jcbSeries.setEnabled(state.isSerie());
+    	jcbSave.setSelected(state.isSave());
+    	jlCurrentStateName.setText("<html><font color=\"blue\" size=\"+1\">" + state.getLocalizedDisplayName() + "</font></html>"); //$NON-NLS-1$ //$NON-NLS-2$
+    	currentState = state;
+    	jbPrint.setEnabled(true);
+	}
 	
 	private void printState() {
 		if(currentState != null) {
@@ -726,6 +738,16 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		} else if(source == printClassementIndiv || source == printClassementEquipe ||  source == printClassementClub) {
 			tabbedpane.setSelectedIndex(3);
 			
+			try {
+				String stateName = this.getClass().getDeclaredField(((JButton)source).getName()).getAnnotation(StateSelector.class).name();
+				State state = stateManager.getState(stateName);
+				if(state != null)
+					prepareState(state);
+			} catch (SecurityException e) {
+				e.printStackTrace();
+			} catch (NoSuchFieldException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	/**

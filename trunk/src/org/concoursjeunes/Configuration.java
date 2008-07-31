@@ -107,8 +107,14 @@ import ajinteractive.standard.utilities.net.Proxy;
 @XmlRootElement
 public class Configuration extends DefaultParameters implements Cloneable {
 	
-	public static String CONFIG_PROFILE = "configuration_"; //$NON-NLS-1$
-	public static String EXT_XML = ".xml"; //$NON-NLS-1$
+	/**
+	 * Préfixe des fichiers de configuration
+	 */
+	public static final String CONFIG_PROFILE = "configuration_"; //$NON-NLS-1$
+	/**
+	 * Suffixe des fichiers de configurations
+	 */
+	public static final String EXT_XML = ".xml"; //$NON-NLS-1$
 
 	private String langue           = "";               //$NON-NLS-1$
 	private String logoPath         = "ressources/logo_ffta.gif";   //$NON-NLS-1$
@@ -369,14 +375,18 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	}
 	
 	/**
-	 * @return the metaDataFichesConcours
+	 * Retourne les méta-données des concours du profils
+	 * 
+	 * @return les méta-données des concours
 	 */
 	public MetaDataFichesConcours getMetaDataFichesConcours() {
 		return metaDataFichesConcours;
 	}
 
 	/**
-	 * @param metaDataFichesConcours the metaDataFichesConcours to set
+	 * Définit les méta-données des concours
+	 * 
+	 * @param metaDataFichesConcours l'objet contenant les méta-données des concours du profil
 	 */
 	public void setMetaDataFichesConcours(
 			MetaDataFichesConcours metaDataFichesConcours) {

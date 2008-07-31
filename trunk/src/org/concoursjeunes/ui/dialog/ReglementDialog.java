@@ -455,6 +455,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 			jtDistanceBlason.setModel(createTableModel());
 		try {
 			List<Blason> blasons = Blason.listAvailableTargetFace();
+			jcbBlasons.removeAllItems();
 			for(Blason blason : blasons)
 				jcbBlasons.addItem(blason);
 			TableColumn cH = jtDistanceBlason.getColumnModel().getColumn(jtDistanceBlason.getColumnModel().getColumnCount() - 1);

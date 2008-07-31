@@ -47,7 +47,7 @@ public class DistancesEtBlason {
 	 * 
 	 * @param distances tableau des distances représenté. 1 distance par série.
 	 * 	Les distances sont représenté en metre
-	 * @param blason
+	 * @param targetFace le blason associé
 	 */
 	public DistancesEtBlason(int[] distances, Blason targetFace) {
 		this.distances = distances;

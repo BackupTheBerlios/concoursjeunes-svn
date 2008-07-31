@@ -185,7 +185,7 @@ public class ConcurrentList {
 
 	/**
 	 * supprime tout les concurrent de la liste
-	 *
+	 * @deprecated remplacé par {@link org.concoursjeunes.ConcurrentList#clear()}
 	 */
 	@Deprecated
 	public void removeAll() {
@@ -374,10 +374,9 @@ public class ConcurrentList {
 						int scorei = sort_list[i].getTotalScore();
 						int scorej = sort_list[j].getTotalScore();
 						if(scorej > scorei ||
-								(scorej == scorei && (sort_list[j].getManque() < sort_list[i].getManque() ||
-										(sort_list[j].getManque() == sort_list[i].getManque() && sort_list[j].getDix() > sort_list[i].getDix()) ||
-										(sort_list[j].getManque() == sort_list[i].getManque() && sort_list[j].getDix() == sort_list[i].getDix() &&
-												sort_list[j].getNeuf() > sort_list[i].getNeuf())))) {
+								(scorej == scorei && (sort_list[j].getDix() > sort_list[i].getDix()) ||
+										(sort_list[j].getDix() == sort_list[i].getDix() &&
+												sort_list[j].getNeuf() > sort_list[i].getNeuf()))) {
 							ArraysUtils.swap(sort_list, i, j);
 						}
 					}	
@@ -619,6 +618,17 @@ public class ConcurrentList {
 		return list(reglement, distancesEtBlason, depart, false).length;
 	}
 	
+	/**
+	 * Donne le nombre de concurrent pour le distance/blason donné en comptant ou non les
+	 * places suppléméntaire réservé aux archer handicapé
+	 * 
+	 * @param reglement le reglement permettant de calculer les distances/blasons
+	 * @param distancesEtBlason le pas de tir pour lequel retourné le nombre d'archer
+	 * @param depart le numero du depart pour lequel retourner le nombre d'archer ou -1 si tous les départs
+	 * @param handicap si <i>true</i>, alors compter 2 places par archers handicapé
+	 * @return le nombre d'archer sur une distance donné + le nombre de place bloqué par les archers
+	 * handicapé si handicap est à <i>true</i>
+	 */
 	public int countArcher(Reglement reglement, DistancesEtBlason distancesEtBlason, int depart, boolean handicap) {
 		return list(reglement, distancesEtBlason, depart, handicap).length;
 	}

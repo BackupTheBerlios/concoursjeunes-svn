@@ -41,13 +41,18 @@ public class EquipeList implements Cloneable {
     }
 
 	/**
-	 * @return nbMembresRetenu
+	 * Retourne le nombre de membre retenue dans le comptage des points par équipes
+	 * 
+	 * @return le nombre de membre retenue pour le comptage des points
 	 */
 	public int getNbMembresRetenu() {
 		return nbMembresRetenu;
 	}
+	
 	/**
-	 * @param nbMembresRetenu nbMembresRetenu à définir
+	 * Définit le nombre de membre retenue dans le comptage des points par équipes
+	 * 
+	 * @param nbMembresRetenu le nombre de membre retenue pour le comptage des points
 	 */
 	public void setNbMembresRetenu(int nbMembresRetenu) {
 		this.nbMembresRetenu = nbMembresRetenu;
@@ -148,11 +153,19 @@ public class EquipeList implements Cloneable {
     
     /**
      * retire toutes les équipes
-     *
+     * @deprecated remplacé par {@link EquipeList#clear()}
      */
+    @Deprecated
     public void removeAll() {
         equipeList.clear();
     }
+    
+    /**
+	 * retire toutes les équipes
+	 */
+	public void clear() {
+		equipeList.clear();
+	}
     
     /**
      * Retourne la liste complete des équipes

@@ -50,7 +50,7 @@ public class Concurrent extends Archer implements Cloneable {
 	private List<Integer> points	= new ArrayList<Integer>();
 	private int neuf                    = 0;
 	private int dix                     = 0;
-	private int manque                  = 0;
+	//private int manque                  = 0;
 
 	private int inscription             = UNINIT;
 	private boolean	presence			= false;
@@ -149,17 +149,17 @@ public class Concurrent extends Archer implements Cloneable {
 	 * Affecte le nombre de fleche manquee total du concurrent
 	 * @param  manque
 	 */
-	public void setManque(int manque) {
+	/*public void setManque(int manque) {
 		this.manque = manque;
-	}
+	}*/
 
 	/**
 	 * Donne le nombre de fleche manquee du concurrent
 	 * @return  int
 	 */
-	public int getManque() {
+	/*public int getManque() {
 		return this.manque;
-	}
+	}*/
 
 	/**
 	 * Retourne le numero de départ de l'archer
@@ -226,28 +226,36 @@ public class Concurrent extends Archer implements Cloneable {
 	}
 
 	/**
-	 * @return presence
+	 * informe sur la présentation ou non de l'archer au greffe
+	 * 
+	 * @return presence <i>true</i> si l'archer est coché comme présenté au greffe, <i><false</i> sinon
 	 */
 	public boolean isPresence() {
 		return presence;
 	}
 
 	/**
-	 * @param presence presence à définir
+	 * définit si l'archer s'est présenté au greffe on non
+	 * 
+	 * @param presence <i>true</i> si l'archer s'est présenté au greffe, <i>false</i> sonon
 	 */
 	public void setPresence(boolean presence) {
 		this.presence = presence;
 	}
 
 	/**
-	 * @return surclassement
+	 * informe sur le surclassement éventuel de l'archer
+	 * 
+	 * @return surclassement <i>true</i> si le concurrent est surclassé, <i>false</i> sinon
 	 */
 	public boolean isSurclassement() {
 		return surclassement;
 	}
 
 	/**
-	 * @param surclassement surclassement à définir
+	 * définit si l'archer est suclassé ou non
+	 * 
+	 * @param surclassement <i>true</i> si l'archer est surclassé, <i>false</i> sinon
 	 */
 	public void setSurclassement(boolean surclassement) {
 		this.surclassement = surclassement;
