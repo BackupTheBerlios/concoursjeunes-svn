@@ -3,6 +3,8 @@ package org.concoursjeunes.webservices;
 
 import javax.xml.bind.annotation.XmlRegistry;
 
+import org.concoursjeunes.plugins.PluginDescription;
+
 
 /**
  * This object contains factory methods for each 

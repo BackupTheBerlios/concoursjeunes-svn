@@ -88,7 +88,10 @@
  */
 package org.concoursjeunes.plugins;
 
-import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Information de description d'un plugin
@@ -96,45 +99,135 @@ import javax.xml.bind.annotation.XmlAttribute;
  * @author Aurélien JEOFFRAY
  *
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "pluginDescription", propOrder = {
+    "logicalName",
+    "displayName",
+    "version",
+    "shortDescription",
+    "longDescription",
+    "minVersionApp",
+    "maxVersionApp",
+    "category",
+    "reposURL"
+})
 public class PluginDescription {
-	private String name = ""; //$NON-NLS-1$
-	private String description = ""; //$NON-NLS-1$
-	private String category = ""; //$NON-NLS-1$
-	private String reposURL = ""; //$NON-NLS-1$
-	private String minVersion = ""; //$NON-NLS-1$
-	private String maxVersion = ""; //$NON-NLS-1$
-	
-	public PluginDescription() {
+	@XmlElement(required = true)
+	protected String logicalName = ""; //$NON-NLS-1$
+	@XmlElement(required = true)
+    protected String displayName = ""; //$NON-NLS-1$
+	@XmlElement(required = true)
+    protected String version = ""; //$NON-NLS-1$
+    protected String shortDescription = ""; //$NON-NLS-1$
+    protected String longDescription = ""; //$NON-NLS-1$
+    @XmlElement(required = true)
+    protected String minVersionApp = ""; //$NON-NLS-1$
+    protected String maxVersionApp = ""; //$NON-NLS-1$
+    @XmlElement(required = true)
+    protected String category = ""; //$NON-NLS-1$
+    @XmlElement(required = true)
+    protected String reposURL = ""; //$NON-NLS-1$
+    
+    public PluginDescription() {
 		
 	}
-
+	
 	/**
-	 * @return name
+	 * @return logicalName
 	 */
-	@XmlAttribute()
-	public String getName() {
-		return name;
+	public String getLogicalName() {
+		return logicalName;
 	}
 
 	/**
-	 * @param name name à définir
+	 * @param logicalName logicalName à définir
 	 */
-	public void setName(String name) {
-		this.name = name;
+	public void setLogicalName(String logicalName) {
+		this.logicalName = logicalName;
 	}
 
 	/**
-	 * @return description
+	 * @return displayName
 	 */
-	public String getDescription() {
-		return description;
+	public String getDisplayName() {
+		return displayName;
 	}
 
 	/**
-	 * @param description description à définir
+	 * @param displayName displayName à définir
 	 */
-	public void setDescription(String description) {
-		this.description = description;
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+
+	/**
+	 * @return version
+	 */
+	public String getVersion() {
+		return version;
+	}
+
+	/**
+	 * @param version version à définir
+	 */
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	/**
+	 * @return shortDescription
+	 */
+	public String getShortDescription() {
+		return shortDescription;
+	}
+
+	/**
+	 * @param shortDescription shortDescription à définir
+	 */
+	public void setShortDescription(String shortDescription) {
+		this.shortDescription = shortDescription;
+	}
+
+	/**
+	 * @return longDescription
+	 */
+	public String getLongDescription() {
+		return longDescription;
+	}
+
+	/**
+	 * @param longDescription longDescription à définir
+	 */
+	public void setLongDescription(String longDescription) {
+		this.longDescription = longDescription;
+	}
+
+	/**
+	 * @return minVersionApp
+	 */
+	public String getMinVersionApp() {
+		return minVersionApp;
+	}
+
+	/**
+	 * @param minVersionApp minVersionApp à définir
+	 */
+	public void setMinVersionApp(String minVersionApp) {
+		this.minVersionApp = minVersionApp;
+	}
+
+	/**
+	 * @return maxVersionApp
+	 */
+	public String getMaxVersionApp() {
+		return maxVersionApp;
+	}
+
+	/**
+	 * @param maxVersionApp maxVersionApp à définir
+	 */
+	public void setMaxVersionApp(String maxVersionApp) {
+		this.maxVersionApp = maxVersionApp;
 	}
 
 	/**
@@ -164,20 +257,4 @@ public class PluginDescription {
 	public void setReposURL(String reposURL) {
 		this.reposURL = reposURL;
 	}
-
-	public String getMinVersion() {
-    	return minVersion;
-    }
-
-	public void setMinVersion(String minVersion) {
-    	this.minVersion = minVersion;
-    }
-
-	public String getMaxVersion() {
-    	return maxVersion;
-    }
-
-	public void setMaxVersion(String maxVersion) {
-    	this.maxVersion = maxVersion;
-    }
 }

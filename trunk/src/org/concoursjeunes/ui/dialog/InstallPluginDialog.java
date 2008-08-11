@@ -96,24 +96,14 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.Authenticator;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.DefaultListSelectionModel;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
-import javax.swing.ListSelectionModel;
-import javax.swing.RowFilter;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.ListSelectionEvent;
@@ -124,23 +114,16 @@ import javax.xml.ws.WebServiceException;
 
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.exceptions.NullConfigurationException;
-import org.concoursjeunes.plugins.PluginLoader;
+import org.concoursjeunes.plugins.AvailablePluginsManager;
+import org.concoursjeunes.plugins.PluginDescription;
 import org.concoursjeunes.ui.GlassPanePanel;
-import org.concoursjeunes.webservices.PluginDescription;
-import org.concoursjeunes.webservices.PluginDescriptionArray;
-import org.concoursjeunes.webservices.PluginsWebService;
-import org.concoursjeunes.webservices.PluginsWebServiceService;
 import org.jdesktop.swingx.JXLoginPane;
 import org.jdesktop.swingx.JXLoginPane.Status;
 import org.jdesktop.swingx.auth.LoginService;
 
 import ajinteractive.standard.ui.AJList;
 import ajinteractive.standard.utilities.net.SimpleAuthenticator;
-import ajinteractive.standard.utilities.updater.AjUpdater;
-import ajinteractive.standard.utilities.updater.AjUpdaterEvent;
-import ajinteractive.standard.utilities.updater.AjUpdaterFrame;
-import ajinteractive.standard.utilities.updater.AjUpdaterListener;
-import ajinteractive.standard.utilities.updater.UpdateException;
+import ajinteractive.standard.utilities.updater.*;
 
 /**
  * @author Aurélien JEOFFRAY
@@ -255,10 +238,6 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 		boolean retry = false;
 		
 		DefaultTableModel dtm = createTableModel();
-		PluginLoader pl = new PluginLoader();
-		List<String> categories = new ArrayList<String>();
-		List<String> categoriesLibelle = new ArrayList<String>();
-		
 		
 		if(ApplicationCore.getConfiguration().isUseProxy()) {
 			System.setProperty("http.proxyHost", ApplicationCore.getConfiguration().getProxy().getProxyServerAddress()); //$NON-NLS-1$
@@ -271,35 +250,20 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 		}
 		
 		try {
-			List<PluginDescription> alreadyInstalledPlugins = new ArrayList<PluginDescription>();
-			PluginsWebService services = new PluginsWebServiceService().getPluginsWebServicePort();
+			Class<?> clazz = Class.forName("org.concoursjeunes.webservices.AvailablePluginsManagerImpl", true, new URLClassLoader(new URL[] { new File("ConcoursJeunes-webservices.jar").toURI().toURL() }));
+			AvailablePluginsManager apm = (AvailablePluginsManager)clazz.newInstance();
+			pluginsDetail = apm.getPluginsDetail();
 			
-			PluginDescriptionArray pluginDescriptionArray = services.getAvailablePluginsForVersion(ApplicationCore.VERSION);
-
-			pluginsDetail = pluginDescriptionArray.getItem();
 			for(PluginDescription pluginDescription : pluginsDetail) {
-				if(!pl.isInstalled(pluginDescription.getLogicalName())) {
-					if(!categories.contains(pluginDescription.getCategory())) {
-						categories.add(pluginDescription.getCategory());
-						categoriesLibelle.add(services.getLibelleCategory(pluginDescription.getCategory(), ApplicationCore.getConfiguration().getLangue()));
-					}
-					Object[] row = new Object[] {
-							new Boolean(false),
-							pluginDescription.getDisplayName(),
-							pluginDescription.getVersion(),
-							categoriesLibelle.get(categories.indexOf(pluginDescription.getCategory())),
-							pluginDescription.getShortDescription()
-					};
-					
-					
-					dtm.addRow(row);
-				} else {
-					alreadyInstalledPlugins.add(pluginDescription);
-				}
-			}
-			
-			for(PluginDescription pluginDescription : alreadyInstalledPlugins) {
-				pluginsDetail.remove(pluginDescription);
+				Object[] row = new Object[] {
+						new Boolean(false),
+						pluginDescription.getDisplayName(),
+						pluginDescription.getVersion(),
+						apm.getCategories().get(pluginDescription.getCategory()),
+						pluginDescription.getShortDescription()
+				};
+				
+				dtm.addRow(row);
 			}
 			
 			sorter = new TableRowSorter<DefaultTableModel>(dtm);
@@ -312,8 +276,8 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 			jtPlugins.getColumnModel().removeColumn(jtPlugins.getColumnModel().getColumn(3));
 			
 			jlCategorie.add(ApplicationCore.ajrLibelle.getResourceString("installplugindialog.category.all")); //$NON-NLS-1$
-			for(String category : categories) {
-				jlCategorie.add(categoriesLibelle.get(categories.indexOf(category)));
+			for(String category : apm.getCategories().values()) {
+				jlCategorie.add(category);
 			}
 			jlCategorie.setSelectedIndex(0);
 		} catch(WebServiceException e1) {
@@ -345,6 +309,38 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 					}
 				});
 			}
+		} catch(ClassNotFoundException e1) {
+			e1.printStackTrace();
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					GlassPanePanel panel = new GlassPanePanel();
+					panel.setMessage(ApplicationCore.ajrLibelle.getResourceString("installplugindialog.temporary.disable")); //$NON-NLS-1$
+					setGlassPane(panel);
+					panel.setVisible(true);
+				}
+			});
+		} catch(IllegalAccessException e1) {
+			e1.printStackTrace();
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					GlassPanePanel panel = new GlassPanePanel();
+					panel.setMessage(ApplicationCore.ajrLibelle.getResourceString("installplugindialog.temporary.disable")); //$NON-NLS-1$
+					setGlassPane(panel);
+					panel.setVisible(true);
+				}
+			});
+		} catch(InstantiationException e1) {
+			e1.printStackTrace();
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					GlassPanePanel panel = new GlassPanePanel();
+					panel.setMessage(ApplicationCore.ajrLibelle.getResourceString("installplugindialog.temporary.disable")); //$NON-NLS-1$
+					setGlassPane(panel);
+					panel.setVisible(true);
+				}
+			});
+		} catch(MalformedURLException e1) {
+			e1.printStackTrace();
 		}
 		
 		if(retry) {

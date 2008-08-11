@@ -95,6 +95,8 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.logging.Level;
 
+import javax.swing.SwingUtilities;
+
 import org.concoursjeunes.exceptions.ExceptionHandlingEventQueue;
 import org.concoursjeunes.plugins.PluginEntry;
 import org.concoursjeunes.plugins.PluginLoader;
@@ -118,6 +120,8 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		final ApplicationCore core;
+		
 		System.setProperty("java.net.useSystemProxies","true"); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		Thread.UncaughtExceptionHandler handlerException = new Thread.UncaughtExceptionHandler() {
@@ -138,7 +142,7 @@ public class Main {
 		
 		Thread.setDefaultUncaughtExceptionHandler(handlerException);
 		Toolkit.getDefaultToolkit().getSystemEventQueue().push(new ExceptionHandlingEventQueue());
-		ApplicationCore core = ApplicationCore.getInstance();
+		core = ApplicationCore.getInstance();
 		if(System.getProperty("noplugin") == null) { //$NON-NLS-1$
 			loadStartupPlugin();
 		}
@@ -163,7 +167,13 @@ public class Main {
 			}
 		});
 		System.out.println("core loaded"); //$NON-NLS-1$
-		new ConcoursJeunesFrame(core);
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				new ConcoursJeunesFrame(core);
+			}
+		});
+		
 	}
 	
 	@SuppressWarnings("unchecked")
