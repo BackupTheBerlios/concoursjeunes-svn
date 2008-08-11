@@ -119,7 +119,6 @@ import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 
 import org.concoursjeunes.*;
-import org.concoursjeunes.builders.ReglementBuilder;
 import org.concoursjeunes.event.ConcoursJeunesEvent;
 import org.concoursjeunes.event.ConcoursJeunesListener;
 import org.concoursjeunes.event.ParametreEvent;
@@ -144,7 +143,6 @@ import ajinteractive.standard.ui.*;
  */
 public class ConcoursJeunesFrame extends JFrame implements ActionListener, HyperlinkListener, ConcoursJeunesListener, ParametreListener, AJTabbedPaneListener, ChangeListener {
 	private JMenuItem jmiParametres;
-	private JMenu jmReglements;
 	private AJTabbedPane tabbedpane;
 	private JEditorPane jepHome;
 
@@ -221,10 +219,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 		if(System.getProperty("noplugin") == null) { //$NON-NLS-1$
 			fillOnDemandPlugin((JMenu) frameCreator.getNamedComponent("mi.import")); //$NON-NLS-1$
 		}
-
-		jmReglements = (JMenu) frameCreator.getNamedComponent("mi.reglements"); //$NON-NLS-1$
-		fillReglementItem(jmReglements);
-
+		
 		jmiParametres = (JMenuItem) frameCreator.getNamedComponent("mi.parametres"); //$NON-NLS-1$
 
 		if (System.getProperty("debug.mode") != null) { //$NON-NLS-1$
@@ -300,62 +295,6 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			});
 
 		}
-	}
-
-	private void fillReglementItem(JMenu reglementMenu) {
-
-		reglementMenu.removeAll();
-
-		String[] availableReglements = Reglement.listAvailableReglements();
-		if (availableReglements != null) {
-			for (String reglementName : availableReglements) {
-				JMenuItem jmiReglement = new JMenuItem(reglementName);
-				jmiReglement.setActionCommand(reglementName);
-				jmiReglement.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						ReglementDialog reglementDialog = new ReglementDialog(ConcoursJeunesFrame.this, ReglementBuilder.createReglement(e.getActionCommand()));
-						Reglement reglement = reglementDialog.showReglementDialog();
-						if (reglement != null) {
-							try {
-								reglement.save();
-							} catch(SQLException e1) {
-								JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
-										null, null, e1, Level.SEVERE, null));
-								e1.printStackTrace();
-							}
-						}
-					}
-				});
-				reglementMenu.add(jmiReglement);
-			}
-			reglementMenu.addSeparator();
-		}
-		JMenuItem jmiNewReglement = new JMenuItem(ApplicationCore.ajrLibelle.getResourceString("menubar.edition.reglement.new")); //$NON-NLS-1$
-		jmiNewReglement.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String reglementName = JOptionPane.showInputDialog(ApplicationCore.ajrLibelle.getResourceString("reglement.general.addreglement")); //$NON-NLS-1$
-				if (reglementName != null) {
-					//Reglement reglement = new Reglement(reglementName);
-					Reglement reglement = ReglementBuilder.createReglement();
-					reglement.setName(reglementName);
-
-					ReglementDialog reglementDialog = new ReglementDialog(ConcoursJeunesFrame.this, reglement);
-					reglement = reglementDialog.showReglementDialog();
-					if (reglement != null) {
-						try {
-							reglement.save();
-						} catch(SQLException e1) {
-							JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
-									null, null, e1, Level.SEVERE, null));
-							e1.printStackTrace();
-						}
-
-						fillReglementItem(jmReglements);
-					}
-				}
-			}
-		});
-		reglementMenu.add(jmiNewReglement);
 	}
 
 	private void showConfigurationDialog() {	
@@ -524,6 +463,9 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			if (jif != null)
 				jif.openParametreDialog();
 
+		} else if (cmd.equals("menubar.edition.reglement")) { //$NON-NLS-1$
+			ReglementManagerDialog reglementManagerDialog = new ReglementManagerDialog(this);
+			reglementManagerDialog.showReglementManagerDialog(false);
 		} else if (cmd.equals("menubar.tools.disableplugins")) { //$NON-NLS-1$
 			DisablePluginDialog disablePluginDialog = new DisablePluginDialog(this);
 			disablePluginDialog.showDisablePluginDialog();
@@ -552,8 +494,11 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 				e1.printStackTrace();
 			}
 		} else if (cmd.equals("menubar.aide.versionnote")) { //$NON-NLS-1$
-			ChangeLogDialog changeLogDialog = new ChangeLogDialog(this);
-			changeLogDialog.showChangeLogDialog();
+			TextDialog textDialog = new TextDialog(this);
+			textDialog.showTextDialog(ApplicationCore.ajrLibelle.getResourceString("changelog.title"), "changelog.txt"); //$NON-NLS-1$ //$NON-NLS-2$
+		} else if (cmd.equals("menubar.aide.licence")) { //$NON-NLS-1$
+			TextDialog textDialog = new TextDialog(this);
+			textDialog.showTextDialog(ApplicationCore.ajrLibelle.getResourceString("licence.title"), "Licence.txt"); //$NON-NLS-1$ //$NON-NLS-2$
 		} else if (cmd.equals("menubar.debug.addpoints")) { //$NON-NLS-1$
 			if (jif != null) {
 				org.concoursjeunes.debug.Debug.attributePoints(jif.getFicheConcours().getConcurrentList());

@@ -1,4 +1,6 @@
 /*
+ * Créer le 6 août 2008 à 19:01:19 pour ConcoursJeunes
+ *
  * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
@@ -86,100 +88,140 @@
  */
 package org.concoursjeunes;
 
-import junit.framework.TestCase;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.concoursjeunes.builders.ConcurrentBuilder;
-import org.concoursjeunes.event.ConcoursJeunesEvent;
-import org.concoursjeunes.event.ConcoursJeunesListener;
-import org.concoursjeunes.exceptions.FicheConcoursException;
-import org.concoursjeunes.exceptions.NullConfigurationException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.concoursjeunes.builders.ReglementBuilder;
 
 /**
  * @author Aurélien JEOFFRAY
+ *
  */
-public class FicheConcoursTest extends TestCase {
+public class ReglementManager {
 	
-	private ApplicationCore concoursJeunes;
-	private FicheConcours ficheConcours;
-
+	private List<Reglement> availableReglements = new ArrayList<Reglement>();
+	private List<Federation> federation = new ArrayList<Federation>();
+	private List<Integer> categorie = new ArrayList<Integer>();
+	
 	/**
-	 * @throws java.lang.Exception
+	 * 
 	 */
-	@Before
-	@Override
-	public void setUp() throws Exception {
-		concoursJeunes = ApplicationCore.getInstance();
-		
-		concoursJeunes.addConcoursJeunesListener(new ConcoursJeunesListener() {
+	public ReglementManager() {
+		try {
+			Statement stmt = ApplicationCore.dbConnection.createStatement();
 
-			public void ficheConcoursClosed(ConcoursJeunesEvent concoursJeunesEvent) {}
-			/* (non-Javadoc)
-			 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursCreated(org.concoursjeunes.ConcoursJeunesEvent)
-			 */
-			public void ficheConcoursCreated(ConcoursJeunesEvent concoursJeunesEvent) {
-				ficheConcours = concoursJeunesEvent.getFicheConcours();
+			ResultSet rs = stmt.executeQuery("select NUMREGLEMENT from REGLEMENT where NUMREGLEMENT <> 0"); //$NON-NLS-1$
+
+			while (rs.next()) {
+				Reglement reglement = ReglementBuilder.getReglement(rs.getInt("NUMREGLEMENT")); //$NON-NLS-1$
+				
+				if(!federation.contains(reglement.getFederation()))
+					federation.add(reglement.getFederation());
+				if(!categorie.contains(reglement.getCategory()))
+					categorie.add(reglement.getCategory());
+				availableReglements.add(reglement); 
 			}
-			public void ficheConcoursDeleted(ConcoursJeunesEvent concoursJeunesEvent) {}
-			public void ficheConcoursRestored(ConcoursJeunesEvent concoursJeunesEvent) {}
-			public void configurationChanged(ConcoursJeunesEvent concoursJeunesEvent) {}
-			
-		});
-		
-		Parametre parametre = new Parametre(ApplicationCore.getConfiguration());
-		concoursJeunes.createFicheConcours(parametre);
+			rs.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
-	@Test
-	public void testFicheConcours() {
-		
-	}
-
-	/**
-	 * Méthode de test pour {@link org.concoursjeunes.FicheConcours#addConcurrent(org.concoursjeunes.Concurrent)}.
-	 */
-	@Test
-	public void testAddConcurrent() {
-		Concurrent concurrent = ConcurrentBuilder.getConcurrent(ficheConcours.getParametre().getReglement());
-		//concurrent.setDifferentiationCriteria();
-		try {
-			ficheConcours.addConcurrent(concurrent, 0);
-		} catch (FicheConcoursException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
-	}
-
-	/**
-	 * Méthode de test pour {@link org.concoursjeunes.FicheConcours#removeConcurrent(org.concoursjeunes.Concurrent)}.
-	 */
-	@Test
-	public void testRemoveConcurrent() {
-		Concurrent concurrent = ConcurrentBuilder.getConcurrent(ficheConcours.getParametre().getReglement());
-		try {
-			ficheConcours.addConcurrent(concurrent, 0);
-		} catch (FicheConcoursException e) {
-			e.printStackTrace();
+	public void removeReglement(Reglement reglement) {
+		if(reglement.delete()) {
+			availableReglements.remove(reglement);
+			if(getReglementsForCategory(reglement.getCategory()).size() == 0)
+				categorie.remove(new Integer(reglement.getCategory()));
+			if(getReglementsForFederation(reglement.getFederation()).size() == 0)
+				federation.remove(reglement.getFederation());
+			reglement = null;
 		}
 		
-		try {
-			ficheConcours.removeConcurrent(concurrent);
-		} catch (FicheConcoursException e) {
-			e.printStackTrace();
-			fail("Une erreur est survenue au cours de la suppression"); //$NON-NLS-1$
-		}
-		assertFalse(ficheConcours.getConcurrentList().contains(concurrent));
 	}
-
-	@After
-	@Override
-	public void tearDown() {
-		try {
-			concoursJeunes.deleteFicheConcours(ficheConcours.getMetaDataFicheConcours());
-		} catch (NullConfigurationException e) {
-			e.printStackTrace();
+	
+	/**
+	 * <p>
+	 * Retourne la liste des réglement disponible en base de donnée.
+	 * </p>
+	 * <p>
+	 * Des mises à jour du programme peuvent apporter de nouveau réglement sous
+	 * forme de script sql
+	 * </p>
+	 * 
+	 * @return la liste des réglement disponible
+	 */
+	public List<Reglement> getAvailableReglements() {
+		return availableReglements;
+	}
+	
+	/**
+	 * Retourne la liste des réglements pour la categorie nommé
+	 * 
+	 * @param categorie le nom de la catégorie des réglements à retourner
+	 * @return la liste des réglements de la catégorie
+	 */
+	public List<Reglement> getReglementsForCategory(int category) {
+		List<Reglement> reglements = new ArrayList<Reglement>();
+		for(Reglement reglement : availableReglements) {
+			if(reglement.getCategory() == category)
+				reglements.add(reglement);
 		}
+		
+		return reglements;
+	}
+	
+	public List<Reglement> getReglementsForFederation(Federation federation) {
+		List<Reglement> reglements = new ArrayList<Reglement>();
+		for(Reglement reglement : availableReglements) {
+			if(reglement.getFederation().equals(federation))
+				reglements.add(reglement);
+		}
+		
+		return reglements;
+	}
+	
+	public List<Reglement> getReglementsForFederationAndCategory(Federation federation, int category) {
+		List<Reglement> reglements = new ArrayList<Reglement>();
+		for(Reglement reglement : availableReglements) {
+			if(reglement.getFederation().equals(federation) && reglement.getCategory() == category)
+				reglements.add(reglement);
+		}
+		
+		return reglements;
+	}
+	
+	/**
+	 * Retourne le reglement qualifié par son nom ou null si inexistant
+	 * 
+	 * @param name le nom du reglement à retourner
+	 * @return le reglement correspondant
+	 */
+	public Reglement getReglementByName(String name) {
+		for(Reglement reglement : availableReglements) {
+			if(reglement.getName().equals(name))
+				return reglement;
+		}
+		return null;
+	}
+	
+	/**
+	 * Retourne les fédération représenté par les réglements
+	 * 
+	 * @return la liste des fédération représenté
+	 */
+	public List<Federation> getFederations() {
+		return federation;
+	}
+	
+	/**
+	 * Retourne la liste des catégories représenté par les réglements
+	 * 
+	 * @return la liste des catégories de réglement
+	 */
+	public List<Integer> getCategories() {
+		return categorie;
 	}
 }

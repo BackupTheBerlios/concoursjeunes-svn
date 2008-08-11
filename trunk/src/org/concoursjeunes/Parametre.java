@@ -140,7 +140,7 @@ public class Parametre extends DefaultParameters {
 		setNbCible(configuration.getNbCible());
 		setNbTireur(configuration.getNbTireur());
 		setNbDepart(configuration.getNbDepart());
-		setReglement(ReglementBuilder.createReglement(configuration.getReglementName()));
+		setReglement(ReglementBuilder.getReglement(configuration.getReglementName()));
 	}
 	
 	/**

@@ -87,9 +87,6 @@
 package org.concoursjeunes.plugins.update;
 
 import static org.concoursjeunes.ApplicationCore.ajrParametreAppli;
-import glguerin.authkit.Authorization;
-import glguerin.authkit.Privilege;
-import glguerin.authkit.imp.macosx.MacOSXAuthorization;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -114,6 +111,7 @@ import org.jdesktop.swingx.JXLoginPane;
 import org.jdesktop.swingx.auth.LoginService;
 import org.jdesktop.swingx.util.OS;
 
+import ajinteractive.macosx.auth.PrivilegedRuntime;
 import ajinteractive.standard.common.AJToolKit;
 import ajinteractive.standard.common.AjResourcesReader;
 import ajinteractive.standard.utilities.app.AppSerializer;
@@ -124,21 +122,16 @@ import ajinteractive.standard.utilities.updater.*;
 public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, MouseListener {
 	// private String baseURL;
 	private SystemTray tray;
-
 	private TrayIcon trayIcon;
-
 	private AjUpdater ajUpdater;
-
-	Hashtable<String, ArrayList<FileMetaData>> updateFiles = new Hashtable<String, ArrayList<FileMetaData>>();
-
+	private Hashtable<String, ArrayList<FileMetaData>> updateFiles = new Hashtable<String, ArrayList<FileMetaData>>();
 	private final AjResourcesReader pluginRessources = new AjResourcesReader("properties.ConcoursJeunesUpdate"); //$NON-NLS-1$
-
 	private final AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.update.ConcoursJeunesUpdate_libelle", ConcoursJeunesUpdate.class.getClassLoader()); //$NON-NLS-1$
-
 	private enum Status {
-		NONE, AVAILABLE, DOWNLODED
+		NONE,
+		AVAILABLE,
+		DOWNLODED
 	}
-
 	private Status currentStatus = Status.NONE;
 
 	public ConcoursJeunesUpdate() {
@@ -288,30 +281,21 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 			if (JOptionPane.showConfirmDialog(null, pluginLocalisation.getResourceString("update.confirminstall"), pluginLocalisation.getResourceString("update.confirminstall.title"), //$NON-NLS-1$ //$NON-NLS-2$
 					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 				try {
+					Process process = null;
+					String[] command = new String[] { "concoursjeunes-applyupdate", //$NON-NLS-1$
+							ApplicationCore.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
+							System.getProperty("user.dir") }; //$NON-NLS-1$
 					if(!OS.isMacOSX()) { 
 						//sur les systèmes Windows et Linux, invoque le programme "concoursjeunes-applyupdate"
 						//qui s'occupe d'élever les priviléges utilisateur si nécessaire.
-						Process process = Runtime.getRuntime().exec(new String[] { "concoursjeunes-applyupdate", //$NON-NLS-1$
-								ApplicationCore.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
-								System.getProperty("user.dir") }); //$NON-NLS-1$
-						process.waitFor();
+						process = Runtime.getRuntime().exec(command); 
 					} else {
-						//sous mac, c'est l'objet MacOSXAuthorization qui à la charge de réaliser
-						//l'élévation de privilége
-						Authorization macAuth = new MacOSXAuthorization();
-						macAuth.isAvailable(Privilege.EMPTY);
-						Process process = macAuth.execPrivileged(new String[] { System.getProperty("user.dir") + "/concoursjeunes-applyupdate", //$NON-NLS-1$ //$NON-NLS-2$
-								ApplicationCore.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
-								System.getProperty("user.dir") });//$NON-NLS-1$
-						if (macAuth.isCapable(Authorization.HAS_PROCESS_WAITFOR)) {
-							try {
-								process.waitFor();
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-						}
-						
+						//Sous Mac OS X, l'elevation de privilege est effectué en java
+						//à l'aide d'une librairie jni
+						process = PrivilegedRuntime.getRuntime().exec(command);
 					}
+					if(process != null)
+						process.waitFor();
 					
 					try {
 						ApplicationCore.getInstance().saveAllFichesConcours();

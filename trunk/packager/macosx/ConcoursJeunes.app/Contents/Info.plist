@@ -46,7 +46,6 @@
 		<string>$JAVAROOT/lib/h2.jar</string>
 		<string>$JAVAROOT/lib/js.jar</string>
 		<string>$JAVAROOT/lib/js-engine.jar</string>
-		<string>$JAVAROOT/lib/AuthKit.jar</string>
 	</array>
 	<key>Properties</key>
 	<dict>

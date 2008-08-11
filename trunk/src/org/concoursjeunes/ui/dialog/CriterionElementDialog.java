@@ -98,7 +98,7 @@ import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Criterion;
 import org.concoursjeunes.CriterionElement;
 
-import ajinteractive.standard.java2.GridbagComposer;
+import ajinteractive.standard.ui.GridbagComposer;
 
 /**
  * 

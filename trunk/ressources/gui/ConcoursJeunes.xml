@@ -32,9 +32,7 @@
 					<menuitem>menubar.edition.entite</menuitem>
 					<separator />
 					<menuitem name="mi.parametres" enable="false">menubar.edition.parametre</menuitem>
-					<menu id="reglement" name="mi.reglements">
-						<label>menubar.edition.reglement</label>
-					</menu>
+					<menuitem name="mi.reglements">menubar.edition.reglement</menuitem>
 				</menuitems>
 			</menu>
 			<menu id="tools" name="mi.tools">
@@ -52,6 +50,7 @@
 					<menuitem keycode="VK_F1">menubar.aide.aide</menuitem>
 					<separator />
 					<menuitem>menubar.aide.versionnote</menuitem>
+					<menuitem>menubar.aide.licence</menuitem>
 					<menuitem>menubar.aide.apropos</menuitem>
 				</menuitems>
 			</menu>

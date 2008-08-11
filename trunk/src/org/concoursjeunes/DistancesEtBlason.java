@@ -58,7 +58,7 @@ public class DistancesEtBlason {
 	 * <p>Conserver pour compatibilite avec les concours réalisé avant la création
 	 * de la propriete targetFace.</p>
 	 * 
-	 * @deprecated remplacer par <b><i>getTargetFace()</i></b>
+	 * @deprecated remplacer par <b><i>{@link DistancesEtBlason#getTargetFace()}</i></b>
 	 * 
 	 * @return Returns the blason.
 	 */
@@ -71,7 +71,7 @@ public class DistancesEtBlason {
 	 * <p>Conserver pour compatibilite avec les concours réalisé avant la création
 	 * de la propriete targetFace.</p>
 	 * 
-	 * @deprecated remplacer par <b><i>setTargetFace(Blason targetFace)</i></b>
+	 * @deprecated remplacer par <b><i>{@link DistancesEtBlason#setTargetFace(Blason)}</i></b>
 	 * 
 	 * @param blason
 	 *            The blason to set.
@@ -246,8 +246,8 @@ public class DistancesEtBlason {
 
 	@SuppressWarnings("nls")
 	@Override
-	public String toString() {
-		return "{" + targetFace.toString() + "," + distances.toString() + "}";
+	public String toString() {	
+		return "{" + targetFace.toString() + "," + Arrays.toString(distances) + "}";
 	}
 
 }

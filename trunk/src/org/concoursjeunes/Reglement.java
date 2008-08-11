@@ -88,7 +88,10 @@
  */
 package org.concoursjeunes;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Types;
 import java.util.*;
 
 /**
@@ -129,6 +132,9 @@ public class Reglement {
 	private List<DistancesEtBlason> listDistancesEtBlason = new ArrayList<DistancesEtBlason>();
 
 	private boolean officialReglement = false;
+	private Federation federation = new Federation();
+	private int category = 0;
+	private boolean removable = true;
 
 	/**
 	 * Constructeur java-beans. Initialise un réglement par défaut
@@ -140,7 +146,7 @@ public class Reglement {
 	/**
 	 * Initialise un réglement par défaut en le nommant
 	 * 
-	 * @param name
+	 * @param name le nom du reglement à créer
 	 */
 	public Reglement(String name) {
 		this.name = name;
@@ -149,7 +155,7 @@ public class Reglement {
 	/**
 	 * Retourne le nom du réglement
 	 * 
-	 * @return name le nom du réglement
+	 * @return le nom du réglement
 	 */
 	public String getName() {
 		return name;
@@ -195,29 +201,38 @@ public class Reglement {
 	}
 
 	/**
-	 * @return surclassement
+	 * Retourne le tableau de surclassement à appliquer sur
+	 * le réglement
+	 * 
+	 * @return le tableau de surclassement
 	 */
 	public Map<CriteriaSet, CriteriaSet> getSurclassement() {
 		return surclassement;
 	}
 
 	/**
-	 * @param surclassement surclassement à définir
+	 * Définit le tableau de surclassement à appliquer sur
+	 * le réglement
+	 * 
+	 * @param surclassement le tableau de surclassement
 	 */
 	public void setSurclassement(Map<CriteriaSet, CriteriaSet> surclassement) {
 		this.surclassement = surclassement;
 	}
 
 	/**
-	 * @return listDistancesEtBlason
+	 * Retourne la liste des couples distances/blasons exploité avec le réglement
+	 * 
+	 * @return la liste des couples distances/blasons
 	 */
 	public List<DistancesEtBlason> getListDistancesEtBlason() {
 		return listDistancesEtBlason;
 	}
 
 	/**
-	 * @param listDistancesEtBlason
-	 *            listDistancesEtBlason à définir
+	 * Définit la liste des couples distances/blasons exploité avec le réglement
+	 * 
+	 * @param listDistancesEtBlason la liste des couples distances/blasons
 	 */
 	public void setListDistancesEtBlason(List<DistancesEtBlason> listDistancesEtBlason) {
 		this.listDistancesEtBlason = listDistancesEtBlason;
@@ -239,6 +254,11 @@ public class Reglement {
 		return null;
 	}
 
+	/**
+	 * Ajoute un couple distances/Blasons au réglement
+	 * 
+	 * @param distancesEtBlason le distances/Blasons à rajouter
+	 */
 	public void addDistancesEtBlason(DistancesEtBlason distancesEtBlason) {
 		listDistancesEtBlason.add(distancesEtBlason);
 	}
@@ -318,75 +338,100 @@ public class Reglement {
 	}
 
 	/**
-	 * @return nbFlecheParVolee
+	 * Retourne le nombre de fleche tiré par volée imposé par le réglement
+	 * <p>
+	 * La valeur par défaut est fixé à 3
+	 * 
+	 * @return le nombre de fleche tiré par voléee
 	 */
 	public int getNbFlecheParVolee() {
 		return nbFlecheParVolee;
 	}
 
 	/**
-	 * @param nbFlecheParVolee
-	 *            nbFlecheParVolee à définir
+	 * Définit le nombre de fleche tiré par volée imposé par le réglement
+	 * 
+	 * @param nbFlecheParVolee le nombre de fleche tiré par voléee
 	 */
 	public void setNbFlecheParVolee(int nbFlecheParVolee) {
 		this.nbFlecheParVolee = nbFlecheParVolee;
 	}
 
 	/**
-	 * @return nbMembresEquipe
+	 * Retourne le nombre maximum de concurrents que peut contenir une équipe
+	 * sur un concours avec ce réglement
+	 * <p>
+	 * La valeur par défaut est fixé à 4
+	 * 
+	 * @return le nombre maximum de concurrents que peut contenir une équipe
 	 */
 	public int getNbMembresEquipe() {
 		return nbMembresEquipe;
 	}
 
 	/**
-	 * @param nbMembresEquipe
-	 *            nbMembresEquipe à définir
+	 * Définit le nombre maximum de concurrents que peut contenir une équipe
+	 * sur un concours avec ce réglement
+	 * 
+	 * @param nbMembresEquipe le nombre maximum de concurrents que peut contenir une équipe
 	 */
 	public void setNbMembresEquipe(int nbMembresEquipe) {
 		this.nbMembresEquipe = nbMembresEquipe;
 	}
 
 	/**
-	 * @return nbMembresRetenu
+	 * Retourne le nombre de concurrents, membre d'une équipe dont les points seront
+	 * comptablisé pour le classement par équipe
+	 * <p>
+	 * La valeur par défaut est fixé à 3
+	 * 
+	 * @return le nombre de concurrents d'une équipe dont les points seront comptablisé
 	 */
 	public int getNbMembresRetenu() {
 		return nbMembresRetenu;
 	}
 
 	/**
-	 * @param nbMembresRetenu
-	 *            nbMembresRetenu à définir
+	 * Définit le nombre de concurrents, membre d'une équipe dont les points seront
+	 * comptablisé pour le classement par équipe
+	 * 
+	 * @param nbMembresRetenu le nombre de concurrents d'une équipe dont les points seront comptablisé
 	 */
 	public void setNbMembresRetenu(int nbMembresRetenu) {
 		this.nbMembresRetenu = nbMembresRetenu;
 	}
 
 	/**
-	 * @return nbSerie
+	 * Retourne le nombre de séries de volées (distances) que compte le concours
+	 *   
+	 * @return le nombre de séries devant être réalisé sur le concours
 	 */
 	public int getNbSerie() {
 		return nbSerie;
 	}
 
 	/**
-	 * @param nbSerie
-	 *            nbSerie à définir
+	 * Définit le nombre de séries de volées (distances) que compte le concours
+	 * 
+	 * @param nbSerie le nombre de séries devant être réalisé sur le concours
 	 */
 	public void setNbSerie(int nbSerie) {
 		this.nbSerie = nbSerie;
 	}
 
 	/**
-	 * @return nbVoleeParSerie
+	 * Définit le nombre de volées que devra tirer un archer dans une série
+	 * 
+	 * @return le nombre de volées dans une série
 	 */
 	public int getNbVoleeParSerie() {
 		return nbVoleeParSerie;
 	}
 
 	/**
-	 * @param nbVoleeParSerie
-	 *            nbVoleeParSerie à définir
+	 * Retourne le nombre de volées que devra tirer un archer dans une série
+	 * 
+	 * @param nbVoleeParSerie le nombre de volées dans une série
 	 */
 	public void setNbVoleeParSerie(int nbVoleeParSerie) {
 		this.nbVoleeParSerie = nbVoleeParSerie;
@@ -438,6 +483,48 @@ public class Reglement {
 	}
 
 	/**
+	 * @param federation federation à définir
+	 */
+	public void setFederation(Federation federation) {
+		this.federation = federation;
+	}
+
+	/**
+	 * @return federation
+	 */
+	public Federation getFederation() {
+		return federation;
+	}
+
+	/**
+	 * @param categorie categorie à définir
+	 */
+	public void setCategory(int category) {
+		this.category = category;
+	}
+
+	/**
+	 * @return categorie
+	 */
+	public int getCategory() {
+		return category;
+	}
+
+	/**
+	 * @param removable removable à définir
+	 */
+	public void setRemovable(boolean removable) {
+		this.removable = removable;
+	}
+
+	/**
+	 * @return removable
+	 */
+	public boolean isRemovable() {
+		return removable;
+	}
+
+	/**
 	 * Rend l'objet persistant. Sauvegarde l'ensemble des données de l'objet
 	 * dans la base de donnée de ConcoursJeunes.
 	 * 
@@ -467,6 +554,11 @@ public class Reglement {
 		saveSurclassement();
 	}
 
+	/**
+	 * Sauvegarde en base les critères de distinction des archers actif pour le réglement
+	 * 
+	 * @throws SQLException
+	 */
 	private void saveCriteria() throws SQLException {
 		int numordre = 1;
 		for (Criterion criterion : listCriteria) {
@@ -475,6 +567,11 @@ public class Reglement {
 		}
 	}
 	
+	/**
+	 * Sauvegarde en base le tableau de surclassement
+	 * 
+	 * @throws SQLException
+	 */
 	private void saveSurclassement() throws SQLException {
 		Statement stmt = ApplicationCore.dbConnection.createStatement();
 		stmt.executeUpdate("delete from SURCLASSEMENT where NUMREGLEMENT=" + hashCode()); //$NON-NLS-1$
@@ -497,6 +594,11 @@ public class Reglement {
 		pstmt.close();
 	}
 
+	/**
+	 * Sauvegarde en base le tableau des distances/blasons
+	 * 
+	 * @throws SQLException
+	 */
 	private void saveDistancesAndBlasons() throws SQLException {
 		for (DistancesEtBlason distancesEtBlason : listDistancesEtBlason) {
 			distancesEtBlason.save(hashCode());
@@ -540,7 +642,7 @@ public class Reglement {
 	 * 
 	 * @return la liste des réglement disponible
 	 */
-	public static String[] listAvailableReglements() {
+	/*public static String[] listAvailableReglements() {
 		ArrayList<String> availableReglements = new ArrayList<String>();
 		try {
 			Statement stmt = ApplicationCore.dbConnection.createStatement();
@@ -556,7 +658,7 @@ public class Reglement {
 		}
 
 		return availableReglements.toArray(new String[availableReglements.size()]);
-	}
+	}*/
 
 	/*
 	 * (non-Javadoc)
@@ -572,6 +674,9 @@ public class Reglement {
 		return result;
 	}
 	
+	/**
+	 * @return le nom du réglement
+	 */
 	@Override
 	public String toString() {
 		return name;

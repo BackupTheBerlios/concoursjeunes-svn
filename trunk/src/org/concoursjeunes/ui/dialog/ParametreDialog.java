@@ -102,13 +102,13 @@ import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.FicheConcours;
 import org.concoursjeunes.Parametre;
 import org.concoursjeunes.Reglement;
-import org.concoursjeunes.builders.ReglementBuilder;
-import org.concoursjeunes.ui.ConcoursJeunesFrame;
 import org.jdesktop.swingx.JXDatePicker;
 
-import ajinteractive.standard.java2.GridbagComposer;
-import ajinteractive.standard.java2.NumberDocument;
 import ajinteractive.standard.ui.AJList;
+import ajinteractive.standard.ui.GridbagComposer;
+import ajinteractive.standard.ui.NumberDocument;
+
+import com.lowagie.text.Font;
 
 /**
  * Boite de dialogue de gestion des parametre du concours
@@ -122,13 +122,15 @@ public class ParametreDialog extends JDialog implements ActionListener {
 	private Reglement tempReglement;
 
 	private final FicheConcours ficheConcours;
+	private JFrame parentframe;
 
 	// private JButton jbLogo;
 	private final JTextField jtfIntituleConcours = new JTextField(20);
 	private final JTextField jtfLieuConcours = new JTextField(20);
 	// private JFormattedTextField jtfDateConcours;
 	private final JXDatePicker jtfDateConcours = new JXDatePicker();
-	private final JComboBox jcbReglement = new JComboBox();
+	private final JLabel jlSelectedReglement = new JLabel();
+	private final JButton jbSelectReglement = new JButton();
 	private final JButton jbDetail = new JButton();
 	private final JTextField jtfNombreCible = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
 	private final JComboBox jcbNombreTireurParCible = new JComboBox();
@@ -148,17 +150,18 @@ public class ParametreDialog extends JDialog implements ActionListener {
 	private final JLabel jlNombreDepart = new JLabel();
 	private final JLabel jlbArbitres = new JLabel();
 
-	ReglementDialog reglementDialog;
-
 	private final JButton jbValider = new JButton();
 	private final JButton jbAnnuler = new JButton();
+	
+	private ReglementDialog reglementDialog;
 
-	public ParametreDialog(ConcoursJeunesFrame concoursJeunesFrame, FicheConcours ficheConcours) {
-		super(concoursJeunesFrame);
+	public ParametreDialog(JFrame parentframe, FicheConcours ficheConcours) {
+		super(parentframe);
 
+		this.parentframe = parentframe;
 		this.ficheConcours = ficheConcours;
 
-		reglementDialog = new ReglementDialog(concoursJeunesFrame, null);
+		reglementDialog = new ReglementDialog(parentframe, null);
 
 		init();
 		affectLibelle();
@@ -176,24 +179,27 @@ public class ParametreDialog extends JDialog implements ActionListener {
 		// JPanel jContentPane = new JPanel();
 		JPanel jpParametre = new JPanel();
 		JPanel jpValidation = new JPanel();
+		JPanel jpReglement	= new JPanel();
 
 		GridBagConstraints c = new GridBagConstraints();
 		GridbagComposer gridbagComposer = new GridbagComposer();
 
 		jbDetail.addActionListener(this);
 		jtfDateConcours.setFormats(new DateFormat[] { DateFormat.getDateInstance(DateFormat.SHORT) });
-		for (String name : Reglement.listAvailableReglements()) {
-			jcbReglement.addItem(name);
-		}
-		jcbReglement.addActionListener(this);
-		for (int i = 2; i <= 4; i += 2)
-			jcbNombreTireurParCible.addItem(i);
+		jlSelectedReglement.setFont(jlSelectedReglement.getFont().deriveFont(Font.ITALIC));
+		jbSelectReglement.addActionListener(this);
+		jcbNombreTireurParCible.addItem("AB"); //$NON-NLS-1$
+		jcbNombreTireurParCible.addItem("AB/CD"); //$NON-NLS-1$
 		jtfArbitres.addActionListener(this);
 		jbAjouterArbitre.addActionListener(this);
 		jbSupprimerArbitre.addActionListener(this);
 		jbArbitreResponsable.addActionListener(this);
 		jbValider.addActionListener(this);
 		jbAnnuler.addActionListener(this);
+		
+		jpReglement.add(jlSelectedReglement);
+		jpReglement.add(jbSelectReglement);
+		jpReglement.add(jbDetail);
 
 		jpValidation.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		jpValidation.add(jbValider);
@@ -223,8 +229,11 @@ public class ParametreDialog extends JDialog implements ActionListener {
 		c.gridy++;
 		c.gridwidth = 1;
 		gridbagComposer.addComponentIntoGrid(jlReglement, c);
-		gridbagComposer.addComponentIntoGrid(jcbReglement, c);
-		gridbagComposer.addComponentIntoGrid(jbDetail, c);
+		c.gridwidth = 3;
+		gridbagComposer.addComponentIntoGrid(jpReglement, c);
+		//c.gridwidth = 2;
+		//gridbagComposer.addComponentIntoGrid(jbSelectReglement, c);
+		//gridbagComposer.addComponentIntoGrid(jbDetail, c);
 
 		c.gridy++;
 		c.gridwidth = 1;
@@ -302,7 +311,8 @@ public class ParametreDialog extends JDialog implements ActionListener {
 		jlNombreDepart.setText(ApplicationCore.ajrLibelle.getResourceString("parametre.nombredepart")); //$NON-NLS-1$
 		jlbArbitres.setText(ApplicationCore.ajrLibelle.getResourceString("parametre.arbitres")); //$NON-NLS-1$
 
-		jbDetail.setText("+"); //$NON-NLS-1$
+		jbSelectReglement.setText(ApplicationCore.ajrLibelle.getResourceString("parametre.choice_reglement")); //$NON-NLS-1$
+		jbDetail.setText(ApplicationCore.ajrLibelle.getResourceString("parametre.detail_customize")); //$NON-NLS-1$
 
 		jbAjouterArbitre.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.ajouter")); //$NON-NLS-1$
 		jbSupprimerArbitre.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.supprimer")); //$NON-NLS-1$
@@ -317,8 +327,8 @@ public class ParametreDialog extends JDialog implements ActionListener {
 		jtfIntituleConcours.setText(parametre.getIntituleConcours());
 		jtfLieuConcours.setText(parametre.getLieuConcours());
 		jtfDateConcours.setDate(parametre.getDate());
-		jcbReglement.setSelectedItem(parametre.getReglement().getName());
-		jcbReglement.setEnabled(!parametre.isReglementLock());
+		jlSelectedReglement.setText(parametre.getReglement().getName());
+		jbSelectReglement.setEnabled(!parametre.isReglementLock());
 		jtfNombreCible.setText("" + parametre.getNbCible()); //$NON-NLS-1$
 		jcbNombreTireurParCible.setSelectedIndex((parametre.getNbTireur() / 2) - 1);
 		jtfNombreDepart.setText("" + parametre.getNbDepart()); //$NON-NLS-1$
@@ -371,7 +381,7 @@ public class ParametreDialog extends JDialog implements ActionListener {
 			}
 
 			parametre.setNbCible(Integer.parseInt(jtfNombreCible.getText()));
-			parametre.setNbTireur((Integer) jcbNombreTireurParCible.getSelectedItem());
+			parametre.setNbTireur(jcbNombreTireurParCible.getSelectedIndex() == 0 ? 2 : 4);
 			parametre.setNbDepart(Integer.parseInt(jtfNombreDepart.getText()));
 			parametre.setReglement(tempReglement);
 			parametre.setReglementLock(true);
@@ -417,9 +427,12 @@ public class ParametreDialog extends JDialog implements ActionListener {
 			Reglement reglement = reglementDialog.showReglementDialog();
 			if (reglement != null)
 				tempReglement = reglement;
-		} else if (ae.getSource() == jcbReglement) {
-			if(tempReglement == null || !tempReglement.getName().equals(jcbReglement.getSelectedItem())) {
-				tempReglement = ReglementBuilder.createReglement((String) jcbReglement.getSelectedItem());
+		} else if (ae.getSource() == jbSelectReglement) {
+			ReglementManagerDialog reglementManagerDialog = new ReglementManagerDialog(parentframe);
+			Reglement reglement = reglementManagerDialog.showReglementManagerDialog(true);
+			if(tempReglement == null || !tempReglement.equals(reglement)) {
+				tempReglement = reglement;
+				jlSelectedReglement.setText(reglement.getName());
 			}
 		}
 	}

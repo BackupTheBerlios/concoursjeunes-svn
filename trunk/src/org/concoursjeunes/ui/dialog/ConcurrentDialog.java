@@ -108,8 +108,8 @@ import org.jdesktop.swingx.error.ErrorInfo;
 
 import ajinteractive.standard.common.AJToolKit;
 import ajinteractive.standard.common.ArraysUtils;
-import ajinteractive.standard.java2.GridbagComposer;
-import ajinteractive.standard.java2.NumberDocument;
+import ajinteractive.standard.ui.GridbagComposer;
+import ajinteractive.standard.ui.NumberDocument;
 
 /**
  * Boite de dialogue de gestion d'un concurrent

@@ -104,7 +104,7 @@ public class CriteriaSet {
 	 * Sauvegarde en base le jeux de critère
 	 */
 	public void save(int numReglement) {
-		String sql;
+		String sql = null;
 		try {
 			Statement stmt = ApplicationCore.dbConnection.createStatement();
 			
@@ -125,6 +125,7 @@ public class CriteriaSet {
 				stmt.executeUpdate(sql);
 			}
 		} catch (SQLException e) {
+			System.out.println(sql);
 			e.printStackTrace();
 		}
 	}
@@ -264,9 +265,9 @@ public class CriteriaSet {
 			return false;
 
 		for(Criterion criterion : criteria.keySet()) {
-			if(getCriterionElement(criterion) != null 
-					&& criteriaSet.getCriterionElement(criterion) != null 
-					&& !getCriterionElement(criterion).equals(criteriaSet.getCriterionElement(criterion))) {
+			if(getCriterionElement(criterion) == null 
+					|| criteriaSet.getCriterionElement(criterion) == null 
+					|| !getCriterionElement(criterion).equals(criteriaSet.getCriterionElement(criterion))) {
 				isEquals = false;
 			}
 		}

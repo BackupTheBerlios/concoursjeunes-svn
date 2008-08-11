@@ -100,7 +100,7 @@ import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Criterion;
 
 import ajinteractive.standard.common.AJToolKit;
-import ajinteractive.standard.java2.GridbagComposer;
+import ajinteractive.standard.ui.GridbagComposer;
 
 /**
  * Boite de dialogue de gestion des critère de distinction des archers

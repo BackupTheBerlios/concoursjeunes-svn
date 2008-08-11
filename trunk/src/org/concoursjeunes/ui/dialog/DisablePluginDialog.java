@@ -101,14 +101,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Level;
 
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.*;
 
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.plugins.PluginLoader;
@@ -118,7 +111,7 @@ import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
 import ajinteractive.standard.common.AJToolKit;
-import ajinteractive.standard.java2.GridbagComposer;
+import ajinteractive.standard.ui.GridbagComposer;
 
 /**
  * @author Aurélien JEOFFRAY

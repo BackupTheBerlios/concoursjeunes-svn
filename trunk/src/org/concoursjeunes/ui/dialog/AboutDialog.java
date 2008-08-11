@@ -144,7 +144,9 @@ public class AboutDialog extends JDialog implements ActionListener {
 		
 		jlAbout.setText("<html>" + ApplicationCore.NOM + "<br>" + //$NON-NLS-1$ //$NON-NLS-2$
 				ApplicationCore.ajrLibelle.getResourceString("apropos.description") + "<br><br>" + //$NON-NLS-1$ //$NON-NLS-2$
-				ApplicationCore.ajrLibelle.getResourceString("apropos.version") + "<br>" + ApplicationCore.VERSION + "<br>" + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				ApplicationCore.ajrLibelle.getResourceString("apropos.version") + "<br>" +  //$NON-NLS-1$ //$NON-NLS-2$
+				ApplicationCore.VERSION + "<br>" + //$NON-NLS-1$
+				ApplicationCore.ajrLibelle.getResourceString("apropos.codename") + " " + ApplicationCore.CODENAME + "<br>" + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				ApplicationCore.COPYR + " " + ApplicationCore.AUTEURS + "<br>" + //$NON-NLS-1$ //$NON-NLS-2$
 				"version base: " + ApplicationCore.dbVersion + "<br><br>" //$NON-NLS-1$ //$NON-NLS-2$
 				+ "mémoire utilisé: " + ((memoryBean.getHeapMemoryUsage().getUsed() + memoryBean.getNonHeapMemoryUsage().getUsed()) / 1024 / 1024) + "Mo<br>" //$NON-NLS-1$ //$NON-NLS-2$

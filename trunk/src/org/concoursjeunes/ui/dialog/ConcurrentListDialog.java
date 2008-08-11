@@ -106,7 +106,7 @@ import javax.swing.table.TableRowSorter;
 import org.concoursjeunes.*;
 import org.jdesktop.swingx.JXBusyLabel;
 
-import ajinteractive.standard.java2.GridbagComposer;
+import ajinteractive.standard.ui.GridbagComposer;
 
 /**
  * La liste des personnes présente daans la base des archers

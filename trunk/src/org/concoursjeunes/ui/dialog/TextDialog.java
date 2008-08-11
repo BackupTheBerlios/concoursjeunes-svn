@@ -93,18 +93,9 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
+import javax.swing.*;
 
 import org.concoursjeunes.ApplicationCore;
 
@@ -112,12 +103,15 @@ import org.concoursjeunes.ApplicationCore;
  * @author Aurélien JEOFFRAY
  *
  */
-public class ChangeLogDialog extends JDialog implements ActionListener {
+public class TextDialog extends JDialog implements ActionListener {
 	
 	private JTextPane jtpChangeLog = new JTextPane();
 	private JButton jbFermer = new JButton(); 
 	
-	public ChangeLogDialog(JFrame parentframe) {
+	
+	private String textPath;
+	
+	public TextDialog(JFrame parentframe) {
 		super(parentframe, true);
 		init();
 		affectLibelle();
@@ -138,13 +132,13 @@ public class ChangeLogDialog extends JDialog implements ActionListener {
 	}
 	
 	private void affectLibelle() {
-		setTitle(ApplicationCore.ajrLibelle.getResourceString("changelog.title")); //$NON-NLS-1$
+		//setTitle(ApplicationCore.ajrLibelle.getResourceString("changelog.title")); //$NON-NLS-1$
 		jbFermer.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.fermer")); //$NON-NLS-1$
 	}
 	
 	private void completePane() {
 		try {
-			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream("changelog.txt"), "UTF-8")); //$NON-NLS-1$ //$NON-NLS-2$
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(textPath), "UTF-8")); //$NON-NLS-1$
 			StringBuilder stringBuilder = new StringBuilder();
 			String line;
 			while((line = bufferedReader.readLine()) != null) {
@@ -162,7 +156,9 @@ public class ChangeLogDialog extends JDialog implements ActionListener {
 		}
 	}
 	
-	public void showChangeLogDialog() {
+	public void showTextDialog(String title,String textPath) {
+		setTitle(title);
+		this.textPath = textPath;
 		completePane();
 		
 		setSize(new Dimension(640, 480));

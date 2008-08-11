@@ -1,4 +1,6 @@
 /*
+ * Créer le 9 août 2008 à 14:02:05 pour ConcoursJeunes
+ *
  * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
@@ -86,100 +88,119 @@
  */
 package org.concoursjeunes;
 
-import junit.framework.TestCase;
-
-import org.concoursjeunes.builders.ConcurrentBuilder;
-import org.concoursjeunes.event.ConcoursJeunesEvent;
-import org.concoursjeunes.event.ConcoursJeunesListener;
-import org.concoursjeunes.exceptions.FicheConcoursException;
-import org.concoursjeunes.exceptions.NullConfigurationException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 /**
  * @author Aurélien JEOFFRAY
+ *
  */
-public class FicheConcoursTest extends TestCase {
+public class Federation {
+	private int numFederation = 0;
+	private String sigleFederation = ""; //$NON-NLS-1$
+	private String nomFederation = ""; //$NON-NLS-1$
 	
-	private ApplicationCore concoursJeunes;
-	private FicheConcours ficheConcours;
-
 	/**
-	 * @throws java.lang.Exception
+	 * 
 	 */
-	@Before
-	@Override
-	public void setUp() throws Exception {
-		concoursJeunes = ApplicationCore.getInstance();
-		
-		concoursJeunes.addConcoursJeunesListener(new ConcoursJeunesListener() {
-
-			public void ficheConcoursClosed(ConcoursJeunesEvent concoursJeunesEvent) {}
-			/* (non-Javadoc)
-			 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursCreated(org.concoursjeunes.ConcoursJeunesEvent)
-			 */
-			public void ficheConcoursCreated(ConcoursJeunesEvent concoursJeunesEvent) {
-				ficheConcours = concoursJeunesEvent.getFicheConcours();
-			}
-			public void ficheConcoursDeleted(ConcoursJeunesEvent concoursJeunesEvent) {}
-			public void ficheConcoursRestored(ConcoursJeunesEvent concoursJeunesEvent) {}
-			public void configurationChanged(ConcoursJeunesEvent concoursJeunesEvent) {}
-			
-		});
-		
-		Parametre parametre = new Parametre(ApplicationCore.getConfiguration());
-		concoursJeunes.createFicheConcours(parametre);
+	public Federation() {
 	}
 	
-	@Test
-	public void testFicheConcours() {
-		
+	/**
+	 * @param nomFederation
+	 * @param numFederation
+	 * @param sigleFederation
+	 */
+	public Federation(String nomFederation, int numFederation,
+			String sigleFederation) {
+		this.nomFederation = nomFederation;
+		this.numFederation = numFederation;
+		this.sigleFederation = sigleFederation;
+	}
+
+
+
+	/**
+	 * @return numFederation
+	 */
+	public int getNumFederation() {
+		return numFederation;
 	}
 
 	/**
-	 * Méthode de test pour {@link org.concoursjeunes.FicheConcours#addConcurrent(org.concoursjeunes.Concurrent)}.
+	 * @param numFederation numFederation à définir
 	 */
-	@Test
-	public void testAddConcurrent() {
-		Concurrent concurrent = ConcurrentBuilder.getConcurrent(ficheConcours.getParametre().getReglement());
-		//concurrent.setDifferentiationCriteria();
-		try {
-			ficheConcours.addConcurrent(concurrent, 0);
-		} catch (FicheConcoursException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
+	public void setNumFederation(int numFederation) {
+		this.numFederation = numFederation;
 	}
 
 	/**
-	 * Méthode de test pour {@link org.concoursjeunes.FicheConcours#removeConcurrent(org.concoursjeunes.Concurrent)}.
+	 * @return sigleFederation
 	 */
-	@Test
-	public void testRemoveConcurrent() {
-		Concurrent concurrent = ConcurrentBuilder.getConcurrent(ficheConcours.getParametre().getReglement());
-		try {
-			ficheConcours.addConcurrent(concurrent, 0);
-		} catch (FicheConcoursException e) {
-			e.printStackTrace();
-		}
-		
-		try {
-			ficheConcours.removeConcurrent(concurrent);
-		} catch (FicheConcoursException e) {
-			e.printStackTrace();
-			fail("Une erreur est survenue au cours de la suppression"); //$NON-NLS-1$
-		}
-		assertFalse(ficheConcours.getConcurrentList().contains(concurrent));
+	public String getSigleFederation() {
+		return sigleFederation;
 	}
 
-	@After
+	/**
+	 * @param sigleFederation sigleFederation à définir
+	 */
+	public void setSigleFederation(String sigleFederation) {
+		this.sigleFederation = sigleFederation;
+	}
+
+	/**
+	 * @return nomFederation
+	 */
+	public String getNomFederation() {
+		return nomFederation;
+	}
+
+	/**
+	 * @param nomFederation nomFederation à définir
+	 */
+	public void setNomFederation(String nomFederation) {
+		this.nomFederation = nomFederation;
+	}
+	
+	
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
-	public void tearDown() {
-		try {
-			concoursJeunes.deleteFicheConcours(ficheConcours.getMetaDataFicheConcours());
-		} catch (NullConfigurationException e) {
-			e.printStackTrace();
-		}
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + numFederation;
+		result = prime * result
+				+ ((sigleFederation == null) ? 0 : sigleFederation.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Federation other = (Federation) obj;
+		if (numFederation != other.numFederation)
+			return false;
+		if (sigleFederation == null) {
+			if (other.sigleFederation != null)
+				return false;
+		} else if (!sigleFederation.equals(other.sigleFederation))
+			return false;
+		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return sigleFederation;
 	}
 }

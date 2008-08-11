@@ -1,6 +1,6 @@
 //mapping:
 // int dbVersion
-// SqlManager sql - moteur de base de donnï¿½es
+// SqlManager sql - moteur de base de données
 
 if(dbVersion == 0) {
 	//passe l'ensemble des scripts de base
@@ -11,6 +11,7 @@ if(dbVersion == 0) {
 	sql.executeScript("02-2x18m.sql");
 	sql.executeScript("02-2x25m.sql");
 	sql.executeScript("02-2x50m.sql");
+	sql.executeScript("02-2x70m.sql");
 	sql.executeScript("04-insertclub.sql");
 	sql.executeScript("99-updatedbver.sql");
 } else if(dbVersion < 10) {
@@ -107,7 +108,7 @@ if(dbVersion == 0) {
 		sql.executeScript("02-defaut.sql");
 	}
 	
-	//ajout d'arcs supplï¿½mentaire sur les 2 rï¿½glements de base
+	//ajout d'arcs supplémentaire sur les 2 réglements de base
 	rowSet = sql.executeQuery("SELECT * FROM CRITEREELEMENT WHERE CODECRITEREELEMENT='AD' and CODECRITERE='arc' and NUMREGLEMENT in(-1825540830, -180676679);");
 	if(!rowSet.first()) {
 		sql.executeUpdate("MERGE INTO PUBLIC.CRITEREELEMENT(CODECRITEREELEMENT, CODECRITERE, NUMREGLEMENT, LIBELLECRITEREELEMENT, ACTIF) VALUES('AD', 'arc', -1825540830, 'Arc droit', TRUE);");
@@ -125,26 +126,20 @@ if(dbVersion == 0) {
 	sql.executeUpdate("CREATE INDEX IF NOT EXISTS I_NOM_ENTITE ON ENTITE (NOMENTITE ASC);");
 	sql.executeUpdate("CREATE INDEX IF NOT EXISTS I_VILLE_ENTITE ON ENTITE (VILLEENTITE ASC);");
 	
-	//Ajout du tableau des surclassements
+	//Extension des réglements au format ConcoursJeunes 2.1
 	rowSet = sql.executeQuery("SELECT * FROM INFORMATION_SCHEMA.TABLES "
 		+ "WHERE TABLE_SCHEMA='PUBLIC' AND TABLE_NAME='SURCLASSEMENT';");
 	if(!rowSet.first()) {
-		sql.executeUpdate("CREATE TABLE SURCLASSEMENT ("
-			+ "NUMCRITERIASET INTEGER NOT NULL,"
-			+ "NUMREGLEMENT INTEGER NOT NULL,"
-			+ "NUMCRITERIASET_SURCLASSE INTEGER NULL,"
-			+ "PRIMARY KEY (NUMCRITERIASET, NUMREGLEMENT),"
-			+ "FOREIGN KEY (NUMCRITERIASET) REFERENCES CRITERIASET (NUMCRITERIASET) ON UPDATE CASCADE ON DELETE CASCADE,"
-			+ "FOREIGN KEY (NUMREGLEMENT) REFERENCES REGLEMENT (NUMREGLEMENT) ON UPDATE CASCADE ON DELETE CASCADE,"
-			+ "FOREIGN KEY (NUMCRITERIASET_SURCLASSE) REFERENCES CRITERIASET (NUMCRITERIASET) ON UPDATE CASCADE ON DELETE CASCADE);");
+		sql.executeScript("05-patch03.sql");
 	}
 	
 	sql.executeScript("02-2x18m.sql");
 	sql.executeScript("02-2x25m.sql");
 	sql.executeScript("02-2x50m.sql");
+	sql.executeScript("02-2x70m.sql");
 }
 
 if(dbVersion != org.concoursjeunes.ApplicationCore.DB_RELEASE_REQUIRED) {
-	//mise ï¿½ jour du numero de version de la base
+	//mise à jour du numero de version de la base
 	sql.executeScript("99-updatedbver.sql");
 }

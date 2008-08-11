@@ -103,7 +103,7 @@ import org.concoursjeunes.*;
 import org.concoursjeunes.event.FicheConcoursEvent;
 import org.concoursjeunes.event.FicheConcoursListener;
 
-import ajinteractive.standard.java2.NumberDocument;
+import ajinteractive.standard.ui.NumberDocument;
 import ajinteractive.standard.ui.ThreeCheckBox;
 
 /**

@@ -97,8 +97,8 @@ import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.Parametre;
 
-import ajinteractive.standard.java2.GridbagComposer;
-import ajinteractive.standard.java2.NumberDocument;
+import ajinteractive.standard.ui.GridbagComposer;
+import ajinteractive.standard.ui.NumberDocument;
 
 /**
  * Boite de dialogue de saisie des résultats pour une cible

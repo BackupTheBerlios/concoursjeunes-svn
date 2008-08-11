@@ -157,7 +157,6 @@ public class Main {
 							dbfile.setWritable(true, false);
 						}
 					}
-					//TODO faire un backup de base à la fermeture
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

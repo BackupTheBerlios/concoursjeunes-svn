@@ -117,7 +117,7 @@ public class ReglementBuilder {
 	 * @return le reglement créer
 	 */
 	public static Reglement createReglement() {
-		return createReglement(0);
+		return getReglement(0);
 	}
 	
 	/**
@@ -134,8 +134,8 @@ public class ReglementBuilder {
 	 * @param reglementName - le nom du reglement à retourner
 	 * @return - le reglement retourné
 	 */
-	public static Reglement createReglement(String reglementName) {
-		return createReglement(-1, reglementName);
+	public static Reglement getReglement(String reglementName) {
+		return getReglement(-1, reglementName);
 	}
 	
 	/**
@@ -153,22 +153,22 @@ public class ReglementBuilder {
 	 * 
 	 * @return le réglement contruit à partir du numero
 	 */
-	public static Reglement createReglement(int numreglement) {
-		return createReglement(numreglement, null);
+	public static Reglement getReglement(int numreglement) {
+		return getReglement(numreglement, null);
 	}
 	
-	private static Reglement createReglement(int numreglement, String reglementName) {
+	private static Reglement getReglement(int numreglement, String reglementName) {
 
 		Reglement reglement = new Reglement();
 		
 		try {
 			Statement stmt = ApplicationCore.dbConnection.createStatement();
 			
-			String sql = null;
-			if(numreglement > -1)
-				sql = "select * from REGLEMENT where NUMREGLEMENT=" + numreglement; //$NON-NLS-1$
+			String sql = "select REGLEMENT.*,SIGLEFEDERATION,NOMFEDERATION from REGLEMENT, FEDERATION where REGLEMENT.NUMFEDERATION=FEDERATION.NUMFEDERATION"; //$NON-NLS-1$
+			if(numreglement != -1)
+				sql += " and NUMREGLEMENT=" + numreglement; //$NON-NLS-1$
 			else
-				sql = "select * from REGLEMENT where NOMREGLEMENT='" + reglementName + "'"; //$NON-NLS-1$ //$NON-NLS-2$
+				sql += " and NOMREGLEMENT='" + reglementName + "'"; //$NON-NLS-1$ //$NON-NLS-2$
 			
 			ResultSet rs = stmt.executeQuery(sql);
 			if(rs.first()) {
@@ -181,6 +181,14 @@ public class ReglementBuilder {
 				reglement.setNbMembresEquipe(rs.getInt("NBMEMBRESEQUIPE")); //$NON-NLS-1$
 				reglement.setNbMembresRetenu(rs.getInt("NBMEMBRESRETENU")); //$NON-NLS-1$
 				reglement.setOfficialReglement(rs.getBoolean("ISOFFICIAL")); //$NON-NLS-1$
+				
+				Federation federation = new Federation();
+				federation.setNumFederation(rs.getInt("NUMFEDERATION")); //$NON-NLS-1$
+				federation.setSigleFederation(rs.getString("SIGLEFEDERATION")); //$NON-NLS-1$
+				federation.setNomFederation(rs.getString("NOMFEDERATION")); //$NON-NLS-1$
+				reglement.setFederation(federation);
+				reglement.setCategory(rs.getInt("NUMCATEGORIE_REGLEMENT")); //$NON-NLS-1$
+				reglement.setRemovable(rs.getBoolean("REMOVABLE")); //$NON-NLS-1$
 				
 				rs.close();
 				

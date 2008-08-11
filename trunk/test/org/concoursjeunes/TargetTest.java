@@ -90,9 +90,6 @@ package org.concoursjeunes;
 
 import junit.framework.TestCase;
 
-import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.Reglement;
-import org.concoursjeunes.Target;
 import org.concoursjeunes.Target.Repartition;
 import org.concoursjeunes.builders.ConcurrentBuilder;
 import org.concoursjeunes.builders.ReglementBuilder;
@@ -105,6 +102,7 @@ import org.junit.Test;
  * @author Aurélien JEOFFRAY
  *
  */
+@SuppressWarnings("nls")
 public class TargetTest extends TestCase {
 
 	Reglement reglement;
@@ -118,7 +116,7 @@ public class TargetTest extends TestCase {
 	public void setUp() throws Exception {
 		@SuppressWarnings("unused")
 		ApplicationCore concoursJeunes = ApplicationCore.getInstance(); // initialise le noyau
-		reglement = ReglementBuilder.createReglement("Savoie"); //charge le réglement savoie //$NON-NLS-1$
+		reglement = ReglementBuilder.getReglement("Savoie"); //charge le réglement savoie //$NON-NLS-1$
 		Concurrent concurrent = ConcurrentBuilder.getConcurrent(reglement);
 		
 		targetVide = new Target(1, reglement, 4);

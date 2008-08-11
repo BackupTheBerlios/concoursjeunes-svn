@@ -1,4 +1,4 @@
 #!/bin/sh
 
 cd $2
-/usr/libexec/authopen /System/Library/Frameworks/JavaVM.framework/Versions/1.6/Commands/java -cp lib/AJPackage.jar ajinteractive.standard.utilities.updater.AjUpdaterApply "$1" "$2"
+/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Commands/java -cp lib/AJPackage.jar ajinteractive.standard.utilities.updater.AjUpdaterApply "$1" "$2"

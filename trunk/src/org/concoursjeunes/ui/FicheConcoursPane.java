@@ -128,8 +128,8 @@ import org.jdesktop.swingx.JXTaskPane;
 import org.jdesktop.swingx.JXTaskPaneContainer;
 import org.jdesktop.swingx.error.ErrorInfo;
 
-import ajinteractive.standard.java2.GridbagComposer;
 import ajinteractive.standard.ui.AJList;
+import ajinteractive.standard.ui.GridbagComposer;
 
 import com.lowagie.text.DocumentException;
 

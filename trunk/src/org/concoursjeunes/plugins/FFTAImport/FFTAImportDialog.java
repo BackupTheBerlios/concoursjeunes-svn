@@ -103,7 +103,7 @@ import org.concoursjeunes.plugins.Plugin;
 import org.concoursjeunes.plugins.PluginEntry;
 
 import ajinteractive.standard.common.AjResourcesReader;
-import ajinteractive.standard.java2.GridbagComposer;
+import ajinteractive.standard.ui.GridbagComposer;
 
 /**
  * @author Aurélien JEOFFRAY
