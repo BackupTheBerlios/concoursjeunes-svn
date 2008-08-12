@@ -190,9 +190,19 @@
 			manifest="${projet.pack.dir}/MANIFEST.MF">
 
 			<fileset dir="${projet.pack.dir}/bin">
+				<include name="org/concoursjeunes/Main*" />
+				<include name="org/concoursjeunes/ui/**" />
+			</fileset>
+		</jar>
+		<jar jarfile="${projet.pack.dir}/lib/ConcoursJeunes-core.jar"
+			manifest="${projet.pack.dir}/MANIFEST.MF">
+
+			<fileset dir="${projet.pack.dir}/bin">
 				<include name="**/**" />
 				<exclude name="org/concoursjeunes/plugins/**" />
 				<exclude name="org/concoursjeunes/webservices/**" />
+				<exclude name="org/concoursjeunes/Main*" />
+				<exclude name="org/concoursjeunes/ui/**" />
 			</fileset>
 			<fileset dir="${projet.pack.dir}/bin">
 				<include name="org/concoursjeunes/plugins/*.*" />
