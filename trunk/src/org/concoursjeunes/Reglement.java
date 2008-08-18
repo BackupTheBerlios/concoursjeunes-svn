@@ -94,6 +94,8 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.*;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * <p>
  * Représentation d'un réglement de concours. Un réglement fixe les régles
@@ -117,6 +119,7 @@ import java.util.*;
  * @author Aurélien JEOFFRAY
  * 
  */
+@XmlRootElement
 public class Reglement {
 
 	private String name = "default"; //$NON-NLS-1$
@@ -531,8 +534,9 @@ public class Reglement {
 	 */
 	public void save() throws SQLException {
 		String sql = "merge into REGLEMENT (NUMREGLEMENT, NOMREGLEMENT, NBSERIE, NBVOLEEPARSERIE," + //$NON-NLS-1$
-				"NBFLECHEPARVOLEE, NBMEMBRESEQUIPE, NBMEMBRESRETENU, ISOFFICIAL) " + //$NON-NLS-1$
-				"VALUES (?, ?, ?, ?, ?, ?, ?, ?)"; //$NON-NLS-1$
+				"NBFLECHEPARVOLEE, NBMEMBRESEQUIPE, NBMEMBRESRETENU, ISOFFICIAL, NUMFEDERATION, " + //$NON-NLS-1$
+				"NUMCATEGORIE_REGLEMENT, REMOVABLE) " + //$NON-NLS-1$
+				"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"; //$NON-NLS-1$
 
 		// Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 		PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
@@ -544,6 +548,9 @@ public class Reglement {
 		pstmt.setInt(6, nbMembresEquipe);
 		pstmt.setInt(7, nbMembresRetenu);
 		pstmt.setBoolean(8, officialReglement);
+		pstmt.setInt(9, federation.getNumFederation());
+		pstmt.setInt(10, category);
+		pstmt.setBoolean(11, removable);
 
 		pstmt.executeUpdate();
 		pstmt.close();
@@ -629,37 +636,6 @@ public class Reglement {
 		return success;
 	}
 
-	/**
-	 * <p>
-	 * Retourne la liste des réglement disponible en base de donnée.<br>
-	 * intégre au passage les réglement disponible sous forme de script sql dans
-	 * le répertoire config/reglements n'ayant pas encore intégré.
-	 * </p>
-	 * <p>
-	 * Des mises à jour du programme peuvent apporter de nouveau réglement sous
-	 * forme de script sql
-	 * </p>
-	 * 
-	 * @return la liste des réglement disponible
-	 */
-	/*public static String[] listAvailableReglements() {
-		ArrayList<String> availableReglements = new ArrayList<String>();
-		try {
-			Statement stmt = ApplicationCore.dbConnection.createStatement();
-
-			ResultSet rs = stmt.executeQuery("select NOMREGLEMENT from REGLEMENT where NUMREGLEMENT <> 0"); //$NON-NLS-1$
-
-			while (rs.next()) {
-				availableReglements.add(rs.getString("NOMREGLEMENT")); //$NON-NLS-1$
-			}
-			rs.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return availableReglements.toArray(new String[availableReglements.size()]);
-	}*/
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -674,6 +650,26 @@ public class Reglement {
 		return result;
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Reglement other = (Reglement) obj;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		return true;
+	}
+
 	/**
 	 * @return le nom du réglement
 	 */

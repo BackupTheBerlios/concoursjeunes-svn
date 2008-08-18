@@ -1,5 +1,5 @@
 /*
- * Créer le 9 août 2008 à 14:02:05 pour ConcoursJeunes
+ * Créer le 17 aoû. 08 à 12:54:22 pour ConcoursJeunes
  *
  * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
@@ -86,151 +86,131 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes;
+package org.concoursjeunes.ui.dialog;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import static org.concoursjeunes.ApplicationCore.ajrLibelle;
+
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.logging.Level;
+
+import javax.swing.*;
+
+import org.concoursjeunes.Federation;
+import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.error.ErrorInfo;
+
+import ajinteractive.standard.ui.GridbagComposer;
 
 /**
  * @author Aurélien JEOFFRAY
  *
  */
-public class Federation {
-	private int numFederation = 0;
-	private String sigleFederation = ""; //$NON-NLS-1$
-	private String nomFederation = ""; //$NON-NLS-1$
+public class NewFederationDialog extends JDialog implements ActionListener {
+	
+	private JLabel jlFederationSigle = new JLabel();
+	private JLabel jlFederationName = new JLabel();
+	private JTextField jtfFederatonSigle = new JTextField(10);
+	private JTextField jtfFederatonName = new JTextField(50);
+	
+	private JButton jbValider = new JButton();
+	private JButton jbAnnuler = new JButton();
+	
+	//private JFrame parentframe;
+	
+	private Federation federation = null;
+	
+	public NewFederationDialog(JFrame parentframe) {
+		super(parentframe, true);
+		
+		//this.parentframe = parentframe;
+		
+		init();
+		affectLibelle();
+	}
+	
+	private void init() {
+		JPanel jpPrincipal = new JPanel();
+		JPanel jpAction = new JPanel();
+		
+		GridbagComposer gbComposer = new GridbagComposer();
+		GridBagConstraints c = new GridBagConstraints();
+		
+		jbValider.addActionListener(this);
+		jbAnnuler.addActionListener(this);
+		
+		gbComposer.setParentPanel(jpPrincipal);
+		c.gridy = 0;
+		c.anchor = GridBagConstraints.WEST;
+		gbComposer.addComponentIntoGrid(jlFederationSigle, c);
+		gbComposer.addComponentIntoGrid(jtfFederatonSigle, c);
+		c.gridy++;
+		gbComposer.addComponentIntoGrid(jlFederationName, c);
+		gbComposer.addComponentIntoGrid(jtfFederatonName, c);
+		
+		jpAction.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		jpAction.add(jbValider);
+		jpAction.add(jbAnnuler);
+		
+		getContentPane().setLayout(new BorderLayout());
+		getContentPane().add(jpPrincipal, BorderLayout.CENTER);
+		getContentPane().add(jpAction, BorderLayout.SOUTH);
+	}
+	
+	private void affectLibelle() {
+		setTitle(ajrLibelle.getResourceString("newfederation.title")); //$NON-NLS-1$
+		
+		jlFederationSigle.setText(ajrLibelle.getResourceString("newfederation.sigle")); //$NON-NLS-1$
+		jlFederationName.setText(ajrLibelle.getResourceString("newfederation.name")); //$NON-NLS-1$
+		
+		jbValider.setText(ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
+		jbAnnuler.setText(ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
+	}
+	
+	private void completePanel() {
+		
+	}
 	
 	/**
+	 * Affiche la boite de dialogue de création de dédération
 	 * 
+	 * @return la federation créer
 	 */
-	public Federation() {
-	}
-	
-	/**
-	 * @param nomFederation
-	 * @param sigleFederation
-	 */
-	public Federation(String nomFederation, String sigleFederation) {
-		this(nomFederation, 0, sigleFederation);
-	}
-	/**
-	 * @param nomFederation
-	 * @param numFederation
-	 * @param sigleFederation
-	 */
-	public Federation(String nomFederation, int numFederation,
-			String sigleFederation) {
-		this.nomFederation = nomFederation;
-		this.numFederation = numFederation;
-		this.sigleFederation = sigleFederation;
-	}
-
-
-
-	/**
-	 * @return numFederation
-	 */
-	public int getNumFederation() {
-		return numFederation;
-	}
-
-	/**
-	 * @param numFederation numFederation à définir
-	 */
-	public void setNumFederation(int numFederation) {
-		this.numFederation = numFederation;
-	}
-
-	/**
-	 * @return sigleFederation
-	 */
-	public String getSigleFederation() {
-		return sigleFederation;
-	}
-
-	/**
-	 * @param sigleFederation sigleFederation à définir
-	 */
-	public void setSigleFederation(String sigleFederation) {
-		this.sigleFederation = sigleFederation;
-	}
-
-	/**
-	 * @return nomFederation
-	 */
-	public String getNomFederation() {
-		return nomFederation;
-	}
-
-	/**
-	 * @param nomFederation nomFederation à définir
-	 */
-	public void setNomFederation(String nomFederation) {
-		this.nomFederation = nomFederation;
-	}
-	
-	public void save() throws SQLException {
-		String sql;
-		if(numFederation == 0)
-			sql = "insert into FEDERATION (SIGLEFEDERATION, NOMFEDERATION) VALUES (?, ?);"; //$NON-NLS-1$
-		else
-			sql = "update FEDERATION set SIGLEFEDERATION=?, NOMFEDERATION=? where NUMFEDERATION=" + numFederation; //$NON-NLS-1$
+	public Federation showNewFederationDialog() {
+		completePanel();
 		
-		PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
-		pstmt.setString(1, sigleFederation);
-		pstmt.setString(2, nomFederation);
-		pstmt.executeUpdate();
+		pack();
+		setLocationRelativeTo(null);
+		setVisible(true);
 		
-		if(numFederation == 0) {
-			ResultSet clefs = pstmt.getGeneratedKeys();
-			if (clefs.first()) {
-				numFederation = (Integer) clefs.getObject(1);
+		return federation;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() == jbValider) {
+			federation = new Federation(jtfFederatonName.getText(), jtfFederatonSigle.getText());
+			try {
+				federation.save();
+				
+			} catch (SQLException e1) {
+				federation = null;
+				JXErrorPane.showDialog(this, new ErrorInfo(ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+						null, null, e1, Level.SEVERE, null));
+				e1.printStackTrace();
 			}
+			setVisible(false);
+		} else if(e.getSource() == jbAnnuler) {
+			setVisible(false);
 		}
-		pstmt.close();
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + numFederation;
-		result = prime * result
-				+ ((sigleFederation == null) ? 0 : sigleFederation.hashCode());
-		return result;
-	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Federation other = (Federation) obj;
-		if (numFederation != other.numFederation)
-			return false;
-		if (sigleFederation == null) {
-			if (other.sigleFederation != null)
-				return false;
-		} else if (!sigleFederation.equals(other.sigleFederation))
-			return false;
-		return true;
-	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return sigleFederation;
-	}
+	
 }

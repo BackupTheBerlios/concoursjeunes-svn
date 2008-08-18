@@ -88,15 +88,24 @@
  */
 package org.concoursjeunes;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.JAXBException;
+
 import org.concoursjeunes.builders.ReglementBuilder;
 
+import ajinteractive.standard.common.AJToolKit;
+
 /**
+ * Permet la gestion listage, séléction, ajout et suppression des
+ * réglements en fonction de leurs catégories et de leurs fédération
+ * 
  * @author Aurélien JEOFFRAY
  *
  */
@@ -110,6 +119,14 @@ public class ReglementManager {
 	 * 
 	 */
 	public ReglementManager() {
+		listReglement();
+	}
+	
+	private void listReglement() {
+		availableReglements.clear();
+		federation.clear();
+		categorie.clear();
+		
 		try {
 			Statement stmt = ApplicationCore.dbConnection.createStatement();
 
@@ -130,6 +147,30 @@ public class ReglementManager {
 		}
 	}
 	
+	/**
+	 * Ajoute le réglement fournit en parametre à la base et au gestionnaire
+	 * 
+	 * @param reglement le réglement à ajouter
+	 * @throws SQLException
+	 */
+	public void addReglement(Reglement reglement) throws SQLException {
+		if(reglement == null)
+			return;
+		
+		reglement.save();
+		
+		availableReglements.add(reglement);
+		if(!federation.contains(reglement.getFederation()))
+			federation.add(reglement.getFederation());
+		if(!categorie.contains(reglement.getCategory()))
+			categorie.add(reglement.getCategory());
+	}
+	
+	/**
+	 * Supprime un réglement de la base et du gestionnaire
+	 * 
+	 * @param reglement le réglement à supprimer
+	 */
 	public void removeReglement(Reglement reglement) {
 		if(reglement.delete()) {
 			availableReglements.remove(reglement);
@@ -173,6 +214,12 @@ public class ReglementManager {
 		return reglements;
 	}
 	
+	/**
+	 * Retourne la liste des réglements pour une fédération donné
+	 * 
+	 * @param federation la fédération pour laquelle retourner les réglements
+	 * @return la liste des réglements
+	 */
 	public List<Reglement> getReglementsForFederation(Federation federation) {
 		List<Reglement> reglements = new ArrayList<Reglement>();
 		for(Reglement reglement : availableReglements) {
@@ -183,6 +230,13 @@ public class ReglementManager {
 		return reglements;
 	}
 	
+	/**
+	 * Retourne la liste des reglements pour une federation et une categorie
+	 * 
+	 * @param federation la federation des réglements à retourner
+	 * @param category le numero de la categorie des réglements à retourner
+	 * @return la liste des réglements
+	 */
 	public List<Reglement> getReglementsForFederationAndCategory(Federation federation, int category) {
 		List<Reglement> reglements = new ArrayList<Reglement>();
 		for(Reglement reglement : availableReglements) {
@@ -217,11 +271,50 @@ public class ReglementManager {
 	}
 	
 	/**
+	 * Liste l'ensemble des fédérations disponible indépendament de l'éxistance
+	 * de réglement associé
+	 * 
+	 * @return la liste des fédérations disponible
+	 */
+	public List<Federation> getAvailableFederations() {
+		List<Federation> federations = new ArrayList<Federation>();
+		String sql = "select * from FEDERATION order by SIGLEFEDERATION"; //$NON-NLS-1$
+		
+		try {
+			Statement stmt = ApplicationCore.dbConnection.createStatement();
+			ResultSet rs = stmt.executeQuery(sql);
+			while(rs.next()) {
+				federations.add(
+						new Federation(
+								rs.getString("NOMFEDERATION"), //$NON-NLS-1$
+								rs.getInt("NUMFEDERATION"), //$NON-NLS-1$
+								rs.getString("SIGLEFEDERATION"))); //$NON-NLS-1$
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return federations;
+	}
+	
+	/**
 	 * Retourne la liste des catégories représenté par les réglements
 	 * 
 	 * @return la liste des catégories de réglement
 	 */
 	public List<Integer> getCategories() {
 		return categorie;
+	}
+	
+	public void exportReglement(Reglement reglement, File exportFile) throws FileNotFoundException, JAXBException {
+		AJToolKit.saveMarshallStructure(exportFile, reglement);
+	}
+	
+	public Reglement importReglement(File importFile) throws JAXBException, SQLException {
+		Reglement reglement = AJToolKit.loadMarshallStructure(importFile, Reglement.class);
+		if(!availableReglements.contains(reglement))
+			addReglement(reglement);
+		
+		return reglement;
 	}
 }

@@ -100,23 +100,25 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.xml.bind.JAXBException;
 
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Federation;
 import org.concoursjeunes.Reglement;
 import org.concoursjeunes.ReglementManager;
-import org.concoursjeunes.builders.ReglementBuilder;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
 import ajinteractive.standard.ui.AJList;
 import ajinteractive.standard.ui.GridbagComposer;
+import ajinteractive.standard.utilities.io.AJFileFilter;
 
 /**
  * @author Aurélien JEOFFRAY
@@ -136,6 +138,8 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 	private JButton jbNew			= new JButton();
 	private JButton jbEdit			= new JButton();
 	private JButton jbDelete		= new JButton();
+	private JButton jbExport		= new JButton();
+	private JButton jbImport		= new JButton();
 	
 	private JButton jbValider		= new JButton();
 	private JButton jbAnnuler		= new JButton();
@@ -176,8 +180,15 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 		jbNew.setMargin(new Insets(0,0,0,0));
 		jbNew.addActionListener(this);
 		jbEdit.setMargin(new Insets(0,0,0,0));
+		jbEdit.addActionListener(this);
 		jbDelete.setMargin(new Insets(0,0,0,0));
 		jbDelete.setEnabled(false);
+		jbDelete.addActionListener(this);
+		jbExport.setMargin(new Insets(0,0,0,0));
+		jbExport.setEnabled(false);
+		jbExport.addActionListener(this);
+		jbImport.setMargin(new Insets(0,0,0,0));
+		jbImport.addActionListener(this);
 		
 		ajlFederations.setFixedCellWidth(150);
 		ajlReglements.setFixedCellWidth(400);
@@ -207,15 +218,17 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 		c.gridy = 0;
 		c.fill = GridBagConstraints.NONE;
 		c.weighty = 0.0;
-		c.gridwidth = 3;
+		c.gridwidth = 5;
 		gbcomposer.addComponentIntoGrid(jlReglements, c);
 		c.gridy++;
 		c.gridwidth = 1;
 		gbcomposer.addComponentIntoGrid(jbNew, c);
 		gbcomposer.addComponentIntoGrid(jbEdit, c);
 		gbcomposer.addComponentIntoGrid(jbDelete, c);
+		gbcomposer.addComponentIntoGrid(jbExport, c);
+		gbcomposer.addComponentIntoGrid(jbImport, c);
 		c.gridy++;
-		c.gridwidth = 3;
+		c.gridwidth = 5;
 		c.fill = GridBagConstraints.BOTH;
 		c.weighty = 1.0;
 		c.weightx = 1.0;
@@ -251,6 +264,8 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 		jbDelete.setIcon(new ImageIcon(ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$ 
 				File.separator + ajrParametreAppli.getResourceString("file.icon.removeelement"))); //$NON-NLS-1$
 		jbDelete.setToolTipText(ajrLibelle.getResourceString("reglementmanager.delete")); //$NON-NLS-1$
+		jbExport.setText(ajrLibelle.getResourceString("reglementmanager.export")); //$NON-NLS-1$
+		jbImport.setText(ajrLibelle.getResourceString("reglementmanager.import")); //$NON-NLS-1$
 		
 		ajlCategories.clear();
 		ajlCategories.add(ajrLibelle.getResourceString("reglementmanager.category.all")); //$NON-NLS-1$
@@ -334,10 +349,13 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 			}
 		} else if(e.getSource() == ajlReglements) {
 			Reglement reglement = (Reglement)ajlReglements.getSelectedValue();
-			if(reglement != null)
+			if(reglement != null) {
 				jbDelete.setEnabled(reglement.isRemovable());
-			else
+				jbExport.setEnabled(true);
+			} else {
 				jbDelete.setEnabled(false);
+				jbExport.setEnabled(false);
+			}
 		}
 	}
 
@@ -390,25 +408,18 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 		} else if(e.getSource() == jbAnnuler || e.getSource() == jbFermer) {
 			setVisible(false);
 		} else if(e.getSource() == jbNew) {
-			String reglementName = JOptionPane.showInputDialog(
-					ApplicationCore.ajrLibelle.getResourceString("reglement.general.addreglement")); //$NON-NLS-1$
-			if (reglementName != null) {
-				//Reglement reglement = new Reglement(reglementName);
-				Reglement reglement = ReglementBuilder.createReglement();
-				reglement.setName(reglementName);
-
-				ReglementDialog reglementDialog = new ReglementDialog(parentframe, reglement);
-				reglement = reglementDialog.showReglementDialog();
-				if (reglement != null) {
-					try {
-						reglement.save();
-					} catch(SQLException e1) {
-						JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
-								null, null, e1, Level.SEVERE, null));
-						e1.printStackTrace();
-					}
+			NewReglementDialog newReglementDialog = new NewReglementDialog(parentframe);
+			Reglement reglement = newReglementDialog.showNewReglementDialog();
+			if(reglement != null) {
+				try {
+					reglementManager.addReglement(reglement);
+				} catch (SQLException e1) {
+					JXErrorPane.showDialog(this, new ErrorInfo(ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+							null, null, e1, Level.SEVERE, null));
+					e1.printStackTrace();
 				}
 			}
+			completePanel();
 		} else if(e.getSource() == jbEdit) {
 			if(ajlReglements.getSelectedIndex() > -1)
 				showReglementDialog();
@@ -418,6 +429,45 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 				if(reglement.delete()) {
 					ajlReglements.remove(reglement);
 					reglementManager.removeReglement(reglement);
+				}
+			}
+		} else if(e.getSource() == jbExport) {
+			Reglement reglement = (Reglement)ajlReglements.getSelectedValue();
+			
+			if(reglement != null) {
+				JFileChooser fileChooser = new JFileChooser();
+				fileChooser.setFileFilter(new AJFileFilter(new String[] {"reglement"}, "Fichier réglement")); //$NON-NLS-1$
+				fileChooser.setSelectedFile(new File(reglement.getName() + ".reglement")); //$NON-NLS-1$
+				if(fileChooser.showSaveDialog(parentframe) == JFileChooser.APPROVE_OPTION) {
+					try {
+						reglementManager.exportReglement(reglement, 
+								fileChooser.getSelectedFile());
+					} catch (FileNotFoundException e1) {
+						JXErrorPane.showDialog(this, new ErrorInfo(ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+								null, null, e1, Level.SEVERE, null));
+						e1.printStackTrace();
+					} catch (JAXBException e1) {
+						JXErrorPane.showDialog(this, new ErrorInfo(ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+								null, null, e1, Level.SEVERE, null));
+						e1.printStackTrace();
+					}
+				}
+			}
+		} else if(e.getSource() == jbExport) {
+			JFileChooser fileChooser = new JFileChooser();
+			fileChooser.setFileFilter(new AJFileFilter(new String[] {"reglement"}, "Fichier réglement")); //$NON-NLS-1$
+			if(fileChooser.showOpenDialog(parentframe) == JFileChooser.APPROVE_OPTION) {
+				try {
+					reglementManager.importReglement(fileChooser.getSelectedFile());
+					completePanel();
+				} catch (JAXBException e1) {
+					JXErrorPane.showDialog(this, new ErrorInfo(ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+							null, null, e1, Level.SEVERE, null));
+					e1.printStackTrace();
+				} catch (SQLException e1) {
+					JXErrorPane.showDialog(this, new ErrorInfo(ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+							null, null, e1, Level.SEVERE, null));
+					e1.printStackTrace();
 				}
 			}
 		}

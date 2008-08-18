@@ -267,11 +267,12 @@ public class ApplicationCore {
 				retry = false;
 			} catch (SQLException e) {
 				e.printStackTrace();
-				JXErrorPane.showDialog(null,new ErrorInfo( "SQL Error", e.toString(), //$NON-NLS-1$
-						null, null, e, Level.SEVERE, null));
 				
 				//Si ce n'est pas un message db bloqué par un autre processus
 				if(!e.getSQLState().equals("" + ErrorCode.DATABASE_ALREADY_OPEN_1)) { //$NON-NLS-1$
+					JXErrorPane.showDialog(null,new ErrorInfo( "SQL Error", e.toString(), //$NON-NLS-1$
+							null, null, e, Level.SEVERE, null));
+					
 					if(JOptionPane.showConfirmDialog(null, ajrLibelle.getResourceString("erreur.breakdb")) == JOptionPane.YES_OPTION) { //$NON-NLS-1$
 						retry = true;
 						try {
@@ -285,6 +286,7 @@ public class ApplicationCore {
 						System.exit(1);
 					}
 				} else {
+					JOptionPane.showMessageDialog(null, "La base de donnée est déjà ouverte ailleur");
 					System.exit(1);
 				}
 			}

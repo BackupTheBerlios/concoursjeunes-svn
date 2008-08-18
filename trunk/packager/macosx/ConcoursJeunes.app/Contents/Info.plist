@@ -43,6 +43,7 @@
 		<string>$JAVAROOT/lib/AJPackage.jar</string>
 		<string>$JAVAROOT/lib/iText-2.1.2u.jar</string>
 		<string>$JAVAROOT/lib/swingx-0.9.3.jar</string>
+		<string>$JAVAROOT/lib/swing-worker.jar</string>
 		<string>$JAVAROOT/lib/h2.jar</string>
 		<string>$JAVAROOT/lib/js.jar</string>
 		<string>$JAVAROOT/lib/js-engine.jar</string>
