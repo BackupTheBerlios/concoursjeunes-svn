@@ -298,7 +298,7 @@ public class ApplicationCore {
 		try {
 			File updatePath = new File(ajrParametreAppli.getResourceString("path.ressources"), "update"); //$NON-NLS-1$ //$NON-NLS-2$
 			stmt = dbConnection.createStatement();
-			SqlManager sqlManager = new SqlManager(stmt, updatePath);
+			SqlManager sqlManager = new SqlManager(dbConnection, updatePath);
 
 			// test si la base existe déjà et retourne sa révision si c'est le cas
 			ResultSet rs = stmt.executeQuery("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='PARAM'"); //$NON-NLS-1$

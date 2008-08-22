@@ -53,8 +53,8 @@ function printState(ficheConcours, template, document, writer) {
 			tplClassementEquipe.parse("TYPE_CLASSEMENT", ApplicationCore.ajrLibelle.getResourceString("classement.equipe")); //$NON-NLS-1$ //$NON-NLS-2$
 
 			
-			var teamCriteriaSet = equipes.listCriteriaSet();
-			var sortedTeamCriteriaSets = new Array(teamCriteriaSet.size());
+			var teamCriteriaSet = ficheConcours.getEquipes().listCriteriaSet();
+			var sortedTeamCriteriaSets = java.lang.reflect.Array.newInstance(CriteriaSet, teamCriteriaSet.size());
 			sortedTeamCriteriaSets = teamCriteriaSet.toArray(sortedTeamCriteriaSets);
 			
 			CriteriaSet.sortCriteriaSet(sortedTeamCriteriaSets, ficheConcours.getParametre().getReglement().getListCriteria());
@@ -72,9 +72,11 @@ function printState(ficheConcours, template, document, writer) {
 					var idsXML = ""; //$NON-NLS-1$
 					var ptsXML = ""; //$NON-NLS-1$
 					var concurrents = sortEquipes[j].getMembresEquipe();
-					for (var k = 0; k > concurrents.size(); k++) {
-						idsXML += XmlUtils.sanitizeText(concurrents[k].getID()) + "<newline/>"; //$NON-NLS-1$
-						ptsXML += concurrents[k].getTotalScore() + "<newline/>"; //$NON-NLS-1$
+					//print(concurrents.size() +"\n");
+					for (var k = 0; k < concurrents.size(); k++) {
+						//print(concurrents[k].getID() +"\n");
+						idsXML += XmlUtils.sanitizeText(concurrents.get(k).getID()) + "<newline/>"; //$NON-NLS-1$
+						ptsXML += concurrents.get(k).getTotalScore() + "<newline/>"; //$NON-NLS-1$
 					}
 					tplClassementEquipe.parse("categories.classement.IDENTITEES", idsXML); //$NON-NLS-1$
 					tplClassementEquipe.parse("categories.classement.NOM_EQUIPE", XmlUtils.sanitizeText(sortEquipes[j].getNomEquipe())); //$NON-NLS-1$

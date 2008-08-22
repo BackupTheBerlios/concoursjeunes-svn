@@ -93,6 +93,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
 import javax.swing.*;
@@ -208,7 +209,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		this.ficheConcours = ficheConcours;
 		nbInstance++;
 		
-		ExecutorService executorService = Executors.newSingleThreadExecutor();
+		ExecutorService executorService = Executors.newSingleThreadExecutor(new LowFactory());
 		concurrentListDialog = executorService.submit(new Callable<ConcurrentListDialog>() {
 			public ConcurrentListDialog call() {
 				return new ConcurrentListDialog(ConcurrentDialog.this, ConcurrentDialog.this.ficheConcours.getParametre().getReglement(), null);
@@ -1029,4 +1030,49 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	public void finalize() throws Throwable {
 		super.finalize();
 	}
+	
+	private abstract static class Factory implements ThreadFactory {
+		protected final ThreadGroup group;
+
+		Factory() {
+			SecurityManager s = System.getSecurityManager();
+			group = (s != null) ? s.getThreadGroup() : Thread.currentThread()
+					.getThreadGroup();
+		}
+
+		public Thread newThread(Runnable r) {
+			Thread t = new Thread(group, r, getThreadName(), 0);
+
+			if (t.isDaemon()) {
+				t.setDaemon(false);
+			}
+
+			return t;
+		}
+
+		protected abstract String getThreadName();
+	}
+	
+	private static class LowFactory extends Factory {
+		private final AtomicInteger lowThreadNumber = new AtomicInteger(1);
+
+		@Override
+		public Thread newThread(Runnable r) {
+			Thread t = super.newThread(r);
+
+			if (t.getPriority() != Thread.MIN_PRIORITY) {
+				t.setPriority(Thread.MIN_PRIORITY);
+			}
+
+			return t;
+		}
+
+		@Override
+		protected String getThreadName() {
+			return "low-thread-" + lowThreadNumber.getAndIncrement();
+		}
+	}
+
 }
+
+

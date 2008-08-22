@@ -96,7 +96,7 @@
 				<phrase size="10.0" style="bold">%classement.score%</phrase>
 			</cell>
 			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
-				<phrase size="10.0" style="bold">0-10-9</phrase>
+				<phrase size="10.0" style="bold">10-9</phrase>
 			</cell>
 		</row>
 		<bloc::classement>

@@ -15,39 +15,39 @@ function printState(ficheConcours, template, document, writer) {
 						java.io.StringReader);
 	
 	with(contexte) {
-		var strClassement = ""; //$NON-NLS-1$
+		var strClassement = "";
 		if (ficheConcours.getConcurrentList() != null && ficheConcours.getConcurrentList().countArcher() > 0) {
 			var concurrentsClasse = ficheConcours.classement();
 
 			var tplClassement = new AJTemplate();
-			var strArbitreResp = ""; //$NON-NLS-1$
-			var strArbitresAss = ""; //$NON-NLS-1$
+			var strArbitreResp = "";
+			var strArbitresAss = "";
 
 			tplClassement.setLocalisationReader(localeReader);
 			tplClassement.loadTemplate(template);
 
-			tplClassement.parse("CURRENT_TIME", DateFormat.getDateInstance(DateFormat.FULL).format(new Date())); //$NON-NLS-1$
-			tplClassement.parse("LOGO_CLUB_URI", ApplicationCore.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			tplClassement.parse("INTITULE_CLUB", ficheConcours.getParametre().getClub().getNom()); //$NON-NLS-1$
-			tplClassement.parse("INTITULE_CONCOURS", ficheConcours.getParametre().getIntituleConcours()); //$NON-NLS-1$
-			tplClassement.parse("VILLE_CLUB", ficheConcours.getParametre().getLieuConcours()); //$NON-NLS-1$
-			tplClassement.parse("DATE_CONCOURS", DateFormat.getDateInstance(DateFormat.LONG).format(ficheConcours.getParametre().getDate())); //$NON-NLS-1$
-			tplClassement.parse("author", ficheConcours.getParametre().getClub().getNom()); //$NON-NLS-1$
+			tplClassement.parse("CURRENT_TIME", DateFormat.getDateInstance(DateFormat.FULL).format(new Date()));
+			tplClassement.parse("LOGO_CLUB_URI", ApplicationCore.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\"));
+			tplClassement.parse("INTITULE_CLUB", ficheConcours.getParametre().getClub().getNom());
+			tplClassement.parse("INTITULE_CONCOURS", ficheConcours.getParametre().getIntituleConcours());
+			tplClassement.parse("VILLE_CLUB", ficheConcours.getParametre().getLieuConcours());
+			tplClassement.parse("DATE_CONCOURS", DateFormat.getDateInstance(DateFormat.LONG).format(ficheConcours.getParametre().getDate()));
+			tplClassement.parse("author", ficheConcours.getParametre().getClub().getNom());
 
 			var arbitres = ficheConcours.getParametre().getArbitres();
 			for (var i = 0; i < arbitres.size(); i++) {
-				if (arbitres.get(i).startsWith("*")) //$NON-NLS-1$
+				if (arbitres.get(i).startsWith("*"))
 					strArbitreResp = arbitres.get(i).substring(1);
 				else {
-					if (!strArbitresAss.equals("")) //$NON-NLS-1$
-						strArbitresAss += ", "; //$NON-NLS-1$
+					if (!strArbitresAss.equals(""))
+						strArbitresAss += ", ";
 					strArbitresAss += arbitres.get(i);
 				}
 			}
-			tplClassement.parse("ARBITRE_RESPONSABLE", XmlUtils.sanitizeText(strArbitreResp)); //$NON-NLS-1$
-			tplClassement.parse("ARBITRES_ASSISTANT", XmlUtils.sanitizeText(strArbitresAss)); //$NON-NLS-1$
-			tplClassement.parse("NB_CLUB", "" + ficheConcours.getConcurrentList().countCompagnie()); //$NON-NLS-1$ //$NON-NLS-2$
-			tplClassement.parse("NB_TIREURS", "" + ficheConcours.getConcurrentList().countArcher()); //$NON-NLS-1$ //$NON-NLS-2$
+			tplClassement.parse("ARBITRE_RESPONSABLE", XmlUtils.sanitizeText(strArbitreResp));
+			tplClassement.parse("ARBITRES_ASSISTANT", XmlUtils.sanitizeText(strArbitresAss));
+			tplClassement.parse("NB_CLUB", "" + ficheConcours.getConcurrentList().countCompagnie());
+			tplClassement.parse("NB_TIREURS", "" + ficheConcours.getConcurrentList().countArcher());
 			
 			// Entete de categorie
 			var scnalst = concurrentsClasse.keys();
@@ -68,22 +68,22 @@ function printState(ficheConcours, template, document, writer) {
 				if (sortList.length > 0) {
 
 					var tailleChampDistance = 10.5262 / ficheConcours.getParametre().getReglement().getNbSerie();
-					var strTailleChampsDistance = ""; //$NON-NLS-1$
+					var strTailleChampsDistance = "";
 					for (var j = 0; j < ficheConcours.getParametre().getReglement().getNbSerie(); j++) {
-						strTailleChampsDistance += tailleChampDistance + ";"; //$NON-NLS-1$
+						strTailleChampsDistance += tailleChampDistance + ";";
 					}
 
 					strSCNA = new CriteriaSetLibelle(scnaUse[i]).toString();
 
-					tplClassement.parse("categories.TAILLE_CHAMPS_DISTANCE", strTailleChampsDistance); //$NON-NLS-1$
-					tplClassement.parse("categories.CATEGORIE", strSCNA); //$NON-NLS-1$
+					tplClassement.parse("categories.TAILLE_CHAMPS_DISTANCE", strTailleChampsDistance);
+					tplClassement.parse("categories.CATEGORIE", strSCNA);
 					tplClassement.parse("categories.NB_TIREUR_COLS", "" + (4 + ficheConcours.getParametre().getReglement().getNbSerie())); //$NON-NLS-1$ //$NON-NLS-2$
-					tplClassement.parse("categories.NB_TIREURS", "" + sortList.length); //$NON-NLS-1$ //$NON-NLS-2$
+					tplClassement.parse("categories.NB_TIREURS", "" + sortList.length);
 
 					for (var j = 0; j < ficheConcours.getParametre().getReglement().getNbSerie(); j++) {
-						tplClassement.parse("categories.distances.DISTANCE", //$NON-NLS-1$
+						tplClassement.parse("categories.distances.DISTANCE",
 								ficheConcours.getParametre().getReglement().getDistancesEtBlasonFor(scnaUse[i].getFilteredCriteriaSet(ficheConcours.getParametre().getReglement().getPlacementFilter())).getDistance()[j] + "m"); //$NON-NLS-1$
-						tplClassement.loopBloc("categories.distances"); //$NON-NLS-1$
+						tplClassement.loopBloc("categories.distances");
 					}
 
 					if (sortList.length > 0) {
@@ -91,32 +91,16 @@ function printState(ficheConcours, template, document, writer) {
 						for (var j = 0; j < sortList.length; j++) {
 							if (sortList[j].getTotalScore() > 0) {
 								row_exist = true;
-								// test d'ex-Eaquo
-								if ((j < sortList.length - 1 && sortList[j].getTotalScore() == sortList[j + 1].getTotalScore() && ApplicationCore.getConfiguration().isInterfaceAffResultatExEquo())
-										|| (j > 0 && sortList[j].getTotalScore() == sortList[j - 1].getTotalScore() && ApplicationCore.getConfiguration().isInterfaceAffResultatExEquo())) {
 
-									if ((sortList[j].getManque() == 0 && sortList[j].getDix() == 0 && sortList[j].getNeuf() == 0)
-											|| (j < sortList.length - 2 && sortList[j].getManque() == sortList[j + 1].getManque() && sortList[j].getDix() == sortList[j + 1].getDix() && sortList[j]
-													.getNeuf() == sortList[j + 1].getNeuf())
-											|| (j > 0 && sortList[j].getManque() == sortList[j - 1].getManque() && sortList[j].getDix() == sortList[j - 1].getDix() && sortList[j].getNeuf() == sortList[j - 1]
-													.getNeuf())) {
-
-										tplClassement.parse("categories.classement.COULEUR", //$NON-NLS-1$
-												"bgcolor=\"#ff0000\""); //$NON-NLS-1$
-									}
-								} else {
-									tplClassement.parse("categories.classement.COULEUR", "bgcolor=\"#ffffff\""); //$NON-NLS-1$ //$NON-NLS-2$
-								}
-
-								tplClassement.parse("categories.classement.PLACE", "" + (j + 1)); //$NON-NLS-1$ //$NON-NLS-2$
-								tplClassement.parse("categories.classement.POSITION", "" + sortList[j].getPosition() + sortList[j].getCible()); //$NON-NLS-1$ //$NON-NLS-2$
-								tplClassement.parse("categories.classement.IDENTITEE", sortList[j].getID()); //$NON-NLS-1$
-								tplClassement.parse("categories.classement.CLUB", sortList[j].getClub().getNom()); //$NON-NLS-1$
-								tplClassement.parse("categories.classement.NUM_LICENCE", sortList[j].getNumLicenceArcher()); //$NON-NLS-1$
+								tplClassement.parse("categories.classement.PLACE", "" + (j + 1));
+								tplClassement.parse("categories.classement.POSITION", "" + sortList[j].getPosition() + sortList[j].getCible());
+								tplClassement.parse("categories.classement.IDENTITEE", sortList[j].getID());
+								tplClassement.parse("categories.classement.CLUB", sortList[j].getClub().getNom());
+								tplClassement.parse("categories.classement.NUM_LICENCE", sortList[j].getNumLicenceArcher());
 
 								var keys = ficheConcours.getParametre().getReglement().getListCriteria();
 								for (var k = 0; k < keys.size(); k++)
-									tplClassement.parse("categories.classement." //$NON-NLS-1$
+									tplClassement.parse("categories.classement."
 											+ keys.get(k).getCode(), sortList[j].getCriteriaSet().getCriterionElement(keys.get(k)).getCode());
 
 								for (var k = 0; k < ficheConcours.getParametre().getReglement().getNbSerie(); k++) {
@@ -125,22 +109,22 @@ function printState(ficheConcours, template, document, writer) {
 									else
 										tplClassement.parse("categories.classement.scores.PT_DISTANCE", "0"); //$NON-NLS-1$ //$NON-NLS-2$
 
-									tplClassement.loopBloc("categories.classement.scores"); //$NON-NLS-1$
+									tplClassement.loopBloc("categories.classement.scores");
 								}
-								tplClassement.parse("categories.classement.TOTAL", "" + sortList[j].getTotalScore()); //$NON-NLS-1$ //$NON-NLS-2$
-								tplClassement.parse("categories.classement.0_10_9", sortList[j].getManque() //$NON-NLS-1$
-										+ "-" + sortList[j].getDix() + "-" + sortList[j].getNeuf()); //$NON-NLS-1$ //$NON-NLS-2$
+								tplClassement.parse("categories.classement.TOTAL", "" + sortList[j].getTotalScore());
+								tplClassement.parse("categories.classement.0_10_9",
+										sortList[j].getDix() + "-" + sortList[j].getNeuf());
 
-								tplClassement.loopBloc("categories.classement"); //$NON-NLS-1$
+								tplClassement.loopBloc("categories.classement");
 							}
 							if (!row_exist)
-								tplClassement.parseBloc("categories.classement", ""); //$NON-NLS-1$ //$NON-NLS-2$
+								tplClassement.parseBloc("categories.classement", "");
 						}
 					} else {
-						tplClassement.parseBloc("categories.classement", ""); //$NON-NLS-1$ //$NON-NLS-2$
+						tplClassement.parseBloc("categories.classement", "");
 					}
 
-					tplClassement.loopBloc("categories"); //$NON-NLS-1$
+					tplClassement.loopBloc("categories");
 				}
 			}
 			XmlParser.parse(document, new StringReader(tplClassement.output()));

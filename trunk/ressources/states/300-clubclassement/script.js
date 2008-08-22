@@ -67,10 +67,10 @@ function printState(ficheConcours, template, document, writer) {
 
 				var idsXML = ""; //$NON-NLS-1$
 				var ptsXML = ""; //$NON-NLS-1$
-				var concurrents = sortEquipes[j].getMembresEquipe();
-				for (var k = 0; k > concurrents.size(); k++) {
-					idsXML += XmlUtils.sanitizeText(concurrents[k].getID()) + "<newline/>"; //$NON-NLS-1$
-					ptsXML += concurrents[k].getTotalScore() + "<newline/>"; //$NON-NLS-1$
+				var concurrents = sortEquipes[i].getMembresEquipe();
+				for (var j = 0; j < concurrents.size(); j++) {
+					idsXML += XmlUtils.sanitizeText(concurrents.get(j).getID()) + "<newline/>"; //$NON-NLS-1$
+					ptsXML += concurrents.get(j).getTotalScore() + "<newline/>"; //$NON-NLS-1$
 				}
 				tplClassementEquipe.parse("categories.classement.IDENTITEES", idsXML); //$NON-NLS-1$
 				tplClassementEquipe.parse("categories.classement.NOM_EQUIPE", sortEquipes[i].getNomEquipe()); //$NON-NLS-1$
