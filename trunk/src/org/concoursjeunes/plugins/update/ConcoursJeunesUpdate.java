@@ -285,14 +285,22 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 					String[] command = new String[] { "concoursjeunes-applyupdate", //$NON-NLS-1$
 							ApplicationCore.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
 							System.getProperty("user.dir") }; //$NON-NLS-1$
-					if(!OS.isMacOSX()) { 
-						//sur les systèmes Windows et Linux, invoque le programme "concoursjeunes-applyupdate"
-						//qui s'occupe d'élever les priviléges utilisateur si nécessaire.
-						process = Runtime.getRuntime().exec(command); 
-					} else {
+					if(OS.isMacOSX()) {
 						//Sous Mac OS X, l'elevation de privilege est effectué en java
 						//à l'aide d'une librairie jni
 						process = PrivilegedRuntime.getRuntime().exec(command);
+						
+					} else {
+						//sur les systèmes Windows et Linux, invoque le programme "concoursjeunes-applyupdate"
+						//qui s'occupe d'élever les priviléges utilisateur si nécessaire.
+						if(OS.isWindowsVista()) {
+							//sur vista,  le popup de l'uac semble ne pas apparaître dans certain cas.
+							//on utilise la commande cmd pour contourner le problème 
+							command =  new String[] {"cmd.exe", "/c", "concoursjeunes-applyupdate",
+									ApplicationCore.userRessources.getAllusersDataPath() + File.separator + "update",
+									System.getProperty("user.dir") }; 
+						}						
+						process = Runtime.getRuntime().exec(command); 
 					}
 					if(process != null)
 						process.waitFor();

@@ -35,6 +35,8 @@ SetCompressor lzma
 # Included files
 !include Sections.nsh
 !include MUI.nsh
+!include x64.nsh
+!addincludedir ..\packager
 !include dotnet.nsh
 !include java.nsh
 
@@ -66,14 +68,14 @@ CRCCheck on
 XPStyle on
 ShowInstDetails show
 RequestExecutionLevel admin
-VIProductVersion 1.0.0.0
+VIProductVersion 1.1.0.0
 VIAddVersionKey /LANG=${LANG_FRENCH} ProductName "ConcoursJeunes Setup"
 VIAddVersionKey ProductVersion "${VERSION}"
 VIAddVersionKey /LANG=${LANG_FRENCH} CompanyName "${COMPANY}"
 VIAddVersionKey /LANG=${LANG_FRENCH} CompanyWebsite "${URL}"
-VIAddVersionKey /LANG=${LANG_FRENCH} FileVersion ""
+VIAddVersionKey FileVersion ""
 VIAddVersionKey /LANG=${LANG_FRENCH} FileDescription ""
-VIAddVersionKey /LANG=${LANG_FRENCH} LegalCopyright "(c) 2007 Concoursjeunes.org"
+VIAddVersionKey LegalCopyright "(c) 2007 Concoursjeunes.org"
 InstallDirRegKey HKLM "${REGKEY}" Path
 ShowUninstDetails show
 
@@ -100,9 +102,7 @@ Section "Base" SEC0000
     File /r plugins\PhoenixPlugin\*
     File *.txt
     File windows\concoursjeunes-applyupdate.exe
-    File windows\concoursjeunes-applyupdate.exe.manifest
     File windows\concoursjeunes-startup.exe
-    File windows\concoursjeunes-startup.exe.manifest
     File windows\concoursjeunes-startup.exe.config
     WriteRegStr HKLM "${REGKEY}\Components" Base 1
     
@@ -215,6 +215,13 @@ SectionEnd
 Function .onInit
     InitPluginsDir
     !insertmacro MUI_LANGDLL_DISPLAY
+    
+    ${If} ${RunningX64}
+        StrCpy '$INSTDIR' '$PROGRAMFILES64\ConcoursJeunes'
+        SetRegView 64
+    ${Else}
+        
+    ${EndIf}
 FunctionEnd
 
 # Uninstaller functions
@@ -224,6 +231,9 @@ Function un.onInit
     ReadRegStr $StartMenuGroup HKLM "${REGKEY}" StartMenuGroup
     !insertmacro MUI_UNGETLANGUAGE
     !insertmacro SELECT_UNSECTION Base ${UNSEC0000}
+    !insertmacro SELECT_UNSECTION "Import Result'Arc" ${UNSEC0001}
+    !insertmacro SELECT_UNSECTION "Icone de Bureau" ${UNSEC0002}
+    !insertmacro SELECT_UNSECTION "Option de Debugage" ${UNSEC0003}
 FunctionEnd
 
 
