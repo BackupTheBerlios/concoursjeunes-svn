@@ -1,0 +1,5 @@
+D:\java\workspace\ConcoursJeunes\src\windows-specific\concoursjeunes-applyupdate\bin\Release\concoursjeunes-applyupdate.exe
+D:\java\workspace\ConcoursJeunes\src\windows-specific\concoursjeunes-applyupdate\bin\Release\concoursjeunes-applyupdate.pdb
+D:\java\workspace\ConcoursJeunes\src\windows-specific\concoursjeunes-applyupdate\obj\Release\ResolveAssemblyReference.cache
+D:\java\workspace\ConcoursJeunes\src\windows-specific\concoursjeunes-applyupdate\obj\Release\concoursjeunes-applyupdate.exe
+D:\java\workspace\ConcoursJeunes\src\windows-specific\concoursjeunes-applyupdate\obj\Release\concoursjeunes-applyupdate.pdb

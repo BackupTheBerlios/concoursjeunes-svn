@@ -88,12 +88,7 @@ package org.concoursjeunes.plugins.update;
 
 import static org.concoursjeunes.ConcoursJeunes.ajrParametreAppli;
 
-import java.awt.AWTException;
-import java.awt.Dimension;
-import java.awt.Image;
-import java.awt.SystemTray;
-import java.awt.Toolkit;
-import java.awt.TrayIcon;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
@@ -110,15 +105,12 @@ import org.concoursjeunes.plugins.Plugin;
 import org.concoursjeunes.plugins.PluginEntry;
 import org.concoursjeunes.plugins.PluginLoader;
 import org.concoursjeunes.plugins.PluginMetadata;
+import org.jdesktop.swingx.util.OS;
 
 import ajinteractive.standard.common.AJToolKit;
 import ajinteractive.standard.common.AjResourcesReader;
 import ajinteractive.standard.utilities.app.AppSerializer;
-import ajinteractive.standard.utilities.updater.AjUpdater;
-import ajinteractive.standard.utilities.updater.AjUpdaterEvent;
-import ajinteractive.standard.utilities.updater.AjUpdaterFrame;
-import ajinteractive.standard.utilities.updater.AjUpdaterListener;
-import ajinteractive.standard.utilities.updater.UpdateException;
+import ajinteractive.standard.utilities.updater.*;
 
 @Plugin(type = Plugin.Type.STARTUP)
 public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, MouseListener {
@@ -249,9 +241,15 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 			if (JOptionPane.showConfirmDialog(null, pluginLocalisation.getResourceString("update.confirminstall"), pluginLocalisation.getResourceString("update.confirminstall.title"), //$NON-NLS-1$ //$NON-NLS-2$
 					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 				try {
-					Process process = Runtime.getRuntime().exec(new String[] { "concoursjeunes-applyupdate", //$NON-NLS-1$
+					String[] command = new String[] { "concoursjeunes-applyupdate", //$NON-NLS-1$
 							ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
-							System.getProperty("user.dir") }); //$NON-NLS-1$
+							System.getProperty("user.dir") };
+					if(OS.isWindows() && Integer.parseInt(System.getProperty("os.version").substring(0,1)) >= 6) {
+						command = new String[] { "cmd.exe", "/c", "concoursjeunes-applyupdate", //$NON-NLS-1$
+								ConcoursJeunes.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
+								System.getProperty("user.dir") };
+					}
+					Process process = Runtime.getRuntime().exec(command); //$NON-NLS-1$
 					process.waitFor();
 					
 					try {
