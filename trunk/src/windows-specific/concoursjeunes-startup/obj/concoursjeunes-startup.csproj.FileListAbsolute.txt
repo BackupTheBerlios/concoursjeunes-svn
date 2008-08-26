@@ -4,3 +4,9 @@ D:\java\workspace\ConcoursJeunes\src\windows-specific\concoursjeunes-startup\obj
 D:\java\workspace\ConcoursJeunes\src\windows-specific\concoursjeunes-startup\obj\Release\concoursjeunes-startup.exe
 D:\java\workspace\ConcoursJeunes\src\windows-specific\concoursjeunes-startup\obj\Release\concoursjeunes-startup.pdb
 D:\java\workspace\ConcoursJeunes\src\windows-specific\concoursjeunes-startup\bin\Release\concoursjeunes-startup.exe.config
+C:\Users\aurelien\Documents\Visual Studio 2005\Projects\windows-specific\concoursjeunes-startup\bin\Release\concoursjeunes-startup.exe.config
+C:\Users\aurelien\Documents\Visual Studio 2005\Projects\windows-specific\concoursjeunes-startup\bin\Release\concoursjeunes-startup.exe
+C:\Users\aurelien\Documents\Visual Studio 2005\Projects\windows-specific\concoursjeunes-startup\bin\Release\concoursjeunes-startup.pdb
+C:\Users\aurelien\Documents\Visual Studio 2005\Projects\windows-specific\concoursjeunes-startup\obj\Release\ResolveAssemblyReference.cache
+C:\Users\aurelien\Documents\Visual Studio 2005\Projects\windows-specific\concoursjeunes-startup\obj\Release\concoursjeunes-startup.exe
+C:\Users\aurelien\Documents\Visual Studio 2005\Projects\windows-specific\concoursjeunes-startup\obj\Release\concoursjeunes-startup.pdb

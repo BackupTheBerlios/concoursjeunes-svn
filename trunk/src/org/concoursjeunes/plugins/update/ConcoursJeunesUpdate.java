@@ -293,13 +293,13 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 					} else {
 						//sur les systèmes Windows et Linux, invoque le programme "concoursjeunes-applyupdate"
 						//qui s'occupe d'élever les priviléges utilisateur si nécessaire.
-						if(OS.isWindowsVista()) {
+						/*if(OS.isWindowsVista()) {
 							//sur vista,  le popup de l'uac semble ne pas apparaître dans certain cas.
 							//on utilise la commande cmd pour contourner le problème 
 							command =  new String[] {"cmd.exe", "/c", "concoursjeunes-applyupdate",
 									ApplicationCore.userRessources.getAllusersDataPath() + File.separator + "update",
 									System.getProperty("user.dir") }; 
-						}						
+						}	*/					
 						process = Runtime.getRuntime().exec(command); 
 					}
 					if(process != null)
