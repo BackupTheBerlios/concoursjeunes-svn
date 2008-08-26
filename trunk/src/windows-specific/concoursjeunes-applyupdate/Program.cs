@@ -11,12 +11,16 @@ namespace concoursjeunes_applyupdate {
 	//[assembly: RegistryPermissionAttribute(SecurityAction.RequestMinimum, ViewAndModify = "HKEY_CURRENT_USER")]
 	class Program {
 		static void Main(string[] args) {
+			bool wow64Mode = false;
 			if (args.Length == 2) {
 				RegistryKey HKLM = Registry.LocalMachine;
 				object version = HKLM.OpenSubKey(@"SOFTWARE\JavaSoft\Java Runtime Environment").GetValue("CurrentVersion");
+				if (version == null) {
+					version = HKLM.OpenSubKey(@"SOFTWARE\Wow6432Node\JavaSoft\Java Runtime Environment").GetValue(@"CurrentVersion");
+					wow64Mode = true;
+				}
 				if (version != null) {
-
-					object javaPath = HKLM.OpenSubKey(@"SOFTWARE\JavaSoft\Java Runtime Environment\" + (string)version ).GetValue("JavaHome");
+					object javaPath = HKLM.OpenSubKey(@"SOFTWARE\" + (wow64Mode ? @"Wow6432Node\" : "") + @"JavaSoft\Java Runtime Environment\" + (string)version).GetValue("JavaHome");
 
 					ProcessStartInfo startInfo = new ProcessStartInfo(javaPath + @"\bin\javaw.exe");
 					startInfo.Arguments = "-cp lib/AJPackage.jar ajinteractive.standard.utilities.updater.AjUpdaterApply \"" + args[0] + "\" \"" + args[1] + "\"";

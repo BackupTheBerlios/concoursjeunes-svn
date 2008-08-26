@@ -3,3 +3,4 @@ D:\java\workspace\ConcoursJeunes\src\windows-specific\concoursjeunes-startup\bin
 D:\java\workspace\ConcoursJeunes\src\windows-specific\concoursjeunes-startup\obj\Release\ResolveAssemblyReference.cache
 D:\java\workspace\ConcoursJeunes\src\windows-specific\concoursjeunes-startup\obj\Release\concoursjeunes-startup.exe
 D:\java\workspace\ConcoursJeunes\src\windows-specific\concoursjeunes-startup\obj\Release\concoursjeunes-startup.pdb
+D:\java\workspace\ConcoursJeunes\src\windows-specific\concoursjeunes-startup\bin\Release\concoursjeunes-startup.exe.config
