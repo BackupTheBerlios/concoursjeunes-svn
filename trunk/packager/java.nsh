@@ -27,11 +27,20 @@ FunctionEnd
  
 Function DetectJRE
 	ReadRegStr $2 HKLM "SOFTWARE\JavaSoft\Java Runtime Environment" "CurrentVersion"
-             
-      StrCpy $4 $2 1 0
-      IntCmp $4 ${JRE_MAJOR} +1 goNext done
-      StrCpy $4 $2 1 2
-      IntCmp $4 ${JRE_MINOR} done goNext done
+	IfErrors checkWoW64
+	GoTo checkVersion
+  
+  checkWoW64:
+	SetRegView 32
+	ReadRegStr $2 HKLM "SOFTWARE\JavaSoft\Java Runtime Environment" "CurrentVersion"
+	SetRegView lastused
+	IfErrors goNext
+	
+  checkVersion:
+	StrCpy $4 $2 1 0
+	IntCmp $4 ${JRE_MAJOR} +1 goNext done
+	StrCpy $4 $2 1 2
+	IntCmp $4 ${JRE_MINOR} done goNext done
 
   goNext:
 	Call GetJRE

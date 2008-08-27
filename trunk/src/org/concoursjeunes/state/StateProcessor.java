@@ -182,10 +182,12 @@ public class StateProcessor {
 		Reader reader = new BufferedReader(new InputStreamReader(
 				new URL(((isZippedState) ? "jar:" : "") + stateURL.toString() + ((isZippedState) ? "!" : "") + "/" + state.getScript()).openStream())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 		//FileReader reader = new FileReader(new File(statePath, state.getScript()));
-		scriptEngine.eval(reader);
+		CompiledScript cs = ((Compilable)scriptEngine).compile(reader);
+		//scriptEngine.eval(reader);
+		cs.eval();
 		reader.close();
 		
-		Invocable invocable = (Invocable)scriptEngine;
+		Invocable invocable = (Invocable)cs.getEngine();
 		boolean isprintable = (Boolean)invocable.invokeFunction("checkPrintable", ficheConcours); //$NON-NLS-1$
 		
 		if(isprintable) {

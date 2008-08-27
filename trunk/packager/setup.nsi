@@ -69,13 +69,16 @@ XPStyle on
 ShowInstDetails show
 RequestExecutionLevel admin
 VIProductVersion 1.1.0.0
-VIAddVersionKey /LANG=${LANG_FRENCH} ProductName "ConcoursJeunes Setup"
+VIAddVersionKey ProductName "ConcoursJeunes Setup"
 VIAddVersionKey ProductVersion "${VERSION}"
-VIAddVersionKey /LANG=${LANG_FRENCH} CompanyName "${COMPANY}"
-VIAddVersionKey /LANG=${LANG_FRENCH} CompanyWebsite "${URL}"
+VIAddVersionKey CompanyName "${COMPANY}"
+VIAddVersionKey CompanyWebsite "${URL}"
 VIAddVersionKey FileVersion ""
-VIAddVersionKey /LANG=${LANG_FRENCH} FileDescription ""
+VIAddVersionKey /LANG=${LANG_FRENCH} FileVersion ""
+VIAddVersionKey FileDescription "ConcoursJeunes Install"
+VIAddVersionKey /LANG=${LANG_FRENCH} FileDescription "Installation de ConcoursJeunes"
 VIAddVersionKey LegalCopyright "(c) 2007 Concoursjeunes.org"
+VIAddVersionKey /LANG=${LANG_FRENCH} LegalCopyright "(c) 2007 Concoursjeunes.org"
 InstallDirRegKey HKLM "${REGKEY}" Path
 ShowUninstDetails show
 
@@ -219,13 +222,15 @@ Function .onInit
     ${If} ${RunningX64}
         StrCpy '$INSTDIR' '$PROGRAMFILES64\ConcoursJeunes'
         SetRegView 64
-    ${Else}
-        
     ${EndIf}
 FunctionEnd
 
 # Uninstaller functions
 Function un.onInit
+	${If} ${RunningX64}
+        StrCpy '$INSTDIR' '$PROGRAMFILES64\ConcoursJeunes'
+        SetRegView 64
+    ${EndIf}
     SetAutoClose true
     ReadRegStr $INSTDIR HKLM "${REGKEY}" Path
     ReadRegStr $StartMenuGroup HKLM "${REGKEY}" StartMenuGroup
