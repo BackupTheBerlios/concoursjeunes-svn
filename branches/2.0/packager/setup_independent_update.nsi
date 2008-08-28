@@ -39,14 +39,8 @@ SetCompressor lzma
 # Reserved Files
 !insertmacro MUI_RESERVEFILE_LANGDLL
 
-# Variables
-Var StartMenuGroup
-var InstallPath
-var active
-
 # Installer pages
 !insertmacro MUI_PAGE_WELCOME
-!insertmacro MUI_PAGE_LICENSE Licence_win.txt
 !insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_PAGE_FINISH
 
@@ -56,51 +50,39 @@ var active
 
 # Installer attributes
 OutFile ${OUT_FILE}
+InstallDir $PROGRAMFILES\ConcoursJeunes
 CRCCheck on
 XPStyle on
 ShowInstDetails show
 RequestExecutionLevel admin
-VIProductVersion 1.0.0.0
+VIProductVersion 1.1.0.0
+VIAddVersionKey ProductName "ConcoursJeunes Patch Setup"
 VIAddVersionKey ProductVersion "${VERSION}"
-VIAddVersionKey ProductName "ConcoursJeunes Setup"
 VIAddVersionKey CompanyName "${COMPANY}"
 VIAddVersionKey CompanyWebsite "${URL}"
 VIAddVersionKey FileVersion ""
+VIAddVersionKey /LANG=${LANG_FRENCH} FileVersion ""
 VIAddVersionKey FileDescription ""
-VIAddVersionKey LegalCopyright "(c) 2007 Concoursjeunes.org"
+VIAddVersionKey /LANG=${LANG_FRENCH} FileDescription ""
+VIAddVersionKey LegalCopyright "(c) 2007-2008 Concoursjeunes.org"
+VIAddVersionKey /LANG=${LANG_FRENCH} LegalCopyright "(c) 2007-2008 Concoursjeunes.org"
 
-ShowUninstDetails show
+InstType "Normal"
 
 # Installer sections
-Section SEC0000
+Section "Base" SEC0000
+    SectionIn RO 1
     SetOverwrite on
-
-    ReadRegStr $StartMenuGroup HKLM "${REGKEY}" StartMenuGroup
-    ReadRegStr $InstallPath HKLM "${REGKEY}" Path
-    SetOutPath $InstallPath
-    
+    SetOutPath $INSTDIR
+    File windows\concoursjeunes-applyupdate.exe
     File windows\concoursjeunes-startup.exe
-    File windows\concoursjeunes-startup.exe.manifest
-    CreateShortCut "$SMPROGRAMS\$StartMenuGroup\ConcoursJeunes.lnk" "$InstallPath\concoursjeunes-startup.exe" '' "$InstallPath\ressources\iconCJ.ico"
-
-    ReadRegStr $active HKLM "${REGKEY}\Components" "Icone de Bureau"
-    StrCmp $active 1 desktopShortcut 0
-opt2:
-    ReadRegStr $active HKLM "${REGKEY}\Components" "Option de Debugage"
-    StrCmp $active 1 debugShortcut 0
-    GoTo done
-
-desktopShortcut:
-    CreateShortCut "$DESKTOP\ConcoursJeunes.lnk" "$InstallPath\concoursjeunes-startup.exe" '' "$InstallPath\ressources\iconCJ.ico"
-    GoTo opt2
-debugShortcut:
-    CreateShortCut "$SMPROGRAMS\$StartMenuGroup\ConcoursJeunes Debug.lnk" "$InstallPath\concoursjeunes-startup.exe" '-debug' "$InstallPath\ressources\iconCJ.ico"
-done:
-
+    File windows\concoursjeunes-startup.exe.config
 SectionEnd
 
 # Installer functions
 Function .onInit
     InitPluginsDir
     !insertmacro MUI_LANGDLL_DISPLAY
+    ReadRegStr $2 HKLM "${REGKEY}" "Path"
+    StrCpy '$INSTDIR' $2
 FunctionEnd

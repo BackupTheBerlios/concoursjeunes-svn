@@ -216,11 +216,16 @@ Function .onInit
     !insertmacro MUI_LANGDLL_DISPLAY
     ${If} ${RunningX64}
         StrCpy '$INSTDIR' '$PROGRAMFILES64\ConcoursJeunes'
+        SetRegView 64
     ${EndIf}
 FunctionEnd
 
 # Uninstaller functions
 Function un.onInit
+	${If} ${RunningX64}
+        StrCpy '$INSTDIR' '$PROGRAMFILES64\ConcoursJeunes'
+        SetRegView 64
+    ${EndIf}
     SetAutoClose true
     ReadRegStr $INSTDIR HKLM "${REGKEY}" Path
     ReadRegStr $StartMenuGroup HKLM "${REGKEY}" StartMenuGroup

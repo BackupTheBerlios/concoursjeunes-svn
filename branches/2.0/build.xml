@@ -150,7 +150,7 @@
 		</revisionscreator>
 	</target>
 
-	<target name="makerpm" depends="jar">
+	<target name="makerpm">
 
 		<mkdir dir="${projet.pack.dir}/linux" />
 		<property name="rpm.pack.path" location="${projet.pack.dir}/linux" />
@@ -317,8 +317,8 @@
 		
 		<nsis script="packager/setup_independent_update.nsi" verbosity="4">
 			<define name="VERSION" value="${version.numero}"/>
-			<define name="OUT_FILE" value="windows\setup-idep-update-${version.name}-${version.numero}.exe"/>
-			<define name="WORKING_DIR" value="..\${projet.pack.dir}"/>
+			<define name="OUT_FILE" value="windows/patch-${version.name}.exe"/>
+			<define name="WORKING_DIR" value="../${projet.pack.dir}"/>
 		</nsis>
 	</target>
 	
@@ -332,6 +332,9 @@
 	<target name="all-system"
 		depends="jar, pack-ConcoursJeunesUpdate, pack-FFTAImport, revisions, makensissetup, makerpm, makedeb"
 		description="Compilation Multi-systeme" />
+	<target name="all-system-packonly"
+			depends="makensissetup, makerpm, makedeb"
+			description="Empacketage uniquement" />
 	<target name="MacOSX" 
 		depends="jar, pack-ConcoursJeunesUpdate, revisions, makemacbundle"
 		description="Pack Mac OS X" />
