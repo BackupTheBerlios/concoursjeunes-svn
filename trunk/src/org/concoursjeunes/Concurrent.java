@@ -270,14 +270,14 @@ public class Concurrent extends Archer implements Cloneable {
 	public String toString() {
 		if(this.targetPosition.getTarget() == 0)
 			return "<html><font color=red>" + //$NON-NLS-1$
-			getNomArcher() + " " + //$NON-NLS-1$
-			getPrenomArcher() + " (" + //$NON-NLS-1$
-			getClub() +
-			")</font></html>"; //$NON-NLS-1$
+					getNomArcher() + " " + //$NON-NLS-1$
+					getPrenomArcher() + " (" + //$NON-NLS-1$
+					getClub() +
+					")</font></html>"; //$NON-NLS-1$
 		return targetPosition.toString() + ": " + //$NON-NLS-1$
-		getNomArcher() + " " + //$NON-NLS-1$
-		getPrenomArcher() + " (" + //$NON-NLS-1$
-		getClub() + ")"; //$NON-NLS-1$
+				getNomArcher() + " " + //$NON-NLS-1$
+				getPrenomArcher() + " (" + //$NON-NLS-1$
+				getClub() + ")"; //$NON-NLS-1$
 	}
 	
 	/**

@@ -727,7 +727,8 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		} else if(source == jbPrint) {
 			printState();
 		} else if(source == jbOpenDocument) {
-			openPdf((File)ajlDocuments.getSelectedValue());
+			if(!ajlDocuments.isSelectionEmpty())
+				openPdf((File)ajlDocuments.getSelectedValue());
 		} else if(source == jbDeleteDocument) {
 			if (JOptionPane.showConfirmDialog(this, ApplicationCore.ajrLibelle.getResourceString("state.confirmation.suppression"), //$NON-NLS-1$
 					ApplicationCore.ajrLibelle.getResourceString("state.confirmation.suppression.title"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {//$NON-NLS-1$
@@ -835,8 +836,10 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if(e.getSource() == ajlDocuments && e.getClickCount() == 2) {
-			File openFile = (File)ajlDocuments.getSelectedValue();
-			openPdf(openFile);
+			if(!ajlDocuments.isSelectionEmpty()) {
+				File openFile = (File)ajlDocuments.getSelectedValue();
+				openPdf(openFile);
+			}
 		}
 	}
 

@@ -342,7 +342,8 @@ public class GreffePane extends JPanel implements
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (e.getClickCount() == 2) {
-			ficheConcoursPane.concDialog.showConcurrentDialog(concurrents[jtConcurrents.getSelectedRow()]);
+			ficheConcoursPane.openConcurrentDialog(concurrents[jtConcurrents.getSelectedRow()]);
+			completePanel();
 		}
 	}
 
