@@ -88,6 +88,8 @@
  */
 package org.concoursjeunes;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
@@ -107,7 +109,7 @@ import org.concoursjeunes.exceptions.PlacementException;
  * @author Aurelien Jeoffray
  * @version 2.2
  */
-public class Target {
+public class Target implements PropertyChangeListener {
 	
 	public enum Repartition {
 		ABCD,
@@ -426,6 +428,7 @@ public class Target {
 			concurrent.setCible(numCible);
 			concurrent.setPosition(pos);
 		}
+		concurrent.addPropertyChangeListener(this);
 		
 		concurrents[pos] = concurrent;
 		nbArcher++;
@@ -525,6 +528,9 @@ public class Target {
 					nbArcher++;
 					if (concurrent.isHandicape())
 						nbHandicap++;
+					
+					concurrent.addPropertyChangeListener(this);
+					
 					concurrents[position] = concurrent;
 					fireConcurrentJoined(concurrent);
 					
@@ -568,6 +574,8 @@ public class Target {
 			if(removedConcurrent.isHandicape())
 				nbHandicap--;
 
+			removedConcurrent.removePropertyChangeListener(this);
+			
 			concurrents[position] = null;
 
 			fireConcurrentQuit(removedConcurrent);
@@ -707,6 +715,20 @@ public class Target {
 	private void fireConcurrentQuit(Concurrent concurrent) {
 		for (TargetListener cibleListener : listeners.getListeners(TargetListener.class)) {
 			cibleListener.concurrentQuit(new TargetEvent(concurrent, this));
+		}
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if(evt.getPropertyName().equals("handicape")) { //$NON-NLS-1$
+			boolean oldValue = (Boolean)evt.getOldValue();
+			boolean newValue = (Boolean)evt.getNewValue();
+			if(oldValue != newValue) {
+				if(newValue)
+					nbHandicap++;
+				else
+					nbHandicap--;
+			}
 		}
 	}
 }

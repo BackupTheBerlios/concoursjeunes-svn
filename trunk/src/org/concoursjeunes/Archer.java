@@ -85,6 +85,10 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 package org.concoursjeunes;
+
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+
 /**
  * Class représentant un archer independament d'un concours
  * 
@@ -100,6 +104,8 @@ public class Archer {
 	private Entite club             = new Entite();
 	private boolean certificat      = false;
 	private boolean handicape		= false;
+	
+	private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
 	/**
 	 * Constructeur vide nécessaire à l'initialisation correct de l'objet
@@ -107,6 +113,23 @@ public class Archer {
 	 *
 	 */
 	public Archer() { }
+	
+	/**
+	 * permet d'écouter les modifications des propriété de l'archer
+	 * 
+	 * @param l
+	 */
+	public void addPropertyChangeListener(PropertyChangeListener l) {
+		pcs.addPropertyChangeListener(l);
+	}
+	
+	/**
+	 * 
+	 * @param l
+	 */
+	public void removePropertyChangeListener(PropertyChangeListener l) {
+		pcs.removePropertyChangeListener(l);
+	}
 
 	/**
 	 * Retourne le numero de licence de l'archer
@@ -123,7 +146,11 @@ public class Archer {
 	 * @param numLicenceArcher le numero de licence de l'archer
 	 */
 	public void setNumLicenceArcher(String numLicenceArcher) {
+		String oldValue = this.numLicenceArcher;
+		
 		this.numLicenceArcher = numLicenceArcher;
+		
+		pcs.firePropertyChange("numLicenceArcher", oldValue, numLicenceArcher); //$NON-NLS-1$
 	}
 
 	/**
@@ -141,7 +168,11 @@ public class Archer {
 	 * @param nomArcher le nom de l'archer
 	 */
 	public void setNomArcher(String nomArcher) {
+		String oldValue = this.nomArcher;
+		
 		this.nomArcher = nomArcher;
+		
+		pcs.firePropertyChange("nomArcher", oldValue, nomArcher); //$NON-NLS-1$
 	}
 
 	/**
@@ -159,7 +190,11 @@ public class Archer {
 	 * @param prenomArcher le prenom de l'archer
 	 */
 	public void setPrenomArcher(String prenomArcher) {
+		String oldValue = this.prenomArcher;
+		
 		this.prenomArcher = prenomArcher;
+		
+		pcs.firePropertyChange("prenomArcher", oldValue, prenomArcher); //$NON-NLS-1$
 	}
 
 	/**
@@ -177,7 +212,11 @@ public class Archer {
 	 * @param club l'objet Entite representant le club de l'archer
 	 */
 	public void setClub(Entite club) {
+		Entite oldValue = this.club;
+		
 		this.club = club;
+		
+		pcs.firePropertyChange("club", oldValue, club); //$NON-NLS-1$
 	}
 	/**
 	 * Indique si l'archer possede ou non un certificat medical de non contre indiquation
@@ -195,7 +234,11 @@ public class Archer {
 	 * @param certificat true si l'archer possede un certificat, false sinon
 	 */
 	public void setCertificat(boolean certificat) {
+		boolean oldValue = this.certificat;
+		
 		this.certificat = certificat;
+		
+		pcs.firePropertyChange("certificat", oldValue, certificat); //$NON-NLS-1$
 	}
 
 	/**
@@ -213,7 +256,11 @@ public class Archer {
 	 * @param handicape true si l'archer est handicapé, false sinon
 	 */
 	public void setHandicape(boolean handicape) {
+		boolean oldValue = this.handicape;
+		
 		this.handicape = handicape;
+		
+		pcs.firePropertyChange("handicape", oldValue, handicape); //$NON-NLS-1$
 	}
 
 	/**
