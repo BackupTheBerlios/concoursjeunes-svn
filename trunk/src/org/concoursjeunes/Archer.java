@@ -96,7 +96,7 @@ import java.beans.PropertyChangeSupport;
  * @version 1.0
  */
 
-public class Archer {
+public class Archer implements Cloneable {
 
 	private String nomArcher        = ""; //$NON-NLS-1$
 	private String prenomArcher     = ""; //$NON-NLS-1$
@@ -105,7 +105,7 @@ public class Archer {
 	private boolean certificat      = false;
 	private boolean handicape		= false;
 	
-	private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
 	/**
 	 * Constructeur vide nécessaire à l'initialisation correct de l'objet
@@ -311,5 +311,13 @@ public class Archer {
 				return false;
 		}
 		return true;
+	}
+	
+	@Override
+	protected Archer clone() throws CloneNotSupportedException {
+		Archer clone = (Archer)super.clone();
+		clone.pcs = new PropertyChangeSupport(clone);
+		
+		return clone;
 	}
 }
