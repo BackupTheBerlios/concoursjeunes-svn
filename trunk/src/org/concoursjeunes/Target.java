@@ -407,7 +407,7 @@ public class Target implements PropertyChangeListener {
 					}
 				} else if(blason.getNbArcher() > 1) {
 					if(!((!otherBlason.equals(blason) && !blason.isOver(position, otherBlason, i))
-							|| (otherBlason.equals(blason) && blason.isOver(position, otherBlason, i)))) {
+							|| otherBlason.equals(blason))) {
 						placable = false;
 						break;
 					}

@@ -103,6 +103,7 @@ Section "Base" SEC0000
     File ConcoursJeunes.jar
     File /r plugins\ConcoursJeunesUpdate\*
     File /r plugins\PhoenixPlugin\*
+    File /r plugins\BackupRestorePlugin\*
     File *.txt
     File windows\concoursjeunes-applyupdate.exe
     File windows\concoursjeunes-startup.exe

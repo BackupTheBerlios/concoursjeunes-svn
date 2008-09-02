@@ -309,8 +309,8 @@ public class ShootingLineState {
 					ApplicationCore.ajrParametreAppli.getResourceString("path.ressources")  //$NON-NLS-1$
 					+ File.separator + db.getTargetFace().getTargetFaceImage());
 			
-			image.setAbsolutePosition(AJToolKit.centimeterToDpi(startCol + 0.135 + ancrage.getX() * (2.6 * hr)),
-					pageHeight - AJToolKit.centimeterToDpi(2.6 * vr) - AJToolKit.centimeterToDpi(topMargin + targetPos + ancrage.getY() * (2.6 * vr)));
+			image.setAbsolutePosition(AJToolKit.centimeterToDpi(startCol + 0.135 + ancrage.getX() * 2.6),
+					pageHeight - AJToolKit.centimeterToDpi(2.6 * vr) - AJToolKit.centimeterToDpi(topMargin + targetPos + ancrage.getY() * 2.6));
 			image.scaleAbsolute(AJToolKit.centimeterToDpi(2.6 * hr), AJToolKit.centimeterToDpi(2.6 * vr));
 			cb.addImage(image);
 		}
