@@ -42,6 +42,6 @@
         <useProxyAuthentification>false</useProxyAuthentification>
         <useProxyForLocalNetwork>false</useProxyForLocalNetwork>
     </proxy>
-    <reglementName>savoie</reglementName>
+    <reglementName>Savoie</reglementName>
     <useProxy>false</useProxy>
 </configuration>

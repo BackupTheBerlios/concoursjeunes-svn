@@ -430,7 +430,7 @@ public class ParametreDialog extends JDialog implements ActionListener {
 		} else if (ae.getSource() == jbSelectReglement) {
 			ReglementManagerDialog reglementManagerDialog = new ReglementManagerDialog(parentframe);
 			Reglement reglement = reglementManagerDialog.showReglementManagerDialog(true);
-			if(tempReglement == null || !tempReglement.equals(reglement)) {
+			if(reglement != null && (tempReglement == null || !tempReglement.equals(reglement))) {
 				tempReglement = reglement;
 				jlSelectedReglement.setText(reglement.getName());
 			}
