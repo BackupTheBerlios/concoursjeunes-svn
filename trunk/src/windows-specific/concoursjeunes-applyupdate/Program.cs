@@ -26,6 +26,7 @@ namespace concoursjeunes_applyupdate {
 					ProcessStartInfo startInfo = new ProcessStartInfo(javaPath + @"\bin\javaw.exe");
 					startInfo.Arguments = "-cp lib/AJPackage.jar ajinteractive.standard.utilities.updater.AjUpdaterApply \"" + args[0] + "\" \"" + args[1] + "\"";
 					Process updateProcess = Process.Start(startInfo);
+                    updateProcess.WaitForExit();
 				} else {
 					MessageBox.Show("Java doit être installé pour lancer l'application"); 
 				}
