@@ -13,14 +13,20 @@ namespace concoursjeunes_applyupdate {
 		static void Main(string[] args) {
 			if (args.Length == 2) {
 				RegistryKey HKLM = Registry.LocalMachine;
-				object version = HKLM.OpenSubKey(@"SOFTWARE\JavaSoft\Java Runtime Environment").GetValue("CurrentVersion");
-				if (version != null) {
+                RegistryKey javaReg = HKLM.OpenSubKey(@"SOFTWARE\JavaSoft\Java Runtime Environment");
 
-					object javaPath = HKLM.OpenSubKey(@"SOFTWARE\JavaSoft\Java Runtime Environment\" + (string)version ).GetValue("JavaHome");
+                if (javaReg == null)
+                    javaReg = HKLM.OpenSubKey(@"SOFTWARE\Wow6432Node\JavaSoft\Java Runtime Environment");
+
+                if (javaReg != null)
+                {
+                    object version = javaReg.GetValue(@"CurrentVersion");
+                    object javaPath = javaReg.OpenSubKey((string)version).GetValue("JavaHome");
 
 					ProcessStartInfo startInfo = new ProcessStartInfo(javaPath + @"\bin\javaw.exe");
 					startInfo.Arguments = "-cp lib/AJPackage.jar ajinteractive.standard.utilities.updater.AjUpdaterApply \"" + args[0] + "\" \"" + args[1] + "\"";
 					Process updateProcess = Process.Start(startInfo);
+                    updateProcess.WaitForExit();
 				} else {
 					MessageBox.Show("Java doit être installé pour lancer l'application"); 
 				}
