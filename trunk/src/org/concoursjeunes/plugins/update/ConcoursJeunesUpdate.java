@@ -283,7 +283,7 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 				try {
 					Process process = null;
 					String[] command = new String[] { "concoursjeunes-applyupdate", //$NON-NLS-1$
-							ApplicationCore.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
+							ApplicationCore.userRessources.getUpdatePath().getPath(), //$NON-NLS-1$
 							System.getProperty("user.dir") }; //$NON-NLS-1$
 					if(OS.isMacOSX()) {
 						//Sous Mac OS X, l'elevation de privilege est effectué en java

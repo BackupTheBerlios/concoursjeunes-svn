@@ -159,6 +159,7 @@ public class StateProcessor {
 					+ " - " + DateFormat.getDateInstance().format(new Date()) + " " + new SimpleDateFormat("HH.mm.ss").format(new Date()) + ".pdf";   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
 		}
 		
+		System.out.println(new Date());
 		ScriptEngineManager se = new ScriptEngineManager();
 		ScriptEngine scriptEngine = se.getEngineByName("JavaScript"); //$NON-NLS-1$
 		scriptEngine.setBindings(new SimpleBindings(Collections.synchronizedMap(new HashMap<String, Object>())), ScriptContext.ENGINE_SCOPE);
@@ -201,6 +202,7 @@ public class StateProcessor {
 		}
 		
 		document.close();
+		System.out.println(new Date());
 		
 		if (isprintable) {
 			if(Desktop.isDesktopSupported()) {

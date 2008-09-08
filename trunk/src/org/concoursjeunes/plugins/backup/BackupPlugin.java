@@ -89,10 +89,12 @@
 package org.concoursjeunes.plugins.backup;
 
 import java.io.*;
+import java.util.List;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Pack200;
 import java.util.jar.Pack200.Packer;
+import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 
 import javax.swing.JFileChooser;
@@ -103,8 +105,11 @@ import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Configuration;
 import org.concoursjeunes.plugins.Plugin;
 import org.concoursjeunes.plugins.PluginEntry;
+import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.error.ErrorInfo;
 
 import ajinteractive.standard.common.AjResourcesReader;
+import ajinteractive.standard.utilities.io.FileUtils;
 
 /**
  * @author Aurélien JEOFFRAY
@@ -137,7 +142,7 @@ public class BackupPlugin {
 	    if(returnVal == JFileChooser.APPROVE_OPTION) {       
 
 			try {
-				File[] concoursFiles = concoursPath.listFiles();
+				List<File> concoursFiles = FileUtils.listAllFiles(concoursPath, "\\.cta", false);
 				
 				File tempJar = File.createTempFile("profilecj_", ".jar"); //$NON-NLS-1$ //$NON-NLS-2$
 				
@@ -161,6 +166,9 @@ public class BackupPlugin {
 				tempJar.delete();
 			} catch (IOException e) {
 				e.printStackTrace();
+				JXErrorPane.showDialog(parentframe, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+						e.toString(),
+						null, null, e, Level.SEVERE, null));
 			}
 	    }
 	}
