@@ -142,11 +142,12 @@ public class BackupPlugin {
 	    if(returnVal == JFileChooser.APPROVE_OPTION) {       
 
 			try {
-				List<File> concoursFiles = FileUtils.listAllFiles(concoursPath, "\\.cta", false);
+				List<File> concoursFiles = FileUtils.listAllFiles(concoursPath, ".*\\.cta", false);
 				
 				File tempJar = File.createTempFile("profilecj_", ".jar"); //$NON-NLS-1$ //$NON-NLS-2$
 				
 				JarOutputStream jos = new JarOutputStream(new FileOutputStream(tempJar));
+				jos.setLevel(9);
 				
 				for(File concoursFile : concoursFiles) {
 					addEntryToJar(concoursFile, jos);
@@ -154,6 +155,7 @@ public class BackupPlugin {
 				
 				addEntryToJar(new File(ApplicationCore.userRessources.getConfigPathForUser(), "configuration.xml"), jos); //$NON-NLS-1$
 				
+				//jos.finish();
 				jos.close();
 				
 				File backupFile = chooser.getSelectedFile();
@@ -186,6 +188,7 @@ public class BackupPlugin {
 		}
 		bis.close();
 		
+		//jos.finish();
 		jos.closeEntry();
 	}
 }

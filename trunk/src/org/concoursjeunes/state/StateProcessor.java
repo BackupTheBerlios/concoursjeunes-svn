@@ -94,9 +94,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 
 import javax.script.*;
 import javax.swing.JOptionPane;
@@ -159,10 +157,10 @@ public class StateProcessor {
 					+ " - " + DateFormat.getDateInstance().format(new Date()) + " " + new SimpleDateFormat("HH.mm.ss").format(new Date()) + ".pdf";   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
 		}
 		
-		System.out.println(new Date());
 		ScriptEngineManager se = new ScriptEngineManager();
 		ScriptEngine scriptEngine = se.getEngineByName("JavaScript"); //$NON-NLS-1$
-		scriptEngine.setBindings(new SimpleBindings(Collections.synchronizedMap(new HashMap<String, Object>())), ScriptContext.ENGINE_SCOPE);
+		//ScriptEngine scriptEngine = se.getEngineByName("rhino-nonjdk"); //$NON-NLS-1$
+		//scriptEngine.setBindings(new SimpleBindings(Collections.synchronizedMap(new HashMap<String, Object>())), ScriptContext.ENGINE_SCOPE);
 
 		String statePath = ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
 				+ File.separator + "states" + File.separator + state.getName(); //$NON-NLS-1$
@@ -182,9 +180,7 @@ public class StateProcessor {
 		
 		Reader reader = new BufferedReader(new InputStreamReader(
 				new URL(((isZippedState) ? "jar:" : "") + stateURL.toString() + ((isZippedState) ? "!" : "") + "/" + state.getScript()).openStream())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-		//FileReader reader = new FileReader(new File(statePath, state.getScript()));
 		CompiledScript cs = ((Compilable)scriptEngine).compile(reader);
-		//scriptEngine.eval(reader);
 		cs.eval();
 		reader.close();
 		
@@ -202,7 +198,6 @@ public class StateProcessor {
 		}
 		
 		document.close();
-		System.out.println(new Date());
 		
 		if (isprintable) {
 			if(Desktop.isDesktopSupported()) {

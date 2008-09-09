@@ -17,7 +17,7 @@ function printState(ficheConcours, template, document, writer) {
 						java.io.StringReader);
 	
 	with(contexte) {
-		var depart = 0;
+		//var depart = 0;
 	
 		var listeArcherXML = new AJTemplate();
 		listeArcherXML.loadTemplate(template);

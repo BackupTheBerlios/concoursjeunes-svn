@@ -453,7 +453,7 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 					}
 				}
 			}
-		} else if(e.getSource() == jbExport) {
+		} else if(e.getSource() == jbImport) {
 			JFileChooser fileChooser = new JFileChooser();
 			fileChooser.setFileFilter(new AJFileFilter(new String[] {"reglement"}, "Fichier réglement")); //$NON-NLS-1$
 			if(fileChooser.showOpenDialog(parentframe) == JFileChooser.APPROVE_OPTION) {

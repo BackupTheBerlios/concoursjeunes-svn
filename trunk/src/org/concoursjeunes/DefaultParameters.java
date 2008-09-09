@@ -79,11 +79,14 @@ public class DefaultParameters {
 	}
 
 	/**
-	 * Définit le nombre de départ sur le concours
+	 * Définit le nombre de départ sur le concours. Ce nombre de ne peut excédé 9
 	 * 
-	 * @param nbDepart le nombre de départ
+	 * @param nbDepart le nombre de départ du concours. Si le nombre fournit est supérieur à 9,
+	 * 9 sera enregistré
 	 */
 	public void setNbDepart(int nbDepart) {
+		if(nbDepart > 9)
+			nbDepart = 9;
 		this.nbDepart = nbDepart;
 	}
 

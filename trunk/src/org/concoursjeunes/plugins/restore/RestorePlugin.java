@@ -170,7 +170,7 @@ public class RestorePlugin {
 					}
 					fos = new FileOutputStream(destination);
 					
-					byte[] buffer = new byte[512*1024];
+					byte[] buffer = new byte[512*1024]; //bloc de 512Ko
 		            int nbLecture;
 		            while((nbLecture = jis.read(buffer)) != -1 ) {
 		                fos.write(buffer, 0, nbLecture);
