@@ -1069,7 +1069,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 
 		@Override
 		protected String getThreadName() {
-			return "low-thread-" + lowThreadNumber.getAndIncrement();
+			return "low-thread-" + lowThreadNumber.getAndIncrement(); //$NON-NLS-1$
 		}
 	}
 

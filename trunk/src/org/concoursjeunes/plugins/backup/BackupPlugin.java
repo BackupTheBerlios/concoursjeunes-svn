@@ -142,7 +142,7 @@ public class BackupPlugin {
 	    if(returnVal == JFileChooser.APPROVE_OPTION) {       
 
 			try {
-				List<File> concoursFiles = FileUtils.listAllFiles(concoursPath, ".*\\.cta", false);
+				List<File> concoursFiles = FileUtils.listAllFiles(concoursPath, ".*\\.cta", false); //$NON-NLS-1$
 				
 				File tempJar = File.createTempFile("profilecj_", ".jar"); //$NON-NLS-1$ //$NON-NLS-2$
 				

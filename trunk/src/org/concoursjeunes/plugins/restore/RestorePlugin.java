@@ -88,10 +88,7 @@
  */
 package org.concoursjeunes.plugins.restore;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Pack200;
@@ -114,6 +111,7 @@ import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
 import ajinteractive.standard.common.AjResourcesReader;
+import ajinteractive.standard.utilities.io.FileUtils;
 
 /**
  * @author Aurélien JEOFFRAY
@@ -134,62 +132,32 @@ public class RestorePlugin {
 	public void showRestoreDialog() {
 		Configuration configuration = ApplicationCore.getConfiguration();
 		
-		File concoursPath = ApplicationCore.userRessources.getConcoursPathForProfile(configuration.getCurProfil());
+		File tempPath;
+		//File concoursPath = ApplicationCore.userRessources.getConcoursPathForProfile(configuration.getCurProfil());
 		
 		JFileChooser chooser = new JFileChooser();
 	    FileNameExtensionFilter filter = new FileNameExtensionFilter(
 	    		pluginLocalisation.getResourceString("description.type.file"), "backup"); //$NON-NLS-1$ //$NON-NLS-2$
 	    chooser.setFileFilter(filter);
-	    //chooser.setSelectedFile(new File(configuration.getCurProfil() + ".backup"));
-	    //chooser.setFileView(FileSystemView.getFileSystemView().);
+
 	    int returnVal = chooser.showOpenDialog(parentframe);
 	    if(returnVal == JFileChooser.APPROVE_OPTION) {       
 
 			try {
-				Unpacker unpack = Pack200.newUnpacker();
-
-				File tempJar = File.createTempFile("profilecj_", ".jar"); //$NON-NLS-1$ //$NON-NLS-2$
+				//On transforme le pack200 en jar
+				//On décompresse le contenue du jar dans un répertoire temporaire
+				tempPath = extractJarContent(unpack(chooser.getSelectedFile()));
 				
-				JarOutputStream jos = new JarOutputStream(new FileOutputStream(tempJar));
+				File configFile = new File(tempPath, "configuration.xml"); //$NON-NLS-1$
 				
-				unpack.unpack(chooser.getSelectedFile(), jos);
-				jos.close();
-				
-				File configFile = null;
-				
-				JarInputStream jis = new JarInputStream(new FileInputStream(tempJar));
-				ZipEntry ze;
-				FileOutputStream fos;
-				while((ze = jis.getNextEntry()) != null) {
-					File destination;
-					if(ze.getName().startsWith("configuration")) { //$NON-NLS-1$
-						destination = new File(System.getProperty("java.io.tmpdir"), ze.getName()); //$NON-NLS-1$
-						configFile = destination;
-					} else {
-						destination = new File(concoursPath, ze.getName());
-					}
-					fos = new FileOutputStream(destination);
-					
-					byte[] buffer = new byte[512*1024]; //bloc de 512Ko
-		            int nbLecture;
-		            while((nbLecture = jis.read(buffer)) != -1 ) {
-		                fos.write(buffer, 0, nbLecture);
-		            }
-
-					fos.close();
-				}
-				jis.close();
-
-				tempJar.delete();
-				
-				if(configFile != null) {
+				if(configFile.exists()) {
 					Configuration restoredConfiguration = ConfigurationManager.loadConfiguration(configFile);
 					if(restoredConfiguration != null) {
+						//si le profil à chargé est le profil courant, alors fermé et sauvegardé tous les concours ouvert
+						//puis ajouté le contenue à la configuration courante
 						if(restoredConfiguration.getCurProfil().equals(configuration.getCurProfil())) {
 							try {
 								ApplicationCore.getInstance().closeAllFichesConcours();
-								
-								//ConcoursJeunes.configuration.save();
 							} catch (NullConfigurationException e1) {
 								JXErrorPane.showDialog(parentframe, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 										null, null, e1, Level.SEVERE, null));
@@ -205,6 +173,14 @@ public class RestorePlugin {
 							restoredConfiguration.saveAsDefault();
 						}
 						
+						File concoursPath = ApplicationCore.userRessources.getConcoursPathForProfile(restoredConfiguration.getCurProfil());
+						for(File f : FileUtils.listAllFiles(tempPath, ".*")) { //$NON-NLS-1$
+							if(!f.getName().equals("configuration.xml")) //$NON-NLS-1$
+								FileUtils.copyFile(f, concoursPath, true);
+							f.delete();
+						}
+						tempPath.delete();
+						
 						restoredConfiguration.save();
 					}
 				}
@@ -214,5 +190,88 @@ public class RestorePlugin {
 				e.printStackTrace();
 			}
 	    }
+	}
+	
+	/**
+	 * Convertie un fichier pack200 en fichier jar temporaire
+	 * 
+	 * @param packedFile le fichier pack200 à convertir
+	 * @return le fichier jar temporaire
+	 */
+	private File unpack(File packedFile) {
+		Unpacker unpack;
+		File tempJar = null;
+		JarOutputStream jos = null;
+		
+		try {
+			unpack = Pack200.newUnpacker();
+			tempJar = File.createTempFile("profilecj_", ".jar"); //$NON-NLS-1$ //$NON-NLS-2$
+			jos = new JarOutputStream(new FileOutputStream(tempJar));
+			
+			unpack.unpack(packedFile, jos);
+		} catch (FileNotFoundException e) {
+			JXErrorPane.showDialog(parentframe, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+					null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
+		} catch (IOException e) {
+			JXErrorPane.showDialog(parentframe, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+					null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
+		} finally {
+			if(jos != null)
+				try { jos.close(); } catch(IOException e) {};
+			unpack = null;
+			jos = null;
+		}
+
+		return tempJar;
+	}
+	
+	/**
+	 * Extrait les fichiers du jar dans un répertoire temporaire
+	 * 
+	 * @param jarFile le fichier jar à extraire
+	 * @return le chemin contenant les fichiers extrait
+	 */
+	private File extractJarContent(File jarFile) {
+		File extractedPath = new File(System.getProperty("java.io.tmpdir"), "profilecj_" + System.currentTimeMillis());  //$NON-NLS-1$//$NON-NLS-2$
+		JarInputStream jis = null;
+		ZipEntry ze;
+		FileOutputStream fos = null;
+		
+		extractedPath.mkdirs();
+		
+		try {
+			jis = new JarInputStream(new FileInputStream(jarFile));
+			
+			while((ze = jis.getNextEntry()) != null) {
+				File destination = new File(extractedPath, ze.getName());
+				try {
+					fos = new FileOutputStream(destination);
+					
+					byte[] buffer = new byte[512*1024]; //bloc de 512Ko
+				    int nbLecture;
+				    while((nbLecture = jis.read(buffer)) != -1 ) {
+				        fos.write(buffer, 0, nbLecture);
+				    }
+				} finally {
+					try { fos.close(); } catch (IOException e) { }
+				}
+			}
+		} catch (FileNotFoundException e) {
+			JXErrorPane.showDialog(parentframe, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+					null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
+		} catch (IOException e) {
+			JXErrorPane.showDialog(parentframe, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+					null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
+		} finally {
+			try { jis.close(); } catch (IOException e) { }
+		}
+
+		jarFile.delete();
+		
+		return extractedPath;
 	}
 }

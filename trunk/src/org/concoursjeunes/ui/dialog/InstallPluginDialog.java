@@ -251,9 +251,9 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 		
 		try {
 			Class<?> clazz = Class.forName(
-					"org.concoursjeunes.webservices.AvailablePluginsManagerImpl",
+					"org.concoursjeunes.webservices.AvailablePluginsManagerImpl", //$NON-NLS-1$
 					true,
-					new URLClassLoader(new URL[] { new URL(ApplicationCore.ajrParametreAppli.getResourceString("url.webservices") + "/ConcoursJeunes-webservices.jar") }));
+					new URLClassLoader(new URL[] { new URL(ApplicationCore.ajrParametreAppli.getResourceString("url.webservices") + "/ConcoursJeunes-webservices.jar") })); //$NON-NLS-1$ //$NON-NLS-2$
 			AvailablePluginsManager apm = (AvailablePluginsManager)clazz.newInstance();
 			pluginsDetail = apm.getPluginsDetail();
 			

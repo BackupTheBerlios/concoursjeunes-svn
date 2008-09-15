@@ -106,15 +106,16 @@ import com.lowagie.text.xml.XmlParser;
  * @author Aurélien JEOFFRAY
  *
  */
+@SuppressWarnings("nls")
 public class IndividualScoreSheetState {
 	private AjResourcesReader localeReader;
 	private int depart;
-	private int serie;
+	//private int serie;
 	
 	public IndividualScoreSheetState(AjResourcesReader localeReader, int depart, int serie) {
 		this.localeReader = localeReader;
 		this.depart = depart;
-		this.serie = serie;
+		//this.serie = serie;
 	}
 	
 	public void printState(FicheConcours ficheConcours, URL template, Document document, PdfWriter writer)
@@ -129,25 +130,25 @@ public class IndividualScoreSheetState {
 			
 			Concurrent[] concurrents = ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), ConcurrentList.SortCriteria.SORT_BY_TARGETS);
 			for(int i = 0; i < concurrents.length; i++) {
-				templateXML.parse("scoresheet.LOGO_CLUB_URI", ApplicationCore.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\"));
+				templateXML.parse("scoresheet.LOGO_CLUB_URI", ApplicationCore.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$
 				templateXML.parse("scoresheet.INTITULE_CLUB", ficheConcours.getParametre().getClub().getNom()); //$NON-NLS-1$
 				templateXML.parse("scoresheet.INTITULE_CONCOURS", ficheConcours.getParametre().getIntituleConcours()); //$NON-NLS-1$
 				templateXML.parse("scoresheet.VILLE_CLUB", ficheConcours.getParametre().getLieuConcours()); //$NON-NLS-1$
 				templateXML.parse("scoresheet.DATE_CONCOURS", DateFormat.getDateInstance(DateFormat.LONG).format(ficheConcours.getParametre().getDate())); //$NON-NLS-1$
 				
-				templateXML.parse("scoresheet.cid", concurrents[i].getNomArcher() + " " + concurrents[i].getPrenomArcher());
-				templateXML.parse("scoresheet.cclub", concurrents[i].getClub().getNom());
-				templateXML.parse("scoresheet.clicence", concurrents[i].getNumLicenceArcher());
-				templateXML.parse("scoresheet.emplacement", new TargetPosition(concurrents[i].getCible(), concurrents[i].getPosition()).toString());
+				templateXML.parse("scoresheet.cid", concurrents[i].getNomArcher() + " " + concurrents[i].getPrenomArcher()); //$NON-NLS-1$
+				templateXML.parse("scoresheet.cclub", concurrents[i].getClub().getNom()); //$NON-NLS-1$
+				templateXML.parse("scoresheet.clicence", concurrents[i].getNumLicenceArcher()); //$NON-NLS-1$
+				templateXML.parse("scoresheet.emplacement", new TargetPosition(concurrents[i].getCible(), concurrents[i].getPosition()).toString()); //$NON-NLS-1$
 				
 				int nbSerie = ficheConcours.getParametre().getReglement().getNbSerie();
-				String colsSeriesSize = "";
+				String colsSeriesSize = ""; //$NON-NLS-1$
 				for(int j = 0; j < nbSerie; j++)
-					colsSeriesSize += ";" + ((100.0 / nbSerie)-1) + ";1";
+					colsSeriesSize += ";" + ((100.0 / nbSerie)-1) + ";1"; //$NON-NLS-1$ //$NON-NLS-2$
 				colsSeriesSize = colsSeriesSize.substring(1);
 				
-				templateXML.parse("scoresheet.NB_SERIE", Integer.toString(nbSerie));
-				templateXML.parse("scoresheet.PERCENT_SERIES", colsSeriesSize);
+				templateXML.parse("scoresheet.NB_SERIE", Integer.toString(nbSerie)); //$NON-NLS-1$
+				templateXML.parse("scoresheet.PERCENT_SERIES", colsSeriesSize); //$NON-NLS-1$
 				
 				int nbFlecheParVolee = ficheConcours.getParametre().getReglement().getNbFlecheParVolee();
 				for(int j = 0; j < nbSerie; j++) {

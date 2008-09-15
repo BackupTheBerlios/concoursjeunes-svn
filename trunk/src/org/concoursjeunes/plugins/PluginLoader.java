@@ -115,7 +115,7 @@ public class PluginLoader {
 
 		if (pluginsFiles != null) {
 			for (File pluginFile : pluginsFiles) {
-				if (pluginFile.getName().endsWith(".properties") && !pluginFile.getName().endsWith("_custom.properties")) { //$NON-NLS-1$
+				if (pluginFile.getName().endsWith(".properties") && !pluginFile.getName().endsWith("_custom.properties")) { //$NON-NLS-1$ //$NON-NLS-2$
 					String pluginName = pluginFile.getName().substring(0, pluginFile.getName().length() - ".properties".length()); //$NON-NLS-1$
 					
 					AjResourcesReader pluginProperties = new AjResourcesReader("properties." + //$NON-NLS-1$

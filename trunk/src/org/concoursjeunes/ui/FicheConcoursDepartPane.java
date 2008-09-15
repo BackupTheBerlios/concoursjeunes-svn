@@ -370,7 +370,12 @@ public class FicheConcoursDepartPane extends JPanel
 	 * 
 	 */
 	private void createListeParNom() {
-		ajlConcurrent.setListData(ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), ConcurrentList.SortCriteria.SORT_BY_TARGETS));
+		if (jcbSortCible.isSelected())
+			ajlConcurrent.setListData(ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), ConcurrentList.SortCriteria.SORT_BY_TARGETS));
+		else if (jcbSortNom.isSelected())
+			ajlConcurrent.setListData(ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), ConcurrentList.SortCriteria.SORT_BY_NAME));
+		else
+			ajlConcurrent.setListData(ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), ConcurrentList.SortCriteria.SORT_BY_CLUBS));
 	}
 
 	/**

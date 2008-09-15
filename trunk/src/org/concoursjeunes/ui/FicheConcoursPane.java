@@ -732,9 +732,11 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		} else if(source == jbDeleteDocument) {
 			if (JOptionPane.showConfirmDialog(this, ApplicationCore.ajrLibelle.getResourceString("state.confirmation.suppression"), //$NON-NLS-1$
 					ApplicationCore.ajrLibelle.getResourceString("state.confirmation.suppression.title"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {//$NON-NLS-1$
-				File file = (File)ajlDocuments.getSelectedValue();
-				file.delete();
-				ajlDocuments.remove(file);
+				Object[] files = ajlDocuments.getSelectedValues();
+				for(Object f : files) {
+					((File)f).delete();
+					ajlDocuments.remove(f);
+				}
 			}
 		} else if(source == printClassementIndiv || source == printClassementEquipe ||  source == printClassementClub) {
 			tabbedpane.setSelectedIndex(3);
