@@ -229,11 +229,6 @@ public class DistancesEtBlason {
 		if (getClass() != obj.getClass())
 			return false;
 		final DistancesEtBlason other = (DistancesEtBlason) obj;
-		if (criteriaSet == null) {
-			if (other.criteriaSet != null)
-				return false;
-		} else if (!criteriaSet.equals(other.criteriaSet))
-			return false;
 		if (!Arrays.equals(distances, other.distances))
 			return false;
 		if (targetFace == null) {

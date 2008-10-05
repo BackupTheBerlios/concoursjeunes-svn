@@ -533,7 +533,8 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 			int first = rows.size();
 			int last = first + concurrents.size() - 1;
 			rows.addAll(concurrents);
-			fireTableRowsInserted(first, last);
+			if(last > first)
+				fireTableRowsInserted(first, last);
 		}
 
 		/**

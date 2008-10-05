@@ -569,6 +569,9 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		jtfAgrement.setDocument(acdAgrement);
 
 		setConcurrent(concurrent);
+		
+		jlDescription.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.description")); //$NON-NLS-1$
+		jlDescription.setBackground(new Color(255, 255, 225));
 
 		pack();
 		setResizable(false);
@@ -722,6 +725,9 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		if (concurrent.haveHomonyme()) {
 			jlDescription.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.homonyme")); //$NON-NLS-1$
 			jlDescription.setBackground(Color.ORANGE);
+		} else if(concurrent.isSurclassement()) {
+			jlDescription.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.mustbeoverclassified")); //$NON-NLS-1$
+			jlDescription.setBackground(new Color(155, 155, 255));
 		} else {
 			jlDescription.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.description")); //$NON-NLS-1$
 			jlDescription.setBackground(new Color(255, 255, 225));
@@ -958,20 +964,15 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 								ApplicationCore.ajrLibelle.getResourceString("concurrent.invalidcriteriaset.title"), //$NON-NLS-1$
 								JOptionPane.WARNING_MESSAGE);
 					} else {
-						if(JOptionPane.showConfirmDialog(this, 
-								ApplicationCore.ajrLibelle.getResourceString("concurrent.mustbeoverclassified", surclassement.toString()), //$NON-NLS-1$
-								ApplicationCore.ajrLibelle.getResourceString("concurrent.invalidcriteriaset.title"), //$NON-NLS-1$
-								JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-							for (Criterion key : ficheConcours.getParametre().getReglement().getListCriteria()) {
-								CriterionElement element = surclassement.getCriterionElement(key);
-								if(element != null)
-									jcbCategorieTable.get(key).setSelectedItem(element);
-								else
-									jcbCategorieTable.get(key).setSelectedIndex(0);
-							}
-							jcbSurclassement.setSelected(true);
-							unselectedItem = null;
+						for (Criterion key : ficheConcours.getParametre().getReglement().getListCriteria()) {
+							CriterionElement element = surclassement.getCriterionElement(key);
+							if(element != null)
+								jcbCategorieTable.get(key).setSelectedItem(element);
+							else
+								jcbCategorieTable.get(key).setSelectedIndex(0);
 						}
+						jcbSurclassement.setSelected(true);
+						unselectedItem = null;
 					}
 					if(unselectedItem != null)
 						((JComboBox)e.getSource()).setSelectedItem(unselectedItem);
