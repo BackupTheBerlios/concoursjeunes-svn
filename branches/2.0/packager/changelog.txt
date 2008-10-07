@@ -1,3 +1,9 @@
+concoursjeunes (2.02.05.1) stable; urgency=low
+
+  * Modification de la chaine de connexion à la base afin d'éviter certain blocage
+
+ -- Aurelien JEOFFRAY <aurelien.jeoffray@gmail.com>  Tue, 7 Oct 2008 21:02:59 +0100
+
 concoursjeunes (2.02.05) stable; urgency=low
 
   * Correction erreur arbre des cibles suite à ajout d'une cible supplémentaire sur un concours
