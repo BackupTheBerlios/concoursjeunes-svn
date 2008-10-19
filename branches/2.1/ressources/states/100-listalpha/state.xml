@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<state>
+	<name>100-listalpha</name>
+	<category>greffe</category>
+	<displayName>state.name</displayName>
+	<serie>false</serie>
+	<start>true</start>
+	<save>false</save>
+	<type>XML</type>
+	<template>template.xml</template>
+	<script>script.js</script>
+</state>
