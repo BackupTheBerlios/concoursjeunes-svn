@@ -99,6 +99,7 @@ import java.util.zip.ZipEntry;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.concoursjeunes.ApplicationCore;
@@ -118,7 +119,7 @@ import ajinteractive.standard.utilities.io.FileUtils;
 @Plugin(type = Plugin.Type.ON_DEMAND)
 public class BackupPlugin {
 	
-	private AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.restore.RestorePlugin_libelle", BackupPlugin.class.getClassLoader()); //$NON-NLS-1$
+	private AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.backup.BackupPlugin_libelle", BackupPlugin.class.getClassLoader()); //$NON-NLS-1$
 	
 	private JFrame parentframe;
 	
@@ -166,6 +167,8 @@ public class BackupPlugin {
 				packer.pack(new JarFile(tempJar), new FileOutputStream(backupFile));
 
 				tempJar.delete();
+				
+				JOptionPane.showMessageDialog(parentframe, pluginLocalisation.getResourceString("backupdialog.success")); //$NON-NLS-1$
 			} catch (IOException e) {
 				e.printStackTrace();
 				JXErrorPane.showDialog(parentframe, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$

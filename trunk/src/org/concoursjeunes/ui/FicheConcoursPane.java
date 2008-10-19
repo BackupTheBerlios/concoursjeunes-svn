@@ -171,6 +171,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	private JButton printClassementClub		= new JButton();
 	
 	//panneau d'édition
+	private JLabel jlAide = new JLabel();
 	private JLabel jlCurrentStateName = new JLabel();
 	private JLabel jlDepart = new JLabel();
 	private JLabel jlSerie = new JLabel();
@@ -411,6 +412,11 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	private JPanel initOptions() {
 		JPanel panel = new JPanel();
 		
+		JPanel jpInformations = new JPanel();
+		jpInformations.setLayout(new FlowLayout(FlowLayout.LEFT));
+		jpInformations.setBackground(new Color(255, 255, 225));
+		jpInformations.setOpaque(true);
+		
 		JPanel jpOptions = new JPanel();
 		jpOptions.setBorder(new TitledBorder(ApplicationCore.ajrLibelle.getResourceString("state.options"))); //$NON-NLS-1$
 		
@@ -432,6 +438,8 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 				ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
 				File.separator +
 				ApplicationCore.ajrParametreAppli.getResourceString("file.icon.removeelement"))); //$NON-NLS-1$
+		
+		jpInformations.add(jlAide);
 
 		composer.setParentPanel(jpOptions);
 		c.gridy = 0;
@@ -462,8 +470,13 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		jpDocuments.add(docActions, BorderLayout.NORTH);
 		jpDocuments.add(new JScrollPane(ajlDocuments), BorderLayout.CENTER);
 		
+		JPanel jpOptInf = new JPanel();
+		jpOptInf.setLayout(new BorderLayout());
+		jpOptInf.add(jpInformations, BorderLayout.NORTH);
+		jpOptInf.add(jpOptions, BorderLayout.CENTER);
+		
 		panel.setLayout(new BorderLayout());
-		panel.add(jpOptions, BorderLayout.NORTH);
+		panel.add(jpOptInf, BorderLayout.NORTH);
 		panel.add(jpDocuments, BorderLayout.CENTER);
 		
 		return panel;
@@ -520,6 +533,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		jtbClassement.setTitleAt(1, ApplicationCore.ajrLibelle.getResourceString("onglet.classementequipe")); //$NON-NLS-1$
 		jtbClassement.setTitleAt(2, ApplicationCore.ajrLibelle.getResourceString("onglet.classementclub")); //$NON-NLS-1$
 		
+		jlAide.setText(ApplicationCore.ajrLibelle.getResourceString("state.help")); //$NON-NLS-1$
 		jlCurrentStateName.setText(ApplicationCore.ajrLibelle.getResourceString("state.choosestate")); //$NON-NLS-1$
 		jlDepart.setText(ApplicationCore.ajrLibelle.getResourceString("state.start")); //$NON-NLS-1$
 		jlSerie.setText(ApplicationCore.ajrLibelle.getResourceString("state.serie")); //$NON-NLS-1$
@@ -612,7 +626,11 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
         return action;
     }
 	
-	private void prepareState(State state) {
+	public void switchToEditPane() {
+		tabbedpane.setSelectedIndex(3);
+	}
+	
+	public void prepareState(State state) {
 		jcbDeparts.setEnabled(state.isStart());
     	jcbSeries.setEnabled(state.isSerie());
     	jcbSave.setSelected(state.isSave());
@@ -739,7 +757,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 				}
 			}
 		} else if(source == printClassementIndiv || source == printClassementEquipe ||  source == printClassementClub) {
-			tabbedpane.setSelectedIndex(3);
+			switchToEditPane();
 			
 			try {
 				String stateName = this.getClass().getDeclaredField(((JButton)source).getName()).getAnnotation(StateSelector.class).name();

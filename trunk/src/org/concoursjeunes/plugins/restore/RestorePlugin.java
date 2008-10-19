@@ -98,6 +98,7 @@ import java.util.zip.ZipEntry;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.concoursjeunes.ApplicationCore;
@@ -182,6 +183,8 @@ public class RestorePlugin {
 						tempPath.delete();
 						
 						restoredConfiguration.save();
+						
+						JOptionPane.showMessageDialog(parentframe, pluginLocalisation.getResourceString("restoredialog.success")); //$NON-NLS-1$
 					}
 				}
 			} catch (IOException e) {

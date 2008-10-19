@@ -89,6 +89,8 @@
 package org.concoursjeunes.ui;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -102,16 +104,20 @@ import javax.swing.table.TableRowSorter;
 import org.concoursjeunes.*;
 import org.concoursjeunes.event.FicheConcoursEvent;
 import org.concoursjeunes.event.FicheConcoursListener;
+import org.concoursjeunes.state.State;
+import org.concoursjeunes.state.StateManager;
+import org.concoursjeunes.state.StateSelector;
+import org.jdesktop.swingx.JXSplitButton;
 
 import ajinteractive.standard.ui.NumberDocument;
-import ajinteractive.standard.ui.ThreeCheckBox;
+import ajinteractive.standard.ui.TriStateCheckBox;
 
 /**
  * @author Aurélien JEOFFRAY
  *
  */
 public class GreffePane extends JPanel implements 
-		FicheConcoursListener, CaretListener, ChangeListener, TableModelListener, MouseListener {
+		FicheConcoursListener, CaretListener, ChangeListener, TableModelListener, MouseListener, ActionListener {
 
 	private JTable jtConcurrents = new JTable() {
 		//  Returning the Class of each column will allow different
@@ -133,14 +139,26 @@ public class GreffePane extends JPanel implements
 	private JTextField jtfPrenom = new JTextField(10);
 	private JTextField jtfClub = new JTextField(10);
 	private JTextField jtfLicence = new JTextField(7);
-	private ThreeCheckBox jcbPayee = new ThreeCheckBox();
+	private TriStateCheckBox jcbPayee = new TriStateCheckBox();
+	@StateSelector(name="200-listgreffe")
+	private JXSplitButton jbImpression = new JXSplitButton();
+	@StateSelector(name="100-listalpha")
+	private JMenuItem jmiPrintAlpha = new JMenuItem();
+	@StateSelector(name="200-listgreffe")
+	private JMenuItem jmiPrintGreffe = new JMenuItem();
+	@StateSelector(name="300-listtarget")
+	private JMenuItem jmiPrintTarget = new JMenuItem();
 	
 	private FicheConcoursPane ficheConcoursPane;
 	private Concurrent[] concurrents;
+	private StateManager stateManager;
 	
 	public GreffePane(FicheConcoursPane ficheConcoursPane) {
 		this.ficheConcoursPane = ficheConcoursPane;
 		ficheConcoursPane.getFicheConcours().addFicheConcoursListener(this);
+		
+		//charge le gestionnaire d'etat
+		stateManager = new StateManager();
 		
 		init();
 		affectLibelle();
@@ -156,8 +174,23 @@ public class GreffePane extends JPanel implements
 		jtfPrenom.addCaretListener(this);
 		jtfClub.addCaretListener(this);
 		jtfLicence.addCaretListener(this);
+		jcbPayee.setState(TriStateCheckBox.State.PARTIAL);
 		jcbPayee.addChangeListener(this);
 		jtConcurrents.addMouseListener(this);
+		jbImpression.addActionListener(this);
+		jbImpression.setName("jbImpression"); //$NON-NLS-1$
+		jmiPrintAlpha.addActionListener(this);
+		jmiPrintAlpha.setName("jmiPrintAlpha"); //$NON-NLS-1$
+		jmiPrintGreffe.addActionListener(this);
+		jmiPrintGreffe.setName("jmiPrintGreffe"); //$NON-NLS-1$
+		jmiPrintTarget.addActionListener(this);
+		jmiPrintTarget.setName("jmiPrintTarget"); //$NON-NLS-1$
+		
+		JPopupMenu jpm = new JPopupMenu();
+		jpm.add(jmiPrintAlpha);
+		jpm.add(jmiPrintGreffe);
+		jpm.add(jmiPrintTarget);
+		jbImpression.setDropDownMenu(jpm);
 		
 		jpFiltre.add(jlDepart);
 		jpFiltre.add(jtfDepart);
@@ -170,6 +203,7 @@ public class GreffePane extends JPanel implements
 		jpFiltre.add(jlLicence);
 		jpFiltre.add(jtfLicence);
 		jpFiltre.add(jcbPayee);
+		jpFiltre.add(jbImpression);
 		
 		//jtConcurrents.getColumnModel().getColumn(4).setPreferredWidth(200);
 		
@@ -185,6 +219,10 @@ public class GreffePane extends JPanel implements
 		jlClub.setText(ApplicationCore.ajrLibelle.getResourceString("greffepane.club")); //$NON-NLS-1$
 		jlLicence.setText(ApplicationCore.ajrLibelle.getResourceString("greffepane.licence")); //$NON-NLS-1$
 		jcbPayee.setText(ApplicationCore.ajrLibelle.getResourceString("greffepane.paid")); //$NON-NLS-1$
+		jbImpression.setText(ApplicationCore.ajrLibelle.getResourceString("greffepane.print")); //$NON-NLS-1$
+		jmiPrintAlpha.setText(ApplicationCore.ajrLibelle.getResourceString("greffepane.print.alpha")); //$NON-NLS-1$
+		jmiPrintGreffe.setText(ApplicationCore.ajrLibelle.getResourceString("greffepane.print.greffe")); //$NON-NLS-1$
+		jmiPrintTarget.setText(ApplicationCore.ajrLibelle.getResourceString("greffepane.print.target")); //$NON-NLS-1$
 	}
 	
 	private void completePanel() {
@@ -273,9 +311,9 @@ public class GreffePane extends JPanel implements
 				public boolean include(
 						javax.swing.RowFilter.Entry<? extends DefaultTableModel, ? extends Integer> entry) {
 					DefaultTableModel model = entry.getModel();
-					if(jcbPayee.getSelected() == 2
-							|| (jcbPayee.getSelected() == 1 && (Boolean)model.getValueAt(entry.getIdentifier(), 7))
-							|| (jcbPayee.getSelected() == 0 && !(Boolean)model.getValueAt(entry.getIdentifier(), 7)))
+					if(jcbPayee.getState() == TriStateCheckBox.State.PARTIAL
+							|| (jcbPayee.getState() == TriStateCheckBox.State.CHECKED && (Boolean)model.getValueAt(entry.getIdentifier(), 7))
+							|| (jcbPayee.getState() == TriStateCheckBox.State.UNCHECKED && !(Boolean)model.getValueAt(entry.getIdentifier(), 7)))
 						return true;
 					return false;
 				}
@@ -373,5 +411,26 @@ public class GreffePane extends JPanel implements
 	 */
 	@Override
 	public void mouseReleased(MouseEvent e) {
+	}
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object source = e.getSource();
+		if(source == jbImpression || source == jmiPrintAlpha || source == jmiPrintGreffe || source == jmiPrintTarget) {
+			ficheConcoursPane.switchToEditPane();
+			try {
+				String stateName = this.getClass().getDeclaredField(((AbstractButton)source).getName()).getAnnotation(StateSelector.class).name();
+				State state = stateManager.getState(stateName);
+				if(state != null)
+					ficheConcoursPane.prepareState(state);
+			} catch (SecurityException ex) {
+				ex.printStackTrace();
+			} catch (NoSuchFieldException ex) {
+				ex.printStackTrace();
+			}
+		}
 	}
 }
