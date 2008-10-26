@@ -1,4 +1,4 @@
 To launch ConcoursJeunes installation, run as root:
 
-cd the_uncomppressed_tar.gz_path
+cd the_uncompressed_tar.gz_path
 make install

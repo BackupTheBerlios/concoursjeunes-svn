@@ -114,7 +114,7 @@
 				<phrase size="10.0" >{NUM_LICENCE}</phrase>
 			</cell>
 			<cell header="false" horizontalalign="Center" top="true" bottom="true" right="true" left="true">
-				<phrase size="10.0" >{categorie}{genre}{arc}{niveau}</phrase>
+				<phrase size="10.0" >{categorie}</phrase>
 			</cell>
 			<bloc::scores>
 			<cell header="false" horizontalalign="Center" top="true" bottom="true" right="true" left="true">

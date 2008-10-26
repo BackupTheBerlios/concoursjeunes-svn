@@ -5,7 +5,8 @@ USE_KDESU=$(shell if [ -x /usr/bin/kdesu ] ; then echo "yes" ; fi)
 all:
 
 install:
-
+	groupadd -f concoursjeunes
+	
 	mkdir -p $(DESTDIR)/usr/lib/ConcoursJeunes
 	mkdir -p $(DESTDIR)/var/lib/ConcoursJeunes
 	mkdir -p $(DESTDIR)/usr/bin/
@@ -20,8 +21,9 @@ install:
 	install -m644 usr/share/pixmaps/ConcoursJeunes.xpm $(DESTDIR)/usr/share/pixmaps/ConcoursJeunes.xpm
 	install -m644 usr/share/applications/ConcoursJeunes.desktop $(DESTDIR)/usr/share/applications/ConcoursJeunes.desktop
 	cp -r var/lib/ConcoursJeunes/. $(DESTDIR)/var/lib/ConcoursJeunes/
+	chmod +s $(DESTDIR)/var/lib/ConcoursJeunes
 	chmod -R a+Xrw $(DESTDIR)/var/lib/ConcoursJeunes
-	chown -R root:root $(DESTDIR)/var/lib/ConcoursJeunes
+	chown -R root:concoursjeunes $(DESTDIR)/var/lib/ConcoursJeunes
 	install -m700 usr/sbin/concoursjeunes-applyupdate $(DESTDIR)/usr/sbin/concoursjeunes-applyupdate
 
 	

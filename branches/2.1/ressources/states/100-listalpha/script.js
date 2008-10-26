@@ -35,11 +35,12 @@ function printState(ficheConcours, template, document, writer) {
 				listeArcherXML.parse("lignes.NUM_LICENCE", concurrents[i].getNumLicenceArcher()); //$NON-NLS-1$
 	
 				var listCriteria = ficheConcours.getParametre().getReglement().getListCriteria();
+				var catStr = "";
 				for (var j = 0; j < listCriteria.size(); j++) {
 					var key = listCriteria.get(j);
-					listeArcherXML.parse("lignes." + key.getCode(), //$NON-NLS-1$
-							concurrents[i].getCriteriaSet().getCriterionElement(key).getCode());
+					catStr += concurrents[i].getCriteriaSet().getCriterionElement(key).getCode());
 				}
+				listeArcherXML.parse("lignes.categorie", catStr);
 	
 				listeArcherXML.parse("lignes.PAYEE", AJToolKit.tokenize(ApplicationCore.ajrLibelle.getResourceString("concurrent.impression.inscription"), ",")[concurrents[i].getInscription()]); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				listeArcherXML.parse("lignes.CERTIFICAT", AJToolKit.tokenize(ApplicationCore.ajrLibelle.getResourceString("concurrent.certificat"), ",")[concurrents[i].isCertificat() ? 0 : 1]); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

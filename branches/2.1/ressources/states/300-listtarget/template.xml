@@ -23,9 +23,6 @@
 				<phrase size="10.0" style="bold">%state.category%</phrase>
 			</cell>
 			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
-				<phrase size="10.0" style="bold">%state.level%</phrase>
-			</cell>
-			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
 				<phrase size="10.0" style="bold">%state.target%</phrase>
 			</cell>
 		</row>
@@ -41,10 +38,7 @@
 				<phrase size="10.0" >{NUM_LICENCE}</phrase>
 			</cell>
 			<cell header="false" horizontalalign="Center" top="true" bottom="true" right="true" left="true">
-				<phrase size="10.0" >{categorie}{genre}{arc}</phrase>
-			</cell>
-			<cell header="false" horizontalalign="Center" top="true" bottom="true" right="true" left="true">
-				<phrase size="10.0" >{niveau}</phrase>
+				<phrase size="10.0" >{categorie}</phrase>
 			</cell>
 			<cell header="false" horizontalalign="Center" top="true" bottom="true" right="true" left="true">
 				<phrase size="10.0" >{CIBLE}</phrase>

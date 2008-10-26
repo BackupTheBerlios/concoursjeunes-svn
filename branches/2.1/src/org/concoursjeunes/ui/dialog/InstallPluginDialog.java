@@ -421,7 +421,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 			}
 			
 			if(pluginsRepos.size() > 0) {
-				AjUpdater ajUpdater = new AjUpdater(ApplicationCore.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
+				ajUpdater = new AjUpdater(ApplicationCore.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
 						"."); //$NON-NLS-1$
 				ajUpdater.addAjUpdaterListener(this);
 				
