@@ -638,19 +638,16 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 
 					reglement.addDistancesEtBlason(db);
 				} else {
-					int updateDbIndex = reglement.getListDistancesEtBlason().indexOf(db);
-
 					db.setDistance(distances);
 					db.setTargetFace((Blason)jtDistanceBlason.getModel().getValueAt(i, jtDistanceBlason.getModel().getColumnCount() - 1));
-
-					reglement.getListDistancesEtBlason().set(updateDbIndex, db);
 				}
 			}
 			
 			//supprime du reglement les D/B qui ne sont plus valide
 			List<DistancesEtBlason> activeDB = new ArrayList<DistancesEtBlason>();
 			for (int i = 0; i < jtDistanceBlason.getRowCount(); i++) {
-				DistancesEtBlason db = reglement.getDistancesEtBlasonFor((CriteriaSet)jtDistanceBlason.getModel().getValueAt(i, 0));
+				CriteriaSet cs = (CriteriaSet)jtDistanceBlason.getModel().getValueAt(i, 0);
+				DistancesEtBlason db = reglement.getDistancesEtBlasonFor(cs);
 				activeDB.add(db);
 			}
 			reglement.getListDistancesEtBlason().clear();

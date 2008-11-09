@@ -57,7 +57,7 @@ function printState(ficheConcours, template, document, writer) {
 			tplClassementEquipe.parse("TYPE_CLASSEMENT", ApplicationCore.ajrLibelle.getResourceString("classement.club")); //$NON-NLS-1$ //$NON-NLS-2$
 
 			tplClassementEquipe.parse("categories.CATEGORIE", ApplicationCore.ajrLibelle.getResourceString("equipe.composition")); //$NON-NLS-1$ //$NON-NLS-2$
-			tplClassementEquipe.parse("categories.NB_EQUIPES", "" + ficheConcours.getEquipes().countEquipes()); //$NON-NLS-1$ //$NON-NLS-2$
+			tplClassementEquipe.parse("categories.NB_EQUIPES", "" + clubList.countEquipes()); //$NON-NLS-1$ //$NON-NLS-2$
 
 			var sortEquipes = EquipeList.sort(clubList.list());
 

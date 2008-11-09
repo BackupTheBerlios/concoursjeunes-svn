@@ -232,7 +232,6 @@ public class ConfigurationManager {
 		if(success && f.exists() && !f.renameTo(fNew)) {
 			try {
 				FileUtils.deleteFilesPath(fNew);
-				fNew.delete();
 				success = f.renameTo(fNew);
 			} catch (IOException e1) {
 				success = false;

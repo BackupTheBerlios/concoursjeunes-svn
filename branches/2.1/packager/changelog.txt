@@ -1,3 +1,31 @@
+concoursjeunes (2.09.05) stable; urgency=low
+
+  * Correction d'un problème d'affichage dans le fenetre de critère d'un réglement.
+  * Mise à jour de la documentation pour la 2.1
+
+ -- Aurelien JEOFFRAY <aurelien.jeoffray@gmail.com>  Sat, 8 Nov 2008 20:40:55 +0100
+
+concoursjeunes (2.09.04) stable; urgency=low
+
+  * Correction d'un problème d'ouverture de fiche erroné dans la table du greffe
+  * Correction de la perte de l'ordre de tri et filtre à l'ouverture d'une fiche dans la table du greffe
+  * Correction du nombre d'équipe dans l'édition du classement par club
+
+ -- Aurelien JEOFFRAY <aurelien.jeoffray@gmail.com>  Fri, 7 Nov 2008 20:29:44 +0100
+
+concoursjeunes (2.09.03) stable; urgency=low
+
+  * Correction problèmes édition
+
+ -- Aurelien JEOFFRAY <aurelien.jeoffray@gmail.com>  Mon, 3 Nov 2008 18:34:12 +0100
+
+concoursjeunes (2.09.02) stable; urgency=low
+
+  * Correction du bug #49 (faute de frappe)
+  * Correction du bug #50 NullpointerException à validation d'un réglement
+
+ -- Aurelien JEOFFRAY <aurelien.jeoffray@gmail.com>  Sun, 2 Nov 2008 15:33:37 +0100
+
 concoursjeunes (2.09.00) stable; urgency=low
 
   * Début de support des compétions officiel sur cibles anglaise (2x18, 2x25, Fédéral, Fita, ...)

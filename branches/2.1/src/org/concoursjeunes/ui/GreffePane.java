@@ -97,6 +97,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.*;
+import javax.swing.RowSorter.SortKey;
 import javax.swing.event.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
@@ -258,8 +259,16 @@ public class GreffePane extends JPanel implements
 			}
 		}
 		
+		List<? extends SortKey> sortKeys = null;
+		if(sorter != null) {
+			sortKeys = sorter.getSortKeys();
+		}
+		
 		sorter = new TableRowSorter<DefaultTableModel>(dtm);
+		if(sortKeys != null)
+			sorter.setSortKeys(sortKeys);
 		jtConcurrents.setModel(dtm);
+		jtConcurrents.setRowSorter(sorter);
 		jtConcurrents.getColumnModel().getColumn(0).setMaxWidth(40);
 		//jtConcurrents.getColumnModel().getColumn(1).setPreferredWidth(400);
 		//jtConcurrents.getColumnModel().getColumn(2).setPreferredWidth(400);
@@ -269,6 +278,8 @@ public class GreffePane extends JPanel implements
 		jtConcurrents.getColumnModel().getColumn(7).setMaxWidth(40);
 		jtConcurrents.getColumnModel().getColumn(8).setMaxWidth(70);
 		jtConcurrents.getColumnModel().getColumn(9).setMaxWidth(70);
+		
+		updateTableFilter();
 	}
 	
 	private DefaultTableModel createTableModel() {
@@ -321,7 +332,7 @@ public class GreffePane extends JPanel implements
 			});
 			
 			sorter.setRowFilter(RowFilter.<DefaultTableModel, Integer>andFilter((Iterable<RowFilter<DefaultTableModel, Integer>>)filters));
-			jtConcurrents.setRowSorter(sorter);
+			//jtConcurrents.setRowSorter(sorter);
 		}
 	}
 
@@ -380,7 +391,7 @@ public class GreffePane extends JPanel implements
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (e.getClickCount() == 2) {
-			ficheConcoursPane.openConcurrentDialog(concurrents[jtConcurrents.getSelectedRow()]);
+			ficheConcoursPane.openConcurrentDialog(concurrents[jtConcurrents.convertRowIndexToModel(jtConcurrents.getSelectedRow())]);
 			completePanel();
 		}
 	}

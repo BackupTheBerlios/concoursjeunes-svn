@@ -8,7 +8,7 @@
 		<chunk size="18.0">%state.title%</chunk>
 	</paragraph>
 	<newline />
-	<table columns="6" width="100.0\%" cellpadding="1.0" widths="36.0;36.0;10;9.0;9.0;9.0">
+	<table columns="5" width="100.0\%" cellpadding="1.0" widths="36.0;36.0;10;9.0;9.0">
 		<row>
 			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
 				<phrase size="10.0" style="bold">%state.identity%</phrase>

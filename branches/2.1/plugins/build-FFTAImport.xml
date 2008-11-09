@@ -19,7 +19,6 @@
 						classname="ajinteractive.standard.utilities.updater.RevisionsCreator" />
 
 		<revisionscreator 
-				hashfilepath="${projet.pack.dir}/plugins/FFTAImport/hash.xml.gz"
 				revisionpath="${projet.pack.dir}/plugins/FFTAImport/revision.xml.gz">
 			<fileset dir="${projet.pack.dir}/plugins/FFTAImport/">
 				<include name="plugins/FFTAImport.jar"/>

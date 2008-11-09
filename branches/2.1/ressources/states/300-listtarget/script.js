@@ -38,7 +38,7 @@ function printState(ficheConcours, template, document, writer) {
 				var catStr = "";
 				for (var j = 0; j < listCriteria.size(); j++) {
 					var key = listCriteria.get(j);
-					catStr += concurrents[i].getCriteriaSet().getCriterionElement(key).getCode());
+					catStr += concurrents[i].getCriteriaSet().getCriterionElement(key).getCode();
 				}
 				listeArcherXML.parse("lignes.categorie", catStr);
 	

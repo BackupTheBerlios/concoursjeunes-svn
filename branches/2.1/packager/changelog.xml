@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?> 
-<java version="1.6.0_06" class="java.beans.XMLDecoder"> 
+<java version="1.6.0_10" class="java.beans.XMLDecoder"> 
  <object class="java.util.ArrayList"> 
   <void method="add"> 
    <object class="ajinteractive.standard.utilities.updater.Version"> 
@@ -232,6 +232,94 @@
     </void> 
     <void property="version"> 
      <string>2.09.00</string> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="add"> 
+   <object class="ajinteractive.standard.utilities.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurelien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction du bug #49 (faute de frappe)
+  * Correction du bug #50 NullpointerException à validation d&apos;un réglement</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1225636417098</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.09.02</string> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="add"> 
+   <object class="ajinteractive.standard.utilities.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurelien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction problèmes édition</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1225733652882</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.09.03</string> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="add"> 
+   <object class="ajinteractive.standard.utilities.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurelien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction d&apos;un problème d&apos;ouverture de fiche erroné dans la table du greffe
+  * Correction de la perte de l&apos;ordre de tri et filtre à l&apos;ouverture d&apos;une fiche dans la table du greffe
+  * Correction du nombre d&apos;équipe dans l&apos;édition du classement par club</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1226086184549</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.09.04</string> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="add"> 
+   <object class="ajinteractive.standard.utilities.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurelien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction d&apos;un problème d&apos;affichage dans le fenetre de critère d&apos;un réglement.
+  * Mise à jour de la documentation pour la 2.1</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1226173255838</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.09.05</string> 
     </void> 
    </object> 
   </void> 

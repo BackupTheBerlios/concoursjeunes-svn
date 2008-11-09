@@ -95,8 +95,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.Authenticator;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -124,7 +124,7 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 	private SystemTray tray;
 	private TrayIcon trayIcon;
 	private AjUpdater ajUpdater;
-	private Hashtable<String, ArrayList<FileMetaData>> updateFiles = new Hashtable<String, ArrayList<FileMetaData>>();
+	private Hashtable<String, List<FileMetaData>> updateFiles = new Hashtable<String, List<FileMetaData>>();
 	private final AjResourcesReader pluginRessources = new AjResourcesReader("properties.ConcoursJeunesUpdate"); //$NON-NLS-1$
 	private final AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.update.ConcoursJeunesUpdate_libelle", ConcoursJeunesUpdate.class.getClassLoader()); //$NON-NLS-1$
 	private enum Status {

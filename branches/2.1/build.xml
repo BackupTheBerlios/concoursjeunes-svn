@@ -63,6 +63,12 @@
 		<delete includeemptydirs="true">
 			<fileset dir="${projet.pack.dir}" includes="**/*"/>
 		</delete>
+		
+		<java classname="ajinteractive.standard.utilities.updater.ChangeLogEditor"
+			classpath="lib/AJPackage.jar"
+			fork="yes">
+			<arg value="packager/changelog.xml"/>
+		</java>
 
 		<!--Copie des ressources du projet-->
 		<copy todir="${projet.pack.dir}" >
@@ -219,10 +225,10 @@
 		<taskdef name="revisionscreator" classpath="lib/AJPackage.jar"
 				classname="ajinteractive.standard.utilities.updater.RevisionsCreator" />
 
-		<revisionscreator 
-				hashfilepath="${projet.pack.dir}/hash.xml.gz"
+		<revisionscreator
 				revisionpath="${projet.pack.dir}/revision.xml.gz"
-				changelog="packager/changelog">
+				changelogXML="packager/changelog.xml"
+				changelogTXT="${projet.pack.dir}/changelog.txt">
 			<fileset dir="${projet.pack.dir}">
 				<include name="config/**"/>
 				<include name="lang/**"/>
