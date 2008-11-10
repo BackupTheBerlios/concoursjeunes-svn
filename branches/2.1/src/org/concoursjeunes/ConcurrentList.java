@@ -374,9 +374,9 @@ public class ConcurrentList {
 						int scorei = sort_list[i].getTotalScore();
 						int scorej = sort_list[j].getTotalScore();
 						if(scorej > scorei ||
-								(scorej == scorei && (sort_list[j].getDix() > sort_list[i].getDix()) ||
+								(scorej == scorei && ((sort_list[j].getDix() > sort_list[i].getDix()) ||
 										(sort_list[j].getDix() == sort_list[i].getDix() &&
-												sort_list[j].getNeuf() > sort_list[i].getNeuf()))) {
+												sort_list[j].getNeuf() > sort_list[i].getNeuf())))) {
 							ArraysUtils.swap(sort_list, i, j);
 						}
 					}	

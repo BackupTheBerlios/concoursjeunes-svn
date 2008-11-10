@@ -323,5 +323,48 @@
     </void> 
    </object> 
   </void> 
+  <void method="add"> 
+   <object class="ajinteractive.standard.utilities.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurelien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction des Surclassements sur les réglements fédéraux
+  * La liste des éditions enregistré est désormais classée dans l&apos;ordre d&apos;enregistrement</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1226322232064</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.09.06</string> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="add"> 
+   <object class="ajinteractive.standard.utilities.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurelien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction d&apos;un problème de classement avec departage 9 renseigné</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1226334323344</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.09.07</string> 
+    </void> 
+   </object> 
+  </void> 
  </object> 
 </java> 
