@@ -136,13 +136,14 @@ public class AutoCompleteDocument extends PlainDocument {
 		AGREMENT_SEARCH
 	}
 	
-	private static Concurrent concurrent;
+	private AutoCompleteDocumentContext context;
+	/*private static Concurrent concurrent;
 	private final Reglement reglement;
 	private static Entite entite;
 	private static boolean autocompleteNom = true;
 	private static boolean autocompleteLicence = true;
 	private static boolean autocompleteClub = true;
-	private static boolean autocompleteAgrement = true;
+	private static boolean autocompleteAgrement = true;*/
 	
 	private final JTextField textField;
 	private final EventListenerList listeners = new EventListenerList();
@@ -157,12 +158,12 @@ public class AutoCompleteDocument extends PlainDocument {
 	 * semi automatique
 	 * @param typeSearch - le type de recherche à effectuer (represente
 	 * la nature de la saisi)
-	 * @param reglement permet de formater le concurrent retourné selon le reglement définit
+	 * @param context Définit le contexte d'autocomplement du doument. Le contexte ne doit pas être null
 	 */
-	public AutoCompleteDocument(JTextField textField, SearchType typeSearch, Reglement reglement) {
+	public AutoCompleteDocument(JTextField textField, SearchType typeSearch, AutoCompleteDocumentContext context) {
 		this.textField = textField;
 		this.typeSearch = typeSearch;
-		this.reglement = reglement;
+		this.context = context;
 	}
 	
 	/**
@@ -303,7 +304,7 @@ public class AutoCompleteDocument extends PlainDocument {
 	 * @throws BadLocationException
 	 */
 	private void insertConcurrentWithName(int caretpos, boolean strict) throws BadLocationException {
-		if(!autocompleteNom)
+		if(!context.isAutocompleteNom() || context.getReglement() == null)
 			return;
 		
 		String searchString = getText(0, getLength());
@@ -311,34 +312,34 @@ public class AutoCompleteDocument extends PlainDocument {
 		searchArcher.setNomArcher(searchString.toUpperCase() + "%"); //$NON-NLS-1$
 		
 		if(getLength() > 0) {
-			List<Concurrent> concurrents = ConcurrentManager.getArchersInDatabase(searchArcher, reglement, "NOMARCHER", 1); //$NON-NLS-1$
+			List<Concurrent> concurrents = ConcurrentManager.getArchersInDatabase(searchArcher, context.getReglement(), "NOMARCHER", 1); //$NON-NLS-1$
 			if(concurrents.size() > 0) {
-				concurrent = concurrents.get(0);
-				autocompleteLicence = false;
+				context.setConcurrent(concurrents.get(0));
+				context.setAutocompleteLicence(false);
 			} else {
-				concurrent = null;
-				autocompleteLicence = true;
+				context.setConcurrent(null);
+				context.setAutocompleteLicence(true);
 			}
 			
 		} else {
-			concurrent = null;
-			autocompleteLicence = true;
+			context.setConcurrent(null);
+			context.setAutocompleteLicence(true);
 		}
 
 		//aucun concurrent trouvé ou concurrent trouvé ne correspondant pas à la recherche
-		if(concurrent == null || (strict && !concurrent.getNomArcher().equals(searchString))) {
-			if(strict && concurrent != null)
-				concurrent = null;
+		if(context.getConcurrent() == null || (strict && !context.getConcurrent().getNomArcher().equals(searchString))) {
+			if(strict && context.getConcurrent() != null)
+				context.setConcurrent(null);
 
 			fireConcurrentNotFound();
 
 		} else {
 			super.remove(0, getLength());
-			super.insertString(0, concurrent.getNomArcher(), null);
-			textField.setCaretPosition(concurrent.getNomArcher().length());
+			super.insertString(0, context.getConcurrent().getNomArcher(), null);
+			textField.setCaretPosition(context.getConcurrent().getNomArcher().length());
 			textField.moveCaretPosition(caretpos);
 			
-			fireConcurrendFinded(concurrent, searchArcher);
+			fireConcurrendFinded(context.getConcurrent(), searchArcher);
 		}
 	}
 	
@@ -355,43 +356,43 @@ public class AutoCompleteDocument extends PlainDocument {
 	 * @throws BadLocationException
 	 */
 	private void insertConcurrentWithFirstName(int caretpos, boolean strict) throws BadLocationException {
-		if(!autocompleteNom)
+		if(!context.isAutocompleteNom() || context.getReglement() == null)
 			return;
 		
 		String searchString = getText(0, getLength());
 		Archer searchArcher = new Archer();
 		Concurrent tempConcurrent = null;
-		if(getLength() > 0 && concurrent != null) {
-			searchArcher.setNomArcher(concurrent.getNomArcher());
+		if(getLength() > 0 && context.getConcurrent() != null) {
+			searchArcher.setNomArcher(context.getConcurrent().getNomArcher());
 			searchArcher.setPrenomArcher(searchString + "%"); //$NON-NLS-1$
 			
 			
-			List<Concurrent> concurrents = ConcurrentManager.getArchersInDatabase(searchArcher, reglement, "PRENOMARCHER"); //$NON-NLS-1$
+			List<Concurrent> concurrents = ConcurrentManager.getArchersInDatabase(searchArcher, context.getReglement(), "PRENOMARCHER"); //$NON-NLS-1$
 			if(concurrents.size() > 0) {
 				tempConcurrent = concurrents.get(0);
-				autocompleteLicence = false;
+				context.setAutocompleteLicence(false);
 			} else {
-				concurrent = null;
-				autocompleteLicence = true;
+				context.setConcurrent(null);
+				context.setAutocompleteLicence(true);
 			}
 		} else {
-			autocompleteLicence = (concurrent != null);
+			context.setAutocompleteLicence(context.getConcurrent() != null);
 		}
 
 		if(tempConcurrent == null || (strict && !tempConcurrent.getPrenomArcher().equals(getText(0, getLength())))) {
-			if(concurrent != null)
-				concurrent.setPrenomArcher(getText(0, getLength()));
+			if(context.getConcurrent() != null)
+				context.getConcurrent().setPrenomArcher(getText(0, getLength()));
 			fireConcurrentNotFound();
 
 		} else {
-			concurrent = tempConcurrent;
+			context.setConcurrent(tempConcurrent);
 			
 			super.remove(0, getLength());
-			super.insertString(0, concurrent.getPrenomArcher(), null);
-			textField.setCaretPosition(concurrent.getPrenomArcher().length());
+			super.insertString(0, context.getConcurrent().getPrenomArcher(), null);
+			textField.setCaretPosition(context.getConcurrent().getPrenomArcher().length());
 			textField.moveCaretPosition(caretpos);
 			
-			fireConcurrendFinded(concurrent, searchArcher);
+			fireConcurrendFinded(context.getConcurrent(), searchArcher);
 		}
 	}
 	
@@ -408,40 +409,42 @@ public class AutoCompleteDocument extends PlainDocument {
 	 * @throws BadLocationException
 	 */
 	private void insertConcurrentWithNumLicence(int caretpos, boolean strict) throws BadLocationException {
+		if(context.getReglement() == null)
+			return;
 		if(!strict)
-			strict = !autocompleteLicence;
+			strict = !context.isAutocompleteLicence();
 		
 		String searchString = getText(0, getLength());
 		Archer searchArcher = new Archer();
 		searchArcher.setNumLicenceArcher(searchString + "%"); //$NON-NLS-1$
 		if(getLength() > 0) {
-			List<Concurrent> concurrents = ConcurrentManager.getArchersInDatabase(searchArcher, reglement, "NUMLICENCEARCHER"); //$NON-NLS-1$
+			List<Concurrent> concurrents = ConcurrentManager.getArchersInDatabase(searchArcher, context.getReglement(), "NUMLICENCEARCHER", 1); //$NON-NLS-1$
 			if(concurrents.size() > 0)
-				concurrent = concurrents.get(0);
+				context.setConcurrent(concurrents.get(0));
 			else
-				concurrent = null;
+				context.setConcurrent(null);
 		} else {
-			concurrent = null;
+			context.setConcurrent(null);
 		}
 		
-		if(concurrent == null || (strict && !concurrent.getNumLicenceArcher().equals(getText(0, getLength())))) {
-			if(strict && concurrent != null)
-				concurrent = null;
+		if(context.getConcurrent() == null || (strict && !context.getConcurrent().getNumLicenceArcher().equals(getText(0, getLength())))) {
+			if(strict && context.getConcurrent() != null)
+				context.setConcurrent(null);
 			
-			autocompleteNom = (getLength() == 0);			
+			context.setAutocompleteNom(getLength() == 0);			
 			
 			fireConcurrentNotFound();
 
 		} else {
-			autocompleteNom = true;
-			autocompleteLicence = true;
+			context.setAutocompleteNom(true);
+			context.setAutocompleteLicence(true);
 			
 			super.remove(0, getLength());
-			super.insertString(0, concurrent.getNumLicenceArcher(), null);
-			textField.setCaretPosition(concurrent.getNumLicenceArcher().length());
+			super.insertString(0, context.getConcurrent().getNumLicenceArcher(), null);
+			textField.setCaretPosition(context.getConcurrent().getNumLicenceArcher().length());
 			textField.moveCaretPosition(caretpos);
 			
-			fireConcurrendFinded(concurrent, searchArcher);
+			fireConcurrendFinded(context.getConcurrent(), searchArcher);
 		}
 	}
 	
@@ -458,7 +461,7 @@ public class AutoCompleteDocument extends PlainDocument {
 	 * @throws BadLocationException
 	 */
 	private void insertEntiteWithClubName(int caretpos, boolean strict) throws BadLocationException {
-		if(!autocompleteClub)
+		if(!context.isAutocompleteClub())
 			return;
 		
 		String searchString = getText(0, getLength());
@@ -467,29 +470,29 @@ public class AutoCompleteDocument extends PlainDocument {
 		if(getLength() > 0) {
 			List<Entite> entites = Entite.getEntitesInDatabase(searchEntite, "VILLEENTITE"); //$NON-NLS-1$
 			if(entites.size() > 0)
-				entite = entites.get(0);
+				context.setEntite(entites.get(0));
 			else
-				entite = null;
-			autocompleteAgrement = false;
+				context.setEntite(null);
+			context.setAutocompleteAgrement(false);
 		} else {
-			entite = null;
-			autocompleteAgrement = true;
+			context.setEntite(null);
+			context.setAutocompleteAgrement(true);
 		}
 
 		//aucun concurrent trouvé ou concurrent trouvé ne correspondant pas à la recherche
-		if(entite == null || (strict && !entite.getVille().equals(searchString))) {
-			if(strict && entite != null)
-				entite = null;
+		if(context.getEntite() == null || (strict && !context.getEntite().getVille().equals(searchString))) {
+			if(strict && context.getEntite() != null)
+				context.setEntite(null);
 
 			fireEntiteNotFound();
 
 		} else {
 			super.remove(0, getLength());
-			super.insertString(0, entite.getVille(), null);
-			textField.setCaretPosition(entite.getVille().length());
+			super.insertString(0, context.getEntite().getVille(), null);
+			textField.setCaretPosition(context.getEntite().getVille().length());
 			textField.moveCaretPosition(caretpos);
 			
-			fireEntiteFinded(entite, searchEntite);
+			fireEntiteFinded(context.getEntite(), searchEntite);
 		}
 	}
 	
@@ -507,7 +510,7 @@ public class AutoCompleteDocument extends PlainDocument {
 	 */
 	private void insertEntiteWithAgrement(int caretpos, boolean strict) throws BadLocationException {
 		if(!strict)
-			strict = !autocompleteAgrement;
+			strict = !context.isAutocompleteAgrement();
 		
 		String searchString = getText(0, getLength());
 		Entite searchEntite = new Entite();
@@ -515,31 +518,31 @@ public class AutoCompleteDocument extends PlainDocument {
 		if(getLength() > 0) {
 			List<Entite> entites = Entite.getEntitesInDatabase(searchEntite, "AGREMENTENTITE"); //$NON-NLS-1$
 			if(entites.size() > 0)
-				entite = Entite.getEntitesInDatabase(searchEntite, "AGREMENTENTITE").get(0); //$NON-NLS-1$
+				context.setEntite(Entite.getEntitesInDatabase(searchEntite, "AGREMENTENTITE").get(0)); //$NON-NLS-1$
 			else
-				entite = null;
+				context.setEntite(null);
 		} else {
-			entite = null;
+			context.setEntite(null);
 		}
 		
-		if(entite == null || (strict && !entite.getAgrement().equals(getText(0, getLength())))) {
-			if(strict && entite != null)
-				entite = null;
+		if(context.getEntite() == null || (strict && !context.getEntite().getAgrement().equals(getText(0, getLength())))) {
+			if(strict && context.getEntite() != null)
+				context.setEntite(null);
 			
-			autocompleteClub = (getLength() == 0);			
+			context.setAutocompleteClub(getLength() == 0);			
 			
 			fireEntiteNotFound();
 
 		} else {
-			autocompleteClub = true;
-			autocompleteAgrement = true;
+			context.setAutocompleteClub(true);
+			context.setAutocompleteAgrement(true);
 			
 			super.remove(0, getLength());
-			super.insertString(0, entite.getAgrement(), null);
-			textField.setCaretPosition(entite.getAgrement().length());
+			super.insertString(0, context.getEntite().getAgrement(), null);
+			textField.setCaretPosition(context.getEntite().getAgrement().length());
 			textField.moveCaretPosition(caretpos);
 			
-			fireEntiteFinded(entite, searchEntite);
+			fireEntiteFinded(context.getEntite(), searchEntite);
 		}
 	}
 

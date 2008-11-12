@@ -275,7 +275,8 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		jbDetail.addActionListener(this);
 		jbDetail.setMargin(new Insets(0,2,0,2));
 
-		AutoCompleteDocument acdAgrement = new AutoCompleteDocument(jtfAgrClub, AutoCompleteDocument.SearchType.AGREMENT_SEARCH, null);
+		AutoCompleteDocumentContext context = new AutoCompleteDocumentContext(null);
+		AutoCompleteDocument acdAgrement = new AutoCompleteDocument(jtfAgrClub, AutoCompleteDocument.SearchType.AGREMENT_SEARCH, context);
 		acdAgrement.addAutoCompleteDocumentListener(this);
 		jtfAgrClub.setDocument(acdAgrement);
 
