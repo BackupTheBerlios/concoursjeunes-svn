@@ -578,8 +578,8 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		jbParcourir.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.general.choiceclub")); //$NON-NLS-1$
 		jbParcourir.setToolTipText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.general.browseclub")); //$NON-NLS-1$
 		jbDetail.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.detail")); //$NON-NLS-1$
-		if (jbLogoPath.getText().equals("")) //$NON-NLS-1$
-			jbLogoPath.setText(ApplicationCore.ajrLibelle.getResourceString("parametre.logo")); //$NON-NLS-1$
+		/*if (jbLogoPath.getText().equals("")) //$NON-NLS-1$
+			jbLogoPath.setText(ApplicationCore.ajrLibelle.getResourceString("parametre.logo")); //$NON-NLS-1$*/
 	}
 
 	private void affectLibelleConcours() {
@@ -667,7 +667,10 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 			jcbPathPdf.addItem(pdfpath);
 		}
 
-		jbLogoPath.setText("<html><img src=\"file:" + configuration.getLogoPath() + "\" width=90 height=100></html>"); //$NON-NLS-1$ //$NON-NLS-2$
+		ImageIcon logo = new ImageIcon(configuration.getLogoPath());
+		logo = new ImageIcon(logo.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+		jbLogoPath.setIcon(logo);
+		//jbLogoPath.setText("<html><img src=\"file:" + configuration.getLogoPath() + "\" width=90 height=100></html>"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	private void completeConcoursPanel(Configuration configuration) {
@@ -792,7 +795,10 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		if (f == null) {
 			return;
 		}
-		jbLogoPath.setText("<html><img src=\"file:" + f.getPath() + "\" width=90 height=100></html>"); //$NON-NLS-1$ //$NON-NLS-2$
+		ImageIcon logo = new ImageIcon(f.getPath());
+		logo = new ImageIcon(logo.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+		jbLogoPath.setIcon(logo);
+		//jbLogoPath.setText("<html><img src=\"file:" + f.getPath() + "\" width=90 height=100></html>"); //$NON-NLS-1$ //$NON-NLS-2$
 		workConfiguration.setLogoPath(f.getPath());
 	}
 

@@ -91,7 +91,6 @@ import static org.concoursjeunes.ApplicationCore.ajrParametreAppli;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Desktop;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -168,7 +167,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 				showConfigurationDialog();
 			}
 			init();
-			setMinimumSize(new Dimension(750, 580));
+			//setMinimumSize(new Dimension(800, 600));
 
 			displayHome();
 		} else {

@@ -91,6 +91,8 @@ package org.concoursjeunes.ui;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -111,14 +113,13 @@ import org.concoursjeunes.state.StateSelector;
 import org.jdesktop.swingx.JXSplitButton;
 
 import ajinteractive.standard.ui.NumberDocument;
-import ajinteractive.standard.ui.TriStateCheckBox;
 
 /**
  * @author Aurélien JEOFFRAY
  *
  */
 public class GreffePane extends JPanel implements 
-		FicheConcoursListener, CaretListener, ChangeListener, TableModelListener, MouseListener, ActionListener {
+		FicheConcoursListener, CaretListener, ItemListener, TableModelListener, MouseListener, ActionListener {
 
 	private JTable jtConcurrents = new JTable() {
 		//  Returning the Class of each column will allow different
@@ -140,7 +141,7 @@ public class GreffePane extends JPanel implements
 	private JTextField jtfPrenom = new JTextField(10);
 	private JTextField jtfClub = new JTextField(10);
 	private JTextField jtfLicence = new JTextField(7);
-	private TriStateCheckBox jcbPayee = new TriStateCheckBox();
+	private JComboBox jcbPayee = new JComboBox();
 	@StateSelector(name="200-listgreffe")
 	private JXSplitButton jbImpression = new JXSplitButton();
 	@StateSelector(name="100-listalpha")
@@ -175,8 +176,10 @@ public class GreffePane extends JPanel implements
 		jtfPrenom.addCaretListener(this);
 		jtfClub.addCaretListener(this);
 		jtfLicence.addCaretListener(this);
-		jcbPayee.setState(TriStateCheckBox.State.PARTIAL);
-		jcbPayee.addChangeListener(this);
+		jcbPayee.addItem(ApplicationCore.ajrLibelle.getResourceString("greffepane.paid.all")); //$NON-NLS-1$
+		jcbPayee.addItem(ApplicationCore.ajrLibelle.getResourceString("greffepane.paid.true")); //$NON-NLS-1$
+		jcbPayee.addItem(ApplicationCore.ajrLibelle.getResourceString("greffepane.paid.false")); //$NON-NLS-1$
+		jcbPayee.addItemListener(this);
 		jtConcurrents.addMouseListener(this);
 		jbImpression.addActionListener(this);
 		jbImpression.setName("jbImpression"); //$NON-NLS-1$
@@ -219,7 +222,7 @@ public class GreffePane extends JPanel implements
 		jlPrenom.setText(ApplicationCore.ajrLibelle.getResourceString("greffepane.firstname")); //$NON-NLS-1$
 		jlClub.setText(ApplicationCore.ajrLibelle.getResourceString("greffepane.club")); //$NON-NLS-1$
 		jlLicence.setText(ApplicationCore.ajrLibelle.getResourceString("greffepane.licence")); //$NON-NLS-1$
-		jcbPayee.setText(ApplicationCore.ajrLibelle.getResourceString("greffepane.paid")); //$NON-NLS-1$
+		//jcbPayee.setText(ApplicationCore.ajrLibelle.getResourceString("greffepane.paid")); //$NON-NLS-1$
 		jbImpression.setText(ApplicationCore.ajrLibelle.getResourceString("greffepane.print")); //$NON-NLS-1$
 		jmiPrintAlpha.setText(ApplicationCore.ajrLibelle.getResourceString("greffepane.print.alpha")); //$NON-NLS-1$
 		jmiPrintGreffe.setText(ApplicationCore.ajrLibelle.getResourceString("greffepane.print.greffe")); //$NON-NLS-1$
@@ -322,9 +325,9 @@ public class GreffePane extends JPanel implements
 				public boolean include(
 						javax.swing.RowFilter.Entry<? extends DefaultTableModel, ? extends Integer> entry) {
 					DefaultTableModel model = entry.getModel();
-					if(jcbPayee.getState() == TriStateCheckBox.State.PARTIAL
-							|| (jcbPayee.getState() == TriStateCheckBox.State.CHECKED && (Boolean)model.getValueAt(entry.getIdentifier(), 7))
-							|| (jcbPayee.getState() == TriStateCheckBox.State.UNCHECKED && !(Boolean)model.getValueAt(entry.getIdentifier(), 7)))
+					if(jcbPayee.getSelectedIndex() == 0
+							|| (jcbPayee.getSelectedIndex() == 1 && (Boolean)model.getValueAt(entry.getIdentifier(), 7))
+							|| (jcbPayee.getSelectedIndex() == 2 && !(Boolean)model.getValueAt(entry.getIdentifier(), 7)))
 						return true;
 					return false;
 				}
@@ -358,14 +361,6 @@ public class GreffePane extends JPanel implements
 	@Override
 	public void caretUpdate(CaretEvent e) {
 		updateTableFilter();
-	}
-
-	/* (non-Javadoc)
-	 * @see javax.swing.event.ChangeListener#stateChanged(javax.swing.event.ChangeEvent)
-	 */
-	@Override
-	public void stateChanged(ChangeEvent e) {
-		updateTableFilter();		
 	}
 
 	/* (non-Javadoc)
@@ -443,5 +438,10 @@ public class GreffePane extends JPanel implements
 				ex.printStackTrace();
 			}
 		}
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		updateTableFilter();
 	}
 }
