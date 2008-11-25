@@ -369,7 +369,7 @@
 	</target>
 	
 	<target name="makedeb" if="dpkgAvailable">
-		<exec command="packager/makedeb.sh" os="Linux">
+		<exec executable="packager/makedeb.sh" os="Linux">
 			<env key="VERSION" value="${version.numero}"/>
 		</exec>
 	</target>
@@ -409,17 +409,11 @@
 			</sequential>
 		</for>
 		
-		<exec command="packager/makedmg.sh" os="Linux">
+		<exec executable="packager/makedmg.sh" os="Linux">
+			<env key="APPNAME" value="${version.name}"/>
 			<env key="VERSION" value="${version.numero}"/>
 		</exec>
-		
-		<!--<tar tarfile="${projet.pack.dir}/macosx/${version.name}-mac-${version.numero}.tar">
-			<tarfileset dir="${projet.pack.dir}/macosx/" >
-				<include name="ConcoursJeunes.app/**" />
-			</tarfileset>
-		</tar>
-		<gzip zipfile="${projet.pack.dir}/macosx/${version.name}-mac-${version.numero}.tar.gz" src="${projet.pack.dir}/macosx/${version.name}-mac-${version.numero}.tar"/>
-		<delete file="${projet.pack.dir}/macosx/${version.name}-mac-${version.numero}.tar" />-->
+		<gzip zipfile="${projet.pack.dir}/macosx/${version.name}-${version.numero}.dmg.gz" src="${projet.pack.dir}/macosx/${version.name}-${version.numero}.dmg"/>
 	</target>
 	
 	<target name="makensissetup" if="nsisAvailable">

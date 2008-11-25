@@ -366,5 +366,49 @@
     </void> 
    </object> 
   </void> 
+  <void method="add"> 
+   <object class="ajinteractive.standard.utilities.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurelien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction de fautes d&apos;orthographe
+  * Correction de problème d&apos;affichage sous Mac OS X</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1226750460363</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.09.08</string> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="add"> 
+   <object class="ajinteractive.standard.utilities.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurelien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * En cas d&apos;absence de changelog, ajout d&apos;une note le précisant au lieu d&apos;une page blanche
+  * Publication de la version stable</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1227364918595</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.10.00</string> 
+    </void> 
+   </object> 
+  </void> 
  </object> 
 </java> 

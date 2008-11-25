@@ -332,11 +332,13 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 
 	public void mouseClicked(MouseEvent e) {
 		if (e.getSource() == trayIcon) {
-			if (currentStatus == Status.AVAILABLE) {
-				AjUpdaterFrame ajUpdaterFrame = new AjUpdaterFrame(ajUpdater, ApplicationCore.VERSION);
-				
-				if(ajUpdaterFrame.showAjUpdaterFrame() == AjUpdaterFrame.ReturnCode.OK) {
-					ajUpdater.downloadFiles(updateFiles);
+			if(e.getClickCount() == 1) {
+				if (currentStatus == Status.AVAILABLE) {
+					AjUpdaterFrame ajUpdaterFrame = new AjUpdaterFrame(ajUpdater, ApplicationCore.VERSION);
+					
+					if(ajUpdaterFrame.showAjUpdaterFrame() == AjUpdaterFrame.ReturnCode.OK) {
+						ajUpdater.downloadFiles(updateFiles);
+					}
 				}
 			}
 		}

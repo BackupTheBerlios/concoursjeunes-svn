@@ -1,5 +1,5 @@
 #!/bin/sh
 
 cd pack/macosx/
-
-mkisofs -r -v -J -o concoursjeunes-$VERSION.dmg .
+echo $APPNAME
+mkisofs -r -v -J -V "ConcoursJeunes Install" -o ${APPNAME}-$VERSION.dmg .
