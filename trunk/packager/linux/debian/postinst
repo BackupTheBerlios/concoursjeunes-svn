@@ -1,5 +1,7 @@
 #!/bin/sh
+groupadd -f concoursjeunes
 
+chmod +s /var/lib/ConcoursJeunes
 chmod -R a+Xrw /var/lib/ConcoursJeunes
 if [ -x /usr/bin/gksu ] ; then
 	echo "gksu /usr/sbin/concoursjeunes-applyupdate \$1 \$2" > /usr/bin/concoursjeunes-applyupdate

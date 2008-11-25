@@ -63,6 +63,12 @@
 		<delete includeemptydirs="true">
 			<fileset dir="${projet.pack.dir}" includes="**/*"/>
 		</delete>
+		
+		<java classname="ajinteractive.standard.utilities.updater.ChangeLogEditor"
+			classpath="lib/AJPackage.jar"
+			fork="yes">
+			<arg value="packager/changelog.xml"/>
+		</java>
 
 		<!--Copie des ressources du projet-->
 		<copy todir="${projet.pack.dir}" >
@@ -219,10 +225,10 @@
 		<taskdef name="revisionscreator" classpath="lib/AJPackage.jar"
 				classname="ajinteractive.standard.utilities.updater.RevisionsCreator" />
 
-		<revisionscreator 
-				hashfilepath="${projet.pack.dir}/hash.xml.gz"
+		<revisionscreator
 				revisionpath="${projet.pack.dir}/revision.xml.gz"
-				changelog="packager/changelog">
+				changelogXML="packager/changelog.xml"
+				changelogTXT="${projet.pack.dir}/changelog.txt">
 			<fileset dir="${projet.pack.dir}">
 				<include name="config/**"/>
 				<include name="lang/**"/>
@@ -363,7 +369,7 @@
 	</target>
 	
 	<target name="makedeb" if="dpkgAvailable">
-		<exec command="packager/makedeb.sh" os="Linux">
+		<exec executable="packager/makedeb.sh" os="Linux">
 			<env key="VERSION" value="${version.numero}"/>
 		</exec>
 	</target>
@@ -403,17 +409,11 @@
 			</sequential>
 		</for>
 		
-		<exec command="packager/makedmg.sh" os="Linux">
+		<exec executable="packager/makedmg.sh" os="Linux">
+			<env key="APPNAME" value="${version.name}"/>
 			<env key="VERSION" value="${version.numero}"/>
 		</exec>
-		
-		<!--<tar tarfile="${projet.pack.dir}/macosx/${version.name}-mac-${version.numero}.tar">
-			<tarfileset dir="${projet.pack.dir}/macosx/" >
-				<include name="ConcoursJeunes.app/**" />
-			</tarfileset>
-		</tar>
-		<gzip zipfile="${projet.pack.dir}/macosx/${version.name}-mac-${version.numero}.tar.gz" src="${projet.pack.dir}/macosx/${version.name}-mac-${version.numero}.tar"/>
-		<delete file="${projet.pack.dir}/macosx/${version.name}-mac-${version.numero}.tar" />-->
+		<gzip zipfile="${projet.pack.dir}/macosx/${version.name}-${version.numero}.dmg.gz" src="${projet.pack.dir}/macosx/${version.name}-${version.numero}.dmg"/>
 	</target>
 	
 	<target name="makensissetup" if="nsisAvailable">

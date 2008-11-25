@@ -20,6 +20,8 @@ Correspond à incran à décrire. Cette écran peut être un frame ou un window-
 <!ATTLIST frame extendedstate (NORMAL|ICONIFIED|MAXIMIZED_HORIZ|MAXIMIZED_VERT|MAXIMIZED_BOTH) #IMPLIED >
 <!ATTLIST frame height NMTOKEN #REQUIRED >
 <!ATTLIST frame width NMTOKEN #REQUIRED >
+<!ATTLIST frame minheight NMTOKEN #IMPLIED >
+<!ATTLIST frame minwidth NMTOKEN #IMPLIED >
 
 <!--Représente un objet de type JWindows (non implémenté actuellement)-->
 <!ELEMENT window ( contentpane ) >

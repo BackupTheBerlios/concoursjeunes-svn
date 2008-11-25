@@ -138,6 +138,12 @@ if(dbVersion == 0) {
 	sql.executeScript("02-2x50m.sql");
 	sql.executeScript("02-2x70m.sql");
 }
+if(dbVersion < 11) {
+	//Supprime les surclassements Super-Vétéran
+	sql.executeUpdate("DELETE FROM PUBLIC.SURCLASSEMENT WHERE NUMCRITERIASET IN (308357278, 308361122) AND NUMREGLEMENT IN (49799935, 49800803)");
+	sql.executeUpdate("DELETE FROM PUBLIC.REGLEMENT WHERE NUMREGLEMENT IN (-1891783300, 2060995795)");
+	sql.executeScript("02-2x50m.sql");
+}
 
 if(dbVersion != org.concoursjeunes.ApplicationCore.DB_RELEASE_REQUIRED) {
 	//mise à jour du numero de version de la base

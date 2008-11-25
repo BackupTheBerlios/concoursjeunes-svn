@@ -201,7 +201,7 @@ public class ReglementManager {
 	/**
 	 * Retourne la liste des réglements pour la categorie nommé
 	 * 
-	 * @param categorie le nom de la catégorie des réglements à retourner
+	 * @param category le nom de la catégorie des réglements à retourner
 	 * @return la liste des réglements de la catégorie
 	 */
 	public List<Reglement> getReglementsForCategory(int category) {

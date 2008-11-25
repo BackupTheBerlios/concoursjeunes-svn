@@ -119,7 +119,6 @@ Section "Import Result'Arc" SEC0001
     SetOverwrite on
     SetOutPath $INSTDIR
     File /r plugins\FFTAImport\*
-    File hash.xml.gz
     WriteRegStr HKLM "${REGKEY}\Components" "Import Result'Arc" 1
 SectionEnd
 

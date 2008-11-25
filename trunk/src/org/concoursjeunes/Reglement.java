@@ -500,14 +500,22 @@ public class Reglement {
 	}
 
 	/**
-	 * @param categorie categorie à définir
+	 * Définit le numéro de la catégorie du réglement<br>
+	 * La correspondance entre les numéros de catégorie et leurs libéllé
+	 * est stocké dans la table CATEGORIE_REGLEMENT   
+	 * 
+	 * @param category le numéro de la catégorie du réglement
 	 */
 	public void setCategory(int category) {
 		this.category = category;
 	}
 
 	/**
-	 * @return categorie
+	 * Retourne le numéro de la catégorie du réglement<br>
+	 * La correspondance entre les numéros de catégorie et leurs libéllé
+	 * est stocké dans la table CATEGORIE_REGLEMENT
+	 * 
+	 * @return le numéro de la catégorie du réglement
 	 */
 	public int getCategory() {
 		return category;

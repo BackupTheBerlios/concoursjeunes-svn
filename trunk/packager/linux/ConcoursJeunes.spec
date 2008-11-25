@@ -28,6 +28,9 @@ Requires: usermode
 %prep
 %setup -c 'ConcoursJeunes-%{version}'
 
+%pre
+groupadd -f concoursjeunes
+
 %install
 [ "$RPM_BUILD_ROOT" != "/" ] && rm -rf $RPM_BUILD_ROOT
 
@@ -55,4 +58,4 @@ rm -rf $RPM_BUILD_ROOT/Makefile
 %attr(644, root, root) %{_sysconfdir}/security/console.apps/concoursjeunes-applyupdate
 %{_datadir}/pixmaps/ConcoursJeunes.xpm
 %{_datadir}/applications/ConcoursJeunes.desktop
-%attr(777, root, root) /var/lib/ConcoursJeunes/*
+%attr(2777, root, concoursjeunes) /var/lib/ConcoursJeunes/

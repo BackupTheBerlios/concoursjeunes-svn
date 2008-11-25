@@ -254,9 +254,13 @@ public class CriterionDialog extends JDialog implements ActionListener, ChangeLi
             jcbClassementEquipeCriterion.setSelected(criterion.isClassementEquipe());
             jcbWinFFTACode.setSelectedItem(criterion.getCodeffta());
             
-            //jcbSortOrder.setEnabled(!parent.getWorkConfiguration().isOfficialProfile());
-            jcbPlacementCriterion.setEnabled(!parent.getReglement().isOfficialReglement());
-            jcbClassementCriterion.setEnabled(!parent.getReglement().isOfficialReglement());
+            jcbPlacementCriterion.setEnabled(jcbClassementCriterion.isSelected());
+			jcbClassementCriterion.setEnabled(!jcbPlacementCriterion.isSelected());
+            
+			if(jcbPlacementCriterion.isEnabled())
+				jcbPlacementCriterion.setEnabled(!parent.getReglement().isOfficialReglement());
+			if(jcbClassementCriterion.isEnabled())
+				jcbClassementCriterion.setEnabled(!parent.getReglement().isOfficialReglement());
             jcbWinFFTACode.setEnabled(!parent.getReglement().isOfficialReglement());
         }
         

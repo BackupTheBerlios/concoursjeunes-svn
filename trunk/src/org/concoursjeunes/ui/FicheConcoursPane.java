@@ -130,6 +130,7 @@ import org.jdesktop.swingx.error.ErrorInfo;
 
 import ajinteractive.standard.ui.AJList;
 import ajinteractive.standard.ui.GridbagComposer;
+import ajinteractive.standard.utilities.io.FileUtils;
 
 import com.lowagie.text.DocumentException;
 
@@ -508,7 +509,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 				concoursDirectory);
 		if(docsPathFile.exists()) {
 			File[] files = docsPathFile.listFiles();
-			//FileUtils.sortFilesListByDate(files, 1);
+			FileUtils.orderByDate(files, true);
 			if(files != null && files.length > 0)
 				ajlDocuments.setListData(files);
 		}

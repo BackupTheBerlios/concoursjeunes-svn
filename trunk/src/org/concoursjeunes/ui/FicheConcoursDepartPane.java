@@ -300,6 +300,7 @@ public class FicheConcoursDepartPane extends JPanel
 		pane.setLayout(new BorderLayout());
 		pane.add(scrollcible, BorderLayout.CENTER);
 
+		treeTarget.setRowHeight(0);
 		treeTarget.setKeepExpansionState(true);
 		treeTarget.setModel(treeModel);
 		treeTarget.addMouseListener(this);

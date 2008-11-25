@@ -225,7 +225,7 @@ public class ConfigurationManagerTest extends TestCase {
 		assertTrue(new File(ApplicationCore.userRessources.getConfigPathForUser(), "configuration_test_rename.xml").delete()); //$NON-NLS-1$
 		try {
 			FileUtils.deleteFilesPath(new File(ApplicationCore.userRessources.getConfigPathForUser(), "Profile/test_rename")); //$NON-NLS-1$
-			assertTrue(new File(ApplicationCore.userRessources.getConfigPathForUser(), "Profile/test_rename").delete()); //$NON-NLS-1$
+			assertFalse(new File(ApplicationCore.userRessources.getConfigPathForUser(), "Profile/test_rename").exists()); //$NON-NLS-1$
 		} catch (IOException e) {
 			fail(e.toString());
 			e.printStackTrace();

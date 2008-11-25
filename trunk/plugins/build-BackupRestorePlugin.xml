@@ -17,7 +17,6 @@
 				classname="ajinteractive.standard.utilities.updater.RevisionsCreator" />
 
 		<revisionscreator 
-				hashfilepath="${projet.pack.dir}/plugins/BackupRestorePlugin/hash.xml.gz"
 				revisionpath="${projet.pack.dir}/plugins/BackupRestorePlugin/revision.xml.gz">
 			<fileset dir="${projet.pack.dir}/plugins/BackupRestorePlugin">
 				<include name="plugins/BackupRestorePlugin.jar"/>

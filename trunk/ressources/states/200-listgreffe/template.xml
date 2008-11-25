@@ -2,34 +2,31 @@
 <!DOCTYPE ITEXT SYSTEM "ressources/templates/itext.dtd">
 <itext creationdate="{CURRENT_TIME}" producer="iTextXML by lowagie.com">
 	<paragraph leading="18.0" font="unknown" align="Center" indentationleft="10.0">
-		<chunk size="18.0">LISTE DES CONCURRENTS POUR LE GREFFE</chunk>
+		<chunk size="18.0">%state.title%</chunk>
 	</paragraph>
 	<newline />
-	<table columns="8" width="100.0%" cellpadding="1.0" widths="30.0;30.0;11.0;10.0;5.0;10.0;7.0;6.0">
+	<table columns="7" width="100.0\%" cellpadding="1.0" widths="30.0;30.0;10.0;9.0;6.0;7.0;6.0">
 		<row>
 			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
-				<phrase size="10.0" style="bold">Nom et prénom</phrase>
+				<phrase size="10.0" style="bold">%state.identity%</phrase>
 			</cell>
 			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
-				<phrase size="10.0" style="bold">Club ou compagnie</phrase>
+				<phrase size="10.0" style="bold">%state.club%</phrase>
 			</cell>
 			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
-				<phrase size="10.0" style="bold">N°licence</phrase>
+				<phrase size="10.0" style="bold">%state.licence%</phrase>
 			</cell>
 			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
-				<phrase size="10.0" style="bold">Cat.</phrase>
+				<phrase size="10.0" style="bold">%state.category%</phrase>
 			</cell>
 			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
-				<phrase size="10.0" style="bold">Niv.</phrase>
+				<phrase size="10.0" style="bold">%state.paid%</phrase>
 			</cell>
 			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
-				<phrase size="10.0" style="bold">Payée</phrase>
+				<phrase size="10.0" style="bold">%state.medic%</phrase>
 			</cell>
 			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
-				<phrase size="10.0" style="bold">Medic.</phrase>
-			</cell>
-			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
-				<phrase size="10.0" style="bold">Cible</phrase>
+				<phrase size="10.0" style="bold">%state.target%</phrase>
 			</cell>
 		</row>
 		<bloc::lignes>
@@ -44,10 +41,7 @@
 				<phrase size="10.0" >{NUM_LICENCE}</phrase>
 			</cell>
 			<cell header="false" horizontalalign="Center" top="true" bottom="true" right="true" left="true">
-				<phrase size="10.0" >{categorie}{genre}{arc}</phrase>
-			</cell>
-			<cell header="false" horizontalalign="Center" top="true" bottom="true" right="true" left="true">
-				<phrase size="10.0" >{niveau}</phrase>
+				<phrase size="10.0" >{categorie}</phrase>
 			</cell>
 			<cell header="false" horizontalalign="Left" top="true" bottom="true" right="true" left="true">
 				<phrase size="10.0" >{PAYEE}</phrase>
@@ -62,6 +56,6 @@
 		</bloc::lignes>
 	</table>
 	<paragraph align="Left">
-		<chunk size="10.0">NOMBRE DE PARTICIPANTS: {NB_PARTICIPANTS}</chunk>
+		<chunk size="10.0">%state.nbparticipant%: {NB_PARTICIPANTS}</chunk>
 	</paragraph>
 </itext>

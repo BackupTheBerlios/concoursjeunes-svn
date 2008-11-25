@@ -140,7 +140,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	private JLabel jlClub = new JLabel(); // nom du club
 	private JLabel jlAgrement = new JLabel(); // n°agrement du club
 	private JLabel jlCible = new JLabel(); // cible attribué
-	private JLabel jlDixNeufM = new JLabel(); // Nb de 10/9/M
+	private JLabel jlDixNeuf = new JLabel(); // Nb de 10/9
 	
 
 	// Tireur
@@ -350,7 +350,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		gridbagComposer.addComponentIntoGrid(jpPoints, c);
 		c.gridy++;
 		c.gridwidth = 1;
-		gridbagComposer.addComponentIntoGrid(jlDixNeufM, c);
+		gridbagComposer.addComponentIntoGrid(jlDixNeuf, c);
 		gridbagComposer.addComponentIntoGrid(tfpd10, c);
 		gridbagComposer.addComponentIntoGrid(tfpdNeuf, c);
 		//gridbagComposer.addComponentIntoGrid(tfpdM, c);
@@ -422,7 +422,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		jlAgrement.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.agrementclub")); // n°agrement du club //$NON-NLS-1$
 		jlCible.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.cible")); // cible attribué //$NON-NLS-1$
 		jlPoints.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.points")); //$NON-NLS-1$
-		jlDixNeufM.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.dix")); //$NON-NLS-1$
+		jlDixNeuf.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.dix")); //$NON-NLS-1$
 
 		jbSelectionArcher.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.selectionarcher")); //$NON-NLS-1$
 		jbEditerArcher.setToolTipText(ApplicationCore.ajrLibelle.getResourceString("bouton.editer")); //$NON-NLS-1$
@@ -550,16 +550,18 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 
 		Concurrent concurrent = new Concurrent();
 		concurrent.setDepart(depart);
+		
+		AutoCompleteDocumentContext context = new AutoCompleteDocumentContext(ficheConcours.getParametre().getReglement());
 
-		AutoCompleteDocument acdNom = new AutoCompleteDocument(jtfNom, AutoCompleteDocument.SearchType.NAME_SEARCH, ficheConcours.getParametre().getReglement());
+		AutoCompleteDocument acdNom = new AutoCompleteDocument(jtfNom, AutoCompleteDocument.SearchType.NAME_SEARCH, context);
 		acdNom.addAutoCompleteDocumentListener(this);
-		AutoCompleteDocument acdPrenom = new AutoCompleteDocument(jtfPrenom, AutoCompleteDocument.SearchType.FIRSTNAME_SEARCH, ficheConcours.getParametre().getReglement());
+		AutoCompleteDocument acdPrenom = new AutoCompleteDocument(jtfPrenom, AutoCompleteDocument.SearchType.FIRSTNAME_SEARCH, context);
 		acdPrenom.addAutoCompleteDocumentListener(this);
-		AutoCompleteDocument acdLicence = new AutoCompleteDocument(jtfLicence, AutoCompleteDocument.SearchType.NUMLICENCE_SEARCH, ficheConcours.getParametre().getReglement());
+		AutoCompleteDocument acdLicence = new AutoCompleteDocument(jtfLicence, AutoCompleteDocument.SearchType.NUMLICENCE_SEARCH, context);
 		acdLicence.addAutoCompleteDocumentListener(this);
-		AutoCompleteDocument acdClub = new AutoCompleteDocument(jtfClub, AutoCompleteDocument.SearchType.CLUB_SEARCH, ficheConcours.getParametre().getReglement());
+		AutoCompleteDocument acdClub = new AutoCompleteDocument(jtfClub, AutoCompleteDocument.SearchType.CLUB_SEARCH, context);
 		acdClub.addAutoCompleteDocumentListener(this);
-		AutoCompleteDocument acdAgrement = new AutoCompleteDocument(jtfAgrement, AutoCompleteDocument.SearchType.AGREMENT_SEARCH, ficheConcours.getParametre().getReglement());
+		AutoCompleteDocument acdAgrement = new AutoCompleteDocument(jtfAgrement, AutoCompleteDocument.SearchType.AGREMENT_SEARCH, context);
 		acdAgrement.addAutoCompleteDocumentListener(this);
 
 		jtfNom.setDocument(acdNom);
@@ -593,9 +595,11 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		jlDescription.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.description")); //$NON-NLS-1$
 		jlDescription.setBackground(new Color(255, 255, 225));
 
-		AutoCompleteDocument acdClub = new AutoCompleteDocument(jtfClub, AutoCompleteDocument.SearchType.CLUB_SEARCH, ficheConcours.getParametre().getReglement());
+		AutoCompleteDocumentContext context = new AutoCompleteDocumentContext(ficheConcours.getParametre().getReglement());
+		
+		AutoCompleteDocument acdClub = new AutoCompleteDocument(jtfClub, AutoCompleteDocument.SearchType.CLUB_SEARCH, context);
 		acdClub.addAutoCompleteDocumentListener(this);
-		AutoCompleteDocument acdAgrement = new AutoCompleteDocument(jtfAgrement, AutoCompleteDocument.SearchType.AGREMENT_SEARCH, ficheConcours.getParametre().getReglement());
+		AutoCompleteDocument acdAgrement = new AutoCompleteDocument(jtfAgrement, AutoCompleteDocument.SearchType.AGREMENT_SEARCH, context);
 		acdAgrement.addAutoCompleteDocumentListener(this);
 
 		jtfNom.setDocument(new PlainDocument());

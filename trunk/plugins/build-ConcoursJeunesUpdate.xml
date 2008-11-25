@@ -16,7 +16,6 @@
 				classname="ajinteractive.standard.utilities.updater.RevisionsCreator" />
 
 		<revisionscreator 
-				hashfilepath="${projet.pack.dir}/plugins/ConcoursJeunesUpdate/hash.xml.gz"
 				revisionpath="${projet.pack.dir}/plugins/ConcoursJeunesUpdate/revision.xml.gz">
 			<fileset dir="${projet.pack.dir}/plugins/ConcoursJeunesUpdate">
 				<include name="plugins/ConcoursJeunesUpdate.jar"/>

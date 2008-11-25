@@ -99,9 +99,10 @@ function printState(ficheConcours, template, document, writer) {
 								tplClassement.parse("categories.classement.NUM_LICENCE", sortList[j].getNumLicenceArcher());
 
 								var keys = ficheConcours.getParametre().getReglement().getListCriteria();
+								var catStr = "";
 								for (var k = 0; k < keys.size(); k++)
-									tplClassement.parse("categories.classement."
-											+ keys.get(k).getCode(), sortList[j].getCriteriaSet().getCriterionElement(keys.get(k)).getCode());
+									catStr += sortList[j].getCriteriaSet().getCriterionElement(keys.get(k)).getCode();
+								tplClassement.parse("categories.classement.categorie", catStr);
 
 								for (var k = 0; k < ficheConcours.getParametre().getReglement().getNbSerie(); k++) {
 									if (sortList[j].getScore() != null)
