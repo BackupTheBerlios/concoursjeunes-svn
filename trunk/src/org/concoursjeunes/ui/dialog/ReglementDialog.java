@@ -89,7 +89,12 @@ package org.concoursjeunes.ui.dialog;
 import static org.concoursjeunes.ApplicationCore.ajrLibelle;
 import static org.concoursjeunes.ApplicationCore.ajrParametreAppli;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -100,7 +105,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.DefaultCellEditor;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
@@ -110,10 +130,17 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
-import org.concoursjeunes.*;
+import org.concoursjeunes.ApplicationCore;
+import org.concoursjeunes.Blason;
+import org.concoursjeunes.CriteriaSet;
+import org.concoursjeunes.Criterion;
+import org.concoursjeunes.CriterionElement;
+import org.concoursjeunes.DistancesEtBlason;
+import org.concoursjeunes.Reglement;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
+import ajinteractive.standard.ui.AJList;
 import ajinteractive.standard.ui.AJTree;
 import ajinteractive.standard.ui.GridbagComposer;
 import ajinteractive.standard.ui.NumberDocument;
@@ -138,6 +165,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	private JLabel jlNbFlecheParVolee = new JLabel();
 	private JLabel jlNbMembresEquipe = new JLabel();
 	private JLabel jlNbMembresRetenu = new JLabel();
+	private JLabel jlDepartages = new JLabel();
 	private JCheckBox jcbOfficialReglement = new JCheckBox();
 
 	private JLabel jlNbDB = new JLabel();
@@ -155,6 +183,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	private JTextField jtfNbFlecheParVolee = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
 	private JTextField jtfNbMembresEquipe = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
 	private JTextField jtfNbMembresRetenu = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
+	private AJList ajlDepartages = new AJList();
 	
 	private JTable jtCriteriaSet = new JTable() {
 	//  Returning the Class of each column will allow different
@@ -220,14 +249,16 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		GridbagComposer gridbagComposer = new GridbagComposer();
 
 		JPanel panel = new JPanel();
+		
+		JScrollPane jspDepartages = new JScrollPane(ajlDepartages);
+		jspDepartages.setPreferredSize(new Dimension(100, 60));
 
 		gridbagComposer.setParentPanel(panel);
-		c.weightx = 1.0;
-		// c.weighty = 0.0;
 
 		c.gridy = 0;
 		c.gridwidth = 2;
-		c.anchor = GridBagConstraints.WEST;
+		c.weightx = 1.0;
+		c.anchor = GridBagConstraints.NORTHWEST;
 		gridbagComposer.addComponentIntoGrid(jlReglementName, c);
 		c.gridy++;
 		gridbagComposer.addComponentIntoGrid(Box.createVerticalStrut(30), c);
@@ -237,20 +268,35 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		c.gridy++;
 		c.gridwidth = 1;
 		c.fill = GridBagConstraints.NONE;
+		c.weightx = 0.0;
 		gridbagComposer.addComponentIntoGrid(jlNbSerie, c);
+		c.weightx = 1.0;
 		gridbagComposer.addComponentIntoGrid(jtfNbSerie, c);
 		c.gridy++;
+		c.weightx = 0.0;
 		gridbagComposer.addComponentIntoGrid(jlNbVoleeParSerie, c);
+		c.weightx = 1.0;
 		gridbagComposer.addComponentIntoGrid(jtfNbVoleeParSerie, c);
 		c.gridy++;
+		c.weightx = 0.0;
 		gridbagComposer.addComponentIntoGrid(jlNbFlecheParVolee, c);
+		c.weightx = 1.0;
 		gridbagComposer.addComponentIntoGrid(jtfNbFlecheParVolee, c);
 		c.gridy++;
+		c.weightx = 0.0;
 		gridbagComposer.addComponentIntoGrid(jlNbMembresEquipe, c);
+		c.weightx = 1.0;
 		gridbagComposer.addComponentIntoGrid(jtfNbMembresEquipe, c);
 		c.gridy++;
+		c.weightx = 0.0;
 		gridbagComposer.addComponentIntoGrid(jlNbMembresRetenu, c);
+		c.weightx = 1.0;
 		gridbagComposer.addComponentIntoGrid(jtfNbMembresRetenu, c);
+		c.gridy++;
+		c.weightx = 0.0;
+		gridbagComposer.addComponentIntoGrid(jlDepartages, c);
+		c.weightx = 1.0;
+		gridbagComposer.addComponentIntoGrid(jspDepartages, c);
 		c.gridy++;
 		gridbagComposer.addComponentIntoGrid(jcbOfficialReglement, c);
 		c.gridy++;
@@ -335,6 +381,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		jlNbFlecheParVolee.setText(ajrLibelle.getResourceString("reglement.flecheparvolee")); //$NON-NLS-1$
 		jlNbMembresEquipe.setText(ajrLibelle.getResourceString("reglement.membresmax")); //$NON-NLS-1$
 		jlNbMembresRetenu.setText(ajrLibelle.getResourceString("reglement.selectionmax")); //$NON-NLS-1$
+		jlDepartages.setText(ajrLibelle.getResourceString("reglement.departages")); //$NON-NLS-1$
 		jcbOfficialReglement.setText(ajrLibelle.getResourceString("reglement.official")); //$NON-NLS-1$
 
 		jbAddCriteria.setIcon(new ImageIcon(ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$ 
@@ -388,6 +435,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		jtfNbFlecheParVolee.setText(reglement.getNbFlecheParVolee() + ""); //$NON-NLS-1$
 		jtfNbMembresEquipe.setText(reglement.getNbMembresEquipe() + ""); //$NON-NLS-1$
 		jtfNbMembresRetenu.setText(reglement.getNbMembresRetenu() + ""); //$NON-NLS-1$
+		ajlDepartages.setListData(reglement.getTie().toArray());
 
 		jcbOfficialReglement.setSelected(reglement.isOfficialReglement());
 		if (System.getProperty("debug.mode") == null) { //$NON-NLS-1$

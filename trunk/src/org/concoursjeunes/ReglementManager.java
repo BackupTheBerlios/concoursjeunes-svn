@@ -183,6 +183,11 @@ public class ReglementManager {
 		
 	}
 	
+	public void replaceReglement(Reglement reglement) throws SQLException {
+		removeReglement(reglement);
+		addReglement(reglement);
+	}
+	
 	/**
 	 * <p>
 	 * Retourne la liste des réglement disponible en base de donnée.
@@ -314,6 +319,8 @@ public class ReglementManager {
 		Reglement reglement = XMLSerializer.loadMarshallStructure(importFile, Reglement.class);
 		if(!availableReglements.contains(reglement))
 			addReglement(reglement);
+		else
+			replaceReglement(reglement);
 		
 		return reglement;
 	}
