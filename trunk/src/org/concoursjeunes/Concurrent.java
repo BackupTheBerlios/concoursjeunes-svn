@@ -47,7 +47,8 @@ public class Concurrent extends Archer implements Cloneable {
 	private int depart                  = 0;
 	private TargetPosition targetPosition = new TargetPosition();
 
-	private List<Integer> points	= new ArrayList<Integer>();
+	private ArrayList<Integer> points	= new ArrayList<Integer>();
+	private ArrayList<Integer> departages = new ArrayList<Integer>();
 	private int neuf                    = 0;
 	private int dix                     = 0;
 	//private int manque                  = 0;
@@ -86,7 +87,7 @@ public class Concurrent extends Archer implements Cloneable {
 	 * @param points - la grille des scores du concurrent
 	 */
 	public void setScore(List<Integer> points) {
-		this.points = points;
+		this.points = (ArrayList<Integer>)points;
 	}
 
 	/**
@@ -113,6 +114,25 @@ public class Concurrent extends Archer implements Cloneable {
 		}
 		return total;
 	}
+	
+	/**
+	 * Retourne le tableau des départage des scores.
+	 * 
+	 * @return le tableau des départage des scores.
+	 */
+	public List<Integer> getDepartages() {
+		return departages;
+	}
+
+	/**
+	 * Définit le tableau de départage des scores
+	 * 
+	 * @param departages le tableau de départage des scores
+	 */
+	public void setDepartages(List<Integer> departages) {
+		this.departages = (ArrayList<Integer>)departages;
+	}
+
 	/**
 	 * Affecte le nombre de dix total du concurrent
 	 * @param  dix
@@ -281,6 +301,43 @@ public class Concurrent extends Archer implements Cloneable {
 	}
 	
 	/**
+	 * compare le score du concurrent avec celui d'un autre
+	 * 
+	 * @param other le concurrent avec lequel comparer le score
+	 * @return 1 si le concurrent à le score le plus élevé, 0 si ex equo, -1 si le second concurrent à le meilleur score.
+	 */
+	public int compareScoreWith(Concurrent other) {
+		if(getTotalScore() > other.getTotalScore()) {
+			return 1;
+		} else if(other.getTotalScore() == getTotalScore()) {
+			return compareDepartageWith(other);
+		}
+		return -1;
+	}
+	
+	/**
+	 * compare de maniere récursive les départages d'ex-equo
+	 * 
+	 * @param other le concurrent avec lequel comparer
+	 * @return 1 si le concurrent à le score le plus élevé, 0 si ex equo, -1 si le second concurrent à le meilleur score.
+	 */
+	public int compareDepartageWith(Concurrent other) {
+		return compareDepartageWith(other, 0);
+	}
+	
+	private int compareDepartageWith(Concurrent other, int indexDepartage) {
+		if(indexDepartage < departages.size()) {
+			if(departages.get(indexDepartage) > other.getDepartages().get(indexDepartage)) {
+				return 1;
+			} else if(departages.get(indexDepartage) == other.getDepartages().get(indexDepartage)) {
+				return compareDepartageWith(other, indexDepartage+1);
+			}
+			return -1;
+		}
+		return 0;
+	}
+	
+	/**
 	 * Test si l'archer possede dans la base des homonymes (même nom et prenom)
 	 * 
 	 * @return true su l'archer possede des homonyme, false sinon
@@ -315,7 +372,7 @@ public class Concurrent extends Archer implements Cloneable {
 					sql = "merge into distinguer (NUMLICENCEARCHER, NUMREGLEMENT, " + //$NON-NLS-1$
 							"NUMCRITERIASET) KEY (NUMLICENCEARCHER, NUMREGLEMENT)" + //$NON-NLS-1$
 							"VALUES (?, ?, ?)"; //$NON-NLS-1$
-					//NUMREGLEMENT
+
 					pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
 					
 					pstmt.setString(1, getNumLicenceArcher());
@@ -331,10 +388,17 @@ public class Concurrent extends Archer implements Cloneable {
 		}
 	}
 	
+	/**
+	 * Clone l'objet concurrent
+	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public Concurrent clone() {
 		try {
-			return (Concurrent)super.clone();
+			Concurrent clone = (Concurrent)super.clone();
+			clone.points = (ArrayList<Integer>)points.clone();
+			clone.departages = (ArrayList<Integer>)points.clone();
+			return clone;
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 			return this;

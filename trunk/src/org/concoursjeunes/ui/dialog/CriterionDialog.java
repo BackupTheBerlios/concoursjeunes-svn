@@ -99,7 +99,7 @@ import javax.swing.event.ChangeListener;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Criterion;
 
-import ajinteractive.standard.common.AJToolKit;
+import ajinteractive.standard.common.StringUtils;
 import ajinteractive.standard.ui.GridbagComposer;
 
 /**
@@ -228,7 +228,7 @@ public class CriterionDialog extends JDialog implements ActionListener, ChangeLi
         jlWinFFTACode.setText(ApplicationCore.ajrLibelle.getResourceString("criterion.winfftacode.libelle")); //$NON-NLS-1$
         jcbWinFFTACode.removeAllItems();
         jcbWinFFTACode.addItem(""); //$NON-NLS-1$
-        for(String critere : AJToolKit.tokenize(ApplicationCore.ajrLibelle.getResourceString("criterion.winfftacode.code"), ",")) { //$NON-NLS-1$ //$NON-NLS-2$
+        for(String critere : StringUtils.tokenize(ApplicationCore.ajrLibelle.getResourceString("criterion.winfftacode.code"), ",")) { //$NON-NLS-1$ //$NON-NLS-2$
             jcbWinFFTACode.addItem(critere);
         }
         

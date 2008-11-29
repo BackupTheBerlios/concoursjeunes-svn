@@ -109,7 +109,7 @@ import org.concoursjeunes.exceptions.NullConfigurationException;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
-import ajinteractive.standard.common.AJToolKit;
+import ajinteractive.standard.common.StringUtils;
 import ajinteractive.standard.ui.GridbagComposer;
 import ajinteractive.standard.ui.NumberDocument;
 import ajinteractive.standard.utilities.io.AJFileFilter;
@@ -759,7 +759,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 
 		} else if (System.getProperty("os.name").contains("Linux")) { //$NON-NLS-1$ //$NON-NLS-2$
 
-			String[] pdfReader = AJToolKit.tokenize(ApplicationCore.ajrParametreAppli.getResourceString("path.unix.pdf"), ","); //$NON-NLS-1$ //$NON-NLS-2$
+			String[] pdfReader = StringUtils.tokenize(ApplicationCore.ajrParametreAppli.getResourceString("path.unix.pdf"), ","); //$NON-NLS-1$ //$NON-NLS-2$
 			for (String reader : pdfReader)
 				pdfPath.add(reader);
 		}

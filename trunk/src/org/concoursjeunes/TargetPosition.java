@@ -96,7 +96,7 @@ import java.text.DecimalFormat;
  * @author Aurélien JEOFFRAY
  *
  */
-public class TargetPosition {
+public class TargetPosition implements Cloneable {
 	private int target = 0;
 	private int position = 0;
 	
@@ -135,6 +135,19 @@ public class TargetPosition {
 	 */
 	public void setPosition(int position) {
 		this.position = position;
+	}
+	
+	/**
+	 * Clone la position de cible
+	 */
+	@Override
+	public TargetPosition clone() {
+		try {
+			return (TargetPosition)super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+			return this;
+		}
 	}
 	
 	@Override

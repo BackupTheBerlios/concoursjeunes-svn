@@ -152,13 +152,13 @@ public class TargetTreeModel implements TreeModel, TargetListener {
 	public void setTargetChilds(List<Target> targetChilds) {
 		if (this.targetChilds != null)
 			for (Target cible : this.targetChilds) {
-				cible.removeCibleListener(this);
+				cible.removeTargetListener(this);
 			}
 
 		this.targetChilds = targetChilds;
 
 		for (Target cible : targetChilds) {
-			cible.addCibleListener(this);
+			cible.addTargetListener(this);
 		}
 
 		fireTreeStructureChanged(new TreePath(new Object[] { rootLabel }));
@@ -167,7 +167,7 @@ public class TargetTreeModel implements TreeModel, TargetListener {
 	public void addTargetChild(Target cible) {
 		targetChilds.add(cible);
 
-		cible.addCibleListener(this);
+		cible.addTargetListener(this);
 
 		fireTreeNodesInserted(cible);
 	}
@@ -175,7 +175,7 @@ public class TargetTreeModel implements TreeModel, TargetListener {
 	public void removeTargetChild(Target cible) {
 		targetChilds.remove(cible);
 
-		cible.removeCibleListener(this);
+		cible.removeTargetListener(this);
 
 		fireTreeNodesRemoved(cible);
 	}

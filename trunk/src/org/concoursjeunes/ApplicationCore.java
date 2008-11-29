@@ -286,7 +286,7 @@ public class ApplicationCore {
 						System.exit(1);
 					}
 				} else {
-					JOptionPane.showMessageDialog(null, "La base de donnée est déjà ouverte ailleur");
+					JOptionPane.showMessageDialog(null, ajrLibelle.getResourceString("erreur.dbalreadyopen")); //$NON-NLS-1$
 					System.exit(1);
 				}
 			}

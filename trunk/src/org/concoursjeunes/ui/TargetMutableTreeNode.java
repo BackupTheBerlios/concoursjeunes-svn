@@ -113,7 +113,7 @@ public class TargetMutableTreeNode implements MutableTreeNode, TargetListener {
 		this.cible = cible;
 		
 		if(cible != null)
-			cible.addCibleListener(this);
+			cible.addTargetListener(this);
 		
 		createChildren();
 	}
@@ -130,10 +130,10 @@ public class TargetMutableTreeNode implements MutableTreeNode, TargetListener {
 	 */
 	public void setCible(Target cible) {
 		if(cible != null) {
-			cible.removeCibleListener(this);
+			cible.removeTargetListener(this);
 			childrens.removeAllElements();
 			
-			cible.addCibleListener(this);
+			cible.addTargetListener(this);
 		}
 		this.cible = cible;
 		

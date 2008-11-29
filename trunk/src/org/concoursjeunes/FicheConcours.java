@@ -38,8 +38,8 @@ import org.concoursjeunes.exceptions.FicheConcoursException;
 import org.concoursjeunes.exceptions.FicheConcoursException.Nature;
 
 import ajinteractive.standard.common.AJTemplate;
-import ajinteractive.standard.common.AJToolKit;
 import ajinteractive.standard.common.XmlUtils;
+import ajinteractive.standard.utilities.io.XMLSerializer;
 
 /**
  * Represente la fiche concours, regroupe l'ensemble des informations commune à un concours donné
@@ -285,7 +285,7 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 	 */
 	public void save() throws IOException {
 		File f = new File(ApplicationCore.userRessources.getConcoursPathForProfile(ApplicationCore.getConfiguration().getCurProfil()) + File.separator + parametre.getSaveName());
-		AJToolKit.saveXMLStructure(f, getFiche(), true);
+		XMLSerializer.saveXMLStructure(f, getFiche(), true);
 	}
 	
 	/**

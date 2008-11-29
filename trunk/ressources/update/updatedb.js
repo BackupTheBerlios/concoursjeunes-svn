@@ -144,6 +144,18 @@ if(dbVersion < 11) {
 	sql.executeUpdate("DELETE FROM PUBLIC.REGLEMENT WHERE NUMREGLEMENT IN (-1891783300, 2060995795)");
 	sql.executeScript("02-2x50m.sql");
 }
+if(dbVersion < 20) {
+	rowSet = sql.executeQuery("SELECT * FROM INFORMATION_SCHEMA.TABLES "
+			+ "WHERE TABLE_SCHEMA='PUBLIC' AND TABLE_NAME='DEPARTAGE'");
+	if(!rowSet.first()) {
+		sql.executeUpdate("CREATE TABLE DEPARTAGE ("
+			+ "NUMDEPARTAGE INTEGER AUTO_INCREMENT NOT NULL,"
+			+ "NUMREGLEMENT INTEGER,"
+			+ "FIELDNAME VARCHAR(64),"
+			+ "PRIMARY KEY (NUMDEPARTAGE, NUMREGLEMENT),"
+			+ "FOREIGN KEY (NUMREGLEMENT) REFERENCES REGLEMENT (NUMREGLEMENT) ON UPDATE CASCADE ON DELETE CASCADE);");
+	}
+}
 
 if(dbVersion != org.concoursjeunes.ApplicationCore.DB_RELEASE_REQUIRED) {
 	//mise à jour du numero de version de la base

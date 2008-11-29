@@ -149,7 +149,7 @@ public class Target implements PropertyChangeListener {
 	 *            l'auditeur devant être mis au courrant des évenements de la
 	 *            cible
 	 */
-	public void addCibleListener(TargetListener cibleListener) {
+	public void addTargetListener(TargetListener cibleListener) {
 		listeners.add(TargetListener.class, cibleListener);
 	}
 
@@ -159,7 +159,7 @@ public class Target implements PropertyChangeListener {
 	 * @param cibleListener -
 	 *            l'auditeur devant être supprimé de la liste de notification
 	 */
-	public void removeCibleListener(TargetListener cibleListener) {
+	public void removeTargetListener(TargetListener cibleListener) {
 		listeners.remove(TargetListener.class, cibleListener);
 	}
 

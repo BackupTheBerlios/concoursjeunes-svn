@@ -94,9 +94,9 @@ import java.util.List;
 import org.concoursjeunes.Main;
 import org.concoursjeunes.plugins.Plugin.Type;
 
-import ajinteractive.standard.common.AJToolKit;
 import ajinteractive.standard.common.AjResourcesReader;
 import ajinteractive.standard.common.PluginClassLoader;
+import ajinteractive.standard.common.StringUtils;
 
 /**
  * Permet de lister et charger les plugins installer en mémoire
@@ -132,7 +132,7 @@ public class PluginLoader {
 						pluginMetadata.setPluginType(cla.getAnnotation(Plugin.class).type());
 						pluginMetadata.setClassName(pluginProperties.getResourceString("plugin.class")); //$NON-NLS-1$
 						pluginMetadata.setReposURL(pluginProperties.getResourceString("plugin.repos")); //$NON-NLS-1$
-						pluginMetadata.setMenuPath(AJToolKit.tokenize(pluginProperties.getResourceString("plugin.menu"), "/")); //$NON-NLS-1$ //$NON-NLS-2$
+						pluginMetadata.setMenuPath(StringUtils.tokenize(pluginProperties.getResourceString("plugin.menu"), "/")); //$NON-NLS-1$ //$NON-NLS-2$
 						pluginMetadata.setPluginClass(cla);
 	
 						listPlugins.add(pluginMetadata);

@@ -110,8 +110,8 @@ import org.concoursjeunes.plugins.Plugin.Type;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
-import ajinteractive.standard.common.AJToolKit;
 import ajinteractive.standard.ui.GridbagComposer;
+import ajinteractive.standard.utilities.io.XMLSerializer;
 
 /**
  * @author Aurélien JEOFFRAY
@@ -198,7 +198,7 @@ public class DisablePluginDialog extends JDialog implements ActionListener {
 	private void completePanel() {
 		List<String> disablePlugin = null;
 		try {
-			disablePlugin = (List<String>)AJToolKit.loadXMLStructure(
+			disablePlugin = (List<String>)XMLSerializer.loadXMLStructure(
 					new File(ApplicationCore.userRessources.getConfigPathForUser(), "disable_plugins.xml"), false); //$NON-NLS-1$
 		} catch (IOException e) {
 			JXErrorPane.showDialog(this, 
@@ -234,7 +234,7 @@ public class DisablePluginDialog extends JDialog implements ActionListener {
 			}
 
 			try {
-				AJToolKit.saveXMLStructure(
+				XMLSerializer.saveXMLStructure(
 						new File(ApplicationCore.userRessources.getConfigPathForUser(), "disable_plugins.xml"), disablePlugin, false); //$NON-NLS-1$
 				setVisible(false);
 			} catch (IOException e1) {

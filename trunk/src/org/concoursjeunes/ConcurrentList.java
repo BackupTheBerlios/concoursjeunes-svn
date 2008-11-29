@@ -371,12 +371,7 @@ public class ConcurrentList {
 			case SORT_BY_POINTS:
 				for(int i = 0; i < nbconcurrents-1;i++) {
 					for(int j = i+1; j < nbconcurrents;j++) {
-						int scorei = sort_list[i].getTotalScore();
-						int scorej = sort_list[j].getTotalScore();
-						if(scorej > scorei ||
-								(scorej == scorei && ((sort_list[j].getDix() > sort_list[i].getDix()) ||
-										(sort_list[j].getDix() == sort_list[i].getDix() &&
-												sort_list[j].getNeuf() > sort_list[i].getNeuf())))) {
+						if(sort_list[i].compareScoreWith(sort_list[j]) == -1) {
 							ArraysUtils.swap(sort_list, i, j);
 						}
 					}	

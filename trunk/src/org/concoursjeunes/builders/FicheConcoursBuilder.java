@@ -95,7 +95,7 @@ import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.FicheConcours;
 import org.concoursjeunes.MetaDataFicheConcours;
 
-import ajinteractive.standard.common.AJToolKit;
+import ajinteractive.standard.utilities.io.XMLSerializer;
 
 /**
  * @author Aurélien JEOFFRAY
@@ -114,7 +114,7 @@ public class FicheConcoursBuilder {
 			throws IOException {
 		File fFiche = new File(ApplicationCore.userRessources.getConcoursPathForProfile(ApplicationCore.getConfiguration().getCurProfil()) + File.separator
 				+ metaDataFicheConcours.getFilenameConcours());
-		Object[] savedStructure = AJToolKit.loadXMLStructure(fFiche, true);
+		Object[] savedStructure = XMLSerializer.loadXMLStructure(fFiche, true);
 
 		if (savedStructure != null) {
 			// lecture du fichier

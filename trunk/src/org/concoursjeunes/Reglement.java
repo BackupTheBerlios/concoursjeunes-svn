@@ -133,6 +133,7 @@ public class Reglement {
 	private List<Criterion> listCriteria = new ArrayList<Criterion>();
 	private Map<CriteriaSet, CriteriaSet> surclassement = new HashMap<CriteriaSet, CriteriaSet>();
 	private List<DistancesEtBlason> listDistancesEtBlason = new ArrayList<DistancesEtBlason>();
+	private List<String> tie = new ArrayList<String>();
 
 	private boolean officialReglement = false;
 	private Federation federation = new Federation();
@@ -438,6 +439,24 @@ public class Reglement {
 	 */
 	public void setNbVoleeParSerie(int nbVoleeParSerie) {
 		this.nbVoleeParSerie = nbVoleeParSerie;
+	}
+
+	/**
+	 * Retourne la liste des champs de départage
+	 * 
+	 * @return la liste des départage
+	 */
+	public List<String> getTie() {
+		return tie;
+	}
+
+	/**
+	 * Défini la liste des champs de départage
+	 * 
+	 * @param tie la liste des champs de départage
+	 */
+	public void setTie(List<String> tie) {
+		this.tie = tie;
 	}
 
 	/**

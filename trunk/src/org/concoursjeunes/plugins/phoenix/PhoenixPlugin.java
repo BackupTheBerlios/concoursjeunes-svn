@@ -97,7 +97,7 @@ import org.concoursjeunes.event.ConcoursJeunesListener;
 import org.concoursjeunes.plugins.Plugin;
 import org.concoursjeunes.plugins.PluginEntry;
 
-import ajinteractive.standard.common.AJToolKit;
+import ajinteractive.standard.utilities.io.XMLSerializer;
 
 /**
  * @author Aurélien JEOFFRAY
@@ -129,7 +129,7 @@ public class PhoenixPlugin extends Thread implements ConcoursJeunesListener {
 			for(File concoursFile : concoursFiles) {
 				if(concoursFile.isFile()) {
 					try {
-						Object[] structure = AJToolKit.loadXMLStructure(concoursFile, true);
+						Object[] structure = XMLSerializer.loadXMLStructure(concoursFile, true);
 						if(structure != null && structure.length == 3) {
 							if(structure[0] instanceof Parametre) {
 								Parametre parametre = (Parametre) structure[0];

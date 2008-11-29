@@ -99,8 +99,8 @@ import javax.xml.bind.JAXBException;
 
 import org.concoursjeunes.ApplicationCore;
 
-import ajinteractive.standard.common.AJToolKit;
 import ajinteractive.standard.utilities.io.FileUtils;
+import ajinteractive.standard.utilities.io.XMLSerializer;
 
 /**
  * Référence et gére les états disponible pour le logiciel
@@ -124,7 +124,7 @@ public class StateManager {
 				File stateFile = new File(stateFolder, "state.xml"); //$NON-NLS-1$
 				if(stateFile.exists()) {
 					try {
-						State state = AJToolKit.loadMarshallStructure(stateFile, State.class);
+						State state = XMLSerializer.loadMarshallStructure(stateFile, State.class);
 						states.add(state);
 					} catch (JAXBException e) {
 						e.printStackTrace();
@@ -135,7 +135,7 @@ public class StateManager {
 				try {
 					URL stateFile = new URL("jar:" + stateFolder.toURI().toURL() + "!/state.xml"); //$NON-NLS-1$ //$NON-NLS-2$
 					
-					State state = AJToolKit.loadMarshallStructure(stateFile, State.class);
+					State state = XMLSerializer.loadMarshallStructure(stateFile, State.class);
 					state.setZipped(true);
 					states.add(state);
 				} catch (MalformedURLException e) {
@@ -183,7 +183,7 @@ public class StateManager {
 	public Categories getCategories() {
 		File statesPath = new File(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources"), "states" + File.separator + "categories.xml"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		try {
-			return AJToolKit.loadMarshallStructure(statesPath, Categories.class);
+			return XMLSerializer.loadMarshallStructure(statesPath, Categories.class);
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}

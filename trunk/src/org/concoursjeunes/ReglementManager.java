@@ -100,7 +100,7 @@ import javax.xml.bind.JAXBException;
 
 import org.concoursjeunes.builders.ReglementBuilder;
 
-import ajinteractive.standard.common.AJToolKit;
+import ajinteractive.standard.utilities.io.XMLSerializer;
 
 /**
  * Permet la gestion listage, séléction, ajout et suppression des
@@ -307,11 +307,11 @@ public class ReglementManager {
 	}
 	
 	public void exportReglement(Reglement reglement, File exportFile) throws FileNotFoundException, JAXBException {
-		AJToolKit.saveMarshallStructure(exportFile, reglement);
+		XMLSerializer.saveMarshallStructure(exportFile, reglement);
 	}
 	
 	public Reglement importReglement(File importFile) throws JAXBException, SQLException {
-		Reglement reglement = AJToolKit.loadMarshallStructure(importFile, Reglement.class);
+		Reglement reglement = XMLSerializer.loadMarshallStructure(importFile, Reglement.class);
 		if(!availableReglements.contains(reglement))
 			addReglement(reglement);
 		

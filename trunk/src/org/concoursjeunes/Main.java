@@ -106,7 +106,7 @@ import org.concoursjeunes.ui.ConcoursJeunesFrame;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
-import ajinteractive.standard.common.AJToolKit;
+import ajinteractive.standard.utilities.io.XMLSerializer;
 
 /**
  * Class initial de l'application.
@@ -182,7 +182,7 @@ public class Main {
 		
 		List<String> disablePlugin = null;
 		try {
-			disablePlugin = (List<String>)AJToolKit.loadXMLStructure(
+			disablePlugin = (List<String>)XMLSerializer.loadXMLStructure(
 					new File(ApplicationCore.userRessources.getConfigPathForUser(), "disable_plugins.xml"), false); //$NON-NLS-1$
 		} catch (IOException e) {
 			e.printStackTrace();

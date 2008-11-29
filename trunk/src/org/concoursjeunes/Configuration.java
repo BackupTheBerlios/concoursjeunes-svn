@@ -95,7 +95,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import ajinteractive.standard.common.AJToolKit;
+import ajinteractive.standard.utilities.io.XMLSerializer;
 import ajinteractive.standard.utilities.net.Proxy;
 
 /**
@@ -439,7 +439,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 				File.separator + 
 				CONFIG_PROFILE + curProfil + EXT_XML);
 		try {
-			AJToolKit.saveMarshallStructure(f, this);
+			XMLSerializer.saveMarshallStructure(f, this);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (JAXBException e) {
@@ -456,7 +456,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 					File.separator + 
 					ApplicationCore.ajrParametreAppli.getResourceString("file.configuration")); //$NON-NLS-1$
 			try {
-				AJToolKit.saveMarshallStructure(f, this);
+				XMLSerializer.saveMarshallStructure(f, this);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (JAXBException e) {

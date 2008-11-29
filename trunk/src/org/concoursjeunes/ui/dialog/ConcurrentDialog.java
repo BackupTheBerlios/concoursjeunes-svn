@@ -107,8 +107,8 @@ import org.concoursjeunes.ui.ConcoursJeunesFrame;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
-import ajinteractive.standard.common.AJToolKit;
 import ajinteractive.standard.common.ArraysUtils;
+import ajinteractive.standard.common.StringUtils;
 import ajinteractive.standard.ui.GridbagComposer;
 import ajinteractive.standard.ui.NumberDocument;
 
@@ -444,7 +444,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			jcbCategorieTable.get(key).addItemListener(this);
 		}
 
-		String[] lInscription = AJToolKit.tokenize(ApplicationCore.ajrLibelle.getResourceString("concurrent.inscription"), ","); //$NON-NLS-1$ //$NON-NLS-2$
+		String[] lInscription = StringUtils.tokenize(ApplicationCore.ajrLibelle.getResourceString("concurrent.inscription"), ","); //$NON-NLS-1$ //$NON-NLS-2$
 		jcbInscription.removeAllItems();
 		for (String status : lInscription) {
 			jcbInscription.addItem(status);
