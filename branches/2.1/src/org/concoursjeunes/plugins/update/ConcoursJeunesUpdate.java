@@ -281,6 +281,14 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 			if (JOptionPane.showConfirmDialog(null, pluginLocalisation.getResourceString("update.confirminstall"), pluginLocalisation.getResourceString("update.confirminstall.title"), //$NON-NLS-1$ //$NON-NLS-2$
 					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 				try {
+					//Ferme l'ensemble des fiche concours avant la mise à jour
+					//pour éviter la corruption des fiches
+					try {
+						ApplicationCore.getInstance().closeAllFichesConcours();
+					} catch (NullConfigurationException e1) {
+						e1.printStackTrace();
+					}
+					
 					Process process = null;
 					String[] command = new String[] { "concoursjeunes-applyupdate", //$NON-NLS-1$
 							ApplicationCore.userRessources.getUpdatePath().getPath(),
@@ -306,15 +314,13 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 						process.waitFor();
 					
 					try {
-						ApplicationCore.getInstance().saveAllFichesConcours();
-						
 						ApplicationCore.dbConnection.close();
-					} catch (NullConfigurationException e) {
-						e.printStackTrace();
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}
 
+					//quitte l'application avec un code de retour 3 pour indiquer
+					//au luncher de rebooter
 					System.exit(3);
 				} catch (IOException e1) {
 					e1.printStackTrace();
