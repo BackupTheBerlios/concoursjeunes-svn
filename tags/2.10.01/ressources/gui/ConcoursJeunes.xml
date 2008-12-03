@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE screen SYSTEM "AjGUI.dtd">
+<screen>
+	<frame width="1024" height="768" minwidth="1024" minheight="700" extendedstate="MAXIMIZED_BOTH">
+		<title>%s - %s</title>
+		<icon src="ressources/iconCJ.jpg" />
+		<menubar>
+			<menu id="file">
+				<label>menubar.fichier</label>
+				<menuitems>
+					<menu id="import" name="mi.import" visible="false">
+						<label>menubar.fichier.importer</label>
+					</menu>
+					<menu id="export" name="mi.export" visible="false">
+						<label>menubar.fichier.exporter</label>
+					</menu>
+					<menuitem name="mi.maj" enable="false">menubar.fichier.maj</menuitem>
+					<separator />
+					<menu id="backup" name="mi.backup" visible="true">
+						<label>menubar.fichier.backup</label>
+					</menu>
+					<menu id="restore" name="mi.restore" visible="true">
+						<label>menubar.fichier.restore</label>
+					</menu>
+					<separator />
+					<menuitem keycode="VK_F4" modifier="ALT_DOWN_MASK">menubar.fichier.quitter</menuitem>
+				</menuitems>
+			</menu>
+			<menu id="edit">
+				<label>menubar.edition</label>
+				<menuitems>
+					<menuitem>menubar.edition.entite</menuitem>
+					<separator />
+					<menuitem name="mi.parametres" enable="false">menubar.edition.parametre</menuitem>
+					<menuitem name="mi.reglements">menubar.edition.reglement</menuitem>
+				</menuitems>
+			</menu>
+			<menu id="tools" name="mi.tools">
+				<label>menubar.tools</label>
+				<menuitems>
+					<menuitem>menubar.tools.disableplugins</menuitem>
+					<menuitem>menubar.tools.installplugins</menuitem>
+					<separator />
+					<menuitem>menubar.tools.configuration</menuitem>
+				</menuitems>
+			</menu>
+			<menu id="help">
+				<label>menubar.aide</label>
+				<menuitems>
+					<menuitem keycode="VK_F1">menubar.aide.aide</menuitem>
+					<separator />
+					<menuitem>menubar.aide.versionnote</menuitem>
+					<menuitem>menubar.aide.licence</menuitem>
+					<menuitem>menubar.aide.apropos</menuitem>
+				</menuitems>
+			</menu>
+			<menu id="debug" name="mi.debug" visible="false">
+				<label>menubar.debug</label>
+				<menuitems>
+					<menuitem>menubar.debug.addpoints</menuitem>
+					<menuitem>menubar.debug.resetpoints</menuitem>
+					<separator />
+					<menuitem>menubar.debug.launchsqlconsole</menuitem>
+				</menuitems>
+			</menu>
+		</menubar>
+		<contentpane>
+			<tabbedpane name="tabbedpane">
+				<method name="setTabLayoutPolicy">
+					<param paramclass="int" value="1" />
+				</method>
+				<tab closebutton="false">
+					<label>onglet.accueil</label>
+					<content class="javax.swing.JEditorPane" name="jepHome">
+						<method name="setEditorKit">
+							<param paramclass="javax.swing.text.EditorKit" class="javax.swing.text.html.HTMLEditorKit" />
+						</method>
+						<method name="setEditable">
+							<param paramclass="boolean" value="false" />
+						</method>
+					</content>
+				</tab>
+			</tabbedpane>
+		</contentpane>
+	</frame>
+</screen>

@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ConcoursJeunes" default="auto-pack">
+	<description>
+		Generation de ConcoursJeunes
+	</description>
+	
+	<tstamp>
+		<format property="version.date" pattern="dd/MM/yyyy" />
+	</tstamp>
+	
+	<taskdef resource="net/sf/antcontrib/antlib.xml">
+	  <classpath>
+	    <pathelement location="packager/ant-contrib-1.0b3.jar"/>
+	  </classpath>
+	</taskdef>
+	
+	<condition property="isWindows">
+		<os family="Windows" />
+	</condition>
+	<condition property="isLinux">
+		<os family="unix" name="Linux" />
+	</condition>
+	<condition property="isMacOS">
+		<os family="mac" />
+	</condition>
+	<available file="/usr/bin/dpkg-buildpackage" property="dpkgAvailable"/>
+	<available file="/usr/bin/rpmbuild" property="rpmAvailable"/>
+	<condition property="nsisAvailable">
+		<or>
+			<available file="/usr/bin/makensis" property="nsisAvailable"/>
+			<os family="Windows" /><!-- Le chemin est malheureusement trop aléatoire sous windows -->
+		</or>
+	</condition>
+	
+	<property file="packager/version.properties" />
+
+	<import file="plugins/build-ConcoursJeunesUpdate.xml"/>
+	<import file="plugins/build-FFTAImport.xml"/>
+	<import file="plugins/build-PhoenixPlugin.xml"/>
+	<import file="plugins/build-BackupRestorePlugin.xml"/>
+
+	<!--genere la documentation technique-->
+	<target name="dev_doc" description="genere la documentation développeur">
+		<echo message="Construction de la documentation developpeur..."/>
+		<!--création du répertoire de documentation-->
+		<mkdir dir="docs" />
+		<javadoc
+			sourcepath="src"
+			destdir="docs"
+			classpath="${compilclasspath}" >
+			<link href="http://java.sun.com/javase/6/docs/api/" />
+			<!--<packageset dir="src" defaultexcludes="yes">
+				<include name="**/**" />
+				<exclude name="org/concoursjeunes/test/**" />
+			</packageset>-->
+		</javadoc>
+		<echo message="Fin de la generation de la doc..."/>
+	</target>
+
+	<target name="pack_stage1">
+		<mkdir dir="${projet.pack.dir}" />
+
+		<delete includeemptydirs="true">
+			<fileset dir="${projet.pack.dir}" includes="**/*"/>
+		</delete>
+		
+		<java classname="ajinteractive.standard.utilities.updater.ChangeLogEditor"
+			classpath="lib/AJPackage.jar"
+			fork="yes">
+			<arg value="packager/changelog.xml"/>
+		</java>
+
+		<!--Copie des ressources du projet-->
+		<copy todir="${projet.pack.dir}" >
+			<fileset dir="." >
+				<include name="config/**"/>
+				<include name="lang/**"/>
+				<include name="lib/**"/>
+				<include name="documentation/**"/>
+				<include name="ressources/**"/>
+				<include name="src/**"/>
+				<!--exclu les réference subversion -->
+				<exclude name="**/.svn*" />
+				<exclude name="lib/AuthKit.jar" />
+				<exclude name="ressources/states/**"/>
+			</fileset>
+		</copy>
+		
+		<!--Copie et commpression des états -->
+		<copy todir="${projet.pack.dir}" >
+			<fileset dir="." >
+				<include name="ressources/states/*.xml"/>
+				<include name="ressources/states/*.properties"/>
+			</fileset>
+		</copy>
+
+		<for param="state">
+		    <dirset dir=".">
+		    	<include name="ressources/states/**"/>
+		    	<exclude name="ressources/states"/>
+		    </dirset>
+			<sequential>
+				<if>
+					<equals arg1="${isWindows}" arg2="true" />
+					<then>
+						<propertyregex override="yes"
+					    	property="statename"  input="@{state}"
+					    	regexp=".*\\([^\\]*)" replace="\1"/>
+					</then>
+					<else>
+						<propertyregex override="yes"
+							property="statename"  input="@{state}"
+							regexp=".*/([^/]*)" replace="\1" />
+					</else>
+				</if>
+				<zip destfile="${projet.pack.dir}/ressources/states/${statename}.zip"
+					basedir="ressources/states/${statename}" />
+			</sequential>
+		</for>
+
+
+		<!--Ajoute les ressources suplémentaires au pack-->
+		<copy todir="${projet.pack.dir}">
+			<fileset dir="packager" >
+				<include name="*.txt" />
+				<include name="MANIFEST.MF" />
+			</fileset>
+		</copy>
+
+		<replace 
+		    file="${projet.pack.dir}/Readme.txt"
+			propertyFile="packager/version.properties">
+			<replacefilter 
+			    token="@version.numero@" 
+			    property="version.numero"/>
+		</replace>
+
+		<replace 
+		    file="${projet.pack.dir}/MANIFEST.MF"
+			propertyFile="packager/version.properties">
+			<replacefilter 
+			    token="@classpath@" 
+			    property="classpath"/>
+		</replace>
+	</target>
+
+	<target name="compile" depends="pack_stage1">
+
+		<mkdir dir="${projet.pack.dir}/bin" />
+		
+		<replace 
+		    file="${projet.pack.dir}/src/org/concoursjeunes/ApplicationCore.java"
+			propertyFile="packager/version.properties"
+			encoding="UTF-8" >
+			<replacefilter 
+			    token="@version.name@" 
+			    property="version.name" />
+			<replacefilter 
+			    token="@version.numero@" 
+			    property="version.numero" />
+			<replacefilter 
+			    token="@version.codename@" 
+			    property="version.codename" />
+			<replacefilter 
+			    token="@version.author@" 
+			    property="version.author" />
+			<replacefilter 
+			    token="@version.copyr@" 
+			    property="version.copyr" />
+		</replace>
+		
+		<replace 
+			file="${projet.pack.dir}/src/org/concoursjeunes/ApplicationCore.java"
+			token="@version.date@" 
+			value="${version.date}"
+			encoding="UTF-8" />
+
+		<javac srcdir="${projet.pack.dir}/src/" destdir="${projet.pack.dir}/bin"
+			optimize="on"
+			encoding="UTF-8"
+			nowarn="on"
+			debug="true"
+			classpath="${compilclasspath}">
+		</javac>
+
+		<copy todir="${projet.pack.dir}/bin">
+			<fileset dir="${projet.pack.dir}/src" >
+				<include name="**/*.properties" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="jar" depends="compile">
+
+		<jar jarfile="${projet.pack.dir}/ConcoursJeunes.jar"
+			manifest="${projet.pack.dir}/MANIFEST.MF">
+
+			<fileset dir="${projet.pack.dir}/bin">
+				<include name="org/concoursjeunes/Main*" />
+				<include name="org/concoursjeunes/ui/**" />
+			</fileset>
+		</jar>
+		<jar jarfile="${projet.pack.dir}/lib/ConcoursJeunes-core.jar"
+			manifest="${projet.pack.dir}/MANIFEST.MF">
+
+			<fileset dir="${projet.pack.dir}/bin">
+				<include name="**/**" />
+				<exclude name="org/concoursjeunes/plugins/**" />
+				<exclude name="org/concoursjeunes/webservices/**" />
+				<exclude name="org/concoursjeunes/Main*" />
+				<exclude name="org/concoursjeunes/ui/**" />
+			</fileset>
+			<fileset dir="${projet.pack.dir}/bin">
+				<include name="org/concoursjeunes/plugins/*.*" />
+			</fileset>
+		</jar>
+		<jar jarfile="${projet.pack.dir}/ConcoursJeunes-webservices.jar">
+			<fileset dir="${projet.pack.dir}/bin">
+				<include name="org/concoursjeunes/webservices/**" />
+			</fileset>
+		</jar>
+	</target>
+
+	<target name="revisions" description="revisions">
+		<taskdef name="revisionscreator" classpath="lib/AJPackage.jar"
+				classname="ajinteractive.standard.utilities.updater.RevisionsCreator" />
+
+		<revisionscreator
+				revisionpath="${projet.pack.dir}/revision.xml.gz"
+				changelogXML="packager/changelog.xml"
+				changelogTXT="${projet.pack.dir}/changelog.txt">
+			<fileset dir="${projet.pack.dir}">
+				<include name="config/**"/>
+				<include name="lang/**"/>
+				<include name="lib/**"/>
+				<include name="ressources/**"/>
+				<include name="documentation/**"/>
+				<include name="ConcoursJeunes.jar"/>
+				<include name="*.txt"/>
+				<include name="*.pack"/>
+			</fileset>
+		</revisionscreator>
+	</target>
+	
+	<target name="makelinuxtargz">
+		<mkdir dir="${projet.pack.dir}/linux/tar" />
+		
+		<copy todir="${projet.pack.dir}/linux/tar/usr/lib/ConcoursJeunes/" >
+			<fileset dir="${projet.pack.dir}" >
+				<include name="config/**"/>
+				<include name="lang/**"/>
+				<include name="lib/**"/>
+				<include name="ressources/**"/>
+				<include name="documentation/**"/>
+				<include name="ConcoursJeunes.jar"/>
+			</fileset>
+		</copy>
+		
+		<for param="plugin">
+		    <dirset dir="${projet.pack.dir}/plugins/">
+		    	<include name="**/plugins"/>
+		    	<exclude name="FFTAImport/plugins/**"/>
+		    </dirset>
+			<sequential>
+				<copy todir="${projet.pack.dir}/linux/tar/usr/lib/ConcoursJeunes/plugins" >
+					<fileset dir="@{plugin}" >
+						<include name="**/**"/>
+					</fileset>
+				</copy>
+			</sequential>
+		</for>
+
+		<copy todir="${projet.pack.dir}/linux/tar">
+			<fileset dir="packager/linux/">
+				<include name="**/*" />
+				<exclude name="*.spec" />
+				<exclude name="debian" />
+			</fileset>
+		</copy>
+		
+		<replace 
+		    file="${projet.pack.dir}/linux/tar/usr/share/applications/ConcoursJeunes.desktop"
+			propertyFile="packager/version.properties">
+			<replacefilter 
+		    token="@version.name@" 
+		    property="version.name" />
+			<replacefilter 
+		    token="@version.numero@" 
+		    property="version.numero" />
+			<replacefilter 
+		    token="@fr.summary@" 
+		    property="fr.summary" />
+			<replacefilter 
+		    token="@en.summary@" 
+		    property="en.summary" />
+		</replace>
+		
+		<tar tarfile="${projet.pack.dir}/linux/${version.name}-${version.numero}.tar">
+			<tarfileset dir="${projet.pack.dir}/linux/tar" >
+				<include name="usr/**" />
+				<include name="var/**" />
+				<include name="etc/**" />
+				<include name="Makefile" />
+			</tarfileset>
+		</tar>
+		<gzip zipfile="${projet.pack.dir}/linux/${version.name}-${version.numero}.tar.gz" src="${projet.pack.dir}/linux/${version.name}-${version.numero}.tar"/>
+		<delete file="${projet.pack.dir}/linux/${version.name}-${version.numero}.tar" />
+		<delete includeemptydirs="true">
+			<fileset dir="${projet.pack.dir}/linux/tar" includes="**"/>
+		</delete>
+	</target>
+
+	<target name="makerpm" if="rpmAvailable">
+
+		<mkdir dir="${projet.pack.dir}/linux/rpm" />
+		<property name="rpm.pack.path" location="${projet.pack.dir}/linux/rpm" />
+
+		<mkdir dir="${rpm.pack.path}/SOURCES/" />
+		<mkdir dir="${rpm.pack.path}/BUILD/" />
+		<mkdir dir="${rpm.pack.path}/RPMS/" />
+		<delete includeemptydirs="true">
+			<fileset dir="${rpm.pack.path}/SOURCES/" includes="**/*"/>
+			<fileset dir="${rpm.pack.path}/BUILD/" includes="**/*"/>
+			<fileset dir="${rpm.pack.path}/RPMS/" includes="**/*"/>
+		</delete>
+		
+		<copy todir="${rpm.pack.path}/SOURCES" >
+			<fileset dir="${projet.pack.dir}/linux/">
+				<include name="${version.name}-${version.numero}.tar.gz" />
+			</fileset>
+		</copy>
+
+		<copy todir="${rpm.pack.path}/SPECS" >
+			<fileset dir="packager/linux/">
+				<include name="ConcoursJeunes.spec" />
+			</fileset>
+		</copy>
+
+		<replace 
+		    file="${rpm.pack.path}/SPECS/ConcoursJeunes.spec"
+			propertyFile="packager/version.properties">
+			<replacefilter 
+		    token="@version.name@" 
+		    property="version.name" />
+			<replacefilter 
+		    token="@version.numero@" 
+		    property="version.numero" />
+			<replacefilter 
+		    token="@version.release@" 
+		    property="version.release" />
+			<replacefilter 
+		    token="@version.url@" 
+		    property="version.url" />
+			<replacefilter 
+		    token="@fr.summary@" 
+		    property="fr.summary" />
+			<replacefilter 
+		    token="@fr.description@" 
+		    property="fr.description" />
+			<replacefilter 
+		    token="@en.summary@" 
+		    property="en.summary" />
+			<replacefilter 
+		    token="@en.description@" 
+		    property="en.description" />
+		</replace>
+
+		<rpm specFile="ConcoursJeunes.spec" topDir="${rpm.pack.path}/" cleanBuildDir="true" />
+	</target>
+	
+	<target name="makedeb" if="dpkgAvailable">
+		<exec executable="packager/makedeb.sh" os="Linux">
+			<env key="VERSION" value="${version.numero}"/>
+		</exec>
+	</target>
+
+	<target name="makemacbundle">
+		<copy todir="${projet.pack.dir}/macosx/" >
+			<fileset dir="packager/macosx" >
+				<include name="**/**"/>
+			</fileset>
+		</copy>
+		
+		<copy todir="${projet.pack.dir}/macosx/${version.name}.app/Contents/Resources/Java" >
+			<fileset dir="pack" >
+				<include name="config/**"/>
+				<include name="lang/**"/>
+				<include name="lib/**"/>
+				<include name="ressources/**"/>
+				<include name="documentation/**"/>
+				<include name="ConcoursJeunes.jar"/>
+				<include name="*.txt"/>
+			</fileset>
+		</copy>
+		<chmod file="${projet.pack.dir}/macosx/${version.name}.app/Contents/MacOS/JavaApplicationStub" perm="a+x"></chmod>
+		<chmod file="${projet.pack.dir}/macosx/${version.name}.app/Contents/Resources/Java/concoursjeunes-applyupdate" perm="a+x"></chmod>
+		
+		<for param="plugin">
+		    <dirset dir="${projet.pack.dir}/plugins/">
+		    	<include name="**/plugins"/>
+		    	<exclude name="FFTAImport/plugins/**"/>
+		    </dirset>
+			<sequential>
+				<copy todir="${projet.pack.dir}/macosx/${version.name}.app/Contents/Resources/Java/plugins" >
+					<fileset dir="@{plugin}" >
+						<include name="**/**"/>
+					</fileset>
+				</copy>
+			</sequential>
+		</for>
+		
+		<exec executable="packager/makedmg.sh" os="Linux">
+			<env key="APPNAME" value="${version.name}"/>
+			<env key="VERSION" value="${version.numero}"/>
+		</exec>
+		<gzip zipfile="${projet.pack.dir}/macosx/${version.name}-${version.numero}.dmg.gz" src="${projet.pack.dir}/macosx/${version.name}-${version.numero}.dmg"/>
+	</target>
+	
+	<target name="makensissetup" if="nsisAvailable">
+		<taskdef name="nsis" classname="net.sf.nsisant.Task">
+	        <classpath location="packager/nsisant-1.2.jar"/>
+	    </taskdef>
+		
+		<mkdir dir="${projet.pack.dir}/windows" />
+		
+		<copy todir="${projet.pack.dir}/windows/" >
+			<fileset dir="packager/windows" >
+				<include name="**/**"/>
+			</fileset>
+		</copy>
+		
+		<nsis script="packager/setup.nsi" verbosity="4">
+			<define name="VERSION" value="${version.numero}"/>
+			<define name="OUT_FILE" value="windows/setup-${version.name}-${version.numero}.exe"/>
+			<define name="WORKING_DIR" value="../${projet.pack.dir}"/>
+		</nsis>
+	</target>
+	
+	<target name="auto-pack"
+		description="Pack en fonction du système">
+		<antcall target="jar" />
+		<antcall target="pack-ConcoursJeunesUpdate" />
+		<antcall target="pack-PhoenixPlugin" />
+		<antcall target="pack-BackupRestorePlugin" />
+		<antcall target="revisions" />
+		<antcall target="windows" />
+		<antcall target="linux" />
+		<antcall target="MacOSX" />	
+	</target>
+	
+
+	<target name="windows" description="Pack Windows" if="isWindows">
+		<antcall target="pack-FFTAImport" />
+		<antcall target="makensissetup" />
+	</target>
+	<target name="linux" description="Pack Linux" if="isLinux">
+		<antcall target="makelinuxtargz" />
+		<antcall target="makerpm" />
+		<antcall target="makedeb" />
+	</target>
+	<target name="MacOSX" description="Pack Mac OS X" if="isMacOS">
+		<antcall target="makemacbundle" />
+	</target>
+	<!-- La target all-system ne peut fonctionner que sur un linux de type debian, ubuntu car c'est le seul à disposer à la fois des
+	outils de construction deb, rpm et nsis. Les sytstème windows ne supporte que nsis, les red-hat like que rpm -->
+	<target name="all-system" description="Compilation Multi-systeme">
+		<antcall target="jar" />
+		<antcall target="pack-ConcoursJeunesUpdate" />
+		<antcall target="pack-PhoenixPlugin" />
+		<antcall target="pack-FFTAImport" />
+		<antcall target="pack-BackupRestorePlugin" />
+		<antcall target="revisions" />
+		<antcall target="makensissetup" />
+		<antcall target="makelinuxtargz" />
+		<antcall target="makerpm" />
+		<antcall target="makedeb" />
+		<antcall target="makemacbundle" />
+	</target>
+	
+	<target name="deploy" description="deploi les fichier sur le serveur de mise à jour">
+		<copy todir="../ConcoursJeunes.org/update/" >
+			<fileset dir="pack" >
+				<include name="config/**"/>
+				<include name="lang/**"/>
+				<include name="lib/**"/>
+				<include name="plugins/**"/>
+				<include name="documentation/**"/>
+				<include name="ressources/**"/>
+				<include name="ConcoursJeunes.jar"/>
+				<include name="revision.xml.gz"/>
+				<include name="*.txt"/>
+			</fileset>
+		</copy>
+	</target>
+
+</project>
