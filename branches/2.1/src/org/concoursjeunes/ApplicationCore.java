@@ -88,8 +88,16 @@
  */
 package org.concoursjeunes;
 
-import java.io.*;
-import java.sql.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -132,7 +140,7 @@ import ajinteractive.standard.utilities.sql.SqlManager;
 public class ApplicationCore {
 
 	// UID: 1.Major(2).Minor(2).Correctif(2).Build(3).Type(1,Alpha,Beta,RC(1->6),Release)
-	public static final long serialVersionUID = 10205000011l;
+	public static final long serialVersionUID = 10210010019l;
 	/**
 	 * Nom public de l'application
 	 */
@@ -156,7 +164,7 @@ public class ApplicationCore {
 	/**
 	 * Numero de version de la base de donnée nécessaire au fonctionnement du programme
 	 */
-	public static final int DB_RELEASE_REQUIRED = 11;
+	public static final int DB_RELEASE_REQUIRED = 12;
 
 	/**
 	 * Chargement des Libelle de l'application

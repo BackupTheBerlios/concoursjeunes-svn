@@ -90,13 +90,12 @@ package org.concoursjeunes;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.bind.JAXBException;
 
 import org.concoursjeunes.builders.ReglementBuilder;
 
@@ -130,7 +129,7 @@ public class ReglementManager {
 		try {
 			Statement stmt = ApplicationCore.dbConnection.createStatement();
 
-			ResultSet rs = stmt.executeQuery("select NUMREGLEMENT from REGLEMENT where NUMREGLEMENT <> 0"); //$NON-NLS-1$
+			ResultSet rs = stmt.executeQuery("select NUMREGLEMENT from REGLEMENT where NUMREGLEMENT <> 0 order by NOMREGLEMENT"); //$NON-NLS-1$
 
 			while (rs.next()) {
 				Reglement reglement = ReglementBuilder.getReglement(rs.getInt("NUMREGLEMENT")); //$NON-NLS-1$
@@ -306,14 +305,15 @@ public class ReglementManager {
 		return categorie;
 	}
 	
-	public void exportReglement(Reglement reglement, File exportFile) throws FileNotFoundException, JAXBException {
-		AJToolKit.saveMarshallStructure(exportFile, reglement);
+	public void exportReglement(Reglement reglement, File exportFile) throws FileNotFoundException, IOException {
+		AJToolKit.saveXMLStructure(exportFile, reglement, false);
 	}
 	
-	public Reglement importReglement(File importFile) throws JAXBException, SQLException {
-		Reglement reglement = AJToolKit.loadMarshallStructure(importFile, Reglement.class);
-		if(!availableReglements.contains(reglement))
-			addReglement(reglement);
+	public Reglement importReglement(File importFile) throws IOException, SQLException {
+		Reglement reglement = (Reglement)AJToolKit.loadXMLStructure(importFile, false);
+		if(availableReglements.contains(reglement))
+			removeReglement(reglement);
+		addReglement(reglement);
 		
 		return reglement;
 	}

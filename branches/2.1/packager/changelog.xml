@@ -410,5 +410,28 @@
     </void> 
    </object> 
   </void> 
+  <void method="add"> 
+   <object class="ajinteractive.standard.utilities.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurelien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction des Réglements 2x18, 2x25 sur le placement des super vétéran arc à poulies.
+  * Modification du format d&apos;export des réglements afin d&apos;éviter divers problèmes.
+  * Correction d&apos;un problème de corruption des concours ouvert durant la mise à jour.</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1228056847203</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.10.01</string> 
+    </void> 
+   </object> 
+  </void> 
  </object> 
 </java> 

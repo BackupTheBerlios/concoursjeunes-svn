@@ -168,8 +168,8 @@ public class DistancesEtBlason {
 				numdistancesblason = (Integer) clefs.getObject(1);
 			}
 		} else {
-			stmt.executeUpdate("update DISTANCESBLASONS set NUMBLASON=" + //$NON-NLS-1$
-					targetFace.getNumblason() + " where NUMREGLEMENT=" + numReglement + " and NUMDISTANCESBLASONS=" + numdistancesblason); //$NON-NLS-1$ //$NON-NLS-2$
+			stmt.executeUpdate("merge into DISTANCESBLASONS (NUMDISTANCESBLASONS, NUMREGLEMENT,NUMBLASON) VALUES (" + //$NON-NLS-1$
+					numdistancesblason + "," + numReglement + "," + targetFace.getNumblason()+ ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
 
 		criteriaSet.save(numReglement);
