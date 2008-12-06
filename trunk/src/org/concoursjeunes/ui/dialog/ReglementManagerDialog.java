@@ -101,13 +101,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.xml.bind.JAXBException;
 
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Federation;
@@ -446,7 +446,7 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 						JXErrorPane.showDialog(this, new ErrorInfo(ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 								null, null, e1, Level.SEVERE, null));
 						e1.printStackTrace();
-					} catch (JAXBException e1) {
+					} catch (IOException e1) {
 						JXErrorPane.showDialog(this, new ErrorInfo(ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 								null, null, e1, Level.SEVERE, null));
 						e1.printStackTrace();
@@ -460,7 +460,7 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 				try {
 					reglementManager.importReglement(fileChooser.getSelectedFile());
 					completePanel();
-				} catch (JAXBException e1) {
+				} catch (IOException e1) {
 					JXErrorPane.showDialog(this, new ErrorInfo(ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 							null, null, e1, Level.SEVERE, null));
 					e1.printStackTrace();

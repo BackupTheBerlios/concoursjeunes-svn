@@ -90,13 +90,12 @@ package org.concoursjeunes;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.bind.JAXBException;
 
 import org.concoursjeunes.builders.ReglementBuilder;
 
@@ -116,12 +115,16 @@ public class ReglementManager {
 	private List<Integer> categorie = new ArrayList<Integer>();
 	
 	/**
-	 * 
+	 * Construit une nouvelle instance du gestionnaire de réglement, listant
+	 * tout les réglements présent en base.
 	 */
 	public ReglementManager() {
 		listReglement();
 	}
 	
+	/**
+	 * Liste tout les réglements présent en base
+	 */
 	private void listReglement() {
 		availableReglements.clear();
 		federation.clear();
@@ -183,8 +186,19 @@ public class ReglementManager {
 		
 	}
 	
-	public void replaceReglement(Reglement reglement) throws SQLException {
-		removeReglement(reglement);
+	/**
+	 * Met à jour un réglement en base à partir de sa référence objet.
+	 * Si le réglement n'existe pas en base, se contente de le creer
+	 * 
+	 * @param reglement
+	 * @throws SQLException
+	 */
+	public void updateReglement(Reglement reglement) throws SQLException {
+		availableReglements.remove(reglement);
+		if(getReglementsForCategory(reglement.getCategory()).size() == 0)
+			categorie.remove(new Integer(reglement.getCategory()));
+		if(getReglementsForFederation(reglement.getFederation()).size() == 0)
+			federation.remove(reglement.getFederation());
 		addReglement(reglement);
 	}
 	
@@ -311,16 +325,31 @@ public class ReglementManager {
 		return categorie;
 	}
 	
-	public void exportReglement(Reglement reglement, File exportFile) throws FileNotFoundException, JAXBException {
-		XMLSerializer.saveMarshallStructure(exportFile, reglement);
+	/**
+	 * Exporte un reglement sous la forme d'un fichier XML
+	 * 
+	 * @param reglement le réglement à exporter
+	 * @param exportFile le fichier dans lequel exporter le réglement
+	 * 
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	public void exportReglement(Reglement reglement, File exportFile) throws FileNotFoundException, IOException {
+		XMLSerializer.saveXMLStructure(exportFile, reglement, false);
 	}
 	
-	public Reglement importReglement(File importFile) throws JAXBException, SQLException {
-		Reglement reglement = XMLSerializer.loadMarshallStructure(importFile, Reglement.class);
-		if(!availableReglements.contains(reglement))
-			addReglement(reglement);
-		else
-			replaceReglement(reglement);
+	/**
+	 * Importe un réglement à partir d'un fichier XML
+	 * 
+	 * @param importFile le fichier XML contenant le réglement
+	 * @return l'objet réglement résultant
+	 * 
+	 * @throws IOException
+	 * @throws SQLException
+	 */
+	public Reglement importReglement(File importFile) throws IOException, SQLException {
+		Reglement reglement = XMLSerializer.loadXMLStructure(importFile, false);
+		updateReglement(reglement);
 		
 		return reglement;
 	}

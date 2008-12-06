@@ -96,6 +96,8 @@ import java.util.*;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import ajinteractive.standard.utilities.sql.SqlPersistanceBean;
+
 /**
  * <p>
  * Représentation d'un réglement de concours. Un réglement fixe les régles
@@ -120,7 +122,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * 
  */
 @XmlRootElement
-public class Reglement {
+public class Reglement implements SqlPersistanceBean {
 
 	private String name = "default"; //$NON-NLS-1$
 

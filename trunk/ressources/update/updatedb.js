@@ -1,19 +1,31 @@
 //mapping:
-// int dbVersion
+// int dbVersion - version de la base de donnée
 // SqlManager sql - moteur de base de données
+
+function updateReglements() {
+	var contexte = JavaImporter(
+			Packages.org.concoursjeunes,
+			Packages.ajinteractive.standard.common,
+			Packages.ajinteractive.standard.utilities.io,
+			Packages.java.util,
+			Packages.java.io);
+
+	with(contexte) {
+		//liste l'ensemble des fichiers de réglements
+		var updatePath = new File(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources"), "update");
+		var reglements = FileUtils.listAllFiles(updatePath, ".*\\.reglement");
+		var rManager = new ReglementManager();
+		for(var i = 0; i < reglements.size(); i++) {
+			rManager.importReglement(reglements.get(i));
+		}
+	}
+}
 
 if(dbVersion == 0) {
 	//passe l'ensemble des scripts de base
 	sql.executeScript("01-create_db.sql");
 	sql.executeScript("02-defaut.sql");
-	sql.executeScript("02-federal.sql");
-	sql.executeScript("02-savoie.sql");
-	sql.executeScript("02-2x18m.sql");
-	sql.executeScript("02-2x25m.sql");
-	sql.executeScript("02-2x50m.sql");
-	sql.executeScript("02-2x70m.sql");
 	sql.executeScript("04-insertclub.sql");
-	sql.executeScript("99-updatedbver.sql");
 } else if(dbVersion < 10) {
 	var rowSet;
 	
@@ -102,26 +114,6 @@ if(dbVersion == 0) {
 		sql.executeScript("05-patch02.sql");
 	}
 	
-	//ajout du réglement de référence
-	rowSet = sql.executeQuery("SELECT * FROM REGLEMENT WHERE NUMREGLEMENT=0;");
-	if(!rowSet.first()) {
-		sql.executeScript("02-defaut.sql");
-	}
-	
-	//ajout d'arcs supplémentaire sur les 2 réglements de base
-	rowSet = sql.executeQuery("SELECT * FROM CRITEREELEMENT WHERE CODECRITEREELEMENT='AD' and CODECRITERE='arc' and NUMREGLEMENT in(-1825540830, -180676679);");
-	if(!rowSet.first()) {
-		sql.executeUpdate("MERGE INTO PUBLIC.CRITEREELEMENT(CODECRITEREELEMENT, CODECRITERE, NUMREGLEMENT, LIBELLECRITEREELEMENT, ACTIF) VALUES('AD', 'arc', -1825540830, 'Arc droit', TRUE);");
-		sql.executeUpdate("MERGE INTO PUBLIC.CRITEREELEMENT(CODECRITEREELEMENT, CODECRITERE, NUMREGLEMENT, LIBELLECRITEREELEMENT, ACTIF) VALUES('AC', 'arc', -1825540830, 'Arc chasse', TRUE);");
-		sql.executeUpdate("MERGE INTO PUBLIC.CRITEREELEMENT(CODECRITEREELEMENT, CODECRITERE, NUMREGLEMENT, LIBELLECRITEREELEMENT, ACTIF) VALUES('BB', 'arc', -1825540830, 'Bare Bow', TRUE);");
-		sql.executeUpdate("MERGE INTO PUBLIC.CRITEREELEMENT(CODECRITEREELEMENT, CODECRITERE, NUMREGLEMENT, LIBELLECRITEREELEMENT, ACTIF) VALUES('TL', 'arc', -1825540830, 'Tir Libre', TRUE);");
-		
-		sql.executeUpdate("MERGE INTO PUBLIC.CRITEREELEMENT(CODECRITEREELEMENT, CODECRITERE, NUMREGLEMENT, LIBELLECRITEREELEMENT, ACTIF) VALUES('AD', 'arc', -180676679, 'Arc droit', TRUE);");
-		sql.executeUpdate("MERGE INTO PUBLIC.CRITEREELEMENT(CODECRITEREELEMENT, CODECRITERE, NUMREGLEMENT, LIBELLECRITEREELEMENT, ACTIF) VALUES('AC', 'arc', -180676679, 'Arc chasse', TRUE);");
-		sql.executeUpdate("MERGE INTO PUBLIC.CRITEREELEMENT(CODECRITEREELEMENT, CODECRITERE, NUMREGLEMENT, LIBELLECRITEREELEMENT, ACTIF) VALUES('BB', 'arc', -180676679, 'Bare Bow', TRUE);");
-		sql.executeUpdate("MERGE INTO PUBLIC.CRITEREELEMENT(CODECRITEREELEMENT, CODECRITERE, NUMREGLEMENT, LIBELLECRITEREELEMENT, ACTIF) VALUES('TL', 'arc', -180676679, 'Tir Libre', TRUE);");
-	}
-	
 	//Ajout des index de recherche sur la table entite
 	sql.executeUpdate("CREATE INDEX IF NOT EXISTS I_NOM_ENTITE ON ENTITE (NOMENTITE ASC);");
 	sql.executeUpdate("CREATE INDEX IF NOT EXISTS I_VILLE_ENTITE ON ENTITE (VILLEENTITE ASC);");
@@ -132,18 +124,9 @@ if(dbVersion == 0) {
 	if(!rowSet.first()) {
 		sql.executeScript("05-patch03.sql");
 	}
-	
-	sql.executeScript("02-2x18m.sql");
-	sql.executeScript("02-2x25m.sql");
-	sql.executeScript("02-2x50m.sql");
-	sql.executeScript("02-2x70m.sql");
+	sql.executeScript("02-defaut.sql");
 }
-if(dbVersion < 11) {
-	//Supprime les surclassements Super-Vétéran
-	sql.executeUpdate("DELETE FROM PUBLIC.SURCLASSEMENT WHERE NUMCRITERIASET IN (308357278, 308361122) AND NUMREGLEMENT IN (49799935, 49800803)");
-	sql.executeUpdate("DELETE FROM PUBLIC.REGLEMENT WHERE NUMREGLEMENT IN (-1891783300, 2060995795)");
-	sql.executeScript("02-2x50m.sql");
-}
+
 if(dbVersion < 20) {
 	rowSet = sql.executeQuery("SELECT * FROM INFORMATION_SCHEMA.TABLES "
 			+ "WHERE TABLE_SCHEMA='PUBLIC' AND TABLE_NAME='DEPARTAGE'");
@@ -155,6 +138,8 @@ if(dbVersion < 20) {
 			+ "PRIMARY KEY (NUMDEPARTAGE, NUMREGLEMENT),"
 			+ "FOREIGN KEY (NUMREGLEMENT) REFERENCES REGLEMENT (NUMREGLEMENT) ON UPDATE CASCADE ON DELETE CASCADE);");
 	}
+	
+	updateReglements();
 }
 
 if(dbVersion != org.concoursjeunes.ApplicationCore.DB_RELEASE_REQUIRED) {

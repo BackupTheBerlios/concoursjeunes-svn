@@ -120,7 +120,9 @@ import org.concoursjeunes.ui.GlassPanePanel;
 import org.jdesktop.swingx.JXLoginPane;
 import org.jdesktop.swingx.JXLoginPane.Status;
 import org.jdesktop.swingx.auth.LoginService;
+import org.jdesktop.swingx.util.OS;
 
+import ajinteractive.macosx.auth.PrivilegedRuntime;
 import ajinteractive.standard.ui.AJList;
 import ajinteractive.standard.utilities.net.SimpleAuthenticator;
 import ajinteractive.standard.utilities.updater.*;
@@ -514,17 +516,31 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 				if (JOptionPane.showConfirmDialog(null, ApplicationCore.ajrLibelle.getResourceString("update.confirminstall"), ApplicationCore.ajrLibelle.getResourceString("update.confirminstall.title"), //$NON-NLS-1$ //$NON-NLS-2$
 						JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 					try {
-						Process process = Runtime.getRuntime().exec(new String[] { "concoursjeunes-applyupdate", //$NON-NLS-1$
-								ApplicationCore.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
-								System.getProperty("user.dir") }); //$NON-NLS-1$
-						process.waitFor();
-						
 						try {
 							ApplicationCore.getInstance().saveAllFichesConcours();
-							
-							ApplicationCore.dbConnection.close();
 						} catch (NullConfigurationException e) {
 							e.printStackTrace();
+						}
+						
+						Process process = null;
+						String[] command = new String[] { "concoursjeunes-applyupdate", //$NON-NLS-1$
+								ApplicationCore.userRessources.getUpdatePath().getPath(),
+								System.getProperty("user.dir") }; //$NON-NLS-1$
+						if(OS.isMacOSX()) {
+							//Sous Mac OS X, l'elevation de privilege est effectué en java
+							//à l'aide d'une librairie jni
+							process = PrivilegedRuntime.getRuntime().exec(command);
+							
+						} else {
+							//sur les systèmes Windows et Linux, invoque le programme "concoursjeunes-applyupdate"
+							//qui s'occupe d'élever les priviléges utilisateur si nécessaire.				
+							process = Runtime.getRuntime().exec(command); 
+						}
+						if(process != null)
+							process.waitFor();
+						
+						try {
+							ApplicationCore.dbConnection.close();
 						} catch (SQLException e) {
 							e.printStackTrace();
 						}

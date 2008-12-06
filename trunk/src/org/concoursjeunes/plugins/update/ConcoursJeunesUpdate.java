@@ -281,6 +281,12 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 			if (JOptionPane.showConfirmDialog(null, pluginLocalisation.getResourceString("update.confirminstall"), pluginLocalisation.getResourceString("update.confirminstall.title"), //$NON-NLS-1$ //$NON-NLS-2$
 					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 				try {
+					try {
+						ApplicationCore.getInstance().saveAllFichesConcours();
+					} catch (NullConfigurationException e) {
+						e.printStackTrace();
+					}
+					
 					Process process = null;
 					String[] command = new String[] { "concoursjeunes-applyupdate", //$NON-NLS-1$
 							ApplicationCore.userRessources.getUpdatePath().getPath(),
@@ -292,25 +298,14 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 						
 					} else {
 						//sur les systèmes Windows et Linux, invoque le programme "concoursjeunes-applyupdate"
-						//qui s'occupe d'élever les priviléges utilisateur si nécessaire.
-						/*if(OS.isWindowsVista()) {
-							//sur vista,  le popup de l'uac semble ne pas apparaître dans certain cas.
-							//on utilise la commande cmd pour contourner le problème 
-							command =  new String[] {"cmd.exe", "/c", "concoursjeunes-applyupdate",
-									ApplicationCore.userRessources.getAllusersDataPath() + File.separator + "update",
-									System.getProperty("user.dir") }; 
-						}	*/					
+						//qui s'occupe d'élever les priviléges utilisateur si nécessaire.				
 						process = Runtime.getRuntime().exec(command); 
 					}
 					if(process != null)
 						process.waitFor();
-					
+
 					try {
-						ApplicationCore.getInstance().saveAllFichesConcours();
-						
 						ApplicationCore.dbConnection.close();
-					} catch (NullConfigurationException e) {
-						e.printStackTrace();
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}
