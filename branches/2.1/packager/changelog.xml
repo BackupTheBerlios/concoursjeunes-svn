@@ -433,5 +433,27 @@
     </void> 
    </object> 
   </void> 
+  <void method="add"> 
+   <object class="ajinteractive.standard.utilities.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurelien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction installation de plugin impossible sous Mac OS X
+  * Correction mise à jour des réglements provoque la perte de la catégorie de l&apos;archer pour ce réglement</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1228660771396</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.10.02</string> 
+    </void> 
+   </object> 
+  </void> 
  </object> 
 </java> 

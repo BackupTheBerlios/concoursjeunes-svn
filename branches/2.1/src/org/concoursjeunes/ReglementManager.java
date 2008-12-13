@@ -182,6 +182,15 @@ public class ReglementManager {
 		
 	}
 	
+	public void updateReglement(Reglement reglement) throws SQLException {
+		availableReglements.remove(reglement);
+		if(getReglementsForCategory(reglement.getCategory()).size() == 0)
+			categorie.remove(new Integer(reglement.getCategory()));
+		if(getReglementsForFederation(reglement.getFederation()).size() == 0)
+			federation.remove(reglement.getFederation());
+		addReglement(reglement);
+	}
+	
 	/**
 	 * <p>
 	 * Retourne la liste des réglement disponible en base de donnée.
@@ -310,10 +319,8 @@ public class ReglementManager {
 	}
 	
 	public Reglement importReglement(File importFile) throws IOException, SQLException {
-		Reglement reglement = (Reglement)AJToolKit.loadXMLStructure(importFile, false);
-		if(availableReglements.contains(reglement))
-			removeReglement(reglement);
-		addReglement(reglement);
+		Reglement reglement = AJToolKit.loadXMLStructure(importFile, false);
+		updateReglement(reglement);
 		
 		return reglement;
 	}
