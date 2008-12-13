@@ -101,8 +101,8 @@ import javax.xml.bind.JAXBException;
 import org.concoursjeunes.builders.ConfigurationBuilder;
 import org.concoursjeunes.exceptions.NullConfigurationException;
 
-import ajinteractive.standard.common.AJToolKit;
 import ajinteractive.standard.utilities.io.FileUtils;
+import ajinteractive.standard.utilities.io.XMLSerializer;
 
 /**
  * Gére le chargement de la configuration du programme
@@ -117,7 +117,7 @@ public class ConfigurationManager {
 	 * 
 	 * @return la configuation courante
 	 */
-	public static Configuration loadCurrentConfiguration() throws IOException {
+	public static Configuration loadCurrentConfiguration() {
 		File confFile = new File(userRessources.getConfigPathForUser(), ajrParametreAppli.getResourceString("file.configuration")); //$NON-NLS-1$
 
 		return loadConfiguration(confFile);
@@ -129,7 +129,7 @@ public class ConfigurationManager {
 	 * @param profilename
 	 * @return la configuration nommé
 	 */
-	public static Configuration loadConfiguration(String profilename) throws IOException {
+	public static Configuration loadConfiguration(String profilename) {
 		return loadConfiguration(new File(ApplicationCore.userRessources.getConfigPathForUser(), "configuration_" + profilename + ".xml")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
@@ -140,48 +140,56 @@ public class ConfigurationManager {
 	 * @return l'objet configuration chargé
 	 */
 	@SuppressWarnings("deprecation")
-	public static Configuration loadConfiguration(File confFile) throws IOException {
+	public static Configuration loadConfiguration(File confFile) {
 		Configuration configuration = null;
+		boolean oldConfigFormat = false;
 		//tente de charger la configuration
 		try {
-			configuration = AJToolKit.loadMarshallStructure(confFile, Configuration.class);
-			if(configuration == null) {
-				configuration = ConfigurationBuilder.getDefaultConfiguration();
-			}
-		
+			configuration = XMLSerializer.loadMarshallStructure(confFile, Configuration.class);
 		//si il n'y arrive pas vérifie que ce n'est pas une config 1.1
 		} catch (JAXBException e) {
-			//couche de compatibilite avec le XML de la 1.1
-			ajinteractive.concours.Configuration oldConfig = AJToolKit.loadXMLStructure(confFile, false);
-			configuration = ConfigurationBuilder.getDefaultConfiguration();
-			if(oldConfig != null) {
-				//Etablie la correspondance entre les methodes 2.0+ et les 1.1
-				Entite entite = new Entite(oldConfig.getNomClub(), Entite.CLUB);
-				entite.setAgrement(oldConfig.getNumAgrement());
-				
-				configuration.setClub(entite);
-				configuration.setIntituleConcours(oldConfig.getIntituleConcours());
-				configuration.setNbCible(oldConfig.getNbCible());
-				configuration.setNbTireur(oldConfig.getNbTireur());
-				configuration.setNbDepart(oldConfig.getNbDepart());
-				configuration.setLangue(oldConfig.getLangue());
-				configuration.setLogoPath(oldConfig.getLogoPath());
-				configuration.setPdfReaderPath(oldConfig.getPdfReaderPath());
-				configuration.setFormatPapier(oldConfig.getFormatPapier());
-				configuration.setOrientation(oldConfig.getOrientation());
-				configuration.setColonneAndLigne(oldConfig.getColonneAndLigne());
-				configuration.setMarges(oldConfig.getMarges());
-				configuration.setEspacements(oldConfig.getEspacements());
-				configuration.setInterfaceResultatCumul(oldConfig.isInterfaceResultatCumul());
-				configuration.setInterfaceResultatSupl(oldConfig.isInterfaceResultatSupl());
-				configuration.setInterfaceAffResultatExEquo(oldConfig.isInterfaceAffResultatExEquo());
-				configuration.setFirstboot(oldConfig.isFirstboot());
-				configuration.setCurProfil(oldConfig.getCurProfil());
-				
-				//ecrase les XML 1.1 du profil par la config 2.0+ 
-				configuration.saveAsDefault();
-				configuration.save();
+			oldConfigFormat = true;
+		}
+		if(oldConfigFormat) {
+			try {
+				//couche de compatibilite avec le XML de la 1.1
+				ajinteractive.concours.Configuration oldConfig = XMLSerializer.loadXMLStructure(confFile, false);
+				configuration = ConfigurationBuilder.getDefaultConfiguration();
+				if(oldConfig != null) {
+					//Etablie la correspondance entre les methodes 2.0+ et les 1.1
+					Entite entite = new Entite(oldConfig.getNomClub(), Entite.CLUB);
+					entite.setAgrement(oldConfig.getNumAgrement());
+					
+					configuration.setClub(entite);
+					configuration.setIntituleConcours(oldConfig.getIntituleConcours());
+					configuration.setNbCible(oldConfig.getNbCible());
+					configuration.setNbTireur(oldConfig.getNbTireur());
+					configuration.setNbDepart(oldConfig.getNbDepart());
+					configuration.setLangue(oldConfig.getLangue());
+					configuration.setLogoPath(oldConfig.getLogoPath());
+					configuration.setPdfReaderPath(oldConfig.getPdfReaderPath());
+					configuration.setFormatPapier(oldConfig.getFormatPapier());
+					configuration.setOrientation(oldConfig.getOrientation());
+					configuration.setColonneAndLigne(oldConfig.getColonneAndLigne());
+					configuration.setMarges(oldConfig.getMarges());
+					configuration.setEspacements(oldConfig.getEspacements());
+					configuration.setInterfaceResultatCumul(oldConfig.isInterfaceResultatCumul());
+					configuration.setInterfaceResultatSupl(oldConfig.isInterfaceResultatSupl());
+					configuration.setInterfaceAffResultatExEquo(oldConfig.isInterfaceAffResultatExEquo());
+					configuration.setFirstboot(oldConfig.isFirstboot());
+					configuration.setCurProfil(oldConfig.getCurProfil());
+					
+					//ecrase les XML 1.1 du profil par la config 2.0+ 
+					configuration.saveAsDefault();
+					configuration.save();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
+		}
+		
+		if(configuration == null) {
+			configuration = ConfigurationBuilder.getDefaultConfiguration();
 		}
 		
 		return configuration;

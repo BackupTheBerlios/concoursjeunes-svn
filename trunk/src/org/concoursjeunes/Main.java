@@ -142,7 +142,9 @@ public class Main {
 		
 		Thread.setDefaultUncaughtExceptionHandler(handlerException);
 		Toolkit.getDefaultToolkit().getSystemEventQueue().push(new ExceptionHandlingEventQueue());
+	
 		core = ApplicationCore.getInstance();
+		
 		if(System.getProperty("noplugin") == null) { //$NON-NLS-1$
 			loadStartupPlugin();
 		}
@@ -173,7 +175,7 @@ public class Main {
 				new ConcoursJeunesFrame(core);
 			}
 		});
-		
+
 	}
 	
 	@SuppressWarnings("unchecked")

@@ -92,6 +92,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.List;
 
 import ajinteractive.standard.utilities.io.FileUtils;
 
@@ -143,56 +144,22 @@ public class AppRessources extends ajinteractive.standard.utilities.app.AppResso
 	 * 
 	 */
 	private void copyDefaultConfigForUser() {
-		File[] fileForCopy = new File(
-				ApplicationCore.ajrParametreAppli.getResourceString("path.config")).listFiles(new java.io.FileFilter() { //$NON-NLS-1$
-					public boolean accept(File pathname) {
-						return pathname.isFile() && pathname.getName().endsWith(EXT_XML);
-					}
-				});
-		if(fileForCopy != null) {
-			for (File file : fileForCopy) {
-				File configPath = new File(getUserPath());
-				if (!new File(configPath.getPath(), file.getName()).exists()) {
-					try {
-						FileUtils.copyFile(file, configPath);
-						for (File dbfile : FileUtils.listAllFiles(configPath, ".*\\.xml")) { //$NON-NLS-1$
-							if (dbfile.isFile()) {
-								dbfile.setWritable(true, true);
-							}
-						}
-					} catch (FileNotFoundException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * Copie les fichiers de mise à jour fournit à l'installation dans
-	 * le répertoire de mise à jour de l'appli 
-	 */
-	public void copyDefaultUpdateFile() {
-		File[] fileForCopy = new File(
-				ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") , "update").listFiles(new java.io.FileFilter() { //$NON-NLS-1$ //$NON-NLS-2$
-					public boolean accept(File pathname) {
-						return pathname.isFile();
-					}
-				});
-
-		File updatePath = new File(
-				ApplicationCore.ajrParametreAppli.getResourceString("path.update", getAllusersDataPath())); //$NON-NLS-1$
-		updatePath.mkdirs(); 
+		List<File> fileForCopy = FileUtils.listAllFiles(
+				new File(ApplicationCore.ajrParametreAppli.getResourceString("path.config")), ".*\\" + EXT_XML); //$NON-NLS-1$ //$NON-NLS-2$
 
 		for (File file : fileForCopy) {
-			try {
-				FileUtils.copyFile(file, updatePath);
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
+			File configFile = new File(getUserPath(), file.getName());
+			if (!configFile.exists()) {
+				try {
+					FileUtils.copyFile(file, configFile);
+					configFile.setWritable(true, true);
+				} catch (FileNotFoundException e) {
+					//Trace les exceptions dans la console, mais le show doit continuer
+					e.printStackTrace();
+				} catch (IOException e) {
+					//Trace les exceptions dans la console, mais le show doit continuer
+					e.printStackTrace();
+				}
 			}
 		}
 	}

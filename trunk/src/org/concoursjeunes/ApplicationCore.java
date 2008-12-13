@@ -88,8 +88,16 @@
  */
 package org.concoursjeunes;
 
-import java.io.*;
-import java.sql.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -112,6 +120,8 @@ import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
 import ajinteractive.standard.common.AjResourcesReader;
+import ajinteractive.standard.utilities.app.AppData;
+import ajinteractive.standard.utilities.app.AppInfosProperties;
 import ajinteractive.standard.utilities.io.FileUtils;
 import ajinteractive.standard.utilities.sql.SqlManager;
 
@@ -129,32 +139,39 @@ import ajinteractive.standard.utilities.sql.SqlManager;
  * @author Aurelien Jeoffray
  * @version 2.0
  */
+@AppInfosProperties("packager/version.properties")
 public class ApplicationCore {
 
 	/**
 	 * Nom public de l'application
 	 */
+	@AppData(name = "version.name")
 	public static final String NOM = "@version.name@"; //$NON-NLS-1$
+	
 	/**
 	 * version de l'application
 	 */
 	public static final String VERSION = new String("@version.numero@ - @version.date@");//$NON-NLS-1$
+	
 	/**
 	 * Nom de code de l'application
 	 */
 	public static final String CODENAME = "@version.codename@"; //$NON-NLS-1$
+	
 	/**
 	 * Auteur(s) de l'application
 	 */
 	public static final String AUTEURS = "@version.author@"; //$NON-NLS-1$
+	
 	/**
 	 * Copyright de l'application
 	 */
 	public static final String COPYR = "@version.copyr@"; //$NON-NLS-1$
+	
 	/**
 	 * Numero de version de la base de donnée nécessaire au fonctionnement du programme
 	 */
-	public static final int DB_RELEASE_REQUIRED = 11;
+	public static final int DB_RELEASE_REQUIRED = 20;
 
 	/**
 	 * Chargement des Libelle de l'application
@@ -170,20 +187,23 @@ public class ApplicationCore {
 	 * ressources utilisateurs
 	 */
 	public static AppRessources userRessources = new AppRessources(NOM);
-	/**
-	 * version de la base de donnée
-	 */
-	public static int dbVersion = 0;
-
+	
 	/**
 	 * Connection à la base de données du logiciel
 	 */
 	public static Connection dbConnection;
-
+	
+	/**
+	 * version de la base de donnée
+	 */
+	public static int dbVersion = 0;
+	
+	private static boolean consoleMode = true;
 	private static Configuration configuration = new Configuration();
-	private final ArrayList<FicheConcours> fichesConcours = new ArrayList<FicheConcours>();
-	private final EventListenerList listeners = new EventListenerList();
 	private static ApplicationCore instance;
+	
+	private final List<FicheConcours> fichesConcours = new ArrayList<FicheConcours>();
+	private final EventListenerList listeners = new EventListenerList();
 
 	/**
 	 * constructeur, création de la fenetre principale
@@ -212,16 +232,7 @@ public class ApplicationCore {
 	 * tente de recuperer la configuration générale du programme
 	 */
 	private void loadConfiguration() {
-		try {
-			configuration = ConfigurationManager.loadCurrentConfiguration();
-		} catch (IOException e2) {
-			JXErrorPane.showDialog(null, 
-					new ErrorInfo(ajrLibelle.getResourceString("erreur.concoursjeunes.loadconfig.title"), //$NON-NLS-1$
-					ajrLibelle.getResourceString("erreur.concoursjeunes.loadconfig"),  //$NON-NLS-1$
-					null, null, e2, Level.SEVERE, null));
-			e2.printStackTrace();
-			System.exit(1);
-		}
+		configuration = ConfigurationManager.loadCurrentConfiguration();
 	}
 	
 	/**
@@ -235,11 +246,9 @@ public class ApplicationCore {
 	private void debugLogger() {
 		if (System.getProperty("debug.mode") == null) { //$NON-NLS-1$
 			try {
-				System.setErr(new PrintStream(new File(userRessources.getLogPathForProfile(configuration.getCurProfil()), ajrParametreAppli.getResourceString("log.error")))); //$NON-NLS-1$
-				System.setOut(new PrintStream(new File(userRessources.getLogPathForProfile(configuration.getCurProfil()), ajrParametreAppli.getResourceString("log.exec")))); //$NON-NLS-1$
+				System.setErr(new PrintStream(new File(userRessources.getAllusersDataPath(), ajrParametreAppli.getResourceString("log.error")))); //$NON-NLS-1$
+				System.setOut(new PrintStream(new File(userRessources.getAllusersDataPath(), ajrParametreAppli.getResourceString("log.exec")))); //$NON-NLS-1$
 			} catch (FileNotFoundException e) {
-				JXErrorPane.showDialog(null, new ErrorInfo(ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
-						e.toString(), null, null, e, Level.WARNING, null));
 				e.printStackTrace();
 			}
 		}
@@ -265,27 +274,25 @@ public class ApplicationCore {
 				retry = false;
 			} catch (SQLException e) {
 				e.printStackTrace();
-				
-				//Si ce n'est pas un message db bloqué par un autre processus
-				if(!e.getSQLState().equals("" + ErrorCode.DATABASE_ALREADY_OPEN_1)) { //$NON-NLS-1$
-					JXErrorPane.showDialog(null,new ErrorInfo( "SQL Error", e.toString(), //$NON-NLS-1$
-							null, null, e, Level.SEVERE, null));
-					
-					if(JOptionPane.showConfirmDialog(null, ajrLibelle.getResourceString("erreur.breakdb")) == JOptionPane.YES_OPTION) { //$NON-NLS-1$
-						retry = true;
-						try {
-							if(dbConnection != null) dbConnection.close();
-							DeleteDbFiles.execute(userRessources.getBasePath().getPath(), null, true);
-						} catch (SQLException e1) {	e1.printStackTrace(); }
-						/*for(File deletefile : userRessources.getBasePath().listFiles()) {
-							deletefile.delete();
-						}*/
+				if(!consoleMode) {
+					//Si ce n'est pas un message db bloqué par un autre processus
+					if(!e.getSQLState().equals("" + ErrorCode.DATABASE_ALREADY_OPEN_1)) { //$NON-NLS-1$
+						JXErrorPane.showDialog(null,new ErrorInfo( "SQL Error", e.toString(), //$NON-NLS-1$
+								null, null, e, Level.SEVERE, null));
+						
+						if(JOptionPane.showConfirmDialog(null, ajrLibelle.getResourceString("erreur.breakdb")) == JOptionPane.YES_OPTION) { //$NON-NLS-1$
+							retry = true;
+							try {
+								if(dbConnection != null) dbConnection.close();
+								DeleteDbFiles.execute(userRessources.getBasePath().getPath(), null, true);
+							} catch (SQLException e1) {	e1.printStackTrace(); }
+						} else {
+							System.exit(1);
+						}
 					} else {
+						JOptionPane.showMessageDialog(null, ajrLibelle.getResourceString("erreur.dbalreadyopen")); //$NON-NLS-1$
 						System.exit(1);
 					}
-				} else {
-					JOptionPane.showMessageDialog(null, ajrLibelle.getResourceString("erreur.dbalreadyopen")); //$NON-NLS-1$
-					System.exit(1);
 				}
 			}
 		} while(retry);
@@ -307,9 +314,10 @@ public class ApplicationCore {
 			// si la version de la base est différente de la version requise par le programme
 			// copie les fichiers de mise à jour par défaut
 			if (dbVersion > DB_RELEASE_REQUIRED) {
-				JOptionPane.showMessageDialog(null, ajrLibelle.getResourceString("erreur.dbrelease"), //$NON-NLS-1$
+				throw new RuntimeException(ajrLibelle.getResourceString("erreur.dbrelease")); //$NON-NLS-1$
+				/*JOptionPane.showMessageDialog(null, ajrLibelle.getResourceString("erreur.dbrelease"), //$NON-NLS-1$
 						ajrLibelle.getResourceString("erreur.dbrelease.title"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
-				System.exit(1);
+				System.exit(1);*/
 			}
 			
 			ScriptEngine scriptEngine = null;
@@ -333,14 +341,17 @@ public class ApplicationCore {
 					}
 				}
 			} else {
-				JOptionPane.showMessageDialog(null, "Votre machine virtuel java ne supporte pas javascript,\nl'application risque de ne pas fonctionner correctement", //$NON-NLS-1$
-						ajrLibelle.getResourceString("erreur.dbrelease.title"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
+				System.err.println("Votre machine virtuel java ne supporte pas javascript,\nl'application risque de ne pas fonctionner correctement"); //$NON-NLS-1$
+				if(!consoleMode)
+					JOptionPane.showMessageDialog(null, "Votre machine virtuel java ne supporte pas javascript,\nl'application risque de ne pas fonctionner correctement", //$NON-NLS-1$
+							ajrLibelle.getResourceString("erreur.dbrelease.title"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 				
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JXErrorPane.showDialog(null, new ErrorInfo("SQL Error", e.toString(), //$NON-NLS-1$
-					null, null, e, Level.SEVERE, null));
+			if(!consoleMode)
+				JXErrorPane.showDialog(null, new ErrorInfo("SQL Error", e.toString(), //$NON-NLS-1$
+						null, null, e, Level.SEVERE, null));
 		} finally {
 			try { if(stmt != null) stmt.close(); } catch (SQLException e) { }
 			dbVersion = getDBVersion();
@@ -373,6 +384,20 @@ public class ApplicationCore {
 		configuration = _configuration;
 		if(instance != null)
 			instance.fireConfigurationChanged();
+	}
+
+	/**
+	 * @return interactiveMode
+	 */
+	public static boolean isConsoleMode() {
+		return consoleMode;
+	}
+
+	/**
+	 * @param interactiveMode interactiveMode à définir
+	 */
+	public static void setConsoleMode(boolean consoleMode) {
+		ApplicationCore.consoleMode = consoleMode;
 	}
 
 	/**
@@ -525,7 +550,8 @@ public class ApplicationCore {
 	/**
 	 * Sauvegarde l'ensemble des fiches de concours actuellement ouverte
 	 * 
-	 * @exception ConfigurationException
+	 * @throws NullConfigurationException
+	 * @throws IOException
 	 */
 	public void saveAllFichesConcours() throws NullConfigurationException, IOException {
 		if (configuration == null)

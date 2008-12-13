@@ -129,12 +129,7 @@ public class ConfigurationManagerTest extends TestCase {
 	 */
 	@Test
 	public void testLoadCurrentConfiguration() {
-		try {
-			assertNotNull(ConfigurationManager.loadCurrentConfiguration());
-		} catch (IOException e) {
-			fail(e.toString());
-			e.printStackTrace();
-		}
+		assertNotNull(ConfigurationManager.loadCurrentConfiguration());
 	}
 
 	/**
@@ -142,12 +137,7 @@ public class ConfigurationManagerTest extends TestCase {
 	 */
 	@Test
 	public void testLoadConfigurationString() {
-		try {
-			assertNotNull(ConfigurationManager.loadConfiguration("defaut")); //$NON-NLS-1$
-		} catch (IOException e) {
-			fail(e.toString());
-			e.printStackTrace();
-		}
+		assertNotNull(ConfigurationManager.loadConfiguration("defaut")); //$NON-NLS-1$
 	}
 
 	/**
@@ -155,13 +145,8 @@ public class ConfigurationManagerTest extends TestCase {
 	 */
 	@Test
 	public void testLoadConfigurationFile() {
-		try {
-			assertNotNull(ConfigurationManager.loadConfiguration(new File(ApplicationCore.userRessources.getConfigPathForUser() 
-					+ File.separator + "configuration_defaut.xml"))); //$NON-NLS-1$
-		} catch (IOException e) {
-			fail(e.toString());
-			e.printStackTrace();
-		}
+		assertNotNull(ConfigurationManager.loadConfiguration(new File(ApplicationCore.userRessources.getConfigPathForUser() 
+				+ File.separator + "configuration_defaut.xml"))); //$NON-NLS-1$
 	}
 
 	/**
@@ -173,24 +158,18 @@ public class ConfigurationManagerTest extends TestCase {
 		configuration.setCurProfil("test_rename_orig"); //$NON-NLS-1$
 		configuration.save();
 		
-		ApplicationCore concoursJeunes = ApplicationCore.getInstance();
+		String actualProfile = ""; //$NON-NLS-1$
 		
-		String actualProfile = ApplicationCore.getConfiguration().getCurProfil();
-		ApplicationCore.getConfiguration().save();
-		
-		configuration.saveAsDefault();
-		ApplicationCore.setConfiguration(configuration);
-		
-		
-		/*concoursJeunes.addConcoursJeunesListener(new ConcoursJeunesListener() {
-			public void ficheConcoursCreated(ConcoursJeunesEvent concoursJeunesEvent) {
-				concoursJeunesEvent.getFicheConcours().getMetaDataFicheConcours().
-			}
-			public void ficheConcoursDeleted(ConcoursJeunesEvent concoursJeunesEvent) { }
-			public void ficheConcoursClosed(ConcoursJeunesEvent concoursJeunesEvent) { }
-			public void ficheConcoursRestored(ConcoursJeunesEvent concoursJeunesEvent) { }
-		});*/
 		try {
+			ApplicationCore concoursJeunes = ApplicationCore.getInstance();
+			
+			actualProfile = ApplicationCore.getConfiguration().getCurProfil();
+			ApplicationCore.getConfiguration().save();
+			
+			configuration.saveAsDefault();
+			ApplicationCore.setConfiguration(configuration);
+		
+		
 			concoursJeunes.createFicheConcours();
 			concoursJeunes.saveAllFichesConcours();
 			concoursJeunes.closeAllFichesConcours();
@@ -214,13 +193,8 @@ public class ConfigurationManagerTest extends TestCase {
 			e.printStackTrace();
 		}
 		
-		try {
-			configuration = ConfigurationManager.loadConfiguration(actualProfile);
-			ApplicationCore.setConfiguration(configuration);
-		} catch (IOException e) {
-			fail(e.toString());
-			e.printStackTrace();
-		}
+		configuration = ConfigurationManager.loadConfiguration(actualProfile);
+		ApplicationCore.setConfiguration(configuration);
 		
 		assertTrue(new File(ApplicationCore.userRessources.getConfigPathForUser(), "configuration_test_rename.xml").delete()); //$NON-NLS-1$
 		try {

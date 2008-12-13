@@ -117,7 +117,7 @@ public class StateManager {
 	public StateManager() {
 		File statesPath = new File(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources"), "states"); //$NON-NLS-1$ //$NON-NLS-2$
 		
-		ArrayList<File> stateFolders = FileUtils.listAllFiles(statesPath, ".*",true); //$NON-NLS-1$
+		List<File> stateFolders = FileUtils.listAllFiles(statesPath, ".*",true); //$NON-NLS-1$
 		
 		for(File stateFolder : stateFolders) {
 			if(stateFolder.isDirectory()) {

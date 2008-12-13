@@ -116,7 +116,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	 */
 	public static final String EXT_XML = ".xml"; //$NON-NLS-1$
 
-	private String langue           = "";               //$NON-NLS-1$
+	private String langue           = "fr";               //$NON-NLS-1$
 	private String logoPath         = "ressources/logo_ffta.gif";   //$NON-NLS-1$
 	
 	private String reglementName	= ""; //$NON-NLS-1$
@@ -139,7 +139,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	//propriete caché
 	private MetaDataFichesConcours metaDataFichesConcours = new MetaDataFichesConcours();
 	private boolean firstboot       = false;            //noreboot
-	private String curProfil        = "";               //noreboot //$NON-NLS-1$
+	private String curProfil        = "defaut";         //noreboot //$NON-NLS-1$
 
 	public Configuration() {
 
@@ -435,8 +435,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	 *
 	 */
 	public void save() {
-		File f = new File(ApplicationCore.userRessources.getConfigPathForUser() + 
-				File.separator + 
+		File f = new File(ApplicationCore.userRessources.getConfigPathForUser(),
 				CONFIG_PROFILE + curProfil + EXT_XML);
 		try {
 			XMLSerializer.saveMarshallStructure(f, this);
@@ -452,8 +451,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	 */
 	public void saveAsDefault() {
 		try {
-			File f = new File(ApplicationCore.userRessources.getConfigPathForUser() + 
-					File.separator + 
+			File f = new File(ApplicationCore.userRessources.getConfigPathForUser(),
 					ApplicationCore.ajrParametreAppli.getResourceString("file.configuration")); //$NON-NLS-1$
 			try {
 				XMLSerializer.saveMarshallStructure(f, this);

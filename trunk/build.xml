@@ -173,7 +173,7 @@
 			file="${projet.pack.dir}/src/org/concoursjeunes/ApplicationCore.java"
 			token="@version.date@" 
 			value="${version.date}"
-			encoding="UTF-8" />
+			encoding="UTF-8" /> 
 
 		<javac srcdir="${projet.pack.dir}/src/" destdir="${projet.pack.dir}/bin"
 			optimize="on"
