@@ -86,21 +86,64 @@
  */
 package org.concoursjeunes.ui.dialog;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.PlainDocument;
 
-import org.concoursjeunes.*;
+import org.concoursjeunes.ApplicationCore;
+import org.concoursjeunes.Archer;
+import org.concoursjeunes.AutoCompleteDocument;
+import org.concoursjeunes.AutoCompleteDocumentContext;
+import org.concoursjeunes.Concurrent;
+import org.concoursjeunes.CriteriaSet;
+import org.concoursjeunes.CriteriaSetLibelle;
+import org.concoursjeunes.Criterion;
+import org.concoursjeunes.CriterionElement;
+import org.concoursjeunes.DistancesEtBlason;
+import org.concoursjeunes.Entite;
+import org.concoursjeunes.FicheConcours;
+import org.concoursjeunes.TargetPosition;
+import org.concoursjeunes.TargetsOccupation;
 import org.concoursjeunes.event.AutoCompleteDocumentEvent;
 import org.concoursjeunes.event.AutoCompleteDocumentListener;
 import org.concoursjeunes.ui.ConcoursJeunesFrame;
@@ -111,6 +154,8 @@ import ajinteractive.standard.common.ArraysUtils;
 import ajinteractive.standard.common.StringUtils;
 import ajinteractive.standard.ui.GridbagComposer;
 import ajinteractive.standard.ui.NumberDocument;
+import ajinteractive.standard.utilities.app.AppUtilities;
+import ajinteractive.standard.utilities.app.Localisable;
 
 /**
  * Boite de dialogue de gestion d'un concurrent
@@ -125,7 +170,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	public static final int CONFIRM_AND_PREVIOUS = 3;
 	public static final int CANCEL = 4;
 
-	private final FicheConcours ficheConcours;
+	private FicheConcours ficheConcours;
 	private Concurrent concurrent;
 	private Entite entiteConcurrent;
 	private Archer filter = null;
@@ -133,45 +178,54 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	private static volatile int nbInstance = 0;
 	private static Future<ConcurrentListDialog> concurrentListDialog;
 
+	@Localisable("concurrent.description")
 	private JLabel jlDescription = new JLabel(); // Description
+	@Localisable("concurrent.identite")
 	private JLabel jlNom = new JLabel(); // Nom et prénom du Tireur
+	@Localisable("concurrent.numlicence")
 	private JLabel jlLicence = new JLabel(); // N° de Licence
-	//private JLabel jlSurclassment = new JLabel("<html>&nbsp;</html>"); //Archer surclassé? //$NON-NLS-1$
+	@Localisable("concurrent.nomclub")
 	private JLabel jlClub = new JLabel(); // nom du club
+	@Localisable("concurrent.agrementclub")
 	private JLabel jlAgrement = new JLabel(); // n°agrement du club
+	@Localisable("concurrent.cible")
 	private JLabel jlCible = new JLabel(); // cible attribué
-	private JLabel jlDixNeuf = new JLabel(); // Nb de 10/9
+	private JLabel jlDepartages = new JLabel(); // Nb de 10/9
 	
 
 	// Tireur
 	private JPanel jpConcurrent = new JPanel();
 	private JTextField jtfNom = new JTextField(8); // Nom du tireur
 	private JTextField jtfPrenom = new JTextField(8); // Prenom du tireur
+	@Localisable("bouton.selectionarcher")
 	private JButton jbSelectionArcher = new JButton();
+	@Localisable(value="",tooltip="bouton.editer")
 	private JButton jbEditerArcher = new JButton();
 	private JTextField jtfLicence = new JTextField(16);// Numero de
+	@Localisable("concurrent.handicap")
 	private JCheckBox jcbHandicape = new JCheckBox();
+	@Localisable("concurrent.surclassement")
 	private JCheckBox jcbSurclassement = new JCheckBox();
 	// licence
 	private Hashtable<Criterion, JLabel> jlCategrieTable = new Hashtable<Criterion, JLabel>();
 	private Hashtable<Criterion, JComboBox> jcbCategorieTable = new Hashtable<Criterion, JComboBox>();
 
 	// Club du tireur
-	private final JPanel jpClub = new JPanel();
-	private final JTextField jtfClub = new JTextField(16);// Intitulé du club
-	private final JTextField jtfAgrement = new JTextField(16);// Numero
-	// d'Agrément
-	private final JButton jbDetailClub = new JButton();
-	private final JButton jbListeClub = new JButton();
-	private final JPanel jpCible = new JPanel();
+	private JPanel jpClub = new JPanel();
+	private JTextField jtfClub = new JTextField(16);// Intitulé du club
+	private JTextField jtfAgrement = new JTextField(16);// Numero d'Agrément
+	private JButton jbDetailClub = new JButton();
+	private JButton jbListeClub = new JButton();
+	private JPanel jpCible = new JPanel();
 
 	// Point du tireur
-	private final JPanel jpPoints = new JPanel();
-	private final JLabel jlValCible = new JLabel();
-	private final JLabel jlPoints = new JLabel();
-	private JTextField tfpd[];
-	private final JTextField tfpd10 = new JTextField(new NumberDocument(false, false), "0", 4); //$NON-NLS-1$
-	private final JTextField tfpdNeuf = new JTextField(new NumberDocument(false, false), "0", 4); //$NON-NLS-1$
+	private JLabel jlValCible = new JLabel();
+	@Localisable("concurrent.points")
+	private JLabel jlPoints = new JLabel();
+	private JTextField[] tfpd;
+	private JTextField[] tfDepartages;
+	//private final JTextField tfpd10 = new JTextField(new NumberDocument(false, false), "0", 4); //$NON-NLS-1$
+	//private final JTextField tfpdNeuf = new JTextField(new NumberDocument(false, false), "0", 4); //$NON-NLS-1$
 	//private final JTextField tfpdM = new JTextField(new NumberDocument(false, false), "0", 4); //$NON-NLS-1$
 
 	// inscription
@@ -183,9 +237,13 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	private final JLabel jlPlaceLibre = new JLabel("<html></html>"); //$NON-NLS-1$
 
 	private final JPanel jpActionPane = new JPanel();
+	@Localisable("bouton.valider")
 	private final JButton jbValider = new JButton();
+	@Localisable("bouton.precedent")
 	private final JButton jbPrecedent = new JButton();
+	@Localisable("bouton.suivant")
 	private final JButton jbSuivant = new JButton();
+	@Localisable("bouton.annuler")
 	private final JButton jbAnnuler = new JButton();
 
 	private int selectField = 0;
@@ -224,9 +282,9 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 				if (selectField >= 0) {
 					tfpd[selectField].requestFocus(true);
 					tfpd[selectField].moveCaretPosition(0);
-				} else {
-					tfpd10.requestFocus(true);
-					tfpd10.moveCaretPosition(0);
+				} else if(tfDepartages != null && tfDepartages.length > 0){
+					tfDepartages[0].requestFocus(true);
+					tfDepartages[0].moveCaretPosition(0);
 				}
 			}
 		});
@@ -241,6 +299,9 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		GridBagConstraints c = new GridBagConstraints();
 
 		GridbagComposer gridbagComposer = new GridbagComposer();
+		
+		JPanel jpPoints = new JPanel();
+		JPanel jpDepartages = new JPanel();
 
 		for (Criterion key : ficheConcours.getParametre().getReglement().getListCriteria()) {
 			jlCategrieTable.put(key, new JLabel());
@@ -290,15 +351,25 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		jpActionPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
 		tfpd = new JTextField[ficheConcours.getParametre().getReglement().getNbSerie()];
-		for (int i = 0; i < ficheConcours.getParametre().getReglement().getNbSerie(); i++) {
-			this.tfpd[i] = new JTextField(new NumberDocument(false, false), "0", 4); //$NON-NLS-1$
-			this.tfpd[i].addFocusListener(this);
-			jpPoints.add(this.tfpd[i]);
+		for (int i = 0; i < tfpd.length; i++) {
+			tfpd[i] = new JTextField(new NumberDocument(false, false), "0", 4); //$NON-NLS-1$
+			tfpd[i].addFocusListener(this);
+			jpPoints.add(tfpd[i]);
 		}
 
-		this.tfpd10.addFocusListener(this);
-		this.tfpdNeuf.addFocusListener(this);
-		//this.tfpdM.addFocusListener(this);
+		String labelDep = ""; //$NON-NLS-1$
+		for(String dep : ficheConcours.getParametre().getReglement().getTie())
+			labelDep += dep + "/"; //$NON-NLS-1$
+		if(!labelDep.isEmpty())
+			labelDep = labelDep.substring(0, labelDep.length() - 1);
+		jlDepartages.setText(labelDep + ":"); //$NON-NLS-1$
+		jpDepartages.add(jlDepartages);
+		tfDepartages = new JTextField[ficheConcours.getParametre().getReglement().getTie().size()];
+		for(int i = 0; i < tfDepartages.length; i++) {
+			tfDepartages[i] = new JTextField(new NumberDocument(false, false), "0", 4); //$NON-NLS-1$
+			tfDepartages[i].addFocusListener(this);
+			jpDepartages.add(tfDepartages[i]);
+		}
 
 		// panneau tireur
 		gridbagComposer.setParentPanel(jpConcurrent);
@@ -344,16 +415,14 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		gridbagComposer.setParentPanel(jpCible);
 		c.gridy = 0;
 		c.gridwidth = 1; // Défaut,Haut
+		c.weightx = 1.0;
 		gridbagComposer.addComponentIntoGrid(jlCible, c);
+		gridbagComposer.addComponentIntoGrid(Box.createHorizontalGlue(), c);
 		gridbagComposer.addComponentIntoGrid(jlValCible, c);
-		c.gridwidth = 2;
 		gridbagComposer.addComponentIntoGrid(jpPoints, c);
 		c.gridy++;
-		c.gridwidth = 1;
-		gridbagComposer.addComponentIntoGrid(jlDixNeuf, c);
-		gridbagComposer.addComponentIntoGrid(tfpd10, c);
-		gridbagComposer.addComponentIntoGrid(tfpdNeuf, c);
-		//gridbagComposer.addComponentIntoGrid(tfpdM, c);
+		c.gridwidth = 4;
+		gridbagComposer.addComponentIntoGrid(jpDepartages, c);
 
 		// panneau action
 		jpActionPane.add(jbValider);
@@ -362,9 +431,11 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		jpActionPane.add(jbAnnuler);
 
 		// panneau global
+		c= new GridBagConstraints();
 		getContentPane().setLayout(gridbag);
 		c.gridy = 0; // Défaut,Haut
 		c.gridwidth = 2;
+		c.fill = GridBagConstraints.HORIZONTAL;
 		gridbag.setConstraints(jlDescription, c);
 		getContentPane().add(jlDescription);
 		c.gridy++;
@@ -411,25 +482,12 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		((TitledBorder) jpCible.getBorder()).setTitle(ApplicationCore.ajrLibelle.getResourceString("concurrent.panel.cible")); //$NON-NLS-1$
 		((TitledBorder) jpInscription.getBorder()).setTitle(ApplicationCore.ajrLibelle.getResourceString("concurrent.inscription.titre")); //$NON-NLS-1$
 		((TitledBorder) jpPlaceLibre.getBorder()).setTitle(ApplicationCore.ajrLibelle.getResourceString("concurrent.placelibre.titre")); //$NON-NLS-1$
+		
+		AppUtilities.localize(this, ApplicationCore.ajrLibelle);
 
-		jlDescription.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.description")); // Description //$NON-NLS-1$
+
 		jlDescription.setBackground(new Color(255, 255, 225));
-		jlNom.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.identite")); // Nom et prénom du Tireur //$NON-NLS-1$
-		jlLicence.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.numlicence")); // N° de Licence //$NON-NLS-1$
-		jcbHandicape.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.handicap")); // Archer handicapé? //$NON-NLS-1$
-		jcbSurclassement.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.surclassement")); //Archr surclassé //$NON-NLS-1$
-		jlClub.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.nomclub")); // nom du club //$NON-NLS-1$
-		jlAgrement.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.agrementclub")); // n°agrement du club //$NON-NLS-1$
-		jlCible.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.cible")); // cible attribué //$NON-NLS-1$
-		jlPoints.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.points")); //$NON-NLS-1$
-		jlDixNeuf.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.dix")); //$NON-NLS-1$
-
-		jbSelectionArcher.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.selectionarcher")); //$NON-NLS-1$
-		jbEditerArcher.setToolTipText(ApplicationCore.ajrLibelle.getResourceString("bouton.editer")); //$NON-NLS-1$
-		jbValider.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
-		jbPrecedent.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.precedent")); //$NON-NLS-1$
-		jbSuivant.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.suivant")); //$NON-NLS-1$
-		jbAnnuler.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
+		//jlDepartages.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.dix")); //$NON-NLS-1$
 
 		for (Criterion key : ficheConcours.getParametre().getReglement().getListCriteria()) {
 			jlCategrieTable.get(key).setText(key.getLibelle());
@@ -530,9 +588,14 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			}
 		}
 
-		tfpd10.setText("" + concurrent.getDix()); //$NON-NLS-1$
-		tfpdNeuf.setText("" + concurrent.getNeuf()); //$NON-NLS-1$
-		//tfpdM.setText("" + concurrent.getManque()); //$NON-NLS-1$
+
+		for(int i = 0; i < tfDepartages.length; i++) {
+			if(i < concurrent.getDepartages().length)
+				tfDepartages[i].setText("" + concurrent.getDepartages()[i]); //$NON-NLS-1$
+			else
+				tfDepartages[i].setText("0"); //$NON-NLS-1$
+		}
+
 
 		if (concurrent.getInscription() == Concurrent.UNINIT)
 			this.jcbInscription.setSelectedIndex(0);
@@ -855,9 +918,11 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			concurrent.setHandicape(tempConcurrent.isHandicape());
 			concurrent.setSurclassement(tempConcurrent.isSurclassement());
 			try {
-				concurrent.setDix(Integer.parseInt(tfpd10.getText()));
-				concurrent.setNeuf(Integer.parseInt(tfpdNeuf.getText()));
-				//concurrent.setManque(Integer.parseInt(tfpdM.getText()));
+				int[] departages = new int[tfDepartages.length];
+				for(int i = 0; i < tfDepartages.length; i++) {
+					departages[i] = Integer.parseInt(tfDepartages[i].getText());
+				}
+				concurrent.setDepartages(departages);
 			} catch (NumberFormatException e) {
 				JOptionPane.showMessageDialog(this, 
 						ApplicationCore.ajrLibelle.getResourceString("erreur.erreursaisie"), //$NON-NLS-1$
@@ -992,14 +1057,12 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	 * @see java.awt.event.FocusListener#focusGained(java.awt.event.FocusEvent)
 	 */
 	public void focusGained(FocusEvent fe) {
+		selectField = -1;
 		for (int i = 0; i < tfpd.length; i++) {
 			if (fe.getSource() == tfpd[i]) {
 				selectField = i;
 				break;
 			}
-		}
-		if (fe.getSource() == tfpd10 || fe.getSource() == tfpdNeuf) {
-			selectField = -1;
 		}
 		if (fe.getSource() instanceof JTextField) {
 			((JTextField) fe.getSource()).setSelectionStart(0);

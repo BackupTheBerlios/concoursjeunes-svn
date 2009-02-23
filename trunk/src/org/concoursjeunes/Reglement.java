@@ -92,11 +92,13 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.annotation.XmlRootElement;
-
-import ajinteractive.standard.utilities.sql.SqlPersistanceBean;
 
 /**
  * <p>
@@ -122,9 +124,17 @@ import ajinteractive.standard.utilities.sql.SqlPersistanceBean;
  * 
  */
 @XmlRootElement
-public class Reglement implements SqlPersistanceBean {
+public class Reglement {
+	
+	public enum TypeReglement {
+		TARGET,
+		NATURE
+	}
 
 	private String name = "default"; //$NON-NLS-1$
+	private String displayName = ""; //$NON-NLS-1$
+	
+	private TypeReglement reglementType = TypeReglement.TARGET;
 
 	private int nbSerie = 2;
 	private int nbVoleeParSerie = 6;
@@ -175,6 +185,34 @@ public class Reglement implements SqlPersistanceBean {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	/**
+	 * @return displayName
+	 */
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	/**
+	 * @param displayName displayName à définir
+	 */
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+
+	/**
+	 * @return reglementType
+	 */
+	public TypeReglement getReglementType() {
+		return reglementType;
+	}
+
+	/**
+	 * @param reglementType reglementType à définir
+	 */
+	public void setReglementType(TypeReglement reglementType) {
+		this.reglementType = reglementType;
 	}
 
 	/**
@@ -584,10 +622,26 @@ public class Reglement implements SqlPersistanceBean {
 		pstmt.executeUpdate();
 		pstmt.close();
 
+		saveTie();
 		// sauvegarde les tableaux de crières et correspondance
 		saveCriteria();
 		saveDistancesAndBlasons();
 		saveSurclassement();
+	}
+	
+	private void saveTie() throws SQLException {
+		Statement stmt = ApplicationCore.dbConnection.createStatement();
+		stmt.executeUpdate("delete from DEPARTAGE where NUMREGLEMENT=" + hashCode()); //$NON-NLS-1$
+		stmt.close();
+		
+		String sql = "insert into DEPARTAGE (NUMREGLEMENT, FIELDNAME) " + //$NON-NLS-1$
+				"values (?, ?)"; //$NON-NLS-1$
+		PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
+		for(String d : tie) {
+			pstmt.setInt(1, hashCode());
+			pstmt.setString(2, d);
+			pstmt.executeUpdate();
+		}
 	}
 
 	/**

@@ -101,30 +101,25 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.Level;
 
 import javax.naming.ConfigurationException;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import javax.swing.JOptionPane;
 import javax.swing.event.EventListenerList;
 
+import org.concoursjeunes.ConfigurationManager;
+import org.concoursjeunes.FicheConcours;
+import org.concoursjeunes.MetaDataFicheConcours;
+import org.concoursjeunes.Parametre;
 import org.concoursjeunes.builders.FicheConcoursBuilder;
 import org.concoursjeunes.event.ConcoursJeunesEvent;
 import org.concoursjeunes.event.ConcoursJeunesListener;
 import org.concoursjeunes.exceptions.NullConfigurationException;
-import org.h2.constant.ErrorCode;
-import org.h2.tools.DeleteDbFiles;
-import org.jdesktop.swingx.JXErrorPane;
-import org.jdesktop.swingx.error.ErrorInfo;
 
 import ajinteractive.standard.common.AjResourcesReader;
-import ajinteractive.standard.utilities.app.AppData;
-import ajinteractive.standard.utilities.app.AppInfosProperties;
 import ajinteractive.standard.utilities.io.FileUtils;
 import ajinteractive.standard.utilities.sql.SqlManager;
-
 /**
  * Class principal de l'application, gére l'ensemble des ressources commune tel que
  * <ul>
@@ -139,13 +134,11 @@ import ajinteractive.standard.utilities.sql.SqlManager;
  * @author Aurelien Jeoffray
  * @version 2.0
  */
-@AppInfosProperties("packager/version.properties")
 public class ApplicationCore {
 
 	/**
 	 * Nom public de l'application
 	 */
-	@AppData(name = "version.name")
 	public static final String NOM = "@version.name@"; //$NON-NLS-1$
 	
 	/**
@@ -208,7 +201,7 @@ public class ApplicationCore {
 	/**
 	 * constructeur, création de la fenetre principale
 	 */
-	private ApplicationCore() {
+	private ApplicationCore() throws SQLException {
 		loadConfiguration();
 		loadLibelle();
 		debugLogger();
@@ -217,14 +210,21 @@ public class ApplicationCore {
 	}
 
 	/**
-	 * Retourne l'instance unique du moteur du logiciel
-	 * 
-	 * @return l'instance de ConcoursJeunes
+	 * Initialise l'application
 	 */
-	public synchronized static ApplicationCore getInstance() {
+	public synchronized static void initializeApplication()  throws SQLException {
 		if (null == instance) { // Premier appel
 			instance = new ApplicationCore();
 		}
+	}
+	/**
+	 * Retourne l'instance unique du moteur du logiciel ou null si le moteur
+	 * n'est pas initialisé.
+	 * Pour initialisé le moteur, lancer la métyode static initializeApplication()
+	 * 
+	 * @return l'instance de ConcoursJeunes
+	 */
+	public static ApplicationCore getInstance() {
 		return instance;
 	}
 	
@@ -264,41 +264,13 @@ public class ApplicationCore {
 	/**
 	 * Ouvre la base de donné de l'application
 	 */
-	private void openDatabase() {
-		boolean retry = false;
-		do {
-			try {
-				dbConnection = DriverManager.getConnection(ajrParametreAppli.getResourceString("database.url", userRessources.getBasePath()), //$NON-NLS-1$
-						ajrParametreAppli.getResourceString("database.user"), //$NON-NLS-1$
-						ajrParametreAppli.getResourceString("database.password")); //$NON-NLS-1$
-				retry = false;
-			} catch (SQLException e) {
-				e.printStackTrace();
-				if(!consoleMode) {
-					//Si ce n'est pas un message db bloqué par un autre processus
-					if(!e.getSQLState().equals("" + ErrorCode.DATABASE_ALREADY_OPEN_1)) { //$NON-NLS-1$
-						JXErrorPane.showDialog(null,new ErrorInfo( "SQL Error", e.toString(), //$NON-NLS-1$
-								null, null, e, Level.SEVERE, null));
-						
-						if(JOptionPane.showConfirmDialog(null, ajrLibelle.getResourceString("erreur.breakdb")) == JOptionPane.YES_OPTION) { //$NON-NLS-1$
-							retry = true;
-							try {
-								if(dbConnection != null) dbConnection.close();
-								DeleteDbFiles.execute(userRessources.getBasePath().getPath(), null, true);
-							} catch (SQLException e1) {	e1.printStackTrace(); }
-						} else {
-							System.exit(1);
-						}
-					} else {
-						JOptionPane.showMessageDialog(null, ajrLibelle.getResourceString("erreur.dbalreadyopen")); //$NON-NLS-1$
-						System.exit(1);
-					}
-				}
-			}
-		} while(retry);
+	private void openDatabase() throws SQLException {
+		dbConnection = DriverManager.getConnection(ajrParametreAppli.getResourceString("database.url", userRessources.getBasePath()), //$NON-NLS-1$
+				ajrParametreAppli.getResourceString("database.user"), //$NON-NLS-1$
+				ajrParametreAppli.getResourceString("database.password")); //$NON-NLS-1$
 	}
 	
-	private void checkUpdateDatabase() {
+	private void checkUpdateDatabase() throws SQLException {
 		Statement stmt = null;
 		try {
 			File updatePath = new File(ajrParametreAppli.getResourceString("path.ressources"), "update"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -315,16 +287,12 @@ public class ApplicationCore {
 			// copie les fichiers de mise à jour par défaut
 			if (dbVersion > DB_RELEASE_REQUIRED) {
 				throw new RuntimeException(ajrLibelle.getResourceString("erreur.dbrelease")); //$NON-NLS-1$
-				/*JOptionPane.showMessageDialog(null, ajrLibelle.getResourceString("erreur.dbrelease"), //$NON-NLS-1$
-						ajrLibelle.getResourceString("erreur.dbrelease.title"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
-				System.exit(1);*/
 			}
 			
 			ScriptEngine scriptEngine = null;
 			ScriptEngineManager se = new ScriptEngineManager();
 			scriptEngine = se.getEngineByExtension("js"); //$NON-NLS-1$
 			if(scriptEngine != null) {
-				//scriptEngine.setBindings(new SimpleBindings(Collections.synchronizedMap(new HashMap<String, Object>())), ScriptContext.ENGINE_SCOPE);
 				scriptEngine.put("dbVersion", dbVersion); //$NON-NLS-1$
 				scriptEngine.put("sql", sqlManager); //$NON-NLS-1$
 				
@@ -340,18 +308,8 @@ public class ApplicationCore {
 						e.printStackTrace();
 					}
 				}
-			} else {
-				System.err.println("Votre machine virtuel java ne supporte pas javascript,\nl'application risque de ne pas fonctionner correctement"); //$NON-NLS-1$
-				if(!consoleMode)
-					JOptionPane.showMessageDialog(null, "Votre machine virtuel java ne supporte pas javascript,\nl'application risque de ne pas fonctionner correctement", //$NON-NLS-1$
-							ajrLibelle.getResourceString("erreur.dbrelease.title"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
-				
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			if(!consoleMode)
-				JXErrorPane.showDialog(null, new ErrorInfo("SQL Error", e.toString(), //$NON-NLS-1$
-						null, null, e, Level.SEVERE, null));
+			} else
+				throw new RuntimeException("Votre machine virtuel java ne supporte pas javascript,\nl'application risque de ne pas fonctionner correctement"); //$NON-NLS-1$
 		} finally {
 			try { if(stmt != null) stmt.close(); } catch (SQLException e) { }
 			dbVersion = getDBVersion();

@@ -256,7 +256,7 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 
 		//popup();
 
-		setGlassPane(new GhostGlassPane());
+		setGlassPane(new GhostGlassPane(0.5f));
 	}
 
 	private void affectLibelle() {

@@ -90,6 +90,8 @@ package org.concoursjeunes;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlElement;
@@ -120,6 +122,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	private String logoPath         = "ressources/logo_ffta.gif";   //$NON-NLS-1$
 	
 	private String reglementName	= ""; //$NON-NLS-1$
+	private List<Tarif> tarifs		= new ArrayList<Tarif>(); 
 
 	private String pdfReaderPath    = "";               //$NON-NLS-1$
 
@@ -186,6 +189,20 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	 */
 	public void setReglementName(String reglementName) {
 		this.reglementName = reglementName;
+	}
+
+	/**
+	 * @return tarifs
+	 */
+	public List<Tarif> getTarifs() {
+		return tarifs;
+	}
+
+	/**
+	 * @param tarifs tarifs à définir
+	 */
+	public void setTarifs(List<Tarif> tarifs) {
+		this.tarifs = tarifs;
 	}
 
 	/**

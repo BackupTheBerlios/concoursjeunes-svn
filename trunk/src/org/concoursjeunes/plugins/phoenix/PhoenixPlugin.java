@@ -135,7 +135,7 @@ public class PhoenixPlugin extends Thread implements ConcoursJeunesListener {
 								Parametre parametre = (Parametre) structure[0];
 								
 								MetaDataFicheConcours metaDataFicheConcours = new MetaDataFicheConcours(
-										parametre.getDate(), parametre.getIntituleConcours(), parametre.getSaveName());
+										parametre.getDateDebutConcours(), parametre.getIntituleConcours(), parametre.getSaveName());
 								if(!metaDataFichesConcours.contains(metaDataFicheConcours)) {
 									metaDataFichesConcours.add(metaDataFicheConcours);
 								}

@@ -88,7 +88,11 @@
  */
 package org.concoursjeunes.plugins.restore;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Pack200;
@@ -159,10 +163,10 @@ public class RestorePlugin {
 						if(restoredConfiguration.getCurProfil().equals(configuration.getCurProfil())) {
 							try {
 								ApplicationCore.getInstance().closeAllFichesConcours();
-							} catch (NullConfigurationException e1) {
-								JXErrorPane.showDialog(parentframe, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
-										null, null, e1, Level.SEVERE, null));
-								e1.printStackTrace();
+							} catch (NullConfigurationException e) {
+								JXErrorPane.showDialog(parentframe, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+										null, null, e, Level.SEVERE, null));
+								e.printStackTrace();
 							}
 							
 							for(MetaDataFicheConcours metaDataFicheConcours : configuration.getMetaDataFichesConcours().getFiches()) {

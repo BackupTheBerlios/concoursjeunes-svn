@@ -95,7 +95,6 @@ import java.beans.PropertyChangeSupport;
  * @author Aurélien JEOFFRAY
  * @version 1.0
  */
-
 public class Archer implements Cloneable {
 
 	private String nomArcher        = ""; //$NON-NLS-1$

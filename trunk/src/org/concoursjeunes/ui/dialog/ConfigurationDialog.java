@@ -88,7 +88,14 @@
  */
 package org.concoursjeunes.ui.dialog;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Desktop;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -99,10 +106,32 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.logging.Level;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JRadioButton;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
-import org.concoursjeunes.*;
+import org.concoursjeunes.ApplicationCore;
+import org.concoursjeunes.AutoCompleteDocument;
+import org.concoursjeunes.AutoCompleteDocumentContext;
+import org.concoursjeunes.Configuration;
+import org.concoursjeunes.ConfigurationManager;
+import org.concoursjeunes.Entite;
+import org.concoursjeunes.Margin;
+import org.concoursjeunes.Reglement;
 import org.concoursjeunes.event.AutoCompleteDocumentEvent;
 import org.concoursjeunes.event.AutoCompleteDocumentListener;
 import org.concoursjeunes.exceptions.NullConfigurationException;
@@ -629,6 +658,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		completeConcoursPanel(configuration);
 		completeEtiquettePanel(configuration);
 		completeAdvancedPanel(configuration);
+		jbAnnuler.setEnabled(!configuration.isFirstboot());
 	}
 
 	private void completeGeneralPanel(Configuration configuration) {
@@ -948,7 +978,9 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
 		if (source == this.jbValider) {
-			if(ApplicationCore.getInstance().getFichesConcours().size() > 0 
+			ApplicationCore core = ApplicationCore.getInstance();
+			
+			if(core.getFichesConcours().size() > 0 
 					&& !workConfiguration.getCurProfil().equals(ApplicationCore.getConfiguration().getCurProfil())
 					&& JOptionPane.showConfirmDialog(this, 
 					ApplicationCore.ajrLibelle.getResourceString("configuration.fermeture.confirmation"), "", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) //$NON-NLS-1$ //$NON-NLS-2$

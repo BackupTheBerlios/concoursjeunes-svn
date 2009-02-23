@@ -49,6 +49,7 @@ Correspond à incran à décrire. Cette écran peut être un frame ou un window-
 <!ATTLIST menuitem keycode NMTOKEN #IMPLIED >
 <!ATTLIST menuitem modifier NMTOKEN #IMPLIED >
 <!ATTLIST menuitem name NMTOKEN #IMPLIED >
+<!ATTLIST menuitem action NMTOKEN #IMPLIED >
 
 <!ELEMENT tabbedpane ( method*, tab* ) >
 <!ATTLIST tabbedpane name NMTOKEN #IMPLIED >

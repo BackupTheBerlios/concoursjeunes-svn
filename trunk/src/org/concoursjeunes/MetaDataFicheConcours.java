@@ -15,15 +15,14 @@
  */
 package org.concoursjeunes;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Date;
-
-import org.concoursjeunes.event.ParametreEvent;
-import org.concoursjeunes.event.ParametreListener;
 
 /**
  * @author Aurélien JEOFFRAY
  */
-public class MetaDataFicheConcours implements ParametreListener {
+public class MetaDataFicheConcours implements PropertyChangeListener {
 	private Date dateConcours;
 	private String intituleConcours;
 	private String filenameConcours;
@@ -83,16 +82,20 @@ public class MetaDataFicheConcours implements ParametreListener {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.concoursjeunes.ParametreListener#metaDataChanged(org.concoursjeunes.ParametreEvent)
+	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
 	 */
-	public void metaDataChanged(ParametreEvent parametreEvent) {
-		setDateConcours(parametreEvent.getParametre().getDate());
-		setIntituleConcours(parametreEvent.getParametre().getIntituleConcours());
-		setFilenameConcours(parametreEvent.getParametre().getSaveName());
-	}
-	
-	public void parametreChanged(ParametreEvent parametreEvent) {
-		
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if(evt.getSource() instanceof Parametre) {
+			Parametre param = (Parametre)evt.getSource();
+			if(evt.getPropertyName().equals("date")) { //$NON-NLS-1$
+				setDateConcours(param.getDateDebutConcours());
+			} else if(evt.getPropertyName().equals("intituleConcours")) { //$NON-NLS-1$
+				setIntituleConcours(param.getIntituleConcours());
+			} else if(evt.getPropertyName().equals("saveName")) { //$NON-NLS-1$
+				setFilenameConcours(param.getSaveName());
+			}
+		}
 	}
 
 	/* (non-Javadoc)

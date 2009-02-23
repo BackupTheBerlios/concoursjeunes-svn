@@ -17,11 +17,11 @@ a {
 </style>
 </head>
 <body>
-	<table width="100%">
+	<table width="100\%">
 		<tr>
 			<td width="100"><img src="file:{LOGO_CLUB_URI}" width="100" height="110"></td>
 			<td><h1>{INTITULE_CLUB}</h1></td>
-			<td><h1>{lib_active_profile} : <a href="http://change_profile">{PROFILE_NAME}</a></h1></td>
+			<td><h1>%home.activeprofile% : <a href="http://change_profile">{PROFILE_NAME}</a></h1></td>
 		</tr>
 	</table>
 	<br><br>
@@ -33,8 +33,8 @@ a {
 				</td>
 				<td>
 					<table>
-						<tr><th colspan="3" align="left"><font size="+1">{lib_gest_competion}</font><hr></th></tr>
-						<tr><td colspan="3"><a href="http://new_concours">{lib_new}</a></td></tr>
+						<tr><th colspan="3" align="left"><font size="+1">%home.gestcompet%</font><hr></th></tr>
+						<tr><td colspan="3"><a href="http://new_concours">%home.new%</a></td></tr>
 						<tr><td colspan="3"><td>&nbsp;</td></tr>
 						<bloc::listconcours>
 						<tr>
@@ -44,7 +44,7 @@ a {
 							</td>
 							<td><a href="http://open_concours#{ID_CONCOURS}">{LIBELLE_CONCOURS}</a></td>
 							<td><a href="http://delete_concours#{ID_CONCOURS}">
-								<img src="file:./ressources/b_drop.png" alt="{lib_delete}" border="0">
+								<img src="file:./ressources/b_drop.png" alt="%home.delete%" border="0">
 							</a></td>
 						</tr>
 						</bloc::listconcours>
@@ -52,6 +52,6 @@ a {
 				</td>
 			</tr>
 		</table>
-		{lib_info}
+		%home.info%
 	</center>
 </html>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2007 - Aurélien JEOFFRAY
+ * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
  *
@@ -145,6 +145,8 @@ import ajinteractive.standard.ui.AJTree;
 import ajinteractive.standard.ui.GridbagComposer;
 import ajinteractive.standard.ui.NumberDocument;
 import ajinteractive.standard.ui.ToolTipHeader;
+import ajinteractive.standard.utilities.app.AppUtilities;
+import ajinteractive.standard.utilities.app.Localisable;
 
 /**
  * @author Aurélien JEOFFRAY
@@ -158,21 +160,34 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 
 	private Reglement reglement;
 
+	@Localisable("reglement.name")
 	private JLabel jlReglementName = new JLabel();
 
+	@Localisable("reglement.serie")
 	private JLabel jlNbSerie = new JLabel();
+	@Localisable("reglement.voleeparserie")
 	private JLabel jlNbVoleeParSerie = new JLabel();
+	@Localisable("reglement.flecheparvolee")
 	private JLabel jlNbFlecheParVolee = new JLabel();
+	@Localisable("reglement.membresmax")
 	private JLabel jlNbMembresEquipe = new JLabel();
+	@Localisable("reglement.selectionmax")
 	private JLabel jlNbMembresRetenu = new JLabel();
+	@Localisable("reglement.departages")
 	private JLabel jlDepartages = new JLabel();
+	@Localisable("reglement.official")
 	private JCheckBox jcbOfficialReglement = new JCheckBox();
 
 	private JLabel jlNbDB = new JLabel();
+	@Localisable(value="",tooltip="reglement.addcriteria")
 	private JButton jbAddCriteria = new JButton();
+	@Localisable(value="",tooltip="reglement.addcriteriamember")
 	private JButton jbAddCriteriaMember = new JButton();
+	@Localisable(value="",tooltip="reglement.upelement")
 	private JButton jbUpElement = new JButton();
+	@Localisable(value="",tooltip="reglement.downelement")
 	private JButton jbDownElement = new JButton();
+	@Localisable(value="",tooltip="reglement.removeelement")
 	private JButton jbRemoveElement = new JButton();
 	private DefaultMutableTreeNode treeRoot = new DefaultMutableTreeNode("criteres"); //$NON-NLS-1$
 	private DefaultTreeModel treeModel = new DefaultTreeModel(treeRoot);
@@ -183,6 +198,14 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	private JTextField jtfNbFlecheParVolee = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
 	private JTextField jtfNbMembresEquipe = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
 	private JTextField jtfNbMembresRetenu = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
+	@Localisable(value="",tooltip="reglement.adddepartages")
+	private JButton jbAddDepartages = new JButton();
+	@Localisable(value="",tooltip="reglement.removedepartages")
+	private JButton jbRemoveDepartages = new JButton();
+	@Localisable(value="",tooltip="reglement.updepartages")
+	private JButton jbUpDepartages = new JButton();
+	@Localisable(value="",tooltip="reglement.downdepartages")
+	private JButton jbDownDepartages = new JButton();
 	private AJList ajlDepartages = new AJList();
 	
 	private JTable jtCriteriaSet = new JTable() {
@@ -202,10 +225,10 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	private JScrollPane jspDistanceBlason = new JScrollPane();
 	private JComboBox jcbBlasons = new JComboBox();
 
+	@Localisable("bouton.valider")
 	private JButton jbValider = new JButton();
+	@Localisable("bouton.annuler")
 	private JButton jbAnnuler = new JButton();
-
-	//private CriteriaSet[] differentiationCriteria;
 
 	private int verrou = NO_LOCK;
 
@@ -227,6 +250,26 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 
 		jbValider.addActionListener(this);
 		jbAnnuler.addActionListener(this);
+		
+		jbAddDepartages.setIcon(new ImageIcon(ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$ 
+				File.separator + ajrParametreAppli.getResourceString("file.icon.addcriteria"))); //$NON-NLS-1$
+		jbRemoveDepartages.setIcon(new ImageIcon(ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + ajrParametreAppli.getResourceString("file.icon.removeelement"))); //$NON-NLS-1$
+		jbUpDepartages.setIcon(new ImageIcon(ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + ajrParametreAppli.getResourceString("file.icon.upelement"))); //$NON-NLS-1$
+		jbDownDepartages.setIcon(new ImageIcon(ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + ajrParametreAppli.getResourceString("file.icon.downelement"))); //$NON-NLS-1$
+		
+		jbAddCriteria.setIcon(new ImageIcon(ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$ 
+				File.separator + ajrParametreAppli.getResourceString("file.icon.addcriteria"))); //$NON-NLS-1$
+		jbAddCriteriaMember.setIcon(new ImageIcon(ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + ajrParametreAppli.getResourceString("file.icon.addcriteriamember"))); //$NON-NLS-1$
+		jbUpElement.setIcon(new ImageIcon(ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + ajrParametreAppli.getResourceString("file.icon.upelement"))); //$NON-NLS-1$
+		jbDownElement.setIcon(new ImageIcon(ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + ajrParametreAppli.getResourceString("file.icon.downelement"))); //$NON-NLS-1$
+		jbRemoveElement.setIcon(new ImageIcon(ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + ajrParametreAppli.getResourceString("file.icon.removeelement"))); //$NON-NLS-1$
 
 		JTabbedPane tabbedPane = new JTabbedPane();
 		tabbedPane.addTab(ajrLibelle.getResourceString("reglement.general.title"), initGeneral()); //$NON-NLS-1$
@@ -249,9 +292,30 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		GridbagComposer gridbagComposer = new GridbagComposer();
 
 		JPanel panel = new JPanel();
+		JPanel jpDepartages = new JPanel();
 		
 		JScrollPane jspDepartages = new JScrollPane(ajlDepartages);
 		jspDepartages.setPreferredSize(new Dimension(100, 60));
+		
+		jbAddDepartages.setMargin(new Insets(0,0,0,0));
+		jbAddDepartages.addActionListener(this);
+		jbRemoveDepartages.setMargin(new Insets(0,0,0,0));
+		jbRemoveDepartages.addActionListener(this);
+		jbUpDepartages.setMargin(new Insets(0,0,0,0));
+		jbUpDepartages.addActionListener(this);
+		jbDownDepartages.setMargin(new Insets(0,0,0,0));
+		jbDownDepartages.addActionListener(this);
+		
+		gridbagComposer.setParentPanel(jpDepartages);
+		c.gridy = 0;
+		gridbagComposer.addComponentIntoGrid(jbAddDepartages, c);
+		gridbagComposer.addComponentIntoGrid(jbRemoveDepartages, c);
+		gridbagComposer.addComponentIntoGrid(jbUpDepartages, c);
+		gridbagComposer.addComponentIntoGrid(jbDownDepartages, c);
+		c.gridy++;
+		c.gridwidth = 5;
+		c.fill = GridBagConstraints.BOTH;
+		gridbagComposer.addComponentIntoGrid(jspDepartages, c);
 
 		gridbagComposer.setParentPanel(panel);
 
@@ -296,7 +360,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		c.weightx = 0.0;
 		gridbagComposer.addComponentIntoGrid(jlDepartages, c);
 		c.weightx = 1.0;
-		gridbagComposer.addComponentIntoGrid(jspDepartages, c);
+		gridbagComposer.addComponentIntoGrid(jpDepartages, c);
 		c.gridy++;
 		gridbagComposer.addComponentIntoGrid(jcbOfficialReglement, c);
 		c.gridy++;
@@ -371,34 +435,8 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 
 	private void affectLibelle() {
 		setTitle(ajrLibelle.getResourceString("reglement.titre")); //$NON-NLS-1$
-
-		jbValider.setText(ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
-		jbAnnuler.setText(ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
-
-		jlReglementName.setText(ajrLibelle.getResourceString("reglement.name")); //$NON-NLS-1$
-		jlNbSerie.setText(ajrLibelle.getResourceString("reglement.serie")); //$NON-NLS-1$
-		jlNbVoleeParSerie.setText(ajrLibelle.getResourceString("reglement.voleeparserie")); //$NON-NLS-1$
-		jlNbFlecheParVolee.setText(ajrLibelle.getResourceString("reglement.flecheparvolee")); //$NON-NLS-1$
-		jlNbMembresEquipe.setText(ajrLibelle.getResourceString("reglement.membresmax")); //$NON-NLS-1$
-		jlNbMembresRetenu.setText(ajrLibelle.getResourceString("reglement.selectionmax")); //$NON-NLS-1$
-		jlDepartages.setText(ajrLibelle.getResourceString("reglement.departages")); //$NON-NLS-1$
-		jcbOfficialReglement.setText(ajrLibelle.getResourceString("reglement.official")); //$NON-NLS-1$
-
-		jbAddCriteria.setIcon(new ImageIcon(ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$ 
-				File.separator + ajrParametreAppli.getResourceString("file.icon.addcriteria"))); //$NON-NLS-1$
-		jbAddCriteria.setToolTipText(ajrLibelle.getResourceString("reglement.addcriteria")); //$NON-NLS-1$
-		jbAddCriteriaMember.setIcon(new ImageIcon(ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ajrParametreAppli.getResourceString("file.icon.addcriteriamember"))); //$NON-NLS-1$
-		jbAddCriteriaMember.setToolTipText(ajrLibelle.getResourceString("reglement.addcriteriamember")); //$NON-NLS-1$
-		jbUpElement.setIcon(new ImageIcon(ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ajrParametreAppli.getResourceString("file.icon.upelement"))); //$NON-NLS-1$
-		jbUpElement.setToolTipText(ajrLibelle.getResourceString("reglement.upelement")); //$NON-NLS-1$
-		jbDownElement.setIcon(new ImageIcon(ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ajrParametreAppli.getResourceString("file.icon.downelement"))); //$NON-NLS-1$
-		jbDownElement.setToolTipText(ajrLibelle.getResourceString("reglement.downelement")); //$NON-NLS-1$
-		jbRemoveElement.setIcon(new ImageIcon(ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ajrParametreAppli.getResourceString("file.icon.removeelement"))); //$NON-NLS-1$
-		jbRemoveElement.setToolTipText(ajrLibelle.getResourceString("reglement.removeelement")); //$NON-NLS-1$
+		
+		AppUtilities.localize(this, ajrLibelle);	
 	}
 
 	private void completePanel() {
@@ -664,6 +702,10 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 			reglement.setNbFlecheParVolee(Integer.parseInt(jtfNbFlecheParVolee.getText()));
 			reglement.setNbMembresEquipe(Integer.parseInt(jtfNbMembresEquipe.getText()));
 			reglement.setNbMembresRetenu(Integer.parseInt(jtfNbMembresRetenu.getText()));
+			
+			reglement.getTie().clear();
+			for(Object o : ajlDepartages.getAllElements())
+				reglement.getTie().add((String)o);
 
 			if(jtDistanceBlason.getCellEditor() != null)
 				jtDistanceBlason.getCellEditor().stopCellEditing();
@@ -729,7 +771,6 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 					Criterion criterion = (Criterion) dmtnObj;
 
 					if (!(criterion.isPlacement() && verrou != NO_LOCK)) {
-						//TreePath selectedPath = treeCriteria.getSelectionPath();
 						CriterionElementDialog cpd = new CriterionElementDialog(this, criterion);
 
 						if (cpd.getCriterionIndividu() != null) {
@@ -738,8 +779,6 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 							dmtn.add(dmtnIndiv);
 
 							treeModel.reload(dmtn);
-							/*treeCriteria.expandPath(selectedPath);
-							treeCriteria.setSelectionPath(selectedPath);*/
 
 							reloadTablesModel();
 						}
@@ -854,6 +893,16 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 					reloadTablesModel();
 				}
 			}
+		} else if (source == jbAddDepartages) {
+			String departages = JOptionPane.showInputDialog(this, "Valeur de départages");
+			if(departages != null && !departages.isEmpty())
+				ajlDepartages.add(departages);
+		} else if(source == jbRemoveDepartages) {
+			ajlDepartages.remove(ajlDepartages.getSelectedIndex());
+		} else if(source == jbUpDepartages) {
+			
+		} else if(source == jbDownDepartages) {
+			
 		}
 	}
 

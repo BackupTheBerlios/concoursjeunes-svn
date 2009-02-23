@@ -48,10 +48,7 @@ public class Concurrent extends Archer implements Cloneable {
 	private TargetPosition targetPosition = new TargetPosition();
 
 	private ArrayList<Integer> points	= new ArrayList<Integer>();
-	private ArrayList<Integer> departages = new ArrayList<Integer>();
-	private int neuf                    = 0;
-	private int dix                     = 0;
-	//private int manque                  = 0;
+	private int[] departages			= new int[2];
 
 	private int inscription             = UNINIT;
 	private boolean	presence			= false;
@@ -120,7 +117,7 @@ public class Concurrent extends Archer implements Cloneable {
 	 * 
 	 * @return le tableau des départage des scores.
 	 */
-	public List<Integer> getDepartages() {
+	public int[] getDepartages() {
 		return departages;
 	}
 
@@ -129,40 +126,52 @@ public class Concurrent extends Archer implements Cloneable {
 	 * 
 	 * @param departages le tableau de départage des scores
 	 */
-	public void setDepartages(List<Integer> departages) {
-		this.departages = (ArrayList<Integer>)departages;
+	public void setDepartages(int[] departages) {
+		this.departages = departages;
 	}
 
 	/**
 	 * Affecte le nombre de dix total du concurrent
 	 * @param  dix
 	 */
-	public void setNeuf(int dix) {
-		this.neuf = dix;
+	@Deprecated
+	public void setNeuf(int neuf) {
+		//this.neuf = neuf;
+		if(neuf > 0) {
+			if(departages[1] == 0)
+				departages[1] = neuf;
+		}
 	}
 
 	/**
-	 * Donne le nombre de dix du concurrent
+	 * Déprecié, retourne toujours 0
 	 * @return  int
 	 */
+	@Deprecated
 	public int getNeuf() {
-		return this.neuf;
+		return 0;
 	}
 
 	/**
 	 * Affecte le nombre de 10+ total du concurrent
 	 * @param  dixPlus
 	 */
-	public void setDix(int dixPlus) {
-		this.dix = dixPlus;
+	@Deprecated
+	public void setDix(int dix) {
+		//this.dix = dixPlus;
+		if(dix > 0) {
+			if(departages[0] == 0)
+				departages[0] = dix;
+		}
 	}
 
 	/**
-	 * Donne le nombre de 10+ du concurrent
+	 * Déprecié, retourne toujours 0
 	 * @return  int
 	 */
+	@Deprecated
 	public int getDix() {
-		return this.dix;
+		return 0;
 	}
 
 	/**
@@ -326,10 +335,14 @@ public class Concurrent extends Archer implements Cloneable {
 	}
 	
 	private int compareDepartageWith(Concurrent other, int indexDepartage) {
-		if(indexDepartage < departages.size()) {
-			if(departages.get(indexDepartage) > other.getDepartages().get(indexDepartage)) {
+		if(indexDepartage < departages.length) {
+			if(indexDepartage >= other.getDepartages().length) {
+				if(departages[indexDepartage] > 0)
+					return 1;
+				return 0;
+			} else if(departages[indexDepartage] > other.getDepartages()[indexDepartage]) {
 				return 1;
-			} else if(departages.get(indexDepartage) == other.getDepartages().get(indexDepartage)) {
+			} else if(departages[indexDepartage] == other.getDepartages()[indexDepartage]) {
 				return compareDepartageWith(other, indexDepartage+1);
 			}
 			return -1;
@@ -397,7 +410,6 @@ public class Concurrent extends Archer implements Cloneable {
 		try {
 			Concurrent clone = (Concurrent)super.clone();
 			clone.points = (ArrayList<Integer>)points.clone();
-			clone.departages = (ArrayList<Integer>)points.clone();
 			return clone;
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();

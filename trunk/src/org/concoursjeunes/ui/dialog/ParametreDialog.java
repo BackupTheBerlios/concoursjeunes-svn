@@ -94,9 +94,17 @@ import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DateFormat;
-import java.util.ArrayList;
+import java.util.List;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.FicheConcours;
@@ -326,7 +334,7 @@ public class ParametreDialog extends JDialog implements ActionListener {
 		
 		jtfIntituleConcours.setText(parametre.getIntituleConcours());
 		jtfLieuConcours.setText(parametre.getLieuConcours());
-		jtfDateConcours.setDate(parametre.getDate());
+		jtfDateConcours.setDate(parametre.getDateDebutConcours());
 		jlSelectedReglement.setText(parametre.getReglement().getName());
 		jbSelectReglement.setEnabled(!parametre.isReglementLock());
 		jtfNombreCible.setText("" + parametre.getNbCible()); //$NON-NLS-1$
@@ -381,9 +389,9 @@ public class ParametreDialog extends JDialog implements ActionListener {
 
 			parametre.setIntituleConcours(jtfIntituleConcours.getText());
 			parametre.setLieuConcours(jtfLieuConcours.getText());
-			parametre.setDate(jtfDateConcours.getDate());
+			parametre.setDateDebutConcours(jtfDateConcours.getDate());
 			parametre.getArbitres().clear();
-			for (Object arbitre : jlArbitres.getAllList()) {
+			for (Object arbitre : jlArbitres.getAllElements()) {
 				parametre.getArbitres().add((String) arbitre);
 			}
 
@@ -407,7 +415,7 @@ public class ParametreDialog extends JDialog implements ActionListener {
 		} else if (ae.getSource() == jbArbitreResponsable && jlArbitres.getSelectedIndex() > -1) {
 			if(jlArbitres.getSelectedIndex() > -1) {
 				// cherche si il existe un arbitre responsable
-				ArrayList<Object> lstArbitres = jlArbitres.getAllList();
+				List<Object> lstArbitres = jlArbitres.getAllElements();
 				for (Object arbitre : lstArbitres) {
 					if(((String) arbitre).startsWith("*")) { //$NON-NLS-1$
 						// si il en existe 1 et qu'il est different de celui que l'on veut

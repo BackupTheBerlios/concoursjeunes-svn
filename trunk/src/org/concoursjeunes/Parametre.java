@@ -89,15 +89,13 @@ package org.concoursjeunes;
 
 import static org.concoursjeunes.ApplicationCore.ajrParametreAppli;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.swing.event.EventListenerList;
-
 import org.concoursjeunes.builders.ReglementBuilder;
-import org.concoursjeunes.event.ParametreEvent;
-import org.concoursjeunes.event.ParametreListener;
 
 /**
  * Parametre d'un concours
@@ -106,9 +104,15 @@ import org.concoursjeunes.event.ParametreListener;
  * @version 3.1
  */
 public class Parametre extends DefaultParameters {
+	
 	private String lieuConcours		= ""; //$NON-NLS-1$
-	private Date dDateConcours		= new Date();
-	private List<String> vArbitres = new ArrayList<String>();
+	private String niveauChampionnat = "";
+	private Date dateDebutConcours	= new Date();
+	private Date dateFinConcours	= new Date();
+	private boolean open			= true;
+	private boolean duel			= false;
+	private String typeEquipe		= "";
+	private List<String> arbitres	= new ArrayList<String>();
 	private Reglement reglement		= new Reglement();
 
 	private String saveName         = System.currentTimeMillis()
@@ -116,7 +120,7 @@ public class Parametre extends DefaultParameters {
 	
 	private boolean reglementLock = false;
 	
-	private EventListenerList listeners = new EventListenerList();
+	private final PropertyChangeSupport pcs = new PropertyChangeSupport( this );
 
 	/**
 	 * 
@@ -143,22 +147,12 @@ public class Parametre extends DefaultParameters {
 		setReglement(ReglementBuilder.getReglement(configuration.getReglementName()));
 	}
 	
-	/**
-	 * Ajoute un auditeur aux evenements de l'objet
-	 * 
-	 * @param parametreListener l'auditeur à ajouter
-	 */
-	public void addParametreListener(ParametreListener parametreListener) {
-		listeners.add(ParametreListener.class, parametreListener);
+	public void addPropertyChangeListener(PropertyChangeListener propertyChangeListener) {
+		pcs.addPropertyChangeListener(propertyChangeListener);
 	}
 	
-	/**
-	 * Revoque un auditeurs pour l'objet
-	 * 
-	 * @param parametreListener l'auditeur à supprimer
-	 */
-	public void removeParametreListener(ParametreListener parametreListener) {
-		listeners.add(ParametreListener.class, parametreListener);
+	public void removePropertyChangeListener(PropertyChangeListener propertyChangeListener) {
+		pcs.removePropertyChangeListener(propertyChangeListener);
 	}
 	
 	/**
@@ -176,16 +170,130 @@ public class Parametre extends DefaultParameters {
 	 * @param lieuConcours le lieu d'organisation du concours
 	 */
 	public void setLieuConcours(String lieuConcours) {
+		String oldValue = this.lieuConcours;
 		this.lieuConcours = lieuConcours;
+		pcs.firePropertyChange("lieuConcours", oldValue, lieuConcours); //$NON-NLS-1$
 	}
 
 	/**
-	 * Donne la date du concours
+	 * @return dateFinConcours
+	 */
+	public Date getDateFinConcours() {
+		return dateFinConcours;
+	}
+
+	/**
+	 * @param dateFinConcours dateFinConcours à définir
+	 */
+	public void setDateFinConcours(Date dateFinConcours) {
+		Date oldValue = this.dateFinConcours;
+		this.dateFinConcours = dateFinConcours;
+		pcs.firePropertyChange("dateFinConcours", oldValue, dateFinConcours); //$NON-NLS-1$
+	}
+
+	/**
+	 * Donne la date de début du concours
+	 * <i>Remplacé par {@link Parametre#getDateDebutConcours()}</i>
 	 * 
 	 * @return Date - la date du concours;
 	 */
+	@Deprecated
 	public Date getDate() {
-		return dDateConcours;
+		return getDateDebutConcours();
+	}
+	
+	/**
+	 * Donne la date de début du concours
+	 * 
+	 * @return Date - la date du concours;
+	 */
+	public Date getDateDebutConcours() {
+		return dateDebutConcours;
+	}
+
+	/**
+	 * specifie la date du concours
+	 * <i>Remplacé par {@link Parametre#setDateDebutConcours(Date)}</i>
+	 * 
+	 * @param dDateConcours la date du concours
+	 */
+	@Deprecated
+	public void setDate(Date dDateConcours) {
+		setDateDebutConcours(dDateConcours);
+	}
+	/**
+	 * specifie la date de début du concours
+	 * 
+	 * @param dDateConcours la date du concours
+	 */
+	public void setDateDebutConcours(Date dDateConcours) {
+		Date oldValue = this.dateDebutConcours;
+		this.dateDebutConcours = dDateConcours;
+		pcs.firePropertyChange("dateDebutConcours", oldValue, dDateConcours); //$NON-NLS-1$
+	}
+	
+	/**
+	 * @return niveauChampionnat
+	 */
+	public String getNiveauChampionnat() {
+		return niveauChampionnat;
+	}
+
+	/**
+	 * @param niveauChampionnat niveauChampionnat à définir
+	 */
+	public void setNiveauChampionnat(String niveauChampionnat) {
+		String oldValue = this.niveauChampionnat;
+		this.niveauChampionnat = niveauChampionnat;
+		pcs.firePropertyChange("niveauChampionnat", oldValue, niveauChampionnat); //$NON-NLS-1$
+	}
+
+	/**
+	 * @return open
+	 */
+	public boolean isOpen() {
+		return open;
+	}
+
+	/**
+	 * @param open open à définir
+	 */
+	public void setOpen(boolean open) {
+		boolean oldValue = this.open;
+		this.open = open;
+		pcs.firePropertyChange("open", oldValue, open); //$NON-NLS-1$
+	}
+
+	/**
+	 * @return duel
+	 */
+	public boolean isDuel() {
+		return duel;
+	}
+
+	/**
+	 * @param duel duel à définir
+	 */
+	public void setDuel(boolean duel) {
+		boolean oldValue = this.duel;
+		this.duel = duel;
+		pcs.firePropertyChange("duel", oldValue, duel); //$NON-NLS-1$
+	}
+
+	/**
+	 * @return typeEquipe
+	 */
+	public String getTypeEquipe() {
+		return typeEquipe;
+	}
+
+	/**
+	 * @param typeEquipe typeEquipe à définir
+	 */
+	public void setTypeEquipe(String typeEquipe) {
+		String oldValue = this.typeEquipe;
+		this.typeEquipe = typeEquipe;
+		pcs.firePropertyChange("typeEquipe", oldValue, typeEquipe); //$NON-NLS-1$
 	}
 
 	/**
@@ -194,9 +302,30 @@ public class Parametre extends DefaultParameters {
 	 * @return la liste des arbitres
 	 */
 	public List<String> getArbitres() {
-		return vArbitres;
+		return arbitres;
 	}
 
+	/**
+	 * specifie la liste des arbitres
+	 * 
+	 * @param vArbitres
+	 */
+	public void setArbitres(List<String> vArbitres) {
+		List<String> oldValue = this.arbitres;
+		this.arbitres = vArbitres;
+		pcs.firePropertyChange("arbitres", oldValue, dateDebutConcours); //$NON-NLS-1$
+	}
+
+	/* (non-Javadoc)
+	 * @see org.concoursjeunes.DefaultParameters#setIntituleConcours(java.lang.String)
+	 */
+	@Override
+	public void setIntituleConcours(String intituleConcours) {
+		String oldValue = getIntituleConcours();
+		super.setIntituleConcours(intituleConcours);
+		pcs.firePropertyChange("intituleConcours", oldValue, intituleConcours); //$NON-NLS-1$
+	}
+	
 	/**
 	 * Donne le chemin du fichier de sauvegarde du concours
 	 * 
@@ -207,42 +336,14 @@ public class Parametre extends DefaultParameters {
 	}
 
 	/**
-	 * specifie la date du concours
-	 * 
-	 * @param dDateConcours la date du concours
-	 */
-	public void setDate(Date dDateConcours) {
-		this.dDateConcours = dDateConcours;
-		fireMetaDataChanged();
-	}
-
-	/**
-	 * specifie la liste des arbitres
-	 * 
-	 * @param vArbitres
-	 */
-	public void setArbitres(List<String> vArbitres) {
-		this.vArbitres = vArbitres;
-		fireParametreChanged();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.concoursjeunes.DefaultParameters#setIntituleConcours(java.lang.String)
-	 */
-	@Override
-	public void setIntituleConcours(String intituleConcours) {
-		super.setIntituleConcours(intituleConcours);
-		fireMetaDataChanged();
-	}
-
-	/**
 	 * specifie le nom de sauvegarde des infos du concours
 	 * 
 	 * @param  saveName
 	 */
 	public void setSaveName(String saveName) {
+		String oldValue = this.saveName; 
 		this.saveName = saveName;
-		fireMetaDataChanged();
+		pcs.firePropertyChange("saveName", oldValue, saveName); //$NON-NLS-1$
 	}
 	
 	/**
@@ -260,8 +361,9 @@ public class Parametre extends DefaultParameters {
 	 * @param reglement le réglement à appliquer
 	 */
 	public void setReglement(Reglement reglement) {
+		Reglement oldValue = this.reglement;
 		this.reglement = reglement;
-		fireParametreChanged();
+		pcs.firePropertyChange("reglement", oldValue, reglement); //$NON-NLS-1$
 	}
 
 	/**
@@ -279,18 +381,8 @@ public class Parametre extends DefaultParameters {
 	 * @param reglementLock true le reglement peut être changé, false il ne peut pas
 	 */
 	public void setReglementLock(boolean reglementLock) {
+		boolean oldValue = this.reglementLock;
 		this.reglementLock = reglementLock;
-	}
-
-	private void fireMetaDataChanged() {
-		for(ParametreListener pl : listeners.getListeners(ParametreListener.class)) {
-			pl.metaDataChanged(new ParametreEvent(this));
-		}
-	}
-	
-	private void fireParametreChanged() {
-		for(ParametreListener pl : listeners.getListeners(ParametreListener.class)) {
-			pl.parametreChanged(new ParametreEvent(this));
-		}
+		pcs.firePropertyChange("reglementLock", oldValue, reglementLock); //$NON-NLS-1$
 	}
 }

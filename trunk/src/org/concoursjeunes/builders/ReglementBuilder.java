@@ -94,9 +94,15 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import org.concoursjeunes.*;
+import org.concoursjeunes.ApplicationCore;
+import org.concoursjeunes.CriteriaSet;
+import org.concoursjeunes.Criterion;
+import org.concoursjeunes.DistancesEtBlason;
+import org.concoursjeunes.Federation;
+import org.concoursjeunes.Reglement;
 
 /**
  * <p>
@@ -191,6 +197,14 @@ public class ReglementBuilder {
 				reglement.setRemovable(rs.getBoolean("REMOVABLE")); //$NON-NLS-1$
 				
 				rs.close();
+				
+				List<String> ties = new ArrayList<String>();
+				rs = stmt.executeQuery("select * from DEPARTAGE where NUMREGLEMENT=" + numreglment + " order by NUMDEPARTAGE");  //$NON-NLS-1$//$NON-NLS-2$
+				while(rs.next()) {
+					ties.add(rs.getString("FIELDNAME")); //$NON-NLS-1$
+				}
+				rs.close();
+				reglement.setTie(ties);
 				
 				ArrayList<Criterion> criteria = new ArrayList<Criterion>();
 				rs = stmt.executeQuery("select CODECRITERE from CRITERE where NUMREGLEMENT=" + numreglment + " order by NUMORDRE"); //$NON-NLS-1$ //$NON-NLS-2$

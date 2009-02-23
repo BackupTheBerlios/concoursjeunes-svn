@@ -18,13 +18,19 @@ package org.concoursjeunes;
 import static org.concoursjeunes.ApplicationCore.ajrLibelle;
 import static org.concoursjeunes.ApplicationCore.ajrParametreAppli;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.text.DateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.swing.event.EventListenerList;
@@ -33,7 +39,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.concoursjeunes.builders.AncragesMapBuilder;
 import org.concoursjeunes.builders.BlasonBuilder;
 import org.concoursjeunes.builders.EquipeListBuilder;
-import org.concoursjeunes.event.*;
+import org.concoursjeunes.event.FicheConcoursEvent;
+import org.concoursjeunes.event.FicheConcoursListener;
+import org.concoursjeunes.event.PasDeTirListener;
 import org.concoursjeunes.exceptions.FicheConcoursException;
 import org.concoursjeunes.exceptions.FicheConcoursException.Nature;
 
@@ -47,7 +55,7 @@ import ajinteractive.standard.utilities.io.XMLSerializer;
  * @author Aurélien Jeoffray
  */
 @XmlRootElement
-public class FicheConcours implements ParametreListener, PasDeTirListener {
+public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 
 	private Parametre parametre = new Parametre(ApplicationCore.getConfiguration());
 
@@ -93,7 +101,7 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 			concurrentList.setParametre(parametre);
 		}
 		
-		this.parametre.addParametreListener(this);
+		this.parametre.addPropertyChangeListener(this);
 		makePasDeTir();
 	}
 
@@ -261,8 +269,8 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 		
 		checkFiche();
 
-		parametre.addParametreListener(metaDataFicheConcours);
-		parametre.addParametreListener(this);
+		parametre.addPropertyChangeListener(metaDataFicheConcours);
+		parametre.addPropertyChangeListener(this);
 
 		makePasDeTir();
 	}
@@ -273,8 +281,8 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 	 * @return l'objet de métédonnée du concours
 	 */
 	public MetaDataFicheConcours getMetaDataFicheConcours() {
-		MetaDataFicheConcours metaDataFicheConcours = new MetaDataFicheConcours(parametre.getDate(), parametre.getIntituleConcours(), parametre.getSaveName());
-		parametre.addParametreListener(metaDataFicheConcours);
+		MetaDataFicheConcours metaDataFicheConcours = new MetaDataFicheConcours(parametre.getDateDebutConcours(), parametre.getIntituleConcours(), parametre.getSaveName());
+		parametre.addPropertyChangeListener(metaDataFicheConcours);
 
 		return metaDataFicheConcours;
 	}
@@ -419,7 +427,7 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 			tplClassement.parse("INTITULE_CLUB", parametre.getClub().getNom()); //$NON-NLS-1$
 			tplClassement.parse("INTITULE_CONCOURS", parametre.getIntituleConcours()); //$NON-NLS-1$
 			tplClassement.parse("VILLE_CLUB", parametre.getLieuConcours()); //$NON-NLS-1$
-			tplClassement.parse("DATE_CONCOURS", DateFormat.getDateInstance(DateFormat.LONG).format(parametre.getDate())); //$NON-NLS-1$
+			tplClassement.parse("DATE_CONCOURS", DateFormat.getDateInstance(DateFormat.LONG).format(parametre.getDateDebutConcours())); //$NON-NLS-1$
 			tplClassement.parse("author", parametre.getClub().getNom()); //$NON-NLS-1$
 
 			for (String arbitre : parametre.getArbitres()) {
@@ -479,18 +487,12 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 							if (sortList[j].getTotalScore() > 0) {
 								row_exist = true;
 								// test d'ex-Eaquo
-								if ((j < sortList.length - 1 && sortList[j].getTotalScore() == sortList[j + 1].getTotalScore() && ApplicationCore.getConfiguration().isInterfaceAffResultatExEquo())
-										|| (j > 0 && sortList[j].getTotalScore() == sortList[j - 1].getTotalScore() && ApplicationCore.getConfiguration().isInterfaceAffResultatExEquo())) {
+								
+								if ((j < sortList.length - 1 && sortList[j].compareScoreWith(sortList[j + 1]) == 0 && ApplicationCore.getConfiguration().isInterfaceAffResultatExEquo())
+										|| (j > 0 && sortList[j].compareScoreWith(sortList[j - 1]) == 0 && ApplicationCore.getConfiguration().isInterfaceAffResultatExEquo())) {
 
-									if ((sortList[j].getDix() == 0 && sortList[j].getNeuf() == 0)
-											|| (j < sortList.length - 2 && sortList[j].getDix() == sortList[j + 1].getDix() && sortList[j]
-													.getNeuf() == sortList[j + 1].getNeuf())
-											|| (j > 0 && sortList[j].getDix() == sortList[j - 1].getDix() && sortList[j].getNeuf() == sortList[j - 1]
-													.getNeuf())) {
-
-										tplClassement.parse("categories.classement.COULEUR", //$NON-NLS-1$
-												"bgcolor=\"#ff0000\""); //$NON-NLS-1$
-									}
+									tplClassement.parse("categories.classement.COULEUR", //$NON-NLS-1$
+											"bgcolor=\"#ff0000\""); //$NON-NLS-1$
 								} else {
 									tplClassement.parse("categories.classement.COULEUR", "bgcolor=\"#ffffff\""); //$NON-NLS-1$ //$NON-NLS-2$
 								}
@@ -514,8 +516,16 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 									tplClassement.loopBloc("categories.classement.scores"); //$NON-NLS-1$
 								}
 								tplClassement.parse("categories.classement.TOTAL", "" + sortList[j].getTotalScore()); //$NON-NLS-1$ //$NON-NLS-2$
-								tplClassement.parse("categories.classement.0_10_9", //$NON-NLS-1$
-										sortList[j].getDix() + "-" + sortList[j].getNeuf()); //$NON-NLS-1$
+								
+								String departages = ""; //$NON-NLS-1$
+								if(sortList[j].getDepartages().length == parametre.getReglement().getTie().size()) {
+									for(int k = 0; k < parametre.getReglement().getTie().size(); k++) {
+										departages += sortList[j].getDepartages()[k];
+										if(k<parametre.getReglement().getTie().size()-1)
+											departages += "-"; //$NON-NLS-1$
+									}
+								}
+								tplClassement.parse("categories.classement.0_10_9", departages); //$NON-NLS-1$
 
 								tplClassement.loopBloc("categories.classement"); //$NON-NLS-1$
 							}
@@ -634,41 +644,39 @@ public class FicheConcours implements ParametreListener, PasDeTirListener {
 
 		return strClassementEquipe;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.concoursjeunes.ParametreListener#metaDataChanged(org.concoursjeunes.ParametreEvent)
+	
+	/* (non-Javadoc)
+	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
 	 */
-	public void metaDataChanged(ParametreEvent parametreEvent) {
-
-	}
-
-	/**
-	 * Invoqué par l'objet parametre du concours lors d'une modification de celui ci
-	 * afin de recalculer le pas de tir en fonction
-	 */
-	public void parametreChanged(ParametreEvent parametreEvent) {
-		assert pasDeTir.size() > 0 : "Il doit exister au moins un pas de tir"; //$NON-NLS-1$
-
-		if (parametreEvent.getParametre().getNbCible() != pasDeTir.get(0).getTargets().size() || parametreEvent.getParametre().getNbTireur() != pasDeTir.get(0).getTargets().get(0).getNbMaxArchers()) {
-			//si le nombre de cible à changé reconstruire le pas de tir
-			makePasDeTir();
-			if (parametreEvent.getParametre().getNbCible() < pasDeTir.get(0).getTargets().size()) {
-				//si le nombre de cible est inferieur, virer les archers
-				//sur les cibles supprimé
-				for (int i = 0; i < parametre.getNbDepart(); i++) {
-					for (int j = parametreEvent.getParametre().getNbCible(); j < pasDeTir.get(i).getTargets().size(); j++) {
-						for (Concurrent concurrent : concurrentList.list(j + 1, i)) {
-							pasDeTir.get(i).retraitConcurrent(concurrent);
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if(evt.getSource() == parametre) {
+			if(evt.getPropertyName().equals("arbitres") //$NON-NLS-1$
+					|| evt.getPropertyName().equals("reglement")) { //$NON-NLS-1$
+				
+				assert pasDeTir.size() > 0 : "Il doit exister au moins un pas de tir"; //$NON-NLS-1$
+				
+				if (parametre.getNbCible() != pasDeTir.get(0).getTargets().size()
+						|| parametre.getNbTireur() != pasDeTir.get(0).getTargets().get(0).getNbMaxArchers()) {
+					//si le nombre de cible à changé reconstruire le pas de tir
+					makePasDeTir();
+					if (parametre.getNbCible() < pasDeTir.get(0).getTargets().size()) {
+						//si le nombre de cible est inferieur, virer les archers
+						//sur les cibles supprimé
+						for (int i = 0; i < parametre.getNbDepart(); i++) {
+							for (int j = parametre.getNbCible(); j < pasDeTir.get(i).getTargets().size(); j++) {
+								for (Concurrent concurrent : concurrentList.list(j + 1, i)) {
+									pasDeTir.get(i).retraitConcurrent(concurrent);
+								}
+							}
 						}
 					}
-				}
+				} else if(parametre.getNbDepart() != pasDeTir.size())
+					makePasDeTir();
 			}
-		} else if(parametreEvent.getParametre().getNbDepart() != pasDeTir.size())
-			makePasDeTir();
+		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.concoursjeunes.event.PasDeTirListener#pasdetirChanged()
 	 */

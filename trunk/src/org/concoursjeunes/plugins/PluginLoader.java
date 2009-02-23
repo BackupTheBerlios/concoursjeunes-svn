@@ -106,10 +106,9 @@ import ajinteractive.standard.common.StringUtils;
  */
 public class PluginLoader {
 
-	private final ArrayList<PluginMetadata> listPlugins = new ArrayList<PluginMetadata>();
+	private static final List<PluginMetadata> listPlugins = new ArrayList<PluginMetadata>();
 	
-
-	public PluginLoader() {
+	static {
 		File pluginPath = new File("./plugins/properties"); //$NON-NLS-1$
 		File[] pluginsFiles = pluginPath.listFiles();
 
@@ -142,7 +141,12 @@ public class PluginLoader {
 		}
 	}
 	
-	private Class<?> loadPluginClass(String className) {
+
+	public PluginLoader() {
+		
+	}
+	
+	private static Class<?> loadPluginClass(String className) {
 		Class<?> cla = null;
 		try {
 			cla =  Class.forName(className, false, new PluginClassLoader(findParentClassLoader(), new File("plugins"))); //$NON-NLS-1$
@@ -191,7 +195,7 @@ public class PluginLoader {
 	 * @return les metafonnées des plugins retourné
 	 */
 	public List<PluginMetadata> getPlugins(Type type) {
-		ArrayList<PluginMetadata> currentList = new ArrayList<PluginMetadata>();
+		List<PluginMetadata> currentList = new ArrayList<PluginMetadata>();
 		for (PluginMetadata pm : listPlugins) {
 			if (type == Type.ALL || pm.getPluginType() == type)
 				currentList.add(pm);

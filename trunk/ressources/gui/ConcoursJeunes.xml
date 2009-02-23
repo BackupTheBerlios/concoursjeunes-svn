@@ -14,7 +14,6 @@
 					<menu id="export" name="mi.export" visible="false">
 						<label>menubar.fichier.exporter</label>
 					</menu>
-					<menuitem name="mi.maj" enable="false">menubar.fichier.maj</menuitem>
 					<separator />
 					<menu id="backup" name="mi.backup" visible="true">
 						<label>menubar.fichier.backup</label>
@@ -23,7 +22,7 @@
 						<label>menubar.fichier.restore</label>
 					</menu>
 					<separator />
-					<menuitem keycode="VK_F4" modifier="ALT_DOWN_MASK">menubar.fichier.quitter</menuitem>
+					<menuitem keycode="VK_F4" modifier="ALT_DOWN_MASK" action="closeApp">menubar.fichier.quitter</menuitem>
 				</menuitems>
 			</menu>
 			<menu id="edit">

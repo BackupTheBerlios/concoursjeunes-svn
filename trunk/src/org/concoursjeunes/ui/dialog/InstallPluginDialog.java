@@ -102,8 +102,22 @@ import java.net.URLClassLoader;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
-import javax.swing.*;
+import javax.swing.DefaultListSelectionModel;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.RowFilter;
+import javax.swing.SwingUtilities;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.ListSelectionEvent;
@@ -117,15 +131,21 @@ import org.concoursjeunes.exceptions.NullConfigurationException;
 import org.concoursjeunes.plugins.AvailablePluginsManager;
 import org.concoursjeunes.plugins.PluginDescription;
 import org.concoursjeunes.ui.GlassPanePanel;
+import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.JXLoginPane;
 import org.jdesktop.swingx.JXLoginPane.Status;
 import org.jdesktop.swingx.auth.LoginService;
+import org.jdesktop.swingx.error.ErrorInfo;
 import org.jdesktop.swingx.util.OS;
 
 import ajinteractive.macosx.auth.PrivilegedRuntime;
 import ajinteractive.standard.ui.AJList;
 import ajinteractive.standard.utilities.net.SimpleAuthenticator;
-import ajinteractive.standard.utilities.updater.*;
+import ajinteractive.standard.utilities.updater.AjUpdater;
+import ajinteractive.standard.utilities.updater.AjUpdaterEvent;
+import ajinteractive.standard.utilities.updater.AjUpdaterFrame;
+import ajinteractive.standard.utilities.updater.AjUpdaterListener;
+import ajinteractive.standard.utilities.updater.UpdateException;
 
 /**
  * @author Aurélien JEOFFRAY
@@ -520,6 +540,8 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 							ApplicationCore.getInstance().saveAllFichesConcours();
 						} catch (NullConfigurationException e) {
 							e.printStackTrace();
+							JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+									e.toString(), null, null, e, Level.SEVERE, null));
 						}
 						
 						Process process = null;

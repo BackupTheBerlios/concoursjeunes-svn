@@ -92,9 +92,11 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import org.concoursjeunes.exceptions.ExceptionHandlingEventQueue;
@@ -103,6 +105,8 @@ import org.concoursjeunes.plugins.PluginLoader;
 import org.concoursjeunes.plugins.PluginMetadata;
 import org.concoursjeunes.plugins.Plugin.Type;
 import org.concoursjeunes.ui.ConcoursJeunesFrame;
+import org.h2.constant.ErrorCode;
+import org.h2.tools.DeleteDbFiles;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
@@ -143,6 +147,32 @@ public class Main {
 		Thread.setDefaultUncaughtExceptionHandler(handlerException);
 		Toolkit.getDefaultToolkit().getSystemEventQueue().push(new ExceptionHandlingEventQueue());
 	
+		boolean retry = false;
+		do {
+			try {
+				ApplicationCore.initializeApplication();
+			} catch (SQLException e1) {
+				//Si ce n'est pas un message db bloqué par un autre processus
+				if(!e1.getSQLState().equals("" + ErrorCode.DATABASE_ALREADY_OPEN_1)) { //$NON-NLS-1$
+					JXErrorPane.showDialog(null,new ErrorInfo( "SQL Error", e1.toString(), //$NON-NLS-1$
+							null, null, e1, Level.SEVERE, null));
+					
+					if(JOptionPane.showConfirmDialog(null, ApplicationCore.ajrLibelle.getResourceString("erreur.breakdb")) == JOptionPane.YES_OPTION) { //$NON-NLS-1$
+						retry = true;
+						try {
+							if(ApplicationCore.dbConnection != null) ApplicationCore.dbConnection.close();
+							DeleteDbFiles.execute(ApplicationCore.userRessources.getBasePath().getPath(), null, true);
+						} catch (SQLException e2) {	e2.printStackTrace(); }
+					} else {
+						System.exit(1);
+					}
+				} else {
+					JOptionPane.showMessageDialog(null, ApplicationCore.ajrLibelle.getResourceString("erreur.dbalreadyopen")); //$NON-NLS-1$
+					System.exit(1);
+				}
+			}
+		} while(retry);
+		
 		core = ApplicationCore.getInstance();
 		
 		if(System.getProperty("noplugin") == null) { //$NON-NLS-1$
