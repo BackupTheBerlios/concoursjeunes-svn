@@ -68,7 +68,7 @@ CRCCheck on
 XPStyle on
 ShowInstDetails show
 RequestExecutionLevel admin
-VIProductVersion 1.1.0.0
+VIProductVersion 1.2.0.0
 VIAddVersionKey ProductName "ConcoursJeunes Setup"
 VIAddVersionKey ProductVersion "${VERSION}"
 VIAddVersionKey CompanyName "${COMPANY}"
@@ -77,8 +77,8 @@ VIAddVersionKey FileVersion ""
 VIAddVersionKey /LANG=${LANG_FRENCH} FileVersion ""
 VIAddVersionKey FileDescription "ConcoursJeunes Install"
 VIAddVersionKey /LANG=${LANG_FRENCH} FileDescription "Installation de ConcoursJeunes"
-VIAddVersionKey LegalCopyright "(c) 2007 Concoursjeunes.org"
-VIAddVersionKey /LANG=${LANG_FRENCH} LegalCopyright "(c) 2007 Concoursjeunes.org"
+VIAddVersionKey LegalCopyright "(c) 2007-2009 Concoursjeunes.org"
+VIAddVersionKey /LANG=${LANG_FRENCH} LegalCopyright "(c) 2007-2009 Concoursjeunes.org"
 InstallDirRegKey HKLM "${REGKEY}" Path
 ShowUninstDetails show
 

@@ -88,7 +88,12 @@ package org.concoursjeunes.plugins.update;
 
 import static org.concoursjeunes.ApplicationCore.ajrParametreAppli;
 
-import java.awt.*;
+import java.awt.AWTException;
+import java.awt.Dimension;
+import java.awt.Image;
+import java.awt.SystemTray;
+import java.awt.Toolkit;
+import java.awt.TrayIcon;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
@@ -116,7 +121,12 @@ import ajinteractive.standard.common.AJToolKit;
 import ajinteractive.standard.common.AjResourcesReader;
 import ajinteractive.standard.utilities.app.AppSerializer;
 import ajinteractive.standard.utilities.net.SimpleAuthenticator;
-import ajinteractive.standard.utilities.updater.*;
+import ajinteractive.standard.utilities.updater.AjUpdater;
+import ajinteractive.standard.utilities.updater.AjUpdaterEvent;
+import ajinteractive.standard.utilities.updater.AjUpdaterFrame;
+import ajinteractive.standard.utilities.updater.AjUpdaterListener;
+import ajinteractive.standard.utilities.updater.FileMetaData;
+import ajinteractive.standard.utilities.updater.UpdateException;
 
 @Plugin(type = Plugin.Type.STARTUP)
 public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, MouseListener {
@@ -301,13 +311,13 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 					} else {
 						//sur les systèmes Windows et Linux, invoque le programme "concoursjeunes-applyupdate"
 						//qui s'occupe d'élever les priviléges utilisateur si nécessaire.
-						/*if(OS.isWindowsVista()) {
+						/*if(OS.isWindows() && Integer.parseInt(System.getProperty("os.version").substring(0,1)) >= 6) { //$NON-NLS-1$
 							//sur vista,  le popup de l'uac semble ne pas apparaître dans certain cas.
 							//on utilise la commande cmd pour contourner le problème 
-							command =  new String[] {"cmd.exe", "/c", "concoursjeunes-applyupdate",
-									ApplicationCore.userRessources.getAllusersDataPath() + File.separator + "update",
-									System.getProperty("user.dir") }; 
-						}	*/					
+							command =  new String[] {"cmd", "/c", "concoursjeunes-applyupdate",   //$NON-NLS-1$
+									ApplicationCore.userRessources.getUpdatePath().getPath(),
+									System.getProperty("user.dir") };  //$NON-NLS-1$
+						}*/
 						process = Runtime.getRuntime().exec(command); 
 					}
 					if(process != null)

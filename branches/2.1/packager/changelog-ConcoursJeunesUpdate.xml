@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<java version="1.6.0_10" class="java.beans.XMLDecoder"> 
+ <object class="java.util.ArrayList"> 
+  <void method="add"> 
+   <object class="ajinteractive.standard.utilities.updater.Version"> 
+    <void property="appname"> 
+     <string>ConcoursJeunesUpdate</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurelien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction d&apos;un problème d&apos;élévation de privilège sur certaine version de Vista et Seven.
+Les Utilisateurs de Windows Vista concerné par les problèmes de mise à jour sont invités à exécuter
+ConcoursJeunes en mode administrateur (Clic droit sur l&apos;icone de l&apos;application, puis &quot;Executer en tant qu&apos;administrateur&quot;) pour passer la mise à jour.</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1235424771612</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.10.03</string> 
+    </void> 
+   </object> 
+  </void> 
+ </object> 
+</java> 

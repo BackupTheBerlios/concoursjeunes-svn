@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?> 
-<java version="1.6.0_10" class="java.beans.XMLDecoder"> 
+<java version="1.6.0_11" class="java.beans.XMLDecoder"> 
  <object class="java.util.ArrayList"> 
   <void method="add"> 
    <object class="ajinteractive.standard.utilities.updater.Version"> 
@@ -452,6 +452,27 @@
     </void> 
     <void property="version"> 
      <string>2.10.02</string> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="add"> 
+   <object class="ajinteractive.standard.utilities.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurelien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction du système de mise à jour pour Vista et Seven. Les utilisateurs ayant des difficultés à réaliser la mise à jour doivent éxecuter ConcoursJeunes en mode administrateur</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1235425485652</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.10.03</string> 
     </void> 
    </object> 
   </void> 
