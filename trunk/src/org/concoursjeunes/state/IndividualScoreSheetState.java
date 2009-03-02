@@ -93,10 +93,13 @@ import java.io.StringReader;
 import java.net.URL;
 import java.text.DateFormat;
 
-import org.concoursjeunes.*;
-
-import ajinteractive.standard.common.AJTemplate;
-import ajinteractive.standard.common.AjResourcesReader;
+import org.ajdeveloppement.commons.AJTemplate;
+import org.ajdeveloppement.commons.AjResourcesReader;
+import org.concoursjeunes.ApplicationCore;
+import org.concoursjeunes.Concurrent;
+import org.concoursjeunes.ConcurrentList;
+import org.concoursjeunes.FicheConcours;
+import org.concoursjeunes.TargetPosition;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.pdf.PdfWriter;

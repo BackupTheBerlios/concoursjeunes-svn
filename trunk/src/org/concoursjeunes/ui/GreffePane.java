@@ -98,21 +98,37 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.AbstractButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.RowFilter;
 import javax.swing.RowSorter.SortKey;
-import javax.swing.event.*;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
-import org.concoursjeunes.*;
+import org.ajdeveloppement.commons.ui.NumberDocument;
+import org.concoursjeunes.ApplicationCore;
+import org.concoursjeunes.Concurrent;
+import org.concoursjeunes.ConcurrentList;
+import org.concoursjeunes.Criterion;
+import org.concoursjeunes.CriterionElement;
+import org.concoursjeunes.TargetPosition;
 import org.concoursjeunes.event.FicheConcoursEvent;
 import org.concoursjeunes.event.FicheConcoursListener;
 import org.concoursjeunes.state.State;
 import org.concoursjeunes.state.StateManager;
 import org.concoursjeunes.state.StateSelector;
 import org.jdesktop.swingx.JXSplitButton;
-
-import ajinteractive.standard.ui.NumberDocument;
 
 /**
  * @author Aurélien JEOFFRAY

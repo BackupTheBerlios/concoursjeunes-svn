@@ -126,6 +126,14 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import javax.xml.ws.WebServiceException;
 
+import org.ajdeveloppement.commons.net.SimpleAuthenticator;
+import org.ajdeveloppement.commons.ui.AJList;
+import org.ajdeveloppement.macosx.PrivilegedRuntime;
+import org.ajdeveloppement.updater.AjUpdater;
+import org.ajdeveloppement.updater.AjUpdaterEvent;
+import org.ajdeveloppement.updater.AjUpdaterFrame;
+import org.ajdeveloppement.updater.AjUpdaterListener;
+import org.ajdeveloppement.updater.UpdateException;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.exceptions.NullConfigurationException;
 import org.concoursjeunes.plugins.AvailablePluginsManager;
@@ -137,15 +145,6 @@ import org.jdesktop.swingx.JXLoginPane.Status;
 import org.jdesktop.swingx.auth.LoginService;
 import org.jdesktop.swingx.error.ErrorInfo;
 import org.jdesktop.swingx.util.OS;
-
-import ajinteractive.macosx.auth.PrivilegedRuntime;
-import ajinteractive.standard.ui.AJList;
-import ajinteractive.standard.utilities.net.SimpleAuthenticator;
-import ajinteractive.standard.utilities.updater.AjUpdater;
-import ajinteractive.standard.utilities.updater.AjUpdaterEvent;
-import ajinteractive.standard.utilities.updater.AjUpdaterFrame;
-import ajinteractive.standard.utilities.updater.AjUpdaterListener;
-import ajinteractive.standard.utilities.updater.UpdateException;
 
 /**
  * @author Aurélien JEOFFRAY

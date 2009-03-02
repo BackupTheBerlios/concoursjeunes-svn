@@ -125,6 +125,12 @@ import javax.swing.text.DefaultCaret;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 
+import org.ajdeveloppement.commons.AJTemplate;
+import org.ajdeveloppement.commons.ui.AJTabbedPane;
+import org.ajdeveloppement.commons.ui.AJTabbedPaneListener;
+import org.ajdeveloppement.commons.ui.FrameCreator;
+import org.ajdeveloppement.commons.ui.GhostGlassPane;
+import org.ajdeveloppement.commons.ui.MenuBarTools;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Configuration;
 import org.concoursjeunes.FicheConcours;
@@ -149,13 +155,6 @@ import org.concoursjeunes.ui.dialog.TextDialog;
 import org.h2.tools.Server;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
-
-import ajinteractive.standard.common.AJTemplate;
-import ajinteractive.standard.ui.AJTabbedPane;
-import ajinteractive.standard.ui.AJTabbedPaneListener;
-import ajinteractive.standard.ui.FrameCreator;
-import ajinteractive.standard.ui.GhostGlassPane;
-import ajinteractive.standard.ui.MenuBarTools;
 
 /**
  * TODO Afficher status bar avec nb archers enregistre, place restante

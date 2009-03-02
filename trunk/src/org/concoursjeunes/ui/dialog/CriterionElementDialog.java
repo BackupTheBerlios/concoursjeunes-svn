@@ -92,13 +92,17 @@ import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
+import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Criterion;
 import org.concoursjeunes.CriterionElement;
-
-import ajinteractive.standard.ui.GridbagComposer;
 
 /**
  * 

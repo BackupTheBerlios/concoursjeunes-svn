@@ -18,7 +18,7 @@ package org.concoursjeunes;
 import java.util.ArrayList;
 import java.util.List;
 
-import ajinteractive.standard.common.ArraysUtils;
+import org.ajdeveloppement.commons.ArraysUtils;
 
 /**
  * Represente la liste des équipes constitué sur un concours

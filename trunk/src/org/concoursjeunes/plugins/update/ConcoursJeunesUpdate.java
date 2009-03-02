@@ -105,6 +105,17 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import org.ajdeveloppement.apps.AppSerializer;
+import org.ajdeveloppement.commons.AJToolKit;
+import org.ajdeveloppement.commons.AjResourcesReader;
+import org.ajdeveloppement.commons.net.SimpleAuthenticator;
+import org.ajdeveloppement.macosx.PrivilegedRuntime;
+import org.ajdeveloppement.updater.AjUpdater;
+import org.ajdeveloppement.updater.AjUpdaterEvent;
+import org.ajdeveloppement.updater.AjUpdaterFrame;
+import org.ajdeveloppement.updater.AjUpdaterListener;
+import org.ajdeveloppement.updater.FileMetaData;
+import org.ajdeveloppement.updater.UpdateException;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.exceptions.NullConfigurationException;
 import org.concoursjeunes.plugins.Plugin;
@@ -115,18 +126,6 @@ import org.concoursjeunes.plugins.Plugin.Type;
 import org.jdesktop.swingx.JXLoginPane;
 import org.jdesktop.swingx.auth.LoginService;
 import org.jdesktop.swingx.util.OS;
-
-import ajinteractive.macosx.auth.PrivilegedRuntime;
-import ajinteractive.standard.common.AJToolKit;
-import ajinteractive.standard.common.AjResourcesReader;
-import ajinteractive.standard.utilities.app.AppSerializer;
-import ajinteractive.standard.utilities.net.SimpleAuthenticator;
-import ajinteractive.standard.utilities.updater.AjUpdater;
-import ajinteractive.standard.utilities.updater.AjUpdaterEvent;
-import ajinteractive.standard.utilities.updater.AjUpdaterFrame;
-import ajinteractive.standard.utilities.updater.AjUpdaterListener;
-import ajinteractive.standard.utilities.updater.FileMetaData;
-import ajinteractive.standard.utilities.updater.UpdateException;
 
 @Plugin(type = Plugin.Type.STARTUP)
 public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, MouseListener {
@@ -308,7 +307,14 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 						
 					} else {
 						//sur les systèmes Windows et Linux, invoque le programme "concoursjeunes-applyupdate"
-						//qui s'occupe d'élever les priviléges utilisateur si nécessaire.				
+						//qui s'occupe d'élever les priviléges utilisateur si nécessaire.
+						/*if(OS.isWindowsVista()) {
+							//sur vista,  le popup de l'uac semble ne pas apparaître dans certain cas.
+							//on utilise la commande cmd pour contourner le problème 
+							command =  new String[] {"cmd.exe", "/c", "concoursjeunes-applyupdate", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+									ApplicationCore.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
+									System.getProperty("user.dir") };  //$NON-NLS-1$
+						}*/
 						process = Runtime.getRuntime().exec(command); 
 					}
 					if(process != null)

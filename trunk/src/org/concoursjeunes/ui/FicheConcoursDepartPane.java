@@ -86,20 +86,56 @@
  */
 package org.concoursjeunes.ui;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.Graphics;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.logging.Level;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTree;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
-import org.concoursjeunes.*;
+import org.ajdeveloppement.commons.ui.AJList;
+import org.ajdeveloppement.commons.ui.AJTree;
+import org.ajdeveloppement.commons.ui.GhostGlassPane;
+import org.concoursjeunes.ApplicationCore;
+import org.concoursjeunes.Concurrent;
+import org.concoursjeunes.ConcurrentList;
+import org.concoursjeunes.FicheConcours;
+import org.concoursjeunes.Target;
+import org.concoursjeunes.TargetPosition;
 import org.concoursjeunes.event.FicheConcoursEvent;
 import org.concoursjeunes.event.FicheConcoursListener;
 import org.concoursjeunes.exceptions.FicheConcoursException;
@@ -108,10 +144,6 @@ import org.concoursjeunes.ui.dialog.ConcurrentDialog;
 import org.concoursjeunes.ui.dialog.EquipeDialog;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
-
-import ajinteractive.standard.ui.AJList;
-import ajinteractive.standard.ui.AJTree;
-import ajinteractive.standard.ui.GhostGlassPane;
 
 /**
  * Panneau de la fiche concours contenant l'ensemble des éléments spécifique à un départ donné

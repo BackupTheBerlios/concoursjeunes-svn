@@ -86,7 +86,14 @@
  */
 package org.concoursjeunes.ui;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Desktop;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -99,7 +106,23 @@ import java.util.Hashtable;
 import java.util.logging.Level;
 
 import javax.script.ScriptException;
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.Box;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JEditorPane;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.ListCellRenderer;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -111,6 +134,9 @@ import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 
+import org.ajdeveloppement.commons.io.FileUtils;
+import org.ajdeveloppement.commons.ui.AJList;
+import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.Criterion;
@@ -127,10 +153,6 @@ import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.JXTaskPane;
 import org.jdesktop.swingx.JXTaskPaneContainer;
 import org.jdesktop.swingx.error.ErrorInfo;
-
-import ajinteractive.standard.ui.AJList;
-import ajinteractive.standard.ui.GridbagComposer;
-import ajinteractive.standard.utilities.io.FileUtils;
 
 import com.lowagie.text.DocumentException;
 

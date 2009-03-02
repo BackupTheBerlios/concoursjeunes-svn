@@ -13,8 +13,8 @@
 			</fileset>
 		</copy>
 		
-		<taskdef name="revisionscreator" classpath="lib/AJPackage.jar"
-				classname="ajinteractive.standard.utilities.updater.RevisionsCreator" />
+		<taskdef name="revisionscreator" classpath="lib/ajcommons.jar"
+				classname="org.ajdeveloppement.updater.RevisionsCreator" />
 
 		<revisionscreator 
 				revisionpath="${projet.pack.dir}/plugins/BackupRestorePlugin/revision.xml.gz">

@@ -99,6 +99,7 @@ import java.util.logging.Level;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.concoursjeunes.exceptions.ExceptionHandlingEventQueue;
 import org.concoursjeunes.plugins.PluginEntry;
 import org.concoursjeunes.plugins.PluginLoader;
@@ -109,8 +110,6 @@ import org.h2.constant.ErrorCode;
 import org.h2.tools.DeleteDbFiles;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
-
-import ajinteractive.standard.utilities.io.XMLSerializer;
 
 /**
  * Class initial de l'application.

@@ -119,6 +119,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
+import org.ajdeveloppement.commons.ui.AJTree;
+import org.ajdeveloppement.commons.ui.GhostGlassPane;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.ConcurrentList;
@@ -129,9 +131,6 @@ import org.concoursjeunes.Entite;
 import org.concoursjeunes.Equipe;
 import org.concoursjeunes.EquipeList;
 import org.concoursjeunes.FicheConcours;
-
-import ajinteractive.standard.ui.AJTree;
-import ajinteractive.standard.ui.GhostGlassPane;
 
 /**
  * Boite de dialogue de gestion des équipes

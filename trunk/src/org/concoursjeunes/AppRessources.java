@@ -94,7 +94,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.List;
 
-import ajinteractive.standard.utilities.io.FileUtils;
+import org.ajdeveloppement.commons.io.FileUtils;
 
 /**
  * <p>Gére et retourne le chemin des différentes ressources utilisateur pour le programme.</p>
@@ -103,7 +103,7 @@ import ajinteractive.standard.utilities.io.FileUtils;
  * 
  * @author Aurélien Jeoffray
  */
-public class AppRessources extends ajinteractive.standard.utilities.app.AppRessources {
+public class AppRessources extends org.ajdeveloppement.apps.AppRessources {
 	private static String CONFIG_PROFILE = "configuration_"; //$NON-NLS-1$
 	private static String EXT_XML = ".xml"; //$NON-NLS-1$
 

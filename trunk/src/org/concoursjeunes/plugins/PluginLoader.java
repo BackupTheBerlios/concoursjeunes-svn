@@ -91,12 +91,11 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.ajdeveloppement.commons.AjResourcesReader;
+import org.ajdeveloppement.commons.PluginClassLoader;
+import org.ajdeveloppement.commons.StringUtils;
 import org.concoursjeunes.Main;
 import org.concoursjeunes.plugins.Plugin.Type;
-
-import ajinteractive.standard.common.AjResourcesReader;
-import ajinteractive.standard.common.PluginClassLoader;
-import ajinteractive.standard.common.StringUtils;
 
 /**
  * Permet de lister et charger les plugins installer en mémoire

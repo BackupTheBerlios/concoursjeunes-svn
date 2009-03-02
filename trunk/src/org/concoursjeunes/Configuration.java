@@ -97,8 +97,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import ajinteractive.standard.utilities.io.XMLSerializer;
-import ajinteractive.standard.utilities.net.Proxy;
+import org.ajdeveloppement.commons.io.XMLSerializer;
+import org.ajdeveloppement.commons.net.Proxy;
 
 /**
  * parametre de configuration de l'application

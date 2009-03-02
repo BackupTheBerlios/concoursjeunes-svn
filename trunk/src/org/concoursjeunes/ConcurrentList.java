@@ -93,7 +93,7 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import ajinteractive.standard.common.ArraysUtils;
+import org.ajdeveloppement.commons.ArraysUtils;
 
 /**
  * Collection des concurrents présent sur le concours

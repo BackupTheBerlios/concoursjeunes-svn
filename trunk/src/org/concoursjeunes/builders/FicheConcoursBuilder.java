@@ -91,11 +91,10 @@ package org.concoursjeunes.builders;
 import java.io.File;
 import java.io.IOException;
 
+import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.FicheConcours;
 import org.concoursjeunes.MetaDataFicheConcours;
-
-import ajinteractive.standard.utilities.io.XMLSerializer;
 
 /**
  * @author Aurélien JEOFFRAY

@@ -130,6 +130,13 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
+import org.ajdeveloppement.apps.AppUtilities;
+import org.ajdeveloppement.apps.Localisable;
+import org.ajdeveloppement.commons.ui.AJList;
+import org.ajdeveloppement.commons.ui.AJTree;
+import org.ajdeveloppement.commons.ui.GridbagComposer;
+import org.ajdeveloppement.commons.ui.NumberDocument;
+import org.ajdeveloppement.commons.ui.ToolTipHeader;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Blason;
 import org.concoursjeunes.CriteriaSet;
@@ -139,14 +146,6 @@ import org.concoursjeunes.DistancesEtBlason;
 import org.concoursjeunes.Reglement;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
-
-import ajinteractive.standard.ui.AJList;
-import ajinteractive.standard.ui.AJTree;
-import ajinteractive.standard.ui.GridbagComposer;
-import ajinteractive.standard.ui.NumberDocument;
-import ajinteractive.standard.ui.ToolTipHeader;
-import ajinteractive.standard.utilities.app.AppUtilities;
-import ajinteractive.standard.utilities.app.Localisable;
 
 /**
  * @author Aurélien JEOFFRAY

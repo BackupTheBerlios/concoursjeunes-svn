@@ -12,12 +12,11 @@ import java.util.logging.Level;
 import javax.swing.JDialog;
 import javax.swing.event.EventListenerList;
 
+import org.ajdeveloppement.commons.AjResourcesReader;
+import org.ajdeveloppement.commons.sql.SqlParser;
 import org.concoursjeunes.ApplicationCore;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
-
-import ajinteractive.standard.common.AjResourcesReader;
-import ajinteractive.standard.utilities.sql.SqlParser;
 
 /**
  * Plugin d'import d'une base WinFFTA 2 (Format Windev HF) vers ConcoursJeunes (Format Java XML)

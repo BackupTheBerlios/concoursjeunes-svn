@@ -2,7 +2,7 @@
 <java version="1.6.0_10" class="java.beans.XMLDecoder"> 
  <object class="java.util.ArrayList"> 
   <void method="add"> 
-   <object class="ajinteractive.standard.utilities.updater.Version"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
     <void property="appname"> 
      <string>concoursjeunes</string> 
     </void> 
@@ -33,7 +33,7 @@
    </object> 
   </void> 
   <void method="add"> 
-   <object class="ajinteractive.standard.utilities.updater.Version"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
     <void property="appname"> 
      <string>concoursjeunes</string> 
     </void> 
@@ -54,7 +54,7 @@
    </object> 
   </void> 
   <void method="add"> 
-   <object class="ajinteractive.standard.utilities.updater.Version"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
     <void property="appname"> 
      <string>concoursjeunes</string> 
     </void> 
@@ -75,7 +75,7 @@
    </object> 
   </void> 
   <void method="add"> 
-   <object class="ajinteractive.standard.utilities.updater.Version"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
     <void property="appname"> 
      <string>concoursjeunes</string> 
     </void> 
@@ -100,7 +100,7 @@
    </object> 
   </void> 
   <void method="add"> 
-   <object class="ajinteractive.standard.utilities.updater.Version"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
     <void property="appname"> 
      <string>concoursjeunes</string> 
     </void> 
@@ -121,7 +121,7 @@
    </object> 
   </void> 
   <void method="add"> 
-   <object class="ajinteractive.standard.utilities.updater.Version"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
     <void property="appname"> 
      <string>concoursjeunes</string> 
     </void> 
@@ -142,7 +142,7 @@
    </object> 
   </void> 
   <void method="add"> 
-   <object class="ajinteractive.standard.utilities.updater.Version"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
     <void property="appname"> 
      <string>concoursjeunes</string> 
     </void> 
@@ -166,7 +166,7 @@
    </object> 
   </void> 
   <void method="add"> 
-   <object class="ajinteractive.standard.utilities.updater.Version"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
     <void property="appname"> 
      <string>concoursjeunes</string> 
     </void> 
@@ -187,7 +187,7 @@
    </object> 
   </void> 
   <void method="add"> 
-   <object class="ajinteractive.standard.utilities.updater.Version"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
     <void property="appname"> 
      <string>concoursjeunes</string> 
     </void> 
@@ -208,7 +208,7 @@
    </object> 
   </void> 
   <void method="add"> 
-   <object class="ajinteractive.standard.utilities.updater.Version"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
     <void property="appname"> 
      <string>concoursjeunes</string> 
     </void> 
@@ -236,7 +236,7 @@
    </object> 
   </void> 
   <void method="add"> 
-   <object class="ajinteractive.standard.utilities.updater.Version"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
     <void property="appname"> 
      <string>concoursjeunes</string> 
     </void> 
@@ -258,7 +258,7 @@
    </object> 
   </void> 
   <void method="add"> 
-   <object class="ajinteractive.standard.utilities.updater.Version"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
     <void property="appname"> 
      <string>concoursjeunes</string> 
     </void> 
@@ -279,7 +279,7 @@
    </object> 
   </void> 
   <void method="add"> 
-   <object class="ajinteractive.standard.utilities.updater.Version"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
     <void property="appname"> 
      <string>concoursjeunes</string> 
     </void> 
@@ -302,7 +302,7 @@
    </object> 
   </void> 
   <void method="add"> 
-   <object class="ajinteractive.standard.utilities.updater.Version"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
     <void property="appname"> 
      <string>concoursjeunes</string> 
     </void> 
@@ -324,7 +324,7 @@
    </object> 
   </void> 
   <void method="add"> 
-   <object class="ajinteractive.standard.utilities.updater.Version"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
     <void property="appname"> 
      <string>concoursjeunes</string> 
     </void> 
@@ -346,7 +346,7 @@
    </object> 
   </void> 
   <void method="add"> 
-   <object class="ajinteractive.standard.utilities.updater.Version"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
     <void property="appname"> 
      <string>concoursjeunes</string> 
     </void> 
@@ -367,7 +367,7 @@
    </object> 
   </void> 
   <void method="add"> 
-   <object class="ajinteractive.standard.utilities.updater.Version"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
     <void property="appname"> 
      <string>concoursjeunes</string> 
     </void> 
@@ -389,7 +389,7 @@
    </object> 
   </void> 
   <void method="add"> 
-   <object class="ajinteractive.standard.utilities.updater.Version"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
     <void property="appname"> 
      <string>concoursjeunes</string> 
     </void> 

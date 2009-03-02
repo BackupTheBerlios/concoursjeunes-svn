@@ -97,9 +97,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.concoursjeunes.builders.ReglementBuilder;
-
-import ajinteractive.standard.utilities.io.XMLSerializer;
 
 /**
  * Permet la gestion listage, séléction, ajout et suppression des

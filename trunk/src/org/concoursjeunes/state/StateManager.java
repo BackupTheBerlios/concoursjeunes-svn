@@ -97,10 +97,9 @@ import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
+import org.ajdeveloppement.commons.io.FileUtils;
+import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.concoursjeunes.ApplicationCore;
-
-import ajinteractive.standard.utilities.io.FileUtils;
-import ajinteractive.standard.utilities.io.XMLSerializer;
 
 /**
  * Référence et gére les états disponible pour le logiciel

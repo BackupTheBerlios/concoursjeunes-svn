@@ -124,6 +124,11 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
+import org.ajdeveloppement.commons.StringUtils;
+import org.ajdeveloppement.commons.io.AJFileFilter;
+import org.ajdeveloppement.commons.net.Proxy;
+import org.ajdeveloppement.commons.ui.GridbagComposer;
+import org.ajdeveloppement.commons.ui.NumberDocument;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.AutoCompleteDocument;
 import org.concoursjeunes.AutoCompleteDocumentContext;
@@ -137,12 +142,6 @@ import org.concoursjeunes.event.AutoCompleteDocumentListener;
 import org.concoursjeunes.exceptions.NullConfigurationException;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
-
-import ajinteractive.standard.common.StringUtils;
-import ajinteractive.standard.ui.GridbagComposer;
-import ajinteractive.standard.ui.NumberDocument;
-import ajinteractive.standard.utilities.io.AJFileFilter;
-import ajinteractive.standard.utilities.net.Proxy;
 
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Rectangle;

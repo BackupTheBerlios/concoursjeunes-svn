@@ -91,13 +91,16 @@ package org.concoursjeunes.plugins.phoenix;
 import java.io.File;
 import java.io.IOException;
 
-import org.concoursjeunes.*;
+import org.ajdeveloppement.commons.io.XMLSerializer;
+import org.concoursjeunes.ApplicationCore;
+import org.concoursjeunes.Configuration;
+import org.concoursjeunes.MetaDataFicheConcours;
+import org.concoursjeunes.MetaDataFichesConcours;
+import org.concoursjeunes.Parametre;
 import org.concoursjeunes.event.ConcoursJeunesEvent;
 import org.concoursjeunes.event.ConcoursJeunesListener;
 import org.concoursjeunes.plugins.Plugin;
 import org.concoursjeunes.plugins.PluginEntry;
-
-import ajinteractive.standard.utilities.io.XMLSerializer;
 
 /**
  * @author Aurélien JEOFFRAY

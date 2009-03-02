@@ -92,15 +92,20 @@ import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.ajdeveloppement.commons.StringUtils;
+import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Criterion;
-
-import ajinteractive.standard.common.StringUtils;
-import ajinteractive.standard.ui.GridbagComposer;
 
 /**
  * Boite de dialogue de gestion des critère de distinction des archers

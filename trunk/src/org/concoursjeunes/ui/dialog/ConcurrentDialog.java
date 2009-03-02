@@ -130,6 +130,12 @@ import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.PlainDocument;
 
+import org.ajdeveloppement.apps.AppUtilities;
+import org.ajdeveloppement.apps.Localisable;
+import org.ajdeveloppement.commons.ArraysUtils;
+import org.ajdeveloppement.commons.StringUtils;
+import org.ajdeveloppement.commons.ui.GridbagComposer;
+import org.ajdeveloppement.commons.ui.NumberDocument;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Archer;
 import org.concoursjeunes.AutoCompleteDocument;
@@ -149,13 +155,6 @@ import org.concoursjeunes.event.AutoCompleteDocumentListener;
 import org.concoursjeunes.ui.ConcoursJeunesFrame;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
-
-import ajinteractive.standard.common.ArraysUtils;
-import ajinteractive.standard.common.StringUtils;
-import ajinteractive.standard.ui.GridbagComposer;
-import ajinteractive.standard.ui.NumberDocument;
-import ajinteractive.standard.utilities.app.AppUtilities;
-import ajinteractive.standard.utilities.app.Localisable;
 
 /**
  * Boite de dialogue de gestion d'un concurrent

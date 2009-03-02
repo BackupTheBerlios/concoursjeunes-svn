@@ -36,6 +36,9 @@ import java.util.concurrent.ConcurrentMap;
 import javax.swing.event.EventListenerList;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.ajdeveloppement.commons.AJTemplate;
+import org.ajdeveloppement.commons.XmlUtils;
+import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.concoursjeunes.builders.AncragesMapBuilder;
 import org.concoursjeunes.builders.BlasonBuilder;
 import org.concoursjeunes.builders.EquipeListBuilder;
@@ -44,10 +47,6 @@ import org.concoursjeunes.event.FicheConcoursListener;
 import org.concoursjeunes.event.PasDeTirListener;
 import org.concoursjeunes.exceptions.FicheConcoursException;
 import org.concoursjeunes.exceptions.FicheConcoursException.Nature;
-
-import ajinteractive.standard.common.AJTemplate;
-import ajinteractive.standard.common.XmlUtils;
-import ajinteractive.standard.utilities.io.XMLSerializer;
 
 /**
  * Represente la fiche concours, regroupe l'ensemble des informations commune à un concours donné

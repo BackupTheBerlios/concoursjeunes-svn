@@ -106,15 +106,14 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import org.ajdeveloppement.commons.ui.AJList;
+import org.ajdeveloppement.commons.ui.GridbagComposer;
+import org.ajdeveloppement.commons.ui.NumberDocument;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.FicheConcours;
 import org.concoursjeunes.Parametre;
 import org.concoursjeunes.Reglement;
 import org.jdesktop.swingx.JXDatePicker;
-
-import ajinteractive.standard.ui.AJList;
-import ajinteractive.standard.ui.GridbagComposer;
-import ajinteractive.standard.ui.NumberDocument;
 
 import com.lowagie.text.Font;
 

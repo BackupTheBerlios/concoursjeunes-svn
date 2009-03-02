@@ -93,12 +93,11 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
+import org.ajdeveloppement.commons.io.FileUtils;
 import org.concoursjeunes.exceptions.NullConfigurationException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import ajinteractive.standard.utilities.io.FileUtils;
 
 /**
  * @author Aurélien JEOFFRAY

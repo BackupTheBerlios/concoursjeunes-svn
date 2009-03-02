@@ -96,14 +96,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JTextField;
 
+import org.ajdeveloppement.commons.AjResourcesReader;
+import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.plugins.Plugin;
 import org.concoursjeunes.plugins.PluginEntry;
-
-import ajinteractive.standard.common.AjResourcesReader;
-import ajinteractive.standard.ui.GridbagComposer;
 
 /**
  * @author Aurélien JEOFFRAY

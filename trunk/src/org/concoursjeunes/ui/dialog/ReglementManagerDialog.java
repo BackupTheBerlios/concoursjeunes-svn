@@ -105,20 +105,28 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import org.ajdeveloppement.commons.io.AJFileFilter;
+import org.ajdeveloppement.commons.ui.AJList;
+import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Federation;
 import org.concoursjeunes.Reglement;
 import org.concoursjeunes.ReglementManager;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
-
-import ajinteractive.standard.ui.AJList;
-import ajinteractive.standard.ui.GridbagComposer;
-import ajinteractive.standard.utilities.io.AJFileFilter;
 
 /**
  * @author Aurélien JEOFFRAY

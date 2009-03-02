@@ -108,18 +108,13 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.swing.event.EventListenerList;
 
-import org.concoursjeunes.ConfigurationManager;
-import org.concoursjeunes.FicheConcours;
-import org.concoursjeunes.MetaDataFicheConcours;
-import org.concoursjeunes.Parametre;
+import org.ajdeveloppement.commons.AjResourcesReader;
+import org.ajdeveloppement.commons.io.FileUtils;
+import org.ajdeveloppement.commons.sql.SqlManager;
 import org.concoursjeunes.builders.FicheConcoursBuilder;
 import org.concoursjeunes.event.ConcoursJeunesEvent;
 import org.concoursjeunes.event.ConcoursJeunesListener;
 import org.concoursjeunes.exceptions.NullConfigurationException;
-
-import ajinteractive.standard.common.AjResourcesReader;
-import ajinteractive.standard.utilities.io.FileUtils;
-import ajinteractive.standard.utilities.sql.SqlManager;
 /**
  * Class principal de l'application, gére l'ensemble des ressources commune tel que
  * <ul>

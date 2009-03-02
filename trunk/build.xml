@@ -64,8 +64,8 @@
 			<fileset dir="${projet.pack.dir}" includes="**/*"/>
 		</delete>
 		
-		<java classname="ajinteractive.standard.utilities.updater.ChangeLogEditor"
-			classpath="lib/AJPackage.jar"
+		<java classname="org.ajdeveloppement.updater.ChangeLogEditor"
+			classpath="lib/ajcommons.jar"
 			fork="yes">
 			<arg value="packager/changelog.xml"/>
 		</java>
@@ -222,8 +222,8 @@
 	</target>
 
 	<target name="revisions" description="revisions">
-		<taskdef name="revisionscreator" classpath="lib/AJPackage.jar"
-				classname="ajinteractive.standard.utilities.updater.RevisionsCreator" />
+		<taskdef name="revisionscreator" classpath="lib/ajcommons.jar"
+				classname="org.ajdeveloppement.updater.RevisionsCreator" />
 
 		<revisionscreator
 				revisionpath="${projet.pack.dir}/revision.xml.gz"

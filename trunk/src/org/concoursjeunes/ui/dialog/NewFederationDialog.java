@@ -98,13 +98,17 @@ import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
+import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.concoursjeunes.Federation;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
-
-import ajinteractive.standard.ui.GridbagComposer;
 
 /**
  * @author Aurélien JEOFFRAY

@@ -105,6 +105,8 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.ajdeveloppement.commons.AjResourcesReader;
+import org.ajdeveloppement.commons.io.FileUtils;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Configuration;
 import org.concoursjeunes.ConfigurationManager;
@@ -114,9 +116,6 @@ import org.concoursjeunes.plugins.Plugin;
 import org.concoursjeunes.plugins.PluginEntry;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
-
-import ajinteractive.standard.common.AjResourcesReader;
-import ajinteractive.standard.utilities.io.FileUtils;
 
 /**
  * @author Aurélien JEOFFRAY

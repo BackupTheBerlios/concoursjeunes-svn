@@ -98,11 +98,10 @@ import java.util.ArrayList;
 import javax.naming.ConfigurationException;
 import javax.xml.bind.JAXBException;
 
+import org.ajdeveloppement.commons.io.FileUtils;
+import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.concoursjeunes.builders.ConfigurationBuilder;
 import org.concoursjeunes.exceptions.NullConfigurationException;
-
-import ajinteractive.standard.utilities.io.FileUtils;
-import ajinteractive.standard.utilities.io.XMLSerializer;
 
 /**
  * Gére le chargement de la configuration du programme

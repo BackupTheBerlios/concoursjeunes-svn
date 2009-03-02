@@ -86,7 +86,11 @@
  */
 package org.concoursjeunes.ui.dialog;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -96,17 +100,35 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.RowFilter;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 
-import org.concoursjeunes.*;
+import org.ajdeveloppement.commons.ui.GridbagComposer;
+import org.concoursjeunes.ApplicationCore;
+import org.concoursjeunes.Archer;
+import org.concoursjeunes.Concurrent;
+import org.concoursjeunes.ConcurrentManager;
+import org.concoursjeunes.ConcurrentManagerProgress;
+import org.concoursjeunes.Criterion;
+import org.concoursjeunes.CriterionElement;
+import org.concoursjeunes.Entite;
+import org.concoursjeunes.Reglement;
 import org.jdesktop.swingx.JXBusyLabel;
-
-import ajinteractive.standard.ui.GridbagComposer;
 
 /**
  * La liste des personnes présente daans la base des archers
