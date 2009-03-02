@@ -372,7 +372,7 @@ public class Concurrent extends Archer implements Cloneable {
 	 */
 	public void saveCriteriaSet(Reglement reglement) {
 		if(!getNumLicenceArcher().equals("")) { //$NON-NLS-1$
-			criteriaSet.save(reglement.hashCode());
+			criteriaSet.save(reglement);
 			try {
 				String sql = "select * from ARCHERS where NUMLICENCEARCHER=?"; //$NON-NLS-1$
 				PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);

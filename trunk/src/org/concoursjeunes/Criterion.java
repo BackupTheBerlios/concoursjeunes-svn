@@ -256,13 +256,13 @@ public class Criterion {
 	 * 
 	 * @throws SQLException si une erreur d'integration en base se produit
 	 */
-	public void save(int numReglement) throws SQLException {
+	public void save(Reglement reglement) throws SQLException {
 
 		Statement stmt = ApplicationCore.dbConnection.createStatement();
 		
 		stmt.executeUpdate("merge into CRITERE (CODECRITERE,NUMREGLEMENT,LIBELLECRITERE,SORTORDERCRITERE," + //$NON-NLS-1$
 				"CLASSEMENT,CLASSEMENTEQUIPE,PLACEMENT,CODEFFTA,NUMORDRE) VALUES ('" + code + "'," +  //$NON-NLS-1$ //$NON-NLS-2$
-				numReglement + ",'" + libelle + "'," +  //$NON-NLS-1$ //$NON-NLS-2$
+				reglement.hashCode() + ",'" + libelle + "'," +  //$NON-NLS-1$ //$NON-NLS-2$
 				sortOrder + "," + //$NON-NLS-1$
 				Boolean.toString(classement).toUpperCase() + "," + //$NON-NLS-1$
 				Boolean.toString(classementEquipe).toUpperCase() + "," + //$NON-NLS-1$
@@ -271,19 +271,19 @@ public class Criterion {
 		int numordre = 1;
 		for(CriterionElement criterionElement : criterionElements) {
 			criterionElement.setNumordre(numordre++);
-			criterionElement.save(numReglement, code);
+			criterionElement.save(reglement, this);
 		}
 	}
 	
 	/**
 	 * Supprime le critère de la base
 	 */
-	public void delete(int numReglement) {
+	public void delete(Reglement reglement) {
 		try {
 			Statement stmt = ApplicationCore.dbConnection.createStatement();
 			
 			stmt.executeUpdate("delete from CRITERE where CODECRITERE='" + code + "' and " + //$NON-NLS-1$ //$NON-NLS-2$
-					"NUMREGLEMENT=" + numReglement); //$NON-NLS-1$
+					"NUMREGLEMENT=" + reglement.hashCode()); //$NON-NLS-1$
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

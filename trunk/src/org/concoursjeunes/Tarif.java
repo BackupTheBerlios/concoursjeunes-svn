@@ -3,8 +3,10 @@ package org.concoursjeunes;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Tarif {
-	private String intituleTarif = "";
+import org.ajdeveloppement.commons.sql.SqlPersistanceBean;
+
+public class Tarif extends SqlPersistanceBean {
+	private String intituleTarif = ""; //$NON-NLS-1$
 	private double tarif = 0.0;
 	private List<CriteriaSet> categoriesTarif = new ArrayList<CriteriaSet>();
 	

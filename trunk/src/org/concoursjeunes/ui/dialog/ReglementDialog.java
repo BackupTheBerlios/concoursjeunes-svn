@@ -874,7 +874,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 				Object dmtnObj = dmtn.getUserObject();
 				if (dmtnObj instanceof Criterion) {
 					reglement.getListCriteria().remove(dmtnObj);
-					((Criterion) dmtnObj).delete(reglement.hashCode());
+					((Criterion) dmtnObj).delete(reglement);
 
 					treeModel.removeNodeFromParent(dmtn);
 

@@ -12,7 +12,7 @@
 	<classpathentry kind="lib" path="lib/swingx-0.9.3.jar"/>
 	<classpathentry kind="lib" path="lib/swing-worker.jar"/>
 	<classpathentry kind="lib" path="lib/AppFramework-1.03.jar"/>
-	<classpathentry kind="lib" path="lib/h2-1.1.105.jar"/>
 	<classpathentry kind="lib" path="lib/ajcommons.jar"/>
+	<classpathentry kind="lib" path="lib/h2-1.1.108.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

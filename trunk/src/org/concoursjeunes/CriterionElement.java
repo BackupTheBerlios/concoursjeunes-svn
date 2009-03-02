@@ -124,14 +124,14 @@ public class CriterionElement {
 	/**
 	 * Sauvegarde l'élement de critére dans la base
 	 */
-	public void save(int numReglement, String codeCriterionParent) {
+	public void save(Reglement reglement, Criterion criterion) {
 		try {
 			Statement stmt = ApplicationCore.dbConnection.createStatement();
 			
 			stmt.executeUpdate("merge into CRITEREELEMENT (CODECRITEREELEMENT," + //$NON-NLS-1$
 					"CODECRITERE,NUMREGLEMENT,LIBELLECRITEREELEMENT,ACTIF,NUMORDRE) values (" + //$NON-NLS-1$
-					"'" + code + "', '" + codeCriterionParent + "'," + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-					"" + numReglement + ", '" + libelle + "'," + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+					"'" + code + "', '" + criterion.getCode() + "'," + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+					"" + reglement.hashCode() + ", '" + libelle + "'," + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 					Boolean.toString(active).toUpperCase() + "," + numordre + ")"); //$NON-NLS-1$ //$NON-NLS-2$
 		} catch(SQLException e) {
 			

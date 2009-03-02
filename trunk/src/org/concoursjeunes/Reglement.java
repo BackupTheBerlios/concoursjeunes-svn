@@ -653,7 +653,7 @@ public class Reglement {
 		int numordre = 1;
 		for (Criterion criterion : listCriteria) {
 			criterion.setNumordre(numordre++);
-			criterion.save(hashCode());
+			criterion.save(this);
 		}
 	}
 	
@@ -671,11 +671,11 @@ public class Reglement {
 				"values (?, ?, ?)"; //$NON-NLS-1$
 		PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
 		for(Map.Entry<CriteriaSet, CriteriaSet> row : surclassement.entrySet()) {
-			row.getKey().save(hashCode());
+			row.getKey().save(this);
 			pstmt.setInt(1, row.getKey().hashCode());
 			pstmt.setInt(2, hashCode());
 			if(row.getValue() != null) {
-				row.getValue().save(hashCode());
+				row.getValue().save(this);
 				pstmt.setInt(3, row.getValue().hashCode());
 			} else
 				pstmt.setNull(3, Types.INTEGER);

@@ -15,11 +15,14 @@
  */
 package org.concoursjeunes;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.ajdeveloppement.commons.sql.SqlPersistanceBean;
 
 /**
  * Entite organisationnelle.<br>
@@ -33,7 +36,7 @@ import java.util.List;
  * 
  * @author Aurélien JEOFFRAY
  */
-public class Entite {
+public class Entite extends SqlPersistanceBean{
     
     private String nom        	= ""; //$NON-NLS-1$
     private String agrement		= ""; //$NON-NLS-1$
@@ -219,19 +222,22 @@ public class Entite {
 	/**
 	 * Sauvegarde l'entite dans la base de donnée
 	 */
+	@Override
 	public void save() {
 		try {
-			Statement stmt = ApplicationCore.dbConnection.createStatement();
-			
-			stmt.executeUpdate("MERGE INTO Entite (AGREMENTENTITE, NOMENTITE, " + //$NON-NLS-1$
+			String sql = "MERGE INTO Entite (AGREMENTENTITE, NOMENTITE, " + //$NON-NLS-1$
 					"ADRESSEENTITE, CODEPOSTALENTITE, VILLEENTITE, NOTEENTITE, TYPEENTITE) " + //$NON-NLS-1$
-					"VALUES ('" + agrement + "', '"  //$NON-NLS-1$ //$NON-NLS-2$
-					+ nom.replaceAll("'", "''") + "', '"  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-					+ adresse.replaceAll("'", "''") + "', '" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-					+ codePostal + "', '"  //$NON-NLS-1$
-					+ ville.replaceAll("'", "''") + "', '"  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-					+ note.replaceAll("'", "''") + "', "  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-					+ type + ")"); //$NON-NLS-1$
+					"VALUES (?, ?, ?, ?, ?, ?, ?)"; //$NON-NLS-1$
+			PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
+			pstmt.setString(1, agrement);
+			pstmt.setString(2, nom);
+			pstmt.setString(3, adresse);
+			pstmt.setString(4, codePostal);
+			pstmt.setString(5, ville);
+			pstmt.setString(6, note);
+			pstmt.setInt(7, type);
+			pstmt.executeUpdate();
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

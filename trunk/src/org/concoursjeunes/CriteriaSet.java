@@ -103,7 +103,7 @@ public class CriteriaSet {
 	/**
 	 * Sauvegarde en base le jeux de critère
 	 */
-	public void save(int numReglement) {
+	public void save(Reglement reglement) {
 		String sql = null;
 		try {
 			Statement stmt = ApplicationCore.dbConnection.createStatement();
@@ -120,7 +120,7 @@ public class CriteriaSet {
 						hashCode() + ", '" +  //$NON-NLS-1$
 						criterionElement.getCode() + "', '" + //$NON-NLS-1$ 
 						criterion.getCode() + "', " +  //$NON-NLS-1$
-						numReglement + ")"; //$NON-NLS-1$
+						reglement.hashCode() + ")"; //$NON-NLS-1$
 				//System.out.println(sql);
 				stmt.executeUpdate(sql);
 			}
