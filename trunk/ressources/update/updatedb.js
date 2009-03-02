@@ -5,8 +5,8 @@
 function updateReglements() {
 	var contexte = JavaImporter(
 			Packages.org.concoursjeunes,
-			Packages.ajinteractive.standard.common,
-			Packages.ajinteractive.standard.utilities.io,
+			Packages.org.ajdeveloppement.commons,
+			Packages.org.ajdeveloppement.commons.io,
 			Packages.java.util,
 			Packages.java.io);
 
