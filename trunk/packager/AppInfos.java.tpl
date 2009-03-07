@@ -1,12 +1,14 @@
 package org.concoursjeunes;
 
+import javax.annotation.Generated;
 
 /**
- * Class généré automatiquement par APT.
+ * Class généré automatiquement.
  *
  * Délivre des constantes représentant la carte d'identité de l'application
  * (Nom, Version, Auteurs, ...)
  */
+@Generated("Class généré automatiquement avec ant projectBuilder.xml")
 public class AppInfos {
 	/**
 	 * Nom public de l'application

@@ -102,6 +102,7 @@ import java.net.Authenticator;
 import java.sql.SQLException;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JOptionPane;
 
@@ -115,7 +116,9 @@ import org.ajdeveloppement.updater.AjUpdaterEvent;
 import org.ajdeveloppement.updater.AjUpdaterFrame;
 import org.ajdeveloppement.updater.AjUpdaterListener;
 import org.ajdeveloppement.updater.FileMetaData;
+import org.ajdeveloppement.updater.Repository;
 import org.ajdeveloppement.updater.UpdateException;
+import org.concoursjeunes.AppInfos;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.exceptions.NullConfigurationException;
 import org.concoursjeunes.plugins.Plugin;
@@ -133,7 +136,7 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 	private SystemTray tray;
 	private TrayIcon trayIcon;
 	private AjUpdater ajUpdater;
-	private Hashtable<String, List<FileMetaData>> updateFiles = new Hashtable<String, List<FileMetaData>>();
+	private Map<Repository, List<FileMetaData>> updateFiles = new Hashtable<Repository, List<FileMetaData>>();
 	private final AjResourcesReader pluginRessources = new AjResourcesReader("properties.ConcoursJeunesUpdate"); //$NON-NLS-1$
 	private final AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.update.ConcoursJeunesUpdate_libelle", ConcoursJeunesUpdate.class.getClassLoader()); //$NON-NLS-1$
 	private enum Status {
@@ -164,22 +167,21 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 		PluginLoader pl = new PluginLoader();
 		
 
-		ajUpdater = new AjUpdater(ApplicationCore.userRessources.getUpdatePath().getPath(),
-				"."); //$NON-NLS-1$
+		ajUpdater = new AjUpdater(ApplicationCore.userRessources.getUpdatePath().getPath(), "."); //$NON-NLS-1$
 		ajUpdater.addAjUpdaterListener(this);
 		
 		try {
 			AppSerializer appSerializer = new AppSerializer(ApplicationCore.userRessources);
-			ajUpdater.setUserAgent(ApplicationCore.NOM + " " + ApplicationCore.VERSION //$NON-NLS-1$
+			ajUpdater.setUserAgent(AppInfos.NOM + " " + AppInfos.VERSION //$NON-NLS-1$
 					+ " (" + appSerializer.getSerial() + ";" + ApplicationCore.getConfiguration().getClub().getAgrement() //$NON-NLS-1$ //$NON-NLS-2$ 
 					+ " " + ApplicationCore.getConfiguration().getClub().getNom() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
 		
-		ajUpdater.addRepositoryURL(pluginRessources.getResourceString("url.reference")); //$NON-NLS-1$
+		ajUpdater.addRepository(new Repository(AppInfos.NOM, new String[] { pluginRessources.getResourceString("url.reference") }, AppInfos.VERSION)); //$NON-NLS-1$
 		for (PluginMetadata pm : pl.getPlugins(Type.ALL)) {
-			ajUpdater.addRepositoryURL(pm.getReposURL());
+			ajUpdater.addRepository(new Repository(pm.getName(), new String[] { pm.getReposURL() }, pm.getVersion()));
 		}
 		if (ApplicationCore.getConfiguration().isUseProxy()) {
 			System.setProperty("http.proxyHost", ApplicationCore.getConfiguration().getProxy().getProxyServerAddress()); //$NON-NLS-1$
@@ -233,7 +235,7 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see ajinteractive.standard.utilities.updater.AjUpdaterListener#updaterStatusChanged(ajinteractive.standard.utilities.updater.AjUpdaterEvent)
+	 * @see org.ajdeveloppement.updater.AjUpdaterListener#updaterStatusChanged(org.ajdeveloppement.updater.AjUpdaterEvent)
 	 */
 	@Override
 	public void updaterStatusChanged(AjUpdaterEvent event) {
@@ -267,7 +269,7 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 			if (trayIcon != null) {
 				trayIcon.displayMessage(pluginLocalisation.getResourceString("update.available.title"), pluginLocalisation.getResourceString("update.available", strSize), TrayIcon.MessageType.INFO); //$NON-NLS-1$ //$NON-NLS-2$
 			} else {
-				AjUpdaterFrame ajUpdaterFrame = new AjUpdaterFrame(ajUpdater, ApplicationCore.VERSION);
+				AjUpdaterFrame ajUpdaterFrame = new AjUpdaterFrame(ajUpdater);
 				
 				if(ajUpdaterFrame.showAjUpdaterFrame() == AjUpdaterFrame.ReturnCode.OK) {
 					ajUpdater.downloadFiles(updateFiles);
@@ -292,7 +294,11 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 				try {
 					try {
 						ApplicationCore.getInstance().saveAllFichesConcours();
+						
+						ApplicationCore.dbConnection.close();
 					} catch (NullConfigurationException e) {
+						e.printStackTrace();
+					} catch (SQLException e) {
 						e.printStackTrace();
 					}
 					
@@ -308,23 +314,10 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 					} else {
 						//sur les systèmes Windows et Linux, invoque le programme "concoursjeunes-applyupdate"
 						//qui s'occupe d'élever les priviléges utilisateur si nécessaire.
-						/*if(OS.isWindowsVista()) {
-							//sur vista,  le popup de l'uac semble ne pas apparaître dans certain cas.
-							//on utilise la commande cmd pour contourner le problème 
-							command =  new String[] {"cmd.exe", "/c", "concoursjeunes-applyupdate", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-									ApplicationCore.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
-									System.getProperty("user.dir") };  //$NON-NLS-1$
-						}*/
 						process = Runtime.getRuntime().exec(command); 
 					}
 					if(process != null)
 						process.waitFor();
-
-					try {
-						ApplicationCore.dbConnection.close();
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
 
 					System.exit(3);
 				} catch (IOException e1) {
@@ -345,7 +338,7 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 		if (e.getSource() == trayIcon) {
 			if(e.getClickCount() == 1) {
 				if (currentStatus == Status.AVAILABLE) {
-					AjUpdaterFrame ajUpdaterFrame = new AjUpdaterFrame(ajUpdater, ApplicationCore.VERSION);
+					AjUpdaterFrame ajUpdaterFrame = new AjUpdaterFrame(ajUpdater);
 					
 					if(ajUpdaterFrame.showAjUpdaterFrame() == AjUpdaterFrame.ReturnCode.OK) {
 						ajUpdater.downloadFiles(updateFiles);

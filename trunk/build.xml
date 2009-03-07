@@ -147,33 +147,6 @@
 	<target name="compile" depends="pack_stage1">
 
 		<mkdir dir="${projet.pack.dir}/bin" />
-		
-		<replace 
-		    file="${projet.pack.dir}/src/org/concoursjeunes/ApplicationCore.java"
-			propertyFile="packager/version.properties"
-			encoding="UTF-8" >
-			<replacefilter 
-			    token="@version.name@" 
-			    property="version.name" />
-			<replacefilter 
-			    token="@version.numero@" 
-			    property="version.numero" />
-			<replacefilter 
-			    token="@version.codename@" 
-			    property="version.codename" />
-			<replacefilter 
-			    token="@version.author@" 
-			    property="version.author" />
-			<replacefilter 
-			    token="@version.copyr@" 
-			    property="version.copyr" />
-		</replace>
-		
-		<replace 
-			file="${projet.pack.dir}/src/org/concoursjeunes/ApplicationCore.java"
-			token="@version.date@" 
-			value="${version.date}"
-			encoding="UTF-8" /> 
 
 		<javac srcdir="${projet.pack.dir}/src/" destdir="${projet.pack.dir}/bin"
 			optimize="on"

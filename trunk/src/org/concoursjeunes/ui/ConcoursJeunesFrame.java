@@ -131,6 +131,7 @@ import org.ajdeveloppement.commons.ui.AJTabbedPaneListener;
 import org.ajdeveloppement.commons.ui.FrameCreator;
 import org.ajdeveloppement.commons.ui.GhostGlassPane;
 import org.ajdeveloppement.commons.ui.MenuBarTools;
+import org.concoursjeunes.AppInfos;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Configuration;
 import org.concoursjeunes.FicheConcours;
@@ -207,7 +208,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	private void init() {
 		FrameCreator frameCreator = new FrameCreator(this);
 
-		frameCreator.formatTitle(ApplicationCore.NOM, ApplicationCore.VERSION);
+		frameCreator.formatTitle(AppInfos.NOM, AppInfos.VERSION);
 		frameCreator.setL10N(ajrLibelle);
 		frameCreator.addActionListener(this);
 		frameCreator.getFrame().addWindowListener(new WindowAdapter() {
@@ -418,7 +419,6 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 		jif = null; 
 	}
 
-	//@Action
 	private void closeApp() {
 		try {
 			concoursJeunes.saveAllFichesConcours();
@@ -441,21 +441,6 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			System.exit(1);
 		}
 		System.exit(0);
-	}
-
-	/**
-	 * @return concoursJeunes
-	 */
-	public ApplicationCore getConcoursJeunes() {
-		return concoursJeunes;
-	}
-
-	/**
-	 * @param concoursJeunes
-	 *            concoursJeunes à définir
-	 */
-	public void setConcoursJeunes(ApplicationCore concoursJeunes) {
-		this.concoursJeunes = concoursJeunes;
 	}
 
 	/**

@@ -125,7 +125,7 @@ import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
 import org.ajdeveloppement.commons.StringUtils;
-import org.ajdeveloppement.commons.io.AJFileFilter;
+import org.ajdeveloppement.commons.io.FileChooserFileFilter;
 import org.ajdeveloppement.commons.net.Proxy;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
@@ -816,7 +816,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	private void changeLogoPath() {
 		File f;
 		JFileChooser fileDialog = new JFileChooser(workConfiguration.getLogoPath());
-		AJFileFilter filtreimg = new AJFileFilter(new String[] { "jpg", "gif" }, ApplicationCore.ajrLibelle.getResourceString("filter.gifjpeg")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		FileChooserFileFilter filtreimg = new FileChooserFileFilter(new String[] { "jpg", "gif" }, ApplicationCore.ajrLibelle.getResourceString("filter.gifjpeg")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		fileDialog.addChoosableFileFilter(filtreimg);
 		fileDialog.setDialogType(JFileChooser.OPEN_DIALOG);
 		fileDialog.showOpenDialog(this);

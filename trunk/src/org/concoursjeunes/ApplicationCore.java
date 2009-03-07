@@ -130,32 +130,6 @@ import org.concoursjeunes.exceptions.NullConfigurationException;
  * @version 2.0
  */
 public class ApplicationCore {
-
-	/**
-	 * Nom public de l'application
-	 */
-	public static final String NOM = "@version.name@"; //$NON-NLS-1$
-	
-	/**
-	 * version de l'application
-	 */
-	public static final String VERSION = new String("@version.numero@ - @version.date@");//$NON-NLS-1$
-	
-	/**
-	 * Nom de code de l'application
-	 */
-	public static final String CODENAME = "@version.codename@"; //$NON-NLS-1$
-	
-	/**
-	 * Auteur(s) de l'application
-	 */
-	public static final String AUTEURS = "@version.author@"; //$NON-NLS-1$
-	
-	/**
-	 * Copyright de l'application
-	 */
-	public static final String COPYR = "@version.copyr@"; //$NON-NLS-1$
-	
 	/**
 	 * Numero de version de la base de donnée nécessaire au fonctionnement du programme
 	 */
@@ -164,17 +138,17 @@ public class ApplicationCore {
 	/**
 	 * Chargement des Libelle de l'application
 	 */
-	public static AjResourcesReader ajrLibelle = new AjResourcesReader("libelle"); //$NON-NLS-1$
+	public static AjResourcesReader ajrLibelle = new AjResourcesReader("libelle");  //$NON-NLS-1$
 
 	/**
 	 * Chargement des parametrages statiques
 	 */
-	public static AjResourcesReader ajrParametreAppli = new AjResourcesReader("parametre"); //$NON-NLS-1$
+	public static AjResourcesReader ajrParametreAppli = new AjResourcesReader("parametre");  //$NON-NLS-1$
 
 	/**
 	 * ressources utilisateurs
 	 */
-	public static AppRessources userRessources = new AppRessources(NOM);
+	public static AppRessources userRessources = new AppRessources(AppInfos.NOM);
 	
 	/**
 	 * Connection à la base de données du logiciel
@@ -214,8 +188,8 @@ public class ApplicationCore {
 	}
 	/**
 	 * Retourne l'instance unique du moteur du logiciel ou null si le moteur
-	 * n'est pas initialisé.
-	 * Pour initialisé le moteur, lancer la métyode static initializeApplication()
+	 * n'est pas initialisé.<br>
+	 * <i>Pour initialisé le moteur, lancer la méthode static {@link ApplicationCore#initializeApplication()}</i>
 	 * 
 	 * @return l'instance de ConcoursJeunes
 	 */
@@ -239,10 +213,10 @@ public class ApplicationCore {
 	}
 	
 	private void debugLogger() {
-		if (System.getProperty("debug.mode") == null) { //$NON-NLS-1$
+		if (System.getProperty("debug.mode") == null) {   //$NON-NLS-1$
 			try {
 				System.setErr(new PrintStream(new File(userRessources.getAllusersDataPath(), ajrParametreAppli.getResourceString("log.error")))); //$NON-NLS-1$
-				System.setOut(new PrintStream(new File(userRessources.getAllusersDataPath(), ajrParametreAppli.getResourceString("log.exec")))); //$NON-NLS-1$
+				System.setOut(new PrintStream(new File(userRessources.getAllusersDataPath(), ajrParametreAppli.getResourceString("log.exec"))));   //$NON-NLS-1$
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -250,10 +224,10 @@ public class ApplicationCore {
 		
 		// Pour le debugage donne le systeme de l'utilisateur
 		System.out.println("OS: " + System.getProperty("os.name")); //$NON-NLS-1$ //$NON-NLS-2$
-		System.out.println("Architecture: " + System.getProperty("os.arch")); //$NON-NLS-1$ //$NON-NLS-2$
-		System.out.println("Version: " + System.getProperty("os.version")); //$NON-NLS-1$ //$NON-NLS-2$
-		System.out.println("Repertoire utilisateur: " + System.getProperty("user.home")); //$NON-NLS-1$ //$NON-NLS-2$
-		System.out.println("Java version:" + System.getProperty("java.version")); //$NON-NLS-1$ //$NON-NLS-2$
+		System.out.println("Architecture: " + System.getProperty("os.arch"));   //$NON-NLS-1$ //$NON-NLS-2$
+		System.out.println("Version: " + System.getProperty("os.version"));    //$NON-NLS-1$//$NON-NLS-2$
+		System.out.println("Repertoire utilisateur: " + System.getProperty("user.home"));   //$NON-NLS-1$ //$NON-NLS-2$
+		System.out.println("Java version:" + System.getProperty("java.version"));   //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
 	/**
@@ -261,8 +235,8 @@ public class ApplicationCore {
 	 */
 	private void openDatabase() throws SQLException {
 		dbConnection = DriverManager.getConnection(ajrParametreAppli.getResourceString("database.url", userRessources.getBasePath()), //$NON-NLS-1$
-				ajrParametreAppli.getResourceString("database.user"), //$NON-NLS-1$
-				ajrParametreAppli.getResourceString("database.password")); //$NON-NLS-1$
+				ajrParametreAppli.getResourceString("database.user"),   //$NON-NLS-1$
+				ajrParametreAppli.getResourceString("database.password"));   //$NON-NLS-1$
 	}
 	
 	private void checkUpdateDatabase() throws SQLException {
@@ -281,17 +255,17 @@ public class ApplicationCore {
 			// si la version de la base est différente de la version requise par le programme
 			// copie les fichiers de mise à jour par défaut
 			if (dbVersion > DB_RELEASE_REQUIRED) {
-				throw new RuntimeException(ajrLibelle.getResourceString("erreur.dbrelease")); //$NON-NLS-1$
+				throw new RuntimeException(ajrLibelle.getResourceString("erreur.dbrelease"));   //$NON-NLS-1$
 			}
 			
 			ScriptEngine scriptEngine = null;
 			ScriptEngineManager se = new ScriptEngineManager();
-			scriptEngine = se.getEngineByExtension("js"); //$NON-NLS-1$
+			scriptEngine = se.getEngineByExtension("js");   //$NON-NLS-1$
 			if(scriptEngine != null) {
 				scriptEngine.put("dbVersion", dbVersion); //$NON-NLS-1$
-				scriptEngine.put("sql", sqlManager); //$NON-NLS-1$
+				scriptEngine.put("sql", sqlManager);   //$NON-NLS-1$
 				
-				List<File> scripts = FileUtils.listAllFiles(updatePath, ".*\\.js"); //$NON-NLS-1$
+				List<File> scripts = FileUtils.listAllFiles(updatePath, ".*\\.js");   //$NON-NLS-1$
 				for(File script : scripts) {
 					try {		
 						FileReader scriptReader = new FileReader(script);
@@ -304,7 +278,7 @@ public class ApplicationCore {
 					}
 				}
 			} else
-				throw new RuntimeException("Votre machine virtuel java ne supporte pas javascript,\nl'application risque de ne pas fonctionner correctement"); //$NON-NLS-1$
+				throw new RuntimeException("Votre machine virtuel java ne supporte pas javascript,\nl'application risque de ne pas fonctionner correctement");  //$NON-NLS-1$
 		} finally {
 			try { if(stmt != null) stmt.close(); } catch (SQLException e) { }
 			dbVersion = getDBVersion();
@@ -316,7 +290,7 @@ public class ApplicationCore {
 	 */
 	public static void reloadLibelle() {
 		AjResourcesReader.setLocale(Locale.getDefault());
-		ajrLibelle = new AjResourcesReader("libelle"); //$NON-NLS-1$
+		ajrLibelle = new AjResourcesReader("libelle");   //$NON-NLS-1$
 	}
 	
 	/**
@@ -377,7 +351,7 @@ public class ApplicationCore {
 
 			ResultSet rs = stmt.executeQuery("SELECT * FROM PARAM"); //$NON-NLS-1$
 			rs.first();
-			return rs.getInt("DBVERSION"); //$NON-NLS-1$
+			return rs.getInt("DBVERSION");   //$NON-NLS-1$
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -408,7 +382,7 @@ public class ApplicationCore {
 	 */
 	public void createFicheConcours(Parametre parametre) throws NullConfigurationException, IOException {
 		if (configuration == null)
-			throw new NullConfigurationException("la configuration est null"); //$NON-NLS-1$
+			throw new NullConfigurationException("la configuration est null");   //$NON-NLS-1$
 
 		FicheConcours ficheConcours = new FicheConcours(parametre);
 		fichesConcours.add(ficheConcours);
@@ -430,7 +404,7 @@ public class ApplicationCore {
 	 */
 	public void deleteFicheConcours(MetaDataFicheConcours metaDataFicheConcours) throws NullConfigurationException {
 		if (configuration == null)
-			throw new NullConfigurationException("la configuration est null"); //$NON-NLS-1$
+			throw new NullConfigurationException("la configuration est null");   //$NON-NLS-1$
 
 		configuration.getMetaDataFichesConcours().remove(metaDataFicheConcours);
 
@@ -450,7 +424,7 @@ public class ApplicationCore {
 	 */
 	public void closeFicheConcours(FicheConcours ficheConcours) throws NullConfigurationException, IOException {
 		if (configuration == null)
-			throw new NullConfigurationException("la configuration est null"); //$NON-NLS-1$
+			throw new NullConfigurationException("la configuration est null");   //$NON-NLS-1$
 
 		ficheConcours.save();
 		configuration.saveAsDefault();
@@ -490,7 +464,7 @@ public class ApplicationCore {
 	public void restoreFicheConcours(MetaDataFicheConcours metaDataFicheConcours)
 			throws NullConfigurationException, IOException {
 		if (configuration == null)
-			throw new NullConfigurationException("la configuration est null"); //$NON-NLS-1$
+			throw new NullConfigurationException("la configuration est null");   //$NON-NLS-1$
 
 		FicheConcours ficheConcours = FicheConcoursBuilder.getFicheConcours(metaDataFicheConcours);
 
@@ -508,7 +482,7 @@ public class ApplicationCore {
 	 */
 	public void saveAllFichesConcours() throws NullConfigurationException, IOException {
 		if (configuration == null)
-			throw new NullConfigurationException("la configuration est null"); //$NON-NLS-1$
+			throw new NullConfigurationException("la configuration est null");   //$NON-NLS-1$
 
 		for (FicheConcours fiche : fichesConcours) {
 			fiche.save();

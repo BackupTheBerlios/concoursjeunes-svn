@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>ConcoursJeunes</name>
-	<comment>@key 32303036313031382D3130303020436F6E636F7572734A65756E65732F617572656C69656E </comment>
+	<comment></comment>
 	<projects>
-		<project>ClassAJ</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -12,17 +11,16 @@
 			</arguments>
 		</buildCommand>
 		<buildCommand>
-			<name>net.sourceforge.metrics.builder</name>
+			<name>org.eclipse.ui.externaltools.ExternalToolBuilder</name>
 			<arguments>
+				<dictionary>
+					<key>LaunchConfigHandle</key>
+					<value>&lt;project&gt;/.externalToolBuilders/AutomaticRessources.launch</value>
+				</dictionary>
 			</arguments>
 		</buildCommand>
 	</buildSpec>
 	<natures>
-		<nature>org.eclipse.jem.workbench.JavaEMFNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
-		<nature>org.eclipse.jem.beaninfo.BeanInfoNature</nature>
-		<nature>net.sf.eclipsensis.installoptions.InstallOptionsNature</nature>
-		<nature>com.soyatec.uml.std.Nature</nature>
-		<nature>net.sourceforge.metrics.nature</nature>
 	</natures>
 </projectDescription>

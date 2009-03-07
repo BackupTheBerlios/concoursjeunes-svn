@@ -118,7 +118,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import org.ajdeveloppement.commons.io.AJFileFilter;
+import org.ajdeveloppement.commons.io.FileChooserFileFilter;
 import org.ajdeveloppement.commons.ui.AJList;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.concoursjeunes.ApplicationCore;
@@ -444,7 +444,7 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 			
 			if(reglement != null) {
 				JFileChooser fileChooser = new JFileChooser();
-				fileChooser.setFileFilter(new AJFileFilter(new String[] {"reglement"}, ApplicationCore.ajrLibelle.getResourceString("filetype.reglement"))); //$NON-NLS-1$ //$NON-NLS-2$
+				fileChooser.setFileFilter(new FileChooserFileFilter(new String[] {"reglement"}, ApplicationCore.ajrLibelle.getResourceString("filetype.reglement"))); //$NON-NLS-1$ //$NON-NLS-2$
 				fileChooser.setSelectedFile(new File(reglement.getName() + ".reglement")); //$NON-NLS-1$
 				if(fileChooser.showSaveDialog(parentframe) == JFileChooser.APPROVE_OPTION) {
 					try {
@@ -463,7 +463,7 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 			}
 		} else if(e.getSource() == jbImport) {
 			JFileChooser fileChooser = new JFileChooser();
-			fileChooser.setFileFilter(new AJFileFilter(new String[] {"reglement"}, ApplicationCore.ajrLibelle.getResourceString("filetype.reglement"))); //$NON-NLS-1$ //$NON-NLS-2$
+			fileChooser.setFileFilter(new FileChooserFileFilter(new String[] {"reglement"}, ApplicationCore.ajrLibelle.getResourceString("filetype.reglement"))); //$NON-NLS-1$ //$NON-NLS-2$
 			if(fileChooser.showOpenDialog(parentframe) == JFileChooser.APPROVE_OPTION) {
 				try {
 					reglementManager.importReglement(fileChooser.getSelectedFile());

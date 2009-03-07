@@ -94,6 +94,7 @@ import java.util.List;
 
 import javax.xml.ws.WebServiceException;
 
+import org.concoursjeunes.AppInfos;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.plugins.AvailablePluginsManager;
 import org.concoursjeunes.plugins.PluginDescription;
@@ -118,7 +119,7 @@ public class AvailablePluginsManagerImpl extends AvailablePluginsManager {
 		
 		categories = new Hashtable<String, String>();
 		
-		PluginDescriptionArray pluginDescriptionArray = services.getAvailablePluginsForVersion(ApplicationCore.VERSION);
+		PluginDescriptionArray pluginDescriptionArray = services.getAvailablePluginsForVersion(AppInfos.VERSION);
 		pluginsDetail = pluginDescriptionArray.getItem();
 		
 		for(PluginDescription pluginDescription : pluginsDetail) {

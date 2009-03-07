@@ -133,6 +133,7 @@ import org.ajdeveloppement.updater.AjUpdater;
 import org.ajdeveloppement.updater.AjUpdaterEvent;
 import org.ajdeveloppement.updater.AjUpdaterFrame;
 import org.ajdeveloppement.updater.AjUpdaterListener;
+import org.ajdeveloppement.updater.Repository;
 import org.ajdeveloppement.updater.UpdateException;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.exceptions.NullConfigurationException;
@@ -434,10 +435,13 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == jbValider) {
 			DefaultTableModel dtm = (DefaultTableModel)jtPlugins.getModel();
-			List<String> pluginsRepos = new ArrayList<String>();
+			List<Repository> pluginsRepos = new ArrayList<Repository>();
 			for(int i = 0; i < dtm.getRowCount(); i++) {
 				if((Boolean)dtm.getValueAt(i, 0) == true) {
-					pluginsRepos.add(pluginsDetail.get(i).getReposURL());
+					pluginsRepos.add(new Repository(
+							pluginsDetail.get(i).getLogicalName(),
+							new String[] { pluginsDetail.get(i).getReposURL()},
+							"0.00.00")); //$NON-NLS-1$ //la version est toujours à 0 car l'extention n'est pas installé
 				}
 			}
 			
@@ -446,8 +450,8 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 						"."); //$NON-NLS-1$
 				ajUpdater.addAjUpdaterListener(this);
 				
-				for(String repos : pluginsRepos) {
-					ajUpdater.addRepositoryURL(repos);
+				for(Repository repos : pluginsRepos) {
+					ajUpdater.addRepository(repos);
 				}
 				try {
 					GlassPanePanel panel = new GlassPanePanel();
@@ -512,7 +516,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 			case CONNECTED:
 				break;
 			case UPDATE_AVAILABLE:
-				AjUpdaterFrame ajUpdaterFrame = new AjUpdaterFrame(ajUpdater, ApplicationCore.VERSION);
+				AjUpdaterFrame ajUpdaterFrame = new AjUpdaterFrame(ajUpdater);
 				
 				if(ajUpdaterFrame.showAjUpdaterFrame() == AjUpdaterFrame.ReturnCode.OK) {
 					ajUpdater.downloadFiles(event.getUpdateFiles());

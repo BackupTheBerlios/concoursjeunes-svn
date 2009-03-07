@@ -95,6 +95,7 @@ import java.text.DateFormat;
 
 import org.ajdeveloppement.commons.AJTemplate;
 import org.ajdeveloppement.commons.AjResourcesReader;
+import org.concoursjeunes.AppInfos;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.ConcurrentList;
@@ -128,7 +129,7 @@ public class IndividualScoreSheetState {
 		templateXML.loadTemplate(template);
 	
 		try {
-			templateXML.parse("producer", ApplicationCore.NOM + " " + ApplicationCore.VERSION); //$NON-NLS-1$ //$NON-NLS-2$
+			templateXML.parse("producer", AppInfos.NOM + " " + AppInfos.VERSION); //$NON-NLS-1$ //$NON-NLS-2$
 			templateXML.parse("author", ApplicationCore.getConfiguration().getClub().getNom()); //$NON-NLS-1$
 			
 			Concurrent[] concurrents = ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), ConcurrentList.SortCriteria.SORT_BY_TARGETS);

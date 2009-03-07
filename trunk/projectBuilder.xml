@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<project name="ConcoursJeunes.makeappinfos" default="makeappinfos" basedir=".">
+		<property file="packager/version.properties" />
+		<tstamp>
+			<format property="version.date" pattern="dd/MM/yyyy" />
+		</tstamp>
+   
+		<target name ="makeappinfos" description="Construit la class AppInfos">
+			<copy file="packager/AppInfos.java.tpl" tofile="src/org/concoursjeunes/AppInfos.java" overwrite="true" />
+			<replace 
+			    file="src/org/concoursjeunes/AppInfos.java"
+				propertyFile="packager/version.properties"
+				encoding="UTF-8" >
+				<replacefilter 
+				    token="{versionName}" 
+				    property="version.name" />
+				<replacefilter
+				    token="{versionNumero}" 
+				    property="version.numero" />
+				<replacefilter 
+				    token="{versionCodename}" 
+				    property="version.codename" />
+				<replacefilter 
+				    token="{versionAuthor}" 
+				    property="version.author" />
+				<replacefilter 
+				    token="{versionCopyr}" 
+				    property="version.copyr" />
+			</replace>
+			<replace 
+				file="src/org/concoursjeunes/AppInfos.java"
+				token="{versionDate}" 
+				value="${version.date}"
+				encoding="UTF-8" /> 
+		</target>
+</project>

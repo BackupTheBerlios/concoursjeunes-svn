@@ -96,8 +96,13 @@ import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
+import org.concoursjeunes.AppInfos;
 import org.concoursjeunes.ApplicationCore;
 import org.jdesktop.swingx.JXLabel;
 
@@ -142,12 +147,12 @@ public class AboutDialog extends JDialog implements ActionListener {
 	private void affectLibelle() {
 		setTitle(ApplicationCore.ajrLibelle.getResourceString("apropos.titre")); //$NON-NLS-1$
 		
-		jlAbout.setText("<html>" + ApplicationCore.NOM + "<br>" + //$NON-NLS-1$ //$NON-NLS-2$
+		jlAbout.setText("<html>" + AppInfos.NOM + "<br>" + //$NON-NLS-1$ //$NON-NLS-2$
 				ApplicationCore.ajrLibelle.getResourceString("apropos.description") + "<br><br>" + //$NON-NLS-1$ //$NON-NLS-2$
 				ApplicationCore.ajrLibelle.getResourceString("apropos.version") + "<br>" +  //$NON-NLS-1$ //$NON-NLS-2$
-				ApplicationCore.VERSION + "<br>" + //$NON-NLS-1$
-				ApplicationCore.ajrLibelle.getResourceString("apropos.codename") + " " + ApplicationCore.CODENAME + "<br>" + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				ApplicationCore.COPYR + " " + ApplicationCore.AUTEURS + "<br>" + //$NON-NLS-1$ //$NON-NLS-2$
+				AppInfos.VERSION + "<br>" + //$NON-NLS-1$
+				ApplicationCore.ajrLibelle.getResourceString("apropos.codename") + " " + AppInfos.CODENAME + "<br>" + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				AppInfos.COPYR + " " + AppInfos.AUTEURS + "<br>" + //$NON-NLS-1$ //$NON-NLS-2$
 				"version base: " + ApplicationCore.dbVersion + "<br><br>" //$NON-NLS-1$ //$NON-NLS-2$
 				+ "mémoire utilisé: " + ((memoryBean.getHeapMemoryUsage().getUsed() + memoryBean.getNonHeapMemoryUsage().getUsed()) / 1024 / 1024) + "Mo<br>" //$NON-NLS-1$ //$NON-NLS-2$
 				+ "mémoire réservé: " + ((memoryBean.getHeapMemoryUsage().getCommitted() + memoryBean.getNonHeapMemoryUsage().getCommitted()) / 1024 / 1024) + "Mo<br><br>" //$NON-NLS-1$ //$NON-NLS-2$

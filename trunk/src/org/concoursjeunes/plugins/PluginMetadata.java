@@ -102,6 +102,7 @@ public class PluginMetadata {
 	private Type pluginType = Type.ALL;
 	private String className = ""; //$NON-NLS-1$
 	private String reposURL = ""; //$NON-NLS-1$
+	private String version = ""; //$NON-NLS-1$
 	private String[] menuPath;
 	private Class<?> pluginClass;
 
@@ -186,6 +187,20 @@ public class PluginMetadata {
 
 	public void setReposURL(String reposURL) {
 		this.reposURL = reposURL;
+	}
+
+	/**
+	 * @return the version
+	 */
+	public String getVersion() {
+		return version;
+	}
+
+	/**
+	 * @param version the version to set
+	 */
+	public void setVersion(String version) {
+		this.version = version;
 	}
 
 	public String[] getMenuPath() {

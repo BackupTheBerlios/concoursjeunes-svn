@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="start.sh|web/" kind="src" path="src"/>
-	<classpathentry kind="src" path="test"/>
-	<classpathentry kind="lib" path="lang"/>
-	<classpathentry kind="lib" path="lib"/>
-	<classpathentry kind="lib" path="plugins"/>
-	<classpathentry kind="lib" path="config"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/iText-2.1.2u.jar" sourcepath="/home/Aurelien/Téléchargement/iText-src-2.1.2u.zip"/>
-	<classpathentry kind="lib" path="lib/swing-worker.jar"/>
-	<classpathentry kind="lib" path="lib/AppFramework-1.03.jar"/>
 	<classpathentry kind="lib" path="lib/ajcommons.jar"/>
 	<classpathentry kind="lib" path="lib/h2-1.1.108.jar"/>
+	<classpathentry kind="lib" path="lib/iText-2.1.2u.jar"/>
 	<classpathentry kind="lib" path="lib/swingx-0.9.5.jar"/>
+	<classpathentry kind="lib" path="config"/>
+	<classpathentry kind="lib" path="lang"/>
+	<classpathentry kind="lib" path="plugins"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

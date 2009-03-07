@@ -106,12 +106,12 @@ import org.concoursjeunes.builders.ReglementBuilder;
 public class Parametre extends DefaultParameters {
 	
 	private String lieuConcours		= ""; //$NON-NLS-1$
-	private String niveauChampionnat = "";
+	private String niveauChampionnat = ""; //$NON-NLS-1$
 	private Date dateDebutConcours	= new Date();
 	private Date dateFinConcours	= new Date();
 	private boolean open			= true;
 	private boolean duel			= false;
-	private String typeEquipe		= "";
+	private String typeEquipe		= ""; //$NON-NLS-1$
 	private List<String> arbitres	= new ArrayList<String>();
 	private Reglement reglement		= new Reglement();
 
