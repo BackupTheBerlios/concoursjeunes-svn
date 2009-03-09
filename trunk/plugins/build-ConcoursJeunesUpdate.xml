@@ -12,8 +12,9 @@
 			</fileset>
 		</copy>
 		
-		<taskdef name="revisionscreator" classpath="lib/ajcommons.jar"
-				classname="org.ajdeveloppement.updater.RevisionsCreator" />
+		<taskdef name="revisionscreator" classname="org.ajdeveloppement.updater.ant.RevisionsCreator">
+			<classpath location="lib/ajcommons.jar"/>
+		</taskdef>
 
 		<revisionscreator 
 				revisionpath="${projet.pack.dir}/plugins/ConcoursJeunesUpdate/revision.xml.gz">

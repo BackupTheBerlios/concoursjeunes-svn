@@ -107,6 +107,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.swing.event.EventListenerList;
+import javax.xml.bind.JAXBException;
 
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.io.FileUtils;
@@ -370,7 +371,7 @@ public class ApplicationCore {
 	 * 
 	 * @throws ConfigurationException
 	 */
-	public void createFicheConcours() throws NullConfigurationException, IOException {
+	public void createFicheConcours() throws NullConfigurationException, IOException, JAXBException {
 		createFicheConcours(null);
 	}
 	
@@ -380,7 +381,7 @@ public class ApplicationCore {
 	 * @param parametre les parametres du concours
 	 * @throws ConfigurationException
 	 */
-	public void createFicheConcours(Parametre parametre) throws NullConfigurationException, IOException {
+	public void createFicheConcours(Parametre parametre) throws NullConfigurationException, IOException, JAXBException {
 		if (configuration == null)
 			throw new NullConfigurationException("la configuration est null");   //$NON-NLS-1$
 
@@ -402,7 +403,7 @@ public class ApplicationCore {
 	 * 
 	 * @throws ConfigurationException
 	 */
-	public void deleteFicheConcours(MetaDataFicheConcours metaDataFicheConcours) throws NullConfigurationException {
+	public void deleteFicheConcours(MetaDataFicheConcours metaDataFicheConcours) throws NullConfigurationException, IOException, JAXBException {
 		if (configuration == null)
 			throw new NullConfigurationException("la configuration est null");   //$NON-NLS-1$
 
@@ -422,7 +423,7 @@ public class ApplicationCore {
 	 * 
 	 * @throws ConfigurationException
 	 */
-	public void closeFicheConcours(FicheConcours ficheConcours) throws NullConfigurationException, IOException {
+	public void closeFicheConcours(FicheConcours ficheConcours) throws NullConfigurationException, IOException, JAXBException {
 		if (configuration == null)
 			throw new NullConfigurationException("la configuration est null");   //$NON-NLS-1$
 
@@ -438,7 +439,7 @@ public class ApplicationCore {
 	 * 
 	 * @throws ConfigurationException
 	 */
-	public void closeAllFichesConcours() throws NullConfigurationException, IOException {
+	public void closeAllFichesConcours() throws NullConfigurationException, IOException, JAXBException {
 		saveAllFichesConcours();
 
 		ArrayList<FicheConcours> tmpList = new ArrayList<FicheConcours>();
@@ -480,7 +481,7 @@ public class ApplicationCore {
 	 * @throws NullConfigurationException
 	 * @throws IOException
 	 */
-	public void saveAllFichesConcours() throws NullConfigurationException, IOException {
+	public void saveAllFichesConcours() throws NullConfigurationException, IOException, JAXBException {
 		if (configuration == null)
 			throw new NullConfigurationException("la configuration est null");   //$NON-NLS-1$
 

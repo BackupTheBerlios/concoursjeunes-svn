@@ -148,6 +148,8 @@ public class ConfigurationManager {
 		//si il n'y arrive pas vérifie que ce n'est pas une config 1.1
 		} catch (JAXBException e) {
 			oldConfigFormat = true;
+		} catch (IOException e) {
+			oldConfigFormat = true;
 		}
 		if(oldConfigFormat) {
 			try {
@@ -184,6 +186,8 @@ public class ConfigurationManager {
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
+			} catch (JAXBException e) {
+				e.printStackTrace();
 			}
 		}
 		
@@ -205,7 +209,7 @@ public class ConfigurationManager {
 	 * @throws IOException
 	 */
 	public static boolean renameConfiguration(String currentName, String newName) 
-			throws NullConfigurationException, IOException {
+			throws NullConfigurationException, IOException, JAXBException {
 		
 		boolean success = false;
 		

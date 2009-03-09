@@ -89,7 +89,7 @@
 package org.concoursjeunes;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -451,32 +451,20 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	 * sauvegarde la configuration général du programme
 	 *
 	 */
-	public void save() {
+	public void save() throws JAXBException, IOException {
 		File f = new File(ApplicationCore.userRessources.getConfigPathForUser(),
 				CONFIG_PROFILE + curProfil + EXT_XML);
-		try {
-			XMLSerializer.saveMarshallStructure(f, this);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		}
+		XMLSerializer.saveMarshallStructure(f, this);
 	}
 	
 	/**
 	 * sauvegarde la configuration courante comme etant la configuration par défaut du programme
 	 */
-	public void saveAsDefault() {
+	public void saveAsDefault() throws JAXBException, IOException {
 		try {
 			File f = new File(ApplicationCore.userRessources.getConfigPathForUser(),
 					ApplicationCore.ajrParametreAppli.getResourceString("file.configuration")); //$NON-NLS-1$
-			try {
-				XMLSerializer.saveMarshallStructure(f, this);
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (JAXBException e) {
-				e.printStackTrace();
-			}
+			XMLSerializer.saveMarshallStructure(f, this);
 		} catch(NullPointerException npe) {
 			npe.printStackTrace();
 		}

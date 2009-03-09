@@ -123,6 +123,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
+import javax.xml.bind.JAXBException;
 
 import org.ajdeveloppement.commons.StringUtils;
 import org.ajdeveloppement.commons.io.FileChooserFileFilter;
@@ -832,7 +833,17 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	}
 
 	public Configuration showConfigurationDialog(Configuration configuration) {
-		configuration.save();
+		try {
+			configuration.save();
+		} catch (JAXBException e) {
+			JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+					e.toString(), null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
+		} catch (IOException e) {
+			JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+					e.toString(), null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
+		}
 		
 		this.workConfiguration = configuration;
 
@@ -1053,6 +1064,9 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 					renamedProfile = false;
 					e1.printStackTrace();
 				} catch (IOException e1) {
+					renamedProfile = false;
+					e1.printStackTrace();
+				} catch(JAXBException e1) {
 					renamedProfile = false;
 					e1.printStackTrace();
 				}

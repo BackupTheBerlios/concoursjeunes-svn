@@ -100,11 +100,13 @@ import java.io.File;
 import java.io.IOException;
 import java.net.Authenticator;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.JOptionPane;
+import javax.xml.bind.JAXBException;
 
 import org.ajdeveloppement.apps.AppSerializer;
 import org.ajdeveloppement.commons.AJToolKit;
@@ -113,11 +115,11 @@ import org.ajdeveloppement.commons.net.SimpleAuthenticator;
 import org.ajdeveloppement.macosx.PrivilegedRuntime;
 import org.ajdeveloppement.updater.AjUpdater;
 import org.ajdeveloppement.updater.AjUpdaterEvent;
-import org.ajdeveloppement.updater.AjUpdaterFrame;
 import org.ajdeveloppement.updater.AjUpdaterListener;
 import org.ajdeveloppement.updater.FileMetaData;
 import org.ajdeveloppement.updater.Repository;
 import org.ajdeveloppement.updater.UpdateException;
+import org.ajdeveloppement.updater.ui.AjUpdaterFrame;
 import org.concoursjeunes.AppInfos;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.exceptions.NullConfigurationException;
@@ -272,7 +274,11 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 				AjUpdaterFrame ajUpdaterFrame = new AjUpdaterFrame(ajUpdater);
 				
 				if(ajUpdaterFrame.showAjUpdaterFrame() == AjUpdaterFrame.ReturnCode.OK) {
-					ajUpdater.downloadFiles(updateFiles);
+					//ajUpdaterFrame.getValidateRepositories()
+					Map<Repository, List<FileMetaData>> filesMap = new HashMap<Repository, List<FileMetaData>>();
+					for(Repository r : ajUpdaterFrame.getValidateRepositories())
+						filesMap.put(r, updateFiles.get(r));
+					ajUpdater.downloadFiles(filesMap);
 				}
 			}
 			currentStatus = Status.AVAILABLE;
@@ -299,6 +305,8 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 					} catch (NullConfigurationException e) {
 						e.printStackTrace();
 					} catch (SQLException e) {
+						e.printStackTrace();
+					} catch(JAXBException e) {
 						e.printStackTrace();
 					}
 					

@@ -124,6 +124,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
+import javax.xml.bind.JAXBException;
 import javax.xml.ws.WebServiceException;
 
 import org.ajdeveloppement.commons.net.SimpleAuthenticator;
@@ -131,10 +132,10 @@ import org.ajdeveloppement.commons.ui.AJList;
 import org.ajdeveloppement.macosx.PrivilegedRuntime;
 import org.ajdeveloppement.updater.AjUpdater;
 import org.ajdeveloppement.updater.AjUpdaterEvent;
-import org.ajdeveloppement.updater.AjUpdaterFrame;
 import org.ajdeveloppement.updater.AjUpdaterListener;
 import org.ajdeveloppement.updater.Repository;
 import org.ajdeveloppement.updater.UpdateException;
+import org.ajdeveloppement.updater.ui.AjUpdaterFrame;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.exceptions.NullConfigurationException;
 import org.concoursjeunes.plugins.AvailablePluginsManager;
@@ -541,7 +542,21 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 					try {
 						try {
 							ApplicationCore.getInstance().saveAllFichesConcours();
+							
+							ApplicationCore.dbConnection.close();
 						} catch (NullConfigurationException e) {
+							e.printStackTrace();
+							JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+									e.toString(), null, null, e, Level.SEVERE, null));
+						} catch (IOException e) {
+							e.printStackTrace();
+							JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+									e.toString(), null, null, e, Level.SEVERE, null));
+						} catch (JAXBException e) {
+							e.printStackTrace();
+							JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+									e.toString(), null, null, e, Level.SEVERE, null));
+						} catch (SQLException e) {
 							e.printStackTrace();
 							JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
 									e.toString(), null, null, e, Level.SEVERE, null));
@@ -563,12 +578,6 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 						}
 						if(process != null)
 							process.waitFor();
-						
-						try {
-							ApplicationCore.dbConnection.close();
-						} catch (SQLException e) {
-							e.printStackTrace();
-						}
 	
 						System.exit(3);
 					} catch (IOException e1) {

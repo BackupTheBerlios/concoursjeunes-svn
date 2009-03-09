@@ -89,6 +89,7 @@
 package org.concoursjeunes.state;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -127,6 +128,8 @@ public class StateManager {
 						states.add(state);
 					} catch (JAXBException e) {
 						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
 					}
 				}
 			//Gestion des états compressé
@@ -140,6 +143,8 @@ public class StateManager {
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
 				} catch (JAXBException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
@@ -184,6 +189,8 @@ public class StateManager {
 		try {
 			return XMLSerializer.loadMarshallStructure(statesPath, Categories.class);
 		} catch (JAXBException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		

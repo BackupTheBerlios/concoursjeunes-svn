@@ -124,6 +124,7 @@ import javax.swing.event.HyperlinkListener;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
+import javax.xml.bind.JAXBException;
 
 import org.ajdeveloppement.commons.AJTemplate;
 import org.ajdeveloppement.commons.ui.AJTabbedPane;
@@ -337,13 +338,27 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 					JXErrorPane.showDialog(this, new ErrorInfo(ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 							null, null, e, Level.SEVERE, null));
 					e.printStackTrace();
+				} catch (JAXBException e) {
+					JXErrorPane.showDialog(this, new ErrorInfo(ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+							null, null, e, Level.SEVERE, null));
+					e.printStackTrace();
 				}
 			}
 
 			ApplicationCore.setConfiguration(configuration);
 			
-			configuration.save();
-			configuration.saveAsDefault();
+			try {
+				configuration.save();
+				configuration.saveAsDefault();
+			} catch (JAXBException e) {
+				JXErrorPane.showDialog(this, new ErrorInfo(ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+						null, null, e, Level.SEVERE, null));
+				e.printStackTrace();
+			} catch (IOException e) {
+				JXErrorPane.showDialog(this, new ErrorInfo(ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+						null, null, e, Level.SEVERE, null));
+				e.printStackTrace();
+			}
 			
 			displayHome();
 		}
@@ -415,6 +430,10 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 					null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
+		} catch (JAXBException e) {
+			JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+					null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
 		}
 		jif = null; 
 	}
@@ -435,6 +454,11 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			e.printStackTrace();
 			System.exit(1);
 		} catch (IOException e) {
+			JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+					null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
+			System.exit(1);
+		} catch (JAXBException e) {
 			JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 					null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
@@ -692,6 +716,14 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 							JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 									null, null, e1, Level.SEVERE, null));
 							e1.printStackTrace();
+						} catch (JAXBException e1) {
+							JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+									null, null, e1, Level.SEVERE, null));
+							e1.printStackTrace();
+						} catch (IOException e1) {
+							JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+									null, null, e1, Level.SEVERE, null));
+							e1.printStackTrace();
 						}
 						displayHome();
 					}
@@ -714,6 +746,10 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 											null, null, e1, Level.SEVERE, null));
 									e1.printStackTrace();
 								} catch (IOException e1) {
+									JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+											null, null, e1, Level.SEVERE, null));
+									e1.printStackTrace();
+								} catch (JAXBException e1) {
 									JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 											null, null, e1, Level.SEVERE, null));
 									e1.printStackTrace();
