@@ -86,8 +86,7 @@
  */
 package org.concoursjeunes.ui.dialog;
 
-import static org.concoursjeunes.ApplicationCore.ajrLibelle;
-import static org.concoursjeunes.ApplicationCore.ajrParametreAppli;
+import static org.concoursjeunes.ApplicationCore.staticParameters;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -132,12 +131,12 @@ import javax.swing.tree.TreePath;
 
 import org.ajdeveloppement.apps.AppUtilities;
 import org.ajdeveloppement.apps.Localisable;
+import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.AJList;
 import org.ajdeveloppement.commons.ui.AJTree;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
 import org.ajdeveloppement.commons.ui.ToolTipHeader;
-import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Blason;
 import org.concoursjeunes.CriteriaSet;
 import org.concoursjeunes.Criterion;
@@ -157,6 +156,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	public static final int LOCK_CHANGE_L1 = 1;
 	public static final int LOCK_CHANGE_L2 = 2;
 
+	private AjResourcesReader localisation;
 	private Reglement reglement;
 
 	@Localisable("reglement.name")
@@ -231,10 +231,11 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 
 	private int verrou = NO_LOCK;
 
-	public ReglementDialog(JFrame parentframe, Reglement reglement) {
+	public ReglementDialog(JFrame parentframe, Reglement reglement, AjResourcesReader localisation) {
 		super(parentframe, true);
 
 		this.reglement = reglement;
+		this.localisation = localisation;
 
 		init();
 		affectLibelle();
@@ -250,31 +251,31 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		jbValider.addActionListener(this);
 		jbAnnuler.addActionListener(this);
 		
-		jbAddDepartages.setIcon(new ImageIcon(ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$ 
-				File.separator + ajrParametreAppli.getResourceString("file.icon.addcriteria"))); //$NON-NLS-1$
-		jbRemoveDepartages.setIcon(new ImageIcon(ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ajrParametreAppli.getResourceString("file.icon.removeelement"))); //$NON-NLS-1$
-		jbUpDepartages.setIcon(new ImageIcon(ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ajrParametreAppli.getResourceString("file.icon.upelement"))); //$NON-NLS-1$
-		jbDownDepartages.setIcon(new ImageIcon(ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ajrParametreAppli.getResourceString("file.icon.downelement"))); //$NON-NLS-1$
+		jbAddDepartages.setIcon(new ImageIcon(staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$ 
+				File.separator + staticParameters.getResourceString("file.icon.addcriteria"))); //$NON-NLS-1$
+		jbRemoveDepartages.setIcon(new ImageIcon(staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + staticParameters.getResourceString("file.icon.removeelement"))); //$NON-NLS-1$
+		jbUpDepartages.setIcon(new ImageIcon(staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + staticParameters.getResourceString("file.icon.upelement"))); //$NON-NLS-1$
+		jbDownDepartages.setIcon(new ImageIcon(staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + staticParameters.getResourceString("file.icon.downelement"))); //$NON-NLS-1$
 		
-		jbAddCriteria.setIcon(new ImageIcon(ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$ 
-				File.separator + ajrParametreAppli.getResourceString("file.icon.addcriteria"))); //$NON-NLS-1$
-		jbAddCriteriaMember.setIcon(new ImageIcon(ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ajrParametreAppli.getResourceString("file.icon.addcriteriamember"))); //$NON-NLS-1$
-		jbUpElement.setIcon(new ImageIcon(ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ajrParametreAppli.getResourceString("file.icon.upelement"))); //$NON-NLS-1$
-		jbDownElement.setIcon(new ImageIcon(ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ajrParametreAppli.getResourceString("file.icon.downelement"))); //$NON-NLS-1$
-		jbRemoveElement.setIcon(new ImageIcon(ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ajrParametreAppli.getResourceString("file.icon.removeelement"))); //$NON-NLS-1$
+		jbAddCriteria.setIcon(new ImageIcon(staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$ 
+				File.separator + staticParameters.getResourceString("file.icon.addcriteria"))); //$NON-NLS-1$
+		jbAddCriteriaMember.setIcon(new ImageIcon(staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + staticParameters.getResourceString("file.icon.addcriteriamember"))); //$NON-NLS-1$
+		jbUpElement.setIcon(new ImageIcon(staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + staticParameters.getResourceString("file.icon.upelement"))); //$NON-NLS-1$
+		jbDownElement.setIcon(new ImageIcon(staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + staticParameters.getResourceString("file.icon.downelement"))); //$NON-NLS-1$
+		jbRemoveElement.setIcon(new ImageIcon(staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + staticParameters.getResourceString("file.icon.removeelement"))); //$NON-NLS-1$
 
 		JTabbedPane tabbedPane = new JTabbedPane();
-		tabbedPane.addTab(ajrLibelle.getResourceString("reglement.general.title"), initGeneral()); //$NON-NLS-1$
-		tabbedPane.addTab(ajrLibelle.getResourceString("reglement.criteres.title"), initCriteria()); //$NON-NLS-1$
-		tabbedPane.addTab(ajrLibelle.getResourceString("reglement.surclassement.title"), initCriteriaSet()); //$NON-NLS-1$
-		tabbedPane.addTab(ajrLibelle.getResourceString("reglement.categories.title"), initDistancesEtBlasons()); //$NON-NLS-1$
+		tabbedPane.addTab(localisation.getResourceString("reglement.general.title"), initGeneral()); //$NON-NLS-1$
+		tabbedPane.addTab(localisation.getResourceString("reglement.criteres.title"), initCriteria()); //$NON-NLS-1$
+		tabbedPane.addTab(localisation.getResourceString("reglement.surclassement.title"), initCriteriaSet()); //$NON-NLS-1$
+		tabbedPane.addTab(localisation.getResourceString("reglement.categories.title"), initDistancesEtBlasons()); //$NON-NLS-1$
 
 		jpAction.add(jbValider);
 		jpAction.add(jbAnnuler);
@@ -433,9 +434,9 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	}
 
 	private void affectLibelle() {
-		setTitle(ajrLibelle.getResourceString("reglement.titre")); //$NON-NLS-1$
+		setTitle(localisation.getResourceString("reglement.titre")); //$NON-NLS-1$
 		
-		AppUtilities.localize(this, ajrLibelle);	
+		AppUtilities.localize(this, localisation);	
 	}
 
 	private void completePanel() {
@@ -465,7 +466,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 				jtfNbFlecheParVolee.setEditable(false);
 		}
 
-		jlReglementName.setText(ajrLibelle.getResourceString("reglement.name") + " " + reglement.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+		jlReglementName.setText(localisation.getResourceString("reglement.name") + " " + reglement.getName()); //$NON-NLS-1$ //$NON-NLS-2$
 
 		jtfNbSerie.setText(reglement.getNbSerie() + ""); //$NON-NLS-1$
 		jtfNbVoleeParSerie.setText(reglement.getNbVoleeParSerie() + ""); //$NON-NLS-1$
@@ -506,7 +507,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 			
 			ToolTipHeader header = new ToolTipHeader(jtCriteriaSet.getColumnModel());
 		    header.setToolTipStrings(new String[] { 
-		    		ajrLibelle.getResourceString("reglement.surclassement.enable"), "", ""} );  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+		    		localisation.getResourceString("reglement.surclassement.enable"), "", ""} );  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 		    jtCriteriaSet.setTableHeader(header);
 			
 			TableColumn cH = jtCriteriaSet.getColumnModel().getColumn(2);
@@ -549,7 +550,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 			TableColumn cH = jtDistanceBlason.getColumnModel().getColumn(jtDistanceBlason.getColumnModel().getColumnCount() - 1);
 			cH.setCellEditor(new DefaultCellEditor(jcbBlasons));
 		} catch (SQLException e) {
-			JXErrorPane.showDialog(this, new ErrorInfo(ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+			JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 					null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		}
@@ -569,9 +570,9 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 			}
 		};
 		
-		dtm.addColumn(ajrLibelle.getResourceString("reglement.surclassement.enable")); //$NON-NLS-1$
-		dtm.addColumn(ajrLibelle.getResourceString("reglement.surclassement.categories")); //$NON-NLS-1$
-		dtm.addColumn(ajrLibelle.getResourceString("reglement.surclassement.surclassement")); //$NON-NLS-1$
+		dtm.addColumn(localisation.getResourceString("reglement.surclassement.enable")); //$NON-NLS-1$
+		dtm.addColumn(localisation.getResourceString("reglement.surclassement.categories")); //$NON-NLS-1$
+		dtm.addColumn(localisation.getResourceString("reglement.surclassement.surclassement")); //$NON-NLS-1$
 		dtm.addTableModelListener(this);
 		
 		//on liste toutes les catégorie de classement
@@ -607,10 +608,10 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		//s'assure que le nombre de serie est corect
 		reglement.setNbSerie(Integer.parseInt(jtfNbSerie.getText()));
 
-		dtm.addColumn(ajrLibelle.getResourceString("configuration.ecran.concours.scna")); //$NON-NLS-1$
+		dtm.addColumn(localisation.getResourceString("configuration.ecran.concours.scna")); //$NON-NLS-1$
 		for (int i = 0; i < reglement.getNbSerie(); i++)
-			dtm.addColumn(ajrLibelle.getResourceString("configuration.ecran.concours.distance") + " " + (i + 1)); //$NON-NLS-1$ //$NON-NLS-2$
-		dtm.addColumn(ajrLibelle.getResourceString("configuration.ecran.concours.blason")); //$NON-NLS-1$
+			dtm.addColumn(localisation.getResourceString("configuration.ecran.concours.distance") + " " + (i + 1)); //$NON-NLS-1$ //$NON-NLS-2$
+		dtm.addColumn(localisation.getResourceString("configuration.ecran.concours.blason")); //$NON-NLS-1$
 
 		CriteriaSet[] differentiationCriteria = reglement.getValidPlacementCriteriaSet();
 		
@@ -752,7 +753,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		if (source == jbAddCriteria) {
 			DefaultMutableTreeNode dmtn = (DefaultMutableTreeNode) treeCriteria.getPathForRow(0).getLastPathComponent();
 			if (dmtn != null) {
-				CriterionDialog cd = new CriterionDialog(this);
+				CriterionDialog cd = new CriterionDialog(this, localisation);
 				cd.setLock(verrou);
 				if (cd.showCriterionDialog() != null) {
 					DefaultMutableTreeNode dmtnCrit = new DefaultMutableTreeNode(cd.getCriterion());
@@ -770,7 +771,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 					Criterion criterion = (Criterion) dmtnObj;
 
 					if (!(criterion.isPlacement() && verrou != NO_LOCK)) {
-						CriterionElementDialog cpd = new CriterionElementDialog(this, criterion);
+						CriterionElementDialog cpd = new CriterionElementDialog(this, criterion, localisation);
 
 						if (cpd.getCriterionIndividu() != null) {
 							DefaultMutableTreeNode dmtnIndiv = new DefaultMutableTreeNode(cpd.getCriterionIndividu());
@@ -782,8 +783,8 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 							reloadTablesModel();
 						}
 					} else {
-						JOptionPane.showMessageDialog(this, ajrLibelle.getResourceString("reglement.message.criteria.noelement"), //$NON-NLS-1$
-								ajrLibelle.getResourceString("reglement.message.criteria.noelement.title"), //$NON-NLS-1$
+						JOptionPane.showMessageDialog(this, localisation.getResourceString("reglement.message.criteria.noelement"), //$NON-NLS-1$
+								localisation.getResourceString("reglement.message.criteria.noelement.title"), //$NON-NLS-1$
 								JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
@@ -913,7 +914,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 			Object dmtnObj = dmtn.getUserObject();
 			if (dmtnObj instanceof Criterion) {
 				TreePath selectedPath = treeCriteria.getSelectionPath();
-				CriterionDialog criterionDialog = new CriterionDialog(this, (Criterion) dmtnObj);
+				CriterionDialog criterionDialog = new CriterionDialog(this, (Criterion) dmtnObj, localisation);
 				criterionDialog.setLock(verrou);
 				criterionDialog.showCriterionDialog();
 
@@ -924,7 +925,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 			} else if (dmtnObj instanceof CriterionElement) {
 				TreePath selectedPath = treeCriteria.getSelectionPath();
 				DefaultMutableTreeNode dmtnParent = (DefaultMutableTreeNode) selectedPath.getParentPath().getLastPathComponent();
-				new CriterionElementDialog(this, (Criterion) dmtnParent.getUserObject(), (CriterionElement) dmtnObj);
+				new CriterionElementDialog(this, (Criterion) dmtnParent.getUserObject(), (CriterionElement) dmtnObj, localisation);
 
 				treeModel.reload((TreeNode) treeCriteria.getSelectionPath().getLastPathComponent());
 				treeCriteria.setSelectionPath(selectedPath);
@@ -992,7 +993,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 			TableColumn cH = jtDistanceBlason.getColumnModel().getColumn(jtDistanceBlason.getColumnModel().getColumnCount() - 1);
 			cH.setCellEditor(new DefaultCellEditor(jcbBlasons));
 		} catch (SQLException e1) {
-			JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+			JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 					null, null, e1, Level.SEVERE, null));
 			e1.printStackTrace();
 		}

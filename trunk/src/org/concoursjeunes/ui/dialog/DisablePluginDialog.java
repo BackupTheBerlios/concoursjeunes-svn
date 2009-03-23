@@ -110,6 +110,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import org.ajdeveloppement.apps.AppUtilities;
+import org.ajdeveloppement.apps.Localisable;
+import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.concoursjeunes.ApplicationCore;
@@ -125,23 +128,28 @@ import org.jdesktop.swingx.error.ErrorInfo;
  */
 public class DisablePluginDialog extends JDialog implements ActionListener {
 	
-	//private JFrame parentframe;
+	private AjResourcesReader localisation;
 	
+	@Localisable("disableplugin.columnname")
 	private JLabel jlColumnName = new JLabel();
+	@Localisable("disableplugin.columnstate")
 	private JLabel jlColumnState = new JLabel();
 	
 	private Hashtable<String, JLabel> jlNomsPlugins = new Hashtable<String, JLabel>();
 	private Hashtable<String, JCheckBox> jcbStatePlugins = new Hashtable<String, JCheckBox>();
 	
+	@Localisable("bouton.valider")
 	private JButton jbValider = new JButton();
+	@Localisable("bouton.annuler")
 	private JButton jbAnnuler = new JButton();
 	
 	private List<PluginMetadata> plugins;
 	
-	public DisablePluginDialog(JFrame parentframe) {
-		super(parentframe, true);
+	public DisablePluginDialog(JFrame parentframe, AjResourcesReader localisation) {
+		super(parentframe, true);		
 		
-		//this.parentframe = parentframe;
+		this.localisation = localisation;
+		
 		PluginLoader pl = new PluginLoader();
 		plugins = pl.getPlugins(Type.STARTUP);
 		
@@ -169,7 +177,7 @@ public class DisablePluginDialog extends JDialog implements ActionListener {
 			JLabel label = new JLabel(pm.getOptionLabel());
 			label.setToolTipText(pm.getInfo());
 			jlNomsPlugins.put(pm.getName(), label);
-			jcbStatePlugins.put(pm.getName(), new JCheckBox("", true)); //$NON-NLS-1$
+			jcbStatePlugins.put(pm.getName(), new JCheckBox("", true));  //$NON-NLS-1$
 			
 			c.gridy++;
 			c.anchor = GridBagConstraints.WEST;
@@ -193,11 +201,7 @@ public class DisablePluginDialog extends JDialog implements ActionListener {
 	}
 	
 	private void affectLibelle() {
-		jlColumnName.setText(ApplicationCore.ajrLibelle.getResourceString("disableplugin.columnname")); //$NON-NLS-1$
-		jlColumnState.setText(ApplicationCore.ajrLibelle.getResourceString("disableplugin.columnstate")); //$NON-NLS-1$
-		
-		jbValider.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
-		jbAnnuler.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
+		AppUtilities.localize(this, localisation);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -205,10 +209,10 @@ public class DisablePluginDialog extends JDialog implements ActionListener {
 		List<String> disablePlugin = null;
 		try {
 			disablePlugin = (List<String>)XMLSerializer.loadXMLStructure(
-					new File(ApplicationCore.userRessources.getConfigPathForUser(), "disable_plugins.xml"), false); //$NON-NLS-1$
+					new File(ApplicationCore.userRessources.getConfigPathForUser(), "disable_plugins.xml"), false);  //$NON-NLS-1$
 		} catch (IOException e) {
 			JXErrorPane.showDialog(this, 
-					new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+					new ErrorInfo(localisation.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 							null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		}
@@ -241,10 +245,10 @@ public class DisablePluginDialog extends JDialog implements ActionListener {
 
 			try {
 				XMLSerializer.saveXMLStructure(
-						new File(ApplicationCore.userRessources.getConfigPathForUser(), "disable_plugins.xml"), disablePlugin, false); //$NON-NLS-1$
+						new File(ApplicationCore.userRessources.getConfigPathForUser(), "disable_plugins.xml"), disablePlugin, false);  //$NON-NLS-1$
 				setVisible(false);
 			} catch (IOException e1) {
-				JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+				JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 						null, null, e1, Level.SEVERE, null));
 				e1.printStackTrace();
 			}

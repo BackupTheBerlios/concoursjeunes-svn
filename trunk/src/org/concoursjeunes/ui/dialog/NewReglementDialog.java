@@ -88,8 +88,6 @@
  */
 package org.concoursjeunes.ui.dialog;
 
-import static org.concoursjeunes.ApplicationCore.ajrLibelle;
-
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -104,6 +102,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.concoursjeunes.Federation;
 import org.concoursjeunes.Reglement;
@@ -115,6 +114,8 @@ import org.concoursjeunes.builders.ReglementBuilder;
  *
  */
 public class NewReglementDialog extends JDialog implements ActionListener {
+	
+	private AjResourcesReader localisation;
 	
 	private JLabel jlReglementName = new JLabel();
 	private JLabel jlFederation = new JLabel();
@@ -134,10 +135,11 @@ public class NewReglementDialog extends JDialog implements ActionListener {
 	/**
 	 * 
 	 */
-	public NewReglementDialog(JFrame parentframe) {
+	public NewReglementDialog(JFrame parentframe, AjResourcesReader localisation) {
 		super(parentframe,true);
 		
 		this.parentframe = parentframe;
+		this.localisation = localisation;
 		
 		init();
 		affectLibelle();
@@ -150,10 +152,10 @@ public class NewReglementDialog extends JDialog implements ActionListener {
 		GridbagComposer gpComposer = new GridbagComposer();
 		GridBagConstraints c = new GridBagConstraints();
 		
-		jcbCategorie.addItem(ajrLibelle.getResourceString("reglementmanager.category.young")); //$NON-NLS-1$
-		jcbCategorie.addItem(ajrLibelle.getResourceString("reglementmanager.category.indoor")); //$NON-NLS-1$
-		jcbCategorie.addItem(ajrLibelle.getResourceString("reglementmanager.category.outdoor")); //$NON-NLS-1$
-		jcbCategorie.addItem(ajrLibelle.getResourceString("reglementmanager.category.other")); //$NON-NLS-1$
+		jcbCategorie.addItem(localisation.getResourceString("reglementmanager.category.young")); //$NON-NLS-1$
+		jcbCategorie.addItem(localisation.getResourceString("reglementmanager.category.indoor")); //$NON-NLS-1$
+		jcbCategorie.addItem(localisation.getResourceString("reglementmanager.category.outdoor")); //$NON-NLS-1$
+		jcbCategorie.addItem(localisation.getResourceString("reglementmanager.category.other")); //$NON-NLS-1$
 		
 		jbValider.addActionListener(this);
 		jbAnnuler.addActionListener(this);
@@ -182,14 +184,14 @@ public class NewReglementDialog extends JDialog implements ActionListener {
 	}
 	
 	private void affectLibelle() {
-		setTitle(ajrLibelle.getResourceString("newreglement.title")); //$NON-NLS-1$
+		setTitle(localisation.getResourceString("newreglement.title")); //$NON-NLS-1$
 		
-		jlReglementName.setText(ajrLibelle.getResourceString("newreglement.name")); //$NON-NLS-1$
-		jlFederation.setText(ajrLibelle.getResourceString("newreglement.federation")); //$NON-NLS-1$
-		jlCategorie.setText(ajrLibelle.getResourceString("newreglement.category")); //$NON-NLS-1$
+		jlReglementName.setText(localisation.getResourceString("newreglement.name")); //$NON-NLS-1$
+		jlFederation.setText(localisation.getResourceString("newreglement.federation")); //$NON-NLS-1$
+		jlCategorie.setText(localisation.getResourceString("newreglement.category")); //$NON-NLS-1$
 		
-		jbValider.setText(ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
-		jbAnnuler.setText(ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
+		jbValider.setText(localisation.getResourceString("bouton.valider")); //$NON-NLS-1$
+		jbAnnuler.setText(localisation.getResourceString("bouton.annuler")); //$NON-NLS-1$
 	}
 	
 	private void completePanel() {
@@ -197,7 +199,7 @@ public class NewReglementDialog extends JDialog implements ActionListener {
 		for(Federation federation : reglementManager.getAvailableFederations()) {
 			jcbFederation.addItem(federation);
 		}
-		jcbFederation.addItem(ajrLibelle.getResourceString("newreglement.addfederation")); //$NON-NLS-1$
+		jcbFederation.addItem(localisation.getResourceString("newreglement.addfederation")); //$NON-NLS-1$
 	}
 	
 	public Reglement showNewReglementDialog() {
@@ -221,7 +223,7 @@ public class NewReglementDialog extends JDialog implements ActionListener {
 			reglement.setFederation((Federation)jcbFederation.getSelectedItem());
 			reglement.setCategory(jcbCategorie.getSelectedIndex() + 1);
 
-			ReglementDialog reglementDialog = new ReglementDialog(parentframe, reglement);
+			ReglementDialog reglementDialog = new ReglementDialog(parentframe, reglement, localisation);
 			reglement = reglementDialog.showReglementDialog();
 			
 			this.reglement = reglement;
@@ -231,7 +233,7 @@ public class NewReglementDialog extends JDialog implements ActionListener {
 			setVisible(false);
 		} else if(e.getSource() ==jcbFederation) {
 			if(jcbFederation.getSelectedItem() instanceof String) {
-				NewFederationDialog newFederationDialog = new NewFederationDialog(parentframe);
+				NewFederationDialog newFederationDialog = new NewFederationDialog(parentframe, localisation);
 				Federation federation = newFederationDialog.showNewFederationDialog();
 				if(federation != null) {
 					completePanel();

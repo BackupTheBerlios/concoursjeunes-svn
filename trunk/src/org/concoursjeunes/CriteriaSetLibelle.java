@@ -17,6 +17,8 @@ package org.concoursjeunes;
 
 import java.util.Hashtable;
 
+import org.ajdeveloppement.commons.AjResourcesReader;
+
 /**
  * Permet la génération du libellé représentant un jeux de critères
  * 
@@ -33,7 +35,7 @@ public class CriteriaSetLibelle {
      * 
      * @param criteriaSet le jeux de criteres pour lequelle construire le libellé
      */
-    public CriteriaSetLibelle(CriteriaSet criteriaSet) {
+    public CriteriaSetLibelle(CriteriaSet criteriaSet, AjResourcesReader localisation) {
         this.criteriaSet = criteriaSet;
         
         String strSCNA = ""; //$NON-NLS-1$
@@ -49,7 +51,7 @@ public class CriteriaSetLibelle {
         strSCNA = strSCNA.trim();
         
         //si la chaine est vide (filtre *false) afficher tous le monde
-        if(strSCNA.equals("")) strSCNA = ApplicationCore.ajrLibelle.getResourceString("equipe.categorie.tous"); //$NON-NLS-1$ //$NON-NLS-2$
+        if(strSCNA.equals("")) strSCNA = localisation.getResourceString("equipe.categorie.tous"); //$NON-NLS-1$ //$NON-NLS-2$
         
         this.libelle = strSCNA.trim();
     }

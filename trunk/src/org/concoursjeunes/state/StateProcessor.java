@@ -113,24 +113,30 @@ import javax.swing.JOptionPane;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.FicheConcours;
+import org.concoursjeunes.Profile;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.PdfWriter;
 
 /**
+ * Permet la compilation et l'affichage des éditions. Voir la documentation de 
+ * conception des états de concours pour plus d'information.
+ * 
  * @author Aurélien JEOFFRAY
  *
  */
 public class StateProcessor {
 	private State state;
+	private Profile profile;
 	private FicheConcours ficheConcours;
 	
 	/**
 	 * 
 	 */
-	public StateProcessor(State state, FicheConcours ficheConcours) {
+	public StateProcessor(State state, Profile profile, FicheConcours ficheConcours) {
 		this.state = state;
+		this.profile = profile;
 		this.ficheConcours = ficheConcours;
 	}
 	
@@ -155,14 +161,13 @@ public class StateProcessor {
 		boolean isZippedState = false;
 		
 		if(!save) {
-			File tmpFile = File.createTempFile("cta", ApplicationCore.ajrParametreAppli.getResourceString("extention.pdf")); //$NON-NLS-1$ //$NON-NLS-2$
+			File tmpFile = File.createTempFile("cta", ApplicationCore.staticParameters.getResourceString("extention.pdf")); //$NON-NLS-1$ //$NON-NLS-2$
 			filePath = tmpFile.getCanonicalPath();
 			tmpFile.deleteOnExit();
 		} else {
 			String concoursName = ficheConcours.getParametre().getSaveName();
 			concoursName = concoursName.substring(0, concoursName.length() - 4);
-			filePath = ApplicationCore.userRessources.getConcoursPathForProfile(
-					ApplicationCore.getConfiguration().getCurProfil()).getPath() + File.separator
+			filePath = ApplicationCore.userRessources.getConcoursPathForProfile(profile).getPath() + File.separator
 					+ concoursName + File.separator + state.getLocalizedDisplayName()
 					+ " - " + DateFormat.getDateInstance().format(new Date()) + " " + new SimpleDateFormat("HH.mm.ss").format(new Date()) + ".pdf";   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
 		}
@@ -172,7 +177,7 @@ public class StateProcessor {
 		//ScriptEngine scriptEngine = se.getEngineByName("rhino-nonjdk"); //$NON-NLS-1$
 		//scriptEngine.setBindings(new SimpleBindings(Collections.synchronizedMap(new HashMap<String, Object>())), ScriptContext.ENGINE_SCOPE);
 
-		String statePath = ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
+		String statePath = ApplicationCore.staticParameters.getResourceString("path.ressources") //$NON-NLS-1$
 				+ File.separator + "states" + File.separator + state.getName(); //$NON-NLS-1$
 		
 		//test si l'état est dans une archive compressé
@@ -187,6 +192,7 @@ public class StateProcessor {
 		scriptEngine.put("depart", depart); //$NON-NLS-1$
 		scriptEngine.put("serie", serie); //$NON-NLS-1$
 		scriptEngine.put("localeReader", langReader); //$NON-NLS-1$
+		scriptEngine.put("profile", profile); //$NON-NLS-1$
 		
 		Reader reader = new BufferedReader(new InputStreamReader(
 				new URL(((isZippedState) ? "jar:" : "") + stateURL.toString() + ((isZippedState) ? "!" : "") + "/" + state.getScript()).openStream())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
@@ -204,7 +210,7 @@ public class StateProcessor {
 			
 			invocable.invokeFunction("printState", ficheConcours, new URL(((isZippedState) ? "jar:" : "") + stateURL.toString() + ((isZippedState) ? "!" : "") + "/" + state.getTemplate()), document, writer); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
 		} else {
-			JOptionPane.showMessageDialog(null, ApplicationCore.ajrLibelle.getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
+			JOptionPane.showMessageDialog(null, profile.getLocalisation().getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 		}
 		
 		document.close();
@@ -213,9 +219,9 @@ public class StateProcessor {
 			if(Desktop.isDesktopSupported()) {
 				Desktop.getDesktop().open(new File(filePath));
 			} else {
-				assert ApplicationCore.getConfiguration() != null;
+				assert profile.getConfiguration() != null;
 				
-				String NAV = ApplicationCore.getConfiguration().getPdfReaderPath();
+				String NAV = ApplicationCore.getAppConfiguration().getPdfReaderPath();
 
 				System.out.println(NAV + " " + new File(filePath).getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
 				Runtime.getRuntime().exec(NAV + " " + new File(filePath).getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$

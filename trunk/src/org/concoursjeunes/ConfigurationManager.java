@@ -88,12 +88,16 @@
  */
 package org.concoursjeunes;
 
-import static org.concoursjeunes.ApplicationCore.ajrParametreAppli;
+import static org.concoursjeunes.ApplicationCore.staticParameters;
 import static org.concoursjeunes.ApplicationCore.userRessources;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.naming.ConfigurationException;
 import javax.xml.bind.JAXBException;
@@ -117,9 +121,21 @@ public class ConfigurationManager {
 	 * @return la configuation courante
 	 */
 	public static Configuration loadCurrentConfiguration() {
-		File confFile = new File(userRessources.getConfigPathForUser(), ajrParametreAppli.getResourceString("file.configuration")); //$NON-NLS-1$
-
-		return loadConfiguration(confFile);
+		File profileChoice = new File(userRessources.getConfigPathForUser(),
+				"currentprofile"); //$NON-NLS-1$
+		String curentProfile = "defaut"; //$NON-NLS-1$
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new FileReader(profileChoice));
+			curentProfile = reader.readLine();
+		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
+		} finally {
+			if(reader != null)
+				try { reader.close(); } catch(IOException e) { }
+		}
+		
+		return loadConfiguration(curentProfile);
 	}
 	
 	/**
@@ -175,7 +191,6 @@ public class ConfigurationManager {
 					configuration.setMarges(oldConfig.getMarges());
 					configuration.setEspacements(oldConfig.getEspacements());
 					configuration.setInterfaceResultatCumul(oldConfig.isInterfaceResultatCumul());
-					configuration.setInterfaceResultatSupl(oldConfig.isInterfaceResultatSupl());
 					configuration.setInterfaceAffResultatExEquo(oldConfig.isInterfaceAffResultatExEquo());
 					configuration.setFirstboot(oldConfig.isFirstboot());
 					configuration.setCurProfil(oldConfig.getCurProfil());
@@ -198,6 +213,56 @@ public class ConfigurationManager {
 		return configuration;
 	}
 	
+	@SuppressWarnings("deprecation")
+	public static AppConfiguration loadAppConfiguration() {
+		File confFile = new File(
+				userRessources.getConfigPathForUser(),
+				staticParameters.getResourceString("file.configuration")); //$NON-NLS-1$
+		
+		AppConfiguration appConfiguration = null;
+		
+		try {
+			appConfiguration = XMLSerializer.loadMarshallStructure(confFile, AppConfiguration.class);
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		if(appConfiguration == null) {
+			try {
+				Configuration oldConf = loadConfiguration(confFile);
+				
+				//on crée un fichier de configuration avec les bons paramètres 
+				appConfiguration = new AppConfiguration();
+				appConfiguration.setFirstboot(false);
+				appConfiguration.setPdfReaderPath(oldConf.getPdfReaderPath());
+				appConfiguration.setProxy(oldConf.getProxy());
+				appConfiguration.setUseProxy(oldConf.isUseProxy());
+				appConfiguration.save();
+				
+				//on reset les paramètres obsoléte
+				oldConf.setFirstboot(true);
+				oldConf.setPdfReaderPath(""); //$NON-NLS-1$
+				oldConf.setProxy(null);
+				oldConf.setUseProxy(false);
+				oldConf.save();
+			} catch (JAXBException e) {
+				e.printStackTrace();
+				appConfiguration = null;
+			} catch (IOException e) {
+				e.printStackTrace();
+				appConfiguration = null;
+			}
+		}
+		
+		if(appConfiguration == null) {
+			appConfiguration = new AppConfiguration();
+		}
+		
+		return appConfiguration;
+	}
+	
 	/**
 	 * Renome un profil
 	 * 
@@ -208,23 +273,24 @@ public class ConfigurationManager {
 	 * @throws ConfigurationException
 	 * @throws IOException
 	 */
-	public static boolean renameConfiguration(String currentName, String newName) 
+	public static boolean renameConfiguration(Profile profile, String currentName, String newName) 
 			throws NullConfigurationException, IOException, JAXBException {
 		
 		boolean success = false;
 		
+		//on interdit de renommer le profil par défaut
 		if(currentName.equals("defaut")) //$NON-NLS-1$
 			return false;
 		
-		ApplicationCore concoursJeunes = ApplicationCore.getInstance();
-		ArrayList<MetaDataFicheConcours> openedFichesConcours = new ArrayList<MetaDataFicheConcours>();
+		List<MetaDataFicheConcours> openedFichesConcours = new ArrayList<MetaDataFicheConcours>();
 		
-		if(ApplicationCore.getConfiguration().getCurProfil().equals(currentName) && concoursJeunes.getFichesConcours().size() > 0) {
-			for(FicheConcours ficheConcours : concoursJeunes.getFichesConcours()) {
+		//si le profil à renommer est le profil courrant on ferme tout avant traitement
+		if(profile.getConfiguration().getCurProfil().equals(currentName) && profile.getFichesConcours().size() > 0) {
+			for(FicheConcours ficheConcours : profile.getFichesConcours()) {
 				openedFichesConcours.add(ficheConcours.getMetaDataFicheConcours());
 			}
-			concoursJeunes.closeAllFichesConcours();
-			ApplicationCore.getConfiguration().save();
+			profile.closeAllFichesConcours();
+			profile.getConfiguration().save();
 		}
 		
 		//renome le fichier de configuration
@@ -258,6 +324,7 @@ public class ConfigurationManager {
 			}
 		}
 		
+		//on recharge la configuration après renommage du fichier pour en renommer son contenue
 		Configuration configuration = null;
 		if(success) {
 			configuration = loadConfiguration(newName);
@@ -265,14 +332,14 @@ public class ConfigurationManager {
 			configuration.save();
 		}
 		
-		if(ApplicationCore.getConfiguration().getCurProfil().equals(currentName) && openedFichesConcours.size() > 0) {
+		//si le profil renommé était le profil courrant, alors le recharger
+		if(profile.getConfiguration().getCurProfil().equals(currentName) && openedFichesConcours.size() > 0) {
 			if(success && configuration != null) {
-				ApplicationCore.setConfiguration(configuration);
-				configuration.saveAsDefault();
+				profile.setConfiguration(configuration);
 			}
 			
 			for(MetaDataFicheConcours metaDataFicheConcours : openedFichesConcours) {
-				concoursJeunes.restoreFicheConcours(metaDataFicheConcours);
+				profile.restoreFicheConcours(metaDataFicheConcours);
 			}
 		}
 		

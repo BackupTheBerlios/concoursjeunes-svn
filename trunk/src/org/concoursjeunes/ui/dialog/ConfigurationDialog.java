@@ -125,11 +125,14 @@ import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.xml.bind.JAXBException;
 
+import org.ajdeveloppement.apps.AppUtilities;
+import org.ajdeveloppement.apps.Localisable;
+import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.StringUtils;
 import org.ajdeveloppement.commons.io.FileChooserFileFilter;
-import org.ajdeveloppement.commons.net.Proxy;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
+import org.concoursjeunes.AppConfiguration;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.AutoCompleteDocument;
 import org.concoursjeunes.AutoCompleteDocumentContext;
@@ -137,6 +140,7 @@ import org.concoursjeunes.Configuration;
 import org.concoursjeunes.ConfigurationManager;
 import org.concoursjeunes.Entite;
 import org.concoursjeunes.Margin;
+import org.concoursjeunes.Profile;
 import org.concoursjeunes.Reglement;
 import org.concoursjeunes.event.AutoCompleteDocumentEvent;
 import org.concoursjeunes.event.AutoCompleteDocumentListener;
@@ -154,26 +158,42 @@ import com.lowagie.text.Rectangle;
  * @version 2.2
  */
 public class ConfigurationDialog extends JDialog implements ActionListener, AutoCompleteDocumentListener {
-	// private boolean runInitDialog = true;
 
+	private JFrame parentframe;
+	private AjResourcesReader localisation;
+	private Profile profile;
 	private Configuration workConfiguration;
+	private AppConfiguration workAppConfiguration;
+	
 	private JTabbedPane tabbedpane = new JTabbedPane();
+	@Localisable(value="configuration.ecran.general.titre0",textMethod="setTitle")
 	private TitledBorder tbProfil = new TitledBorder(""); //$NON-NLS-1$
+	@Localisable("configuration.ecran.general.profil")
 	private JLabel jlNomProfil = new JLabel();
 	private JComboBox jcbProfil = new JComboBox();
+	@Localisable("configuration.ecran.general.renameprofile")
 	private JButton jbRenameProfile = new JButton();
 
 	// Ecran general personnalisation
+	@Localisable(value="configuration.ecran.general.titre1",textMethod="setTitle")
 	private TitledBorder tbParamGeneral = new TitledBorder(""); //$NON-NLS-1$
+	@Localisable("configuration.ecran.general.nom")
 	private JLabel jlNomClub = new JLabel();
+	@Localisable("configuration.ecran.general.agrement")
 	private JLabel jlAgremClub = new JLabel();
+	@Localisable("configuration.ecran.general.intituleconcours")
 	private JLabel jlIntituleConcours = new JLabel();
+	@Localisable("configuration.ecran.general.langue")
 	private JLabel jlLangue = new JLabel();
+	@Localisable("configuration.ecran.general.pdf")
 	private JLabel jlPathPdf = new JLabel();
+	@Localisable("configuration.ecran.general.logo")
 	private JLabel jlLogoPath = new JLabel();
 	private JTextField jtfNomClub = new JTextField(20);
 	private JTextField jtfAgrClub = new JTextField(new NumberDocument(false, false), "", 5); //$NON-NLS-1$
+	@Localisable(value="configuration.ecran.general.choiceclub",tooltip="configuration.ecran.general.browseclub")
 	private JButton jbParcourir = new JButton();
+	@Localisable("bouton.detail")
 	private JButton jbDetail = new JButton();
 	private JTextField jtfIntConc = new JTextField(20);
 	private JComboBox jcbLangue = new JComboBox();
@@ -182,27 +202,42 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	private JButton jbLogoPath = new JButton();
 
 	// Ecran concours/pas de tir
+	@Localisable("configuration.ecran.concours.reglement")
 	private JLabel jlReglement = new JLabel();
+	@Localisable("configuration.ecran.concours.cible")
 	private JLabel jlNbCible = new JLabel();
+	@Localisable("configuration.ecran.concours.tireur")
 	private JLabel jlNbTireur = new JLabel();
+	@Localisable("configuration.ecran.concours.depart")
 	private JLabel jlNbDepart = new JLabel();
 	private JLabel jlSelectedReglement = new JLabel();
+	@Localisable("configuration.ecran.concours.change_reglement")
 	private JButton jbSelectReglement = new JButton();
 	private JTextField jtfNbCible = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
 	private JComboBox jcbNbTireur = new JComboBox();
 	private JTextField jtfNbDepart = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
 
 	// Ecran etiquette
+	@Localisable("configuration.ecran.etiquettes.formatpapier")
 	private JLabel jlFormatPapier = new JLabel();
+	@Localisable("configuration.ecran.etiquettes.nbetiquettes")
 	private JLabel jlNbEtiquettes = new JLabel();
 	private JLabel jlColonnes = new JLabel("x"); //$NON-NLS-1$
+	@Localisable("configuration.ecran.etiquettes.marges")
 	private JLabel jlMarges = new JLabel();
+	@Localisable("configuration.ecran.etiquettes.haut")
 	private JLabel jlMargesH = new JLabel();
+	@Localisable("configuration.ecran.etiquettes.bas")
 	private JLabel jlMargesB = new JLabel();
+	@Localisable("configuration.ecran.etiquettes.gauche")
 	private JLabel jlMargesG = new JLabel();
+	@Localisable("configuration.ecran.etiquettes.droite")
 	private JLabel jlMargesD = new JLabel();
+	@Localisable("configuration.ecran.etiquettes.espacement")
 	private JLabel jlEspacements = new JLabel();
+	@Localisable("configuration.ecran.etiquettes.horizontal")
 	private JLabel jlEspacementsH = new JLabel();
+	@Localisable("configuration.ecran.etiquettes.vertical")
 	private JLabel jlEspacementsV = new JLabel();
 	private JComboBox jcbFormatPapier = new JComboBox();
 	private JComboBox jcbOrientation = new JComboBox();
@@ -216,42 +251,55 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	private JTextField jtfEspacementsV = new JTextField(new NumberDocument(true, false), "", 5); //$NON-NLS-1$
 
 	// Ecran avancé
-	private JLabel jlURLImport = new JLabel();
-	private JLabel jlURLExport = new JLabel();
+	@Localisable("configuration.ecran.interface.resultat")
 	private JLabel jlResultats = new JLabel();
+	@Localisable("configuration.ecran.interface.affresultat")
 	private JLabel jlAffResultats = new JLabel();
 
 	// private TitledBorder tbPath = new TitledBorder(""); //$NON-NLS-1$
+	@Localisable("configuration.ecran.interface.resultatcumul")
 	private JCheckBox jcbAvanceResultatCumul = new JCheckBox();
-	private JCheckBox jcbAvanceResultatSupl = new JCheckBox();
+	@Localisable("configuration.ecran.interface.resultataffexequo")
 	private JCheckBox jcbAvanceAffResultatExEquo = new JCheckBox();
+	@Localisable(value="configuration.ecran.avance.configurationproxy",textMethod="setTitle")
 	private TitledBorder tbProxy = new TitledBorder(""); //$NON-NLS-1$
+	@Localisable("configuration.ecran.avance.adresseproxy")
 	private JLabel jlAdresseProxy = new JLabel();
+	@Localisable("configuration.ecran.avance.portproxy")
 	private JLabel jlPortProxy = new JLabel();
+	@Localisable("configuration.ecran.avance.userproxy")
 	private JLabel jlUserProxy = new JLabel();
+	@Localisable("configuration.ecran.avance.passwordproxy")
 	private JLabel jlPasswordProxy = new JLabel();
 	//private JCheckBox jcbUseProxy = new JCheckBox();
+	@Localisable("configuration.ecran.avance.utilisationproxysystem")
 	private JRadioButton jrbUseSystemConfig = new JRadioButton();
+	@Localisable("configuration.ecran.avance.utilisationproxycustom")
 	private JRadioButton jrbUseSpecificConfig = new JRadioButton();
 	private final JTextField jtfAdresseProxy = new JTextField(20);
 	private final JTextField jtfPortProxy = new JTextField(new NumberDocument(false, false), "", 5); //$NON-NLS-1$
+	@Localisable("configuration.ecran.avance.authentificationproxy")
 	private final JCheckBox jcbAuthentificationProxy = new JCheckBox();
 	private final JTextField jtfUserProxy = new JTextField(20);
 	private final JPasswordField jpfPasswordProxy = new JPasswordField(20);
 
 	// Ecran avancé option debug
+	@Localisable("configuration.ecran.interface.firstboot")
 	private final JCheckBox jcbFirstBoot = new JCheckBox();
+	@Localisable("bouton.valider")
 	private final JButton jbValider = new JButton();
+	@Localisable("bouton.annuler")
 	private final JButton jbAnnuler = new JButton();
 	private String[] strLstLangue;
 	private boolean renameProfile = false;
 	private boolean renamedProfile = false;
-	
-	private JFrame parentframe;
 
-	public ConfigurationDialog(JFrame parentframe) {
+	public ConfigurationDialog(JFrame parentframe, AjResourcesReader localisation, Profile profile) {
 		super(parentframe, true);
+		
 		this.parentframe = parentframe;
+		this.localisation = localisation;
+		this.profile = profile;
 		
 		JPanel jpBouton = new JPanel();
 
@@ -430,7 +478,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	 */
 	private JPanel initEcranEtiquette() {
 		JPanel jpEcranEtiquette = new JPanel();
-		jpEcranEtiquette.setBorder(new TitledBorder(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.etiquettes.bordertitle"))); //$NON-NLS-1$
+		jpEcranEtiquette.setBorder(new TitledBorder(localisation.getResourceString("configuration.ecran.etiquettes.bordertitle"))); //$NON-NLS-1$
 
 		GridBagConstraints c = new GridBagConstraints();
 
@@ -554,8 +602,6 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		c.gridy++;
 		gridbagComposer.addComponentIntoGrid(jcbAvanceResultatCumul, c);
 		c.gridy++;
-		gridbagComposer.addComponentIntoGrid(jcbAvanceResultatSupl, c);
-		c.gridy++;
 		gridbagComposer.addComponentIntoGrid(jlAffResultats, c);
 		c.gridy++;
 		gridbagComposer.addComponentIntoGrid(jcbAvanceAffResultatExEquo, c);
@@ -574,91 +620,24 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	}
 
 	private void affectLibelle() {
-		setTitle(ApplicationCore.ajrLibelle.getResourceString("configuration.title")); //$NON-NLS-1$
-		jbValider.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
-		jbAnnuler.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
-
+		setTitle(localisation.getResourceString("configuration.title")); //$NON-NLS-1$
+		
+		AppUtilities.localize(this, localisation);
+		
 		if (tabbedpane.getTabCount() > 0) {
-			tabbedpane.setTitleAt(0, ApplicationCore.ajrLibelle.getResourceString("configuration.onglet.genral")); //$NON-NLS-1$
-			tabbedpane.setTitleAt(1, ApplicationCore.ajrLibelle.getResourceString("configuration.onglet.concours")); //$NON-NLS-1$
-			tabbedpane.setTitleAt(2, ApplicationCore.ajrLibelle.getResourceString("configuration.onglet.etiquettes")); //$NON-NLS-1$
-			tabbedpane.setTitleAt(3, ApplicationCore.ajrLibelle.getResourceString("configuration.onglet.avance")); //$NON-NLS-1$
+			tabbedpane.setTitleAt(0, localisation.getResourceString("configuration.onglet.genral")); //$NON-NLS-1$
+			tabbedpane.setTitleAt(1, localisation.getResourceString("configuration.onglet.concours")); //$NON-NLS-1$
+			tabbedpane.setTitleAt(2, localisation.getResourceString("configuration.onglet.etiquettes")); //$NON-NLS-1$
+			tabbedpane.setTitleAt(3, localisation.getResourceString("configuration.onglet.avance")); //$NON-NLS-1$
 		}
-
-		affectLibelleGeneral();
-		affectLibelleConcours();
-		affectLibelleEtiquette();
-		affectLibelleAdvanced();
 	}
 
-	private void affectLibelleGeneral() {
-		jlNomProfil.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.general.profil")); //$NON-NLS-1$
-		jlNomClub.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.general.nom")); //$NON-NLS-1$
-		jlAgremClub.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.general.agrement")); //$NON-NLS-1$
-		jlIntituleConcours.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.general.intituleconcours")); //$NON-NLS-1$
-		jlLangue.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.general.langue")); //$NON-NLS-1$
-		jlPathPdf.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.general.pdf")); //$NON-NLS-1$
-		jlLogoPath.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.general.logo")); //$NON-NLS-1$
-
-		tbProfil.setTitle(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.general.titre0")); //$NON-NLS-1$
-		tbParamGeneral.setTitle(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.general.titre1")); //$NON-NLS-1$
-
-		jbRenameProfile.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.general.renameprofile")); //$NON-NLS-1$
-		jbParcourir.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.general.choiceclub")); //$NON-NLS-1$
-		jbParcourir.setToolTipText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.general.browseclub")); //$NON-NLS-1$
-		jbDetail.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.detail")); //$NON-NLS-1$
-		/*if (jbLogoPath.getText().equals("")) //$NON-NLS-1$
-			jbLogoPath.setText(ApplicationCore.ajrLibelle.getResourceString("parametre.logo")); //$NON-NLS-1$*/
-	}
-
-	private void affectLibelleConcours() {
-		jlReglement.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.concours.reglement")); //$NON-NLS-1$
-		jbSelectReglement.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.concours.change_reglement")); //$NON-NLS-1$
-		jlNbCible.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.concours.cible")); //$NON-NLS-1$
-		jlNbTireur.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.concours.tireur")); //$NON-NLS-1$
-		jlNbDepart.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.concours.depart")); //$NON-NLS-1$
-	}
-
-	private void affectLibelleEtiquette() {
-		jlFormatPapier.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.etiquettes.formatpapier")); //$NON-NLS-1$
-		jlNbEtiquettes.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.etiquettes.nbetiquettes")); //$NON-NLS-1$
-		jlMarges.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.etiquettes.marges")); //$NON-NLS-1$
-		jlMargesH.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.etiquettes.haut")); //$NON-NLS-1$
-		jlMargesB.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.etiquettes.bas")); //$NON-NLS-1$
-		jlMargesG.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.etiquettes.gauche")); //$NON-NLS-1$
-		jlMargesD.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.etiquettes.droite")); //$NON-NLS-1$
-		jlEspacements.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.etiquettes.espacement")); //$NON-NLS-1$
-		jlEspacementsH.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.etiquettes.horizontal")); //$NON-NLS-1$
-		jlEspacementsV.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.etiquettes.vertical")); //$NON-NLS-1$
-	}
-
-	private void affectLibelleAdvanced() {
-		jlResultats.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.interface.resultat")); //$NON-NLS-1$
-		jlAffResultats.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.interface.affresultat")); //$NON-NLS-1$
-		jlURLImport.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.interface.urlimport")); //$NON-NLS-1$
-		jlURLExport.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.interface.urlexport")); //$NON-NLS-1$
-		jcbFirstBoot.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.interface.firstboot")); //$NON-NLS-1$
-
-		jcbAvanceResultatCumul.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.interface.resultatcumul")); //$NON-NLS-1$
-		jcbAvanceResultatSupl.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.interface.resultatdnm")); //$NON-NLS-1$
-		jcbAvanceAffResultatExEquo.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.interface.resultataffexequo")); //$NON-NLS-1$
-
-		jrbUseSystemConfig.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.avance.utilisationproxysystem")); //$NON-NLS-1$
-		jrbUseSpecificConfig.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.avance.utilisationproxycustom")); //$NON-NLS-1$
-		tbProxy.setTitle(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.avance.configurationproxy")); //$NON-NLS-1$
-		jlAdresseProxy.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.avance.adresseproxy")); //$NON-NLS-1$
-		jlPortProxy.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.avance.portproxy")); //$NON-NLS-1$
-		jcbAuthentificationProxy.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.avance.authentificationproxy")); //$NON-NLS-1$
-		jlUserProxy.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.avance.userproxy")); //$NON-NLS-1$
-		jlPasswordProxy.setText(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.avance.passwordproxy")); //$NON-NLS-1$
-	}
-
-	private void completePanel(Configuration configuration) {
-		completeGeneralPanel(configuration);
-		completeConcoursPanel(configuration);
-		completeEtiquettePanel(configuration);
-		completeAdvancedPanel(configuration);
-		jbAnnuler.setEnabled(!configuration.isFirstboot());
+	private void completePanel() {
+		completeGeneralPanel(workConfiguration);
+		completeConcoursPanel(workConfiguration);
+		completeEtiquettePanel(workConfiguration);
+		completeAdvancedPanel(workConfiguration);
+		jbAnnuler.setEnabled(!workAppConfiguration.isFirstboot());
 	}
 
 	private void completeGeneralPanel(Configuration configuration) {
@@ -673,7 +652,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		for (String profile : ApplicationCore.userRessources.listAvailableConfigurations())
 			jcbProfil.addItem(profile);
 		jcbProfil.addItem("---"); //$NON-NLS-1$
-		jcbProfil.addItem(ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.general.addprofile")); //$NON-NLS-1$
+		jcbProfil.addItem(localisation.getResourceString("configuration.ecran.general.addprofile")); //$NON-NLS-1$
 
 		jcbProfil.setSelectedItem(configuration.getCurProfil());
 		jcbProfil.addActionListener(this);
@@ -737,24 +716,23 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 
 	private void completeAdvancedPanel(Configuration configuration) {
 		jcbAvanceResultatCumul.setSelected(configuration.isInterfaceResultatCumul());
-		jcbAvanceResultatSupl.setSelected(configuration.isInterfaceResultatSupl());
 		jcbAvanceAffResultatExEquo.setSelected(configuration.isInterfaceAffResultatExEquo());
 
-		jrbUseSpecificConfig.setSelected(configuration.isUseProxy());
-		jlAdresseProxy.setEnabled(configuration.isUseProxy());
-		jtfAdresseProxy.setEnabled(configuration.isUseProxy());
-		jlPortProxy.setEnabled(configuration.isUseProxy());
-		jtfPortProxy.setEnabled(configuration.isUseProxy());
-		if (configuration.getProxy() != null) {
-			jtfAdresseProxy.setText(configuration.getProxy().getProxyServerAddress());
-			jtfPortProxy.setText(configuration.getProxy().getProxyServerPort() + ""); //$NON-NLS-1$
-			jcbAuthentificationProxy.setSelected(configuration.getProxy().isUseProxyAuthentification());
-			jlUserProxy.setEnabled(configuration.getProxy().isUseProxyAuthentification());
-			jtfUserProxy.setText(configuration.getProxy().getProxyAuthLogin());
-			jtfUserProxy.setEnabled(configuration.getProxy().isUseProxyAuthentification());
-			jlPasswordProxy.setEnabled(configuration.getProxy().isUseProxyAuthentification());
-			jpfPasswordProxy.setText(configuration.getProxy().getProxyAuthPassword());
-			jpfPasswordProxy.setEnabled(configuration.getProxy().isUseProxyAuthentification());
+		jrbUseSpecificConfig.setSelected(workAppConfiguration.isUseProxy());
+		jlAdresseProxy.setEnabled(workAppConfiguration.isUseProxy());
+		jtfAdresseProxy.setEnabled(workAppConfiguration.isUseProxy());
+		jlPortProxy.setEnabled(workAppConfiguration.isUseProxy());
+		jtfPortProxy.setEnabled(workAppConfiguration.isUseProxy());
+		if (workAppConfiguration.getProxy() != null) {
+			jtfAdresseProxy.setText(workAppConfiguration.getProxy().getProxyServerAddress());
+			jtfPortProxy.setText(workAppConfiguration.getProxy().getProxyServerPort() + ""); //$NON-NLS-1$
+			jcbAuthentificationProxy.setSelected(workAppConfiguration.getProxy().isUseProxyAuthentification());
+			jlUserProxy.setEnabled(workAppConfiguration.getProxy().isUseProxyAuthentification());
+			jtfUserProxy.setText(workAppConfiguration.getProxy().getProxyAuthLogin());
+			jtfUserProxy.setEnabled(workAppConfiguration.getProxy().isUseProxyAuthentification());
+			jlPasswordProxy.setEnabled(workAppConfiguration.getProxy().isUseProxyAuthentification());
+			jpfPasswordProxy.setText(workAppConfiguration.getProxy().getProxyAuthPassword()); 
+			jpfPasswordProxy.setEnabled(workAppConfiguration.getProxy().isUseProxyAuthentification());
 		}
 	}
 
@@ -766,13 +744,13 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	private ArrayList<String> getPdfPath(Configuration configuration) {
 		ArrayList<String> pdfPath = new ArrayList<String>();
 
-		if (!configuration.getPdfReaderPath().equals("")) { //$NON-NLS-1$
-			pdfPath.add(configuration.getPdfReaderPath());
+		if (!workAppConfiguration.getPdfReaderPath().equals("")) {  //$NON-NLS-1$
+			pdfPath.add(workAppConfiguration.getPdfReaderPath());
 		}
 		// Recherche d'un lecteur pdf en fonction du syteme
-		if (System.getProperty("os.name").startsWith("Windows")) { //$NON-NLS-1$ //$NON-NLS-2$
+		if (System.getProperty("os.name").startsWith("Windows")) { //$NON-NLS-1$ //$NON-NLS-2$ 
 
-			String base_pdfPath = ApplicationCore.ajrParametreAppli.getResourceString("path.windows.acrobat"); //$NON-NLS-1$
+			String base_pdfPath = ApplicationCore.staticParameters.getResourceString("path.windows.acrobat");  //$NON-NLS-1$
 			// tente l'ouverture de acrobat reader
 			File f = new File(base_pdfPath);
 
@@ -781,7 +759,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 				String reader = ""; //$NON-NLS-1$
 				for (int i = 0; i < fList.length; i++) {
 					if (fList[i].startsWith("Acrobat")) { //$NON-NLS-1$
-						reader = base_pdfPath + File.separator + fList[i] + "\\Reader\\AcroRd32.exe"; //$NON-NLS-1$
+						reader = base_pdfPath + File.separator + fList[i] + "\\Reader\\AcroRd32.exe";  //$NON-NLS-1$
 						pdfPath.add(reader);
 					}
 				}
@@ -789,7 +767,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 
 		} else if (System.getProperty("os.name").contains("Linux")) { //$NON-NLS-1$ //$NON-NLS-2$
 
-			String[] pdfReader = StringUtils.tokenize(ApplicationCore.ajrParametreAppli.getResourceString("path.unix.pdf"), ","); //$NON-NLS-1$ //$NON-NLS-2$
+			String[] pdfReader = StringUtils.tokenize(ApplicationCore.staticParameters.getResourceString("path.unix.pdf"), ",");  //$NON-NLS-1$ //$NON-NLS-2$
 			for (String reader : pdfReader)
 				pdfPath.add(reader);
 		}
@@ -817,7 +795,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	private void changeLogoPath() {
 		File f;
 		JFileChooser fileDialog = new JFileChooser(workConfiguration.getLogoPath());
-		FileChooserFileFilter filtreimg = new FileChooserFileFilter(new String[] { "jpg", "gif" }, ApplicationCore.ajrLibelle.getResourceString("filter.gifjpeg")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		FileChooserFileFilter filtreimg = new FileChooserFileFilter(new String[] { "jpg", "gif" }, localisation.getResourceString("filter.gifjpeg")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		fileDialog.addChoosableFileFilter(filtreimg);
 		fileDialog.setDialogType(JFileChooser.OPEN_DIALOG);
 		fileDialog.showOpenDialog(this);
@@ -828,26 +806,28 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		ImageIcon logo = new ImageIcon(f.getPath());
 		logo = new ImageIcon(logo.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
 		jbLogoPath.setIcon(logo);
-		//jbLogoPath.setText("<html><img src=\"file:" + f.getPath() + "\" width=90 height=100></html>"); //$NON-NLS-1$ //$NON-NLS-2$
+		//jbLogoPath.setText("<html><img src=\"file:" + f.getPath() + "\" width=90 height=100></html>"); 
 		workConfiguration.setLogoPath(f.getPath());
 	}
 
-	public Configuration showConfigurationDialog(Configuration configuration) {
+	public Configuration showConfigurationDialog(AppConfiguration appConfiguration, Configuration configuration) {
 		try {
 			configuration.save();
+			appConfiguration.save();
 		} catch (JAXBException e) {
-			JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+			JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), //$NON-NLS-1$
 					e.toString(), null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		} catch (IOException e) {
-			JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+			JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), //$NON-NLS-1$
 					e.toString(), null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		}
 		
 		this.workConfiguration = configuration;
+		this.workAppConfiguration = appConfiguration;
 
-		completePanel(workConfiguration);
+		completePanel();
 		pack();
 		setVisible(true);
 
@@ -859,6 +839,10 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	 */
 	public Configuration getWorkConfiguration() {
 		return workConfiguration;
+	}
+	
+	public AppConfiguration getWorkAppConfiguration() {
+		return workAppConfiguration;
 	}
 
 	/**
@@ -876,9 +860,9 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	 */
 	private String[] listLangue() {
 		if (strLstLangue == null) {
-			String[] strLng = new File("lang").list(new FilenameFilter() { //$NON-NLS-1$
+			String[] strLng = new File("lang").list(new FilenameFilter() {  //$NON-NLS-1$
 						public boolean accept(File dir, String name) {
-							if (name.startsWith("libelle_") && name.endsWith(".properties")) //$NON-NLS-1$ //$NON-NLS-2$
+							if (name.startsWith("libelle_") && name.endsWith(".properties"))  //$NON-NLS-1$ //$NON-NLS-2$
 								return true;
 							return false;
 						}
@@ -895,7 +879,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	private void loadProfile() throws IOException {
 		renamedProfile = false;
 		workConfiguration = ConfigurationManager.loadConfiguration((String) jcbProfil.getSelectedItem());
-		completePanel(workConfiguration);
+		completePanel();
 
 		workConfiguration.setCurProfil((String) jcbProfil.getSelectedItem());
 	}
@@ -922,33 +906,33 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 			if(((margeGauche + (espacementHorizontal*nbColonne-1) + margeDroite) / 2.54 * 72 > pageDimension.getWidth())
 					|| ((margeHaut + (espacementVertical*nbLigne-1) + margeBas) / 2.54 * 72 > pageDimension.getHeight())) {
 				JOptionPane.showMessageDialog(this, 
-						ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.etiquettes.errordimension"), //$NON-NLS-1$
-						ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.etiquettes.errordimension.title"), //$NON-NLS-1$
+						localisation.getResourceString("configuration.ecran.etiquettes.errordimension"), //$NON-NLS-1$
+						localisation.getResourceString("configuration.ecran.etiquettes.errordimension.title"),  //$NON-NLS-1$
 						JOptionPane.ERROR_MESSAGE);
 				return false;
 			}
 		} catch (SecurityException e) {
-			JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+			JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), //$NON-NLS-1$
 					e.toString(), null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
-			JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+			JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), //$NON-NLS-1$
 					e.toString(), null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		} catch (NoSuchFieldException e) {
-			JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+			JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), //$NON-NLS-1$
 					e.toString(), null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			JXErrorPane.showDialog(this, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+			JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), //$NON-NLS-1$
 					e.toString(), null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		}
 		
 		if(jtfNomClub.getText().isEmpty()) {
 			JOptionPane.showMessageDialog(this, 
-					ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.general.errornameclub"), //$NON-NLS-1$
-					ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.general.errornameclub.title"), //$NON-NLS-1$
+					localisation.getResourceString("configuration.ecran.general.errornameclub"), //$NON-NLS-1$
+					localisation.getResourceString("configuration.ecran.general.errornameclub.title"),  //$NON-NLS-1$
 					JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
@@ -957,13 +941,13 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		workConfiguration.getClub().setAgrement(jtfAgrClub.getText());
 		workConfiguration.setIntituleConcours(jtfIntConc.getText());
 		workConfiguration.setLangue(listLangue()[jcbLangue.getSelectedIndex()]);
-		workConfiguration.setPdfReaderPath(jcbPathPdf.getSelectedItem().toString());
+		workAppConfiguration.setPdfReaderPath(jcbPathPdf.getSelectedItem().toString());
 
 		workConfiguration.setReglementName(jlSelectedReglement.getText());
 		workConfiguration.setNbCible(Integer.parseInt(jtfNbCible.getText()));
 		workConfiguration.setNbTireur((jcbNbTireur.getSelectedIndex() == 0) ? 2 : 4);
 		workConfiguration.setNbDepart(Integer.parseInt(jtfNbDepart.getText()));
-		workConfiguration.setFirstboot(jcbFirstBoot.isSelected());
+		workAppConfiguration.setFirstboot(jcbFirstBoot.isSelected());
 
 		workConfiguration.setFormatPapier((String) this.jcbFormatPapier.getSelectedItem());
 		workConfiguration.setOrientation((String) this.jcbOrientation.getSelectedItem());
@@ -971,13 +955,14 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		workConfiguration.setMarges(new Margin(margeHaut, margeBas, margeGauche, margeDroite));
 		workConfiguration.setEspacements(new double[] { espacementHorizontal, espacementVertical });
 		workConfiguration.setInterfaceResultatCumul(jcbAvanceResultatCumul.isSelected());
-		workConfiguration.setInterfaceResultatSupl(jcbAvanceResultatSupl.isSelected());
 		workConfiguration.setInterfaceAffResultatExEquo(jcbAvanceAffResultatExEquo.isSelected());
 
-		workConfiguration.setUseProxy(jrbUseSpecificConfig.isSelected());
-		Proxy proxy = new Proxy(jtfAdresseProxy.getText(), Integer.parseInt("0" + jtfPortProxy.getText()), jtfUserProxy.getText(), new String(jpfPasswordProxy.getPassword())); //$NON-NLS-1$
-		proxy.setUseProxyAuthentification(jcbAuthentificationProxy.isSelected());
-		workConfiguration.setProxy(proxy);
+		workAppConfiguration.setUseProxy(jrbUseSpecificConfig.isSelected());
+		workAppConfiguration.getProxy().setProxyServerAddress(jtfAdresseProxy.getText());
+		workAppConfiguration.getProxy().setProxyServerPort(Integer.parseInt("0" + jtfPortProxy.getText()));  //$NON-NLS-1$
+		workAppConfiguration.getProxy().setUseProxyAuthentification(jcbAuthentificationProxy.isSelected());
+		workAppConfiguration.getProxy().setProxyAuthLogin(jtfUserProxy.getText());
+		workAppConfiguration.getProxy().setProxyAuthPassword(new String(jpfPasswordProxy.getPassword()));
 		
 		return true;
 	}
@@ -988,14 +973,6 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
 		if (source == this.jbValider) {
-			ApplicationCore core = ApplicationCore.getInstance();
-			
-			if(core.getFichesConcours().size() > 0 
-					&& !workConfiguration.getCurProfil().equals(ApplicationCore.getConfiguration().getCurProfil())
-					&& JOptionPane.showConfirmDialog(this, 
-					ApplicationCore.ajrLibelle.getResourceString("configuration.fermeture.confirmation"), "", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) //$NON-NLS-1$ //$NON-NLS-2$
-				return;
-
 			if(registerConfig())
 				setVisible(false);
 		} else if (source == jbAnnuler) {
@@ -1014,17 +991,18 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 					this.jcbPathPdf.setSelectedItem(fileDialog.getSelectedFile().getCanonicalPath());
 				}
 			} catch (IOException io) {
-				System.err.println("IOException: " + io.getMessage()); //$NON-NLS-1$
+				System.err.println("IOException: " + io.getMessage());  //$NON-NLS-1$
 			} catch (NullPointerException npe) {
-				System.err.println("Aucune sauvegarde possible. Action annulé"); //$NON-NLS-1$
+				System.err.println("Aucune sauvegarde possible. Action annulé");  //$NON-NLS-1$
 			}
 		} else if (source == jbParcourir) {
-			EntiteListDialog eld = new EntiteListDialog(null);
+			EntiteListDialog eld = new EntiteListDialog(null, localisation);
 			if (eld.getAction() == EntiteListDialog.VALIDER)
 					jtfAgrClub.setText(eld.getSelectedEntite().getAgrement());
 		} else if (source == this.jbDetail) {
-			EntiteDialog ed = new EntiteDialog(this);
-			ed.showEntite(workConfiguration.getClub());
+			EntiteDialog ed = new EntiteDialog(this, localisation);
+			ed.setEntite(workConfiguration.getClub());
+			ed.showEntiteDialog();
 
 			jtfNomClub.setText(workConfiguration.getClub().getNom());
 		} else if (source == jcbProfil) {
@@ -1033,25 +1011,25 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 					try {
 						loadProfile();
 					} catch (IOException e1) {
-						JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+						JXErrorPane.showDialog(null, new ErrorInfo(localisation.getResourceString("erreur"), //$NON-NLS-1$
 								e1.toString(), null, null, e1, Level.SEVERE, null));
 						e1.printStackTrace();
 					}
 				} else if (jcbProfil.getSelectedIndex() == jcbProfil.getItemCount() - 1) {
-					String strP = JOptionPane.showInputDialog(this, ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.general.newprofile")); //$NON-NLS-1$
-					if (strP != null && !strP.equals("")) { //$NON-NLS-1$
+					String strP = JOptionPane.showInputDialog(this, localisation.getResourceString("configuration.ecran.general.newprofile")); //$NON-NLS-1$
+					if (strP != null && !strP.equals("")) {  //$NON-NLS-1$
 
 						workConfiguration.setCurProfil(strP);
 						workConfiguration.getMetaDataFichesConcours().removeAll();
 
-						completePanel(workConfiguration);
+						completePanel();
 						jcbProfil.insertItemAt(strP, 0);
 						jcbProfil.setSelectedItem(strP);
 					}
 				}
 			}
 		} else if (source == jbRenameProfile) {
-			String strP = JOptionPane.showInputDialog(this, ApplicationCore.ajrLibelle.getResourceString("configuration.ecran.general.newprofile"), //$NON-NLS-1$ 
+			String strP = JOptionPane.showInputDialog(this, localisation.getResourceString("configuration.ecran.general.newprofile"), //$NON-NLS-1$ 
 					workConfiguration.getCurProfil());
 			if (strP != null && !strP.isEmpty()) {
 				renameProfile = true;
@@ -1059,7 +1037,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 				int insIndex = jcbProfil.getSelectedIndex();
 				
 				try {
-					renamedProfile = ConfigurationManager.renameConfiguration(workConfiguration.getCurProfil(), strP);
+					renamedProfile = ConfigurationManager.renameConfiguration(profile, workConfiguration.getCurProfil(), strP);
 				} catch (NullConfigurationException e1) {
 					renamedProfile = false;
 					e1.printStackTrace();
@@ -1082,8 +1060,8 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 					renamedProfile = true;
 				} else {
 					JOptionPane.showMessageDialog(this, 
-							ApplicationCore.ajrLibelle.getResourceString("erreur.renameprofile"), //$NON-NLS-1$
-							ApplicationCore.ajrLibelle.getResourceString("erreur.renameprofile.title"), //$NON-NLS-1$
+							localisation.getResourceString("erreur.renameprofile"), //$NON-NLS-1$
+							localisation.getResourceString("erreur.renameprofile.title"),  //$NON-NLS-1$
 							JOptionPane.ERROR_MESSAGE);
 				}
 				/*} else {
@@ -1103,7 +1081,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 			jtfUserProxy.setEnabled(jcbAuthentificationProxy.isSelected());
 			jpfPasswordProxy.setEnabled(jcbAuthentificationProxy.isSelected());
 		} else if (source == jbSelectReglement) {
-			ReglementManagerDialog reglementManagerDialog = new ReglementManagerDialog(parentframe);
+			ReglementManagerDialog reglementManagerDialog = new ReglementManagerDialog(parentframe, localisation);
 			Reglement reglement = reglementManagerDialog.showReglementManagerDialog(true);
 			if(reglement != null)
 				jlSelectedReglement.setText(reglement.getName());

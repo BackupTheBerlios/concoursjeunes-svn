@@ -117,17 +117,17 @@ public class ConcoursListeRenderer extends JLabel implements ListCellRenderer {
 	 */
 	public ConcoursListeRenderer() {
 		archerIcon = new ImageIcon(
-				ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
-				ApplicationCore.ajrParametreAppli.getResourceString("file.icon.archer.normal")); //$NON-NLS-1$
+				ApplicationCore.staticParameters.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
+				ApplicationCore.staticParameters.getResourceString("file.icon.archer.normal")); //$NON-NLS-1$
 		archerHandicapIcon = new ImageIcon(
-				ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
-				ApplicationCore.ajrParametreAppli.getResourceString("file.icon.archer.handicap")); //$NON-NLS-1$
+				ApplicationCore.staticParameters.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
+				ApplicationCore.staticParameters.getResourceString("file.icon.archer.handicap")); //$NON-NLS-1$
 		archerRedIcon = new ImageIcon(
-				ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
-				ApplicationCore.ajrParametreAppli.getResourceString("file.icon.archer.notarget")); //$NON-NLS-1$
+				ApplicationCore.staticParameters.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
+				ApplicationCore.staticParameters.getResourceString("file.icon.archer.notarget")); //$NON-NLS-1$
 		archerHandicapRedIcon = new ImageIcon(
-				ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
-				ApplicationCore.ajrParametreAppli.getResourceString("file.icon.archer.handicap.notarget")); //$NON-NLS-1$
+				ApplicationCore.staticParameters.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
+				ApplicationCore.staticParameters.getResourceString("file.icon.archer.handicap.notarget")); //$NON-NLS-1$
 	}
 
 	/**

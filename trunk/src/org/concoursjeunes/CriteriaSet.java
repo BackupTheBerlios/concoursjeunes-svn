@@ -304,9 +304,4 @@ public class CriteriaSet {
 		}
 		return result;
 	}
-	
-	@Override
-	public String toString() {
-		return new CriteriaSetLibelle(this).toString();
-	}
 }

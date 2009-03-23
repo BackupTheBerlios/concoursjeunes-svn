@@ -12,7 +12,7 @@ function updateReglements() {
 
 	with(contexte) {
 		//liste l'ensemble des fichiers de réglements
-		var updatePath = new File(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources"), "update");
+		var updatePath = new File(ApplicationCore.staticParameters.getResourceString("path.ressources"), "update");
 		var reglements = FileUtils.listAllFiles(updatePath, ".*\\.reglement");
 		var rManager = new ReglementManager();
 		for(var i = 0; i < reglements.size(); i++) {

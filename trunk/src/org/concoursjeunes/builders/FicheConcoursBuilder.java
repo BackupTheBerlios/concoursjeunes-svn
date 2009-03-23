@@ -95,6 +95,7 @@ import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.FicheConcours;
 import org.concoursjeunes.MetaDataFicheConcours;
+import org.concoursjeunes.Profile;
 
 /**
  * @author Aurélien JEOFFRAY
@@ -106,24 +107,26 @@ public class FicheConcoursBuilder {
 	 * pour identifier le fichier du concours
 	 * 
 	 * @param metaDataFicheConcours les métadonnées du concours à charger
+	 * @param profile le profile contenant le concours à charger
 	 * @return la fiche concours chargé
 	 * @throws IOException
 	 */
-	public static FicheConcours getFicheConcours(MetaDataFicheConcours metaDataFicheConcours) 
+	public static FicheConcours getFicheConcours(MetaDataFicheConcours metaDataFicheConcours, Profile profile) 
 			throws IOException {
-		File fFiche = new File(ApplicationCore.userRessources.getConcoursPathForProfile(ApplicationCore.getConfiguration().getCurProfil()) + File.separator
-				+ metaDataFicheConcours.getFilenameConcours());
+		File fFiche = new File(ApplicationCore.userRessources.getConcoursPathForProfile(profile),
+				metaDataFicheConcours.getFilenameConcours());
 		Object[] savedStructure = XMLSerializer.loadXMLStructure(fFiche, true);
 
 		if (savedStructure != null) {
 			// lecture du fichier
-			FicheConcours ficheConcours = new FicheConcours();
+			FicheConcours ficheConcours = new FicheConcours(profile);
 			ficheConcours.setFiche(savedStructure, metaDataFicheConcours);
 
 			System.out.println("Fin chargement du concours " + metaDataFicheConcours.getIntituleConcours()); //$NON-NLS-1$
+			
 			return ficheConcours;
 		}
 
-		throw new IOException("Echec de chargement du concours " + metaDataFicheConcours.getIntituleConcours() + "(" + metaDataFicheConcours.getFilenameConcours() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		throw new IOException("Failed to load competition " + metaDataFicheConcours.getIntituleConcours() + "(" + metaDataFicheConcours.getFilenameConcours() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 }

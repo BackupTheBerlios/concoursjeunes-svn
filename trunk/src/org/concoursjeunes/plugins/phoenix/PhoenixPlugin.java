@@ -97,8 +97,11 @@ import org.concoursjeunes.Configuration;
 import org.concoursjeunes.MetaDataFicheConcours;
 import org.concoursjeunes.MetaDataFichesConcours;
 import org.concoursjeunes.Parametre;
-import org.concoursjeunes.event.ConcoursJeunesEvent;
-import org.concoursjeunes.event.ConcoursJeunesListener;
+import org.concoursjeunes.Profile;
+import org.concoursjeunes.event.ApplicationCoreEvent;
+import org.concoursjeunes.event.ApplicationCoreListener;
+import org.concoursjeunes.event.ProfileEvent;
+import org.concoursjeunes.event.ProfileListener;
 import org.concoursjeunes.plugins.Plugin;
 import org.concoursjeunes.plugins.PluginEntry;
 
@@ -107,24 +110,26 @@ import org.concoursjeunes.plugins.PluginEntry;
  *
  */
 @Plugin(type = Plugin.Type.STARTUP)
-public class PhoenixPlugin extends Thread implements ConcoursJeunesListener {
+public class PhoenixPlugin implements ProfileListener, ApplicationCoreListener {
+	
 	public PhoenixPlugin() {
-		ApplicationCore.getInstance().addConcoursJeunesListener(this);
+		for(Profile profile : ApplicationCore.getInstance().getProfiles())
+			profile.addProfileListener(this);
+		ApplicationCore.getInstance().addApplicationCoreListener(this);
 	}
 	
-	@Override
 	@PluginEntry
 	public void start() {
-		super.start();
+		for(Profile profile : ApplicationCore.getInstance().getProfiles())
+			findConcours(profile);
 	}
 	
-	@Override
-	public void run() {
-		Configuration configuration = ApplicationCore.getConfiguration();
+	private synchronized void findConcours(Profile profile) {
+		Configuration configuration = profile.getConfiguration();
 		
 		MetaDataFichesConcours metaDataFichesConcours = configuration.getMetaDataFichesConcours();
 		
-		File concoursPath = ApplicationCore.userRessources.getConcoursPathForProfile(configuration.getCurProfil());
+		File concoursPath = ApplicationCore.userRessources.getConcoursPathForProfile(profile);
 		
 		File[] concoursFiles = concoursPath.listFiles();
 		
@@ -158,15 +163,15 @@ public class PhoenixPlugin extends Thread implements ConcoursJeunesListener {
 	 * @see org.concoursjeunes.ConcoursJeunesListener#configurationChanged(org.concoursjeunes.ConcoursJeunesEvent)
 	 */
 	@Override
-	public void configurationChanged(ConcoursJeunesEvent concoursJeunesEvent) {
-		run();
+	public void configurationChanged(ProfileEvent profileEvent) {
+		findConcours(profileEvent.getProfile());
 	}
 
 	/* (non-Javadoc)
 	 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursClosed(org.concoursjeunes.ConcoursJeunesEvent)
 	 */
 	@Override
-	public void ficheConcoursClosed(ConcoursJeunesEvent concoursJeunesEvent) {
+	public void ficheConcoursClosed(ProfileEvent concoursJeunesEvent) {
 		
 	}
 
@@ -174,7 +179,7 @@ public class PhoenixPlugin extends Thread implements ConcoursJeunesListener {
 	 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursCreated(org.concoursjeunes.ConcoursJeunesEvent)
 	 */
 	@Override
-	public void ficheConcoursCreated(ConcoursJeunesEvent concoursJeunesEvent) {
+	public void ficheConcoursCreated(ProfileEvent concoursJeunesEvent) {
 		
 	}
 
@@ -182,7 +187,7 @@ public class PhoenixPlugin extends Thread implements ConcoursJeunesListener {
 	 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursDeleted(org.concoursjeunes.ConcoursJeunesEvent)
 	 */
 	@Override
-	public void ficheConcoursDeleted(ConcoursJeunesEvent concoursJeunesEvent) {
+	public void ficheConcoursDeleted(ProfileEvent concoursJeunesEvent) {
 		
 	}
 
@@ -190,7 +195,18 @@ public class PhoenixPlugin extends Thread implements ConcoursJeunesListener {
 	 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursRestored(org.concoursjeunes.ConcoursJeunesEvent)
 	 */
 	@Override
-	public void ficheConcoursRestored(ConcoursJeunesEvent concoursJeunesEvent) {
+	public void ficheConcoursRestored(ProfileEvent concoursJeunesEvent) {
+		
+	}
+
+	@Override
+	public void profileAdded(ApplicationCoreEvent e) {
+		findConcours(e.getProfile());
+	}
+
+	@Override
+	public void profileRemoved(ApplicationCoreEvent e) {
+		// TODO Raccord de méthode auto-généré
 		
 	}
 }

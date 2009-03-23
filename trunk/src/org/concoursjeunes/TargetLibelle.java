@@ -1,5 +1,7 @@
 /*
- * Copyright 2002-2008 - Aurélien JEOFFRAY
+ * Créer le 14 mars 2009 à 20:04:51 pour ConcoursJeunes
+ *
+ * Copyright 2002-2009 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
  *
@@ -84,103 +86,90 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes.ui;
+package org.concoursjeunes;
 
-import java.awt.Component;
-import java.io.File;
-
-import javax.swing.ImageIcon;
-import javax.swing.JTree;
-import javax.swing.tree.DefaultTreeCellRenderer;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map.Entry;
 
 import org.ajdeveloppement.commons.AjResourcesReader;
-import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.Concurrent;
-import org.concoursjeunes.Target;
-import org.concoursjeunes.TargetLibelle;
-import org.concoursjeunes.TargetPosition;
 
 /**
- * Affecte les icone à l'arbre des cibles
- * 
- * @author Aurélien Jeoffray
- * @version 2.0
+ * @author Aurélien JEOFFRAY
  *
  */
-
-public class TargetRenderer extends DefaultTreeCellRenderer {
-	private final ImageIcon archerIcon;
-	private final ImageIcon archerHandicapIcon;
-	private final ImageIcon cibleIcon;
-	private final ImageIcon disableIcon;
-
+public class TargetLibelle {
+	private Target target;
 	private AjResourcesReader localisation;
-	/**
-	 * Constructeur, initialise les icone à afficher
-	 */
-	public TargetRenderer(AjResourcesReader localisation) {
+
+	public TargetLibelle(Target target, AjResourcesReader localisation) {
+		super();
+		this.target = target;
 		this.localisation = localisation;
-		
-		archerIcon = new ImageIcon(
-				ApplicationCore.staticParameters.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
-				ApplicationCore.staticParameters.getResourceString("file.icon.archer.normal")); //$NON-NLS-1$
-		archerHandicapIcon = new ImageIcon(
-				ApplicationCore.staticParameters.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
-				ApplicationCore.staticParameters.getResourceString("file.icon.archer.handicap")); //$NON-NLS-1$
-		cibleIcon = new ImageIcon(
-				ApplicationCore.staticParameters.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
-				ApplicationCore.staticParameters.getResourceString("file.icon.target")); //$NON-NLS-1$
-		disableIcon = new ImageIcon(
-				ApplicationCore.staticParameters.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
-				ApplicationCore.staticParameters.getResourceString("file.icon.disable")); //$NON-NLS-1$
 	}
 
 	/**
-	 * affecte l'icone en fonction du type de noeud
-	 * 
-	 * @param tree - l'arbre affecté par le rendu
-	 * @param value - l'objet à prendre en compte pour le rendu
-	 * @param sel - Le noeud est il seléctionné ?
-	 * @param expanded - Le noeud est il étendu ?
-	 * @param leaf - Le noeud est il une feuille ?
-	 * @param hasFocus - Le noeud a t'il le focus ?
-	 * 
-	 * @return Component - Retourne le renderer
+	 * @return target
 	 */
+	public Target getTarget() {
+		return target;
+	}
+	
 	@Override
-	public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-		super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-		if (isCible(value)) {
-			setIcon(cibleIcon);
-			setText(new TargetLibelle((Target)value, localisation).toString());
-		} else if(value instanceof Concurrent) {
-			Concurrent concurrent = (Concurrent) value;
-			if(concurrent.isHandicape())
-				setIcon(archerHandicapIcon);
-			else
-				setIcon(archerIcon);
-		} else if (value instanceof TargetPosition) {
-			TargetPosition targetPosition = (TargetPosition) value;
-			TargetTreeModel targetTreeModel = (TargetTreeModel)tree.getModel();
-			if(targetTreeModel.getTargetChilds().get(targetPosition.getTarget() - 1).isReservedPosition(targetPosition.getPosition()))
-				setIcon(disableIcon);
-			else
-				setIcon(archerIcon);
+	public String toString() {
+		String strCouleur = "<font color=\"#00AA00\">"; //$NON-NLS-1$
+		if (target.getNbMaxArchers() == target.getNbArcher() + target.getNbHandicap())
+			strCouleur = "<font color=\"#0000FF\">"; //$NON-NLS-1$
+		String strCibleLibelle = "<html>" + strCouleur + "<b>" + localisation.getResourceString("treenode.cible") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				+ ((target.getNumCible() < 10) ? "0" : "") //$NON-NLS-1$ //$NON-NLS-2$
+				+ target.getNumCible() + "</b> ("; //$NON-NLS-1$
+		if(target.getDistancesEtBlason().size() > 0) {
+			List<DistancesEtBlason> dbs = target.getDistancesEtBlason();
+			if (dbs != null && dbs.size() > 0) {
+				//Sur une cible, les distances des differents objets sont réputées être identique
+				for (int i = 0; i < dbs.get(0).getDistance().length; i++) {
+					if (i == 0 || (i > 0 && dbs.get(0).getDistance()[i] != dbs.get(0).getDistance()[i - 1])) {
+						if (i > 0)
+							strCibleLibelle += "/"; //$NON-NLS-1$
+						strCibleLibelle += dbs.get(0).getDistance()[i] + "m"; //$NON-NLS-1$
+					}
+				}
+				strCibleLibelle += ", "; //$NON-NLS-1$
+				
+				//Les blasons sont eux toujours différent
+				for (int i = 0; i < dbs.size(); i++) {
+					if (i == 0 || (i > 0 && !dbs.get(i).getTargetFace().equals(dbs.get(i - 1).getTargetFace()))) {
+						if (i > 0)
+							strCibleLibelle += "/"; //$NON-NLS-1$
+						strCibleLibelle += dbs.get(i).getTargetFace().getName();
+					}
+				}
+			}
 		}
-		return this;
-	}
 
-	/**
-	 * teste si un noeud est une cible
-	 * 
-	 * @param value - le contenue du noeud à tester
-	 * 
-	 * @return boolean - true si c'est une cible, false dans le cas contraire
-	 */
-	protected boolean isCible(Object value) {
-		if(value instanceof Target) {
-			return true;
-		} 
-		return false;
+		strCibleLibelle += ") (" + target.getNbArcher() + "/" + (target.getNbMaxArchers() - target.getNbHandicap()) + ")</font>"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+		Hashtable<Entite, Integer> nbArcherByClub = new Hashtable<Entite, Integer>();
+		for (Concurrent concurrent : target.getAllConcurrents()) {
+			if(!nbArcherByClub.containsKey(concurrent.getClub()))
+				nbArcherByClub.put(concurrent.getClub(), 0);
+			nbArcherByClub.put(concurrent.getClub(), nbArcherByClub.get(concurrent.getClub())+1);
+		}
+		
+		if (nbArcherByClub.size() == 1 && target.getNbArcher() > 1)
+			strCibleLibelle += localisation.getResourceString("target.sameclub"); //$NON-NLS-1$
+		else if (target.getNbArcher() == 1)
+			strCibleLibelle += localisation.getResourceString("target.onlyone"); //$NON-NLS-1$
+		else {
+			for(Entry<Entite, Integer> nbarch : nbArcherByClub.entrySet()) {
+				if(nbarch.getValue() > 2) {
+					strCibleLibelle += localisation.getResourceString("target.morethan2sameclub"); //$NON-NLS-1$
+					break;
+				}
+			}
+		}
+		strCibleLibelle += "</html>"; //$NON-NLS-1$
+
+		return strCibleLibelle;
 	}
 }

@@ -20,15 +20,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
 
-import org.ajdeveloppement.commons.sql.SqlPersistanceBean;
-
 /**
  * parametre de distances et blason pour une cible et un concurrent
  * 
  * @author Aurélien Jeoffray
  * @version 1.0
  */
-public class DistancesEtBlason extends SqlPersistanceBean {
+public class DistancesEtBlason {
 	private int[] distances = new int[] { 18, 18 };
 	private int blason = 80;
 	private Blason targetFace = new Blason();

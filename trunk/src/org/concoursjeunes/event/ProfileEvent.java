@@ -87,13 +87,14 @@
 package org.concoursjeunes.event;
 
 import org.concoursjeunes.FicheConcours;
+import org.concoursjeunes.Profile;
 
 /**
  * Objet evenement de la class ConcoursJeunes
  * 
  * @author Aurélien JEOFFRAY
  */
-public class ConcoursJeunesEvent {
+public class ProfileEvent {
 	
 	/**
 	 * Type d'evenement pouvant être émis par la class ConcoursJeunes
@@ -110,6 +111,7 @@ public class ConcoursJeunesEvent {
 	}
 	
 	private FicheConcours ficheConcours;
+	private Profile profile;
 	
 	private Type action = Type.NONE;
 
@@ -119,8 +121,9 @@ public class ConcoursJeunesEvent {
 	 * @param ficheConcours la ficheConcours crée/supprimé
 	 * @param action l'action réalisé
 	 */
-	public ConcoursJeunesEvent(FicheConcours ficheConcours, Type action) {
+	public ProfileEvent(FicheConcours ficheConcours, Profile profile, Type action) {
 		this.ficheConcours = ficheConcours;
+		this.profile = profile;
 		this.action = action;
 	}
 
@@ -158,5 +161,19 @@ public class ConcoursJeunesEvent {
 	 */
 	public void setFicheConcours(FicheConcours ficheConcours) {
 		this.ficheConcours = ficheConcours;
+	}
+
+	/**
+	 * @return profile
+	 */
+	public Profile getProfile() {
+		return profile;
+	}
+
+	/**
+	 * @param profile profile à définir
+	 */
+	public void setProfile(Profile profile) {
+		this.profile = profile;
 	}
 }

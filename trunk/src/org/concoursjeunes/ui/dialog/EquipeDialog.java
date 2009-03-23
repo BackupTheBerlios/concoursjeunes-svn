@@ -86,8 +86,6 @@
  */
 package org.concoursjeunes.ui.dialog;
 
-import static org.concoursjeunes.ApplicationCore.ajrLibelle;
-
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
@@ -119,9 +117,9 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
+import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.AJTree;
 import org.ajdeveloppement.commons.ui.GhostGlassPane;
-import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.ConcurrentList;
 import org.concoursjeunes.CriteriaSet;
@@ -140,7 +138,8 @@ import org.concoursjeunes.FicheConcours;
  */
 public class EquipeDialog extends JDialog implements ActionListener, TreeSelectionListener, MouseListener, MouseMotionListener {
 
-	private final FicheConcours ficheConcours;
+	private AjResourcesReader localisation;
+	private FicheConcours ficheConcours;
 
 	private final Hashtable<Criterion, JCheckBox> classmentCriteriaCB = new Hashtable<Criterion, JCheckBox>();
 	private final JTree treeConcurrents = new JTree();
@@ -171,8 +170,9 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 	 * @param ficheConcours -
 	 *            La fiche concours associé
 	 */
-	public EquipeDialog(JFrame parentFrame, FicheConcours ficheConcours) {
+	public EquipeDialog(JFrame parentFrame, FicheConcours ficheConcours, AjResourcesReader localisation) {
 		super(parentFrame, true);
+		this.localisation = localisation;
 		this.ficheConcours = ficheConcours;
 		tempEquipes = ficheConcours.getEquipes().clone();
 
@@ -259,9 +259,9 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 	}
 
 	private void affectLibelle() {
-		cbEquipeClub.setText(ajrLibelle.getResourceString("equipe.contrainte.club")); //$NON-NLS-1$
-		jbValider.setText(ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
-		jbAnnuler.setText(ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
+		cbEquipeClub.setText(localisation.getResourceString("equipe.contrainte.club")); //$NON-NLS-1$
+		jbValider.setText(localisation.getResourceString("bouton.valider")); //$NON-NLS-1$
+		jbAnnuler.setText(localisation.getResourceString("bouton.annuler")); //$NON-NLS-1$
 	}
 
 	private void completePanel() {
@@ -291,7 +291,7 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 			// test si il existe des archers dans la catégorie
 			Concurrent[] concurrents = ficheConcours.getConcurrentList().list(catList[i], -1, criteriaFilter);
 			if (concurrents.length >= ficheConcours.getParametre().getReglement().getNbMembresRetenu()) {
-				dmtnCategorie[i] = new DefaultMutableTreeNode(new CriteriaSetLibelle(catList[i]));
+				dmtnCategorie[i] = new DefaultMutableTreeNode(new CriteriaSetLibelle(catList[i], localisation));
 
 				if (cbEquipeClub.isSelected()) {
 					Entite[] entites = ficheConcours.getConcurrentList().listCompagnie();
@@ -352,7 +352,7 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 		
 		for(CriteriaSet criteriaSet : sortedCriteriaSets) {
 			// generer le noeud correspondant
-			dmtnCategorie = new DefaultMutableTreeNode(new CriteriaSetLibelle(criteriaSet));
+			dmtnCategorie = new DefaultMutableTreeNode(new CriteriaSetLibelle(criteriaSet, localisation));
 	
 			// liste les équipes pour la catégorie
 			for (Equipe equipe : equipes.get(criteriaSet)) {
@@ -396,7 +396,7 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 		}
 
 		// generer le noeud correspondant
-		dmtnCategorie = new DefaultMutableTreeNode(new CriteriaSetLibelle(criteriaSet));
+		dmtnCategorie = new DefaultMutableTreeNode(new CriteriaSetLibelle(criteriaSet, localisation));
 
 		DefaultMutableTreeNode dmtnClub = null;
 		if (club != null)
@@ -420,33 +420,7 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 
 		// recharger l'arbre
 		treeModel.reload();
-
-		// selectionner le 1er élément
-		// treeEquipes.setSelectionRow(0);
-		//expandPath(treeEquipes, new TreePath(dmtnCategorie.getPath()), (club!=null)?1:0);
 	}
-
-	/*private void expandPath(JTree tree, TreePath treePath, int profondeur) {
-		tree.expandPath(treePath);
-
-		if(profondeur > 0) {
-			DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) treePath.getLastPathComponent();
-			for (int i = 0; i < treeNode.getChildCount(); i++) {
-				expandPath(tree, new TreePath(((DefaultMutableTreeNode) treeNode.getChildAt(i)).getPath()), --profondeur);
-			}
-		}
-	}*/
-
-	/*public void popup() {
-		popup = new JPopupMenu("Edit"); //$NON-NLS-1$
-
-		JMenuItem mi1 = new JMenuItem(ConcoursJeunes.ajrLibelle.getResourceString("popup.suppression")); //$NON-NLS-1$
-		mi1.setActionCommand("popup.suppression"); //$NON-NLS-1$
-		mi1.addActionListener(this);
-		popup.add(mi1);
-
-		treeEquipes.add(popup);
-	}*/
 
 	/**
 	 * renvoie la liste des équipes
@@ -495,7 +469,7 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 		}
 
 		do {
-			strEquipeName = JOptionPane.showInputDialog(this, ApplicationCore.ajrLibelle.getResourceString("equipe.saisinom"), strEquipeName); //$NON-NLS-1$
+			strEquipeName = JOptionPane.showInputDialog(this, localisation.getResourceString("equipe.saisinom"), strEquipeName); //$NON-NLS-1$
 			if(strEquipeName == null)
 				return false;
 		} while (strEquipeName.isEmpty() || tempEquipes.contains(strEquipeName));
@@ -541,8 +515,8 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 
 		// test si le nombre de concurrent n'est pas trop important pour l'équipe
 		if (equipe.getMembresEquipe().size() + selectionConc.length > ficheConcours.getParametre().getReglement().getNbMembresEquipe()) {
-			JOptionPane.showMessageDialog(this, ApplicationCore.ajrLibelle.getResourceString("equipe.taille.max"), //$NON-NLS-1$
-					ApplicationCore.ajrLibelle.getResourceString("equipe.warning"), JOptionPane.WARNING_MESSAGE); //$NON-NLS-1$
+			JOptionPane.showMessageDialog(this, localisation.getResourceString("equipe.taille.max"), //$NON-NLS-1$
+					localisation.getResourceString("equipe.warning"), JOptionPane.WARNING_MESSAGE); //$NON-NLS-1$
 			return false;
 		}
 		
@@ -586,8 +560,8 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 			for(Equipe equipe : tempEquipes.list()) {
 	            if(equipe.getMembresEquipe().size() < ficheConcours.getParametre().getReglement().getNbMembresRetenu()) {
 	                if(JOptionPane.showConfirmDialog(this, 
-	                		ApplicationCore.ajrLibelle.getResourceString("equipe.warning.incomplete"), //$NON-NLS-1$
-	                		ApplicationCore.ajrLibelle.getResourceString("equipe.warning.incomplete.title"), //$NON-NLS-1$
+	                		localisation.getResourceString("equipe.warning.incomplete"), //$NON-NLS-1$
+	                		localisation.getResourceString("equipe.warning.incomplete.title"), //$NON-NLS-1$
 	                		JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
 	                	return;
 	                }

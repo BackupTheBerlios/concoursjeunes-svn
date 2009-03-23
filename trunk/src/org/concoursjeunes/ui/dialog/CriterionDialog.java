@@ -102,9 +102,11 @@ import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.ajdeveloppement.apps.AppUtilities;
+import org.ajdeveloppement.apps.Localisable;
+import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.StringUtils;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
-import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Criterion;
 
 /**
@@ -116,24 +118,34 @@ public class CriterionDialog extends JDialog implements ActionListener, ChangeLi
 	public static final int NO_LOCK = 0;
 	public static final int PLACEMENT_LOCK = 1;
     
+	private AjResourcesReader localisation;
     private ReglementDialog parent;
     
     private Criterion criterion;
     
     private JLabel jlIndex = new JLabel();
+    @Localisable("criterion.code")
     private JLabel jlCode = new JLabel();
+    @Localisable("criterion.libelle")
     private JLabel jlLibelle = new JLabel();
+    @Localisable("criterion.ordretri")
     private JLabel jlSortOrder = new JLabel();
+    @Localisable("criterion.winfftacode.libelle")
     private JLabel jlWinFFTACode = new JLabel();
     private JTextField jtfCode = new JTextField(10);
     private JTextField jtfLibelle = new JTextField(20);
     private JComboBox jcbSortOrder = new JComboBox();
+    @Localisable("criterion.placement")
     private JCheckBox jcbPlacementCriterion = new JCheckBox();
+    @Localisable("criterion.classement")
     private JCheckBox jcbClassementCriterion = new JCheckBox();
+    @Localisable("criterion.classementequipe")
     private JCheckBox jcbClassementEquipeCriterion = new JCheckBox();
     private JComboBox jcbWinFFTACode = new JComboBox();
     
+    @Localisable("bouton.valider")
     private JButton jbValider = new JButton();
+    @Localisable("bouton.annuler")
     private JButton jbAnnuler = new JButton();
     
     private int lock = NO_LOCK;
@@ -142,8 +154,8 @@ public class CriterionDialog extends JDialog implements ActionListener, ChangeLi
      * 
      * @param parent
      */
-    public CriterionDialog(ReglementDialog parent) {
-        this(parent, null);
+    public CriterionDialog(ReglementDialog parent, AjResourcesReader localisation) {
+        this(parent, null, localisation);
     }
     
     /**
@@ -151,9 +163,10 @@ public class CriterionDialog extends JDialog implements ActionListener, ChangeLi
      * @param parent
      * @param criterion
      */
-    public CriterionDialog(ReglementDialog parent, Criterion criterion) {
+    public CriterionDialog(ReglementDialog parent, Criterion criterion, AjResourcesReader localisation) {
         super(parent, "", true); //$NON-NLS-1$
         
+        this.localisation = localisation;
         this.parent = parent;
         this.criterion = criterion;
         
@@ -219,26 +232,18 @@ public class CriterionDialog extends JDialog implements ActionListener, ChangeLi
      *
      */
     private void affectLibelle() {
-        setTitle(ApplicationCore.ajrLibelle.getResourceString("criterion.titre")); //$NON-NLS-1$
+        setTitle(localisation.getResourceString("criterion.titre")); //$NON-NLS-1$
         
-        jlCode.setText(ApplicationCore.ajrLibelle.getResourceString("criterion.code")); //$NON-NLS-1$
-        jlLibelle.setText(ApplicationCore.ajrLibelle.getResourceString("criterion.libelle")); //$NON-NLS-1$
-        jlSortOrder.setText(ApplicationCore.ajrLibelle.getResourceString("criterion.ordretri")); //$NON-NLS-1$
+        AppUtilities.localize(this, localisation);
+        
         jcbSortOrder.removeAllItems();
-        jcbSortOrder.addItem(ApplicationCore.ajrLibelle.getResourceString("criterion.ordretri.asc")); //$NON-NLS-1$
-        jcbSortOrder.addItem(ApplicationCore.ajrLibelle.getResourceString("criterion.ordretri.desc")); //$NON-NLS-1$
-        jcbPlacementCriterion.setText(ApplicationCore.ajrLibelle.getResourceString("criterion.placement")); //$NON-NLS-1$
-        jcbClassementCriterion.setText(ApplicationCore.ajrLibelle.getResourceString("criterion.classement")); //$NON-NLS-1$
-        jcbClassementEquipeCriterion.setText(ApplicationCore.ajrLibelle.getResourceString("criterion.classementequipe")); //$NON-NLS-1$
-        jlWinFFTACode.setText(ApplicationCore.ajrLibelle.getResourceString("criterion.winfftacode.libelle")); //$NON-NLS-1$
+        jcbSortOrder.addItem(localisation.getResourceString("criterion.ordretri.asc")); //$NON-NLS-1$
+        jcbSortOrder.addItem(localisation.getResourceString("criterion.ordretri.desc")); //$NON-NLS-1$
         jcbWinFFTACode.removeAllItems();
         jcbWinFFTACode.addItem(""); //$NON-NLS-1$
-        for(String critere : StringUtils.tokenize(ApplicationCore.ajrLibelle.getResourceString("criterion.winfftacode.code"), ",")) { //$NON-NLS-1$ //$NON-NLS-2$
+        for(String critere : StringUtils.tokenize(localisation.getResourceString("criterion.winfftacode.code"), ",")) { //$NON-NLS-1$ //$NON-NLS-2$
             jcbWinFFTACode.addItem(critere);
         }
-        
-        jbValider.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
-        jbAnnuler.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
     }
     
     /**

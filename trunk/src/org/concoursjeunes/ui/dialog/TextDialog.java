@@ -93,11 +93,22 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextPane;
 
-import org.concoursjeunes.ApplicationCore;
+import org.ajdeveloppement.apps.AppUtilities;
+import org.ajdeveloppement.apps.Localisable;
+import org.ajdeveloppement.commons.AjResourcesReader;
 
 /**
  * @author Aurélien JEOFFRAY
@@ -105,14 +116,18 @@ import org.concoursjeunes.ApplicationCore;
  */
 public class TextDialog extends JDialog implements ActionListener {
 	
-	private JTextPane jtpChangeLog = new JTextPane();
-	private JButton jbFermer = new JButton(); 
+	private AjResourcesReader localisation;
 	
+	private JTextPane jtpChangeLog = new JTextPane();
+	@Localisable("bouton.fermer")
+	private JButton jbFermer = new JButton(); 
 	
 	private String textPath;
 	
-	public TextDialog(JFrame parentframe) {
+	public TextDialog(JFrame parentframe, AjResourcesReader localisation) {
 		super(parentframe, true);
+		this.localisation = localisation;
+		
 		init();
 		affectLibelle();
 	}
@@ -132,8 +147,7 @@ public class TextDialog extends JDialog implements ActionListener {
 	}
 	
 	private void affectLibelle() {
-		//setTitle(ApplicationCore.ajrLibelle.getResourceString("changelog.title")); //$NON-NLS-1$
-		jbFermer.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.fermer")); //$NON-NLS-1$
+		AppUtilities.localize(this, localisation);
 	}
 	
 	private void completePane() {

@@ -105,17 +105,33 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.text.MaskFormatter;
 
+import org.ajdeveloppement.apps.AppUtilities;
+import org.ajdeveloppement.apps.Localisable;
+import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
-import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Entite;
 
 /**
  * @author Aurélien JEOFFRAY
  */
 public class EntiteDialog extends JDialog implements ActionListener {
-	// private ConcoursJeunes concoursJeunes;
+	private AjResourcesReader localisation;
 	private Entite entite;
 
+	@Localisable("entite.nom")
+	private JLabel jlNom = new JLabel();
+	@Localisable("entite.agrement")
+	private JLabel jlAgrement = new JLabel();
+	@Localisable("entite.adresse")
+	private JLabel jlAdresse = new JLabel();
+	@Localisable("entite.codepostal")
+	private JLabel jlCodePostal = new JLabel();
+	@Localisable("entite.ville")
+	private JLabel jlVille = new JLabel();
+	@Localisable("entite.type")
+	private JLabel jlType = new JLabel();
+	@Localisable("entite.note")
+	private JLabel jlNote = new JLabel();
 	private JTextField jtfNom;
 	private JTextField jftfAgrement;
 	private JTextField jtfAdresse;
@@ -124,36 +140,38 @@ public class EntiteDialog extends JDialog implements ActionListener {
 	private JComboBox jcbType;
 	private JTextArea jtaNote;
 
-	private JButton jbValider;
-	private JButton jbAnnuler;
+	@Localisable("bouton.valider")
+	private JButton jbValider = new JButton();
+	@Localisable("bouton.annuler")
+	private JButton jbAnnuler = new JButton();
 
-	public EntiteDialog(JFrame parent) {
+	public EntiteDialog(JFrame parent, AjResourcesReader localisation) {
 		super(parent, "", true); //$NON-NLS-1$
 
-		initialize();
+		this.localisation = localisation;
+		
+		init();
+		affectLibelle();
+		completePanel();
 	}
 
-	public EntiteDialog(JDialog parent) {
+	public EntiteDialog(JDialog parent, AjResourcesReader localisation) {
 		super(parent, "", true); //$NON-NLS-1$
+		
+		this.localisation = localisation;
 
-		initialize();
+		init();
+		affectLibelle();
+		completePanel();
 	}
 
-	public void initialize() {
+	private void init() {
 		GridBagConstraints c = new GridBagConstraints();
 
 		GridbagComposer gridbagComposer = new GridbagComposer();
 
 		JPanel entitePane = new JPanel();
 		JPanel buttonPane = new JPanel();
-
-		JLabel jlNom = new JLabel(ApplicationCore.ajrLibelle.getResourceString("entite.nom")); //$NON-NLS-1$
-		JLabel jlAgrement = new JLabel(ApplicationCore.ajrLibelle.getResourceString("entite.agrement")); //$NON-NLS-1$
-		JLabel jlAdresse = new JLabel(ApplicationCore.ajrLibelle.getResourceString("entite.adresse")); //$NON-NLS-1$
-		JLabel jlCodePostal = new JLabel(ApplicationCore.ajrLibelle.getResourceString("entite.codepostal")); //$NON-NLS-1$
-		JLabel jlVille = new JLabel(ApplicationCore.ajrLibelle.getResourceString("entite.ville")); //$NON-NLS-1$
-		JLabel jlType = new JLabel(ApplicationCore.ajrLibelle.getResourceString("entite.type")); //$NON-NLS-1$
-		JLabel jlNote = new JLabel(ApplicationCore.ajrLibelle.getResourceString("entite.note")); //$NON-NLS-1$
 
 		jtfNom = new JTextField("", 30); //$NON-NLS-1$
 		jtfNom.setEditable(false);
@@ -164,6 +182,9 @@ public class EntiteDialog extends JDialog implements ActionListener {
 		jtfVille.setEditable(false);
 		jcbType = new JComboBox(new String[] { "Fédération", "Ligue", "Comité Départemental", "Compagnie" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		jtaNote = new JTextArea(5, 30);
+		
+		jbValider.addActionListener(this);
+		jbAnnuler.addActionListener(this);
 
 		MaskFormatter formatter;
 		try {
@@ -204,11 +225,6 @@ public class EntiteDialog extends JDialog implements ActionListener {
 
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
-		jbValider = new JButton(ApplicationCore.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
-		jbValider.addActionListener(this);
-		jbAnnuler = new JButton(ApplicationCore.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
-		jbAnnuler.addActionListener(this);
-
 		buttonPane.add(jbValider);
 		buttonPane.add(jbAnnuler);
 
@@ -218,20 +234,43 @@ public class EntiteDialog extends JDialog implements ActionListener {
 		pack();
 		setLocationRelativeTo(null);
 	}
-
-	public void showEntite(Entite curEntite) {
-		if (curEntite != null) {
-			this.entite = curEntite;
-
-			jtfNom.setText(curEntite.getNom());
-			jtfAdresse.setText(curEntite.getAdresse());
-			jtfVille.setText(curEntite.getVille());
-			jcbType.setSelectedIndex(curEntite.getType());
-			jtaNote.setText(curEntite.getNote());
-			jftfAgrement.setText(curEntite.getAgrement());
-			jftfCodePostal.setValue(curEntite.getCodePostal());
-			setVisible(true);
+	
+	private void affectLibelle() {
+		AppUtilities.localize(this, localisation);
+	}
+	
+	private void completePanel() {
+		if(entite != null) {
+			jtfNom.setText(entite.getNom());
+			jtfAdresse.setText(entite.getAdresse());
+			jtfVille.setText(entite.getVille());
+			jcbType.setSelectedIndex(entite.getType());
+			jtaNote.setText(entite.getNote());
+			jftfAgrement.setText(entite.getAgrement());
+			jftfCodePostal.setValue(entite.getCodePostal());
 		}
+	}
+
+	public void showEntiteDialog() {
+		completePanel();
+		
+		pack();
+		setLocationRelativeTo(null);
+		setVisible(true);
+	}
+
+	/**
+	 * @return entite
+	 */
+	public Entite getEntite() {
+		return entite;
+	}
+
+	/**
+	 * @param entite entite à définir
+	 */
+	public void setEntite(Entite entite) {
+		this.entite = entite;
 	}
 
 	public void actionPerformed(ActionEvent ae) {

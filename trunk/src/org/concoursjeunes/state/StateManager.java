@@ -115,7 +115,7 @@ public class StateManager {
 	 * 
 	 */
 	public StateManager() {
-		File statesPath = new File(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources"), "states"); //$NON-NLS-1$ //$NON-NLS-2$
+		File statesPath = new File(ApplicationCore.staticParameters.getResourceString("path.ressources"), "states"); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		List<File> stateFolders = FileUtils.listAllFiles(statesPath, ".*",true); //$NON-NLS-1$
 		
@@ -185,7 +185,7 @@ public class StateManager {
 	}
 	
 	public Categories getCategories() {
-		File statesPath = new File(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources"), "states" + File.separator + "categories.xml"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		File statesPath = new File(ApplicationCore.staticParameters.getResourceString("path.ressources"), "states" + File.separator + "categories.xml"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		try {
 			return XMLSerializer.loadMarshallStructure(statesPath, Categories.class);
 		} catch (JAXBException e) {

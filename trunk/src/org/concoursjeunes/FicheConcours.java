@@ -15,8 +15,7 @@
  */
 package org.concoursjeunes;
 
-import static org.concoursjeunes.ApplicationCore.ajrLibelle;
-import static org.concoursjeunes.ApplicationCore.ajrParametreAppli;
+import static org.concoursjeunes.ApplicationCore.staticParameters;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -29,8 +28,10 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.swing.event.EventListenerList;
@@ -56,37 +57,26 @@ import org.concoursjeunes.exceptions.FicheConcoursException.Nature;
 @XmlRootElement
 public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 
-	private Parametre parametre = new Parametre(ApplicationCore.getConfiguration());
+	private Profile profile;
+	private Parametre parametre;
 
-	private ConcurrentList concurrentList = new ConcurrentList(parametre);
-	private EquipeList equipes = new EquipeList(parametre.getReglement().getNbMembresRetenu());
+	private ConcurrentList concurrentList;
+	private EquipeList equipes;
+	private Map<Integer, PasDeTir> pasDeTir = new HashMap<Integer, PasDeTir>();
 
-	private final Hashtable<Integer, PasDeTir> pasDeTir = new Hashtable<Integer, PasDeTir>();
-
-	private final EventListenerList ficheConcoursListeners = new EventListenerList();
+	private EventListenerList ficheConcoursListeners = new EventListenerList();
 
 	private int currentDepart = 0;
 
-	private static AJTemplate templateClassementHTML = new AJTemplate(ajrLibelle);
-	private static AJTemplate templateClassementEquipeHTML = new AJTemplate(ajrLibelle);
-
-	static {
-		try {
-			loadTemplates();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+	private AJTemplate templateClassementHTML;
+	private AJTemplate templateClassementEquipeHTML;
 
 	/**
 	 * Initialise une nouvelle fiche concours
 	 */
-	public FicheConcours() {
-		this(null);
+	public FicheConcours(Profile profile) 
+			throws UnsupportedEncodingException, FileNotFoundException, IOException {
+		this(profile, null);
 	}
 	
 	/**
@@ -94,11 +84,20 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	 * 
 	 * @param parametre les parametres du concours ou null si laisser les parametres par défaut
 	 */
-	public FicheConcours(Parametre parametre) {
+	public FicheConcours(Profile profile, Parametre parametre)
+			throws UnsupportedEncodingException, FileNotFoundException, IOException {
+		this.profile = profile;
 		if(parametre != null) {
 			this.parametre = parametre;
-			concurrentList.setParametre(parametre);
+		} else {
+			this.parametre = new Parametre(profile.getConfiguration());
 		}
+		concurrentList = new ConcurrentList(this.parametre);
+		equipes = new EquipeList(this.parametre.getReglement().getNbMembresRetenu());
+		
+		templateClassementHTML = new AJTemplate(this.profile.getLocalisation());
+		templateClassementEquipeHTML = new AJTemplate(this.profile.getLocalisation());
+		loadTemplates();
 		
 		this.parametre.addPropertyChangeListener(this);
 		makePasDeTir();
@@ -107,8 +106,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	/**
 	 * Enregistre un auditeur aux evenements d'un concours
 	 * 
-	 * @param ficheConcoursListener -
-	 *            l'auditeur à abonner
+	 * @param ficheConcoursListener l'auditeur à abonner
 	 */
 	public void addFicheConcoursListener(FicheConcoursListener ficheConcoursListener) {
 		ficheConcoursListeners.add(FicheConcoursListener.class, ficheConcoursListener);
@@ -117,8 +115,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	/**
 	 * Supprime un auditeur des evenements du concours
 	 * 
-	 * @param ficheConcoursListener -
-	 *            l'auditeur à résilier
+	 * @param ficheConcoursListener l'auditeur à résilier
 	 */
 	public void removeFicheConcoursListener(FicheConcoursListener ficheConcoursListener) {
 		ficheConcoursListeners.remove(FicheConcoursListener.class, ficheConcoursListener);
@@ -291,7 +288,9 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	 * 
 	 */
 	public void save() throws IOException {
-		File f = new File(ApplicationCore.userRessources.getConcoursPathForProfile(ApplicationCore.getConfiguration().getCurProfil()) + File.separator + parametre.getSaveName());
+		File f = new File(
+				ApplicationCore.userRessources.getConcoursPathForProfile(this.profile),
+				parametre.getSaveName());
 		XMLSerializer.saveXMLStructure(f, getFiche(), true);
 	}
 	
@@ -394,12 +393,12 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	 * Chargement des template de sortie XML
 	 * 
 	 */
-	private static void loadTemplates() throws UnsupportedEncodingException, FileNotFoundException, IOException {
-		templateClassementHTML.loadTemplate(ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
-				+ File.separator + ajrParametreAppli.getResourceString("template.classement.html")); //$NON-NLS-1$
+	private void loadTemplates() throws UnsupportedEncodingException, FileNotFoundException, IOException {
+		templateClassementHTML.loadTemplate(staticParameters.getResourceString("path.ressources") //$NON-NLS-1$
+				+ File.separator + staticParameters.getResourceString("template.classement.html")); //$NON-NLS-1$
 
-		templateClassementEquipeHTML.loadTemplate(ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
-				+ File.separator + ajrParametreAppli.getResourceString("template.classement_equipe.html")); //$NON-NLS-1$
+		templateClassementEquipeHTML.loadTemplate(staticParameters.getResourceString("path.ressources") //$NON-NLS-1$
+				+ File.separator + staticParameters.getResourceString("template.classement_equipe.html")); //$NON-NLS-1$
 	}
 
 	/**
@@ -422,7 +421,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 			tplClassement.reset();
 
 			tplClassement.parse("CURRENT_TIME", DateFormat.getDateInstance(DateFormat.FULL).format(new Date())); //$NON-NLS-1$
-			tplClassement.parse("LOGO_CLUB_URI", ApplicationCore.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			tplClassement.parse("LOGO_CLUB_URI", this.profile.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			tplClassement.parse("INTITULE_CLUB", parametre.getClub().getNom()); //$NON-NLS-1$
 			tplClassement.parse("INTITULE_CONCOURS", parametre.getIntituleConcours()); //$NON-NLS-1$
 			tplClassement.parse("VILLE_CLUB", parametre.getLieuConcours()); //$NON-NLS-1$
@@ -467,7 +466,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 						strTailleChampsDistance += tailleChampDistance + ";"; //$NON-NLS-1$
 					}
 
-					strSCNA = new CriteriaSetLibelle(scna).toString();
+					strSCNA = new CriteriaSetLibelle(scna, this.profile.getLocalisation()).toString();
 
 					tplClassement.parse("categories.TAILLE_CHAMPS_DISTANCE", strTailleChampsDistance); //$NON-NLS-1$
 					tplClassement.parse("categories.CATEGORIE", strSCNA); //$NON-NLS-1$
@@ -487,8 +486,8 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 								row_exist = true;
 								// test d'ex-Eaquo
 								
-								if ((j < sortList.length - 1 && sortList[j].compareScoreWith(sortList[j + 1]) == 0 && ApplicationCore.getConfiguration().isInterfaceAffResultatExEquo())
-										|| (j > 0 && sortList[j].compareScoreWith(sortList[j - 1]) == 0 && ApplicationCore.getConfiguration().isInterfaceAffResultatExEquo())) {
+								if ((j < sortList.length - 1 && sortList[j].compareScoreWith(sortList[j + 1]) == 0 && this.profile.getConfiguration().isInterfaceAffResultatExEquo())
+										|| (j > 0 && sortList[j].compareScoreWith(sortList[j - 1]) == 0 && this.profile.getConfiguration().isInterfaceAffResultatExEquo())) {
 
 									tplClassement.parse("categories.classement.COULEUR", //$NON-NLS-1$
 											"bgcolor=\"#ff0000\""); //$NON-NLS-1$
@@ -558,7 +557,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 			tplClassementEquipe.reset();
 
 			// classement sortie XML
-			tplClassementEquipe.parse("LOGO_CLUB_URI", ApplicationCore.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			tplClassementEquipe.parse("LOGO_CLUB_URI", this.profile.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			tplClassementEquipe.parse("INTITULE_CLUB", XmlUtils.sanitizeText(parametre.getClub().getNom())); //$NON-NLS-1$
 
 			List<CriteriaSet> teamCriteriaSet = equipes.listCriteriaSet();
@@ -568,7 +567,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 			CriteriaSet.sortCriteriaSet(sortedTeamCriteriaSets, parametre.getReglement().getListCriteria());
 			
 			for(CriteriaSet criteriaSet : sortedTeamCriteriaSets) {			
-				tplClassementEquipe.parse("categories.CATEGORIE", new CriteriaSetLibelle(criteriaSet).toString()); //$NON-NLS-1$
+				tplClassementEquipe.parse("categories.CATEGORIE", new CriteriaSetLibelle(criteriaSet, this.profile.getLocalisation()).toString()); //$NON-NLS-1$
 				tplClassementEquipe.parse("categories.NB_EQUIPES", "" + equipes.countEquipes()); //$NON-NLS-1$ //$NON-NLS-2$
 	
 				Equipe[] sortEquipes = EquipeList.sort(equipes.list(criteriaSet));
@@ -614,10 +613,10 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 			tplClassementEquipe.reset();
 
 			// classement sortie XML
-			tplClassementEquipe.parse("LOGO_CLUB_URI", ApplicationCore.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			tplClassementEquipe.parse("LOGO_CLUB_URI", this.profile.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			tplClassementEquipe.parse("INTITULE_CLUB", parametre.getClub().getNom()); //$NON-NLS-1$
 
-			tplClassementEquipe.parse("categories.CATEGORIE", ApplicationCore.ajrLibelle.getResourceString("equipe.composition")); //$NON-NLS-1$ //$NON-NLS-2$
+			tplClassementEquipe.parse("categories.CATEGORIE", this.profile.getLocalisation().getResourceString("equipe.composition")); //$NON-NLS-1$ //$NON-NLS-2$
 
 			Equipe[] sortEquipes = EquipeList.sort(clubList.list());
 

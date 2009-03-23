@@ -116,8 +116,9 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
+import org.ajdeveloppement.apps.AppUtilities;
+import org.ajdeveloppement.apps.Localisable;
 import org.ajdeveloppement.commons.ui.NumberDocument;
-import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.ConcurrentList;
 import org.concoursjeunes.Criterion;
@@ -147,10 +148,15 @@ public class GreffePane extends JPanel implements
 	};
 	private TableRowSorter<DefaultTableModel> sorter;
 	
+	@Localisable("greffepane.start")
 	private JLabel jlDepart = new JLabel();
+	@Localisable("greffepane.name")
 	private JLabel jlNom = new JLabel();
+	@Localisable("greffepane.firstname")
 	private JLabel jlPrenom = new JLabel();
+	@Localisable("greffepane.club")
 	private JLabel jlClub = new JLabel();
+	@Localisable("greffepane.licence")
 	private JLabel jlLicence = new JLabel();
 	private JTextField jtfDepart = new JTextField(new NumberDocument(false, false), "", 2); //$NON-NLS-1$
 	private JTextField jtfNom = new JTextField(10);
@@ -159,12 +165,16 @@ public class GreffePane extends JPanel implements
 	private JTextField jtfLicence = new JTextField(7);
 	private JComboBox jcbPayee = new JComboBox();
 	@StateSelector(name="200-listgreffe")
+	@Localisable("greffepane.print")
 	private JXSplitButton jbImpression = new JXSplitButton();
 	@StateSelector(name="100-listalpha")
+	@Localisable("greffepane.print.alpha")
 	private JMenuItem jmiPrintAlpha = new JMenuItem();
 	@StateSelector(name="200-listgreffe")
+	@Localisable("greffepane.print.greffe")
 	private JMenuItem jmiPrintGreffe = new JMenuItem();
 	@StateSelector(name="300-listtarget")
+	@Localisable("greffepane.print.target")
 	private JMenuItem jmiPrintTarget = new JMenuItem();
 	
 	private FicheConcoursPane ficheConcoursPane;
@@ -192,9 +202,9 @@ public class GreffePane extends JPanel implements
 		jtfPrenom.addCaretListener(this);
 		jtfClub.addCaretListener(this);
 		jtfLicence.addCaretListener(this);
-		jcbPayee.addItem(ApplicationCore.ajrLibelle.getResourceString("greffepane.paid.all")); //$NON-NLS-1$
-		jcbPayee.addItem(ApplicationCore.ajrLibelle.getResourceString("greffepane.paid.true")); //$NON-NLS-1$
-		jcbPayee.addItem(ApplicationCore.ajrLibelle.getResourceString("greffepane.paid.false")); //$NON-NLS-1$
+		jcbPayee.addItem(ficheConcoursPane.getLocalisation().getResourceString("greffepane.paid.all")); //$NON-NLS-1$
+		jcbPayee.addItem(ficheConcoursPane.getLocalisation().getResourceString("greffepane.paid.true")); //$NON-NLS-1$
+		jcbPayee.addItem(ficheConcoursPane.getLocalisation().getResourceString("greffepane.paid.false")); //$NON-NLS-1$
 		jcbPayee.addItemListener(this);
 		jtConcurrents.addMouseListener(this);
 		jbImpression.addActionListener(this);
@@ -233,16 +243,7 @@ public class GreffePane extends JPanel implements
 	}
 	
 	private void affectLibelle() {
-		jlDepart.setText(ApplicationCore.ajrLibelle.getResourceString("greffepane.start")); //$NON-NLS-1$
-		jlNom.setText(ApplicationCore.ajrLibelle.getResourceString("greffepane.name")); //$NON-NLS-1$
-		jlPrenom.setText(ApplicationCore.ajrLibelle.getResourceString("greffepane.firstname")); //$NON-NLS-1$
-		jlClub.setText(ApplicationCore.ajrLibelle.getResourceString("greffepane.club")); //$NON-NLS-1$
-		jlLicence.setText(ApplicationCore.ajrLibelle.getResourceString("greffepane.licence")); //$NON-NLS-1$
-		//jcbPayee.setText(ApplicationCore.ajrLibelle.getResourceString("greffepane.paid")); //$NON-NLS-1$
-		jbImpression.setText(ApplicationCore.ajrLibelle.getResourceString("greffepane.print")); //$NON-NLS-1$
-		jmiPrintAlpha.setText(ApplicationCore.ajrLibelle.getResourceString("greffepane.print.alpha")); //$NON-NLS-1$
-		jmiPrintGreffe.setText(ApplicationCore.ajrLibelle.getResourceString("greffepane.print.greffe")); //$NON-NLS-1$
-		jmiPrintTarget.setText(ApplicationCore.ajrLibelle.getResourceString("greffepane.print.target")); //$NON-NLS-1$
+		AppUtilities.localize(this, ficheConcoursPane.getLocalisation());
 	}
 	
 	private void completePanel() {
@@ -311,16 +312,16 @@ public class GreffePane extends JPanel implements
 			}
 		};
 		
-		dtm.addColumn(ApplicationCore.ajrLibelle.getResourceString("greffepane.start")); //$NON-NLS-1$
-		dtm.addColumn(ApplicationCore.ajrLibelle.getResourceString("greffepane.name")); //$NON-NLS-1$
-		dtm.addColumn(ApplicationCore.ajrLibelle.getResourceString("greffepane.firstname")); //$NON-NLS-1$
-		dtm.addColumn(ApplicationCore.ajrLibelle.getResourceString("greffepane.club")); //$NON-NLS-1$
-		dtm.addColumn(ApplicationCore.ajrLibelle.getResourceString("greffepane.licence")); //$NON-NLS-1$
-		dtm.addColumn(ApplicationCore.ajrLibelle.getResourceString("greffepane.category")); //$NON-NLS-1$
-		dtm.addColumn(ApplicationCore.ajrLibelle.getResourceString("greffepane.target")); //$NON-NLS-1$
-		dtm.addColumn(ApplicationCore.ajrLibelle.getResourceString("greffepane.paid")); //$NON-NLS-1$
-		dtm.addColumn(ApplicationCore.ajrLibelle.getResourceString("greffepane.medic")); //$NON-NLS-1$
-		dtm.addColumn(ApplicationCore.ajrLibelle.getResourceString("greffepane.presence")); //$NON-NLS-1$
+		dtm.addColumn(ficheConcoursPane.getLocalisation().getResourceString("greffepane.start")); //$NON-NLS-1$
+		dtm.addColumn(ficheConcoursPane.getLocalisation().getResourceString("greffepane.name")); //$NON-NLS-1$
+		dtm.addColumn(ficheConcoursPane.getLocalisation().getResourceString("greffepane.firstname")); //$NON-NLS-1$
+		dtm.addColumn(ficheConcoursPane.getLocalisation().getResourceString("greffepane.club")); //$NON-NLS-1$
+		dtm.addColumn(ficheConcoursPane.getLocalisation().getResourceString("greffepane.licence")); //$NON-NLS-1$
+		dtm.addColumn(ficheConcoursPane.getLocalisation().getResourceString("greffepane.category")); //$NON-NLS-1$
+		dtm.addColumn(ficheConcoursPane.getLocalisation().getResourceString("greffepane.target")); //$NON-NLS-1$
+		dtm.addColumn(ficheConcoursPane.getLocalisation().getResourceString("greffepane.paid")); //$NON-NLS-1$
+		dtm.addColumn(ficheConcoursPane.getLocalisation().getResourceString("greffepane.medic")); //$NON-NLS-1$
+		dtm.addColumn(ficheConcoursPane.getLocalisation().getResourceString("greffepane.presence")); //$NON-NLS-1$
 		
 		dtm.addTableModelListener(this);
 		

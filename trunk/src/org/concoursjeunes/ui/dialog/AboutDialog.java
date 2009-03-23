@@ -102,6 +102,9 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import org.ajdeveloppement.apps.AppUtilities;
+import org.ajdeveloppement.apps.Localisable;
+import org.ajdeveloppement.commons.AjResourcesReader;
 import org.concoursjeunes.AppInfos;
 import org.concoursjeunes.ApplicationCore;
 import org.jdesktop.swingx.JXLabel;
@@ -111,6 +114,9 @@ import org.jdesktop.swingx.JXLabel;
  *
  */
 public class AboutDialog extends JDialog implements ActionListener {
+	private AjResourcesReader localisation;
+	
+	@Localisable("bouton.fermer")
 	private JButton jbFermer = new JButton();
 	private JXLabel jlAbout = new JXLabel();
 
@@ -118,8 +124,9 @@ public class AboutDialog extends JDialog implements ActionListener {
 	/**
 	 * 
 	 */
-	public AboutDialog(JFrame parentframe) {
+	public AboutDialog(JFrame parentframe, AjResourcesReader localisation) {
 		super(parentframe, true);
+		this.localisation = localisation;
 		init();
 		affectLibelle();
 	}
@@ -129,8 +136,8 @@ public class AboutDialog extends JDialog implements ActionListener {
 		
 		jbFermer.addActionListener(this);
 		
-		jlAbout.setIcon(new ImageIcon(ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ApplicationCore.ajrParametreAppli.getResourceString("file.icon.about") //$NON-NLS-1$
+		jlAbout.setIcon(new ImageIcon(ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.about") //$NON-NLS-1$
 		));
 		
 		jpAction.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -145,20 +152,20 @@ public class AboutDialog extends JDialog implements ActionListener {
 	 * 
 	 */
 	private void affectLibelle() {
-		setTitle(ApplicationCore.ajrLibelle.getResourceString("apropos.titre")); //$NON-NLS-1$
+		setTitle(localisation.getResourceString("apropos.titre")); //$NON-NLS-1$
+		
+		AppUtilities.localize(this, localisation);
 		
 		jlAbout.setText("<html>" + AppInfos.NOM + "<br>" + //$NON-NLS-1$ //$NON-NLS-2$
-				ApplicationCore.ajrLibelle.getResourceString("apropos.description") + "<br><br>" + //$NON-NLS-1$ //$NON-NLS-2$
-				ApplicationCore.ajrLibelle.getResourceString("apropos.version") + "<br>" +  //$NON-NLS-1$ //$NON-NLS-2$
+				localisation.getResourceString("apropos.description") + "<br><br>" + //$NON-NLS-1$ //$NON-NLS-2$
+				localisation.getResourceString("apropos.version") + "<br>" +  //$NON-NLS-1$ //$NON-NLS-2$
 				AppInfos.VERSION + "<br>" + //$NON-NLS-1$
-				ApplicationCore.ajrLibelle.getResourceString("apropos.codename") + " " + AppInfos.CODENAME + "<br>" + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				localisation.getResourceString("apropos.codename") + " " + AppInfos.CODENAME + "<br>" + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				AppInfos.COPYR + " " + AppInfos.AUTEURS + "<br>" + //$NON-NLS-1$ //$NON-NLS-2$
 				"version base: " + ApplicationCore.dbVersion + "<br><br>" //$NON-NLS-1$ //$NON-NLS-2$
 				+ "mémoire utilisé: " + ((memoryBean.getHeapMemoryUsage().getUsed() + memoryBean.getNonHeapMemoryUsage().getUsed()) / 1024 / 1024) + "Mo<br>" //$NON-NLS-1$ //$NON-NLS-2$
 				+ "mémoire réservé: " + ((memoryBean.getHeapMemoryUsage().getCommitted() + memoryBean.getNonHeapMemoryUsage().getCommitted()) / 1024 / 1024) + "Mo<br><br>" //$NON-NLS-1$ //$NON-NLS-2$
-				+ ApplicationCore.ajrLibelle.getResourceString("apropos.liens") + "<br></html>"); //$NON-NLS-1$ //$NON-NLS-2$
-		
-		jbFermer.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.fermer")); //$NON-NLS-1$
+				+ localisation.getResourceString("apropos.liens") + "<br></html>"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
 	public void showAboutDialog() {

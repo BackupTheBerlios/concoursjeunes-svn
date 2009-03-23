@@ -1,5 +1,7 @@
 /*
- * Copyright 2002-2008 - Aurélien JEOFFRAY
+ * Créer le 15 mars 2009 à 16:49:04 pour ConcoursJeunes
+ *
+ * Copyright 2002-2009 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
  *
@@ -84,103 +86,123 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes.ui;
+package org.concoursjeunes;
 
-import java.awt.Component;
 import java.io.File;
+import java.io.IOException;
 
-import javax.swing.ImageIcon;
-import javax.swing.JTree;
-import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
-import org.ajdeveloppement.commons.AjResourcesReader;
-import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.Concurrent;
-import org.concoursjeunes.Target;
-import org.concoursjeunes.TargetLibelle;
-import org.concoursjeunes.TargetPosition;
+import org.ajdeveloppement.commons.io.XMLSerializer;
+import org.ajdeveloppement.commons.net.Proxy;
 
 /**
- * Affecte les icone à l'arbre des cibles
- * 
- * @author Aurélien Jeoffray
- * @version 2.0
+ * @author Aurélien JEOFFRAY
  *
  */
-
-public class TargetRenderer extends DefaultTreeCellRenderer {
-	private final ImageIcon archerIcon;
-	private final ImageIcon archerHandicapIcon;
-	private final ImageIcon cibleIcon;
-	private final ImageIcon disableIcon;
-
-	private AjResourcesReader localisation;
-	/**
-	 * Constructeur, initialise les icone à afficher
-	 */
-	public TargetRenderer(AjResourcesReader localisation) {
-		this.localisation = localisation;
+@XmlRootElement
+public class AppConfiguration implements Cloneable {
+	@XmlAttribute
+	@SuppressWarnings("unused")
+	private String version = "1.0"; //$NON-NLS-1$
+	
+	private String pdfReaderPath    = ""; //$NON-NLS-1$
+	private boolean useProxy		= false;
+	private Proxy proxy				= new Proxy();
+	
+	private boolean firstboot       = true;
+	
+	public AppConfiguration() {
 		
-		archerIcon = new ImageIcon(
-				ApplicationCore.staticParameters.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
-				ApplicationCore.staticParameters.getResourceString("file.icon.archer.normal")); //$NON-NLS-1$
-		archerHandicapIcon = new ImageIcon(
-				ApplicationCore.staticParameters.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
-				ApplicationCore.staticParameters.getResourceString("file.icon.archer.handicap")); //$NON-NLS-1$
-		cibleIcon = new ImageIcon(
-				ApplicationCore.staticParameters.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
-				ApplicationCore.staticParameters.getResourceString("file.icon.target")); //$NON-NLS-1$
-		disableIcon = new ImageIcon(
-				ApplicationCore.staticParameters.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
-				ApplicationCore.staticParameters.getResourceString("file.icon.disable")); //$NON-NLS-1$
 	}
 
 	/**
-	 * affecte l'icone en fonction du type de noeud
-	 * 
-	 * @param tree - l'arbre affecté par le rendu
-	 * @param value - l'objet à prendre en compte pour le rendu
-	 * @param sel - Le noeud est il seléctionné ?
-	 * @param expanded - Le noeud est il étendu ?
-	 * @param leaf - Le noeud est il une feuille ?
-	 * @param hasFocus - Le noeud a t'il le focus ?
-	 * 
-	 * @return Component - Retourne le renderer
+	 * @return pdfReaderPath
 	 */
+	@XmlElement(required=false)
+	public String getPdfReaderPath() {
+		return pdfReaderPath;
+	}
+
+	/**
+	 * @param pdfReaderPath pdfReaderPath à définir
+	 */
+	public void setPdfReaderPath(String pdfReaderPath) {
+		this.pdfReaderPath = pdfReaderPath;
+	}
+
+	/**
+	 * Est ce qu'un proxy doit être utilisé pour la connectivité réseau?
+	 * 
+	 * @return useProxy true si un proxy doit être utilisé
+	 */
+	public boolean isUseProxy() {
+		return useProxy;
+	}
+
+	/**
+	 * Définit l'utilisation ou nom d'un serveur mendataire pour la connectivité réseau
+	 * 
+	 * @param useProxy true si un proxy doit être utilisé, false sinon
+	 */
+	public void setUseProxy(boolean useProxy) {
+		this.useProxy = useProxy;
+	}
+
+	/**
+	 * Retourne les parametres du proxy qui doit être utilisé pour les connections http
+	 * 
+	 * @return proxy les parametres de proxy
+	 */
+	public Proxy getProxy() {
+		return proxy;
+	}
+
+	/**
+	 * Définit les parametres du proxy qui doit être utilisé pour les connections http
+	 * 
+	 * @param proxy les parametres de proxy
+	 */
+	public void setProxy(Proxy proxy) {
+		this.proxy = proxy;
+	}
+
+	/**
+	 * Détéremine si c'est le premier lancement de l'application
+	 * @return <code>true</code> si l'application est lancé pour la première fois, <code><false</code> sinon
+	 */
+	public boolean isFirstboot() {
+		return firstboot;
+	}
+
+	/**
+	 * Place l'application sur premier lancement
+	 * @param firstboot <code>true</code> si l'application est lancé pour la première fois, <code><false</code> sinon
+	 */
+	public void setFirstboot(boolean firstboot) {
+		this.firstboot = firstboot;
+	}
+
+	/**
+	 * sauvegarde la configuration général du programme
+	 *
+	 */
+	public void save() throws JAXBException, IOException {
+		File f = new File(ApplicationCore.userRessources.getConfigPathForUser(),
+				ApplicationCore.staticParameters.getResourceString("file.configuration")); //$NON-NLS-1$
+		XMLSerializer.saveMarshallStructure(f, this);
+	}
+	
 	@Override
-	public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-		super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-		if (isCible(value)) {
-			setIcon(cibleIcon);
-			setText(new TargetLibelle((Target)value, localisation).toString());
-		} else if(value instanceof Concurrent) {
-			Concurrent concurrent = (Concurrent) value;
-			if(concurrent.isHandicape())
-				setIcon(archerHandicapIcon);
-			else
-				setIcon(archerIcon);
-		} else if (value instanceof TargetPosition) {
-			TargetPosition targetPosition = (TargetPosition) value;
-			TargetTreeModel targetTreeModel = (TargetTreeModel)tree.getModel();
-			if(targetTreeModel.getTargetChilds().get(targetPosition.getTarget() - 1).isReservedPosition(targetPosition.getPosition()))
-				setIcon(disableIcon);
-			else
-				setIcon(archerIcon);
+	public AppConfiguration clone() {
+		try {
+			return (AppConfiguration)super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+			return this;
 		}
-		return this;
-	}
-
-	/**
-	 * teste si un noeud est une cible
-	 * 
-	 * @param value - le contenue du noeud à tester
-	 * 
-	 * @return boolean - true si c'est une cible, false dans le cas contraire
-	 */
-	protected boolean isCible(Object value) {
-		if(value instanceof Target) {
-			return true;
-		} 
-		return false;
 	}
 }

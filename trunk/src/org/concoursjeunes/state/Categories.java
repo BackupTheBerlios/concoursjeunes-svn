@@ -161,7 +161,7 @@ public class Categories {
 		
 		public String getLocalizedLibelle() {
 			String localizedLibelle = libelle;
-			String statePath = ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
+			String statePath = ApplicationCore.staticParameters.getResourceString("path.ressources") //$NON-NLS-1$
 					+ File.separator + "states"; //$NON-NLS-1$
 			
 			try {

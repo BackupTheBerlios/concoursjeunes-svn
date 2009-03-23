@@ -6,14 +6,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.naming.ConfigurationException;
 import javax.swing.event.EventListenerList;
 import javax.xml.bind.JAXBException;
 
+import org.ajdeveloppement.commons.AjResourcesReader;
 import org.concoursjeunes.builders.FicheConcoursBuilder;
-import org.concoursjeunes.event.ConcoursJeunesEvent;
-import org.concoursjeunes.event.ConcoursJeunesListener;
+import org.concoursjeunes.event.ProfileEvent;
+import org.concoursjeunes.event.ProfileListener;
 import org.concoursjeunes.exceptions.NullConfigurationException;
 
 /**
@@ -26,26 +28,67 @@ public class Profile {
 	
 	private String name = "defaut"; //$NON-NLS-1$
 	
+	private AjResourcesReader localisation = new AjResourcesReader("libelle"); //$NON-NLS-1$
 	private Configuration configuration = new Configuration();
 	private List<FicheConcours> fichesConcours = new ArrayList<FicheConcours>();
 	private EventListenerList listeners = new EventListenerList();
 	
-	public Profile() throws IOException {
-		this("defaut"); //$NON-NLS-1$
+	public Profile() {
+		this((String)null);
 	}
 	
-	public Profile(String name) throws IOException {
+	public Profile(String name){
 		this.name = name;
 		loadConfiguration();
+	}
+	
+	public Profile(File profilepath) {
+		loadConfiguration(profilepath);
 	}
 	
 	/**
 	 * tente de recuperer la configuration générale du programme
 	 */
-	private void loadConfiguration() throws IOException {
-		configuration = ConfigurationManager.loadConfiguration(name);
+	private void loadConfiguration() {
+		if(this.name == null) {
+			configuration = ConfigurationManager.loadCurrentConfiguration();
+			this.name = configuration.getCurProfil();
+		} else {
+			configuration = ConfigurationManager.loadConfiguration(name);
+		}
+		localisation.setLocale(new Locale(configuration.getLangue()));
 	}
 	
+	private void loadConfiguration(File profilepath) {
+		configuration = ConfigurationManager.loadConfiguration(profilepath);
+		this.name = configuration.getCurProfil();
+		localisation.setLocale(new Locale(configuration.getLangue()));
+	}
+	
+	/**
+	 * Ajoute un auditeur aux evenements du Singleton ConcoursJeunes
+	 * 
+	 * @param profileListener l'auditeur qui s'enregistre à la class
+	 */
+	public void addProfileListener(ProfileListener profileListener) {
+		listeners.add(ProfileListener.class, profileListener);
+	}
+
+	/**
+	 * Retire un auditeur aux evenements du Singleton ConcoursJeunes
+	 * @param profileListener l'auditeur qui résilie à la class
+	 */
+	public void removeProfileListener(ProfileListener profileListener) {
+		listeners.remove(ProfileListener.class, profileListener);
+	}
+	
+	/**
+	 * @return localisation
+	 */
+	public AjResourcesReader getLocalisation() {
+		return localisation;
+	}
+
 	/**
 	 * Retourne la configuration courante de l'application
 	 * 
@@ -83,11 +126,11 @@ public class Profile {
 		if (configuration == null)
 			throw new NullConfigurationException("la configuration est null"); //$NON-NLS-1$
 
-		FicheConcours ficheConcours = new FicheConcours(parametre);
+		FicheConcours ficheConcours = new FicheConcours(this, parametre);
 		fichesConcours.add(ficheConcours);
 		configuration.getMetaDataFichesConcours().add(ficheConcours.getMetaDataFicheConcours());
 
-		configuration.saveAsDefault();
+		configuration.save();
 		ficheConcours.save();
 
 		fireFicheConcoursCreated(ficheConcours);
@@ -107,8 +150,8 @@ public class Profile {
 
 		configuration.getMetaDataFichesConcours().remove(metaDataFicheConcours);
 
-		if (new File(userRessources.getConcoursPathForProfile(name) + File.separator + metaDataFicheConcours.getFilenameConcours()).delete()) {
-			configuration.saveAsDefault();
+		if (new File(userRessources.getConcoursPathForProfile(this) + File.separator + metaDataFicheConcours.getFilenameConcours()).delete()) {
+			configuration.save();
 
 			fireFicheConcoursDeleted(null);
 		}
@@ -126,7 +169,7 @@ public class Profile {
 			throw new NullConfigurationException("la configuration est null"); //$NON-NLS-1$
 
 		ficheConcours.save();
-		configuration.saveAsDefault();
+		configuration.save();
 		if (fichesConcours.remove(ficheConcours)) {
 			fireFicheConcoursClosed(ficheConcours);
 		}
@@ -165,7 +208,7 @@ public class Profile {
 		if (configuration == null)
 			throw new NullConfigurationException("la configuration est null"); //$NON-NLS-1$
 
-		FicheConcours ficheConcours = FicheConcoursBuilder.getFicheConcours(metaDataFicheConcours);
+		FicheConcours ficheConcours = FicheConcoursBuilder.getFicheConcours(metaDataFicheConcours, this);
 
 		if (ficheConcours != null) {
 			fichesConcours.add(ficheConcours);
@@ -185,7 +228,7 @@ public class Profile {
 		for (FicheConcours fiche : fichesConcours) {
 			fiche.save();
 		}
-		configuration.saveAsDefault();
+		configuration.save();
 	}
 	
 	/**
@@ -212,26 +255,26 @@ public class Profile {
 	}
 	
 	private void fireFicheConcoursCreated(FicheConcours ficheConcours) {
-		for (ConcoursJeunesListener concoursJeunesListener : listeners.getListeners(ConcoursJeunesListener.class)) {
-			concoursJeunesListener.ficheConcoursCreated(new ConcoursJeunesEvent(ficheConcours, ConcoursJeunesEvent.Type.CREATE_CONCOURS));
+		for (ProfileListener concoursJeunesListener : listeners.getListeners(ProfileListener.class)) {
+			concoursJeunesListener.ficheConcoursCreated(new ProfileEvent(ficheConcours, this, ProfileEvent.Type.CREATE_CONCOURS));
 		}
 	}
 
 	private void fireFicheConcoursDeleted(FicheConcours ficheConcours) {
-		for (ConcoursJeunesListener concoursJeunesListener : listeners.getListeners(ConcoursJeunesListener.class)) {
-			concoursJeunesListener.ficheConcoursDeleted(new ConcoursJeunesEvent(ficheConcours, ConcoursJeunesEvent.Type.DELETE_CONCOURS));
+		for (ProfileListener concoursJeunesListener : listeners.getListeners(ProfileListener.class)) {
+			concoursJeunesListener.ficheConcoursDeleted(new ProfileEvent(ficheConcours, this, ProfileEvent.Type.DELETE_CONCOURS));
 		}
 	}
 
 	private void fireFicheConcoursClosed(FicheConcours ficheConcours) {
-		for (ConcoursJeunesListener concoursJeunesListener : listeners.getListeners(ConcoursJeunesListener.class)) {
-			concoursJeunesListener.ficheConcoursClosed(new ConcoursJeunesEvent(ficheConcours, ConcoursJeunesEvent.Type.CLOSE_CONCOURS));
+		for (ProfileListener concoursJeunesListener : listeners.getListeners(ProfileListener.class)) {
+			concoursJeunesListener.ficheConcoursClosed(new ProfileEvent(ficheConcours, this, ProfileEvent.Type.CLOSE_CONCOURS));
 		}
 	}
 
 	private void fireFicheConcoursRestored(FicheConcours ficheConcours) {
-		for (ConcoursJeunesListener concoursJeunesListener : listeners.getListeners(ConcoursJeunesListener.class)) {
-			concoursJeunesListener.ficheConcoursRestored(new ConcoursJeunesEvent(ficheConcours, ConcoursJeunesEvent.Type.OPEN_CONCOURS));
+		for (ProfileListener concoursJeunesListener : listeners.getListeners(ProfileListener.class)) {
+			concoursJeunesListener.ficheConcoursRestored(new ProfileEvent(ficheConcours, this, ProfileEvent.Type.OPEN_CONCOURS));
 		}
 	}
 }

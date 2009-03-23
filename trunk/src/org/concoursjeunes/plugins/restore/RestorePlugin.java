@@ -93,11 +93,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Pack200;
 import java.util.jar.Pack200.Unpacker;
 import java.util.logging.Level;
+import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 
 import javax.swing.JFileChooser;
@@ -110,8 +112,8 @@ import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.io.FileUtils;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Configuration;
-import org.concoursjeunes.ConfigurationManager;
 import org.concoursjeunes.MetaDataFicheConcours;
+import org.concoursjeunes.Profile;
 import org.concoursjeunes.exceptions.NullConfigurationException;
 import org.concoursjeunes.plugins.Plugin;
 import org.concoursjeunes.plugins.PluginEntry;
@@ -128,17 +130,18 @@ public class RestorePlugin {
 	private AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.restore.RestorePlugin_libelle", RestorePlugin.class.getClassLoader()); //$NON-NLS-1$
 	
 	private JFrame parentframe;
+	private Profile profile;
 	
-	public RestorePlugin(JFrame parentframe) {
+	public RestorePlugin(JFrame parentframe, Profile profile) {
 		this.parentframe = parentframe;
+		this.profile = profile;
 	}
 	
 	@PluginEntry
 	public void showRestoreDialog() {
-		Configuration configuration = ApplicationCore.getConfiguration();
+		Configuration configuration = profile.getConfiguration();
 		
 		File tempPath;
-		//File concoursPath = ApplicationCore.userRessources.getConcoursPathForProfile(configuration.getCurProfil());
 		
 		JFileChooser chooser = new JFileChooser();
 	    FileNameExtensionFilter filter = new FileNameExtensionFilter(
@@ -156,47 +159,46 @@ public class RestorePlugin {
 				File configFile = new File(tempPath, "configuration.xml"); //$NON-NLS-1$
 				
 				if(configFile.exists()) {
-					Configuration restoredConfiguration = ConfigurationManager.loadConfiguration(configFile);
-					if(restoredConfiguration != null) {
-						//si le profil à chargé est le profil courant, alors fermé et sauvegardé tous les concours ouvert
-						//puis ajouté le contenue à la configuration courante
-						if(restoredConfiguration.getCurProfil().equals(configuration.getCurProfil())) {
-							try {
-								ApplicationCore.getInstance().closeAllFichesConcours();
-							} catch (NullConfigurationException e) {
-								JXErrorPane.showDialog(parentframe, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
-										null, null, e, Level.SEVERE, null));
-								e.printStackTrace();
-							}
-							
-							for(MetaDataFicheConcours metaDataFicheConcours : configuration.getMetaDataFichesConcours().getFiches()) {
-								if(!restoredConfiguration.getMetaDataFichesConcours().contains(metaDataFicheConcours))
-									restoredConfiguration.getMetaDataFichesConcours().add(metaDataFicheConcours);
-							}
-							
-							ApplicationCore.setConfiguration(restoredConfiguration);
-							restoredConfiguration.saveAsDefault();
+					Profile restoredProfile = new Profile(configFile);
+					//Configuration restoredConfiguration = ConfigurationManager.loadConfiguration(configFile);
+
+					//si le profil à chargé est le profil courant, alors fermé et sauvegardé tous les concours ouvert
+					//puis ajouté le contenue à la configuration courante
+					if(restoredProfile.getConfiguration().getCurProfil().equals(configuration.getCurProfil())) {
+						try {
+							profile.closeAllFichesConcours();
+						} catch (NullConfigurationException e) {
+							JXErrorPane.showDialog(parentframe, new ErrorInfo(profile.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+									null, null, e, Level.SEVERE, null));
+							e.printStackTrace();
 						}
 						
-						File concoursPath = ApplicationCore.userRessources.getConcoursPathForProfile(restoredConfiguration.getCurProfil());
-						for(File f : FileUtils.listAllFiles(tempPath, ".*")) { //$NON-NLS-1$
-							if(!f.getName().equals("configuration.xml")) //$NON-NLS-1$
-								FileUtils.copyFile(f, concoursPath, true);
-							f.delete();
+						for(MetaDataFicheConcours metaDataFicheConcours : configuration.getMetaDataFichesConcours().getFiches()) {
+							if(!restoredProfile.getConfiguration().getMetaDataFichesConcours().contains(metaDataFicheConcours))
+								restoredProfile.getConfiguration().getMetaDataFichesConcours().add(metaDataFicheConcours);
 						}
-						tempPath.delete();
 						
-						restoredConfiguration.save();
-						
-						JOptionPane.showMessageDialog(parentframe, pluginLocalisation.getResourceString("restoredialog.success")); //$NON-NLS-1$
+						profile.setConfiguration(restoredProfile.getConfiguration());
 					}
+					
+					File concoursPath = ApplicationCore.userRessources.getConcoursPathForProfile(restoredProfile);
+					for(File f : FileUtils.listAllFiles(tempPath, ".*")) { //$NON-NLS-1$
+						if(!f.getName().equals("configuration.xml")) //$NON-NLS-1$
+							FileUtils.copyFile(f, concoursPath, true);
+						f.delete();
+					}
+					tempPath.delete();
+					
+					restoredProfile.getConfiguration().save();
+					
+					JOptionPane.showMessageDialog(parentframe, pluginLocalisation.getResourceString("restoredialog.success")); //$NON-NLS-1$
 				}
 			} catch (IOException e) {
-				JXErrorPane.showDialog(parentframe, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+				JXErrorPane.showDialog(parentframe, new ErrorInfo(profile.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 						null, null, e, Level.SEVERE, null));
 				e.printStackTrace();
 			} catch (JAXBException e) {
-				JXErrorPane.showDialog(parentframe, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+				JXErrorPane.showDialog(parentframe, new ErrorInfo(profile.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 						null, null, e, Level.SEVERE, null));
 				e.printStackTrace();
 			}
@@ -212,25 +214,38 @@ public class RestorePlugin {
 	private File unpack(File packedFile) {
 		Unpacker unpack;
 		File tempJar = null;
+		InputStream is = null;
 		JarOutputStream jos = null;
 		
 		try {
 			unpack = Pack200.newUnpacker();
 			tempJar = File.createTempFile("profilecj_", ".jar"); //$NON-NLS-1$ //$NON-NLS-2$
 			jos = new JarOutputStream(new FileOutputStream(tempJar));
+			is = new FileInputStream(packedFile);
+			try {
+				if (is.markSupported()) {
+                    is.mark(2); //set marker for reset
+                }
+				is = new GZIPInputStream(is);
+			} catch(IOException ioe) {
+				if(is.markSupported())
+					is.reset(); 
+			}
 			
-			unpack.unpack(packedFile, jos);
+			unpack.unpack(is, jos);
 		} catch (FileNotFoundException e) {
-			JXErrorPane.showDialog(parentframe, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+			JXErrorPane.showDialog(parentframe, new ErrorInfo(profile.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 					null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		} catch (IOException e) {
-			JXErrorPane.showDialog(parentframe, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+			JXErrorPane.showDialog(parentframe, new ErrorInfo(profile.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 					null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		} finally {
 			if(jos != null)
 				try { jos.close(); } catch(IOException e) {};
+			if(is != null)
+				try { is.close(); } catch(IOException e) {};
 			unpack = null;
 			jos = null;
 		}
@@ -270,11 +285,11 @@ public class RestorePlugin {
 				}
 			}
 		} catch (FileNotFoundException e) {
-			JXErrorPane.showDialog(parentframe, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+			JXErrorPane.showDialog(parentframe, new ErrorInfo(profile.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 					null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		} catch (IOException e) {
-			JXErrorPane.showDialog(parentframe, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+			JXErrorPane.showDialog(parentframe, new ErrorInfo(profile.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 					null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		} finally {

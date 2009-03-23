@@ -163,7 +163,7 @@ public class State implements Comparable<State> {
 	
 	public String getLocalizedDisplayName() {
 		String actionName = displayName;
-		String statePath = ApplicationCore.ajrParametreAppli.getResourceString("path.ressources") //$NON-NLS-1$
+		String statePath = ApplicationCore.staticParameters.getResourceString("path.ressources") //$NON-NLS-1$
 				+ File.separator + "states" + File.separator + name + ((isZipped) ? ".zip" : ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		
 		try {

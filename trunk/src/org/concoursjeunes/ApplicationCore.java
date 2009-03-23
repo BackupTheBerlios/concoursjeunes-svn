@@ -93,6 +93,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -100,22 +101,20 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
-import javax.naming.ConfigurationException;
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.swing.event.EventListenerList;
-import javax.xml.bind.JAXBException;
 
 import org.ajdeveloppement.commons.AjResourcesReader;
+import org.ajdeveloppement.commons.SecureStringsStore;
 import org.ajdeveloppement.commons.io.FileUtils;
 import org.ajdeveloppement.commons.sql.SqlManager;
-import org.concoursjeunes.builders.FicheConcoursBuilder;
-import org.concoursjeunes.event.ConcoursJeunesEvent;
-import org.concoursjeunes.event.ConcoursJeunesListener;
-import org.concoursjeunes.exceptions.NullConfigurationException;
+import org.concoursjeunes.event.ApplicationCoreEvent;
+import org.concoursjeunes.event.ApplicationCoreListener;
 /**
  * Class principal de l'application, gére l'ensemble des ressources commune tel que
  * <ul>
@@ -137,14 +136,9 @@ public class ApplicationCore {
 	public static final int DB_RELEASE_REQUIRED = 20;
 
 	/**
-	 * Chargement des Libelle de l'application
-	 */
-	public static AjResourcesReader ajrLibelle = new AjResourcesReader("libelle");  //$NON-NLS-1$
-
-	/**
 	 * Chargement des parametrages statiques
 	 */
-	public static AjResourcesReader ajrParametreAppli = new AjResourcesReader("parametre");  //$NON-NLS-1$
+	public static AjResourcesReader staticParameters = new AjResourcesReader("parametre");  //$NON-NLS-1$
 
 	/**
 	 * ressources utilisateurs
@@ -161,19 +155,18 @@ public class ApplicationCore {
 	 */
 	public static int dbVersion = 0;
 	
-	private static boolean consoleMode = true;
-	private static Configuration configuration = new Configuration();
 	private static ApplicationCore instance;
+
+	private static AppConfiguration _appConfiguration = new AppConfiguration();
 	
-	private final List<FicheConcours> fichesConcours = new ArrayList<FicheConcours>();
-	private final EventListenerList listeners = new EventListenerList();
+	private List<Profile> profiles = new ArrayList<Profile>();
+	private EventListenerList listeners = new EventListenerList();
 
 	/**
 	 * constructeur, création de la fenetre principale
 	 */
-	private ApplicationCore() throws SQLException {
-		loadConfiguration();
-		loadLibelle();
+	private ApplicationCore() throws SQLException, IOException {
+		loadAppConfiguration();
 		debugLogger();
 		openDatabase();
 		checkUpdateDatabase();
@@ -182,11 +175,29 @@ public class ApplicationCore {
 	/**
 	 * Initialise l'application
 	 */
-	public synchronized static void initializeApplication()  throws SQLException {
+	public synchronized static void initializeApplication()  throws SQLException, IOException {
 		if (null == instance) { // Premier appel
 			instance = new ApplicationCore();
 		}
 	}
+	/**
+	 * Ajoute l'auditeur fournit en parametre aux auditeurs de la class
+	 * 
+	 * @param listener
+	 */
+	public void addApplicationCoreListener(ApplicationCoreListener listener) {
+		listeners.add(ApplicationCoreListener.class, listener);
+	}
+	
+	/**
+	 * Retire l'auditeur fournit en parametre aux auditeurs de la class
+	 * 
+	 * @param listener
+	 */
+	public void removeApplicationCoreListener(ApplicationCoreListener listener) {
+		listeners.remove(ApplicationCoreListener.class, listener);
+	}
+	
 	/**
 	 * Retourne l'instance unique du moteur du logiciel ou null si le moteur
 	 * n'est pas initialisé.<br>
@@ -198,26 +209,27 @@ public class ApplicationCore {
 		return instance;
 	}
 	
-	/**
-	 * tente de recuperer la configuration générale du programme
-	 */
-	private void loadConfiguration() {
-		configuration = ConfigurationManager.loadCurrentConfiguration();
-	}
-	
-	/**
-	 * Charge les libelle de l'application en fonction de la locale
-	 */
-	private void loadLibelle() {
-		Locale.setDefault(new Locale(configuration.getLangue()));
-		reloadLibelle();
+	private void loadAppConfiguration() {
+		setAppConfiguration(ConfigurationManager.loadAppConfiguration());
+		
+		try {
+			SecureStringsStore secureStringsStore = new SecureStringsStore(Cipher.getInstance("AES")); //$NON-NLS-1$
+			secureStringsStore.loadKey(new File(staticParameters.getResourceString("path.ressources"), "security/keys/default.key")); //$NON-NLS-1$ //$NON-NLS-2$
+			getAppConfiguration().getProxy().setSecureStringsStore(secureStringsStore);
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (NoSuchPaddingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void debugLogger() {
 		if (System.getProperty("debug.mode") == null) {   //$NON-NLS-1$
 			try {
-				System.setErr(new PrintStream(new File(userRessources.getAllusersDataPath(), ajrParametreAppli.getResourceString("log.error")))); //$NON-NLS-1$
-				System.setOut(new PrintStream(new File(userRessources.getAllusersDataPath(), ajrParametreAppli.getResourceString("log.exec"))));   //$NON-NLS-1$
+				System.setErr(new PrintStream(new File(userRessources.getAllusersDataPath(), staticParameters.getResourceString("log.error")))); //$NON-NLS-1$
+				System.setOut(new PrintStream(new File(userRessources.getAllusersDataPath(), staticParameters.getResourceString("log.exec"))));   //$NON-NLS-1$
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -235,15 +247,15 @@ public class ApplicationCore {
 	 * Ouvre la base de donné de l'application
 	 */
 	private void openDatabase() throws SQLException {
-		dbConnection = DriverManager.getConnection(ajrParametreAppli.getResourceString("database.url", userRessources.getBasePath()), //$NON-NLS-1$
-				ajrParametreAppli.getResourceString("database.user"),   //$NON-NLS-1$
-				ajrParametreAppli.getResourceString("database.password"));   //$NON-NLS-1$
+		dbConnection = DriverManager.getConnection(staticParameters.getResourceString("database.url", userRessources.getBasePath()), //$NON-NLS-1$
+				staticParameters.getResourceString("database.user"),   //$NON-NLS-1$
+				staticParameters.getResourceString("database.password"));   //$NON-NLS-1$
 	}
 	
 	private void checkUpdateDatabase() throws SQLException {
 		Statement stmt = null;
 		try {
-			File updatePath = new File(ajrParametreAppli.getResourceString("path.ressources"), "update"); //$NON-NLS-1$ //$NON-NLS-2$
+			File updatePath = new File(staticParameters.getResourceString("path.ressources"), "update"); //$NON-NLS-1$ //$NON-NLS-2$
 			stmt = dbConnection.createStatement();
 			SqlManager sqlManager = new SqlManager(dbConnection, updatePath);
 
@@ -253,10 +265,8 @@ public class ApplicationCore {
 				dbVersion = getDBVersion();
 			}
 
-			// si la version de la base est différente de la version requise par le programme
-			// copie les fichiers de mise à jour par défaut
 			if (dbVersion > DB_RELEASE_REQUIRED) {
-				throw new RuntimeException(ajrLibelle.getResourceString("erreur.dbrelease"));   //$NON-NLS-1$
+				throw new RuntimeException("Bad database version");   //$NON-NLS-1$
 			}
 			
 			ScriptEngine scriptEngine = null;
@@ -285,22 +295,14 @@ public class ApplicationCore {
 			dbVersion = getDBVersion();
 		}
 	}
-
-	/**
-	 * Recharge le fichier de libelle en fonction de la localite definit par defaut
-	 */
-	public static void reloadLibelle() {
-		AjResourcesReader.setLocale(Locale.getDefault());
-		ajrLibelle = new AjResourcesReader("libelle");   //$NON-NLS-1$
-	}
 	
 	/**
-	 * Retourne la configuration courante de l'application
+	 * Retourne la configuration de l'application
 	 * 
 	 * @return la configuration de l'application
 	 */
-	public static Configuration getConfiguration() {
-		return configuration;
+	public static AppConfiguration getAppConfiguration() {
+		return _appConfiguration;
 	}
 	
 	/**
@@ -308,41 +310,8 @@ public class ApplicationCore {
 	 * 
 	 * @param _configuration la configuration de l'application
 	 */
-	public static void setConfiguration(Configuration _configuration) {
-		configuration = _configuration;
-		if(instance != null)
-			instance.fireConfigurationChanged();
-	}
-
-	/**
-	 * @return interactiveMode
-	 */
-	public static boolean isConsoleMode() {
-		return consoleMode;
-	}
-
-	/**
-	 * @param interactiveMode interactiveMode à définir
-	 */
-	public static void setConsoleMode(boolean consoleMode) {
-		ApplicationCore.consoleMode = consoleMode;
-	}
-
-	/**
-	 * Ajoute un auditeur aux evenements du Singleton ConcoursJeunes
-	 * 
-	 * @param concoursJeunesListener l'auditeur qui s'enregistre à la class
-	 */
-	public void addConcoursJeunesListener(ConcoursJeunesListener concoursJeunesListener) {
-		listeners.add(ConcoursJeunesListener.class, concoursJeunesListener);
-	}
-
-	/**
-	 * Retire un auditeur aux evenements du Singleton ConcoursJeunes
-	 * @param concoursJeunesListener l'auditeur qui résilie à la class
-	 */
-	public void removeConcoursJeunesListener(ConcoursJeunesListener concoursJeunesListener) {
-		listeners.remove(ConcoursJeunesListener.class, concoursJeunesListener);
+	public static void setAppConfiguration(AppConfiguration appConfiguration) {
+		_appConfiguration = appConfiguration;
 	}
 
 	private int getDBVersion() {
@@ -367,13 +336,30 @@ public class ApplicationCore {
 	}
 
 	/**
+	 * @return profiles
+	 */
+	public List<Profile> getProfiles() {
+		return profiles;
+	}
+	
+	public void addProfile(Profile profile) {
+		profiles.add(profile);
+		fireProfileAdded(profile);
+	}
+	
+	public void removeProfile(Profile profile) {
+		profiles.remove(profile);
+		fireProfileRemoved(profile);
+	}
+
+	/**
 	 * Création d'une nouvelle fiche concours
 	 * 
 	 * @throws ConfigurationException
 	 */
-	public void createFicheConcours() throws NullConfigurationException, IOException, JAXBException {
+	/*public void createFicheConcours() throws NullConfigurationException, IOException, JAXBException {
 		createFicheConcours(null);
-	}
+	}*/
 	
 	/**
 	 * Création d'une nouvelle fiche concours ayant les parametres fournit
@@ -381,7 +367,7 @@ public class ApplicationCore {
 	 * @param parametre les parametres du concours
 	 * @throws ConfigurationException
 	 */
-	public void createFicheConcours(Parametre parametre) throws NullConfigurationException, IOException, JAXBException {
+	/*public void createFicheConcours(Parametre parametre) throws NullConfigurationException, IOException, JAXBException {
 		if (configuration == null)
 			throw new NullConfigurationException("la configuration est null");   //$NON-NLS-1$
 
@@ -393,7 +379,7 @@ public class ApplicationCore {
 		ficheConcours.save();
 
 		fireFicheConcoursCreated(ficheConcours);
-	}
+	}*/
 
 	/**
 	 * Supprime une fiche concours du système
@@ -403,7 +389,7 @@ public class ApplicationCore {
 	 * 
 	 * @throws ConfigurationException
 	 */
-	public void deleteFicheConcours(MetaDataFicheConcours metaDataFicheConcours) throws NullConfigurationException, IOException, JAXBException {
+	/*public void deleteFicheConcours(MetaDataFicheConcours metaDataFicheConcours) throws NullConfigurationException, IOException, JAXBException {
 		if (configuration == null)
 			throw new NullConfigurationException("la configuration est null");   //$NON-NLS-1$
 
@@ -414,7 +400,7 @@ public class ApplicationCore {
 
 			fireFicheConcoursDeleted(null);
 		}
-	}
+	}*/
 
 	/**
 	 * Referme une fiche de concours
@@ -423,7 +409,7 @@ public class ApplicationCore {
 	 * 
 	 * @throws ConfigurationException
 	 */
-	public void closeFicheConcours(FicheConcours ficheConcours) throws NullConfigurationException, IOException, JAXBException {
+	/*public void closeFicheConcours(FicheConcours ficheConcours) throws NullConfigurationException, IOException, JAXBException {
 		if (configuration == null)
 			throw new NullConfigurationException("la configuration est null");   //$NON-NLS-1$
 
@@ -432,14 +418,14 @@ public class ApplicationCore {
 		if (fichesConcours.remove(ficheConcours)) {
 			fireFicheConcoursClosed(ficheConcours);
 		}
-	}
+	}*/
 
 	/**
 	 * Décharge de la mémoire l'ensemble des fiches ouvertes
 	 * 
 	 * @throws ConfigurationException
 	 */
-	public void closeAllFichesConcours() throws NullConfigurationException, IOException, JAXBException {
+	/*public void closeAllFichesConcours() throws NullConfigurationException, IOException, JAXBException {
 		saveAllFichesConcours();
 
 		ArrayList<FicheConcours> tmpList = new ArrayList<FicheConcours>();
@@ -451,7 +437,7 @@ public class ApplicationCore {
 		tmpList.clear();
 		
 		configuration.save();
-	}
+	}*/
 
 	/**
 	 * Restaure le coucours dont l'objet de metadonnée est fournit en parametre
@@ -462,7 +448,7 @@ public class ApplicationCore {
 	 * @throws ConfigurationException
 	 * @throws IOException
 	 */
-	public void restoreFicheConcours(MetaDataFicheConcours metaDataFicheConcours)
+	/*public void restoreFicheConcours(MetaDataFicheConcours metaDataFicheConcours)
 			throws NullConfigurationException, IOException {
 		if (configuration == null)
 			throw new NullConfigurationException("la configuration est null");   //$NON-NLS-1$
@@ -473,7 +459,7 @@ public class ApplicationCore {
 			fichesConcours.add(ficheConcours);
 			fireFicheConcoursRestored(ficheConcours);
 		}
-	}
+	}*/
 
 	/**
 	 * Sauvegarde l'ensemble des fiches de concours actuellement ouverte
@@ -481,7 +467,7 @@ public class ApplicationCore {
 	 * @throws NullConfigurationException
 	 * @throws IOException
 	 */
-	public void saveAllFichesConcours() throws NullConfigurationException, IOException, JAXBException {
+	/*public void saveAllFichesConcours() throws NullConfigurationException, IOException, JAXBException {
 		if (configuration == null)
 			throw new NullConfigurationException("la configuration est null");   //$NON-NLS-1$
 
@@ -489,16 +475,16 @@ public class ApplicationCore {
 			fiche.save();
 		}
 		configuration.saveAsDefault();
-	}
+	}*/
 	
 	/**
 	 * Retourne la liste des fiches concours actuellement ouvertent
 	 * 
 	 * @return la liste des fiches concours actuellement ouvertent
 	 */
-	public List<FicheConcours> getFichesConcours() {
+	/*public List<FicheConcours> getFichesConcours() {
 		return fichesConcours;
-	}
+	}*/
 	
 	/**
 	 * Test si une fiche est déjà ouverte ou non
@@ -506,15 +492,15 @@ public class ApplicationCore {
 	 * @param metaDataFicheConcours - le fichier de metadonnées du concours à tester
 	 * @return true si ouvert, false sinon
 	 */
-	public boolean isOpenFicheConcours(MetaDataFicheConcours metaDataFicheConcours) {
+	/*public boolean isOpenFicheConcours(MetaDataFicheConcours metaDataFicheConcours) {
 		for(FicheConcours ficheConcours : fichesConcours) {
 			if(ficheConcours.getMetaDataFicheConcours().equals(metaDataFicheConcours))
 				return true;
 		}
 		return false;
-	}
+	}*/
 
-	private void fireFicheConcoursCreated(FicheConcours ficheConcours) {
+	/*private void fireFicheConcoursCreated(FicheConcours ficheConcours) {
 		for (ConcoursJeunesListener concoursJeunesListener : listeners.getListeners(ConcoursJeunesListener.class)) {
 			concoursJeunesListener.ficheConcoursCreated(new ConcoursJeunesEvent(ficheConcours, ConcoursJeunesEvent.Type.CREATE_CONCOURS));
 		}
@@ -541,6 +527,18 @@ public class ApplicationCore {
 	private void fireConfigurationChanged() {
 		for (ConcoursJeunesListener concoursJeunesListener : listeners.getListeners(ConcoursJeunesListener.class)) {
 			concoursJeunesListener.configurationChanged(new ConcoursJeunesEvent(null, ConcoursJeunesEvent.Type.CONFIGURATION_CHANGED));
+		}
+	}*/
+	
+	private void fireProfileAdded(Profile profile) {
+		for (ApplicationCoreListener applicationCoreListener : listeners.getListeners(ApplicationCoreListener.class)) {
+			applicationCoreListener.profileAdded(new ApplicationCoreEvent(profile));
+		}
+	}
+	
+	private void fireProfileRemoved(Profile profile) {
+		for (ApplicationCoreListener applicationCoreListener : listeners.getListeners(ApplicationCoreListener.class)) {
+			applicationCoreListener.profileRemoved(new ApplicationCoreEvent(profile));
 		}
 	}
 }

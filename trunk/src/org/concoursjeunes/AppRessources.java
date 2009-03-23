@@ -122,7 +122,7 @@ public class AppRessources extends org.ajdeveloppement.apps.AppRessources {
 	 */
 	@Override
 	public String getUserPath() {
-		return ApplicationCore.ajrParametreAppli.getResourceString("path.user", super.getUserPath()); //$NON-NLS-1$
+		return ApplicationCore.staticParameters.getResourceString("path.user", super.getUserPath()); //$NON-NLS-1$
 	}
 	/**
 	 * Retourne le chemin absolu du profile
@@ -130,10 +130,10 @@ public class AppRessources extends org.ajdeveloppement.apps.AppRessources {
 	 * @param profile le nom du profil pour lequelle récuperer le chemin
 	 * @return le chemin absolu du profile
 	 */
-	private File getProfilePath(String profile) {
+	private File getProfilePath(Profile profile) {
 		File profilePath = new File(
-				ApplicationCore.ajrParametreAppli.getResourceString("path.profile", getUserPath()), //$NON-NLS-1$
-				profile);
+				ApplicationCore.staticParameters.getResourceString("path.profile", getUserPath()), //$NON-NLS-1$
+				profile.getConfiguration().getCurProfil());
 
 		return profilePath;
 	}
@@ -145,7 +145,7 @@ public class AppRessources extends org.ajdeveloppement.apps.AppRessources {
 	 */
 	private void copyDefaultConfigForUser() {
 		List<File> fileForCopy = FileUtils.listAllFiles(
-				new File(ApplicationCore.ajrParametreAppli.getResourceString("path.config")), ".*\\" + EXT_XML); //$NON-NLS-1$ //$NON-NLS-2$
+				new File(ApplicationCore.staticParameters.getResourceString("path.config")), ".*\\" + EXT_XML); //$NON-NLS-1$ //$NON-NLS-2$
 
 		for (File file : fileForCopy) {
 			File configFile = new File(getUserPath(), file.getName());
@@ -182,7 +182,7 @@ public class AppRessources extends org.ajdeveloppement.apps.AppRessources {
 	 */
 	public File getBasePath() {
 		File basePath = new File(
-				ApplicationCore.ajrParametreAppli.getResourceString("path.base", getAllusersDataPath())); //$NON-NLS-1$
+				ApplicationCore.staticParameters.getResourceString("path.base", getAllusersDataPath())); //$NON-NLS-1$
 
 		basePath.mkdirs();
 
@@ -196,7 +196,7 @@ public class AppRessources extends org.ajdeveloppement.apps.AppRessources {
 	 */
 	public File getUpdatePath() {
 		File basePath = new File(
-				ApplicationCore.ajrParametreAppli.getResourceString("path.update", getAllusersDataPath())); //$NON-NLS-1$
+				ApplicationCore.staticParameters.getResourceString("path.update", getAllusersDataPath())); //$NON-NLS-1$
 
 		basePath.mkdirs();
 
@@ -211,9 +211,9 @@ public class AppRessources extends org.ajdeveloppement.apps.AppRessources {
 	 *            le nom du profile pour lequel récuperer le chemin des concours
 	 * @return le chemin des concours
 	 */
-	public File getConcoursPathForProfile(String profile) {
+	public File getConcoursPathForProfile(Profile profile) {
 		File concoursPath = new File(
-				ApplicationCore.ajrParametreAppli.getResourceString("path.concours", getProfilePath(profile))); //$NON-NLS-1$
+				ApplicationCore.staticParameters.getResourceString("path.concours", getProfilePath(profile))); //$NON-NLS-1$
 
 		concoursPath.mkdirs();
 
@@ -227,9 +227,9 @@ public class AppRessources extends org.ajdeveloppement.apps.AppRessources {
 	 *            le profil pour lequelle renvouyé le chemin des logs
 	 * @return le chemin des logs du profil
 	 */
-	public File getLogPathForProfile(String profile) {
+	public File getLogPathForProfile(Profile profile) {
 		File concoursPath = new File(
-				ApplicationCore.ajrParametreAppli.getResourceString("path.log", getProfilePath(profile))); //$NON-NLS-1$
+				ApplicationCore.staticParameters.getResourceString("path.log", getProfilePath(profile))); //$NON-NLS-1$
 
 		concoursPath.mkdirs();
 

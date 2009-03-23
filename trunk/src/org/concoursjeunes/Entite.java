@@ -22,8 +22,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.ajdeveloppement.commons.sql.SqlPersistanceBean;
-
 /**
  * Entite organisationnelle.<br>
  * Une entite peut représenté
@@ -36,7 +34,7 @@ import org.ajdeveloppement.commons.sql.SqlPersistanceBean;
  * 
  * @author Aurélien JEOFFRAY
  */
-public class Entite extends SqlPersistanceBean{
+public class Entite {
     
     private String nom        	= ""; //$NON-NLS-1$
     private String agrement		= ""; //$NON-NLS-1$
@@ -222,7 +220,6 @@ public class Entite extends SqlPersistanceBean{
 	/**
 	 * Sauvegarde l'entite dans la base de donnée
 	 */
-	@Override
 	public void save() {
 		try {
 			String sql = "MERGE INTO Entite (AGREMENTENTITE, NOMENTITE, " + //$NON-NLS-1$

@@ -86,7 +86,7 @@
  */
 package org.concoursjeunes.plugins.update;
 
-import static org.concoursjeunes.ApplicationCore.ajrParametreAppli;
+import static org.concoursjeunes.ApplicationCore.staticParameters;
 
 import java.awt.AWTException;
 import java.awt.Dimension;
@@ -122,6 +122,7 @@ import org.ajdeveloppement.updater.UpdateException;
 import org.ajdeveloppement.updater.ui.AjUpdaterFrame;
 import org.concoursjeunes.AppInfos;
 import org.concoursjeunes.ApplicationCore;
+import org.concoursjeunes.Profile;
 import org.concoursjeunes.exceptions.NullConfigurationException;
 import org.concoursjeunes.plugins.Plugin;
 import org.concoursjeunes.plugins.PluginEntry;
@@ -175,8 +176,7 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 		try {
 			AppSerializer appSerializer = new AppSerializer(ApplicationCore.userRessources);
 			ajUpdater.setUserAgent(AppInfos.NOM + " " + AppInfos.VERSION //$NON-NLS-1$
-					+ " (" + appSerializer.getSerial() + ";" + ApplicationCore.getConfiguration().getClub().getAgrement() //$NON-NLS-1$ //$NON-NLS-2$ 
-					+ " " + ApplicationCore.getConfiguration().getClub().getNom() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+					+ " (" + appSerializer.getSerial() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -185,14 +185,9 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 		for (PluginMetadata pm : pl.getPlugins(Type.ALL)) {
 			ajUpdater.addRepository(new Repository(pm.getName(), new String[] { pm.getReposURL() }, pm.getVersion()));
 		}
-		if (ApplicationCore.getConfiguration().isUseProxy()) {
-			System.setProperty("http.proxyHost", ApplicationCore.getConfiguration().getProxy().getProxyServerAddress()); //$NON-NLS-1$
-			System.setProperty("http.proxyPort",Integer.toString(ApplicationCore.getConfiguration().getProxy().getProxyServerPort())); //$NON-NLS-1$
-			if(ApplicationCore.getConfiguration().getProxy().isUseProxyAuthentification()) {
-				Authenticator.setDefault(new SimpleAuthenticator(
-						ApplicationCore.getConfiguration().getProxy().getProxyAuthLogin(),
-						ApplicationCore.getConfiguration().getProxy().getProxyAuthPassword()));
-			}
+		
+		if (ApplicationCore.getAppConfiguration().isUseProxy()) {
+			ApplicationCore.getAppConfiguration().getProxy().activateProxyConfiguration();
 		}
 		
 		boolean loop;
@@ -248,7 +243,7 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 				// load an image
 				Dimension dimension = tray.getTrayIconSize();
 				Image image = Toolkit.getDefaultToolkit().getImage(
-						ajrParametreAppli.getResourceString("path.ressources") + File.separator + ajrParametreAppli.getResourceString("file.icon.application")).getScaledInstance(dimension.width, //$NON-NLS-1$ //$NON-NLS-2$
+						staticParameters.getResourceString("path.ressources") + File.separator + staticParameters.getResourceString("file.icon.application")).getScaledInstance(dimension.width, //$NON-NLS-1$ //$NON-NLS-2$
 						dimension.height, Image.SCALE_SMOOTH);
 
 				// create a popup menu
@@ -299,7 +294,8 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 				try {
 					try {
-						ApplicationCore.getInstance().saveAllFichesConcours();
+						for(Profile profile : ApplicationCore.getInstance().getProfiles())
+							profile.saveAllFichesConcours();
 						
 						ApplicationCore.dbConnection.close();
 					} catch (NullConfigurationException e) {

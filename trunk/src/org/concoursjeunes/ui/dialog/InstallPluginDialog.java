@@ -127,6 +127,7 @@ import javax.swing.table.TableRowSorter;
 import javax.xml.bind.JAXBException;
 import javax.xml.ws.WebServiceException;
 
+import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.net.SimpleAuthenticator;
 import org.ajdeveloppement.commons.ui.AJList;
 import org.ajdeveloppement.macosx.PrivilegedRuntime;
@@ -137,6 +138,7 @@ import org.ajdeveloppement.updater.Repository;
 import org.ajdeveloppement.updater.UpdateException;
 import org.ajdeveloppement.updater.ui.AjUpdaterFrame;
 import org.concoursjeunes.ApplicationCore;
+import org.concoursjeunes.Profile;
 import org.concoursjeunes.exceptions.NullConfigurationException;
 import org.concoursjeunes.plugins.AvailablePluginsManager;
 import org.concoursjeunes.plugins.PluginDescription;
@@ -153,6 +155,8 @@ import org.jdesktop.swingx.util.OS;
  *
  */
 public class InstallPluginDialog extends JDialog implements ActionListener, CaretListener, ListSelectionListener, AjUpdaterListener {
+	
+	private AjResourcesReader localisation;
 	
 	private final JLabel jllCategorie = new JLabel();
 	private final AJList jlCategorie = new AJList();
@@ -177,8 +181,10 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 	private List<PluginDescription> pluginsDetail;
 	private AjUpdater ajUpdater;
 	
-	public InstallPluginDialog(JFrame parentframe) {
+	public InstallPluginDialog(JFrame parentframe, AjResourcesReader localisation) {
 		super(parentframe, true);
+		
+		this.localisation = localisation;
 		
 		init();
 		affectLibelle();
@@ -249,12 +255,12 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 	}
 	
 	private void affectLibelle() {
-		jllCategorie.setText(ApplicationCore.ajrLibelle.getResourceString("installplugindialog.category")); //$NON-NLS-1$
-		jlPlugins.setText(ApplicationCore.ajrLibelle.getResourceString("installplugindialog.plugins")); //$NON-NLS-1$
-		jlSearch.setText(ApplicationCore.ajrLibelle.getResourceString("installplugindialog.search")); //$NON-NLS-1$
+		jllCategorie.setText(localisation.getResourceString("installplugindialog.category")); //$NON-NLS-1$
+		jlPlugins.setText(localisation.getResourceString("installplugindialog.plugins")); //$NON-NLS-1$
+		jlSearch.setText(localisation.getResourceString("installplugindialog.search")); //$NON-NLS-1$
 		
-		jbValider.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
-		jbAnnuler.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
+		jbValider.setText(localisation.getResourceString("bouton.valider")); //$NON-NLS-1$
+		jbAnnuler.setText(localisation.getResourceString("bouton.annuler")); //$NON-NLS-1$
 	}
 	
 	private void completePanel() {
@@ -262,21 +268,15 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 		
 		DefaultTableModel dtm = createTableModel();
 		
-		if(ApplicationCore.getConfiguration().isUseProxy()) {
-			System.setProperty("http.proxyHost", ApplicationCore.getConfiguration().getProxy().getProxyServerAddress()); //$NON-NLS-1$
-			System.setProperty("http.proxyPort",Integer.toString(ApplicationCore.getConfiguration().getProxy().getProxyServerPort())); //$NON-NLS-1$
-			if(ApplicationCore.getConfiguration().getProxy().isUseProxyAuthentification()) {
-				Authenticator.setDefault(new SimpleAuthenticator(
-						ApplicationCore.getConfiguration().getProxy().getProxyAuthLogin(),
-						ApplicationCore.getConfiguration().getProxy().getProxyAuthPassword()));
-			}
+		if(ApplicationCore.getAppConfiguration().isUseProxy()) {
+			ApplicationCore.getAppConfiguration().getProxy().activateProxyConfiguration();
 		}
 		
 		try {
 			Class<?> clazz = Class.forName(
 					"org.concoursjeunes.webservices.AvailablePluginsManagerImpl", //$NON-NLS-1$
 					true,
-					new URLClassLoader(new URL[] { new URL(ApplicationCore.ajrParametreAppli.getResourceString("url.webservices") + "/ConcoursJeunes-webservices.jar") })); //$NON-NLS-1$ //$NON-NLS-2$
+					new URLClassLoader(new URL[] { new URL(ApplicationCore.staticParameters.getResourceString("url.webservices") + "/ConcoursJeunes-webservices.jar") })); //$NON-NLS-1$ //$NON-NLS-2$
 			AvailablePluginsManager apm = (AvailablePluginsManager)clazz.newInstance();
 			pluginsDetail = apm.getPluginsDetail();
 			
@@ -301,7 +301,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 			jtPlugins.getColumnModel().getColumn(4).setPreferredWidth(200);
 			jtPlugins.getColumnModel().removeColumn(jtPlugins.getColumnModel().getColumn(3));
 			
-			jlCategorie.add(ApplicationCore.ajrLibelle.getResourceString("installplugindialog.category.all")); //$NON-NLS-1$
+			jlCategorie.add(localisation.getResourceString("installplugindialog.category.all")); //$NON-NLS-1$
 			for(String category : apm.getCategories().values()) {
 				jlCategorie.add(category);
 			}
@@ -318,7 +318,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 						public void run() {
 							GlassPanePanel panel = new GlassPanePanel();
 							
-							panel.setMessage(ApplicationCore.ajrLibelle.getResourceString("installplugindialog.temporary.disable")); //$NON-NLS-1$
+							panel.setMessage(localisation.getResourceString("installplugindialog.temporary.disable")); //$NON-NLS-1$
 							setGlassPane(panel);
 							panel.setVisible(true);
 						}
@@ -329,7 +329,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						GlassPanePanel panel = new GlassPanePanel();
-						panel.setMessage(ApplicationCore.ajrLibelle.getResourceString("installplugindialog.temporary.disable")); //$NON-NLS-1$
+						panel.setMessage(localisation.getResourceString("installplugindialog.temporary.disable")); //$NON-NLS-1$
 						setGlassPane(panel);
 						panel.setVisible(true);
 					}
@@ -340,7 +340,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
 					GlassPanePanel panel = new GlassPanePanel();
-					panel.setMessage(ApplicationCore.ajrLibelle.getResourceString("installplugindialog.temporary.disable")); //$NON-NLS-1$
+					panel.setMessage(localisation.getResourceString("installplugindialog.temporary.disable")); //$NON-NLS-1$
 					setGlassPane(panel);
 					panel.setVisible(true);
 				}
@@ -350,7 +350,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
 					GlassPanePanel panel = new GlassPanePanel();
-					panel.setMessage(ApplicationCore.ajrLibelle.getResourceString("installplugindialog.temporary.disable")); //$NON-NLS-1$
+					panel.setMessage(localisation.getResourceString("installplugindialog.temporary.disable")); //$NON-NLS-1$
 					setGlassPane(panel);
 					panel.setVisible(true);
 				}
@@ -360,7 +360,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
 					GlassPanePanel panel = new GlassPanePanel();
-					panel.setMessage(ApplicationCore.ajrLibelle.getResourceString("installplugindialog.temporary.disable")); //$NON-NLS-1$
+					panel.setMessage(localisation.getResourceString("installplugindialog.temporary.disable")); //$NON-NLS-1$
 					setGlassPane(panel);
 					panel.setVisible(true);
 				}
@@ -399,10 +399,10 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 		};
 		
 		dtm.addColumn(""); //$NON-NLS-1$
-		dtm.addColumn(ApplicationCore.ajrLibelle.getResourceString("installplugindialog.plugins.name")); //$NON-NLS-1$
-		dtm.addColumn(ApplicationCore.ajrLibelle.getResourceString("installplugindialog.plugins.version")); //$NON-NLS-1$
+		dtm.addColumn(localisation.getResourceString("installplugindialog.plugins.name")); //$NON-NLS-1$
+		dtm.addColumn(localisation.getResourceString("installplugindialog.plugins.version")); //$NON-NLS-1$
 		dtm.addColumn("category_hide"); //$NON-NLS-1$
-		dtm.addColumn(ApplicationCore.ajrLibelle.getResourceString("installplugindialog.plugins.description")); //$NON-NLS-1$
+		dtm.addColumn(localisation.getResourceString("installplugindialog.plugins.description")); //$NON-NLS-1$
 		
 		return dtm;
 	}
@@ -412,7 +412,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 	 */
 	public void showInstallPluginDialog() {
 		final GlassPanePanel panel = new GlassPanePanel();
-		panel.setMessage(ApplicationCore.ajrLibelle.getResourceString("installplugindialog.loading")); //$NON-NLS-1$
+		panel.setMessage(localisation.getResourceString("installplugindialog.loading")); //$NON-NLS-1$
 		setGlassPane(panel);
 		panel.setVisible(true);
 		SwingUtilities.invokeLater(new Runnable() {
@@ -456,7 +456,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 				}
 				try {
 					GlassPanePanel panel = new GlassPanePanel();
-					panel.setMessage(ApplicationCore.ajrLibelle.getResourceString("installplugindialog.loading")); //$NON-NLS-1$
+					panel.setMessage(localisation.getResourceString("installplugindialog.loading")); //$NON-NLS-1$
 					setGlassPane(panel);
 					panel.setVisible(true);
 					ajUpdater.checkUpdate();
@@ -526,39 +526,40 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 				break;
 			case CONNECTION_INTERRUPTED:
 				panel = new GlassPanePanel();
-				panel.setMessage(ApplicationCore.ajrLibelle.getResourceString("installplugindialog.temporary.disable")); //$NON-NLS-1$
+				panel.setMessage(localisation.getResourceString("installplugindialog.temporary.disable")); //$NON-NLS-1$
 				setGlassPane(panel);
 				panel.setVisible(true);
 				break;
 			case FILE_ERROR:
 				panel = new GlassPanePanel();
-				panel.setMessage(ApplicationCore.ajrLibelle.getResourceString("installplugindialog.temporary.disable")); //$NON-NLS-1$
+				panel.setMessage(localisation.getResourceString("installplugindialog.temporary.disable")); //$NON-NLS-1$
 				setGlassPane(panel);
 				panel.setVisible(true);
 				break;
 			case FILES_DOWNLOADED:
-				if (JOptionPane.showConfirmDialog(null, ApplicationCore.ajrLibelle.getResourceString("update.confirminstall"), ApplicationCore.ajrLibelle.getResourceString("update.confirminstall.title"), //$NON-NLS-1$ //$NON-NLS-2$
+				if (JOptionPane.showConfirmDialog(null, localisation.getResourceString("update.confirminstall"), localisation.getResourceString("update.confirminstall.title"), //$NON-NLS-1$ //$NON-NLS-2$
 						JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 					try {
 						try {
-							ApplicationCore.getInstance().saveAllFichesConcours();
+							for(Profile profile : ApplicationCore.getInstance().getProfiles())
+								profile.saveAllFichesConcours();
 							
 							ApplicationCore.dbConnection.close();
 						} catch (NullConfigurationException e) {
 							e.printStackTrace();
-							JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+							JXErrorPane.showDialog(null, new ErrorInfo(localisation.getResourceString("erreur"), //$NON-NLS-1$
 									e.toString(), null, null, e, Level.SEVERE, null));
 						} catch (IOException e) {
 							e.printStackTrace();
-							JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+							JXErrorPane.showDialog(null, new ErrorInfo(localisation.getResourceString("erreur"), //$NON-NLS-1$
 									e.toString(), null, null, e, Level.SEVERE, null));
 						} catch (JAXBException e) {
 							e.printStackTrace();
-							JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+							JXErrorPane.showDialog(null, new ErrorInfo(localisation.getResourceString("erreur"), //$NON-NLS-1$
 									e.toString(), null, null, e, Level.SEVERE, null));
 						} catch (SQLException e) {
 							e.printStackTrace();
-							JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+							JXErrorPane.showDialog(null, new ErrorInfo(localisation.getResourceString("erreur"), //$NON-NLS-1$
 									e.toString(), null, null, e, Level.SEVERE, null));
 						}
 						

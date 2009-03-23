@@ -99,8 +99,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.ajdeveloppement.apps.AppUtilities;
+import org.ajdeveloppement.apps.Localisable;
+import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
-import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Criterion;
 import org.concoursjeunes.CriterionElement;
 
@@ -111,17 +113,23 @@ import org.concoursjeunes.CriterionElement;
  */
 public class CriterionElementDialog extends JDialog implements ActionListener {
     
+	private AjResourcesReader localisation;
     private ReglementDialog parent;
     private Criterion criterion;
     private CriterionElement criterionIndividu;
     
+    @Localisable("criterion.code")
     private JLabel jlCode = new JLabel();
+    @Localisable("criterion.libelle")
     private JLabel jlLibelle = new JLabel();
     private JTextField jtfCode = new JTextField(10);
     private JTextField jtfLibelle = new JTextField(20);
+    @Localisable("criterion.active")
     private JCheckBox jcbActive = new JCheckBox("", true); //$NON-NLS-1$
     
+    @Localisable("bouton.valider")
     private JButton jbValider = new JButton();
+    @Localisable("bouton.annuler")
     private JButton jbAnnuler = new JButton();
 
     /**
@@ -130,8 +138,8 @@ public class CriterionElementDialog extends JDialog implements ActionListener {
      * @param parent la boite de dialogue de reglement parent
      * @param criterion le critére parent de l'element
      */
-    public CriterionElementDialog(ReglementDialog parent, Criterion criterion) {
-        this(parent, criterion, null);
+    public CriterionElementDialog(ReglementDialog parent, Criterion criterion, AjResourcesReader localisation) {
+        this(parent, criterion, null, localisation);
     }
     
     /**
@@ -141,9 +149,10 @@ public class CriterionElementDialog extends JDialog implements ActionListener {
      * @param criterion le critére parent de l'element
      * @param criterionIndividu l'element à manipuler
      */
-    public CriterionElementDialog(ReglementDialog parent, Criterion criterion, CriterionElement criterionIndividu) {
-        super(parent, ApplicationCore.ajrLibelle.getResourceString("criterion.titre"), true); //$NON-NLS-1$
+    public CriterionElementDialog(ReglementDialog parent, Criterion criterion, CriterionElement criterionIndividu, AjResourcesReader localisation) {
+        super(parent, localisation.getResourceString("criterion.titre"), true); //$NON-NLS-1$
         
+        this.localisation = localisation;
         this.parent = parent;
         this.criterion = criterion;
         this.criterionIndividu = criterionIndividu;
@@ -191,12 +200,7 @@ public class CriterionElementDialog extends JDialog implements ActionListener {
     }
     
     private void affectLibelle() {
-        jlCode.setText(ApplicationCore.ajrLibelle.getResourceString("criterion.code")); //$NON-NLS-1$
-        jlLibelle.setText(ApplicationCore.ajrLibelle.getResourceString("criterion.libelle")); //$NON-NLS-1$
-        jcbActive.setText(ApplicationCore.ajrLibelle.getResourceString("criterion.active")); //$NON-NLS-1$
-        
-        jbValider.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
-        jbAnnuler.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
+    	AppUtilities.localize(this, localisation);
     }
     
     private void completePanel() {

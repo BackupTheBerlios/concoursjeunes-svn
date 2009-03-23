@@ -95,6 +95,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.Locale;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -108,7 +109,7 @@ import javax.swing.JTextField;
 
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
-import org.concoursjeunes.ApplicationCore;
+import org.concoursjeunes.Profile;
 import org.concoursjeunes.plugins.Plugin;
 import org.concoursjeunes.plugins.PluginEntry;
 
@@ -119,18 +120,23 @@ import org.concoursjeunes.plugins.PluginEntry;
 @Plugin(type = Plugin.Type.ON_DEMAND)
 public class FFTAImportDialog extends JDialog implements ActionListener, FFTAImportThreadListener {
 
-	private final JLabel jlEmplacementLFFTA = new JLabel();
-	private final JTextField jtfEmplacementLFFTA = new JTextField("C:\\ResultArc", 30); //$NON-NLS-1$
-	private final JButton jbParcourir = new JButton();
-	private final JButton jbSart = new JButton();
-	private final JProgressBar jpbProgression = new JProgressBar();
+	private Profile profile;
+	
+	private JLabel jlEmplacementLFFTA = new JLabel();
+	private JTextField jtfEmplacementLFFTA = new JTextField("C:\\ResultArc", 30); //$NON-NLS-1$
+	private JButton jbParcourir = new JButton();
+	private JButton jbSart = new JButton();
+	private JProgressBar jpbProgression = new JProgressBar();
 
-	private final JButton jbAnnuler = new JButton();
+	private JButton jbAnnuler = new JButton();
 
-	private final AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.FFTAImport.FFTAImportPlugin_libelle", FFTAImportDialog.class.getClassLoader()); //$NON-NLS-1$
+	private AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.FFTAImport.FFTAImportPlugin_libelle", FFTAImportDialog.class.getClassLoader()); //$NON-NLS-1$
 
-	public FFTAImportDialog(JFrame parentframe) {
+	public FFTAImportDialog(JFrame parentframe, Profile profile) {
 		super(parentframe);
+		
+		this.profile = profile;
+		pluginLocalisation.setLocale(new Locale(profile.getConfiguration().getLangue()));
 
 		init();
 		affectLibelle();
@@ -178,7 +184,7 @@ public class FFTAImportDialog extends JDialog implements ActionListener, FFTAImp
 		jbParcourir.setText(pluginLocalisation.getResourceString("button.parcourir")); //$NON-NLS-1$
 		jbSart.setText(pluginLocalisation.getResourceString("button.start")); //$NON-NLS-1$
 
-		jbAnnuler.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
+		jbAnnuler.setText(profile.getLocalisation().getResourceString("bouton.annuler")); //$NON-NLS-1$
 	}
 
 	private void completePane() {
@@ -207,7 +213,7 @@ public class FFTAImportDialog extends JDialog implements ActionListener, FFTAImp
 				jtfEmplacementLFFTA.setText(jfc.getSelectedFile().getPath());
 			}
 		} else if (e.getSource() == jbSart) {
-			FFTAImportThread fftaIT = new FFTAImportThread();
+			FFTAImportThread fftaIT = new FFTAImportThread(profile.getLocalisation());
 			fftaIT.setParentFrame(this);
 			fftaIT.setFftalogpath(jtfEmplacementLFFTA.getText());
 			fftaIT.addFFTAImportThreadListener(this);

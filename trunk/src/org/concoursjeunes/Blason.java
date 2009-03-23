@@ -97,7 +97,6 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.ajdeveloppement.commons.sql.SqlPersistanceBean;
 import org.concoursjeunes.builders.BlasonBuilder;
 
 /**
@@ -107,7 +106,7 @@ import org.concoursjeunes.builders.BlasonBuilder;
  * @version 1.0
  *
  */
-public class Blason extends SqlPersistanceBean {
+public class Blason {
 	
 	/**
 	 * Représente le blason par défaut
@@ -413,7 +412,6 @@ public class Blason extends SqlPersistanceBean {
 	 * 
 	 * @throws SQLException
 	 */
-	@Override
 	public void save() throws SQLException {
 		String sql;
 		if(numblason > 0)
@@ -442,7 +440,6 @@ public class Blason extends SqlPersistanceBean {
 	 * 
 	 * @throws SQLException
 	 */
-	@Override
 	public void delete() throws SQLException {
 		String sql = "delete from BLASONS where numblason=" + numblason; //$NON-NLS-1$
 		

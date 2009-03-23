@@ -88,8 +88,6 @@
  */
 package org.concoursjeunes.state;
 
-import static org.concoursjeunes.ApplicationCore.ajrLibelle;
-
 import java.awt.Graphics2D;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -97,11 +95,13 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 
 import org.ajdeveloppement.commons.AJToolKit;
+import org.ajdeveloppement.commons.AjResourcesReader;
 import org.concoursjeunes.Ancrage;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.DistancesEtBlason;
 import org.concoursjeunes.PasDeTir;
+import org.concoursjeunes.Profile;
 import org.concoursjeunes.Target;
 
 import com.lowagie.text.BadElementException;
@@ -119,6 +119,8 @@ public class ShootingLineState {
 	private static final double rightMargin = 0.5;
 	private static final double leftMargin = 0.5;
 	
+	private AjResourcesReader localisation;
+	private Profile profile;
 	private PasDeTir pasDeTir;
 	
 	private Document document;
@@ -129,7 +131,9 @@ public class ShootingLineState {
 	private float pageHeight = 0;
 	private int maxDistance = 0;
 	
-	public ShootingLineState(PasDeTir pasDeTir, Document document, PdfWriter writer) {
+	public ShootingLineState(AjResourcesReader localisation, Profile profile, PasDeTir pasDeTir, Document document, PdfWriter writer) {
+		this.localisation = localisation;
+		this.profile = profile;
 		this.pasDeTir = pasDeTir;
 		this.maxDistance = getMaxDistance(0);
 		this.document = document;
@@ -148,31 +152,14 @@ public class ShootingLineState {
 		paint();
 	}
 	
-	/*public Document getDocument() {
-		return document;
-	}*/
-	
 	public void paint() {
 		int page = 1;
 		try {
-			//String concoursFileName = pasDeTir.getFicheConcours().getParametre().getSaveName();
-			//String concoursDirectory = concoursFileName.substring(0, concoursFileName.length() - 4);
-			
-			/*File pdfFile = new File(
-					ApplicationCore.userRessources.getConcoursPathForProfile(ApplicationCore.getConfiguration().getCurProfil()), 
-					concoursDirectory + File.separator + ajrLibelle.getResourceString("state.pasdetir.title")  //$NON-NLS-1$
-					+ " - " + DateFormat.getDateInstance().format(new Date()) + " " + DateFormat.getTimeInstance().format(new Date()) + ".pdf"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			pdfFile.getParentFile().mkdirs();*/
-			//String filePath = pdfFile.getCanonicalPath();
-			
-			/*PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filePath));
-			writer.setFullCompression();*/
-
 			document.addCreationDate();
-			document.addAuthor(ApplicationCore.getConfiguration().getClub().getNom());
+			document.addAuthor(profile.getConfiguration().getClub().getNom());
 			document.addProducer();
-			document.addCreator(ApplicationCore.getConfiguration().getClub().getNom());
-			document.addTitle(ajrLibelle.getResourceString("state.pasdetir.title")); //$NON-NLS-1$
+			document.addCreator(profile.getConfiguration().getClub().getNom());
+			document.addTitle(localisation.getResourceString("shootingline.title")); //$NON-NLS-1$
 			document.open();
 			
 			cb = writer.getDirectContent();
@@ -226,10 +213,10 @@ public class ShootingLineState {
 	}
 	
 	private void printLigneDeTir(Graphics2D g2, int page, int serie, int firsttarget) {
-		String strSerie = ajrLibelle.getResourceString("state.pasdetir.allseries"); //$NON-NLS-1$
+		String strSerie = localisation.getResourceString("shootingline.allseries"); //$NON-NLS-1$
 		if(serie != -1)
-			strSerie = ajrLibelle.getResourceString("state.pasdetir.serie", serie); //$NON-NLS-1$
-		String strPasDeTir = ajrLibelle.getResourceString("state.pasdetir.footer", (pasDeTir.getDepart() + 1), strSerie, page, firsttarget, firsttarget + 9); //$NON-NLS-1$
+			strSerie = localisation.getResourceString("shootingline.serie", serie); //$NON-NLS-1$
+		String strPasDeTir = localisation.getResourceString("shootingline.footer", (pasDeTir.getDepart() + 1), strSerie, page, firsttarget, firsttarget + 9); //$NON-NLS-1$
 		double pasDeTirPos = 20;
 		int sizeStrPasDeTir = g2.getFontMetrics().stringWidth(strPasDeTir);
 		double colSize = (29.7 - (leftMargin + rightMargin)) / 10;
@@ -314,7 +301,7 @@ public class ShootingLineState {
 			double vr = db.getTargetFace().getVerticalRatio();
 			
 			Image image = Image.getInstance(
-					ApplicationCore.ajrParametreAppli.getResourceString("path.ressources")  //$NON-NLS-1$
+					ApplicationCore.staticParameters.getResourceString("path.ressources")  //$NON-NLS-1$
 					+ File.separator + db.getTargetFace().getTargetFaceImage());
 			
 			image.setAbsolutePosition(AJToolKit.centimeterToDpi(startCol + 0.135 + ancrage.getX() * 2.6),

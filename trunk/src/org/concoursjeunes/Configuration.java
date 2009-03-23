@@ -133,7 +133,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	private double[] espacements    = new double[] {0.5, 0.5};
 
 	private boolean interfaceResultatCumul = false;     //noreboot
-	private boolean interfaceResultatSupl = true;       //noreboot
 	private boolean interfaceAffResultatExEquo = true;  //noreboot
 	
 	private boolean useProxy = false;
@@ -141,7 +140,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 
 	//propriete caché
 	private MetaDataFichesConcours metaDataFichesConcours = new MetaDataFichesConcours();
-	private boolean firstboot       = false;            //noreboot
+	private boolean firstboot       = true;            //noreboot
 	private String curProfil        = "defaut";         //noreboot //$NON-NLS-1$
 
 	public Configuration() {
@@ -157,12 +156,22 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	}
 
 	/**
-	 * Retourne l'adresse du lecteur pdf
+	 * Retourne l'adresse du lecteur pdf. <i>Déplacer dans la class AppConfiguration</i>
 	 * @return  String - l'adresse du lecteur pdf
 	 */
 	@XmlElement(required=false)
+	@Deprecated
 	public String getPdfReaderPath() {
 		return this.pdfReaderPath;
+	}
+	
+	/**
+	 * defini l'adresse du lecteur pdf
+	 * @param pdfReaderPath  - l'adresse du lecteur pdf
+	 */
+	@Deprecated
+	public void setPdfReaderPath(String pdfReaderPath) {
+		this.pdfReaderPath = pdfReaderPath;
 	}
 
 	/**
@@ -203,14 +212,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	 */
 	public void setTarifs(List<Tarif> tarifs) {
 		this.tarifs = tarifs;
-	}
-
-	/**
-	 * defini l'adresse du lecteur pdf
-	 * @param pdfReaderPath  - l'adresse du lecteur pdf
-	 */
-	public void setPdfReaderPath(String pdfReaderPath) {
-		this.pdfReaderPath = pdfReaderPath;
 	}
 
 	/**
@@ -315,6 +316,8 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	 * Détéremine si c'est le premier lancement de l'application
 	 * @return  Returns the firstboot.
 	 */
+	@XmlElement(required=false)
+	@Deprecated
 	public boolean isFirstboot() {
 		return firstboot;
 	}
@@ -323,6 +326,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	 * Place l'application sur premier lancement
 	 * @param firstboot  The firstboot to set.
 	 */
+	@Deprecated
 	public void setFirstboot(boolean firstboot) {
 		this.firstboot = firstboot;
 	}
@@ -341,22 +345,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	 */
 	public void setInterfaceResultatCumul(boolean interfaceResultatCumul) {
 		this.interfaceResultatCumul = interfaceResultatCumul;
-	}
-
-	/**
-	 * Est ce qu'on affiche la saisie des 10/9/M
-	 * @return  Renvoie interfaceResultatSupl.
-	 */
-	public boolean isInterfaceResultatSupl() {
-		return interfaceResultatSupl;
-	}
-
-	/**
-	 * Définit si l'on affiche la saisie des 10/9/M
-	 * @param interfaceResultatSupl  interfaceResultatSupl à définir.
-	 */
-	public void setInterfaceResultatSupl(boolean interfaceResultatSupl) {
-		this.interfaceResultatSupl = interfaceResultatSupl;
 	}
 
 	/**
@@ -415,6 +403,8 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	 * 
 	 * @return useProxy true si un proxy doit être utilisé
 	 */
+	@XmlElement(required=false)
+	@Deprecated
 	public boolean isUseProxy() {
 		return useProxy;
 	}
@@ -424,6 +414,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	 * 
 	 * @param useProxy true si un proxy doit être utilisé, false sinon
 	 */
+	@Deprecated
 	public void setUseProxy(boolean useProxy) {
 		this.useProxy = useProxy;
 	}
@@ -433,6 +424,8 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	 * 
 	 * @return proxy les parametres de proxy
 	 */
+	@XmlElement(required=false)
+	@Deprecated
 	public Proxy getProxy() {
 		return proxy;
 	}
@@ -442,6 +435,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	 * 
 	 * @param proxy les parametres de proxy
 	 */
+	@Deprecated
 	public void setProxy(Proxy proxy) {
 		this.proxy = proxy;
 	}
@@ -460,10 +454,11 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	/**
 	 * sauvegarde la configuration courante comme etant la configuration par défaut du programme
 	 */
+	@Deprecated
 	public void saveAsDefault() throws JAXBException, IOException {
 		try {
 			File f = new File(ApplicationCore.userRessources.getConfigPathForUser(),
-					ApplicationCore.ajrParametreAppli.getResourceString("file.configuration")); //$NON-NLS-1$
+					ApplicationCore.staticParameters.getResourceString("file.configuration")); //$NON-NLS-1$
 			XMLSerializer.saveMarshallStructure(f, this);
 		} catch(NullPointerException npe) {
 			npe.printStackTrace();

@@ -99,6 +99,7 @@ import java.util.logging.Level;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.concoursjeunes.exceptions.ExceptionHandlingEventQueue;
 import org.concoursjeunes.plugins.PluginEntry;
@@ -106,7 +107,6 @@ import org.concoursjeunes.plugins.PluginLoader;
 import org.concoursjeunes.plugins.PluginMetadata;
 import org.concoursjeunes.plugins.Plugin.Type;
 import org.concoursjeunes.ui.ConcoursJeunesFrame;
-import org.h2.constant.ErrorCode;
 import org.h2.tools.DeleteDbFiles;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
@@ -127,16 +127,17 @@ public class Main {
 		
 		System.setProperty("java.net.useSystemProxies","true"); //$NON-NLS-1$ //$NON-NLS-2$
 		
+		AjResourcesReader localisation = new AjResourcesReader("libelle"); //$NON-NLS-1$
+		
 		Thread.UncaughtExceptionHandler handlerException = new Thread.UncaughtExceptionHandler() {
 
 			@Override
 			public void uncaughtException(Thread t, final Throwable e) {
 				EventQueue.invokeLater(new Runnable() {
 			         public void run() {
-						JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+						JXErrorPane.showDialog(null, new ErrorInfo("Application uncaught Exception!", //$NON-NLS-1$
 								e.toString(),
 								null, null, e, Level.SEVERE, null));
-			        	//JXErrorPane.showDialog(e);
 						e.printStackTrace();
 			         }
 				});
@@ -151,24 +152,21 @@ public class Main {
 			try {
 				ApplicationCore.initializeApplication();
 			} catch (SQLException e1) {
-				//Si ce n'est pas un message db bloqué par un autre processus
-				if(!e1.getSQLState().equals("" + ErrorCode.DATABASE_ALREADY_OPEN_1)) { //$NON-NLS-1$
-					JXErrorPane.showDialog(null,new ErrorInfo( "SQL Error", e1.toString(), //$NON-NLS-1$
-							null, null, e1, Level.SEVERE, null));
-					
-					if(JOptionPane.showConfirmDialog(null, ApplicationCore.ajrLibelle.getResourceString("erreur.breakdb")) == JOptionPane.YES_OPTION) { //$NON-NLS-1$
-						retry = true;
-						try {
-							if(ApplicationCore.dbConnection != null) ApplicationCore.dbConnection.close();
-							DeleteDbFiles.execute(ApplicationCore.userRessources.getBasePath().getPath(), null, true);
-						} catch (SQLException e2) {	e2.printStackTrace(); }
-					} else {
-						System.exit(1);
-					}
+				JXErrorPane.showDialog(null,new ErrorInfo( "SQL Error", e1.toString(), //$NON-NLS-1$
+						null, null, e1, Level.SEVERE, null));
+				
+				if(JOptionPane.showConfirmDialog(null, localisation.getResourceString("erreur.breakdb")) == JOptionPane.YES_OPTION) { //$NON-NLS-1$
+					retry = true;
+					try {
+						if(ApplicationCore.dbConnection != null) ApplicationCore.dbConnection.close();
+						DeleteDbFiles.execute(ApplicationCore.userRessources.getBasePath().getPath(), null, true);
+					} catch (SQLException e2) {	e2.printStackTrace(); }
 				} else {
-					JOptionPane.showMessageDialog(null, ApplicationCore.ajrLibelle.getResourceString("erreur.dbalreadyopen")); //$NON-NLS-1$
 					System.exit(1);
 				}
+			} catch(IOException e1) {
+				JOptionPane.showMessageDialog(null, "Application Error!"); //$NON-NLS-1$
+				System.exit(1);
 			}
 		} while(retry);
 		
@@ -201,10 +199,31 @@ public class Main {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				new ConcoursJeunesFrame(core);
+				Profile profile = new Profile();
+				core.addProfile(profile);
+				new ConcoursJeunesFrame(profile);
 			}
 		});
 
+	}
+	
+	public static String getHexString(byte[] b) {
+		String result = ""; //$NON-NLS-1$
+		for (int i = 0; i < b.length; i++) {
+			//result += Integer.toHexString(b[i]);//Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1);
+			result += Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1);
+		}
+		return result;
+	}
+
+	public static byte[] hexStringToByteArray(String s) {
+	    int len = s.length();
+	    byte[] data = new byte[len / 2];
+	    for (int i = 0; i < len; i += 2) {
+	        data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+	                             + Character.digit(s.charAt(i+1), 16));
+	    }
+	    return data;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -235,19 +254,19 @@ public class Main {
 					}
 				}
 			} catch (InstantiationException e1) {
-				JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+				JXErrorPane.showDialog(null, new ErrorInfo(e1.getLocalizedMessage(), e1.toString(),
 						null, null, e1, Level.SEVERE, null));
 				e1.printStackTrace();
 			} catch (IllegalAccessException e1) {
-				JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+				JXErrorPane.showDialog(null, new ErrorInfo(e1.getLocalizedMessage(), e1.toString(),
 						null, null, e1, Level.SEVERE, null));
 				e1.printStackTrace();
 			} catch (SecurityException e1) {
-				JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+				JXErrorPane.showDialog(null, new ErrorInfo(e1.getLocalizedMessage(), e1.toString(),
 						null, null, e1, Level.SEVERE, null));
 				e1.printStackTrace();
 			} catch (InvocationTargetException e1) {
-				JXErrorPane.showDialog(null, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+				JXErrorPane.showDialog(null, new ErrorInfo(e1.getLocalizedMessage(), e1.toString(),
 						null, null, e1, Level.SEVERE, null));
 				e1.printStackTrace();
 			}

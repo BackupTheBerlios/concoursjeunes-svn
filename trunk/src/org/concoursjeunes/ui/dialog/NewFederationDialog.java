@@ -88,8 +88,6 @@
  */
 package org.concoursjeunes.ui.dialog;
 
-import static org.concoursjeunes.ApplicationCore.ajrLibelle;
-
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -105,6 +103,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.concoursjeunes.Federation;
 import org.jdesktop.swingx.JXErrorPane;
@@ -115,6 +114,8 @@ import org.jdesktop.swingx.error.ErrorInfo;
  *
  */
 public class NewFederationDialog extends JDialog implements ActionListener {
+	
+	private AjResourcesReader localisation;
 	
 	private JLabel jlFederationSigle = new JLabel();
 	private JLabel jlFederationName = new JLabel();
@@ -128,10 +129,10 @@ public class NewFederationDialog extends JDialog implements ActionListener {
 	
 	private Federation federation = null;
 	
-	public NewFederationDialog(JFrame parentframe) {
+	public NewFederationDialog(JFrame parentframe, AjResourcesReader localisation) {
 		super(parentframe, true);
 		
-		//this.parentframe = parentframe;
+		this.localisation = localisation;
 		
 		init();
 		affectLibelle();
@@ -166,13 +167,13 @@ public class NewFederationDialog extends JDialog implements ActionListener {
 	}
 	
 	private void affectLibelle() {
-		setTitle(ajrLibelle.getResourceString("newfederation.title")); //$NON-NLS-1$
+		setTitle(localisation.getResourceString("newfederation.title")); //$NON-NLS-1$
 		
-		jlFederationSigle.setText(ajrLibelle.getResourceString("newfederation.sigle")); //$NON-NLS-1$
-		jlFederationName.setText(ajrLibelle.getResourceString("newfederation.name")); //$NON-NLS-1$
+		jlFederationSigle.setText(localisation.getResourceString("newfederation.sigle")); //$NON-NLS-1$
+		jlFederationName.setText(localisation.getResourceString("newfederation.name")); //$NON-NLS-1$
 		
-		jbValider.setText(ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
-		jbAnnuler.setText(ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
+		jbValider.setText(localisation.getResourceString("bouton.valider")); //$NON-NLS-1$
+		jbAnnuler.setText(localisation.getResourceString("bouton.annuler")); //$NON-NLS-1$
 	}
 	
 	private void completePanel() {
@@ -206,7 +207,7 @@ public class NewFederationDialog extends JDialog implements ActionListener {
 				
 			} catch (SQLException e1) {
 				federation = null;
-				JXErrorPane.showDialog(this, new ErrorInfo(ajrLibelle.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+				JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 						null, null, e1, Level.SEVERE, null));
 				e1.printStackTrace();
 			}

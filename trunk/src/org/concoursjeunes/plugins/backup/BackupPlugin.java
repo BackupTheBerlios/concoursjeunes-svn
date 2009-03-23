@@ -99,6 +99,7 @@ import java.util.jar.JarOutputStream;
 import java.util.jar.Pack200;
 import java.util.jar.Pack200.Packer;
 import java.util.logging.Level;
+import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 
 import javax.swing.JFileChooser;
@@ -110,6 +111,7 @@ import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.io.FileUtils;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Configuration;
+import org.concoursjeunes.Profile;
 import org.concoursjeunes.plugins.Plugin;
 import org.concoursjeunes.plugins.PluginEntry;
 import org.jdesktop.swingx.JXErrorPane;
@@ -122,19 +124,21 @@ import org.jdesktop.swingx.error.ErrorInfo;
 @Plugin(type = Plugin.Type.ON_DEMAND)
 public class BackupPlugin {
 	
+	private Profile profile;
 	private AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.backup.BackupPlugin_libelle", BackupPlugin.class.getClassLoader()); //$NON-NLS-1$
 	
 	private JFrame parentframe;
 	
-	public BackupPlugin(JFrame parentframe) {
+	public BackupPlugin(JFrame parentframe, Profile profile) {
 		this.parentframe = parentframe;
+		this.profile = profile;
 	}
 	
 	@PluginEntry
 	public void showBackupDialog() {
-		Configuration configuration = ApplicationCore.getConfiguration();
+		Configuration configuration = profile.getConfiguration();
 		
-		File concoursPath = ApplicationCore.userRessources.getConcoursPathForProfile(configuration.getCurProfil());
+		File concoursPath = ApplicationCore.userRessources.getConcoursPathForProfile(profile);
 		
 		JFileChooser chooser = new JFileChooser();
 	    FileNameExtensionFilter filter = new FileNameExtensionFilter(
@@ -151,7 +155,6 @@ public class BackupPlugin {
 				File tempJar = File.createTempFile("profilecj_", ".jar"); //$NON-NLS-1$ //$NON-NLS-2$
 				
 				JarOutputStream jos = new JarOutputStream(new FileOutputStream(tempJar));
-				jos.setLevel(9);
 				
 				for(File concoursFile : concoursFiles) {
 					addEntryToJar(concoursFile, jos);
@@ -159,7 +162,6 @@ public class BackupPlugin {
 				
 				addEntryToJar(new File(ApplicationCore.userRessources.getConfigPathForUser(), "configuration.xml"), jos); //$NON-NLS-1$
 				
-				//jos.finish();
 				jos.close();
 				
 				File backupFile = chooser.getSelectedFile();
@@ -167,14 +169,14 @@ public class BackupPlugin {
 					backupFile = new File(backupFile.getParent(), backupFile.getName() + ".backup"); //$NON-NLS-1$
 				
 				Packer packer = Pack200.newPacker();
-				packer.pack(new JarFile(tempJar), new FileOutputStream(backupFile));
+				packer.pack(new JarFile(tempJar), new GZIPOutputStream(new FileOutputStream(backupFile)));
 
 				tempJar.delete();
 				
 				JOptionPane.showMessageDialog(parentframe, pluginLocalisation.getResourceString("backupdialog.success")); //$NON-NLS-1$
 			} catch (IOException e) {
 				e.printStackTrace();
-				JXErrorPane.showDialog(parentframe, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), //$NON-NLS-1$
+				JXErrorPane.showDialog(parentframe, new ErrorInfo(profile.getLocalisation().getResourceString("erreur"), //$NON-NLS-1$
 						e.toString(),
 						null, null, e, Level.SEVERE, null));
 			}

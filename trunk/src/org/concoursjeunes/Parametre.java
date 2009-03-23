@@ -87,7 +87,7 @@
 
 package org.concoursjeunes;
 
-import static org.concoursjeunes.ApplicationCore.ajrParametreAppli;
+import static org.concoursjeunes.ApplicationCore.staticParameters;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -116,7 +116,7 @@ public class Parametre extends DefaultParameters {
 	private Reglement reglement		= new Reglement();
 
 	private String saveName         = System.currentTimeMillis()
-			+ ajrParametreAppli.getResourceString("extention.concours"); //$NON-NLS-1$
+			+ staticParameters.getResourceString("extention.concours"); //$NON-NLS-1$
 	
 	private boolean reglementLock = false;
 	

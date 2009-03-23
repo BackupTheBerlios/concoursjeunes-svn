@@ -95,7 +95,7 @@ import java.util.List;
 import javax.xml.ws.WebServiceException;
 
 import org.concoursjeunes.AppInfos;
-import org.concoursjeunes.ApplicationCore;
+import org.concoursjeunes.Profile;
 import org.concoursjeunes.plugins.AvailablePluginsManager;
 import org.concoursjeunes.plugins.PluginDescription;
 import org.concoursjeunes.plugins.PluginLoader;
@@ -111,7 +111,7 @@ public class AvailablePluginsManagerImpl extends AvailablePluginsManager {
 	/**
 	 * 
 	 */
-	public AvailablePluginsManagerImpl() throws WebServiceException {
+	public AvailablePluginsManagerImpl(Profile profile) throws WebServiceException {
 		PluginLoader pl = new PluginLoader();
 		List<PluginDescription> alreadyInstalledPlugins = new ArrayList<PluginDescription>();
 		
@@ -127,7 +127,7 @@ public class AvailablePluginsManagerImpl extends AvailablePluginsManager {
 				if(!categories.containsKey(pluginDescription.getCategory())) {
 					categories.put(
 							pluginDescription.getCategory(),
-							services.getLibelleCategory(pluginDescription.getCategory(), ApplicationCore.getConfiguration().getLangue()));
+							services.getLibelleCategory(pluginDescription.getCategory(), profile.getConfiguration().getLangue()));
 				}
 			} else {
 				alreadyInstalledPlugins.add(pluginDescription);

@@ -96,10 +96,10 @@ import java.text.DateFormat;
 import org.ajdeveloppement.commons.AJTemplate;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.concoursjeunes.AppInfos;
-import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.ConcurrentList;
 import org.concoursjeunes.FicheConcours;
+import org.concoursjeunes.Profile;
 import org.concoursjeunes.TargetPosition;
 
 import com.lowagie.text.Document;
@@ -113,11 +113,13 @@ import com.lowagie.text.xml.XmlParser;
 @SuppressWarnings("nls")
 public class IndividualScoreSheetState {
 	private AjResourcesReader localeReader;
+	private Profile profile;
 	private int depart;
 	//private int serie;
 	
-	public IndividualScoreSheetState(AjResourcesReader localeReader, int depart, int serie) {
+	public IndividualScoreSheetState(AjResourcesReader localeReader, Profile profile, int depart, int serie) {
 		this.localeReader = localeReader;
+		this.profile = profile;
 		this.depart = depart;
 		//this.serie = serie;
 	}
@@ -130,11 +132,11 @@ public class IndividualScoreSheetState {
 	
 		try {
 			templateXML.parse("producer", AppInfos.NOM + " " + AppInfos.VERSION); //$NON-NLS-1$ //$NON-NLS-2$
-			templateXML.parse("author", ApplicationCore.getConfiguration().getClub().getNom()); //$NON-NLS-1$
+			templateXML.parse("author", profile.getConfiguration().getClub().getNom()); //$NON-NLS-1$
 			
 			Concurrent[] concurrents = ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), ConcurrentList.SortCriteria.SORT_BY_TARGETS);
 			for(int i = 0; i < concurrents.length; i++) {
-				templateXML.parse("scoresheet.LOGO_CLUB_URI", ApplicationCore.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$
+				templateXML.parse("scoresheet.LOGO_CLUB_URI", profile.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$
 				templateXML.parse("scoresheet.INTITULE_CLUB", ficheConcours.getParametre().getClub().getNom()); //$NON-NLS-1$
 				templateXML.parse("scoresheet.INTITULE_CONCOURS", ficheConcours.getParametre().getIntituleConcours()); //$NON-NLS-1$
 				templateXML.parse("scoresheet.VILLE_CLUB", ficheConcours.getParametre().getLieuConcours()); //$NON-NLS-1$

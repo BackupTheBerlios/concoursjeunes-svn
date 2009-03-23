@@ -691,7 +691,7 @@ public class Reglement {
 	 */
 	private void saveDistancesAndBlasons() throws SQLException {
 		for (DistancesEtBlason distancesEtBlason : listDistancesEtBlason) {
-			distancesEtBlason.save(hashCode());
+			distancesEtBlason.save(this);
 		}
 	}
 

@@ -116,6 +116,9 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
+import org.ajdeveloppement.apps.AppUtilities;
+import org.ajdeveloppement.apps.Localisable;
+import org.ajdeveloppement.commons.AjResourcesReader;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Entite;
 
@@ -128,46 +131,45 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 	public static final int ANNULER = 2;
 
 	private JFrame parentframe;
+	private AjResourcesReader localisation;
 
 	private EntiteTableModel dtm = new EntiteTableModel();
 	private TableRowSorter<EntiteTableModel> sorter;
 
-	private JTable jTable		= null;
-	private JTextField jtfNom		= null;
-	private JTextField jtfAgrement	= null;
-	private JTextField jtfVille		= null;
-	private JScrollPane jScrollPane	= null;
-	private JButton jbValider       	= null;
-	private JButton jbAnnuler		= null;
+	@Localisable("listeentite.nom")
+	private JLabel jlNom = new JLabel();
+	@Localisable("listeentite.agrement")
+	private JLabel jlAgrement = new JLabel();
+	@Localisable("listeentite.ville")
+	private JLabel jlVille = new JLabel();
+	private JTable jTable			= null;
+	private JTextField jtfNom = new JTextField(10);
+	private JTextField jtfAgrement = new JTextField(10);
+	private JTextField jtfVille = new JTextField(10);
+	private JScrollPane jScrollPane = new JScrollPane();
+	
+	@Localisable("bouton.valider")
+	private JButton jbValider       = new JButton();
+	@Localisable("bouton.annuler")
+	private JButton jbAnnuler		= new JButton();
 
 	private int action				= ANNULER;
 
-	public EntiteListDialog(JFrame parentframe) {
+	public EntiteListDialog(JFrame parentframe, AjResourcesReader localisation) {
 		super(parentframe, "", true); //$NON-NLS-1$
 		this.parentframe = parentframe;
+		this.localisation = localisation;
 
-		initialize();
+		init();
+		affectLibelle();
 	}
 
 	/**
 	 * This method initializes this
 	 */
-	private void initialize() {
+	private void init() {
 		JPanel jpEntete = new JPanel();
 		JPanel jpPied = new JPanel();
-
-		JLabel jlNom = new JLabel(ApplicationCore.ajrLibelle.getResourceString("listeentite.nom") + ":"); //$NON-NLS-1$ //$NON-NLS-2$
-		JLabel jlAgrement = new JLabel(ApplicationCore.ajrLibelle.getResourceString("listeentite.agrement") + ":"); //$NON-NLS-1$ //$NON-NLS-2$
-		JLabel jlVille = new JLabel(ApplicationCore.ajrLibelle.getResourceString("listeentite.ville") + ":"); //$NON-NLS-1$ //$NON-NLS-2$
-
-		jtfNom = new JTextField(10);
-		jtfAgrement = new JTextField(10);
-		jtfVille = new JTextField(10);
-
-		jScrollPane = new JScrollPane();
-
-		jbValider = new JButton(ApplicationCore.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
-		jbAnnuler = new JButton(ApplicationCore.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
 
 		//jtfNom.addFocusListener(this);
 		jtfNom.addCaretListener(this);
@@ -200,6 +202,10 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		this.pack();
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
+	}
+	
+	private void affectLibelle() {
+		AppUtilities.localize(this, localisation);
 	}
 
 	/**
@@ -270,11 +276,9 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 
 	public void mouseClicked(MouseEvent e) {
 		if(e.getClickCount() == 2) {
-			EntiteDialog ed = new EntiteDialog(parentframe);
-			ed.showEntite(dtm.getEntiteAtRow(jTable.convertRowIndexToModel(jTable.getSelectedRow())));
-
-			//this.isValider = true;
-			//this.setVisible(false);
+			EntiteDialog ed = new EntiteDialog(parentframe, localisation);
+			ed.setEntite(dtm.getEntiteAtRow(jTable.convertRowIndexToModel(jTable.getSelectedRow())));
+			ed.showEntiteDialog();
 		}
 	}
 
@@ -306,10 +310,10 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 				e.printStackTrace();
 			}
 
-			columnName.add(ApplicationCore.ajrLibelle.getResourceString("listeentite.nom")); //$NON-NLS-1$
-			columnName.add(ApplicationCore.ajrLibelle.getResourceString("listeentite.agrement")); //$NON-NLS-1$
-			columnName.add(ApplicationCore.ajrLibelle.getResourceString("listeentite.adresse")); //$NON-NLS-1$
-			columnName.add(ApplicationCore.ajrLibelle.getResourceString("listeentite.ville")); //$NON-NLS-1$
+			columnName.add(localisation.getResourceString("listeentite.nom")); //$NON-NLS-1$
+			columnName.add(localisation.getResourceString("listeentite.agrement")); //$NON-NLS-1$
+			columnName.add(localisation.getResourceString("listeentite.adresse")); //$NON-NLS-1$
+			columnName.add(localisation.getResourceString("listeentite.ville")); //$NON-NLS-1$
 		}
 
 		/**

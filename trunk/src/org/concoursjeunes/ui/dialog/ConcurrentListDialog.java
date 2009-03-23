@@ -90,7 +90,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -118,8 +117,8 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 
+import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
-import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Archer;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.ConcurrentManager;
@@ -127,6 +126,7 @@ import org.concoursjeunes.ConcurrentManagerProgress;
 import org.concoursjeunes.Criterion;
 import org.concoursjeunes.CriterionElement;
 import org.concoursjeunes.Entite;
+import org.concoursjeunes.Profile;
 import org.concoursjeunes.Reglement;
 import org.jdesktop.swingx.JXBusyLabel;
 
@@ -137,6 +137,8 @@ import org.jdesktop.swingx.JXBusyLabel;
  * @version 2.0
  */
 public class ConcurrentListDialog extends JDialog implements ActionListener, MouseListener, CaretListener {
+	private AjResourcesReader localisation;
+	
 	private ArchersTableModel dtm = null;
 	private TableRowSorter<ArchersTableModel> sorter;
 
@@ -165,14 +167,15 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	 * @param parentframe -
 	 *            la fenetre principal de l'application (pour le point modal)
 	 */
-	public ConcurrentListDialog(Window parentframe, Reglement reglement, Archer filter) {
-		super(parentframe, ApplicationCore.ajrLibelle.getResourceString("concurrent.nouveau.titre"), ModalityType.APPLICATION_MODAL); //$NON-NLS-1$
+	public ConcurrentListDialog(JDialog parentframe, AjResourcesReader localisation, Profile profile, Reglement reglement, Archer filter) {
+		super(parentframe, localisation.getResourceString("concurrent.nouveau.titre"), ModalityType.APPLICATION_MODAL); //$NON-NLS-1$
 		this.reglement = reglement;
+		this.localisation = localisation;
 
-		if (filter == null && ApplicationCore.getConfiguration().getClub().getAgrement().length() > 0) {
+		if (filter == null && profile.getConfiguration().getClub().getAgrement().length() > 0) {
 			filter = new Archer();
 			Entite entite = new Entite();
-			entite.setAgrement(ApplicationCore.getConfiguration().getClub().getAgrement().substring(0, 2) + "%"); //$NON-NLS-1$
+			entite.setAgrement(profile.getConfiguration().getClub().getAgrement().substring(0, 2) + "%"); //$NON-NLS-1$
 			filter.setClub(entite);
 		}
 		//dtm = new ArchersTableModel(filter);
@@ -201,7 +204,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		jlFilterClub = new JLabel();
 
 		moreResult.addActionListener(this);
-		moreResult.setToolTipText(ApplicationCore.ajrLibelle.getResourceString("listeconcurrent.moreresult")); //$NON-NLS-1$
+		moreResult.setToolTipText(localisation.getResourceString("listeconcurrent.moreresult")); //$NON-NLS-1$
 
 		jpEntete.add(jlFilterLicence);
 		jpEntete.add(getJtfFilterLicence());
@@ -225,9 +228,9 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	}
 
 	private void affectLibelle() {
-		jlFilterLicence.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.nouveau.licence")); //$NON-NLS-1$
-		jlFilterNom.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.nouveau.nom")); //$NON-NLS-1$
-		jlFilterClub.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.nouveau.club")); //$NON-NLS-1$
+		jlFilterLicence.setText(localisation.getResourceString("concurrent.nouveau.licence")); //$NON-NLS-1$
+		jlFilterNom.setText(localisation.getResourceString("concurrent.nouveau.nom")); //$NON-NLS-1$
+		jlFilterClub.setText(localisation.getResourceString("concurrent.nouveau.club")); //$NON-NLS-1$
 	}
 
 	/**
@@ -353,7 +356,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	private JButton getJButton() {
 		if (this.jbValider == null) {
 			this.jbValider = new JButton();
-			this.jbValider.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.valider")); //$NON-NLS-1$
+			this.jbValider.setText(localisation.getResourceString("bouton.valider")); //$NON-NLS-1$
 			this.jbValider.setActionCommand("bouton.valider"); //$NON-NLS-1$
 			this.jbValider.addActionListener(this);
 		}
@@ -368,7 +371,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	private JButton getJButton1() {
 		if (this.jbAnnuler == null) {
 			this.jbAnnuler = new JButton();
-			this.jbAnnuler.setText(ApplicationCore.ajrLibelle.getResourceString("bouton.annuler")); //$NON-NLS-1$
+			this.jbAnnuler.setText(localisation.getResourceString("bouton.annuler")); //$NON-NLS-1$
 			this.jbAnnuler.setActionCommand("bouton.annuler"); //$NON-NLS-1$
 			this.jbAnnuler.addActionListener(this);
 		}
@@ -381,11 +384,11 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
                 if (event.getPropertyName().equals("progress")) { //$NON-NLS-1$
                     int progress = ((Integer) event.getNewValue()).intValue();
                     //progressBar.setValue(progress);
-                    loadingProgressLabel.setText(ApplicationCore.ajrLibelle.getResourceString("listeconcurrent.loading", progress)); //$NON-NLS-1$
+                    loadingProgressLabel.setText(localisation.getResourceString("listeconcurrent.loading", progress)); //$NON-NLS-1$
 
                     if (progress == 100) {
                     	loading.setBusy(false);
-                    	 loadingProgressLabel.setText(ApplicationCore.ajrLibelle.getResourceString("listeconcurrent.loadingended")); //$NON-NLS-1$
+                    	 loadingProgressLabel.setText(localisation.getResourceString("listeconcurrent.loadingended")); //$NON-NLS-1$
                     }
                 }
             }
@@ -538,17 +541,12 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		}
 
 		public ArchersTableModel(Archer filter) {
-
-
-			//rows = ConcurrentManager.getArchersInDatabase(filter, reglement, "NOMARCHER"); //$NON-NLS-1$
-			//rows = ConcurrentManager.getArchersInDatabase(filter, reglement, ""); //$NON-NLS-1$
-
-			columnsName.add(ApplicationCore.ajrLibelle.getResourceString("listeconcurrent.numlicence")); //$NON-NLS-1$
-			columnsName.add(ApplicationCore.ajrLibelle.getResourceString("listeconcurrent.nom")); //$NON-NLS-1$
-			columnsName.add(ApplicationCore.ajrLibelle.getResourceString("listeconcurrent.prenom")); //$NON-NLS-1$
-			columnsName.add(ApplicationCore.ajrLibelle.getResourceString("listeconcurrent.club")); //$NON-NLS-1$
-			columnsName.add(ApplicationCore.ajrLibelle.getResourceString("listeconcurrent.categorie")); //$NON-NLS-1$
-			columnsName.add(ApplicationCore.ajrLibelle.getResourceString("listeconcurrent.niveau")); //$NON-NLS-1$
+			columnsName.add(localisation.getResourceString("listeconcurrent.numlicence")); //$NON-NLS-1$
+			columnsName.add(localisation.getResourceString("listeconcurrent.nom")); //$NON-NLS-1$
+			columnsName.add(localisation.getResourceString("listeconcurrent.prenom")); //$NON-NLS-1$
+			columnsName.add(localisation.getResourceString("listeconcurrent.club")); //$NON-NLS-1$
+			columnsName.add(localisation.getResourceString("listeconcurrent.categorie")); //$NON-NLS-1$
+			columnsName.add(localisation.getResourceString("listeconcurrent.niveau")); //$NON-NLS-1$
 		}
 		
 		public void add(List<Concurrent> concurrents) {

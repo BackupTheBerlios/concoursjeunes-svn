@@ -27,6 +27,7 @@ import org.jdesktop.swingx.error.ErrorInfo;
 public class FFTAImportThread extends Thread {
 
 	private JDialog parentframe;
+	private AjResourcesReader localisation;
 
 	private final AjResourcesReader pluginRessources = new AjResourcesReader("properties.FFTAImportPlugin"); //$NON-NLS-1$
 	private final AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.FFTAImport.FFTAImportPlugin_libelle", FFTAImportThread.class.getClassLoader()); //$NON-NLS-1$
@@ -38,8 +39,9 @@ public class FFTAImportThread extends Thread {
 	 * 
 	 * 
 	 */
-	public FFTAImportThread() {
+	public FFTAImportThread(AjResourcesReader localisation) {
 		this.setName("FFTAImportThread"); //$NON-NLS-1$
+		this.localisation = localisation;
 	}
 
 	public void addFFTAImportThreadListener(FFTAImportThreadListener listener) {
@@ -138,25 +140,25 @@ public class FFTAImportThread extends Thread {
 			stmt.close();
 
 		} catch (InterruptedException e1) {
-			JXErrorPane.showDialog(parentframe, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
+			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
 					null, null, e1, Level.SEVERE, null));
 			e1.printStackTrace();
 
 		} catch (IOException io) {
-			JXErrorPane.showDialog(parentframe, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), io.getLocalizedMessage(), //$NON-NLS-1$
+			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), io.getLocalizedMessage(), //$NON-NLS-1$
 					null, null, io, Level.SEVERE, null));
 			io.printStackTrace();
 
 		} catch (NullPointerException npe) {
-			JXErrorPane.showDialog(parentframe, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), npe.getLocalizedMessage(), //$NON-NLS-1$
+			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), npe.getLocalizedMessage(), //$NON-NLS-1$
 					null, null, npe, Level.SEVERE, null));
 			npe.printStackTrace();
 		} catch (OutOfMemoryError oome) {
-			JXErrorPane.showDialog(parentframe, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), oome.getLocalizedMessage(), //$NON-NLS-1$
+			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), oome.getLocalizedMessage(), //$NON-NLS-1$
 					null, null, oome, Level.SEVERE, null));
 			oome.printStackTrace();
 		} catch (SQLException e) {
-			JXErrorPane.showDialog(parentframe, new ErrorInfo(ApplicationCore.ajrLibelle.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
+			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
 					null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		}

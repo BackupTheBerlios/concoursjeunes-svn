@@ -92,9 +92,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Hashtable;
 import java.util.List;
-import java.util.Map.Entry;
 
 import javax.swing.event.EventListenerList;
 
@@ -640,70 +638,6 @@ public class Target implements PropertyChangeListener {
 		}
 
 		return dbs;
-	}
-
-	/**
-	 * Renvoie le Libelle qualifié de la cible
-	 * 
-	 */
-	@Override
-	public String toString() {
-		String strCouleur = "<font color=\"#00AA00\">"; //$NON-NLS-1$
-		if (concurrents.length == nbArcher + nbHandicap)
-			strCouleur = "<font color=\"#0000FF\">"; //$NON-NLS-1$
-		String strCibleLibelle = "<html>" + strCouleur + "<b>" + ApplicationCore.ajrLibelle.getResourceString("treenode.cible") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				+ ((this.numCible < 10) ? "0" : "") //$NON-NLS-1$ //$NON-NLS-2$
-				+ this.numCible + "</b> ("; //$NON-NLS-1$
-		if(getDistancesEtBlason().size() > 0) {
-			List<DistancesEtBlason> dbs = getDistancesEtBlason();
-			if (dbs != null && dbs.size() > 0) {
-				//Sur une cible, les distances des differents objets sont réputées être identique
-				for (int i = 0; i < dbs.get(0).getDistance().length; i++) {
-					if (i == 0 || (i > 0 && dbs.get(0).getDistance()[i] != dbs.get(0).getDistance()[i - 1])) {
-						if (i > 0)
-							strCibleLibelle += "/"; //$NON-NLS-1$
-						strCibleLibelle += dbs.get(0).getDistance()[i] + "m"; //$NON-NLS-1$
-					}
-				}
-				strCibleLibelle += ", "; //$NON-NLS-1$
-				
-				//Les blasons sont eux toujours différent
-				for (int i = 0; i < dbs.size(); i++) {
-					if (i == 0 || (i > 0 && !dbs.get(i).getTargetFace().equals(dbs.get(i - 1).getTargetFace()))) {
-						if (i > 0)
-							strCibleLibelle += "/"; //$NON-NLS-1$
-						strCibleLibelle += dbs.get(i).getTargetFace().getName();
-					}
-				}
-			}
-		}
-
-		strCibleLibelle += ") (" + this.nbArcher + "/" + (concurrents.length - nbHandicap) + ")</font>"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-
-		Hashtable<Entite, Integer> nbArcherByClub = new Hashtable<Entite, Integer>();
-		for (Concurrent concurrent : concurrents) {
-			if(concurrent != null) {
-				if(!nbArcherByClub.containsKey(concurrent.getClub()))
-					nbArcherByClub.put(concurrent.getClub(), 0);
-				nbArcherByClub.put(concurrent.getClub(), nbArcherByClub.get(concurrent.getClub())+1);
-			}
-		}
-		
-		if (nbArcherByClub.size() == 1 && getNbArcher() > 1)
-			strCibleLibelle += ApplicationCore.ajrLibelle.getResourceString("target.sameclub"); //$NON-NLS-1$
-		else if (getNbArcher() == 1)
-			strCibleLibelle += ApplicationCore.ajrLibelle.getResourceString("target.onlyone"); //$NON-NLS-1$
-		else {
-			for(Entry<Entite, Integer> nbarch : nbArcherByClub.entrySet()) {
-				if(nbarch.getValue() > 2) {
-					strCibleLibelle += ApplicationCore.ajrLibelle.getResourceString("target.morethan2sameclub"); //$NON-NLS-1$
-					break;
-				}
-			}
-		}
-		strCibleLibelle += "</html>"; //$NON-NLS-1$
-
-		return strCibleLibelle;
 	}
 
 	private void fireConcurrentJoined(Concurrent concurrent) {
