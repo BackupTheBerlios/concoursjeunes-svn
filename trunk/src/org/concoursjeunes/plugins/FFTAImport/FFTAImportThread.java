@@ -1,18 +1,24 @@
 package org.concoursjeunes.plugins.FFTAImport;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
+import java.net.URL;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Hashtable;
 import java.util.logging.Level;
+import java.util.zip.ZipEntry;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.swing.JDialog;
 import javax.swing.event.EventListenerList;
 
 import org.ajdeveloppement.commons.AjResourcesReader;
+import org.ajdeveloppement.commons.SecureStringsStore;
+import org.ajdeveloppement.commons.io.zip.EncryptedZipInputStream;
 import org.ajdeveloppement.commons.sql.SqlParser;
 import org.concoursjeunes.ApplicationCore;
 import org.jdesktop.swingx.JXErrorPane;
@@ -80,8 +86,12 @@ public class FFTAImportThread extends Thread {
 	public void run() {
 		if (parentframe == null)
 			return;
-
-		fftaLoader();
+		
+		if(pluginRessources.getResourceString("plugin.mode").equals("FTP"))
+			fftaFTPLoader();
+		else
+			fftaLoader();
+		
 		fireImportFinished();
 	}
 
@@ -158,6 +168,88 @@ public class FFTAImportThread extends Thread {
 					null, null, oome, Level.SEVERE, null));
 			oome.printStackTrace();
 		} catch (SQLException e) {
+			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
+					null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
+		}
+	}
+	
+	private void fftaFTPLoader() {
+		try {
+			SecureStringsStore secureStringsStore = new SecureStringsStore();
+			secureStringsStore.loadKey(
+					new File(ApplicationCore.staticParameters.getResourceString("path.ressources"), "security/keys/default.key"));
+			secureStringsStore.load(
+					new FileReader(new File(ApplicationCore.staticParameters.getResourceString("path.config"), "ffta.properties")));
+			URL ftpFFTA = new URL("file:///d:/result_data.zip"/*secureStringsStore.get("ffta.ftp.url")*/);
+			EncryptedZipInputStream ezis = new EncryptedZipInputStream(ftpFFTA.openStream());
+			ezis.setEncryptedPassword(secureStringsStore.get("ffta.zip.password=").getBytes());
+			
+			byte[] buffer = new byte[2048];
+			ZipEntry entry;
+            while((entry = ezis.getNextEntry())!=null) {
+            	 String outpath = System.getProperty("java.io.tmpdir") + "/" + entry.getName();
+                 FileOutputStream output = null;
+                 
+                 output = new FileOutputStream(outpath);
+                 int len = 0;
+                 while ((len = ezis.read(buffer)) > 0) {
+                     output.write(buffer, 0, len);
+                 }
+            }
+            
+            Statement stmt = ApplicationCore.dbConnection.createStatement();
+
+			Hashtable<String, String> ht = new Hashtable<String, String>();
+
+			ht.put("temp", System.getProperty("java.io.tmpdir").replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ 
+
+			SqlParser.createBatch(new File(pluginRessources.getResourceString("sql.importftpffta")), stmt, ht); //$NON-NLS-1$
+
+			fireProgressionInfo(pluginLocalisation.getResourceString("progress.integration")); //$NON-NLS-1$
+			stmt.executeBatch();
+			
+			new File(System.getProperty("java.io.tmpdir"), "result_club.txt").delete();
+			new File(System.getProperty("java.io.tmpdir"), "result_licence.txt").delete();
+
+			stmt.close();
+		} catch (NoSuchAlgorithmException e) {
+			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
+					null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
+		} catch (NoSuchPaddingException e) {
+			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
+					null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
+		} /*catch (InvalidKeyException e) {
+			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
+					null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
+		} catch (IllegalBlockSizeException e) {
+			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
+					null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
+		} catch (BadPaddingException e) {
+			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
+					null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
+		}*/ catch (IOException e) {
+			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
+					null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
+		} catch (SQLException e) {
+			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
+					null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
+		} catch (InvalidKeyException e) {
+			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
+					null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
+		} catch (IllegalBlockSizeException e) {
+			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
+					null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
+		} catch (BadPaddingException e) {
 			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
 					null, null, e, Level.SEVERE, null));
 			e.printStackTrace();

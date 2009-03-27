@@ -1,4 +1,4 @@
-#Wed Dec 10 23:03:03 CET 2008
+#Fri Mar 27 11:58:56 CET 2009
 eclipse.preferences.version=1
 encoding//config/parametre.properties=UTF-8
 encoding//lang/libelle.properties=UTF-8
@@ -8,6 +8,7 @@ encoding//packager/Licence_win.txt=ISO-8859-1
 encoding//packager/linux/debian/control=ISO-8859-1
 encoding//packager/linux/debian/copyright=ISO-8859-1
 encoding//packager/version.properties=ISO-8859-1
+encoding//plugins/properties/FFTAImportPlugin.properties=UTF-8
 encoding//ressources/update/updatedb.js=ISO-8859-1
 encoding//src/org/concoursjeunes/plugins/FFTAImport/FFTAImportPlugin_libelle.properties=UTF-8
 encoding//src/org/concoursjeunes/plugins/update/ConcoursJeunesUpdate_libelle.properties=UTF-8
