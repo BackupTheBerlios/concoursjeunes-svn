@@ -102,7 +102,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -110,8 +109,8 @@ import javax.script.ScriptException;
 import javax.swing.event.EventListenerList;
 
 import org.ajdeveloppement.commons.AjResourcesReader;
-import org.ajdeveloppement.commons.SecureStringsStore;
 import org.ajdeveloppement.commons.io.FileUtils;
+import org.ajdeveloppement.commons.security.CryptUtil;
 import org.ajdeveloppement.commons.sql.SqlManager;
 import org.concoursjeunes.event.ApplicationCoreEvent;
 import org.concoursjeunes.event.ApplicationCoreListener;
@@ -213,9 +212,9 @@ public class ApplicationCore {
 		setAppConfiguration(ConfigurationManager.loadAppConfiguration());
 		
 		try {
-			SecureStringsStore secureStringsStore = new SecureStringsStore(Cipher.getInstance("AES")); //$NON-NLS-1$
-			secureStringsStore.loadKey(new File(staticParameters.getResourceString("path.ressources"), "security/keys/default.key")); //$NON-NLS-1$ //$NON-NLS-2$
-			getAppConfiguration().getProxy().setSecureStringsStore(secureStringsStore);
+			CryptUtil cryptUtil = new CryptUtil();
+			cryptUtil.loadKey(new File(staticParameters.getResourceString("path.ressources"), "security/keys/default.key")); //$NON-NLS-1$ //$NON-NLS-2$
+			getAppConfiguration().getProxy().setCryptUtil(cryptUtil);
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		} catch (NoSuchPaddingException e) {

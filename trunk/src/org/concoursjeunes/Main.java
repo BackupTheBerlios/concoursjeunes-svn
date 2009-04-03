@@ -125,29 +125,8 @@ public class Main {
 	public static void main(String[] args) {
 		final ApplicationCore core;
 		
-		/*try {
-			SecureStringsStore secureStringsStore = new SecureStringsStore();
-			secureStringsStore.loadKey(
-					new File(ApplicationCore.staticParameters.getResourceString("path.ressources"), "security/keys/default.key"));
-			secureStringsStore.put("ffta.ftp.url", );
-			secureStringsStore.put("ffta.zip.password", );
-			secureStringsStore.store(new FileWriter("config/ffta.properties"));
-		} catch (NoSuchAlgorithmException e3) {
-			e3.printStackTrace();
-		} catch (NoSuchPaddingException e3) {
-			e3.printStackTrace();
-		} catch (IOException e3) {
-			e3.printStackTrace();
-		} catch (InvalidKeyException e) {
-			e.printStackTrace();
-		} catch (IllegalBlockSizeException e) {
-			e.printStackTrace();
-		} catch (BadPaddingException e) {
-			e.printStackTrace();
-		}*/
-		
-		
 		System.setProperty("java.net.useSystemProxies","true"); //$NON-NLS-1$ //$NON-NLS-2$
+		System.setProperty("java.net.preferIPv6Addresses", "true"); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		AjResourcesReader localisation = new AjResourcesReader("libelle"); //$NON-NLS-1$
 		

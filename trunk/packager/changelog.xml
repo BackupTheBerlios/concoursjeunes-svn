@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<java version="1.6.0_10-rc" class="java.beans.XMLDecoder"> 
+ <object class="java.util.ArrayList"> 
+  <void method="add"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
+    <void property="appname"> 
+     <string>ConcoursJeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurélien JEOFFRAY &lt;aurelien.jeoffrayàgmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Test Change Log V2.0</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1238240925418</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.19.00</string> 
+    </void> 
+   </object> 
+  </void> 
+ </object> 
+</java> 

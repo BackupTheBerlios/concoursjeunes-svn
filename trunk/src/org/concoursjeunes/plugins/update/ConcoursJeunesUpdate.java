@@ -176,7 +176,7 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 		try {
 			AppSerializer appSerializer = new AppSerializer(ApplicationCore.userRessources);
 			ajUpdater.setUserAgent(AppInfos.NOM + " " + AppInfos.VERSION //$NON-NLS-1$
-					+ " (" + appSerializer.getSerial() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+					+ " (" + appSerializer.getSerial() + "; TEST)"); //$NON-NLS-1$ //$NON-NLS-2$
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}

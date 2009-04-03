@@ -64,7 +64,7 @@
 			<fileset dir="${projet.pack.dir}" includes="**/*"/>
 		</delete>
 		
-		<java classname="org.ajdeveloppement.updater.ChangeLogEditor"
+		<java classname="org.ajdeveloppement.updater.tools.ChangeLogEditor"
 			classpath="lib/ajcommons.jar"
 			fork="yes">
 			<arg value="packager/changelog.xml"/>

@@ -1,8 +1,9 @@
 package org.concoursjeunes.plugins.FFTAImport;
 
-import java.io.*;
-import java.net.URL;
-import java.security.InvalidKeyException;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -10,15 +11,12 @@ import java.util.Hashtable;
 import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.swing.JDialog;
 import javax.swing.event.EventListenerList;
 
 import org.ajdeveloppement.commons.AjResourcesReader;
-import org.ajdeveloppement.commons.SecureStringsStore;
-import org.ajdeveloppement.commons.io.zip.EncryptedZipInputStream;
+import org.ajdeveloppement.commons.security.SecurePoperties;
 import org.ajdeveloppement.commons.sql.SqlParser;
 import org.concoursjeunes.ApplicationCore;
 import org.jdesktop.swingx.JXErrorPane;
@@ -87,7 +85,7 @@ public class FFTAImportThread extends Thread {
 		if (parentframe == null)
 			return;
 		
-		if(pluginRessources.getResourceString("plugin.mode").equals("FTP"))
+		if(pluginRessources.getResourceString("plugin.mode").equals("FTP")) //$NON-NLS-1$ //$NON-NLS-2$
 			fftaFTPLoader();
 		else
 			fftaLoader();
@@ -176,19 +174,19 @@ public class FFTAImportThread extends Thread {
 	
 	private void fftaFTPLoader() {
 		try {
-			SecureStringsStore secureStringsStore = new SecureStringsStore();
-			secureStringsStore.loadKey(
-					new File(ApplicationCore.staticParameters.getResourceString("path.ressources"), "security/keys/default.key"));
-			secureStringsStore.load(
-					new FileReader(new File(ApplicationCore.staticParameters.getResourceString("path.config"), "ffta.properties")));
-			URL ftpFFTA = new URL("file:///d:/result_data.zip"/*secureStringsStore.get("ffta.ftp.url")*/);
-			EncryptedZipInputStream ezis = new EncryptedZipInputStream(ftpFFTA.openStream());
-			ezis.setEncryptedPassword(secureStringsStore.get("ffta.zip.password=").getBytes());
+			SecurePoperties secureProperties = new SecurePoperties();
+			secureProperties.loadKey(
+					new File(ApplicationCore.staticParameters.getResourceString("path.ressources"), "security/keys/default.key")); //$NON-NLS-1$ //$NON-NLS-2$
+			secureProperties.load(
+					new FileReader(new File(ApplicationCore.staticParameters.getResourceString("path.config"), "ffta.properties"))); //$NON-NLS-1$ //$NON-NLS-2$
+			//URL ftpFFTA = new URL(secureStringsStore.get("ffta.ftp.url")); //$NON-NLS-1$
+			//EncryptedZipInputStream ezis = new EncryptedZipInputStream(ftpFFTA.openStream());
+			//ezis.setEncryptedPassword(secureStringsStore.get("ffta.zip.password").getBytes()); //$NON-NLS-1$
 			
 			byte[] buffer = new byte[2048];
 			ZipEntry entry;
-            while((entry = ezis.getNextEntry())!=null) {
-            	 String outpath = System.getProperty("java.io.tmpdir") + "/" + entry.getName();
+            /*while((entry = ezis.getNextEntry())!=null) {
+            	 String outpath = System.getProperty("java.io.tmpdir") + "/" + entry.getName(); //$NON-NLS-1$ //$NON-NLS-2$
                  FileOutputStream output = null;
                  
                  output = new FileOutputStream(outpath);
@@ -196,7 +194,7 @@ public class FFTAImportThread extends Thread {
                  while ((len = ezis.read(buffer)) > 0) {
                      output.write(buffer, 0, len);
                  }
-            }
+            }*/
             
             Statement stmt = ApplicationCore.dbConnection.createStatement();
 
@@ -209,8 +207,8 @@ public class FFTAImportThread extends Thread {
 			fireProgressionInfo(pluginLocalisation.getResourceString("progress.integration")); //$NON-NLS-1$
 			stmt.executeBatch();
 			
-			new File(System.getProperty("java.io.tmpdir"), "result_club.txt").delete();
-			new File(System.getProperty("java.io.tmpdir"), "result_licence.txt").delete();
+			new File(System.getProperty("java.io.tmpdir"), "result_club.txt").delete(); //$NON-NLS-1$ //$NON-NLS-2$
+			new File(System.getProperty("java.io.tmpdir"), "result_licence.txt").delete(); //$NON-NLS-1$ //$NON-NLS-2$
 
 			stmt.close();
 		} catch (NoSuchAlgorithmException e) {
@@ -238,18 +236,6 @@ public class FFTAImportThread extends Thread {
 					null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		} catch (SQLException e) {
-			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
-					null, null, e, Level.SEVERE, null));
-			e.printStackTrace();
-		} catch (InvalidKeyException e) {
-			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
-					null, null, e, Level.SEVERE, null));
-			e.printStackTrace();
-		} catch (IllegalBlockSizeException e) {
-			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
-					null, null, e, Level.SEVERE, null));
-			e.printStackTrace();
-		} catch (BadPaddingException e) {
 			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
 					null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
