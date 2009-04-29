@@ -202,7 +202,12 @@
 		<revisionscreator
 				revisionpath="${projet.pack.dir}/revision.xml.gz"
 				changelogXML="packager/changelog.xml"
-				changelogTXT="${projet.pack.dir}/changelog.txt">
+				changelogTXT="${projet.pack.dir}/changelog.txt"
+				keystorepath="/data/developpement/projets/SecurityTools/ajeoffray.jks"
+				keystorepassword="florianne"
+				signkeysalias="ajeoffraysign"
+				signkeysaliaspassword="florianne"
+			>
 			<fileset dir="${projet.pack.dir}">
 				<include name="config/**"/>
 				<include name="lang/**"/>

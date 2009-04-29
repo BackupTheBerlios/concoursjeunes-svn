@@ -92,9 +92,13 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.stream.XMLStreamException;
 
 import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.ajdeveloppement.commons.net.Proxy;
@@ -104,12 +108,15 @@ import org.ajdeveloppement.commons.net.Proxy;
  *
  */
 @XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder={"firstboot", "pdfReaderPath", "useProxy", "proxy"})
 public class AppConfiguration implements Cloneable {
 	@XmlAttribute
 	@SuppressWarnings("unused")
 	private String version = "1.0"; //$NON-NLS-1$
 	
-	private String pdfReaderPath    = ""; //$NON-NLS-1$
+	@XmlElement(required=false)
+	private String pdfReaderPath    = null; 
 	private boolean useProxy		= false;
 	private Proxy proxy				= new Proxy();
 	
@@ -122,7 +129,6 @@ public class AppConfiguration implements Cloneable {
 	/**
 	 * @return pdfReaderPath
 	 */
-	@XmlElement(required=false)
 	public String getPdfReaderPath() {
 		return pdfReaderPath;
 	}
@@ -190,7 +196,7 @@ public class AppConfiguration implements Cloneable {
 	 * sauvegarde la configuration général du programme
 	 *
 	 */
-	public void save() throws JAXBException, IOException {
+	public void save() throws JAXBException, IOException, XMLStreamException {
 		File f = new File(ApplicationCore.userRessources.getConfigPathForUser(),
 				ApplicationCore.staticParameters.getResourceString("file.configuration")); //$NON-NLS-1$
 		XMLSerializer.saveMarshallStructure(f, this);

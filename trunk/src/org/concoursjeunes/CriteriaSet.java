@@ -23,21 +23,36 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import org.ajdeveloppement.commons.JAXBMapRefAdapter;
+
 /**
  * Jeux de critères utilisé pour distinguer un archer a des fins
  * de classements/placements et/ou informations
  * 
  * @author  Aurélien Jeoffray
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class CriteriaSet {
 
-	private Hashtable<Criterion, CriterionElement> criteria = new Hashtable<Criterion, CriterionElement>();
+	@XmlID
+	@SuppressWarnings("unused")
+	private String id = ""; //$NON-NLS-1$
+	@XmlJavaTypeAdapter(JAXBMapRefAdapter.class)
+	private Map<Criterion, CriterionElement> criteria = new Hashtable<Criterion, CriterionElement>();
 
 	public CriteriaSet() {
+		id = Integer.toString(hashCode());
 	}
 
 	public CriteriaSet(Hashtable<Criterion, CriterionElement> criteria) {
 		this.criteria = criteria;
+		
+		id = Integer.toString(hashCode());
 	}
 
 	/**
@@ -61,6 +76,8 @@ public class CriteriaSet {
 	public void setCriterionElement(Criterion criterion, CriterionElement element) {
 		if(element != null) {
 			criteria.put(criterion, element);
+			
+			id = Integer.toString(hashCode());
 		}
 	}
 
@@ -69,7 +86,7 @@ public class CriteriaSet {
 	 * 
 	 * @return la liste des critères composant le jeux
 	 */
-	public Hashtable<Criterion, CriterionElement> getCriteria() {
+	public Map<Criterion, CriterionElement> getCriteria() {
 		return criteria;
 	}
 
@@ -78,8 +95,10 @@ public class CriteriaSet {
 	 * 
 	 * @param criteria  criteria à définir.
 	 */
-	public void setCriteria(Hashtable<Criterion, CriterionElement> criteria) {
+	public void setCriteria(Map<Criterion, CriterionElement> criteria) {
 		this.criteria = criteria;
+		
+		id = Integer.toString(hashCode());
 	}
 
 	/**

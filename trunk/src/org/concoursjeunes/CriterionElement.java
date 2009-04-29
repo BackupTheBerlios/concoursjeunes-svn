@@ -21,6 +21,11 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlID;
+
 import org.concoursjeunes.builders.CriterionElementBuilder;
 
 /**
@@ -28,7 +33,10 @@ import org.concoursjeunes.builders.CriterionElementBuilder;
  * 
  * @author Aurélien JEOFFRAY
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class CriterionElement {
+	@XmlID
+	@XmlAttribute
     private String code = ""; //$NON-NLS-1$
     private String libelle = ""; //$NON-NLS-1$
     private boolean active = true;

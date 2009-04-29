@@ -107,6 +107,7 @@ import java.util.Map;
 
 import javax.swing.JOptionPane;
 import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
 
 import org.ajdeveloppement.apps.AppSerializer;
 import org.ajdeveloppement.commons.AJToolKit;
@@ -172,6 +173,7 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 
 		ajUpdater = new AjUpdater(ApplicationCore.userRessources.getUpdatePath().getPath(), "."); //$NON-NLS-1$
 		ajUpdater.addAjUpdaterListener(this);
+		ajUpdater.setAppKeyStore(ApplicationCore.userRessources.getAppKeyStore());
 		
 		try {
 			AppSerializer appSerializer = new AppSerializer(ApplicationCore.userRessources);
@@ -183,7 +185,8 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 		
 		ajUpdater.addRepository(new Repository(AppInfos.NOM, new String[] { pluginRessources.getResourceString("url.reference") }, AppInfos.VERSION)); //$NON-NLS-1$
 		for (PluginMetadata pm : pl.getPlugins(Type.ALL)) {
-			ajUpdater.addRepository(new Repository(pm.getName(), new String[] { pm.getReposURL() }, pm.getVersion()));
+			if(!pm.getReposURL().equals("plugin.repos")) //$NON-NLS-1$
+				ajUpdater.addRepository(new Repository(pm.getName(), new String[] { pm.getReposURL() }, pm.getVersion()));
 		}
 		
 		if (ApplicationCore.getAppConfiguration().isUseProxy()) {
@@ -269,7 +272,6 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 				AjUpdaterFrame ajUpdaterFrame = new AjUpdaterFrame(ajUpdater);
 				
 				if(ajUpdaterFrame.showAjUpdaterFrame() == AjUpdaterFrame.ReturnCode.OK) {
-					//ajUpdaterFrame.getValidateRepositories()
 					Map<Repository, List<FileMetaData>> filesMap = new HashMap<Repository, List<FileMetaData>>();
 					for(Repository r : ajUpdaterFrame.getValidateRepositories())
 						filesMap.put(r, updateFiles.get(r));
@@ -303,6 +305,8 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 					} catch (SQLException e) {
 						e.printStackTrace();
 					} catch(JAXBException e) {
+						e.printStackTrace();
+					} catch (XMLStreamException e) {
 						e.printStackTrace();
 					}
 					
@@ -345,7 +349,10 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 					AjUpdaterFrame ajUpdaterFrame = new AjUpdaterFrame(ajUpdater);
 					
 					if(ajUpdaterFrame.showAjUpdaterFrame() == AjUpdaterFrame.ReturnCode.OK) {
-						ajUpdater.downloadFiles(updateFiles);
+						Map<Repository, List<FileMetaData>> filesMap = new HashMap<Repository, List<FileMetaData>>();
+						for(Repository r : ajUpdaterFrame.getValidateRepositories())
+							filesMap.put(r, updateFiles.get(r));
+						ajUpdater.downloadFiles(filesMap);
 					}
 				}
 			}

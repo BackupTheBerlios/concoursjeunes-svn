@@ -133,7 +133,7 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 	private JFrame parentframe;
 	private AjResourcesReader localisation;
 
-	private EntiteTableModel dtm = new EntiteTableModel();
+	private EntiteTableModel dtm;
 	private TableRowSorter<EntiteTableModel> sorter;
 
 	@Localisable("listeentite.nom")
@@ -162,6 +162,10 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 
 		init();
 		affectLibelle();
+		
+		this.pack();
+		this.setLocationRelativeTo(null);
+		this.setVisible(true);
 	}
 
 	/**
@@ -170,6 +174,8 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 	private void init() {
 		JPanel jpEntete = new JPanel();
 		JPanel jpPied = new JPanel();
+		
+		dtm = new EntiteTableModel();
 
 		//jtfNom.addFocusListener(this);
 		jtfNom.addCaretListener(this);
@@ -197,11 +203,7 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		this.getContentPane().setLayout(new BorderLayout());
 		this.getContentPane().add(jpEntete, BorderLayout.NORTH);
 		this.getContentPane().add(jScrollPane, BorderLayout.CENTER);
-		this.getContentPane().add(jpPied, BorderLayout.SOUTH);
-
-		this.pack();
-		this.setLocationRelativeTo(null);
-		this.setVisible(true);
+		this.getContentPane().add(jpPied, BorderLayout.SOUTH);		
 	}
 	
 	private void affectLibelle() {

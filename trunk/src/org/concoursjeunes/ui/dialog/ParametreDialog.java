@@ -97,6 +97,7 @@ import java.text.DateFormat;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -106,12 +107,16 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import org.ajdeveloppement.apps.AppUtilities;
+import org.ajdeveloppement.apps.Localisable;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.AJList;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
+import org.concoursjeunes.CompetitionLevel;
 import org.concoursjeunes.FicheConcours;
 import org.concoursjeunes.Parametre;
+import org.concoursjeunes.Profile;
 import org.concoursjeunes.Reglement;
 import org.jdesktop.swingx.JXDatePicker;
 
@@ -126,47 +131,71 @@ import com.lowagie.text.Font;
 public class ParametreDialog extends JDialog implements ActionListener {
 
 	private AjResourcesReader localisation;
+	private Profile profile;
 	private Parametre parametre;
 	private Reglement tempReglement;
 
 	private final FicheConcours ficheConcours;
 	private JFrame parentframe;
 
-	// private JButton jbLogo;
 	private final JTextField jtfIntituleConcours = new JTextField(20);
 	private final JTextField jtfLieuConcours = new JTextField(20);
-	// private JFormattedTextField jtfDateConcours;
-	private final JXDatePicker jtfDateConcours = new JXDatePicker();
+	private final JXDatePicker jtfDateDebutConcours = new JXDatePicker();
+	private final JXDatePicker jtfDateFinConcours = new JXDatePicker();
 	private final JLabel jlSelectedReglement = new JLabel();
+	@Localisable("parametre.choice_reglement")
 	private final JButton jbSelectReglement = new JButton();
+	@Localisable("parametre.detail_customize")
 	private final JButton jbDetail = new JButton();
+	private JComboBox jcbNiveauChampionnat = new JComboBox();
+	private JCheckBox jcbCloseCompetition = new JCheckBox();
 	private final JTextField jtfNombreCible = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
 	private final JComboBox jcbNombreTireurParCible = new JComboBox();
 	private final JTextField jtfNombreDepart = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
 	private final JTextField jtfArbitres = new JTextField(20);
+	@Localisable("bouton.ajouter")
 	private final JButton jbAjouterArbitre = new JButton();
+	@Localisable("bouton.supprimer")
 	private final JButton jbSupprimerArbitre = new JButton();
+	@Localisable("bouton.arbitreresponsable")
 	private final JButton jbArbitreResponsable = new JButton();
 	private final AJList jlArbitres = new AJList();
 
+	@Localisable("parametre.intituleconcours")
 	private final JLabel jlIntituleConcours = new JLabel();
+	@Localisable("parametre.lieuconcours")
 	private final JLabel jlLieuConcours = new JLabel();
-	private final JLabel jlDateConcours = new JLabel();
+	@Localisable("parametre.datedebutconcours")
+	private final JLabel jlDateDebutConcours = new JLabel();
+	@Localisable("parametre.datefinconcours")
+	private final JLabel jlDateFinConcours = new JLabel();
+	@Localisable("parametre.reglement")
 	private final JLabel jlReglement = new JLabel();
+	@Localisable("parametre.niveauchampionnat")
+	private JLabel jlNiveauChampionnat = new JLabel();
+	@Localisable("parametre.openclose")
+	private JLabel jlConcoursOuvert = new JLabel();
+	@Localisable("parametre.nombrecible")
 	private final JLabel jlNombreCible = new JLabel();
+	@Localisable("parametre.nombretireurparcible")
 	private final JLabel jlNombreTireurParCible = new JLabel();
+	@Localisable("parametre.nombredepart")
 	private final JLabel jlNombreDepart = new JLabel();
+	@Localisable("parametre.arbitres")
 	private final JLabel jlbArbitres = new JLabel();
 
+	@Localisable("bouton.valider")
 	private final JButton jbValider = new JButton();
+	@Localisable("bouton.annuler")
 	private final JButton jbAnnuler = new JButton();
 	
 	private ReglementDialog reglementDialog;
 
-	public ParametreDialog(JFrame parentframe, FicheConcours ficheConcours, AjResourcesReader localisation) {
+	public ParametreDialog(JFrame parentframe, Profile profile, FicheConcours ficheConcours, AjResourcesReader localisation) {
 		super(parentframe);
 
 		this.parentframe = parentframe;
+		this.profile = profile;
 		this.ficheConcours = ficheConcours;
 		this.localisation = localisation;
 
@@ -177,15 +206,12 @@ public class ParametreDialog extends JDialog implements ActionListener {
 
 		getRootPane().setDefaultButton(jbValider);
 		setModal(true);
-
-		// this.setResizable(false);
 	}
 
 	/**
 	 * This method initializes this
 	 */
 	private void init() {
-		// JPanel jContentPane = new JPanel();
 		JPanel jpParametre = new JPanel();
 		JPanel jpValidation = new JPanel();
 		JPanel jpReglement	= new JPanel();
@@ -194,7 +220,8 @@ public class ParametreDialog extends JDialog implements ActionListener {
 		GridbagComposer gridbagComposer = new GridbagComposer();
 
 		jbDetail.addActionListener(this);
-		jtfDateConcours.setFormats(new DateFormat[] { DateFormat.getDateInstance(DateFormat.SHORT) });
+		jtfDateDebutConcours.setFormats(new DateFormat[] { DateFormat.getDateInstance(DateFormat.SHORT) });
+		jtfDateFinConcours.setFormats(new DateFormat[] { DateFormat.getDateInstance(DateFormat.SHORT) });
 		jlSelectedReglement.setFont(jlSelectedReglement.getFont().deriveFont(Font.ITALIC));
 		jbSelectReglement.addActionListener(this);
 		jcbNombreTireurParCible.addItem("AB"); //$NON-NLS-1$
@@ -231,19 +258,34 @@ public class ParametreDialog extends JDialog implements ActionListener {
 		
 		c.gridy++;
 		c.gridwidth = 1;
-		gridbagComposer.addComponentIntoGrid(jlDateConcours, c);
+		gridbagComposer.addComponentIntoGrid(jlDateDebutConcours, c);
 		c.gridwidth = 2;
-		gridbagComposer.addComponentIntoGrid(jtfDateConcours, c);
+		gridbagComposer.addComponentIntoGrid(jtfDateDebutConcours, c);
+		
+		c.gridy++;
+		c.gridwidth = 1;
+		gridbagComposer.addComponentIntoGrid(jlDateFinConcours, c);
+		c.gridwidth = 2;
+		gridbagComposer.addComponentIntoGrid(jtfDateFinConcours, c);
 
 		c.gridy++;
 		c.gridwidth = 1;
 		gridbagComposer.addComponentIntoGrid(jlReglement, c);
-		c.gridwidth = 3;
+		c.gridwidth = 2;
 		gridbagComposer.addComponentIntoGrid(jpReglement, c);
-		//c.gridwidth = 2;
-		//gridbagComposer.addComponentIntoGrid(jbSelectReglement, c);
-		//gridbagComposer.addComponentIntoGrid(jbDetail, c);
 
+		c.gridy++;
+		c.gridwidth = 1;
+		gridbagComposer.addComponentIntoGrid(jlNiveauChampionnat, c);
+		c.gridwidth = 2;
+		gridbagComposer.addComponentIntoGrid(jcbNiveauChampionnat, c);
+		
+		c.gridy++;
+		c.gridwidth = 1;
+		gridbagComposer.addComponentIntoGrid(jlConcoursOuvert, c);
+		c.gridwidth = 2;
+		gridbagComposer.addComponentIntoGrid(jcbCloseCompetition, c);
+		
 		c.gridy++;
 		c.gridwidth = 1;
 		gridbagComposer.addComponentIntoGrid(jlNombreCible, c);
@@ -291,10 +333,6 @@ public class ParametreDialog extends JDialog implements ActionListener {
 		getContentPane().add(jpValidation, BorderLayout.SOUTH);
 	}
 
-	/**
-	 * 
-	 * 
-	 */
 	public void showParametreDialog(Parametre parametre) {
 		this.parametre = parametre;
 		completePanel();
@@ -304,40 +342,26 @@ public class ParametreDialog extends JDialog implements ActionListener {
 		setVisible(true);
 	}
 
-	/**
-	 * 
-	 * 
-	 */
-	public void affectLibelle() {
+	private void affectLibelle() {
 		setTitle(localisation.getResourceString("parametre.titre")); //$NON-NLS-1$
-
-		jlIntituleConcours.setText(localisation.getResourceString("parametre.intituleconcours")); //$NON-NLS-1$
-		jlLieuConcours.setText(localisation.getResourceString("parametre.lieuconcours")); //$NON-NLS-1$
-		jlDateConcours.setText(localisation.getResourceString("parametre.dateconcours")); //$NON-NLS-1$
-		jlReglement.setText(localisation.getResourceString("parametre.reglement")); //$NON-NLS-1$
-		jlNombreCible.setText(localisation.getResourceString("parametre.nombrecible")); //$NON-NLS-1$
-		jlNombreTireurParCible.setText(localisation.getResourceString("parametre.nombretireurparcible")); //$NON-NLS-1$
-		jlNombreDepart.setText(localisation.getResourceString("parametre.nombredepart")); //$NON-NLS-1$
-		jlbArbitres.setText(localisation.getResourceString("parametre.arbitres")); //$NON-NLS-1$
-
-		jbSelectReglement.setText(localisation.getResourceString("parametre.choice_reglement")); //$NON-NLS-1$
-		jbDetail.setText(localisation.getResourceString("parametre.detail_customize")); //$NON-NLS-1$
-
-		jbAjouterArbitre.setText(localisation.getResourceString("bouton.ajouter")); //$NON-NLS-1$
-		jbSupprimerArbitre.setText(localisation.getResourceString("bouton.supprimer")); //$NON-NLS-1$
-		jbArbitreResponsable.setText(localisation.getResourceString("bouton.arbitreresponsable")); //$NON-NLS-1$
-		jbValider.setText(localisation.getResourceString("bouton.valider")); //$NON-NLS-1$
-		jbAnnuler.setText(localisation.getResourceString("bouton.annuler")); //$NON-NLS-1$
+		
+		AppUtilities.localize(this, localisation);
 	}
 
-	public void completePanel() {
+	private void completePanel() {
 		tempReglement = parametre.getReglement();
 		
 		jtfIntituleConcours.setText(parametre.getIntituleConcours());
 		jtfLieuConcours.setText(parametre.getLieuConcours());
-		jtfDateConcours.setDate(parametre.getDateDebutConcours());
+		jtfDateDebutConcours.setDate(parametre.getDateDebutConcours());
+		jtfDateFinConcours.setDate(parametre.getDateFinConcours());
 		jlSelectedReglement.setText(parametre.getReglement().getName());
 		jbSelectReglement.setEnabled(!parametre.isReglementLock());
+		jcbNiveauChampionnat.removeAllItems();
+		for(CompetitionLevel cl : parametre.getReglement().getFederation().getCompetitionLevels(profile.getConfiguration().getLangue()))
+			jcbNiveauChampionnat.addItem(cl);
+		jcbNiveauChampionnat.setSelectedItem(parametre.getNiveauChampionnat());
+		jcbCloseCompetition.setSelected(!parametre.isOpen());
 		jtfNombreCible.setText("" + parametre.getNbCible()); //$NON-NLS-1$
 		jcbNombreTireurParCible.setSelectedIndex((parametre.getNbTireur() / 2) - 1);
 		jtfNombreDepart.setText("" + parametre.getNbDepart()); //$NON-NLS-1$
@@ -390,7 +414,9 @@ public class ParametreDialog extends JDialog implements ActionListener {
 
 			parametre.setIntituleConcours(jtfIntituleConcours.getText());
 			parametre.setLieuConcours(jtfLieuConcours.getText());
-			parametre.setDateDebutConcours(jtfDateConcours.getDate());
+			parametre.setDateDebutConcours(jtfDateDebutConcours.getDate());
+			parametre.setDateFinConcours(jtfDateFinConcours.getDate());
+			parametre.setNiveauChampionnat((CompetitionLevel)jcbNiveauChampionnat.getSelectedItem());
 			parametre.getArbitres().clear();
 			for (Object arbitre : jlArbitres.getAllElements()) {
 				parametre.getArbitres().add((String) arbitre);
@@ -449,6 +475,10 @@ public class ParametreDialog extends JDialog implements ActionListener {
 			if(reglement != null && (tempReglement == null || !tempReglement.equals(reglement))) {
 				tempReglement = reglement;
 				jlSelectedReglement.setText(reglement.getName());
+				jcbNiveauChampionnat.removeAllItems();
+				for(CompetitionLevel cl : parametre.getReglement().getFederation().getCompetitionLevels(profile.getConfiguration().getLangue()))
+					jcbNiveauChampionnat.addItem(cl);
+				jcbNiveauChampionnat.setSelectedItem(parametre.getNiveauChampionnat());
 			}
 		}
 	}

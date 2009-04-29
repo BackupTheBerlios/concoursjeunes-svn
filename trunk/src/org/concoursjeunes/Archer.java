@@ -88,6 +88,7 @@ package org.concoursjeunes;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.List;
 
 /**
  * Class représentant un archer independament d'un concours
@@ -269,6 +270,21 @@ public class Archer implements Cloneable {
 	 */
 	public String getID() {
 		return nomArcher + " " + prenomArcher; //$NON-NLS-1$
+	}
+	
+	/**
+	 * Test si l'archer possede dans la base des homonymes (même nom et prenom)
+	 * 
+	 * @return true su l'archer possede des homonyme, false sinon
+	 */
+	public boolean haveHomonyme() {
+		Archer aComparant = new Archer();
+		aComparant.setNomArcher(getNomArcher());
+		aComparant.setPrenomArcher(getPrenomArcher());
+
+		List<Concurrent> homonyme = ConcurrentManager.getArchersInDatabase(aComparant, null, ""); //$NON-NLS-1$
+
+		return (homonyme.size() > 1);
 	}
 
 	/* (non-Javadoc)

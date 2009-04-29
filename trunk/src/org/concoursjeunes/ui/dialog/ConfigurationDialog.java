@@ -124,6 +124,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
 
 import org.ajdeveloppement.apps.AppUtilities;
 import org.ajdeveloppement.apps.Localisable;
@@ -139,9 +140,11 @@ import org.concoursjeunes.AutoCompleteDocumentContext;
 import org.concoursjeunes.Configuration;
 import org.concoursjeunes.ConfigurationManager;
 import org.concoursjeunes.Entite;
+import org.concoursjeunes.Federation;
 import org.concoursjeunes.Margin;
 import org.concoursjeunes.Profile;
 import org.concoursjeunes.Reglement;
+import org.concoursjeunes.ReglementManager;
 import org.concoursjeunes.event.AutoCompleteDocumentEvent;
 import org.concoursjeunes.event.AutoCompleteDocumentListener;
 import org.concoursjeunes.exceptions.NullConfigurationException;
@@ -177,6 +180,8 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	// Ecran general personnalisation
 	@Localisable(value="configuration.ecran.general.titre1",textMethod="setTitle")
 	private TitledBorder tbParamGeneral = new TitledBorder(""); //$NON-NLS-1$
+	@Localisable("configuration.ecran.general.federation")
+	private JLabel jlFederation = new JLabel();
 	@Localisable("configuration.ecran.general.nom")
 	private JLabel jlNomClub = new JLabel();
 	@Localisable("configuration.ecran.general.agrement")
@@ -189,6 +194,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	private JLabel jlPathPdf = new JLabel();
 	@Localisable("configuration.ecran.general.logo")
 	private JLabel jlLogoPath = new JLabel();
+	private JComboBox jcbFederation = new JComboBox();
 	private JTextField jtfNomClub = new JTextField(20);
 	private JTextField jtfAgrClub = new JTextField(new NumberDocument(false, false), "", 5); //$NON-NLS-1$
 	@Localisable(value="configuration.ecran.general.choiceclub",tooltip="configuration.ecran.general.browseclub")
@@ -386,6 +392,9 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		c.gridy = 0;
 		c.anchor = GridBagConstraints.WEST; // Défaut,Haut
 		c.fill = GridBagConstraints.HORIZONTAL;
+		gridbagComposer.addComponentIntoGrid(jlFederation, c);
+		gridbagComposer.addComponentIntoGrid(jcbFederation, c);
+		c.gridy++;
 		gridbagComposer.addComponentIntoGrid(jlAgremClub, c);
 		gridbagComposer.addComponentIntoGrid(jpClub, c);
 		c.gridy++;
@@ -661,6 +670,11 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 			jbRenameProfile.setEnabled(false);
 		else
 			jbRenameProfile.setEnabled(true);
+		
+		jcbFederation.removeAllItems();
+		for(Federation federation : ReglementManager.getAvailableFederations())
+			jcbFederation.addItem(federation);
+		jcbFederation.setSelectedItem(configuration.getFederation());
 
 		jcbLangue.removeAllItems();
 		for (int i = 0; i < libelleLangues.length; i++) {
@@ -822,6 +836,10 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 			JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), //$NON-NLS-1$
 					e.toString(), null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
+		} catch (XMLStreamException e) {
+			JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), //$NON-NLS-1$
+					e.toString(), null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
 		}
 		
 		this.workConfiguration = configuration;
@@ -835,12 +853,21 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	}
 
 	/**
-	 * @return Renvoie workConfiguration.
+	 * Retourne la configuration du profil actuellement manipulé par la boite
+	 * de dialogue
+	 * 
+	 * @return Renvoie la configuration du profil
 	 */
 	public Configuration getWorkConfiguration() {
 		return workConfiguration;
 	}
 	
+	/**
+	 * Retourne la configuration de l'application actuellement manipulé par
+	 * la boite de dialogue
+	 * 
+	 * @return la configuration de l'application en cours de manipulation
+	 */
 	public AppConfiguration getWorkAppConfiguration() {
 		return workAppConfiguration;
 	}
@@ -883,7 +910,12 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 
 		workConfiguration.setCurProfil((String) jcbProfil.getSelectedItem());
 	}
-	
+
+	/**
+	 * Détérmine si le profil à été ou non renomé
+	 * 
+	 * @return <code>true</true> si le profil à été renomé, <code>false</code> sinon
+	 */
 	public boolean isRenamedProfile() {
 		return renamedProfile;
 	}
@@ -937,6 +969,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 			return false;
 		}
 		
+		workConfiguration.setFederation((Federation)jcbFederation.getSelectedItem());
 		workConfiguration.getClub().setNom(jtfNomClub.getText());
 		workConfiguration.getClub().setAgrement(jtfAgrClub.getText());
 		workConfiguration.setIntituleConcours(jtfIntConc.getText());
@@ -1045,6 +1078,9 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 					renamedProfile = false;
 					e1.printStackTrace();
 				} catch(JAXBException e1) {
+					renamedProfile = false;
+					e1.printStackTrace();
+				} catch (XMLStreamException e1) {
 					renamedProfile = false;
 					e1.printStackTrace();
 				}

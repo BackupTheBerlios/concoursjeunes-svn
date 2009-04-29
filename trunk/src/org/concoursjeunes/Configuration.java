@@ -96,6 +96,7 @@ import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.stream.XMLStreamException;
 
 import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.ajdeveloppement.commons.net.Proxy;
@@ -121,6 +122,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	private String langue           = "fr";               //$NON-NLS-1$
 	private String logoPath         = "ressources/logo_ffta.gif";   //$NON-NLS-1$
 	
+	private Federation federation	= new Federation();
 	private String reglementName	= ""; //$NON-NLS-1$
 	private List<Tarif> tarifs		= new ArrayList<Tarif>(); 
 
@@ -201,14 +203,39 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	}
 
 	/**
-	 * @return tarifs
+	 * <p>Retourne la fédération définit pour le profil. La fédération définit le
+	 * choix des réglements propsé par défaut.</p>
+	 * <p>Dans le futur, permettra le choix du club et des archers en fonction de la
+	 * fédération. Mais n'est pas iplémenté à ce jour.</p>
+	 * 
+	 * @return federation la fédération définit pour le profil
+	 */
+	public Federation getFederation() {
+		return federation;
+	}
+
+	/**
+	 * Définit la fédération  attaché au profil courrant.
+	 * 
+	 * @param federation la fédération attaché au profil
+	 */
+	public void setFederation(Federation federation) {
+		this.federation = federation;
+	}
+
+	/**
+	 * Retourne la liste des tarifs praticable pour ce profil
+	 * 
+	 * @return tarifs les tarifs du profil
 	 */
 	public List<Tarif> getTarifs() {
 		return tarifs;
 	}
 
 	/**
-	 * @param tarifs tarifs à définir
+	 * Définit la liste des tarifs pour le profil.
+	 * 
+	 * @param tarifs la liste des tarifs du profil.
 	 */
 	public void setTarifs(List<Tarif> tarifs) {
 		this.tarifs = tarifs;
@@ -216,6 +243,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 
 	/**
 	 * nombre de colonne et de ligne sur une page d'étiquettes
+	 * 
 	 * @return  Returns the colonneAndLigne.
 	 */
 	public int[] getColonneAndLigne() {
@@ -224,6 +252,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 
 	/**
 	 * Espacements entre 2 cellules d'étiquettes
+	 * 
 	 * @return  Returns the espacements.
 	 */
 	public double[] getEspacements() {
@@ -445,7 +474,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	 * sauvegarde la configuration général du programme
 	 *
 	 */
-	public void save() throws JAXBException, IOException {
+	public void save() throws JAXBException, IOException, XMLStreamException {
 		File f = new File(ApplicationCore.userRessources.getConfigPathForUser(),
 				CONFIG_PROFILE + curProfil + EXT_XML);
 		XMLSerializer.saveMarshallStructure(f, this);
@@ -455,7 +484,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	 * sauvegarde la configuration courante comme etant la configuration par défaut du programme
 	 */
 	@Deprecated
-	public void saveAsDefault() throws JAXBException, IOException {
+	public void saveAsDefault() throws JAXBException, IOException, XMLStreamException {
 		try {
 			File f = new File(ApplicationCore.userRessources.getConfigPathForUser(),
 					ApplicationCore.staticParameters.getResourceString("file.configuration")); //$NON-NLS-1$

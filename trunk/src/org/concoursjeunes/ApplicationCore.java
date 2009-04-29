@@ -93,7 +93,12 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -103,14 +108,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.swing.event.EventListenerList;
 
+import org.ajdeveloppement.apps.AppSerializer;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.io.FileUtils;
 import org.ajdeveloppement.commons.security.CryptUtil;
+import org.ajdeveloppement.commons.security.SecurityImporter;
 import org.ajdeveloppement.commons.sql.SqlManager;
 import org.concoursjeunes.event.ApplicationCoreEvent;
 import org.concoursjeunes.event.ApplicationCoreListener;
@@ -212,14 +220,32 @@ public class ApplicationCore {
 		setAppConfiguration(ConfigurationManager.loadAppConfiguration());
 		
 		try {
-			CryptUtil cryptUtil = new CryptUtil();
-			cryptUtil.loadKey(new File(staticParameters.getResourceString("path.ressources"), "security/keys/default.key")); //$NON-NLS-1$ //$NON-NLS-2$
+			SecurityImporter.importCerts(userRessources.getAppKeyStore(), new File(userRessources.getUpdatePath(), "security/certs")); //$NON-NLS-1$
+			
+			AppSerializer serial = new AppSerializer(userRessources);
+			SecretKey sKey = (SecretKey)userRessources.getAppKeyStore().getKey("proxy.pswd", serial.getSerial().toCharArray()); //$NON-NLS-1$
+			
+			CryptUtil cryptUtil = new CryptUtil(sKey);
+			if(sKey == null) {
+			    KeyStore.SecretKeyEntry skEntry = new KeyStore.SecretKeyEntry(cryptUtil.getSecretKey());
+				userRessources.getAppKeyStore().setEntry("proxy.pswd",skEntry, new KeyStore.PasswordProtection(serial.getSerial().toCharArray())); //$NON-NLS-1$
+			}
 			getAppConfiguration().getProxy().setCryptUtil(cryptUtil);
+			
+			userRessources.storeAppKeyStore();
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		} catch (NoSuchPaddingException e) {
 			e.printStackTrace();
+		} catch (CertificateException e) {
+			e.printStackTrace();
+		} catch (KeyStoreException e) {
+			e.printStackTrace();
 		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (UnrecoverableKeyException e) {
+			e.printStackTrace();
+		} catch (InvalidAlgorithmParameterException e) {
 			e.printStackTrace();
 		}
 	}

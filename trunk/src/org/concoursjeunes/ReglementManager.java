@@ -97,6 +97,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.JAXBException;
+
 import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.concoursjeunes.builders.ReglementBuilder;
 
@@ -132,7 +134,7 @@ public class ReglementManager {
 		try {
 			Statement stmt = ApplicationCore.dbConnection.createStatement();
 
-			ResultSet rs = stmt.executeQuery("select NUMREGLEMENT from REGLEMENT where NUMREGLEMENT <> 0"); //$NON-NLS-1$
+			ResultSet rs = stmt.executeQuery("select NUMREGLEMENT from REGLEMENT where NUMREGLEMENT <> 0 order by LIBELLE"); //$NON-NLS-1$
 
 			while (rs.next()) {
 				Reglement reglement = ReglementBuilder.getReglement(rs.getInt("NUMREGLEMENT")); //$NON-NLS-1$
@@ -294,7 +296,7 @@ public class ReglementManager {
 	 * 
 	 * @return la liste des fédérations disponible
 	 */
-	public List<Federation> getAvailableFederations() {
+	public static List<Federation> getAvailableFederations() {
 		List<Federation> federations = new ArrayList<Federation>();
 		String sql = "select * from FEDERATION order by SIGLEFEDERATION"; //$NON-NLS-1$
 		
@@ -334,7 +336,12 @@ public class ReglementManager {
 	 * @throws IOException
 	 */
 	public void exportReglement(Reglement reglement, File exportFile) throws FileNotFoundException, IOException {
-		XMLSerializer.saveXMLStructure(exportFile, reglement, false);
+		//XMLSerializer.saveXMLStructure(exportFile, reglement, false);
+		try {
+			XMLSerializer.saveMarshallStructure(exportFile, reglement);
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -347,8 +354,15 @@ public class ReglementManager {
 	 * @throws SQLException
 	 */
 	public Reglement importReglement(File importFile) throws IOException, SQLException {
-		Reglement reglement = XMLSerializer.loadXMLStructure(importFile, false);
-		updateReglement(reglement);
+		Reglement reglement = null;
+		try {
+			reglement = XMLSerializer.loadMarshallStructure(importFile, Reglement.class, false);
+			updateReglement(reglement);
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		}
+		//reglement = XMLSerializer.loadXMLStructure(importFile, false);
+		//updateReglement(reglement);
 		
 		return reglement;
 	}

@@ -89,12 +89,7 @@
 package org.concoursjeunes;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
-import java.io.IOException;
-import java.util.List;
-
-import org.ajdeveloppement.commons.io.FileUtils;
 
 /**
  * <p>Gére et retourne le chemin des différentes ressources utilisateur pour le programme.</p>
@@ -139,39 +134,11 @@ public class AppRessources extends org.ajdeveloppement.apps.AppRessources {
 	}
 
 	/**
-	 * Copie les fichiers de configuration du repertoire de base vers le
-	 * repertoire utilisateur
-	 * 
-	 */
-	private void copyDefaultConfigForUser() {
-		List<File> fileForCopy = FileUtils.listAllFiles(
-				new File(ApplicationCore.staticParameters.getResourceString("path.config")), ".*\\" + EXT_XML); //$NON-NLS-1$ //$NON-NLS-2$
-
-		for (File file : fileForCopy) {
-			File configFile = new File(getUserPath(), file.getName());
-			if (!configFile.exists()) {
-				try {
-					FileUtils.copyFile(file, configFile);
-					configFile.setWritable(true, true);
-				} catch (FileNotFoundException e) {
-					//Trace les exceptions dans la console, mais le show doit continuer
-					e.printStackTrace();
-				} catch (IOException e) {
-					//Trace les exceptions dans la console, mais le show doit continuer
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-
-	/**
 	 * Donne le chemin des fichiers de configuration
 	 * 
 	 * @return le chemin des fichiers de configuration
 	 */
 	public File getConfigPathForUser() {
-		copyDefaultConfigForUser();
-
 		return new File(getUserPath());
 	}
 

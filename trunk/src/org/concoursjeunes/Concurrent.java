@@ -175,22 +175,6 @@ public class Concurrent extends Archer implements Cloneable {
 	}
 
 	/**
-	 * Affecte le nombre de fleche manquee total du concurrent
-	 * @param  manque
-	 */
-	/*public void setManque(int manque) {
-		this.manque = manque;
-	}*/
-
-	/**
-	 * Donne le nombre de fleche manquee du concurrent
-	 * @return  int
-	 */
-	/*public int getManque() {
-		return this.manque;
-	}*/
-
-	/**
 	 * Retourne le numero de départ de l'archer
 	 * @return  Returns the depart.
 	 */
@@ -348,21 +332,6 @@ public class Concurrent extends Archer implements Cloneable {
 			return -1;
 		}
 		return 0;
-	}
-	
-	/**
-	 * Test si l'archer possede dans la base des homonymes (même nom et prenom)
-	 * 
-	 * @return true su l'archer possede des homonyme, false sinon
-	 */
-	public boolean haveHomonyme() {
-		Archer aComparant = new Archer();
-		aComparant.setNomArcher(getNomArcher());
-		aComparant.setPrenomArcher(getPrenomArcher());
-
-		List<Concurrent> homonyme = ConcurrentManager.getArchersInDatabase(aComparant, null, ""); //$NON-NLS-1$
-
-		return (homonyme.size() > 1);
 	}
 	
 	/**

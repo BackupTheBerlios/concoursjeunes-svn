@@ -122,6 +122,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -139,6 +140,7 @@ import org.ajdeveloppement.commons.ui.NumberDocument;
 import org.ajdeveloppement.commons.ui.ToolTipHeader;
 import org.concoursjeunes.Blason;
 import org.concoursjeunes.CriteriaSet;
+import org.concoursjeunes.CriteriaSetLibelle;
 import org.concoursjeunes.Criterion;
 import org.concoursjeunes.CriterionElement;
 import org.concoursjeunes.DistancesEtBlason;
@@ -411,7 +413,13 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	private JPanel initCriteriaSet() {
 		JPanel jpCriteriaSet = new JPanel();
 		
-		//jtCriteriaSet.add
+		jtCriteriaSet.setDefaultRenderer(CriteriaSet.class, new DefaultTableCellRenderer() {
+	    	@Override
+	    	public Component getTableCellRendererComponent(JTable table, Object value,
+	    			boolean isSelected, boolean hasFocus, int row, int column) {
+	    		return super.getTableCellRendererComponent(table, new CriteriaSetLibelle((CriteriaSet)value, localisation), isSelected, hasFocus, row, column);
+	    	}
+	    });
 		
 		jpCriteriaSet.setLayout(new BorderLayout());
 		jpCriteriaSet.add(BorderLayout.CENTER, new JScrollPane(jtCriteriaSet));
@@ -425,6 +433,13 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		jspDistanceBlason.setPreferredSize(new Dimension(400, 250));
 		jtDistanceBlason.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		jtDistanceBlason.setPreferredScrollableViewportSize(new Dimension(450, 200));
+		jtDistanceBlason.setDefaultRenderer(CriteriaSet.class, new DefaultTableCellRenderer() {
+	    	@Override
+	    	public Component getTableCellRendererComponent(JTable table, Object value,
+	    			boolean isSelected, boolean hasFocus, int row, int column) {
+	    		return super.getTableCellRendererComponent(table, new CriteriaSetLibelle((CriteriaSet)value, localisation), isSelected, hasFocus, row, column);
+	    	}
+	    });
 
 		jpConcours.setLayout(new BorderLayout());
 		jpConcours.add(BorderLayout.NORTH, jlNbDB);
@@ -466,7 +481,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 				jtfNbFlecheParVolee.setEditable(false);
 		}
 
-		jlReglementName.setText(localisation.getResourceString("reglement.name") + " " + reglement.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+		jlReglementName.setText(localisation.getResourceString("reglement.name") + " " + reglement.getDisplayName()); //$NON-NLS-1$ //$NON-NLS-2$
 
 		jtfNbSerie.setText(reglement.getNbSerie() + ""); //$NON-NLS-1$
 		jtfNbVoleeParSerie.setText(reglement.getNbVoleeParSerie() + ""); //$NON-NLS-1$
@@ -542,6 +557,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	private void completeDistancesEtBlasons() {
 		if (reglement != null)
 			jtDistanceBlason.setModel(createTableModel());
+		
 		try {
 			List<Blason> blasons = Blason.listAvailableTargetFace();
 			jcbBlasons.removeAllItems();

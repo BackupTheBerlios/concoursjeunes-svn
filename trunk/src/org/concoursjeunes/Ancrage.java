@@ -88,12 +88,17 @@
  */
 package org.concoursjeunes;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
+
 /**
  * Représente la position physique relative d'un blason
  * 
  * @author Aurélien JEOFFRAY
  *
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Ancrage {
 	public static final int POSITION_A = 0;
 	public static final int POSITION_B = 1;

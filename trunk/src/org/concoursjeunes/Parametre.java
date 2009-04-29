@@ -106,7 +106,7 @@ import org.concoursjeunes.builders.ReglementBuilder;
 public class Parametre extends DefaultParameters {
 	
 	private String lieuConcours		= ""; //$NON-NLS-1$
-	private String niveauChampionnat = ""; //$NON-NLS-1$
+	private CompetitionLevel niveauChampionnat = new CompetitionLevel();
 	private Date dateDebutConcours	= new Date();
 	private Date dateFinConcours	= new Date();
 	private boolean open			= true;
@@ -235,15 +235,15 @@ public class Parametre extends DefaultParameters {
 	/**
 	 * @return niveauChampionnat
 	 */
-	public String getNiveauChampionnat() {
+	public CompetitionLevel getNiveauChampionnat() {
 		return niveauChampionnat;
 	}
 
 	/**
 	 * @param niveauChampionnat niveauChampionnat à définir
 	 */
-	public void setNiveauChampionnat(String niveauChampionnat) {
-		String oldValue = this.niveauChampionnat;
+	public void setNiveauChampionnat(CompetitionLevel niveauChampionnat) {
+		CompetitionLevel oldValue = this.niveauChampionnat;
 		this.niveauChampionnat = niveauChampionnat;
 		pcs.firePropertyChange("niveauChampionnat", oldValue, niveauChampionnat); //$NON-NLS-1$
 	}

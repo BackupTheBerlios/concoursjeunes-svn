@@ -94,8 +94,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 
 import org.concoursjeunes.builders.BlasonBuilder;
 
@@ -106,20 +111,21 @@ import org.concoursjeunes.builders.BlasonBuilder;
  * @version 1.0
  *
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Blason {
 	
-	/**
-	 * Représente le blason par défaut
-	 */
+	@XmlAttribute
+	private int numblason = 0;
+	
 	private String name = ""; //$NON-NLS-1$
 	private double horizontalRatio = 1;
 	private double verticalRatio = 1;
 	private int nbArcher = 4;
 	private int numordre = 0;
 	private String targetFaceImage = ""; //$NON-NLS-1$
-	private ConcurrentMap<Integer, Ancrage> ancrages = new ConcurrentHashMap<Integer, Ancrage>();
+	//@XmlJavaTypeAdapter(JAXBMapAdapter.class)
+	private Map<Integer, Ancrage> ancrages = new ConcurrentHashMap<Integer, Ancrage>();
 	
-	private int numblason = 0;
 	
 	public Blason() {
 	}
@@ -332,7 +338,7 @@ public class Blason {
 	 * 
 	 * @return la table des points d'ancrages possible du blason
 	 */
-	public synchronized ConcurrentMap<Integer, Ancrage> getAncrages() {
+	public synchronized Map<Integer, Ancrage> getAncrages() {
     	return ancrages;
     }
 	

@@ -18,7 +18,7 @@ public class AppInfos {
 	/**
 	 * version de l'application
 	 */
-	public static final String VERSION = new String("2.19.00 - 27/03/2009");//$NON-NLS-1$
+	public static final String VERSION = new String("2.19.00 - 06/04/2009");//$NON-NLS-1$
 	
 	/**
 	 * Nom de code de l'application

@@ -1,5 +1,7 @@
 /*
- * Copyright 2002-2008 - Aurélien JEOFFRAY
+ * Créer le 13 avr. 2009 à 20:57:53 pour ConcoursJeunes
+ *
+ * Copyright 2002-2009 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
  *
@@ -84,42 +86,82 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes.debug;
-
-//import java.util.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.concoursjeunes.Concurrent;
-import org.concoursjeunes.ConcurrentList;
-import org.concoursjeunes.FicheConcours;
-
+package org.concoursjeunes;
 
 /**
+ * Représente le niveau d'une compétition
+ * 
  * @author Aurélien JEOFFRAY
- *
  */
-public class Debug {
-    
-    public static void attributePoints(ConcurrentList archerList) {
-    	
-        for(Concurrent concurrent : archerList.list(-1)) {
-        	List<Integer> points = new ArrayList<Integer>();
-            for(int i = 0; i < archerList.getParametre().getReglement().getNbSerie(); i++) {
-            	points.add((int)(100 + Math.random() * 80));
-            }
-            concurrent.setScore(points);
-        }
-    }
-    
-    public static void resetPoints(FicheConcours ficheConcours) {
-        for(Concurrent concurrent : ficheConcours.getConcurrentList().list(-1)) {
-            for(int i = 0; i < concurrent.getScore().size(); i++) {
-            	concurrent.getScore().set(i, 0);
-            }
-            int[] departages = new int[concurrent.getDepartages().length];
-            concurrent.setDepartages(departages);
-        }
-    }
+public class CompetitionLevel {
+	private String code = ""; //$NON-NLS-1$
+	private String libelle = ""; //$NON-NLS-1$
+	
+	public CompetitionLevel() {
+		
+	}
+
+	/**
+	 * @return code
+	 */
+	public String getCode() {
+		return code;
+	}
+
+	/**
+	 * @param code code à définir
+	 */
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	/**
+	 * @return libelle
+	 */
+	public String getLibelle() {
+		return libelle;
+	}
+
+	/**
+	 * @param libelle libelle à définir
+	 */
+	public void setLibelle(String libelle) {
+		this.libelle = libelle;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((code == null) ? 0 : code.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CompetitionLevel other = (CompetitionLevel) obj;
+		if (code == null) {
+			if (other.code != null)
+				return false;
+		} else if (!code.equals(other.code))
+			return false;
+		return true;
+	}
+	
+	@Override
+	public String toString() {
+		return libelle;
+	}
 }

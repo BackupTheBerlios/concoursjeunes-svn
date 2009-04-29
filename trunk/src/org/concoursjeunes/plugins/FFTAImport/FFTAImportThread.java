@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -16,7 +17,7 @@ import javax.swing.JDialog;
 import javax.swing.event.EventListenerList;
 
 import org.ajdeveloppement.commons.AjResourcesReader;
-import org.ajdeveloppement.commons.security.SecurePoperties;
+import org.ajdeveloppement.commons.security.SecureProperties;
 import org.ajdeveloppement.commons.sql.SqlParser;
 import org.concoursjeunes.ApplicationCore;
 import org.jdesktop.swingx.JXErrorPane;
@@ -174,7 +175,7 @@ public class FFTAImportThread extends Thread {
 	
 	private void fftaFTPLoader() {
 		try {
-			SecurePoperties secureProperties = new SecurePoperties();
+			SecureProperties secureProperties = new SecureProperties();
 			secureProperties.loadKey(
 					new File(ApplicationCore.staticParameters.getResourceString("path.ressources"), "security/keys/default.key")); //$NON-NLS-1$ //$NON-NLS-2$
 			secureProperties.load(
@@ -219,23 +220,15 @@ public class FFTAImportThread extends Thread {
 			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
 					null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
-		} /*catch (InvalidKeyException e) {
-			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
-					null, null, e, Level.SEVERE, null));
-			e.printStackTrace();
-		} catch (IllegalBlockSizeException e) {
-			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
-					null, null, e, Level.SEVERE, null));
-			e.printStackTrace();
-		} catch (BadPaddingException e) {
-			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
-					null, null, e, Level.SEVERE, null));
-			e.printStackTrace();
-		}*/ catch (IOException e) {
+		} catch (IOException e) {
 			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
 					null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 		} catch (SQLException e) {
+			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
+					null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
+		} catch (InvalidAlgorithmParameterException e) {
 			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
 					null, null, e, Level.SEVERE, null));
 			e.printStackTrace();

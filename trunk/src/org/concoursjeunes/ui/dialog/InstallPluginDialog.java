@@ -125,6 +125,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.ws.WebServiceException;
 
 import org.ajdeveloppement.commons.AjResourcesReader;
@@ -558,6 +559,10 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 							JXErrorPane.showDialog(null, new ErrorInfo(localisation.getResourceString("erreur"), //$NON-NLS-1$
 									e.toString(), null, null, e, Level.SEVERE, null));
 						} catch (SQLException e) {
+							e.printStackTrace();
+							JXErrorPane.showDialog(null, new ErrorInfo(localisation.getResourceString("erreur"), //$NON-NLS-1$
+									e.toString(), null, null, e, Level.SEVERE, null));
+						} catch (XMLStreamException e) {
 							e.printStackTrace();
 							JXErrorPane.showDialog(null, new ErrorInfo(localisation.getResourceString("erreur"), //$NON-NLS-1$
 									e.toString(), null, null, e, Level.SEVERE, null));

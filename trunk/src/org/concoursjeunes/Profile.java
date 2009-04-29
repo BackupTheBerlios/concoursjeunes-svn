@@ -11,6 +11,7 @@ import java.util.Locale;
 import javax.naming.ConfigurationException;
 import javax.swing.event.EventListenerList;
 import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
 
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.concoursjeunes.builders.FicheConcoursBuilder;
@@ -112,7 +113,8 @@ public class Profile {
 	 * 
 	 * @throws ConfigurationException
 	 */
-	public void createFicheConcours() throws NullConfigurationException, IOException, JAXBException {
+	public void createFicheConcours()
+			throws NullConfigurationException, IOException, JAXBException, XMLStreamException {
 		createFicheConcours(null);
 	}
 	
@@ -122,7 +124,8 @@ public class Profile {
 	 * @param parametre les parametres du concours
 	 * @throws ConfigurationException
 	 */
-	public void createFicheConcours(Parametre parametre) throws NullConfigurationException, IOException, JAXBException {
+	public void createFicheConcours(Parametre parametre)
+			throws NullConfigurationException, IOException, JAXBException, XMLStreamException {
 		if (configuration == null)
 			throw new NullConfigurationException("la configuration est null"); //$NON-NLS-1$
 
@@ -144,7 +147,8 @@ public class Profile {
 	 * 
 	 * @throws ConfigurationException
 	 */
-	public void deleteFicheConcours(MetaDataFicheConcours metaDataFicheConcours) throws NullConfigurationException, IOException, JAXBException {
+	public void deleteFicheConcours(MetaDataFicheConcours metaDataFicheConcours)
+			throws NullConfigurationException, IOException, JAXBException, XMLStreamException {
 		if (configuration == null)
 			throw new NullConfigurationException("la configuration est null"); //$NON-NLS-1$
 
@@ -164,7 +168,8 @@ public class Profile {
 	 * 
 	 * @throws ConfigurationException
 	 */
-	public void closeFicheConcours(FicheConcours ficheConcours) throws NullConfigurationException, IOException, JAXBException {
+	public void closeFicheConcours(FicheConcours ficheConcours)
+			throws NullConfigurationException, IOException, JAXBException, XMLStreamException {
 		if (configuration == null)
 			throw new NullConfigurationException("la configuration est null"); //$NON-NLS-1$
 
@@ -180,7 +185,8 @@ public class Profile {
 	 * 
 	 * @throws ConfigurationException
 	 */
-	public void closeAllFichesConcours() throws NullConfigurationException, IOException, JAXBException {
+	public void closeAllFichesConcours()
+			throws NullConfigurationException, IOException, JAXBException, XMLStreamException {
 		saveAllFichesConcours();
 
 		ArrayList<FicheConcours> tmpList = new ArrayList<FicheConcours>();
@@ -221,7 +227,8 @@ public class Profile {
 	 * 
 	 * @exception ConfigurationException
 	 */
-	public void saveAllFichesConcours() throws NullConfigurationException, IOException, JAXBException {
+	public void saveAllFichesConcours()
+			throws NullConfigurationException, IOException, JAXBException, XMLStreamException {
 		if (configuration == null)
 			throw new NullConfigurationException("la configuration est null"); //$NON-NLS-1$
 

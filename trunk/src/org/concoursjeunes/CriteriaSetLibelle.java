@@ -15,7 +15,7 @@
  */
 package org.concoursjeunes;
 
-import java.util.Hashtable;
+import java.util.Map;
 
 import org.ajdeveloppement.commons.AjResourcesReader;
 
@@ -40,7 +40,7 @@ public class CriteriaSetLibelle {
         
         String strSCNA = ""; //$NON-NLS-1$
         
-        Hashtable<Criterion, CriterionElement> criteria = criteriaSet.getCriteria();
+        Map<Criterion, CriterionElement> criteria = criteriaSet.getCriteria();
         for(Criterion keyCriterion : criteria.keySet()) {
             
             if(criteriaSet.getCriterionElement(keyCriterion) != null) {

@@ -138,14 +138,16 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 
 	private JLabel jlCible = new JLabel();
 	private JLabel jlDistance = new JLabel();
+	private JLabel[] jlDepartages;
 	private JLabel[] jlDistances;
 
-	private JLabel[] lPoints;
-	private JTextField[][] oldPoints;
-	private JTextField[][] pointsCum2V;
-	private JTextField[][] points;
-	private JTextField[] dix;
-	private JTextField[] neuf;
+	private JLabel[] lPoints; //label cumuls des points de la série
+	private JTextField[][] oldPoints; //ancien cumuls
+	private JTextField[][] pointsCum2V; //cumuls sur 2 volées
+	private JTextField[][] points; //cumuls des points de la série
+	private JTextField[][] departages;
+	//private JTextField[] dix;
+	//private JTextField[] neuf;
 	//private JTextField[] manque;
 	
 	private final JButton jbValider = new JButton();
@@ -191,13 +193,15 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 	
 	private void init() {
 		int nbSerie = parametres.getReglement().getNbSerie();
+		int nbDepartages = parametres.getReglement().getTie().size();
 
 		//initialise les champs
 		oldPoints = new JTextField[parametres.getNbTireur()][nbSerie];
 		pointsCum2V = new JTextField[parametres.getNbTireur()][nbSerie];
 		points = new JTextField[parametres.getNbTireur()][nbSerie];
-		dix = new JTextField[parametres.getNbTireur()];
-		neuf = new JTextField[parametres.getNbTireur()];
+		departages = new JTextField[parametres.getNbTireur()][nbDepartages];
+		//dix = new JTextField[parametres.getNbTireur()];
+		//neuf = new JTextField[parametres.getNbTireur()];
 		//manque = new JTextField[parametres.getNbTireur()];
 
 		for(int i = 0; i < parametres.getNbTireur(); i++) {
@@ -223,14 +227,12 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 				points[i][j].setEnabled(false);
 
 			}
-			dix[i] = new JTextField(new NumberDocument(false, false),"0",3); //$NON-NLS-1$
-			dix[i].addKeyListener(this);
-			dix[i].addFocusListener(this);
-			dix[i].setEnabled(false);
-			neuf[i] = new JTextField(new NumberDocument(false, false),"0",3); //$NON-NLS-1$
-			neuf[i].addKeyListener(this);
-			neuf[i].addFocusListener(this);
-			neuf[i].setEnabled(false);
+			for(int j = 0; j < departages[i].length; j++) {
+				departages[i][j] = new JTextField(new NumberDocument(false, false),"0",3); //$NON-NLS-1$
+				departages[i][j].addKeyListener(this);
+				departages[i][j].addFocusListener(this);
+				departages[i][j].setEnabled(false);
+			}
 		}
 
 		JPanel pane1 = new JPanel();
@@ -247,8 +249,12 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 		for(int i = 0; i < nbSerie; i++) {
 			jlDistances[i] = new JLabel();
 		}
-		JLabel ldix = new JLabel("10"); //$NON-NLS-1$
-		JLabel lneuf = new JLabel("9"); //$NON-NLS-1$
+		jlDepartages = new JLabel[nbDepartages];
+		for(int i = 0; i < nbSerie; i++) {
+			jlDepartages[i] = new JLabel();
+		}
+		//JLabel ldix = new JLabel("10"); //$NON-NLS-1$
+		//JLabel lneuf = new JLabel("9"); //$NON-NLS-1$
 		//JLabel lmanque = new JLabel("M"); //$NON-NLS-1$
 
 		lPoints = new JLabel[parametres.getNbTireur()];
@@ -282,10 +288,12 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 			c.gridx = i+1;
 			gridbagComposer.addComponentIntoGrid(jlDistances[i], c);
 		}
-		c.gridx++;
-		gridbagComposer.addComponentIntoGrid(ldix, c);
-		c.gridx++;
-		gridbagComposer.addComponentIntoGrid(lneuf, c);
+		for(int i = 0; i < nbDepartages; i++) {
+			c.gridx++;
+			gridbagComposer.addComponentIntoGrid(jlDepartages[i], c);
+		}
+		//c.gridx++;
+		//gridbagComposer.addComponentIntoGrid(lneuf, c);
 
 
 		c.gridx = GridBagConstraints.RELATIVE;
@@ -305,8 +313,8 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 				ppoints[i][j].add(points[i][j]);
 				gridbagComposer.addComponentIntoGrid(ppoints[i][j], c);
 			}
-			gridbagComposer.addComponentIntoGrid(dix[i], c);
-			gridbagComposer.addComponentIntoGrid(neuf[i], c);
+			for(int j = 0; j < departages[i].length; j++)
+				gridbagComposer.addComponentIntoGrid(departages[i][j], c);
 
 		}
 
@@ -339,10 +347,13 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 				points[concurrent.getPosition()][j].setEnabled(true);
 				lPoints[concurrent.getPosition()].setEnabled(true);
 				
-				dix[concurrent.getPosition()].setText(concurrent.getDix()+""); //$NON-NLS-1$
+				/*dix[concurrent.getPosition()].setText(concurrent.getDix()+""); //$NON-NLS-1$
 				dix[concurrent.getPosition()].setEnabled(true);
 				neuf[concurrent.getPosition()].setText(concurrent.getNeuf()+""); //$NON-NLS-1$
-				neuf[concurrent.getPosition()].setEnabled(true);
+				neuf[concurrent.getPosition()].setEnabled(true);*/
+			}
+			for(int j = 0; j < departages[concurrent.getPosition()].length; j++) {
+				departages[concurrent.getPosition()][j].setText(concurrent.getDepartages()[j]+""); //$NON-NLS-1$
 			}
 		}
 	}
@@ -357,6 +368,8 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 					localisation.getResourceString("resultats.distance1") + " " //$NON-NLS-1$ //$NON-NLS-2$
 					: (i+1) + localisation.getResourceString("resultats.distancen") + " "); //$NON-NLS-1$ //$NON-NLS-2$
 		}
+		for(int i = 0 ; i < jlDepartages.length; i++)
+			jlDepartages[i].setText(parametres.getReglement().getTie().get(i));
 		
 		jbValider.setText(localisation.getResourceString("bouton.valider")); //$NON-NLS-1$
 		jbSuivant.setText(localisation.getResourceString("bouton.suivant")); //$NON-NLS-1$
@@ -396,6 +409,11 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 						else
 							concPoints.add(i, Integer.parseInt(points[concurrent.getPosition()][i].getText()));
 					}
+					//récupére les départages
+					int[] concDepartages = new int[departages[concurrent.getPosition()].length];
+					for(int i = 0; i < departages[concurrent.getPosition()].length; i++) {
+						concDepartages[i] = Integer.parseInt(departages[concurrent.getPosition()][i].getText());
+					}
 					
 					//vérifie que le score soit valide et affiche un message d'erreur dans le cas contraire 
 					if(!parametres.getReglement().isValidScore(concPoints)) {
@@ -408,8 +426,9 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 					//si c'est bon affecte le score à l'archer
 					concurrent.setScore(concPoints);
 					//intégre les 10/9/M si nécessaire
-					concurrent.setDix(Integer.parseInt(dix[concurrent.getPosition()].getText()));
-					concurrent.setNeuf(Integer.parseInt(neuf[concurrent.getPosition()].getText()));
+					concurrent.setDepartages(concDepartages);
+					//concurrent.setDix(Integer.parseInt(dix[concurrent.getPosition()].getText()));
+					//concurrent.setNeuf(Integer.parseInt(neuf[concurrent.getPosition()].getText()));
 
 				}
 		
@@ -475,60 +494,63 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 			Component nextComp = null;
 			for (int i = 0; i < parametres.getNbTireur(); i++) {
 				for (int j = 0; j < parametres.getReglement().getNbSerie(); j++) {
-					if (aComponent == oldPoints[i][j]) {
-						if (i + 1 < parametres.getNbTireur() && oldPoints[i + 1][j].isEnabled())
-							nextComp = oldPoints[i + 1][j];
-						else if (j + 1 < parametres.getReglement().getNbSerie())
-							nextComp = oldPoints[0][j + 1];
-						else if (dix[0].isEnabled())
-							nextComp = dix[0];
-						else
-							nextComp = oldPoints[0][0];
-						break;
-					} else if (aComponent == pointsCum2V[i][j]) {
-						if (i + 1 < parametres.getNbTireur() && pointsCum2V[i + 1][j].isEnabled())
-							nextComp = pointsCum2V[i + 1][j];
-						else if (j + 1 < parametres.getReglement().getNbSerie())
-							nextComp = pointsCum2V[0][j + 1];
-						else if (dix[0].isEnabled())
-							nextComp = dix[0];
-						else
-							nextComp = pointsCum2V[0][0];
-						break;
-					} else if (aComponent == points[i][j]) {
-						if (i + 1 < parametres.getNbTireur() && points[i + 1][j].isEnabled())
-							nextComp = points[i + 1][j];
-						else if (j + 1 < parametres.getReglement().getNbSerie())
-							nextComp = points[0][j + 1];
-						else if (dix[0].isEnabled())
-							nextComp = dix[0];
-						else
+					for (int k = 0; k < parametres.getReglement().getTie().size(); k++) {
+						if (aComponent == oldPoints[i][j]) {
+							if (i + 1 < parametres.getNbTireur() && oldPoints[i + 1][j].isEnabled())
+								nextComp = oldPoints[i + 1][j];
+							else if (j + 1 < parametres.getReglement().getNbSerie())
+								nextComp = oldPoints[0][j + 1];
+							else if (departages[0][0].isEnabled())
+								nextComp = departages[0][0];
+							else
+								nextComp = oldPoints[0][0];
+							break;
+						} else if (aComponent == pointsCum2V[i][j]) {
+							if (i + 1 < parametres.getNbTireur() && pointsCum2V[i + 1][j].isEnabled())
+								nextComp = pointsCum2V[i + 1][j];
+							else if (j + 1 < parametres.getReglement().getNbSerie())
+								nextComp = pointsCum2V[0][j + 1];
+							else if (departages[0][0].isEnabled())
+								nextComp = departages[0][0];
+							else
+								nextComp = pointsCum2V[0][0];
+							break;
+						} else if (aComponent == points[i][j]) {
+							if (i + 1 < parametres.getNbTireur() && points[i + 1][j].isEnabled())
+								nextComp = points[i + 1][j];
+							else if (j + 1 < parametres.getReglement().getNbSerie())
+								nextComp = points[0][j + 1];
+							else if (departages[0][0].isEnabled())
+								nextComp = departages[0][0];
+							else
+								nextComp = points[0][0];
+							break;
+						} else if (aComponent == departages[i][k]) {
+							if(k + 1 < departages[i].length)
+								nextComp = departages[i][k + 1];
+							else if(i + 1 < parametres.getNbTireur() && departages[i + 1][0].isEnabled())
+								nextComp = departages[i + 1][0];
+							else if (profile.getConfiguration().isInterfaceResultatCumul())
+								nextComp = oldPoints[0][0];
+							else
+								nextComp = jbSuivant;
+							break;
+						} else if (aComponent == jbSuivant) {
+							nextComp = jbAnnuler;
+							break;
+						} else if (aComponent == jbAnnuler) {
+							nextComp = jbValider;
+							break;
+						} else if (aComponent == jbValider) {
+							nextComp = jbPrecedent;
+							break;
+						} else if (aComponent == jbPrecedent) {
 							nextComp = points[0][0];
-						break;
-					} else if (aComponent == dix[i]) {
-						nextComp = neuf[i];
-						break;
-					} else if (aComponent == neuf[i]) {
-						if (i + 1 < parametres.getNbTireur() && dix[i + 1].isEnabled())
-							nextComp = dix[i + 1];
-						else if (profile.getConfiguration().isInterfaceResultatCumul())
-							nextComp = oldPoints[0][0];
-						else
-							nextComp = jbSuivant;
-						break;
-					} else if (aComponent == jbSuivant) {
-						nextComp = jbAnnuler;
-						break;
-					} else if (aComponent == jbAnnuler) {
-						nextComp = jbValider;
-						break;
-					} else if (aComponent == jbValider) {
-						nextComp = jbPrecedent;
-						break;
-					} else if (aComponent == jbPrecedent) {
-						nextComp = points[0][0];
-						break;
+							break;
+						}
 					}
+					if (nextComp != null)
+						break;
 				}
 				if (nextComp != null)
 					break;
@@ -539,63 +561,67 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 		@Override
 		public Component getComponentBefore(Container focusCycleRoot, Component aComponent) {
 			int nbConc = concurrents.length;
+			int nbDepartages = departages[0].length;
 			Component nextComp = null;
 			for (int i = nbConc - 1; i >= 0; i--) {
 				for (int j = parametres.getReglement().getNbSerie() - 1; j >= 0; j--) {
-					if (aComponent == oldPoints[i][j]) {
-						if (i - 1 >= 0)
-							nextComp = oldPoints[i - 1][j];
-						else if (j - 1 >= 0)
-							nextComp = oldPoints[nbConc - 1][j - 1];
-						else if (neuf[nbConc - 1].isEnabled())
-							nextComp = jbPrecedent;
-						else
-							nextComp = oldPoints[nbConc - 1][parametres.getReglement().getNbSerie() - 1];
-						break;
-					} else if (aComponent == pointsCum2V[i][j]) {
-						if (i - 1 >= 0)
-							nextComp = pointsCum2V[i - 1][j];
-						else if (j - 1 >= 0)
-							nextComp = pointsCum2V[nbConc - 1][j - 1];
-						else if (neuf[nbConc - 1].isEnabled())
-							nextComp = jbPrecedent;
-						else
-							nextComp = pointsCum2V[nbConc - 1][parametres.getReglement().getNbSerie() - 1];
-						break;
-					} else if (aComponent == points[i][j]) {
-						if (i - 1 >= 0)
-							nextComp = points[i - 1][j];
-						else if (j - 1 >= 0)
-							nextComp = points[nbConc - 1][j - 1];
-						else if (neuf[nbConc - 1].isEnabled())
-							nextComp = jbPrecedent;
-						else
-							nextComp = points[nbConc - 1][parametres.getReglement().getNbSerie() - 1];
-						break;
-					} else if (aComponent == neuf[i]) {
-						nextComp = dix[i];
-						break;
-					} else if (aComponent == dix[i]) {
-						if (i - 1 >= 0)
-							nextComp = neuf[i - 1];
-						else if (profile.getConfiguration().isInterfaceResultatCumul())
-							nextComp = oldPoints[nbConc - 1][parametres.getReglement().getNbSerie() - 1];
-						else
-							nextComp = points[nbConc - 1][parametres.getReglement().getNbSerie() - 1];
-						break;
-					} else if (aComponent == jbSuivant) {
-						nextComp = neuf[nbConc - 1];
-						break;
-					} else if (aComponent == jbAnnuler) {
-						nextComp = jbSuivant;
-						break;
-					} else if (aComponent == jbValider) {
-						nextComp = jbAnnuler;
-						break;
-					} else if (aComponent == jbPrecedent) {
-						nextComp = jbValider;
-						break;
+					for(int k = nbDepartages -1;  k >= 0; k--) {
+						if (aComponent == oldPoints[i][j]) {
+							if (i - 1 >= 0)
+								nextComp = oldPoints[i - 1][j];
+							else if (j - 1 >= 0)
+								nextComp = oldPoints[nbConc - 1][j - 1];
+							else if (departages[nbConc - 1][departages[nbConc - 1].length - 1].isEnabled())
+								nextComp = jbPrecedent;
+							else
+								nextComp = oldPoints[nbConc - 1][parametres.getReglement().getNbSerie() - 1];
+							break;
+						} else if (aComponent == pointsCum2V[i][j]) {
+							if (i - 1 >= 0)
+								nextComp = pointsCum2V[i - 1][j];
+							else if (j - 1 >= 0)
+								nextComp = pointsCum2V[nbConc - 1][j - 1];
+							else if (departages[nbConc - 1][departages[nbConc - 1].length - 1].isEnabled())
+								nextComp = jbPrecedent;
+							else
+								nextComp = pointsCum2V[nbConc - 1][parametres.getReglement().getNbSerie() - 1];
+							break;
+						} else if (aComponent == points[i][j]) {
+							if (i - 1 >= 0)
+								nextComp = points[i - 1][j];
+							else if (j - 1 >= 0)
+								nextComp = points[nbConc - 1][j - 1];
+							else if (departages[nbConc - 1][departages[nbConc - 1].length - 1].isEnabled())
+								nextComp = jbPrecedent;
+							else
+								nextComp = points[nbConc - 1][parametres.getReglement().getNbSerie() - 1];
+							break;
+						} else if (aComponent == departages[i][k]) {
+							if(k - 1 >= 0)
+								nextComp = departages[i][k - 1];
+							else if (i - 1 >= 0)
+								nextComp = departages[i - 1][nbDepartages - 1];
+							else if (profile.getConfiguration().isInterfaceResultatCumul())
+								nextComp = oldPoints[nbConc - 1][parametres.getReglement().getNbSerie() - 1];
+							else
+								nextComp = points[nbConc - 1][parametres.getReglement().getNbSerie() - 1];
+							break;
+						} else if (aComponent == jbSuivant) {
+							nextComp = departages[nbConc - 1][departages[nbConc - 1].length - 1];
+							break;
+						} else if (aComponent == jbAnnuler) {
+							nextComp = jbSuivant;
+							break;
+						} else if (aComponent == jbValider) {
+							nextComp = jbAnnuler;
+							break;
+						} else if (aComponent == jbPrecedent) {
+							nextComp = jbValider;
+							break;
+						}
 					}
+					if (nextComp != null)
+						break;
 				}
 				if (nextComp != null)
 					break;
@@ -612,7 +638,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 
 		@Override
 		public Component getLastComponent(Container focusCycleRoot) {
-			return neuf[3];
+			return departages[departages.length-1][departages[departages.length-1].length - 1];
 		}
 
 		@Override

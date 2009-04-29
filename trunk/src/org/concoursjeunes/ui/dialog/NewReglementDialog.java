@@ -128,7 +128,7 @@ public class NewReglementDialog extends JDialog implements ActionListener {
 	private JButton jbAnnuler = new JButton();
 	
 	private Reglement reglement = null;
-	private ReglementManager reglementManager = new ReglementManager();
+	//private ReglementManager reglementManager = new ReglementManager();
 	
 	private JFrame parentframe;
 
@@ -196,7 +196,7 @@ public class NewReglementDialog extends JDialog implements ActionListener {
 	
 	private void completePanel() {
 		jcbFederation.removeAllItems();
-		for(Federation federation : reglementManager.getAvailableFederations()) {
+		for(Federation federation : ReglementManager.getAvailableFederations()) {
 			jcbFederation.addItem(federation);
 		}
 		jcbFederation.addItem(localisation.getResourceString("newreglement.addfederation")); //$NON-NLS-1$

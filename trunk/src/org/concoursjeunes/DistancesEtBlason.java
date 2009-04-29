@@ -158,33 +158,74 @@ public class DistancesEtBlason {
 	 * @throws SQLException
 	 */
 	public void save(Reglement reglement) throws SQLException {
-		Statement stmt = ApplicationCore.dbConnection.createStatement();
-
-		if (numdistancesblason == 0) {
-			stmt.executeUpdate("insert into DISTANCESBLASONS (NUMREGLEMENT, NUMBLASON) VALUES (" + //$NON-NLS-1$
-					reglement.hashCode() + ", " + targetFace.getNumblason() + ")", Statement.RETURN_GENERATED_KEYS); //$NON-NLS-1$ //$NON-NLS-2$
-			ResultSet clefs = stmt.getGeneratedKeys();
-			if (clefs.first()) {
-				numdistancesblason = (Integer) clefs.getObject(1);
+		Statement stmt = null;
+		boolean createDB = true;
+		try {
+			stmt = ApplicationCore.dbConnection.createStatement();
+			
+			ResultSet rs = null;
+			try {
+				if (numdistancesblason != 0) {
+					rs = stmt.executeQuery("select * from DISTANCESBLASONS where NUMREGLEMENT=" + reglement.hashCode() + " and NUMDISTANCESBLASONS="+numdistancesblason); //$NON-NLS-1$ //$NON-NLS-2$
+					createDB = !rs.first();
+				}
+			} finally {
+				if(rs != null)
+					rs.close();
 			}
-		} else {
-			stmt.executeUpdate("update DISTANCESBLASONS set NUMBLASON=" + //$NON-NLS-1$
-					targetFace.getNumblason() + " where NUMREGLEMENT=" + reglement.hashCode() + " and NUMDISTANCESBLASONS=" + numdistancesblason); //$NON-NLS-1$ //$NON-NLS-2$
+			
+			if (createDB) {
+				stmt.executeUpdate("insert into DISTANCESBLASONS (NUMREGLEMENT, NUMBLASON) VALUES (" + //$NON-NLS-1$
+						reglement.hashCode() + ", " + targetFace.getNumblason() + ")", Statement.RETURN_GENERATED_KEYS); //$NON-NLS-1$ //$NON-NLS-2$
+				ResultSet clefs = null;
+				try {
+					clefs = stmt.getGeneratedKeys();
+					if (clefs.first()) {
+						numdistancesblason = (Integer) clefs.getObject(1);
+					}
+				} finally {
+					if(clefs != null)
+						clefs.close();
+				}
+			} else {
+				stmt.executeUpdate("update DISTANCESBLASONS set NUMBLASON=" + //$NON-NLS-1$
+						targetFace.getNumblason() + " where NUMREGLEMENT=" + reglement.hashCode() + " and NUMDISTANCESBLASONS=" + numdistancesblason); //$NON-NLS-1$ //$NON-NLS-2$
+			}
+	
+			criteriaSet.save(reglement);
+	
+			String sql = "merge into ASSOCIER (NUMDISTANCESBLASONS, " + //$NON-NLS-1$
+					"NUMREGLEMENT, NUMCRITERIASET) " + //$NON-NLS-1$
+					"VALUES (" + numdistancesblason + ", " + //$NON-NLS-1$ //$NON-NLS-2$
+					reglement.hashCode() + "," + //$NON-NLS-1$
+					criteriaSet.hashCode() + ")"; //$NON-NLS-1$
+			stmt.executeUpdate(sql); 
+			
+			stmt.executeUpdate("delete from DISTANCES where NUMDISTANCESBLASONS=" + numdistancesblason + " and NUMREGLEMENT=" + reglement.hashCode()); //$NON-NLS-1$ //$NON-NLS-2$
+			for(int distance : distances) {
+				stmt.executeUpdate("insert into DISTANCES (NUMDISTANCESBLASONS, NUMREGLEMENT, DISTANCE) " + //$NON-NLS-1$
+						"VALUES (" + numdistancesblason + ", " + reglement.hashCode() +", " + distance + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+			}
+		} finally {
+			if(stmt != null)
+				stmt.close();
 		}
-
-		criteriaSet.save(reglement);
-
-		String sql = "merge into ASSOCIER (NUMDISTANCESBLASONS, " + //$NON-NLS-1$
-				"NUMREGLEMENT, NUMCRITERIASET) " + //$NON-NLS-1$
-				"VALUES (" + numdistancesblason + ", " + //$NON-NLS-1$ //$NON-NLS-2$
-				reglement.hashCode() + "," + //$NON-NLS-1$
-				criteriaSet.hashCode() + ")"; //$NON-NLS-1$
-		stmt.executeUpdate(sql); 
-		
-		stmt.executeUpdate("delete from DISTANCES where NUMDISTANCESBLASONS=" + numdistancesblason + " and NUMREGLEMENT=" + reglement.hashCode()); //$NON-NLS-1$ //$NON-NLS-2$
-		for(int distance : distances) {
-			stmt.executeUpdate("insert into DISTANCES (NUMDISTANCESBLASONS, NUMREGLEMENT, DISTANCE) " + //$NON-NLS-1$
-					"VALUES (" + numdistancesblason + ", " + reglement.hashCode() +", " + distance + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+	}
+	
+	/**
+	 * Supprime le distances/blason de la base
+	 * @param reglement
+	 * @throws SQLException
+	 */
+	public void delete(Reglement reglement) throws SQLException {
+		Statement stmt = null;
+		try {
+			stmt = ApplicationCore.dbConnection.createStatement();
+			
+			stmt.executeUpdate("delete from DISTANCESBLASONS where NUMREGLEMENT=" + reglement.hashCode() + " and NUMDISTANCESBLASONS="+numdistancesblason); //$NON-NLS-1$ //$NON-NLS-2$
+		} finally {
+			if(stmt != null)
+				stmt.close();
 		}
 	}
 

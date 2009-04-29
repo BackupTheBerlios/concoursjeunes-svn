@@ -91,6 +91,11 @@ package org.concoursjeunes;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.bind.annotation.XmlAttribute;
 
 /**
  * @author Aurélien JEOFFRAY
@@ -131,6 +136,7 @@ public class Federation {
 	/**
 	 * @return numFederation
 	 */
+	@XmlAttribute
 	public int getNumFederation() {
 		return numFederation;
 	}
@@ -168,6 +174,28 @@ public class Federation {
 	 */
 	public void setNomFederation(String nomFederation) {
 		this.nomFederation = nomFederation;
+	}
+	
+	@SuppressWarnings("nls")
+	public List<CompetitionLevel> getCompetitionLevels(String lang) {
+		List<CompetitionLevel> competitionLevelList = new ArrayList<CompetitionLevel>();
+		String sql = "select CODENIVEAU, LIBELLE from NIVEAU_COMPETITION where NUMFEDERATION=" + numFederation 
+				+ " and LANG='" + lang + "'";
+		
+		try {
+			Statement stmt = ApplicationCore.dbConnection.createStatement();
+			ResultSet rs = stmt.executeQuery(sql);
+			while(rs.next()) {
+				CompetitionLevel c = new CompetitionLevel();
+				c.setCode(rs.getString("CODENIVEAU"));
+				c.setLibelle(rs.getString("LIBELLE"));
+				competitionLevelList.add(c);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return competitionLevelList;
 	}
 	
 	public void save() throws SQLException {

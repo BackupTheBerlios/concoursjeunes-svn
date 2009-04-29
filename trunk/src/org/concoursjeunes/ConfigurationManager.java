@@ -101,6 +101,7 @@ import java.util.List;
 
 import javax.naming.ConfigurationException;
 import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
 
 import org.ajdeveloppement.commons.io.FileUtils;
 import org.ajdeveloppement.commons.io.XMLSerializer;
@@ -164,8 +165,12 @@ public class ConfigurationManager {
 		//si il n'y arrive pas vérifie que ce n'est pas une config 1.1
 		} catch (JAXBException e) {
 			oldConfigFormat = true;
+			e.printStackTrace();
+		} catch(FileNotFoundException e) {
+			//ne rien faire, c'est que la configuration n'a pas été créé
 		} catch (IOException e) {
 			oldConfigFormat = true;
+			e.printStackTrace();
 		}
 		if(oldConfigFormat) {
 			try {
@@ -203,6 +208,8 @@ public class ConfigurationManager {
 				e.printStackTrace();
 			} catch (JAXBException e) {
 				e.printStackTrace();
+			} catch (XMLStreamException e) {
+				e.printStackTrace();
 			}
 		}
 		
@@ -225,6 +232,8 @@ public class ConfigurationManager {
 			appConfiguration = XMLSerializer.loadMarshallStructure(confFile, AppConfiguration.class);
 		} catch (JAXBException e) {
 			e.printStackTrace();
+		} catch(FileNotFoundException e) {
+			//ne rien faire, c'est que la configuration n'a pas été créé
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -250,7 +259,13 @@ public class ConfigurationManager {
 			} catch (JAXBException e) {
 				e.printStackTrace();
 				appConfiguration = null;
+			} catch(FileNotFoundException e) {
+				//ne rien faire, c'est que la configuration n'a pas été créé
+				appConfiguration = null;
 			} catch (IOException e) {
+				e.printStackTrace();
+				appConfiguration = null;
+			} catch (XMLStreamException e) {
 				e.printStackTrace();
 				appConfiguration = null;
 			}
@@ -274,7 +289,7 @@ public class ConfigurationManager {
 	 * @throws IOException
 	 */
 	public static boolean renameConfiguration(Profile profile, String currentName, String newName) 
-			throws NullConfigurationException, IOException, JAXBException {
+			throws NullConfigurationException, IOException, JAXBException, XMLStreamException {
 		
 		boolean success = false;
 		

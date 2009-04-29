@@ -181,6 +181,7 @@ public class ReglementBuilder {
 				int numreglment = rs.getInt("NUMREGLEMENT"); //$NON-NLS-1$
 				
 				reglement.setName(rs.getString("NOMREGLEMENT")); //$NON-NLS-1$
+				reglement.setDisplayName(rs.getString("LIBELLE")); //$NON-NLS-1$
 				reglement.setNbSerie(rs.getInt("NBSERIE")); //$NON-NLS-1$
 				reglement.setNbVoleeParSerie(rs.getInt("NBVOLEEPARSERIE")); //$NON-NLS-1$
 				reglement.setNbFlecheParVolee(rs.getInt("NBFLECHEPARVOLEE")); //$NON-NLS-1$

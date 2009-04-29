@@ -124,6 +124,7 @@ import javax.swing.text.DefaultCaret;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
 
 import org.ajdeveloppement.commons.AJTemplate;
 import org.ajdeveloppement.commons.ui.AJTabbedPane;
@@ -342,6 +343,10 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 					JXErrorPane.showDialog(this, new ErrorInfo(profile.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 							null, null, e, Level.SEVERE, null));
 					e.printStackTrace();
+				} catch (XMLStreamException e) {
+					JXErrorPane.showDialog(this, new ErrorInfo(profile.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+							null, null, e, Level.SEVERE, null));
+					e.printStackTrace();
 				}
 			}
 
@@ -350,12 +355,16 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			
 			try {
 				configuration.save();
-				//configuration.saveAsDefault();
+				configurationDialog.getWorkAppConfiguration().save();
 			} catch (JAXBException e) {
 				JXErrorPane.showDialog(this, new ErrorInfo(profile.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 						null, null, e, Level.SEVERE, null));
 				e.printStackTrace();
 			} catch (IOException e) {
+				JXErrorPane.showDialog(this, new ErrorInfo(profile.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+						null, null, e, Level.SEVERE, null));
+				e.printStackTrace();
+			} catch (XMLStreamException e) {
 				JXErrorPane.showDialog(this, new ErrorInfo(profile.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 						null, null, e, Level.SEVERE, null));
 				e.printStackTrace();
@@ -435,6 +444,10 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			JXErrorPane.showDialog(this, new ErrorInfo(profile.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 					null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
+		} catch (XMLStreamException e) {
+			JXErrorPane.showDialog(this, new ErrorInfo(profile.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+					null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
 		}
 		jif = null; 
 	}
@@ -464,6 +477,10 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 					null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
 			System.exit(1);
+		} catch (XMLStreamException e) {
+			JXErrorPane.showDialog(this, new ErrorInfo(profile.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+					null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
 		}
 		System.exit(0);
 	}
@@ -725,6 +742,10 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 							JXErrorPane.showDialog(this, new ErrorInfo(profile.getLocalisation().getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 									null, null, e1, Level.SEVERE, null));
 							e1.printStackTrace();
+						} catch (XMLStreamException e1) {
+							JXErrorPane.showDialog(this, new ErrorInfo(profile.getLocalisation().getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+									null, null, e1, Level.SEVERE, null));
+							e1.printStackTrace();
 						}
 						displayHome();
 					}
@@ -734,7 +755,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 					this.jepHome.setEnabled(false);
 					Thread.yield();
 					
-					ParametreDialog parametreDialog = new ParametreDialog(this, null, profile.getLocalisation());
+					ParametreDialog parametreDialog = new ParametreDialog(this, profile, null, profile.getLocalisation());
 					parametreDialog.showParametreDialog(parametre);
 					if(parametre.isReglementLock()) {
 						SwingUtilities.invokeLater(new Runnable() {
@@ -751,6 +772,10 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 											null, null, e1, Level.SEVERE, null));
 									e1.printStackTrace();
 								} catch (JAXBException e1) {
+									JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(profile.getLocalisation().getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+											null, null, e1, Level.SEVERE, null));
+									e1.printStackTrace();
+								}  catch (XMLStreamException e1) {
 									JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(profile.getLocalisation().getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 											null, null, e1, Level.SEVERE, null));
 									e1.printStackTrace();

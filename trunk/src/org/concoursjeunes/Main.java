@@ -125,10 +125,10 @@ public class Main {
 	public static void main(String[] args) {
 		final ApplicationCore core;
 		
-		System.setProperty("java.net.useSystemProxies","true"); //$NON-NLS-1$ //$NON-NLS-2$
+		System.setProperty("java.net.useSystemProxies","true"); //$NON-NLS-1$ //$NON-NLS-2$ 
 		System.setProperty("java.net.preferIPv6Addresses", "true"); //$NON-NLS-1$ //$NON-NLS-2$
 		
-		AjResourcesReader localisation = new AjResourcesReader("libelle"); //$NON-NLS-1$
+		AjResourcesReader localisation = new AjResourcesReader("libelle");  //$NON-NLS-1$
 		
 		Thread.UncaughtExceptionHandler handlerException = new Thread.UncaughtExceptionHandler() {
 
@@ -156,7 +156,7 @@ public class Main {
 				JXErrorPane.showDialog(null,new ErrorInfo( "SQL Error", e1.toString(), //$NON-NLS-1$
 						null, null, e1, Level.SEVERE, null));
 				
-				if(JOptionPane.showConfirmDialog(null, localisation.getResourceString("erreur.breakdb")) == JOptionPane.YES_OPTION) { //$NON-NLS-1$
+				if(JOptionPane.showConfirmDialog(null, localisation.getResourceString("erreur.breakdb")) == JOptionPane.YES_OPTION) {  //$NON-NLS-1$
 					retry = true;
 					try {
 						if(ApplicationCore.dbConnection != null) ApplicationCore.dbConnection.close();
@@ -196,7 +196,7 @@ public class Main {
 				}
 			}
 		});
-		System.out.println("core loaded"); //$NON-NLS-1$
+		System.out.println("core loaded");  //$NON-NLS-1$
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -234,7 +234,7 @@ public class Main {
 		List<String> disablePlugin = null;
 		try {
 			disablePlugin = (List<String>)XMLSerializer.loadXMLStructure(
-					new File(ApplicationCore.userRessources.getConfigPathForUser(), "disable_plugins.xml"), false); //$NON-NLS-1$
+					new File(ApplicationCore.userRessources.getConfigPathForUser(), "disable_plugins.xml"), false);  //$NON-NLS-1$
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -245,7 +245,7 @@ public class Main {
 			try {
 				Class<?> cla = pm.getPluginClass();
 				
-				assert cla != null : "le loader devrait toujours retourner une class"; //$NON-NLS-1$
+				assert cla != null : "le loader devrait toujours retourner une class";  //$NON-NLS-1$
 				
 				Object plugin = cla.newInstance();
 				for (Method m : cla.getMethods()) {

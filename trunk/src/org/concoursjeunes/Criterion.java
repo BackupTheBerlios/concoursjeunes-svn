@@ -21,11 +21,19 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlID;
+
 /**
  * Caractéristique d'un critère de distinction
  * 
  * @author Aurélien JEOFFRAY
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Criterion {
 	/**
 	 * Tri des éléments du critères croissant
@@ -37,16 +45,18 @@ public class Criterion {
      */
     public static final int SORT_DESC = -1;
     
-    private int sortOrder = 1;
-    
+    @XmlID
+    @XmlAttribute
     private String code = ""; //$NON-NLS-1$
     private String libelle = ""; //$NON-NLS-1$
+    private int sortOrder = SORT_ASC;
     private boolean classement = false;
     private boolean classementEquipe = false;
     private boolean placement = false;
     private String codeffta = ""; //$NON-NLS-1$
     private int numordre = 0;
-    
+    @XmlElementWrapper(name="criterionelements",required=true)
+    @XmlElement(name="element")
     private List<CriterionElement> criterionElements = new ArrayList<CriterionElement>();
     
     public Criterion() {

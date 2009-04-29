@@ -98,6 +98,11 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -124,13 +129,24 @@ import javax.xml.bind.annotation.XmlRootElement;
  * 
  */
 @XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Reglement {
 	
 	public enum TypeReglement {
+		/**
+		 * Réglement sur cible anglaise
+		 */
 		TARGET,
+		/**
+		 * Réglement nature (3D, Campagne, Tir Nature)
+		 */
 		NATURE
 	}
 
+	@XmlAttribute
+	@SuppressWarnings("unused")
+	private int version = 1;
+	@XmlAttribute
 	private String name = "default"; //$NON-NLS-1$
 	private String displayName = ""; //$NON-NLS-1$
 	
@@ -142,9 +158,15 @@ public class Reglement {
 	private int nbMembresEquipe = 4;
 	private int nbMembresRetenu = 3;
 
+	@XmlElementWrapper(name="criteria",required=true)
+    @XmlElement(name="criterion")
 	private List<Criterion> listCriteria = new ArrayList<Criterion>();
 	private Map<CriteriaSet, CriteriaSet> surclassement = new HashMap<CriteriaSet, CriteriaSet>();
+	@XmlElementWrapper(name="listdistancesetblason",required=true)
+    @XmlElement(name="distancesetblason")
 	private List<DistancesEtBlason> listDistancesEtBlason = new ArrayList<DistancesEtBlason>();
+	@XmlElementWrapper(name="departages",required=true)
+    @XmlElement(name="departage")
 	private List<String> tie = new ArrayList<String>();
 
 	private boolean officialReglement = false;
@@ -572,7 +594,7 @@ public class Reglement {
 	/**
 	 * Retourne le numéro de la catégorie du réglement<br>
 	 * La correspondance entre les numéros de catégorie et leurs libéllé
-	 * est stocké dans la table CATEGORIE_REGLEMENT
+	 * sont stockés dans la table CATEGORIE_REGLEMENT
 	 * 
 	 * @return le numéro de la catégorie du réglement
 	 */
@@ -600,24 +622,26 @@ public class Reglement {
 	 * 
 	 */
 	public void save() throws SQLException {
-		String sql = "merge into REGLEMENT (NUMREGLEMENT, NOMREGLEMENT, NBSERIE, NBVOLEEPARSERIE," + //$NON-NLS-1$
+		String sql = "merge into REGLEMENT (NUMREGLEMENT, NOMREGLEMENT, LIBELLE, NBSERIE, NBVOLEEPARSERIE," + //$NON-NLS-1$
 				"NBFLECHEPARVOLEE, NBMEMBRESEQUIPE, NBMEMBRESRETENU, ISOFFICIAL, NUMFEDERATION, " + //$NON-NLS-1$
 				"NUMCATEGORIE_REGLEMENT, REMOVABLE) " + //$NON-NLS-1$
-				"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"; //$NON-NLS-1$
+				"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"; //$NON-NLS-1$
 
 		// Statement stmt = ConcoursJeunes.dbConnection.createStatement();
 		PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
-		pstmt.setInt(1, hashCode());
-		pstmt.setString(2, name);
-		pstmt.setInt(3, nbSerie);
-		pstmt.setInt(4, nbVoleeParSerie);
-		pstmt.setInt(5, nbFlecheParVolee);
-		pstmt.setInt(6, nbMembresEquipe);
-		pstmt.setInt(7, nbMembresRetenu);
-		pstmt.setBoolean(8, officialReglement);
-		pstmt.setInt(9, federation.getNumFederation());
-		pstmt.setInt(10, category);
-		pstmt.setBoolean(11, removable);
+		int index = 1;
+		pstmt.setInt(index++, hashCode());
+		pstmt.setString(index++, name);
+		pstmt.setString(index++, displayName);
+		pstmt.setInt(index++, nbSerie);
+		pstmt.setInt(index++, nbVoleeParSerie);
+		pstmt.setInt(index++, nbFlecheParVolee);
+		pstmt.setInt(index++, nbMembresEquipe);
+		pstmt.setInt(index++, nbMembresRetenu);
+		pstmt.setBoolean(index++, officialReglement);
+		pstmt.setInt(index++, federation.getNumFederation());
+		pstmt.setInt(index++, category);
+		pstmt.setBoolean(index++, removable);
 
 		pstmt.executeUpdate();
 		pstmt.close();
@@ -758,6 +782,6 @@ public class Reglement {
 	 */
 	@Override
 	public String toString() {
-		return name;
+		return displayName;
 	}
 }
