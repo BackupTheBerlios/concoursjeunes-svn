@@ -109,7 +109,7 @@ import javax.swing.JOptionPane;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 
-import org.ajdeveloppement.apps.AppSerializer;
+import org.ajdeveloppement.apps.AppUtilities;
 import org.ajdeveloppement.commons.AJToolKit;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.net.SimpleAuthenticator;
@@ -174,14 +174,9 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 		ajUpdater = new AjUpdater(ApplicationCore.userRessources.getUpdatePath().getPath(), "."); //$NON-NLS-1$
 		ajUpdater.addAjUpdaterListener(this);
 		ajUpdater.setAppKeyStore(ApplicationCore.userRessources.getAppKeyStore());
-		
-		try {
-			AppSerializer appSerializer = new AppSerializer(ApplicationCore.userRessources);
-			ajUpdater.setUserAgent(AppInfos.NOM + " " + AppInfos.VERSION //$NON-NLS-1$
-					+ " (" + appSerializer.getSerial() + "; TEST)"); //$NON-NLS-1$ //$NON-NLS-2$
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+		ajUpdater.setUserAgent(AppInfos.NOM + " " + AppInfos.VERSION //$NON-NLS-1$
+				+ " (" + AppUtilities.getAppUID(ApplicationCore.userRessources) + "; TEST)"); //$NON-NLS-1$ //$NON-NLS-2$
+
 		
 		ajUpdater.addRepository(new Repository(AppInfos.NOM, new String[] { pluginRessources.getResourceString("url.reference") }, AppInfos.VERSION)); //$NON-NLS-1$
 		for (PluginMetadata pm : pl.getPlugins(Type.ALL)) {

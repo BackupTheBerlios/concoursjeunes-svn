@@ -114,7 +114,7 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.swing.event.EventListenerList;
 
-import org.ajdeveloppement.apps.AppSerializer;
+import org.ajdeveloppement.apps.AppUtilities;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.io.FileUtils;
 import org.ajdeveloppement.commons.security.CryptUtil;
@@ -222,13 +222,12 @@ public class ApplicationCore {
 		try {
 			SecurityImporter.importCerts(userRessources.getAppKeyStore(), new File(userRessources.getUpdatePath(), "security/certs")); //$NON-NLS-1$
 			
-			AppSerializer serial = new AppSerializer(userRessources);
-			SecretKey sKey = (SecretKey)userRessources.getAppKeyStore().getKey("proxy.pswd", serial.getSerial().toCharArray()); //$NON-NLS-1$
+			SecretKey sKey = (SecretKey)userRessources.getAppKeyStore().getKey("proxy.pswd", AppUtilities.getAppUID(userRessources).toCharArray()); //$NON-NLS-1$
 			
 			CryptUtil cryptUtil = new CryptUtil(sKey);
 			if(sKey == null) {
 			    KeyStore.SecretKeyEntry skEntry = new KeyStore.SecretKeyEntry(cryptUtil.getSecretKey());
-				userRessources.getAppKeyStore().setEntry("proxy.pswd",skEntry, new KeyStore.PasswordProtection(serial.getSerial().toCharArray())); //$NON-NLS-1$
+				userRessources.getAppKeyStore().setEntry("proxy.pswd",skEntry, new KeyStore.PasswordProtection(AppUtilities.getAppUID(userRessources).toCharArray())); //$NON-NLS-1$
 			}
 			getAppConfiguration().getProxy().setCryptUtil(cryptUtil);
 			

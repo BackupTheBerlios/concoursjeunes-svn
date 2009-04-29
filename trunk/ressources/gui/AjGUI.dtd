@@ -1,18 +1,28 @@
 <!--
 	This DTD can be used to validate an XML AjGUI Interface
 
-    For further information, see: http://www.concoursjeunes.org
+    For further information, see: http://www.ajdeveloppement.org
 
-    Copyright 2007 by Aurélien JEOFFRAY
+    Copyright 2007-2009 by Aurélien JEOFFRAY
     All Rights Reserved.
 
-    $Id: AjGUI.dtd,v 1.00 2007/08/06 17:03:00 AjMaster $
-    $Name:  $
+	v 1.10 2009/04/29 19:56:00 Aurélien JEOFFRAY - Ajout du support des LayoutManager
+    v 1.00 2007/08/06 17:03:00 Aurélien JEOFFRAY    
 -->
 
-<!--Noeud racine.
+<!ENTITY % class.attributes
+"class		NMTOKEN				#REQUIRED"
+>
 
-Correspond à incran à décrire. Cette écran peut être un frame ou un window-->
+<!ENTITY % param.attributes
+"class		NMTOKEN				#IMPLIED
+ paramclass	NMTOKEN				#REQUIRED
+ type		(value|staticfield) #IMPLIED
+ value		CDATA 				#IMPLIED"
+>
+
+<!--Noeud racine.
+Correspond à écran à décrire. Cette écran peut être un frame ou un window-->
 <!ELEMENT screen ( frame | window ) >
 
 <!--Représente un objet swing JFrame-->
@@ -26,8 +36,10 @@ Correspond à incran à décrire. Cette écran peut être un frame ou un window-
 <!--Représente un objet de type JWindows (non implémenté actuellement)-->
 <!ELEMENT window ( contentpane ) >
 
+<!--Représente le titre de la fenetre-->
 <!ELEMENT title ( #PCDATA ) >
 
+<!--Représente l'icone de la fenetre-->
 <!ELEMENT icon EMPTY >
 <!ATTLIST icon src CDATA #REQUIRED >
 
@@ -57,16 +69,24 @@ Correspond à incran à décrire. Cette écran peut être un frame ou un window-
 <!ELEMENT method ( param* ) >
 <!ATTLIST method name NMTOKEN #REQUIRED >
 
-<!ELEMENT param ( param? ) >
-<!ATTLIST param class NMTOKEN #IMPLIED >
-<!ATTLIST param paramclass NMTOKEN #REQUIRED >
-<!ATTLIST param value CDATA #IMPLIED >
+<!ELEMENT param ( param* ) >
+<!ATTLIST param %param.attributes; >
 
 <!ELEMENT separator EMPTY >
 
 <!ELEMENT tab ( label, content? ) >
 <!ATTLIST tab closebutton (true|false) #IMPLIED >
 
-<!ELEMENT content ( method* ) >
-<!ATTLIST content class NMTOKEN #REQUIRED >
-<!ATTLIST content name NMTOKEN #IMPLIED >
+<!ELEMENT content ( layout?, component* ) >
+
+<!ELEMENT layout ( param*, method* ) >
+<!ATTLIST layout %class.attributes; >
+
+<!ELEMENT component ( method*,constraints? ) >
+<!ATTLIST component
+	%class.attributes;
+	name		NMTOKEN		#IMPLIED
+>
+
+<!ELEMENT constraints ( param*, method* ) >
+<!ATTLIST constraints %param.attributes; >
