@@ -10,6 +10,7 @@ drop table POSSEDE;
 drop table DISTINGUER;
 drop table ASSOCIER;
 drop table ARCHERSFFTA;
+drop table ARCHERS;
 drop table CATEGORIE_REGLEMENT;
 drop table SURCLASSEMENT;
 drop table CRITERIASET;

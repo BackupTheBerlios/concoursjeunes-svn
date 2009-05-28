@@ -73,7 +73,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -121,14 +121,15 @@ import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.concoursjeunes.Archer;
 import org.concoursjeunes.Concurrent;
-import org.concoursjeunes.ConcurrentManager;
-import org.concoursjeunes.ConcurrentManagerProgress;
 import org.concoursjeunes.Criterion;
 import org.concoursjeunes.CriterionElement;
 import org.concoursjeunes.Entite;
 import org.concoursjeunes.Profile;
 import org.concoursjeunes.Reglement;
+import org.concoursjeunes.manager.ConcurrentManager;
+import org.concoursjeunes.manager.ConcurrentManagerProgress;
 import org.jdesktop.swingx.JXBusyLabel;
+import org.jdesktop.swingx.JXHyperlink;
 
 /**
  * La liste des personnes présente daans la base des archers
@@ -150,16 +151,19 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	private JTextField jtfFilterNom = null;
 	private JLabel jlFilterClub = null;
 	private JTextField jtfFilterClub = null;
-	private final JButton moreResult = new JButton("+"); //$NON-NLS-1$
 	private JTable jTable = null;
 	private JScrollPane jScrollPane = null;
 	private JPanel jPanel = null;
 	private JXBusyLabel loading = new JXBusyLabel();
 	private JLabel loadingProgressLabel = new JLabel();
+	private JLabel databaseFilter = new JLabel();
+	private JXHyperlink jxhDisableFilter = new JXHyperlink();
 	private JButton jbValider = null;
 	private JButton jbAnnuler = null;
 
 	private boolean isValider = false;
+	private boolean filtreligue = false;
+	private boolean filtre = false;
 
 	/**
 	 * This is the default constructor
@@ -167,17 +171,22 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	 * @param parentframe -
 	 *            la fenetre principal de l'application (pour le point modal)
 	 */
-	public ConcurrentListDialog(JDialog parentframe, AjResourcesReader localisation, Profile profile, Reglement reglement, Archer filter) {
-		super(parentframe, localisation.getResourceString("concurrent.nouveau.titre"), ModalityType.APPLICATION_MODAL); //$NON-NLS-1$
+	public ConcurrentListDialog(JDialog parentframe, Profile profile, Reglement reglement, Archer filter) {
+		super(parentframe, profile.getLocalisation().getResourceString("concurrent.nouveau.titre"), ModalityType.APPLICATION_MODAL); //$NON-NLS-1$
 		this.reglement = reglement;
-		this.localisation = localisation;
+		this.localisation = profile.getLocalisation();
 
 		if (filter == null && profile.getConfiguration().getClub().getAgrement().length() > 0) {
-			filter = new Archer();
-			Entite entite = new Entite();
-			entite.setAgrement(profile.getConfiguration().getClub().getAgrement().substring(0, 2) + "%"); //$NON-NLS-1$
-			filter.setClub(entite);
+			if(profile.getConfiguration().getFederation().getSigleFederation().equals("FFTA"))  {//$NON-NLS-1$
+				filter = new Archer();
+				Entite entite = new Entite();
+				entite.setAgrement(profile.getConfiguration().getClub().getAgrement().substring(0, 2) + "%"); //$NON-NLS-1$
+				filter.setClub(entite);
+				filtreligue = true;
+			}
 		}
+		if(filter != null)
+			filtre = true;
 		//dtm = new ArchersTableModel(filter);
 		dtm = new ArchersTableModel();
 		ArchersTableLoader loader = new ArchersTableLoader(filter);
@@ -203,16 +212,12 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		jlFilterNom = new JLabel();
 		jlFilterClub = new JLabel();
 
-		moreResult.addActionListener(this);
-		moreResult.setToolTipText(localisation.getResourceString("listeconcurrent.moreresult")); //$NON-NLS-1$
-
 		jpEntete.add(jlFilterLicence);
 		jpEntete.add(getJtfFilterLicence());
 		jpEntete.add(jlFilterNom);
 		jpEntete.add(getJtfFilterNom());
 		jpEntete.add(jlFilterClub);
 		jpEntete.add(getJtfFilterClub());
-		jpEntete.add(moreResult);
 
 		jContentPane.setLayout(new BorderLayout());
 
@@ -299,8 +304,6 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 			column.setPreferredWidth(200);
 			column = jTable.getColumnModel().getColumn(4);
 			column.setPreferredWidth(60);
-			column = jTable.getColumnModel().getColumn(5);
-			column.setPreferredWidth(50);
 		}
 		return this.jTable;
 	}
@@ -327,11 +330,30 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		if (this.jPanel == null) {
 			this.jPanel = new JPanel();
 			
+			JPanel jpFilter = new JPanel();
+			
+			if(filtre) {
+				if(filtreligue)
+					databaseFilter.setText(localisation.getResourceString("listeconcurrent.liguefilter")); //$NON-NLS-1$
+				else
+					databaseFilter.setText(localisation.getResourceString("listeconcurrent.genericfilter")); //$NON-NLS-1$
+				jxhDisableFilter.setText(localisation.getResourceString("listeconcurrent.disablefilter")); //$NON-NLS-1$
+				jxhDisableFilter.addActionListener(this);
+			}
+			
 			GridBagConstraints c = new GridBagConstraints();
 			GridbagComposer gridbagComposer = new GridbagComposer();
+			
+			jpFilter.add(databaseFilter);
+			jpFilter.add(jxhDisableFilter);
 					
 			gridbagComposer.setParentPanel(this.jPanel);
+			c.gridy=0;
 			c.anchor = GridBagConstraints.WEST;
+			c.gridwidth = 5;
+			gridbagComposer.addComponentIntoGrid(jpFilter, c);
+			c.gridy++;
+			c.gridwidth = 1;
 			gridbagComposer.addComponentIntoGrid(loading, c);
 			c.insets = new Insets(0, 5, 0, 0);
 			gridbagComposer.addComponentIntoGrid(loadingProgressLabel, c);
@@ -455,15 +477,19 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		} else if (ae.getActionCommand().equals("bouton.annuler")) { //$NON-NLS-1$
 			this.isValider = false;
 			this.setVisible(false);
-		} else if (ae.getSource() == moreResult) {
+		} else if (ae.getSource() == jxhDisableFilter) {
+			databaseFilter.setText(""); //$NON-NLS-1$
+			jxhDisableFilter.setText(""); //$NON-NLS-1$
+			jxhDisableFilter.removeActionListener(this);
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
 					dtm = new ArchersTableModel();
-					
 					ArchersTableLoader loader = new ArchersTableLoader(null);
 					loadingProgress(loader);
+					loadingProgressLabel.setText(localisation.getResourceString("listeconcurrent.loading", 0)); //$NON-NLS-1$
 					loader.execute();
 					loading.setBusy(true);
+					
 					
 					sorter = new TableRowSorter<ArchersTableModel>(dtm);
 					jTable.setModel(dtm);
@@ -484,17 +510,17 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	}
 
 	public void caretUpdate(CaretEvent e) {
-		if (e.getSource() == jtfFilterLicence && !jtfFilterLicence.getText().isEmpty()) {
+		if (e.getSource() == jtfFilterLicence && jtfFilterLicence.hasFocus()) {
 			sorter.setRowFilter(RowFilter.regexFilter("^" + jtfFilterLicence.getText().toUpperCase(), 0)); //$NON-NLS-1$
 			jTable.setRowSorter(sorter);
 			jtfFilterNom.setText(""); //$NON-NLS-1$
 			jtfFilterClub.setText(""); //$NON-NLS-1$
-		} else if (e.getSource() == jtfFilterNom && !jtfFilterNom.getText().isEmpty()) {
+		} else if (e.getSource() == jtfFilterNom && jtfFilterNom.hasFocus()) {
 			sorter.setRowFilter(RowFilter.regexFilter("^" + jtfFilterNom.getText().toUpperCase(), 1)); //$NON-NLS-1$
 			jTable.setRowSorter(sorter);
 			jtfFilterLicence.setText(""); //$NON-NLS-1$
 			jtfFilterClub.setText(""); //$NON-NLS-1$
-		} else if (e.getSource() == jtfFilterClub && !jtfFilterClub.getText().isEmpty()) {
+		} else if (e.getSource() == jtfFilterClub && jtfFilterClub.hasFocus()) {
 			sorter.setRowFilter(RowFilter.regexFilter(jtfFilterClub.getText().toUpperCase(), 3));
 			jTable.setRowSorter(sorter);
 			jtfFilterNom.setText(""); //$NON-NLS-1$
@@ -546,7 +572,6 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 			columnsName.add(localisation.getResourceString("listeconcurrent.prenom")); //$NON-NLS-1$
 			columnsName.add(localisation.getResourceString("listeconcurrent.club")); //$NON-NLS-1$
 			columnsName.add(localisation.getResourceString("listeconcurrent.categorie")); //$NON-NLS-1$
-			columnsName.add(localisation.getResourceString("listeconcurrent.niveau")); //$NON-NLS-1$
 		}
 		
 		public void add(List<Concurrent> concurrents) {
@@ -609,31 +634,19 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 				case 3:
 					return curConcurrent.getClub().getNom();
 				case 4:
-					String noplacementcritere = ""; //$NON-NLS-1$
-					if(curConcurrent.isSurclassement())
-						noplacementcritere = "<html><font color=red>"; //$NON-NLS-1$
-					for (Criterion key : reglement.getListCriteria()) {
-						if (!key.isPlacement()) {
+					String criteres = ""; //$NON-NLS-1$
+					if(reglement != null) {
+						if(curConcurrent.isSurclassement())
+							criteres = "<html><font color=red>"; //$NON-NLS-1$
+						for (Criterion key : reglement.getListCriteria()) {
 							CriterionElement criterionElement = curConcurrent.getCriteriaSet().getCriterionElement(key);
 							if (criterionElement != null)
-								noplacementcritere += criterionElement.getCode();
+								criteres += criterionElement.getCode();
 						}
+						if(curConcurrent.isSurclassement())
+							criteres += "</font></html>"; //$NON-NLS-1$
 					}
-					if(curConcurrent.isSurclassement())
-						noplacementcritere += "</font></html>"; //$NON-NLS-1$
-					return noplacementcritere;
-				case 5:
-					String placementcritere = ""; //$NON-NLS-1$
-					if(curConcurrent.isSurclassement())
-						placementcritere = "<html><font color=red>"; //$NON-NLS-1$
-					for (Criterion key : reglement.getListCriteria()) {
-						if (key.isPlacement()) {
-							placementcritere += curConcurrent.getCriteriaSet().getCriterionElement(key).getCode();
-						}
-					}
-					if(curConcurrent.isSurclassement())
-						placementcritere += "</font></html>"; //$NON-NLS-1$
-					return placementcritere;
+					return criteres;
 				default:
 					return null;
 			}

@@ -2,7 +2,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -15,20 +15,30 @@
  */
 package org.concoursjeunes;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.ajdeveloppement.commons.JAXBMapRefAdapter;
+import org.ajdeveloppement.commons.sql.SqlField;
+import org.ajdeveloppement.commons.sql.SqlForeignFields;
+import org.ajdeveloppement.commons.sql.SqlPersistance;
+import org.ajdeveloppement.commons.sql.SqlPersistanceException;
+import org.ajdeveloppement.commons.sql.SqlPrimaryKey;
+import org.ajdeveloppement.commons.sql.SqlStoreHelper;
+import org.ajdeveloppement.commons.sql.SqlTable;
 
 /**
  * Jeux de critères utilisé pour distinguer un archer a des fins
@@ -37,22 +47,66 @@ import org.ajdeveloppement.commons.JAXBMapRefAdapter;
  * @author  Aurélien Jeoffray
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class CriteriaSet {
+@SqlTable(name="CRITERIASET")
+@SqlPrimaryKey(fields="NUMCRITERIASET",generatedidField="NUMCRITERIASET")
+@SqlForeignFields(fields={"IDCRITERIASET", "NUMREGLEMENT"})
+public class CriteriaSet implements SqlPersistance {
 
-	@XmlID
-	@SuppressWarnings("unused")
-	private String id = ""; //$NON-NLS-1$
+	@XmlTransient
+	@SqlField(name="NUMCRITERIASET")
+	private int numCriteriaSet = 0;
+	@XmlTransient
+	private Reglement reglement = new Reglement();
 	@XmlJavaTypeAdapter(JAXBMapRefAdapter.class)
-	private Map<Criterion, CriterionElement> criteria = new Hashtable<Criterion, CriterionElement>();
-
-	public CriteriaSet() {
-		id = Integer.toString(hashCode());
+	private Map<Criterion, CriterionElement> criteria = new HashMap<Criterion, CriterionElement>();
+	
+	private static SqlStoreHelper<CriteriaSet> helper = null;
+	static {
+		try {
+			helper = new SqlStoreHelper<CriteriaSet>(ApplicationCore.dbConnection, CriteriaSet.class);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
-	public CriteriaSet(Hashtable<Criterion, CriterionElement> criteria) {
+	public CriteriaSet() {
+	}
+
+	public CriteriaSet(Map<Criterion, CriterionElement> criteria) {
 		this.criteria = criteria;
+	}
+
+	/**
+	 * @return numCriteriaSet
+	 */
+	public int getNumCriteriaSet() {
+		return numCriteriaSet;
+	}
+
+	/**
+	 * @param numCriteriaSet numCriteriaSet à définir
+	 */
+	public void setNumCriteriaSet(int numCriteriaSet) {
+		this.numCriteriaSet = numCriteriaSet;
+	}
+
+	/**
+	 * @param reglement reglement à définir
+	 */
+	public void setReglement(Reglement reglement) {
+		this.reglement = reglement;
 		
-		id = Integer.toString(hashCode());
+		for(Entry<Criterion, CriterionElement> entry : criteria.entrySet()) {
+			entry.getKey().setReglement(reglement);
+			entry.getValue().setCriterion(entry.getKey());
+		}
+	}
+
+	/**
+	 * @return reglement
+	 */
+	public Reglement getReglement() {
+		return reglement;
 	}
 
 	/**
@@ -76,8 +130,8 @@ public class CriteriaSet {
 	public void setCriterionElement(Criterion criterion, CriterionElement element) {
 		if(element != null) {
 			criteria.put(criterion, element);
-			
-			id = Integer.toString(hashCode());
+			criterion.setReglement(reglement);
+			element.setCriterion(criterion);
 		}
 	}
 
@@ -98,7 +152,10 @@ public class CriteriaSet {
 	public void setCriteria(Map<Criterion, CriterionElement> criteria) {
 		this.criteria = criteria;
 		
-		id = Integer.toString(hashCode());
+		for(Entry<Criterion, CriterionElement> entry : criteria.entrySet()) {
+			entry.getKey().setReglement(reglement);
+			entry.getValue().setCriterion(entry.getKey());
+		}
 	}
 
 	/**
@@ -108,8 +165,9 @@ public class CriteriaSet {
 	 * @param criteriaFilter la table de filtrage des critères inclue dans le jeux retourné
 	 * @return le jeux de critères filtré.
 	 */
-	public CriteriaSet getFilteredCriteriaSet(Hashtable<Criterion, Boolean> criteriaFilter) {
+	public CriteriaSet getFilteredCriteriaSet(Map<Criterion, Boolean> criteriaFilter) {
 		CriteriaSet criteriaSet = new CriteriaSet();
+		criteriaSet.setReglement(reglement);
 		for(Criterion criterion : criteria.keySet()) {
 			if(criteriaFilter.get(criterion))
 				criteriaSet.setCriterionElement(criterion, criteria.get(criterion));
@@ -118,35 +176,90 @@ public class CriteriaSet {
 		}
 		return criteriaSet;
 	}
-
+	
+	@SuppressWarnings("nls")
+	private String getUID() {
+		//garantie l'ordre des éléments
+		List<String> l = new ArrayList<String>();
+		for(Entry<Criterion, CriterionElement> entry : criteria.entrySet())
+			l.add(entry.getKey().getCode()+"="+entry.getValue().getCode());
+		Collections.sort(l);
+		String uid = "{";
+		for(String e : l) {
+			if(uid.length() > 1)
+				uid += ",";
+			uid += e;
+		}
+		uid += "}";
+		return "R=" + reglement.getNumReglement() + ",S=" + uid;
+	}
+	
 	/**
-	 * Sauvegarde en base le jeux de critère
+	 * Sauvegarde en base le jeux de critère. Les arguments sont ignoré
+	 * 
+	 * @see org.ajdeveloppement.commons.sql.SqlPersistance#save(java.lang.Object[])
+	 * 
 	 */
-	public void save(Reglement reglement) {
-		String sql = null;
+	@Override
+	public void save() throws SqlPersistanceException {
+		//vérifie si le jeux n'existe pas déjà
+		String uid = getUID();
+		String sql = "select NUMCRITERIASET from CRITERIASET where IDCRITERIASET='" + uid.replace("'","''") + "'"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		
 		try {
 			Statement stmt = ApplicationCore.dbConnection.createStatement();
-			
-			stmt.executeUpdate("merge into CRITERIASET VALUES (" + hashCode() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
-
-			
-			for(Entry<Criterion, CriterionElement> entry : criteria.entrySet()) {
-				Criterion criterion = entry.getKey();
-				CriterionElement criterionElement = entry.getValue();
-
-				sql =  "merge into POSSEDE (NUMCRITERIASET, CODECRITEREELEMENT, " + //$NON-NLS-1$
-						"CODECRITERE, NUMREGLEMENT) KEY (NUMCRITERIASET, CODECRITERE, NUMREGLEMENT) VALUES (" + //$NON-NLS-1$
-						hashCode() + ", '" +  //$NON-NLS-1$
-						criterionElement.getCode() + "', '" + //$NON-NLS-1$ 
-						criterion.getCode() + "', " +  //$NON-NLS-1$
-						reglement.hashCode() + ")"; //$NON-NLS-1$
-				//System.out.println(sql);
-				stmt.executeUpdate(sql);
+			try {
+				ResultSet rs = stmt.executeQuery(sql);
+				try {
+					//si le jeux existe ne pas aller plus loin
+					if(rs.first()) {
+						if(numCriteriaSet == 0)
+							numCriteriaSet = rs.getInt(1);
+						return;
+					}
+				} finally {
+					rs.close();
+				}
+			} finally {
+				stmt.close();
 			}
 		} catch (SQLException e) {
-			System.out.println(sql);
-			e.printStackTrace();
+			throw new SqlPersistanceException(e);
 		}
+
+		Map<String, Object> fk = new HashMap<String, Object>();
+		fk.put("NUMREGLEMENT", reglement.getNumReglement()); //$NON-NLS-1$
+		fk.put("IDCRITERIASET", uid); //$NON-NLS-1$
+		helper.save(this, fk); 
+		
+		try {
+			sql =  "merge into POSSEDE (NUMCRITERIASET, CODECRITEREELEMENT, " //$NON-NLS-1$
+				+ "CODECRITERE, NUMREGLEMENT) "//$NON-NLS-1$
+				+ "values (?, ?, ?, ?)"; //$NON-NLS-1$
+			PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
+			try {
+				for(Entry<Criterion, CriterionElement> entry : criteria.entrySet()) {
+					Criterion criterion = entry.getKey();
+					CriterionElement criterionElement = entry.getValue();
+					
+					pstmt.setInt(1, numCriteriaSet); 
+					pstmt.setString(2, criterionElement.getCode());
+					pstmt.setString(3, criterion.getCode());
+					pstmt.setInt(4, reglement.getNumReglement());
+	
+					pstmt.executeUpdate();
+				}
+			} finally {
+				pstmt.close();
+			}
+		} catch (SQLException e) {
+			throw new SqlPersistanceException(e);
+		}
+	}
+
+	@Override
+	public void delete() throws SqlPersistanceException {
+		helper.delete(this);
 	}
 	
 	/**
@@ -155,18 +268,18 @@ public class CriteriaSet {
 	 * @param differentiationCriteriaTable
 	 * @param listCriteria
 	 */
-	public static void sortCriteriaSet(CriteriaSet[] differentiationCriteriaTable, List<Criterion> listCriteria) {
+	public static void sortCriteriaSet(List<CriteriaSet> differentiationCriteriaTable, List<Criterion> listCriteria) {
 
 		//boucle sur a liste des critères disponible dans l'ordre d'affichage
 		for(int i = 0; i < listCriteria.size(); i++) {
 			//boucle sur la liste de ritere de distiction retourné (comparaison d'élément
-			for(int j = 0; j < differentiationCriteriaTable.length - 1; j++) {
+			for(int j = 0; j < differentiationCriteriaTable.size() - 1; j++) {
 
-				for(int k = j + 1; k < differentiationCriteriaTable.length; k++) {
+				for(int k = j + 1; k < differentiationCriteriaTable.size(); k++) {
 					Criterion testedCriterion = listCriteria.get(i);
 					//recuperation des valeurs de critère
-					CriterionElement result1 = differentiationCriteriaTable[j].getCriterionElement(testedCriterion);
-					CriterionElement result2 = differentiationCriteriaTable[k].getCriterionElement(testedCriterion);
+					CriterionElement result1 = differentiationCriteriaTable.get(j).getCriterionElement(testedCriterion);
+					CriterionElement result2 = differentiationCriteriaTable.get(k).getCriterionElement(testedCriterion);
 
 					boolean regle;
 
@@ -185,8 +298,8 @@ public class CriteriaSet {
 					for(int l = 0; l < i; l++) {
 						Criterion otherCriterion = listCriteria.get(l);
 
-						CriterionElement otherresult1 = differentiationCriteriaTable[j].getCriterionElement(otherCriterion);
-						CriterionElement otherresult2 = differentiationCriteriaTable[k].getCriterionElement(otherCriterion);
+						CriterionElement otherresult1 = differentiationCriteriaTable.get(j).getCriterionElement(otherCriterion);
+						CriterionElement otherresult2 = differentiationCriteriaTable.get(k).getCriterionElement(otherCriterion);
 
 						int otherindex1 = otherCriterion.getCriterionElements().indexOf(otherresult1);
 						int otherindex2 = otherCriterion.getCriterionElements().indexOf(otherresult2);
@@ -195,9 +308,7 @@ public class CriteriaSet {
 					}
 
 					if(regle) {
-						CriteriaSet temp = differentiationCriteriaTable[j];
-						differentiationCriteriaTable[j] = differentiationCriteriaTable[k];
-						differentiationCriteriaTable[k] = temp;
+						Collections.swap(differentiationCriteriaTable, j, k);
 					}
 				}
 			}
@@ -211,7 +322,7 @@ public class CriteriaSet {
 	 * @param criteriaFilter - le filtre du jeux
 	 * @return la liste des jeux de critères retourné
 	 */
-	public static CriteriaSet[] listCriteriaSet(Reglement reglement, Hashtable<Criterion, Boolean> criteriaFilter) {       
+	public static CriteriaSet[] listCriteriaSet(Reglement reglement, Map<Criterion, Boolean> criteriaFilter) {       
 		//cré la population complete pour l'ensemble des critéres
 		//objet de référence
 		CriteriaSet[] referents = new CriteriaSet[] { new CriteriaSet() };
@@ -258,6 +369,7 @@ public class CriteriaSet {
 			if(criterion.getCriterionElements().get(i).isActive()) {
 				//initialise les critères
 				CriteriaSet tempCrit = new CriteriaSet();
+				tempCrit.setReglement(reglement);
 
 				for(Criterion curCriterion : reglement.getListCriteria()) {
 					if(referent.getCriterionElement(curCriterion) != null)
@@ -316,11 +428,14 @@ public class CriteriaSet {
 	 */
 	@Override
 	public int hashCode() {
-		final int PRIME = 31;
-		int result = 1;
-		for(Map.Entry<Criterion, CriterionElement> entry : criteria.entrySet()) {
-			result = PRIME * result + (entry.getKey().getCode() + ":" + entry.getValue().getCode()).hashCode(); //$NON-NLS-1$
-		}
-		return result;
+		return getUID().hashCode();
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return getUID();
 	}
 }

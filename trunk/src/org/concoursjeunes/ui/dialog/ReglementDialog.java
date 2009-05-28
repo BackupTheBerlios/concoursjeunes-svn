@@ -73,7 +73,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -101,11 +101,12 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
 
 import javax.swing.Box;
 import javax.swing.DefaultCellEditor;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -113,6 +114,7 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -120,12 +122,14 @@ import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.JTree;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -133,6 +137,7 @@ import javax.swing.tree.TreePath;
 import org.ajdeveloppement.apps.AppUtilities;
 import org.ajdeveloppement.apps.Localisable;
 import org.ajdeveloppement.commons.AjResourcesReader;
+import org.ajdeveloppement.commons.StringUtils;
 import org.ajdeveloppement.commons.ui.AJList;
 import org.ajdeveloppement.commons.ui.AJTree;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
@@ -140,24 +145,20 @@ import org.ajdeveloppement.commons.ui.NumberDocument;
 import org.ajdeveloppement.commons.ui.ToolTipHeader;
 import org.concoursjeunes.Blason;
 import org.concoursjeunes.CriteriaSet;
-import org.concoursjeunes.CriteriaSetLibelle;
 import org.concoursjeunes.Criterion;
 import org.concoursjeunes.CriterionElement;
 import org.concoursjeunes.DistancesEtBlason;
+import org.concoursjeunes.Profile;
 import org.concoursjeunes.Reglement;
-import org.jdesktop.swingx.JXErrorPane;
-import org.jdesktop.swingx.error.ErrorInfo;
+import org.concoursjeunes.localisable.CriteriaSetLibelle;
 
 /**
  * @author Aurélien JEOFFRAY
  * 
  */
 public class ReglementDialog extends JDialog implements ActionListener, MouseListener, TableModelListener {
-
-	public static final int NO_LOCK = 0;
-	public static final int LOCK_CHANGE_L1 = 1;
-	public static final int LOCK_CHANGE_L2 = 2;
-
+	private JFrame parentframe;
+	private Profile profile;
 	private AjResourcesReader localisation;
 	private Reglement reglement;
 
@@ -176,6 +177,8 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	private JLabel jlNbMembresRetenu = new JLabel();
 	@Localisable("reglement.departages")
 	private JLabel jlDepartages = new JLabel();
+	@Localisable("reglement.departagesinfo")
+	private JLabel jlDepartagesInfo = new JLabel();
 	@Localisable("reglement.official")
 	private JCheckBox jcbOfficialReglement = new JCheckBox();
 
@@ -194,50 +197,43 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	private DefaultTreeModel treeModel = new DefaultTreeModel(treeRoot);
 	private AJTree treeCriteria = new AJTree(treeModel);
 
+	private JTextField jtfReglementName = new JTextField(15);
 	private JTextField jtfNbSerie = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
 	private JTextField jtfNbVoleeParSerie = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
 	private JTextField jtfNbFlecheParVolee = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
 	private JTextField jtfNbMembresEquipe = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
 	private JTextField jtfNbMembresRetenu = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
-	@Localisable(value="",tooltip="reglement.adddepartages")
-	private JButton jbAddDepartages = new JButton();
-	@Localisable(value="",tooltip="reglement.removedepartages")
-	private JButton jbRemoveDepartages = new JButton();
-	@Localisable(value="",tooltip="reglement.updepartages")
-	private JButton jbUpDepartages = new JButton();
-	@Localisable(value="",tooltip="reglement.downdepartages")
-	private JButton jbDownDepartages = new JButton();
-	private AJList ajlDepartages = new AJList();
+	private JTextField jtfDepartages = new JTextField(15);
 	
 	private JTable jtCriteriaSet = new JTable() {
 	//  Returning the Class of each column will allow different
 		//  renderers to be used based on Class
 		@Override
         public Class<?> getColumnClass(int column)	{
-			Object value = getValueAt(0, column);
-			if(value !=null)
-				return value.getClass();
-			return String.class;
+			if(column == 0)
+				return Boolean.class;
+			return CriteriaSet.class;
 		}
 	};
 	private JComboBox jcbCriteriaSet = new JComboBox(); 
 
-	private JTable jtDistanceBlason = new JTable();
-	private JScrollPane jspDistanceBlason = new JScrollPane();
-	private JComboBox jcbBlasons = new JComboBox();
+	private AJList<DistancesBlasonsSet> ajlDistancesBlasons = new AJList<DistancesBlasonsSet>();
+	private JScrollPane jspDistanceBlason = new JScrollPane(ajlDistancesBlasons);
 
 	@Localisable("bouton.valider")
 	private JButton jbValider = new JButton();
 	@Localisable("bouton.annuler")
 	private JButton jbAnnuler = new JButton();
 
-	private int verrou = NO_LOCK;
+	private boolean verrou = false;
 
-	public ReglementDialog(JFrame parentframe, Reglement reglement, AjResourcesReader localisation) {
+	public ReglementDialog(JFrame parentframe, Reglement reglement, Profile profile) {
 		super(parentframe, true);
 
+		this.parentframe = parentframe;
 		this.reglement = reglement;
-		this.localisation = localisation;
+		this.profile = profile;
+		this.localisation = profile.getLocalisation();
 
 		init();
 		affectLibelle();
@@ -252,15 +248,6 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 
 		jbValider.addActionListener(this);
 		jbAnnuler.addActionListener(this);
-		
-		jbAddDepartages.setIcon(new ImageIcon(staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$ 
-				File.separator + staticParameters.getResourceString("file.icon.addcriteria"))); //$NON-NLS-1$
-		jbRemoveDepartages.setIcon(new ImageIcon(staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + staticParameters.getResourceString("file.icon.removeelement"))); //$NON-NLS-1$
-		jbUpDepartages.setIcon(new ImageIcon(staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + staticParameters.getResourceString("file.icon.upelement"))); //$NON-NLS-1$
-		jbDownDepartages.setIcon(new ImageIcon(staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + staticParameters.getResourceString("file.icon.downelement"))); //$NON-NLS-1$
 		
 		jbAddCriteria.setIcon(new ImageIcon(staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$ 
 				File.separator + staticParameters.getResourceString("file.icon.addcriteria"))); //$NON-NLS-1$
@@ -294,39 +281,64 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		GridbagComposer gridbagComposer = new GridbagComposer();
 
 		JPanel panel = new JPanel();
-		JPanel jpDepartages = new JPanel();
 		
-		JScrollPane jspDepartages = new JScrollPane(ajlDepartages);
-		jspDepartages.setPreferredSize(new Dimension(100, 60));
-		
-		jbAddDepartages.setMargin(new Insets(0,0,0,0));
-		jbAddDepartages.addActionListener(this);
-		jbRemoveDepartages.setMargin(new Insets(0,0,0,0));
-		jbRemoveDepartages.addActionListener(this);
-		jbUpDepartages.setMargin(new Insets(0,0,0,0));
-		jbUpDepartages.addActionListener(this);
-		jbDownDepartages.setMargin(new Insets(0,0,0,0));
-		jbDownDepartages.addActionListener(this);
-		
-		gridbagComposer.setParentPanel(jpDepartages);
-		c.gridy = 0;
-		gridbagComposer.addComponentIntoGrid(jbAddDepartages, c);
-		gridbagComposer.addComponentIntoGrid(jbRemoveDepartages, c);
-		gridbagComposer.addComponentIntoGrid(jbUpDepartages, c);
-		gridbagComposer.addComponentIntoGrid(jbDownDepartages, c);
-		c.gridy++;
-		c.gridwidth = 5;
-		c.fill = GridBagConstraints.BOTH;
-		gridbagComposer.addComponentIntoGrid(jspDepartages, c);
+		ajlDistancesBlasons.setCellRenderer(new DefaultListCellRenderer() {
+			@Override
+			public Component getListCellRendererComponent(JList list,
+					Object value, int index, boolean isSelected,
+					boolean cellHasFocus) {
+				if(value instanceof DistancesBlasonsSet) {
+					DistancesBlasonsSet dbSet = (DistancesBlasonsSet)value;
+					
+					String formattedString = "<html>"; //$NON-NLS-1$
+					
+					DistancesEtBlason fisrtDB = dbSet.get().get(0);
+					formattedString += new CriteriaSetLibelle(fisrtDB.getCriteriaSet(),localisation).toString();
+					String distances = ""; //$NON-NLS-1$
+					for(int dist : fisrtDB.getDistance()) {
+						if(!distances.isEmpty())
+							distances += ", "; //$NON-NLS-1$
+						distances += dist + "m"; //$NON-NLS-1$
+					}
+					formattedString += "<br><span style=\"font-weight: normal;\">"; //$NON-NLS-1$
+					formattedString += "&nbsp;&nbsp;&nbsp;" + localisation.getResourceString("reglement.distance") + ": " + distances + "<br>";  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+					formattedString += "&nbsp;&nbsp;&nbsp;" + localisation.getResourceString("reglement.blason") + ": " + fisrtDB.getTargetFace().getName() + "<br>";  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+					if(dbSet.get().size() > 1) {
+						String blasonsalt = ""; //$NON-NLS-1$
+						boolean first = true;
+						for(DistancesEtBlason db : dbSet.get()) {
+							if(first) {
+								first = false;
+								continue;
+							}
+							if(!blasonsalt.isEmpty())
+								blasonsalt += ", "; //$NON-NLS-1$
+							blasonsalt += db.getTargetFace().getName();
+						}
+						formattedString += "&nbsp;&nbsp;&nbsp;" + localisation.getResourceString("reglement.blasonsalt") + " " + blasonsalt; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+					} else {
+						formattedString += "&nbsp;&nbsp;&nbsp;" + localisation.getResourceString("reglement.blasonsaltnull"); //$NON-NLS-1$ //$NON-NLS-2$
+					}
+					formattedString += "</span></html>";  //$NON-NLS-1$
+					
+					value = formattedString;
+				}
 
+				return super.getListCellRendererComponent(list, value, index, isSelected,
+						cellHasFocus);
+			}
+		});
+		
 		gridbagComposer.setParentPanel(panel);
 
 		c.gridy = 0;
-		c.gridwidth = 2;
+		c.gridwidth = 1;
 		c.weightx = 1.0;
 		c.anchor = GridBagConstraints.NORTHWEST;
 		gridbagComposer.addComponentIntoGrid(jlReglementName, c);
+		gridbagComposer.addComponentIntoGrid(jtfReglementName, c);
 		c.gridy++;
+		c.gridwidth = 2;
 		gridbagComposer.addComponentIntoGrid(Box.createVerticalStrut(30), c);
 		c.gridy++;
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -362,8 +374,12 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		c.weightx = 0.0;
 		gridbagComposer.addComponentIntoGrid(jlDepartages, c);
 		c.weightx = 1.0;
-		gridbagComposer.addComponentIntoGrid(jpDepartages, c);
+		gridbagComposer.addComponentIntoGrid(jtfDepartages, c);
 		c.gridy++;
+		c.gridx = 1;
+		gridbagComposer.addComponentIntoGrid(jlDepartagesInfo, c);
+		c.gridy++;
+		c.gridx = GridBagConstraints.RELATIVE;
 		gridbagComposer.addComponentIntoGrid(jcbOfficialReglement, c);
 		c.gridy++;
 		c.weighty = 1.0;
@@ -382,6 +398,26 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		treeCriteria.addMouseListener(this);
 		treeCriteria.setToggleClickCount(3);
 		treeCriteria.setKeepExpansionState(true);
+		treeCriteria.setCellRenderer(new DefaultTreeCellRenderer() {
+			/* (non-Javadoc)
+			 * @see javax.swing.tree.DefaultTreeCellRenderer#getTreeCellRendererComponent(javax.swing.JTree, java.lang.Object, boolean, boolean, boolean, int, boolean)
+			 */
+			@Override
+			public Component getTreeCellRendererComponent(JTree tree,
+					Object value, boolean sel, boolean expanded, boolean leaf,
+					int row, boolean hasFocus) {
+				if(value instanceof DefaultMutableTreeNode) {
+					Object o = ((DefaultMutableTreeNode)value).getUserObject();
+					if(o instanceof Criterion)
+						value = ((Criterion)o).getLibelle();
+					else if(o instanceof CriterionElement)
+						value = ((CriterionElement)o).getLibelle();
+				}
+					
+				return super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf,
+						row, hasFocus);
+			}
+		});
 
 		jpDifCriteria.setLayout(new BorderLayout());
 
@@ -417,9 +453,23 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	    	@Override
 	    	public Component getTableCellRendererComponent(JTable table, Object value,
 	    			boolean isSelected, boolean hasFocus, int row, int column) {
-	    		return super.getTableCellRendererComponent(table, new CriteriaSetLibelle((CriteriaSet)value, localisation), isSelected, hasFocus, row, column);
+	    		if(value instanceof CriteriaSet)
+	    			value = new CriteriaSetLibelle((CriteriaSet)value, localisation);
+	    		return super.getTableCellRendererComponent(table, 
+	    				value, isSelected, hasFocus, row, column);
 	    	}
 	    });
+		jcbCriteriaSet.setRenderer(new DefaultListCellRenderer() {
+			@Override
+			public Component getListCellRendererComponent(JList list,
+					Object value, int index, boolean isSelected,
+					boolean cellHasFocus) {
+				if(value instanceof CriteriaSet)
+					value = new CriteriaSetLibelle((CriteriaSet)value, localisation);
+				return super.getListCellRendererComponent(list, value, index, isSelected,
+						cellHasFocus);
+			}
+		});
 		
 		jpCriteriaSet.setLayout(new BorderLayout());
 		jpCriteriaSet.add(BorderLayout.CENTER, new JScrollPane(jtCriteriaSet));
@@ -431,15 +481,25 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		JPanel jpConcours = new JPanel();
 
 		jspDistanceBlason.setPreferredSize(new Dimension(400, 250));
-		jtDistanceBlason.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-		jtDistanceBlason.setPreferredScrollableViewportSize(new Dimension(450, 200));
-		jtDistanceBlason.setDefaultRenderer(CriteriaSet.class, new DefaultTableCellRenderer() {
+		ajlDistancesBlasons.addMouseListener(this);
+		//jtDistanceBlason.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+		//jtDistanceBlason.setPreferredScrollableViewportSize(new Dimension(450, 200));
+		/*jtDistanceBlason.setDefaultRenderer(CriteriaSet.class, new DefaultTableCellRenderer() {
 	    	@Override
 	    	public Component getTableCellRendererComponent(JTable table, Object value,
 	    			boolean isSelected, boolean hasFocus, int row, int column) {
 	    		return super.getTableCellRendererComponent(table, new CriteriaSetLibelle((CriteriaSet)value, localisation), isSelected, hasFocus, row, column);
 	    	}
 	    });
+		jtDistanceBlason.setDefaultRenderer(Blason.class, new DefaultTableCellRenderer() {
+	    	@Override
+	    	public Component getTableCellRendererComponent(JTable table, Object value,
+	    			boolean isSelected, boolean hasFocus, int row, int column) {
+	    		if(value == null)
+	    			value = " "; //$NON-NLS-1$
+	    		return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+	    	}
+	    });*/
 
 		jpConcours.setLayout(new BorderLayout());
 		jpConcours.add(BorderLayout.NORTH, jlNbDB);
@@ -463,32 +523,40 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 
 	private void completeGeneral() {
 		if (reglement.isOfficialReglement())
-			verrou = LOCK_CHANGE_L2;
+			verrou = true;
 
-		switch (verrou) {
-			case LOCK_CHANGE_L2:
-				jtfNbMembresEquipe.setEditable(false);
-				jtfNbMembresRetenu.setEditable(false);
-	
-				jbAddCriteria.setEnabled(false);
-				jbAddCriteriaMember.setEnabled(false);
-				jbDownElement.setEnabled(false);
-				jbUpElement.setEnabled(false);
-				jbRemoveElement.setEnabled(false);
-			case LOCK_CHANGE_L1:
-				jtfNbSerie.setEditable(false);
-				jtfNbVoleeParSerie.setEditable(false);
-				jtfNbFlecheParVolee.setEditable(false);
+		if(verrou) {
+			jtfReglementName.setEditable(false);
+			
+			jtfNbSerie.setEditable(false);
+			jtfNbVoleeParSerie.setEditable(false);
+			jtfNbFlecheParVolee.setEditable(false);
+			jtfNbMembresEquipe.setEditable(false);
+			jtfNbMembresRetenu.setEditable(false);
+			jtfDepartages.setEditable(false);
+
+			jbAddCriteria.setEnabled(false);
+			jbAddCriteriaMember.setEnabled(false);
+			jbDownElement.setEnabled(false);
+			jbUpElement.setEnabled(false);
+			jbRemoveElement.setEnabled(false);
 		}
 
-		jlReglementName.setText(localisation.getResourceString("reglement.name") + " " + reglement.getDisplayName()); //$NON-NLS-1$ //$NON-NLS-2$
+		jtfReglementName.setText(reglement.getDisplayName()); 
 
 		jtfNbSerie.setText(reglement.getNbSerie() + ""); //$NON-NLS-1$
 		jtfNbVoleeParSerie.setText(reglement.getNbVoleeParSerie() + ""); //$NON-NLS-1$
 		jtfNbFlecheParVolee.setText(reglement.getNbFlecheParVolee() + ""); //$NON-NLS-1$
 		jtfNbMembresEquipe.setText(reglement.getNbMembresEquipe() + ""); //$NON-NLS-1$
 		jtfNbMembresRetenu.setText(reglement.getNbMembresRetenu() + ""); //$NON-NLS-1$
-		ajlDepartages.setListData(reglement.getTie().toArray());
+		
+		jtfDepartages.setText(""); //$NON-NLS-1$
+		for(String departage : reglement.getTie()) {
+			String tmp = "";  //$NON-NLS-1$
+			if(!jtfDepartages.getText().isEmpty())
+				tmp = jtfDepartages.getText() + ","; //$NON-NLS-1$
+			jtfDepartages.setText(tmp + departage);
+		}
 
 		jcbOfficialReglement.setSelected(reglement.isOfficialReglement());
 		if (System.getProperty("debug.mode") == null) { //$NON-NLS-1$
@@ -512,7 +580,6 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 			}
 		}
 		treeModel.reload();
-		jspDistanceBlason.setViewportView(jtDistanceBlason);
 	}
 	
 	private void completeCriteriaSet() {
@@ -525,54 +592,63 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		    		localisation.getResourceString("reglement.surclassement.enable"), "", ""} );  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 		    jtCriteriaSet.setTableHeader(header);
 			
-			TableColumn cH = jtCriteriaSet.getColumnModel().getColumn(2);
-			cH.setCellEditor(new DefaultCellEditor(jcbCriteriaSet) {
-				/* (non-Javadoc)
-				 * @see javax.swing.DefaultCellEditor#getTableCellEditorComponent(javax.swing.JTable, java.lang.Object, boolean, int, int)
-				 */
-				@Override
-				public Component getTableCellEditorComponent(JTable table,
-						Object value, boolean isSelected, int row, int column) {
-					
-					jcbCriteriaSet.removeAllItems();
-					jcbCriteriaSet.addItem(""); //$NON-NLS-1$
-					CriteriaSet tmpCs = (CriteriaSet)table.getValueAt(row, 1);
-					
-					if(!reglement.getSurclassement().containsValue(tmpCs)) {
-						for(CriteriaSet cs : CriteriaSet.listCriteriaSet(reglement, reglement.getClassementFilter())) {
-							if(!tmpCs.equals(cs) && !reglement.getSurclassement().containsKey(cs))
-								jcbCriteriaSet.addItem(cs);
+		    if(!verrou) {
+				TableColumn cH = jtCriteriaSet.getColumnModel().getColumn(2);
+				cH.setCellEditor(new DefaultCellEditor(jcbCriteriaSet) {
+					/* (non-Javadoc)
+					 * @see javax.swing.DefaultCellEditor#getTableCellEditorComponent(javax.swing.JTable, java.lang.Object, boolean, int, int)
+					 */
+					@Override
+					public Component getTableCellEditorComponent(JTable table,
+							Object value, boolean isSelected, int row, int column) {
+						
+						jcbCriteriaSet.removeAllItems();
+						jcbCriteriaSet.addItem(" "); //$NON-NLS-1$
+						CriteriaSet tmpCs = (CriteriaSet)table.getValueAt(row, 1);
+						
+						if(!reglement.getSurclassement().containsValue(tmpCs)) {
+							for(CriteriaSet cs : CriteriaSet.listCriteriaSet(reglement, reglement.getClassementFilter())) {
+								if(!tmpCs.equals(cs) && !reglement.getSurclassement().containsKey(cs))
+									jcbCriteriaSet.addItem(cs);
+							}
 						}
+	
+						return super.getTableCellEditorComponent(table, value, isSelected, row, column);
 					}
-					return super.getTableCellEditorComponent(table, value, isSelected, row, column);
-				}
-			});
-		}
-		
-		if (verrou != NO_LOCK) {
-			jtCriteriaSet.setEnabled(false);
+				});
+		    }
 		}
 	}
 
 	private void completeDistancesEtBlasons() {
-		if (reglement != null)
-			jtDistanceBlason.setModel(createTableModel());
+		if (reglement == null)
+			return;
 		
-		try {
-			List<Blason> blasons = Blason.listAvailableTargetFace();
-			jcbBlasons.removeAllItems();
-			for(Blason blason : blasons)
-				jcbBlasons.addItem(blason);
-			TableColumn cH = jtDistanceBlason.getColumnModel().getColumn(jtDistanceBlason.getColumnModel().getColumnCount() - 1);
-			cH.setCellEditor(new DefaultCellEditor(jcbBlasons));
-		} catch (SQLException e) {
-			JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
-					null, null, e, Level.SEVERE, null));
-			e.printStackTrace();
-		}
-
-		if (verrou != NO_LOCK) {
-			jtDistanceBlason.setEnabled(false);
+		//s'assure que le nombre de serie est correct
+		reglement.setNbSerie(Integer.parseInt(jtfNbSerie.getText()));
+		
+		CriteriaSet[] differentiationCriteria = reglement.getValidPlacementCriteriaSet();
+		
+		ajlDistancesBlasons.clear();
+		for (CriteriaSet plCS : differentiationCriteria) {
+			if (reglement.getDistancesEtBlasonFor(plCS).size() > 0) {
+				ajlDistancesBlasons.add(new DistancesBlasonsSet(reglement.getDistancesEtBlasonFor(plCS)));
+			} else {
+				DistancesEtBlason newDb = new DistancesEtBlason();
+				newDb.setCriteriaSet(plCS);
+				newDb.setDistance(new int[reglement.getNbSerie()]);
+				Blason defaultBlason = new Blason();
+				try {
+					List<Blason> availableTargetFace = Blason.listAvailableTargetFace();
+					if(availableTargetFace.size() > 0)
+						defaultBlason = availableTargetFace.get(0);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				newDb.setTargetFace(defaultBlason);
+				
+				ajlDistancesBlasons.add(new DistancesBlasonsSet(Collections.singletonList(newDb)));
+			}
 		}
 	}
 	
@@ -580,7 +656,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		DefaultTableModel dtm = new DefaultTableModel() {
 			@Override
 			public boolean isCellEditable(int row, int col) {
-				if (col == 1 || reglement.isOfficialReglement())
+				if (verrou || col == 1 || reglement.isOfficialReglement())
 					return false;
 				return true;
 			}
@@ -602,62 +678,10 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 			dtm.addRow(new Object[] {
 					enable,
 					differentiationCriteria[i],
-					(criteriaSet != null) ? criteriaSet : "" //$NON-NLS-1$
+					criteriaSet
 				});
 		}
 		
-		return dtm;
-	}
-
-	private DefaultTableModel createTableModel() {
-		assert reglement != null : "ne peut creer le tableau avec un reglement null"; //$NON-NLS-1$
-
-		DefaultTableModel dtm = new DefaultTableModel() {
-			@Override
-			public boolean isCellEditable(int row, int col) {
-				if (col == 0 || reglement.isOfficialReglement())
-					return false;
-				return true;
-			}
-		};
-		
-		//s'assure que le nombre de serie est corect
-		reglement.setNbSerie(Integer.parseInt(jtfNbSerie.getText()));
-
-		dtm.addColumn(localisation.getResourceString("configuration.ecran.concours.scna")); //$NON-NLS-1$
-		for (int i = 0; i < reglement.getNbSerie(); i++)
-			dtm.addColumn(localisation.getResourceString("configuration.ecran.concours.distance") + " " + (i + 1)); //$NON-NLS-1$ //$NON-NLS-2$
-		dtm.addColumn(localisation.getResourceString("configuration.ecran.concours.blason")); //$NON-NLS-1$
-
-		CriteriaSet[] differentiationCriteria = reglement.getValidPlacementCriteriaSet();
-		
-		for (CriteriaSet plCS : differentiationCriteria) {
-			//System.out.println(plCS.toString() + ":" + plCS.hashCode());
-			Object[] row = new Object[reglement.getNbSerie() + 2];
-			row[0] = plCS;
-
-			for (int j = 1; j < reglement.getNbSerie() + 1; j++) {
-				if (reglement.getDistancesEtBlasonFor(plCS) != null)
-					row[j] = "" + reglement.getDistancesEtBlasonFor(plCS).getDistance()[j - 1]; //$NON-NLS-1$
-				else
-					row[j] = "0"; //$NON-NLS-1$
-			}
-			if (reglement.getDistancesEtBlasonFor(plCS) != null)
-				row[reglement.getNbSerie() + 1] = reglement.getDistancesEtBlasonFor(plCS).getTargetFace();
-			else {
-				Blason defaultBlason = new Blason();
-				try {
-					List<Blason> availableTargetFace = Blason.listAvailableTargetFace();
-					if(availableTargetFace.size() > 0)
-						defaultBlason = availableTargetFace.get(0);
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-				row[reglement.getNbSerie() + 1] = defaultBlason;
-			}
-			dtm.addRow(row);
-		}
-
 		return dtm;
 	}
 
@@ -683,7 +707,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	/**
 	 * @return verrou
 	 */
-	public int getVerrou() {
+	public boolean isVerrou() {
 		return verrou;
 	}
 
@@ -691,7 +715,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	 * @param verrou
 	 *            verrou à définir
 	 */
-	public void setVerrou(int verrou) {
+	public void setVerrou(boolean verrou) {
 		this.verrou = verrou;
 	}
 
@@ -713,6 +737,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		if (source == this.jbValider) {
 			if (reglement == null)
 				reglement = new Reglement();
+			reglement.setDisplayName(jtfReglementName.getText());
 			reglement.setNbSerie(Integer.parseInt(jtfNbSerie.getText()));
 			reglement.setNbVoleeParSerie(Integer.parseInt(jtfNbVoleeParSerie.getText()));
 			reglement.setNbFlecheParVolee(Integer.parseInt(jtfNbFlecheParVolee.getText()));
@@ -720,58 +745,33 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 			reglement.setNbMembresRetenu(Integer.parseInt(jtfNbMembresRetenu.getText()));
 			
 			reglement.getTie().clear();
-			for(Object o : ajlDepartages.getAllElements())
-				reglement.getTie().add((String)o);
-
-			if(jtDistanceBlason.getCellEditor() != null)
-				jtDistanceBlason.getCellEditor().stopCellEditing();
+			for(String departage : StringUtils.tokenize(jtfDepartages.getText(), ",")) //$NON-NLS-1$
+				reglement.getTie().add(departage);
 			
-			for (int i = 0; i < jtDistanceBlason.getRowCount(); i++) {
-				int[] distances = new int[reglement.getNbSerie()];
-				for (int j = 0; j < distances.length; j++) {
-					if (j < jtDistanceBlason.getModel().getColumnCount() - 2)
-						distances[j] = Integer.parseInt((String) this.jtDistanceBlason.getModel().getValueAt(i, j + 1));
-					else
-						distances[j] = 0;
-				}
-				
-				CriteriaSet placementCriteriaSet = (CriteriaSet)jtDistanceBlason.getModel().getValueAt(i, 0);
-				DistancesEtBlason db = reglement.getDistancesEtBlasonFor(placementCriteriaSet);
-				if (db == null) {
-					db = new DistancesEtBlason(distances, (Blason) jtDistanceBlason.getModel().getValueAt(i, jtDistanceBlason.getModel().getColumnCount() - 1));
-
-					db.setCriteriaSet(placementCriteriaSet);
-
-					reglement.addDistancesEtBlason(db);
-				} else {
-					db.setDistance(distances);
-					db.setTargetFace((Blason)jtDistanceBlason.getModel().getValueAt(i, jtDistanceBlason.getModel().getColumnCount() - 1));
-				}
-			}
-			
-			//supprime du reglement les D/B qui ne sont plus valide
 			List<DistancesEtBlason> activeDB = new ArrayList<DistancesEtBlason>();
-			for (int i = 0; i < jtDistanceBlason.getRowCount(); i++) {
-				CriteriaSet cs = (CriteriaSet)jtDistanceBlason.getModel().getValueAt(i, 0);
-				DistancesEtBlason db = reglement.getDistancesEtBlasonFor(cs);
-				activeDB.add(db);
+			for (DistancesBlasonsSet dbSet : ajlDistancesBlasons.getAllElements()) {
+				for(DistancesEtBlason db : dbSet.get()) {
+					//reglement.addDistancesEtBlason(db);
+					activeDB.add(db);
+				}
 			}
+
 			reglement.getListDistancesEtBlason().clear();
 			reglement.getListDistancesEtBlason().addAll(activeDB);
 
 			reglement.setOfficialReglement(jcbOfficialReglement.isSelected());
-
+			
 			setVisible(false);
 		} else if (source == jbAnnuler) {
 			reglement = null;
 			setVisible(false);
-		}
-		if (source == jbAddCriteria) {
+		} else if (source == jbAddCriteria) {
 			DefaultMutableTreeNode dmtn = (DefaultMutableTreeNode) treeCriteria.getPathForRow(0).getLastPathComponent();
 			if (dmtn != null) {
 				CriterionDialog cd = new CriterionDialog(this, localisation);
 				cd.setLock(verrou);
 				if (cd.showCriterionDialog() != null) {
+					cd.getCriterion().setReglement(reglement);
 					DefaultMutableTreeNode dmtnCrit = new DefaultMutableTreeNode(cd.getCriterion());
 
 					dmtn.add(dmtnCrit);
@@ -786,7 +786,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 				if (dmtnObj instanceof Criterion) {
 					Criterion criterion = (Criterion) dmtnObj;
 
-					if (!(criterion.isPlacement() && verrou != NO_LOCK)) {
+					if (!(criterion.isPlacement() && verrou)) {
 						CriterionElementDialog cpd = new CriterionElementDialog(this, criterion, localisation);
 
 						if (cpd.getCriterionIndividu() != null) {
@@ -821,6 +821,8 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 					dmtnRoot.insert(dmtn, curIndex - 1);
 
 					treeModel.reload();
+					
+					treeCriteria.setSelectionPath(new TreePath(dmtn.getPath()));
 
 					reloadTablesModel();
 				} else if (dmtnObj instanceof CriterionElement) {
@@ -843,6 +845,8 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 					dmtnParent.insert(dmtn, curIndex - 1);
 
 					treeModel.reload();
+					
+					treeCriteria.setSelectionPath(new TreePath(dmtn.getPath()));
 
 					reloadTablesModel();
 				}
@@ -863,6 +867,8 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 					dmtnRoot.insert(dmtn, curIndex + 1);
 
 					treeModel.reload();
+					
+					treeCriteria.setSelectionPath(new TreePath(dmtn.getPath()));
 
 					reloadTablesModel();
 				} else if (dmtnObj instanceof CriterionElement) {
@@ -881,6 +887,8 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 					dmtnParent.insert(dmtn, curIndex + 1);
 
 					treeModel.reload();
+					
+					treeCriteria.setSelectionPath(new TreePath(dmtn.getPath()));
 
 					reloadTablesModel();
 				}
@@ -891,7 +899,6 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 				Object dmtnObj = dmtn.getUserObject();
 				if (dmtnObj instanceof Criterion) {
 					reglement.getListCriteria().remove(dmtnObj);
-					((Criterion) dmtnObj).delete(reglement);
 
 					treeModel.removeNodeFromParent(dmtn);
 
@@ -902,51 +909,47 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 
 					Criterion curCriterion = (Criterion) dmtnParent.getUserObject();
 					curCriterion.getCriterionElements().remove(dmtnObj);
-					((CriterionElement) dmtnObj).delete(reglement.hashCode(), curCriterion.getCode());
 
 					treeModel.removeNodeFromParent(dmtn);
 
 					reloadTablesModel();
 				}
 			}
-		} else if (source == jbAddDepartages) {
-			String departages = JOptionPane.showInputDialog(this, "Valeur de départages");
-			if(departages != null && !departages.isEmpty())
-				ajlDepartages.add(departages);
-		} else if(source == jbRemoveDepartages) {
-			ajlDepartages.remove(ajlDepartages.getSelectedIndex());
-		} else if(source == jbUpDepartages) {
-			
-		} else if(source == jbDownDepartages) {
-			
 		}
 	}
 
 	public void mouseClicked(MouseEvent e) {
-		if (e.getClickCount() == 2) {
-			DefaultMutableTreeNode dmtn = (DefaultMutableTreeNode) treeCriteria.getLastSelectedPathComponent();
-			if(dmtn == null)
-				return;
-			Object dmtnObj = dmtn.getUserObject();
-			if (dmtnObj instanceof Criterion) {
-				TreePath selectedPath = treeCriteria.getSelectionPath();
-				CriterionDialog criterionDialog = new CriterionDialog(this, (Criterion) dmtnObj, localisation);
-				criterionDialog.setLock(verrou);
-				criterionDialog.showCriterionDialog();
-
-				treeModel.reload((TreeNode) treeCriteria.getSelectionPath().getLastPathComponent());
-				treeCriteria.setSelectionPath(selectedPath);
-
-				reloadTablesModel();
-			} else if (dmtnObj instanceof CriterionElement) {
-				TreePath selectedPath = treeCriteria.getSelectionPath();
-				DefaultMutableTreeNode dmtnParent = (DefaultMutableTreeNode) selectedPath.getParentPath().getLastPathComponent();
-				new CriterionElementDialog(this, (Criterion) dmtnParent.getUserObject(), (CriterionElement) dmtnObj, localisation);
-
-				treeModel.reload((TreeNode) treeCriteria.getSelectionPath().getLastPathComponent());
-				treeCriteria.setSelectionPath(selectedPath);
-
-				reloadTablesModel();
+		if(e.getSource() == treeCriteria) {
+			if (e.getClickCount() == 2) {
+				DefaultMutableTreeNode dmtn = (DefaultMutableTreeNode) treeCriteria.getLastSelectedPathComponent();
+				if(dmtn == null)
+					return;
+				Object dmtnObj = dmtn.getUserObject();
+				if (dmtnObj instanceof Criterion) {
+					TreePath selectedPath = treeCriteria.getSelectionPath();
+					CriterionDialog criterionDialog = new CriterionDialog(this, (Criterion) dmtnObj, localisation);
+					criterionDialog.setLock(verrou);
+					criterionDialog.showCriterionDialog();
+	
+					treeModel.reload((TreeNode) treeCriteria.getSelectionPath().getLastPathComponent());
+					treeCriteria.setSelectionPath(selectedPath);
+	
+					reloadTablesModel();
+				} else if (dmtnObj instanceof CriterionElement) {
+					TreePath selectedPath = treeCriteria.getSelectionPath();
+					DefaultMutableTreeNode dmtnParent = (DefaultMutableTreeNode) selectedPath.getParentPath().getLastPathComponent();
+					new CriterionElementDialog(this, (Criterion) dmtnParent.getUserObject(), (CriterionElement) dmtnObj, localisation);
+	
+					treeModel.reload((TreeNode) treeCriteria.getSelectionPath().getLastPathComponent());
+					treeCriteria.setSelectionPath(selectedPath);
+	
+					reloadTablesModel();
+				}
+			}
+		} else if(e.getSource() == ajlDistancesBlasons) {
+			if (e.getClickCount() == 2 && !verrou) {
+				DistancesBlasonsDialog dbDialog = new DistancesBlasonsDialog(parentframe, profile);
+				dbDialog.showDistancesBlasonsDialog(((DistancesBlasonsSet)ajlDistancesBlasons.getSelectedValue()).get());
 			}
 		}
 	}
@@ -1000,18 +1003,35 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		else
 			reglement.getSurclassement().remove(criteriaSet);
 		
-		jtDistanceBlason.setModel(createTableModel());
-		try {
-			List<Blason> blasons = Blason.listAvailableTargetFace();
-			jcbBlasons.removeAllItems();
-			for(Blason blason : blasons)
-				jcbBlasons.addItem(blason);
-			TableColumn cH = jtDistanceBlason.getColumnModel().getColumn(jtDistanceBlason.getColumnModel().getColumnCount() - 1);
-			cH.setCellEditor(new DefaultCellEditor(jcbBlasons));
-		} catch (SQLException e1) {
-			JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
-					null, null, e1, Level.SEVERE, null));
-			e1.printStackTrace();
+		completeDistancesEtBlasons();
+	}
+
+	private class DistancesBlasonsSet {
+		private List<DistancesEtBlason> dbList = new ArrayList<DistancesEtBlason>();
+		
+		public DistancesBlasonsSet() {
+		}
+		
+		public DistancesBlasonsSet(List<DistancesEtBlason> dbList) {
+			set(dbList);
+		}
+		
+		public List<DistancesEtBlason> get() {
+			return dbList;
+		}
+		
+		public void set(List<DistancesEtBlason> dbList) {
+			if(!(dbList instanceof ArrayList))
+				dbList = new ArrayList<DistancesEtBlason>(dbList);
+			this.dbList = dbList;
+		}
+		
+		public void add(DistancesEtBlason distancesEtBlason) {
+			dbList.add(distancesEtBlason);
+		}
+		
+		public void remove(DistancesEtBlason distancesEtBlason) {
+			dbList.remove(distancesEtBlason);
 		}
 	}
 }

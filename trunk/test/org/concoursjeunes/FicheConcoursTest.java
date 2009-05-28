@@ -73,7 +73,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -86,11 +86,16 @@
  */
 package org.concoursjeunes;
 
+import java.io.IOException;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
+
 import junit.framework.TestCase;
 
 import org.concoursjeunes.builders.ConcurrentBuilder;
-import org.concoursjeunes.event.ConcoursJeunesEvent;
-import org.concoursjeunes.event.ConcoursJeunesListener;
+import org.concoursjeunes.event.ProfileEvent;
+import org.concoursjeunes.event.ProfileListener;
 import org.concoursjeunes.exceptions.FicheConcoursException;
 import org.concoursjeunes.exceptions.NullConfigurationException;
 import org.junit.After;
@@ -103,6 +108,7 @@ import org.junit.Test;
 public class FicheConcoursTest extends TestCase {
 	
 	private ApplicationCore concoursJeunes;
+	private Profile profile;
 	private FicheConcours ficheConcours;
 
 	/**
@@ -112,24 +118,26 @@ public class FicheConcoursTest extends TestCase {
 	@Override
 	public void setUp() throws Exception {
 		concoursJeunes = ApplicationCore.getInstance();
+		profile = new Profile();
+		concoursJeunes.addProfile(profile);
 		
-		concoursJeunes.addConcoursJeunesListener(new ConcoursJeunesListener() {
+		profile.addProfileListener(new ProfileListener() {
 
-			public void ficheConcoursClosed(ConcoursJeunesEvent concoursJeunesEvent) {}
+			public void ficheConcoursClosed(ProfileEvent concoursJeunesEvent) {}
 			/* (non-Javadoc)
 			 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursCreated(org.concoursjeunes.ConcoursJeunesEvent)
 			 */
-			public void ficheConcoursCreated(ConcoursJeunesEvent concoursJeunesEvent) {
+			public void ficheConcoursCreated(ProfileEvent concoursJeunesEvent) {
 				ficheConcours = concoursJeunesEvent.getFicheConcours();
 			}
-			public void ficheConcoursDeleted(ConcoursJeunesEvent concoursJeunesEvent) {}
-			public void ficheConcoursRestored(ConcoursJeunesEvent concoursJeunesEvent) {}
-			public void configurationChanged(ConcoursJeunesEvent concoursJeunesEvent) {}
+			public void ficheConcoursDeleted(ProfileEvent concoursJeunesEvent) {}
+			public void ficheConcoursRestored(ProfileEvent concoursJeunesEvent) {}
+			public void configurationChanged(ProfileEvent concoursJeunesEvent) {}
 			
 		});
 		
-		Parametre parametre = new Parametre(ApplicationCore.getConfiguration());
-		concoursJeunes.createFicheConcours(parametre);
+		Parametre parametre = new Parametre(profile.getConfiguration());
+		profile.createFicheConcours(parametre);
 	}
 	
 	@Test
@@ -177,8 +185,14 @@ public class FicheConcoursTest extends TestCase {
 	@Override
 	public void tearDown() {
 		try {
-			concoursJeunes.deleteFicheConcours(ficheConcours.getMetaDataFicheConcours());
+			profile.deleteFicheConcours(ficheConcours.getMetaDataFicheConcours());
 		} catch (NullConfigurationException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		} catch (XMLStreamException e) {
 			e.printStackTrace();
 		}
 	}

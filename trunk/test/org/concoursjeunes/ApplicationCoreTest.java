@@ -1,7 +1,5 @@
 /*
- * Créer le 14 mars 2009 à 20:04:51 pour ConcoursJeunes
- *
- * Copyright 2002-2009 - Aurélien JEOFFRAY
+ * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
  *
@@ -75,7 +73,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -88,88 +86,76 @@
  */
 package org.concoursjeunes;
 
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map.Entry;
+import java.io.File;
+import java.sql.SQLException;
 
-import org.ajdeveloppement.commons.AjResourcesReader;
+import junit.framework.TestCase;
+
+import org.concoursjeunes.event.ApplicationCoreEvent;
+import org.concoursjeunes.event.ApplicationCoreListener;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
- * @author Aurélien JEOFFRAY
- *
+ * @author  Aurélien JEOFFRAY
  */
-public class TargetLibelle {
-	private Target target;
-	private AjResourcesReader localisation;
+public class ApplicationCoreTest extends TestCase {
+	
+	ApplicationCore concoursJeunes;
+	Profile profile;
 
-	public TargetLibelle(Target target, AjResourcesReader localisation) {
-		super();
-		this.target = target;
-		this.localisation = localisation;
+	@Before
+	@Override
+	public void setUp() throws Exception {
+		ApplicationCore.initializeApplication();
+		concoursJeunes = ApplicationCore.getInstance();
 	}
 
-	/**
-	 * @return target
-	 */
-	public Target getTarget() {
-		return target;
+	@Test
+	public void testApplicationCore() {
+		//test que ConcoursJeunes accédent correctement aux fichiers
+		//ressources
+		assertNotNull(ApplicationCore.staticParameters);
+		assertEquals(ApplicationCore.staticParameters.getResourceString("path.ressources"), "ressources"); //$NON-NLS-1$ //$NON-NLS-2$
+		
+		//test l'accès au fichier de config
+		assertNotNull(ApplicationCore.getAppConfiguration());
+		//test l'accès aux ressources utilisateur
+		assertNotNull(ApplicationCore.userRessources);
+		if(System.getProperty("os.name").startsWith("Windows")) //$NON-NLS-1$ //$NON-NLS-2$
+			assertEquals(ApplicationCore.userRessources.getUserPath(), System.getenv("APPDATA") + File.separator + AppInfos.NOM); //$NON-NLS-1$
+		else
+			assertEquals(ApplicationCore.userRessources.getUserPath(), System.getProperty("user.home") + File.separator + "." + AppInfos.NOM); //$NON-NLS-1$ //$NON-NLS-2$
+		
+		//test la base de donnée
+		assertNotNull(ApplicationCore.dbConnection);
+		try {
+			assertFalse(ApplicationCore.dbConnection.isClosed());
+			ApplicationCore.dbConnection.close();
+		} catch (SQLException e) {
+			fail(e.getLocalizedMessage());
+			e.printStackTrace();
+		}
 	}
 	
-	@Override
-	public String toString() {
-		String strCouleur = "<font color=\"#00AA00\">"; //$NON-NLS-1$
-		if (target.getNbMaxArchers() == target.getNbArcher() + target.getNbHandicap())
-			strCouleur = "<font color=\"#0000FF\">"; //$NON-NLS-1$
-		String strCibleLibelle = "<html>" + strCouleur + "<b>" + localisation.getResourceString("treenode.cible") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				+ ((target.getNumCible() < 10) ? "0" : "") //$NON-NLS-1$ //$NON-NLS-2$
-				+ target.getNumCible() + "</b> ("; //$NON-NLS-1$
-		if(target.getDistancesEtBlason().size() > 0) {
-			List<DistancesEtBlason> dbs = target.getDistancesEtBlason();
-			if (dbs != null && dbs.size() > 0) {
-				//Sur une cible, les distances des differents objets sont réputées être identique
-				for (int i = 0; i < dbs.get(0).getDistance().length; i++) {
-					if (i == 0 || (i > 0 && dbs.get(0).getDistance()[i] != dbs.get(0).getDistance()[i - 1])) {
-						if (i > 0)
-							strCibleLibelle += "/"; //$NON-NLS-1$
-						strCibleLibelle += dbs.get(0).getDistance()[i] + "m"; //$NON-NLS-1$
-					}
-				}
-				strCibleLibelle += ", "; //$NON-NLS-1$
-				
-				//Les blasons sont eux toujours différent
-				for (int i = 0; i < dbs.size(); i++) {
-					if (i == 0 || (i > 0 && !dbs.get(i).getTargetFace().equals(dbs.get(i - 1).getTargetFace()))) {
-						if (i > 0)
-							strCibleLibelle += "/"; //$NON-NLS-1$
-						strCibleLibelle += dbs.get(i).getTargetFace().getName();
-					}
-				}
+	@Test
+	public void testAddRemoveProfile() {
+		concoursJeunes.addApplicationCoreListener(new ApplicationCoreListener() {
+			@Override
+			public void profileAdded(ApplicationCoreEvent e) {
+				profile = e.getProfile();
 			}
-		}
-
-		strCibleLibelle += ") (" + target.getNbArcher() + "/" + (target.getNbMaxArchers() - target.getNbHandicap()) + ")</font>"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-
-		Hashtable<Entite, Integer> nbArcherByClub = new Hashtable<Entite, Integer>();
-		for (Concurrent concurrent : target.getAllConcurrents()) {
-			if(!nbArcherByClub.containsKey(concurrent.getClub()))
-				nbArcherByClub.put(concurrent.getClub(), 0);
-			nbArcherByClub.put(concurrent.getClub(), nbArcherByClub.get(concurrent.getClub())+1);
-		}
-		
-		if (nbArcherByClub.size() == 1 && target.getNbArcher() > 1)
-			strCibleLibelle += localisation.getResourceString("target.sameclub"); //$NON-NLS-1$
-		else if (target.getNbArcher() == 1)
-			strCibleLibelle += localisation.getResourceString("target.onlyone"); //$NON-NLS-1$
-		else {
-			for(Entry<Entite, Integer> nbarch : nbArcherByClub.entrySet()) {
-				if(nbarch.getValue() > 2) {
-					strCibleLibelle += localisation.getResourceString("target.morethan2sameclub"); //$NON-NLS-1$
-					break;
-				}
+			@Override
+			public void profileRemoved(ApplicationCoreEvent e) {
+				profile = e.getProfile();
 			}
-		}
-		strCibleLibelle += "</html>"; //$NON-NLS-1$
-
-		return strCibleLibelle;
+			
+		});
+		Profile p = new Profile();
+		concoursJeunes.addProfile(p);
+		assertNotNull(profile);
+		profile = null;
+		concoursJeunes.removeProfile(p);
+		assertNotNull(profile);
 	}
 }

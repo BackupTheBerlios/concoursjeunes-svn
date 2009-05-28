@@ -73,7 +73,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -103,6 +103,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.logging.Level;
 
 import javax.script.ScriptException;
@@ -152,6 +153,7 @@ import org.concoursjeunes.state.Categories.Category;
 import org.concoursjeunes.ui.dialog.ConcurrentDialog;
 import org.concoursjeunes.ui.dialog.ParametreDialog;
 import org.concoursjeunes.ui.dialog.ResultatDialog;
+import org.jdesktop.swingx.JXBusyLabel;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.JXTaskPane;
 import org.jdesktop.swingx.JXTaskPaneContainer;
@@ -217,11 +219,12 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	private JCheckBox jcbSave = new JCheckBox();
 	@Localisable("state.print")
 	private JButton jbPrint = new JButton();
+	private JXBusyLabel jxbPrint = new JXBusyLabel();
 	@Localisable(value="",tooltip="state.opendocument")
 	private JButton jbOpenDocument = new JButton();
 	@Localisable(value="",tooltip="state.deletedocument")
 	private JButton jbDeleteDocument = new JButton();
-	private AJList ajlDocuments = new AJList();
+	private AJList<File> ajlDocuments = new AJList<File>();
 
 	public ParametreDialog paramDialog;
 	public ConcurrentDialog concDialog;
@@ -238,12 +241,12 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	 * @param parentframe
 	 * @param ficheConcours
 	 */
-	public FicheConcoursPane(ConcoursJeunesFrame parentframe, FicheConcours ficheConcours, AjResourcesReader localisation) {
+	public FicheConcoursPane(ConcoursJeunesFrame parentframe, FicheConcours ficheConcours) {
 		this.parentframe = parentframe;
 		this.ficheConcours = ficheConcours;
-		this.localisation = localisation;
+		this.localisation = parentframe.profile.getLocalisation();
 		
-		paramDialog = new ParametreDialog(parentframe, parentframe.profile, ficheConcours, localisation);
+		paramDialog = new ParametreDialog(parentframe, parentframe.profile, ficheConcours);
 		
 		if(!ficheConcours.getParametre().isReglementLock()) {
 			paramDialog.showParametreDialog(ficheConcours.getParametre());
@@ -251,7 +254,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		
 		init();
 		completeListDocuments();
-		concDialog = new ConcurrentDialog(parentframe, localisation, parentframe.profile, ficheConcours);
+		concDialog = new ConcurrentDialog(parentframe, parentframe.profile, ficheConcours);
 	}
 
 	/**
@@ -423,21 +426,27 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		
 		JXTaskPaneContainer taskPaneContainer = new JXTaskPaneContainer();
 		
-		//charge le gestionnaire d'etat
-		stateManager = new StateManager();
-		
-		//charge les etats trouvé
-		for(Category categorie : stateManager.getCategories().getCategorie()) {
-			java.util.List<State> states = stateManager.getStates(categorie.getName());
-			if(states.size() > 0) {
-				JXTaskPane taskPane = new JXTaskPane();
-				taskPane.setTitle(categorie.getLocalizedLibelle());
-				
-				for(State state : states)
-					taskPane.add(printGenAction(state));
-				
-				taskPaneContainer.add(taskPane);
+		try {
+			//charge le gestionnaire d'etat
+			stateManager = new StateManager();
+			
+			//charge les etats trouvé
+			for(Category categorie : stateManager.getCategories().getCategorie()) {
+				java.util.List<State> states = stateManager.getStates(categorie.getName());
+				if(states.size() > 0) {
+					JXTaskPane taskPane = new JXTaskPane();
+					taskPane.setTitle(categorie.getLocalizedLibelle());
+					
+					for(State state : states)
+						taskPane.add(printGenAction(state));
+					
+					taskPaneContainer.add(taskPane);
+				}
 			}
+		} catch (ScriptException e) {
+			JXErrorPane.showDialog(parentframe, new ErrorInfo(parentframe.profile.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+					null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
 		}
 		
 		panel.setLayout(new BorderLayout());
@@ -487,17 +496,21 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		composer.addComponentIntoGrid(jlDepart, c);
 		c.weightx = 1.0;
 		composer.addComponentIntoGrid(jcbDeparts, c);
+		c.gridwidth = 2;
 		composer.addComponentIntoGrid(jlCurrentStateName, c);
 		c.gridy++;
 		c.weightx = 0;
+		c.gridwidth = 1;
 		composer.addComponentIntoGrid(jlSerie, c);
 		c.weightx = 1.0;
 		composer.addComponentIntoGrid(jcbSeries, c);
 		c.gridy++;
 		c.weightx = 0; c.gridwidth = 2;
 		composer.addComponentIntoGrid(jcbSave, c);
-		c.weightx = 1.0; c.gridwidth = 1;
+		c.weightx = 0.0; c.gridwidth = 1; c.insets = new Insets(0,0,0,10);
 		composer.addComponentIntoGrid(jbPrint, c);
+		c.weightx = 1.0;
+		composer.addComponentIntoGrid(jxbPrint, c);
 		
 		JPanel docActions = new JPanel();
 		docActions.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -587,20 +600,32 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	/**
 	 * Affiche la boite de dialogue de gestion des concurrents
 	 * 
-	 * @param concurrent - le concurrent à editer
+	 * @param editedConcurrent - le concurrent à editer
+	 * @param concurrents - la liste des concurrents entourant le concurrent à éditer nécessaire pour les
+	 * fonctions précédent/suivant. null si non utilisé
 	 */
-	public void openConcurrentDialog(Concurrent concurrent) {
-		if(concurrent != null) {
-			int codeRetour = concDialog.showConcurrentDialog(concurrent);
-			if(codeRetour == ConcurrentDialog.CONFIRM_AND_NEXT 
-					|| codeRetour == ConcurrentDialog.CONFIRM_AND_PREVIOUS) {
+	public void openConcurrentDialog(Concurrent editedConcurrent, List<Concurrent> concurrents) {
+		if(editedConcurrent != null) {
+			boolean hasPrevious = false;
+			boolean hasNext = false;
+			if(concurrents != null) {
+				int index = concurrents.indexOf(editedConcurrent);
+				if(index > 0)
+					hasPrevious = true;
+				if(index+1 < concurrents.size())
+					hasNext = true;
+			}
+			int codeRetour = concDialog.showConcurrentDialog(editedConcurrent, hasPrevious, hasNext);
+			if(concurrents != null && (codeRetour == ConcurrentDialog.CONFIRM_AND_NEXT 
+					|| codeRetour == ConcurrentDialog.CONFIRM_AND_PREVIOUS)) {
 				
+				int index = concurrents.indexOf(editedConcurrent);
 				if(codeRetour == ConcurrentDialog.CONFIRM_AND_NEXT) {
-					openConcurrentDialog(ficheConcours.getConcurrentList().nextConcurrent(concurrent));
+					if(index > -1 && index + 1 < concurrents.size())
+						openConcurrentDialog(concurrents.get(index + 1), concurrents);
 				} else {
-					assert codeRetour == ConcurrentDialog.CONFIRM_AND_PREVIOUS;
-					
-					openConcurrentDialog(ficheConcours.getConcurrentList().previousConcurrent(concurrent));
+					if(index > 0)
+						openConcurrentDialog(concurrents.get(index - 1), concurrents);
 				}
 			}
 		}
@@ -611,8 +636,8 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	 * 
 	 */
 	public void openResultatDialog() {
-		Concurrent[] concurrents = ficheConcours.getConcurrentList().list(index, ficheConcours.getCurrentDepart());
-		if(concurrents.length == 0)
+		List<Concurrent> concurrents = ficheConcours.getConcurrentList().list(index, ficheConcours.getCurrentDepart());
+		if(concurrents.size() == 0)
 			return;
 		ResultatDialog resultat = new ResultatDialog(parentframe, localisation, parentframe.profile,
 				ficheConcours.getParametre(), concurrents);
@@ -625,11 +650,11 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		if(returnVal == ResultatDialog.NEXT_TARGET) {
 			do {
 				index++;
-			} while(ficheConcours.getConcurrentList().list(index, ficheConcours.getCurrentDepart()).length == 0 && index <= ficheConcours.getParametre().getNbCible());
+			} while(ficheConcours.getConcurrentList().list(index, ficheConcours.getCurrentDepart()).size() == 0 && index <= ficheConcours.getParametre().getNbCible());
 		} else if(returnVal == ResultatDialog.PREVIOUS_TARGET) {
 			do {
 				index--;
-			} while(ficheConcours.getConcurrentList().list(index, ficheConcours.getCurrentDepart()).length == 0 && index > 0);
+			} while(ficheConcours.getConcurrentList().list(index, ficheConcours.getCurrentDepart()).size() == 0 && index > 0);
 		}
 
 		if(returnVal != ResultatDialog.SAVE_AND_QUIT && (index > 0 && index <= ficheConcours.getParametre().getNbCible())) {
@@ -673,6 +698,8 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 				StateProcessor sp = new StateProcessor(currentState, parentframe.profile, ficheConcours);
 				sp.process(jcbDeparts.getSelectedIndex(), jcbSeries.getSelectedIndex(), jcbSave.isSelected());
 				completeListDocuments();
+				jxbPrint.setBusy(false);
+				jxbPrint.setText(""); //$NON-NLS-1$
 			} catch (FileNotFoundException e) {
 				JXErrorPane.showDialog(parentframe, new ErrorInfo(parentframe.profile.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 						null, null, e, Level.SEVERE, null));
@@ -767,7 +794,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		if(source == jbResultat) {
 			index = 1;
 			while(index < ficheConcours.getParametre().getNbCible() 
-					&& ficheConcours.getConcurrentList().list(index, ficheConcours.getCurrentDepart()).length == 0)
+					&& ficheConcours.getConcurrentList().list(index, ficheConcours.getCurrentDepart()).size() == 0)
 				index++;
 			if(index < ficheConcours.getParametre().getNbCible()) {
 				openResultatDialog();
@@ -785,7 +812,17 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 			ficheConcours.setCurrentDepart(((JComboBox)source).getSelectedIndex());
 			cl.show(fichesDepart, "depart." + ficheConcours.getCurrentDepart()); //$NON-NLS-1$
 		} else if(source == jbPrint) {
-			printState();
+			jxbPrint.setBusy(true);
+			jxbPrint.setText(parentframe.profile.getLocalisation().getResourceString("state.generate")); //$NON-NLS-1$
+			Thread t = new Thread() {
+				@Override
+				public void run() {
+					printState();
+				}
+			};
+			t.setPriority(Thread.MIN_PRIORITY);
+			t.start();
+			
 		} else if(source == jbOpenDocument) {
 			if(!ajlDocuments.isSelectionEmpty())
 				openPdf((File)ajlDocuments.getSelectedValue());
@@ -795,21 +832,26 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 				Object[] files = ajlDocuments.getSelectedValues();
 				for(Object f : files) {
 					((File)f).delete();
-					ajlDocuments.remove(f);
+					ajlDocuments.remove((File)f);
 				}
 			}
 		} else if(source == printClassementIndiv || source == printClassementEquipe ||  source == printClassementClub) {
 			switchToEditPane();
-			
-			try {
-				String stateName = this.getClass().getDeclaredField(((JButton)source).getName()).getAnnotation(StateSelector.class).name();
-				State state = stateManager.getState(stateName);
-				if(state != null)
-					prepareState(state);
-			} catch (SecurityException e) {
-				e.printStackTrace();
-			} catch (NoSuchFieldException e) {
-				e.printStackTrace();
+			if(stateManager != null) {
+				try {
+					String stateName = this.getClass().getDeclaredField(((JButton)source).getName()).getAnnotation(StateSelector.class).name();
+					State state = stateManager.getState(stateName);
+					if(state != null)
+						prepareState(state);
+				} catch (SecurityException e) {
+					JXErrorPane.showDialog(parentframe, new ErrorInfo(parentframe.profile.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+							null, null, e, Level.SEVERE, null));
+					e.printStackTrace();
+				} catch (NoSuchFieldException e) {
+					JXErrorPane.showDialog(parentframe, new ErrorInfo(parentframe.profile.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+							null, null, e, Level.SEVERE, null));
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -820,7 +862,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		if(e.getSource() == tabbedpane) {
 			int i = tabbedpane.getSelectedIndex();
 			if(i == 2) {
-				Concurrent[] listConcurrents = ficheConcours.getConcurrentList().list(ficheConcours.getCurrentDepart());
+				List<Concurrent> listConcurrents = ficheConcours.getConcurrentList().list(ficheConcours.getCurrentDepart());
 				for(Concurrent concurrent : listConcurrents) {
 					if(concurrent.getCible() == 0) {
 						JOptionPane.showMessageDialog(this,
@@ -842,7 +884,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 				}
 			}
 		} else if(e.getSource() == jtbClassement) {
-			Concurrent[] listConcurrents = ficheConcours.getConcurrentList().list(ficheConcours.getCurrentDepart());
+			List<Concurrent> listConcurrents = ficheConcours.getConcurrentList().list(ficheConcours.getCurrentDepart());
 			for(Concurrent concurrent : listConcurrents) {
 				if(concurrent.getCible() == 0) {
 					JOptionPane.showMessageDialog(this,
@@ -873,7 +915,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 				openConcurrentDialog(ficheConcours.getConcurrentList().getConcurrentAt(
 						Integer.parseInt(e.getURL().getRef().substring(0,1)),
 						Integer.parseInt(e.getURL().getRef().substring(2)),
-						Integer.parseInt(e.getURL().getRef().substring(1,2))));
+						Integer.parseInt(e.getURL().getRef().substring(1,2))), null);
 
 				jepClassIndiv.setText(ficheConcours.getClassement());
 			} 

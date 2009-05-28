@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -326,7 +326,7 @@ public class PasDeTir implements FicheConcoursListener {
 		//pour chaque distance/blason 
 		for(DistancesEtBlason distancesEtBlason : lDB) {
 			//liste les archers pour le distance/blason
-			Concurrent[] concurrents = ConcurrentList.sort(
+			List<Concurrent> concurrents = ConcurrentList.sort(
 					ficheConcours.getConcurrentList().list(
 							ficheConcours.getParametre().getReglement(), 
 							distancesEtBlason, depart, false),
@@ -354,7 +354,7 @@ public class PasDeTir implements FicheConcoursListener {
 					endCible += 1;
 			}
 			
-			if(nbConcurrent > concurrents.length) { //si on a des archers handicapé dans le groupe
+			if(nbConcurrent > concurrents.size()) { //si on a des archers handicapé dans le groupe
 				//extraire les archers handicapé pour les placer en premier
 				//afin d'éviter d'avoir des problèmes pour les placer
 				ArrayList<Concurrent> concurrentsHandicape = new ArrayList<Concurrent>();

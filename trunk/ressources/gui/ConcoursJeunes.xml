@@ -72,13 +72,15 @@
 					<label>onglet.accueil</label>
 					<content>
 						<layout class="java.awt.BorderLayout" />
-						<component class="javax.swing.JEditorPane" name="jepHome">
-							<method name="setEditorKit">
-								<param paramclass="javax.swing.text.EditorKit" class="javax.swing.text.html.HTMLEditorKit" />
-							</method>
-							<method name="setEditable">
-								<param paramclass="boolean" value="false" />
-							</method>
+						<component class="javax.swing.JScrollPane" name="jepHome">
+							<param paramclass="java.awt.Component" class="javax.swing.JEditorPane">
+								<method name="setEditorKit">
+									<param paramclass="javax.swing.text.EditorKit" class="javax.swing.text.html.HTMLEditorKit" />
+								</method>
+								<method name="setEditable">
+									<param paramclass="boolean" value="false" />
+								</method>
+							</param>
 							<constraints paramclass="java.lang.String" type="staticfield" value="java.awt.BorderLayout.CENTER" />
 						</component>
 					</content>

@@ -2,7 +2,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -20,7 +20,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.concoursjeunes.*;
+import org.concoursjeunes.ApplicationCore;
+import org.concoursjeunes.Concurrent;
+import org.concoursjeunes.CriteriaSet;
+import org.concoursjeunes.Criterion;
+import org.concoursjeunes.CriterionElement;
+import org.concoursjeunes.Reglement;
 
 /**
  * Fabrique d'archer en se basant sur les données en base
@@ -54,28 +59,37 @@ public class ConcurrentBuilder {
 				PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
 				
 				pstmt.setString(1, concurrent.getNumLicenceArcher());
-				pstmt.setInt(2, reglement.hashCode());
+				pstmt.setInt(2, reglement.getNumReglement());
 				
 				ResultSet rsCriteriaSet = pstmt.executeQuery();
 
 				if(rsCriteriaSet.first()) {
 					differentiationCriteria = CriteriaSetBuilder
-							.getCriteriaSet(rsCriteriaSet.getInt("NUMCRITERIASET"), reglement, reglement.hashCode()); //$NON-NLS-1$
+							.getCriteriaSet(rsCriteriaSet.getInt("NUMCRITERIASET"), reglement); //$NON-NLS-1$
 				} else {
 					differentiationCriteria = new CriteriaSet();
 					for(Criterion key : reglement.getListCriteria()) {
-						if(!key.getCodeffta().isEmpty()) {
-							List<CriterionElement> arrayList = key.getCriterionElements();
-							int valindex = rs.getInt(key.getCodeffta() + "FFTA"); //$NON-NLS-1$
-							if(valindex >= arrayList.size())
-								valindex = arrayList.size() - 1;
-							if(valindex < 0)
-								valindex = 0;
-							if(key.getCriterionElements().get(valindex).isActive())
-								differentiationCriteria.getCriteria().put(key, key.getCriterionElements().get(valindex));
-							else
-								return null;
-						} else {
+						boolean returnfirstval = true;
+						if(!key.getChampsTableArchers().isEmpty()) {
+							try {
+								List<CriterionElement> arrayList = key.getCriterionElements();
+								int valindex = rs.getInt(key.getChampsTableArchers()); 
+								if(valindex >= arrayList.size())
+									valindex = arrayList.size() - 1;
+								if(valindex < 0)
+									valindex = 0;
+								
+								if(key.getCriterionElements().get(valindex).isActive())
+									differentiationCriteria.getCriteria().put(key, key.getCriterionElements().get(valindex));
+								else
+									return null;
+								
+								returnfirstval = false;
+							} catch (SQLException e) {
+							}
+						}
+						
+						if(returnfirstval) {
 							int valindex = 0;
 							while(valindex < key.getCriterionElements().size() 
 									&& !key.getCriterionElements().get(valindex).isActive())

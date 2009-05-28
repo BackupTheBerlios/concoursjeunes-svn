@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -99,7 +99,6 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -123,6 +122,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 
@@ -130,7 +130,6 @@ import org.ajdeveloppement.apps.AppUtilities;
 import org.ajdeveloppement.apps.Localisable;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.StringUtils;
-import org.ajdeveloppement.commons.io.FileChooserFileFilter;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
 import org.concoursjeunes.AppConfiguration;
@@ -138,16 +137,16 @@ import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.AutoCompleteDocument;
 import org.concoursjeunes.AutoCompleteDocumentContext;
 import org.concoursjeunes.Configuration;
-import org.concoursjeunes.ConfigurationManager;
 import org.concoursjeunes.Entite;
 import org.concoursjeunes.Federation;
 import org.concoursjeunes.Margin;
 import org.concoursjeunes.Profile;
 import org.concoursjeunes.Reglement;
-import org.concoursjeunes.ReglementManager;
+import org.concoursjeunes.builders.ReglementBuilder;
 import org.concoursjeunes.event.AutoCompleteDocumentEvent;
 import org.concoursjeunes.event.AutoCompleteDocumentListener;
-import org.concoursjeunes.exceptions.NullConfigurationException;
+import org.concoursjeunes.manager.ConfigurationManager;
+import org.concoursjeunes.manager.FederationManager;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
@@ -196,7 +195,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	private JLabel jlLogoPath = new JLabel();
 	private JComboBox jcbFederation = new JComboBox();
 	private JTextField jtfNomClub = new JTextField(20);
-	private JTextField jtfAgrClub = new JTextField(new NumberDocument(false, false), "", 5); //$NON-NLS-1$
+	private JTextField jtfAgrClub = new JTextField(new NumberDocument(false, false), "", 7); //$NON-NLS-1$
 	@Localisable(value="configuration.ecran.general.choiceclub",tooltip="configuration.ecran.general.browseclub")
 	private JButton jbParcourir = new JButton();
 	@Localisable("bouton.detail")
@@ -296,15 +295,15 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	private final JButton jbValider = new JButton();
 	@Localisable("bouton.annuler")
 	private final JButton jbAnnuler = new JButton();
-	private String[] strLstLangue;
+	//private String[] strLstLangue;
 	private boolean renameProfile = false;
 	private boolean renamedProfile = false;
 
-	public ConfigurationDialog(JFrame parentframe, AjResourcesReader localisation, Profile profile) {
+	public ConfigurationDialog(JFrame parentframe, Profile profile) {
 		super(parentframe, true);
 		
 		this.parentframe = parentframe;
-		this.localisation = localisation;
+		this.localisation = profile.getLocalisation();
 		this.profile = profile;
 		
 		JPanel jpBouton = new JPanel();
@@ -650,7 +649,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	}
 
 	private void completeGeneralPanel(Configuration configuration) {
-		String[] libelleLangues = getAvailableLanguages();
+		String[] libelleLangues = Configuration.getAvailableLanguages();
 
 		jtfNomClub.setText(configuration.getClub().getNom());
 		((AutoCompleteDocument) jtfAgrClub.getDocument()).setText(configuration.getClub().getAgrement());
@@ -672,7 +671,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 			jbRenameProfile.setEnabled(true);
 		
 		jcbFederation.removeAllItems();
-		for(Federation federation : ReglementManager.getAvailableFederations())
+		for(Federation federation : FederationManager.getAvailableFederations())
 			jcbFederation.addItem(federation);
 		jcbFederation.setSelectedItem(configuration.getFederation());
 
@@ -697,7 +696,8 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	}
 
 	private void completeConcoursPanel(Configuration configuration) {
-		jlSelectedReglement.setText(configuration.getReglementName());
+		Reglement reglement = ReglementBuilder.getReglement(configuration.getReglementName());
+		jlSelectedReglement.setText(reglement.getDisplayName());
 		jtfNbCible.setText("" + configuration.getNbCible()); //$NON-NLS-1$
 		if(configuration.getNbTireur() == 2)
 			jcbNbTireur.setSelectedIndex(0);
@@ -789,19 +789,6 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		return pdfPath;
 	}
 
-	private String[] getAvailableLanguages() {
-		// liste les langues disponible
-		String[] langues = listLangue();
-		Locale[] locales = new Locale[langues.length];
-		String[] libelleLangues = new String[langues.length];
-		for (int i = 0; i < langues.length; i++) {
-			locales[i] = new Locale(langues[i]);
-			libelleLangues[i] = locales[i].getDisplayLanguage(locales[i]);
-		}
-
-		return libelleLangues;
-	}
-
 	/**
 	 * Recherche du logo club
 	 * 
@@ -809,7 +796,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	private void changeLogoPath() {
 		File f;
 		JFileChooser fileDialog = new JFileChooser(workConfiguration.getLogoPath());
-		FileChooserFileFilter filtreimg = new FileChooserFileFilter(new String[] { "jpg", "gif" }, localisation.getResourceString("filter.gifjpeg")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		FileNameExtensionFilter filtreimg = new FileNameExtensionFilter(localisation.getResourceString("filter.gifjpeg"), "jpg", "gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		fileDialog.addChoosableFileFilter(filtreimg);
 		fileDialog.setDialogType(JFileChooser.OPEN_DIALOG);
 		fileDialog.showOpenDialog(this);
@@ -878,29 +865,6 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	 */
 	public void setWorkConfiguration(Configuration workConfiguration) {
 		this.workConfiguration = workConfiguration;
-	}
-
-	/**
-	 * Renvoie la liste des langues disponibles
-	 * 
-	 * @return String[] - retourne la liste des langues disponible
-	 */
-	private String[] listLangue() {
-		if (strLstLangue == null) {
-			String[] strLng = new File("lang").list(new FilenameFilter() {  //$NON-NLS-1$
-						public boolean accept(File dir, String name) {
-							if (name.startsWith("libelle_") && name.endsWith(".properties"))  //$NON-NLS-1$ //$NON-NLS-2$
-								return true;
-							return false;
-						}
-					});
-
-			for (int i = 0; i < strLng.length; i++)
-				strLng[i] = strLng[i].substring(8, strLng[i].length() - 11);
-			strLstLangue = strLng;
-		}
-
-		return strLstLangue;
 	}
 
 	private void loadProfile() throws IOException {
@@ -973,10 +937,9 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		workConfiguration.getClub().setNom(jtfNomClub.getText());
 		workConfiguration.getClub().setAgrement(jtfAgrClub.getText());
 		workConfiguration.setIntituleConcours(jtfIntConc.getText());
-		workConfiguration.setLangue(listLangue()[jcbLangue.getSelectedIndex()]);
+		workConfiguration.setLangue(Configuration.listLangue()[jcbLangue.getSelectedIndex()]);
 		workAppConfiguration.setPdfReaderPath(jcbPathPdf.getSelectedItem().toString());
 
-		workConfiguration.setReglementName(jlSelectedReglement.getText());
 		workConfiguration.setNbCible(Integer.parseInt(jtfNbCible.getText()));
 		workConfiguration.setNbTireur((jcbNbTireur.getSelectedIndex() == 0) ? 2 : 4);
 		workConfiguration.setNbDepart(Integer.parseInt(jtfNbDepart.getText()));
@@ -1069,26 +1032,12 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 
 				int insIndex = jcbProfil.getSelectedIndex();
 				
-				try {
-					renamedProfile = ConfigurationManager.renameConfiguration(profile, workConfiguration.getCurProfil(), strP);
-				} catch (NullConfigurationException e1) {
-					renamedProfile = false;
-					e1.printStackTrace();
-				} catch (IOException e1) {
-					renamedProfile = false;
-					e1.printStackTrace();
-				} catch(JAXBException e1) {
-					renamedProfile = false;
-					e1.printStackTrace();
-				} catch (XMLStreamException e1) {
-					renamedProfile = false;
-					e1.printStackTrace();
-				}
+				renamedProfile = profile.renameProfile(strP);
+				
 				if(renamedProfile) {
 					jcbProfil.removeItem(workConfiguration.getCurProfil());
 	
 					workConfiguration.setCurProfil(strP);
-					//workConfiguration.save();
 
 					jcbProfil.insertItemAt(strP, insIndex);
 					jcbProfil.setSelectedIndex(insIndex);
@@ -1117,10 +1066,12 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 			jtfUserProxy.setEnabled(jcbAuthentificationProxy.isSelected());
 			jpfPasswordProxy.setEnabled(jcbAuthentificationProxy.isSelected());
 		} else if (source == jbSelectReglement) {
-			ReglementManagerDialog reglementManagerDialog = new ReglementManagerDialog(parentframe, localisation);
+			ReglementManagerDialog reglementManagerDialog = new ReglementManagerDialog(parentframe, profile);
 			Reglement reglement = reglementManagerDialog.showReglementManagerDialog(true);
-			if(reglement != null)
-				jlSelectedReglement.setText(reglement.getName());
+			if(reglement != null) {
+				workConfiguration.setReglementName(reglement.getName());
+				jlSelectedReglement.setText(ReglementBuilder.getReglement(reglement.getName()).getDisplayName());
+			}
 		}
 	}
 

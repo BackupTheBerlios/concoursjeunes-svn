@@ -73,7 +73,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -99,6 +99,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JButton;
@@ -123,12 +124,12 @@ import org.ajdeveloppement.commons.ui.GhostGlassPane;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.ConcurrentList;
 import org.concoursjeunes.CriteriaSet;
-import org.concoursjeunes.CriteriaSetLibelle;
 import org.concoursjeunes.Criterion;
 import org.concoursjeunes.Entite;
 import org.concoursjeunes.Equipe;
 import org.concoursjeunes.EquipeList;
 import org.concoursjeunes.FicheConcours;
+import org.concoursjeunes.localisable.CriteriaSetLibelle;
 
 /**
  * Boite de dialogue de gestion des équipes
@@ -289,15 +290,15 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 
 		for (int i = 0; i < catList.length; i++) {
 			// test si il existe des archers dans la catégorie
-			Concurrent[] concurrents = ficheConcours.getConcurrentList().list(catList[i], -1, criteriaFilter);
-			if (concurrents.length >= ficheConcours.getParametre().getReglement().getNbMembresRetenu()) {
+			List<Concurrent> concurrents = ficheConcours.getConcurrentList().list(catList[i], -1, criteriaFilter);
+			if (concurrents.size() >= ficheConcours.getParametre().getReglement().getNbMembresRetenu()) {
 				dmtnCategorie[i] = new DefaultMutableTreeNode(new CriteriaSetLibelle(catList[i], localisation));
 
 				if (cbEquipeClub.isSelected()) {
 					Entite[] entites = ficheConcours.getConcurrentList().listCompagnie();
 					for (Entite entite : entites) {
-						Concurrent[] clubConcurrents = ConcurrentList.sort(ficheConcours.getConcurrentList().list(entite, catList[i], criteriaFilter), ConcurrentList.SortCriteria.SORT_BY_NAME);
-						if (clubConcurrents.length >= ficheConcours.getParametre().getReglement().getNbMembresRetenu()) {
+						List<Concurrent> clubConcurrents = ConcurrentList.sort(ficheConcours.getConcurrentList().list(entite, catList[i], criteriaFilter), ConcurrentList.SortCriteria.SORT_BY_NAME);
+						if (clubConcurrents.size() >= ficheConcours.getParametre().getReglement().getNbMembresRetenu()) {
 							DefaultMutableTreeNode dmtnEntite = new DefaultMutableTreeNode(entite);
 							for (Concurrent concurrent : clubConcurrents) {
 								if (tempEquipes.containsConcurrent(concurrent) == null)
@@ -342,15 +343,13 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 			equipes.get(equipe.getDifferentiationCriteria()).add(equipe);
 		}
 
-		ArrayList<CriteriaSet> activeCriteriaSet = new ArrayList<CriteriaSet>();
+		List<CriteriaSet> activeCriteriaSet = new ArrayList<CriteriaSet>();
 		for(CriteriaSet criteriaSet : equipes.keySet()) {
 			activeCriteriaSet.add(criteriaSet);
 		}
-		CriteriaSet[] sortedCriteriaSets = new CriteriaSet[activeCriteriaSet.size()];
-		sortedCriteriaSets = activeCriteriaSet.toArray(sortedCriteriaSets); 
-		CriteriaSet.sortCriteriaSet(sortedCriteriaSets, ficheConcours.getParametre().getReglement().getListCriteria());
+		CriteriaSet.sortCriteriaSet(activeCriteriaSet, ficheConcours.getParametre().getReglement().getListCriteria());
 		
-		for(CriteriaSet criteriaSet : sortedCriteriaSets) {
+		for(CriteriaSet criteriaSet : activeCriteriaSet) {
 			// generer le noeud correspondant
 			dmtnCategorie = new DefaultMutableTreeNode(new CriteriaSetLibelle(criteriaSet, localisation));
 	
@@ -420,6 +419,11 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 
 		// recharger l'arbre
 		treeModel.reload();
+		
+		if (dmtnClub != null && !dmtnClub.isLeaf())
+			treeEquipes.expandPath(new TreePath(dmtnClub.getPath()));
+		else
+			treeEquipes.expandPath(new TreePath(dmtnCategorie.getPath()));
 	}
 
 	/**

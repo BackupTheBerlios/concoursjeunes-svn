@@ -1,20 +1,26 @@
 //mapping Java/JS:
 //	depart: le depart selectionné
-function checkPrintable(ficheConcours) {
+function checkPrintable(ficheConcours, options) {
 	if(ficheConcours.getEquipes() != null && ficheConcours.getEquipes().countEquipes() > 0)
 		return true;
 	return false;
 }
 
-function printState(ficheConcours, template, document, writer) {
+function printState(ficheConcours, template, document, writer, options) {
 	var contexte = JavaImporter(
 						Packages.org.concoursjeunes,
+						Packages.org.concoursjeunes.localisable,
 						Packages.org.ajdeveloppement.commons,
 						Packages.com.lowagie.text,
 						com.lowagie.text.xml.XmlParser,
 						java.text.DateFormat,
 						Packages.java.util,
 						java.io.StringReader);
+	
+	var localeReader = options.getLangReader();
+	var serie = options.getSerie();
+	var depart = options.getDepart();
+	var profile = options.getProfile();
 	
 	with(contexte) {
 		var strClassementEquipe = ""; //$NON-NLS-1$
@@ -26,7 +32,7 @@ function printState(ficheConcours, template, document, writer) {
 
 			// classement sortie XML
 			tplClassementEquipe.parse("CURRENT_TIME", DateFormat.getDateInstance(DateFormat.MEDIUM).format(new Date())); //$NON-NLS-1$
-			tplClassementEquipe.parse("LOGO_CLUB_URI", ApplicationCore.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			tplClassementEquipe.parse("LOGO_CLUB_URI", profile.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			tplClassementEquipe.parse("INTITULE_CLUB", XmlUtils.sanitizeText(ficheConcours.getParametre().getClub().getNom())); //$NON-NLS-1$
 			tplClassementEquipe.parse("INTITULE_CONCOURS", XmlUtils.sanitizeText(ficheConcours.getParametre().getIntituleConcours())); //$NON-NLS-1$
 			tplClassementEquipe.parse("VILLE_CLUB", XmlUtils.sanitizeText(ficheConcours.getParametre().getLieuConcours())); //$NON-NLS-1$
@@ -35,14 +41,14 @@ function printState(ficheConcours, template, document, writer) {
 			var strArbitreResp = ""; //$NON-NLS-1$
 			var strArbitresAss = ""; //$NON-NLS-1$
 
-			var arbitres = ficheConcours.getParametre().getArbitres();
+			var arbitres = ficheConcours.getParametre().getJudges();
 			for (var i = 0; i < arbitres.size(); i++) {
-				if (arbitres.get(i).startsWith("*")) //$NON-NLS-1$
-					strArbitreResp = arbitres.get(i).substring(1);
+				if (arbitres.get(i).isResponsable())
+					strArbitreResp = arbitres.get(i).getID();
 				else {
-					if (!strArbitresAss.equals("")) //$NON-NLS-1$
-						strArbitresAss += ", "; //$NON-NLS-1$
-					strArbitresAss += arbitres.get(i);
+					if (!strArbitresAss.equals(""))
+						strArbitresAss += ", ";
+					strArbitresAss += arbitres.get(i).getID();
 				}
 			}
 
@@ -50,20 +56,17 @@ function printState(ficheConcours, template, document, writer) {
 			tplClassementEquipe.parse("ARBITRES_ASSISTANT", XmlUtils.sanitizeText(strArbitresAss)); //$NON-NLS-1$
 			tplClassementEquipe.parse("NB_CLUB", "" + ficheConcours.getConcurrentList().countCompagnie()); //$NON-NLS-1$ //$NON-NLS-2$
 			tplClassementEquipe.parse("NB_TIREURS", "" + ficheConcours.getConcurrentList().countArcher()); //$NON-NLS-1$ //$NON-NLS-2$
-			tplClassementEquipe.parse("TYPE_CLASSEMENT", ApplicationCore.ajrLibelle.getResourceString("classement.equipe")); //$NON-NLS-1$ //$NON-NLS-2$
+			tplClassementEquipe.parse("TYPE_CLASSEMENT", profile.getLocalisation().getResourceString("classement.equipe")); //$NON-NLS-1$ //$NON-NLS-2$
 
-			
-			var teamCriteriaSet = ficheConcours.getEquipes().listCriteriaSet();
-			var sortedTeamCriteriaSets = java.lang.reflect.Array.newInstance(CriteriaSet, teamCriteriaSet.size());
-			sortedTeamCriteriaSets = teamCriteriaSet.toArray(sortedTeamCriteriaSets);
+			sortedTeamCriteriaSets = ficheConcours.getEquipes().listCriteriaSet();
 			
 			CriteriaSet.sortCriteriaSet(sortedTeamCriteriaSets, ficheConcours.getParametre().getReglement().getListCriteria());
 			
-			for(var i = 0; i < sortedTeamCriteriaSets.length; i++) {			
-				tplClassementEquipe.parse("categories.CATEGORIE", new CriteriaSetLibelle(sortedTeamCriteriaSets[i]).toString()); //$NON-NLS-1$
+			for(var i = 0; i < sortedTeamCriteriaSets.size(); i++) {			
+				tplClassementEquipe.parse("categories.CATEGORIE", new CriteriaSetLibelle(sortedTeamCriteriaSets.get(i), profile.getLocalisation()).toString()); //$NON-NLS-1$
 				tplClassementEquipe.parse("categories.NB_EQUIPES", "" + ficheConcours.getEquipes().countEquipes()); //$NON-NLS-1$ //$NON-NLS-2$
 	
-				var sortEquipes = EquipeList.sort(ficheConcours.getEquipes().list(sortedTeamCriteriaSets[i]));
+				var sortEquipes = EquipeList.sort(ficheConcours.getEquipes().list(sortedTeamCriteriaSets.get(i)));
 	
 				for (var j = 0; j < sortEquipes.length; j++) {
 	

@@ -73,7 +73,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -98,7 +98,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
-import java.net.Authenticator;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -112,7 +111,6 @@ import javax.xml.stream.XMLStreamException;
 import org.ajdeveloppement.apps.AppUtilities;
 import org.ajdeveloppement.commons.AJToolKit;
 import org.ajdeveloppement.commons.AjResourcesReader;
-import org.ajdeveloppement.commons.net.SimpleAuthenticator;
 import org.ajdeveloppement.macosx.PrivilegedRuntime;
 import org.ajdeveloppement.updater.AjUpdater;
 import org.ajdeveloppement.updater.AjUpdaterEvent;
@@ -130,8 +128,6 @@ import org.concoursjeunes.plugins.PluginEntry;
 import org.concoursjeunes.plugins.PluginLoader;
 import org.concoursjeunes.plugins.PluginMetadata;
 import org.concoursjeunes.plugins.Plugin.Type;
-import org.jdesktop.swingx.JXLoginPane;
-import org.jdesktop.swingx.auth.LoginService;
 import org.jdesktop.swingx.util.OS;
 
 @Plugin(type = Plugin.Type.STARTUP)
@@ -167,16 +163,13 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 
 	@Override
 	public void run() {
-		boolean proxyAuthRequired = false;
 		PluginLoader pl = new PluginLoader();
-		
 
 		ajUpdater = new AjUpdater(ApplicationCore.userRessources.getUpdatePath().getPath(), "."); //$NON-NLS-1$
 		ajUpdater.addAjUpdaterListener(this);
 		ajUpdater.setAppKeyStore(ApplicationCore.userRessources.getAppKeyStore());
 		ajUpdater.setUserAgent(AppInfos.NOM + " " + AppInfos.VERSION //$NON-NLS-1$
-				+ " (" + AppUtilities.getAppUID(ApplicationCore.userRessources) + "; TEST)"); //$NON-NLS-1$ //$NON-NLS-2$
-
+				+ " (" + AppUtilities.getAppUID(ApplicationCore.userRessources) + "; " + AppInfos.CODENAME + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		
 		ajUpdater.addRepository(new Repository(AppInfos.NOM, new String[] { pluginRessources.getResourceString("url.reference") }, AppInfos.VERSION)); //$NON-NLS-1$
 		for (PluginMetadata pm : pl.getPlugins(Type.ALL)) {
@@ -188,43 +181,16 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 			ApplicationCore.getAppConfiguration().getProxy().activateProxyConfiguration();
 		}
 		
-		boolean loop;
-		do {
-			loop = false;
-			proxyAuthRequired = false;
-			try {
-				updateFiles = ajUpdater.checkUpdate();
-			} catch (UpdateException e) {
-				if(e.getMessage().equals("Proxy Authentification required")) { //$NON-NLS-1$
-					proxyAuthRequired = true;
-				} else {
-					System.out.println("update enable"); //$NON-NLS-1$
-					e.printStackTrace();
-					
-					if (trayIcon != null) {
-						tray.remove(trayIcon);
-					}
-				}
+		try {
+			updateFiles = ajUpdater.checkUpdate();
+		} catch (UpdateException e) {
+			System.out.println("update disable"); //$NON-NLS-1$
+			e.printStackTrace();
+			
+			if (trayIcon != null) {
+				tray.remove(trayIcon);
 			}
-			if(proxyAuthRequired) {
-				LoginService loginService = new LoginService() {
-					@Override
-					public boolean authenticate(String user , char[] password, String server) {
-						Authenticator.setDefault(new SimpleAuthenticator(
-								user,
-								new String(password)));
-						return true;
-					}
-				};
-				JXLoginPane loginPanel = new JXLoginPane(loginService);
-				loginPanel.setBannerText(pluginLocalisation.getResourceString("update.proxy.auth.title")); //$NON-NLS-1$
-				loginPanel.setMessage(pluginLocalisation.getResourceString("update.proxy.auth.message")); //$NON-NLS-1$
-				//loginPanel.setP
-				org.jdesktop.swingx.JXLoginPane.Status status = JXLoginPane.showLoginDialog(null, loginPanel);
-				if(status == JXLoginPane.Status.SUCCEEDED)
-					loop = true;
-			}
-		} while(loop);
+		}
 	}
 
 	/*

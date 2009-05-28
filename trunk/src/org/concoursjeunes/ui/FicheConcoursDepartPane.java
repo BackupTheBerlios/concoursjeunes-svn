@@ -73,7 +73,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -102,11 +102,17 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
+import javax.swing.AbstractListModel;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -129,15 +135,16 @@ import javax.swing.tree.TreePath;
 
 import org.ajdeveloppement.apps.AppUtilities;
 import org.ajdeveloppement.apps.Localisable;
-import org.ajdeveloppement.commons.ui.AJList;
 import org.ajdeveloppement.commons.ui.AJTree;
 import org.ajdeveloppement.commons.ui.GhostGlassPane;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Concurrent;
-import org.concoursjeunes.ConcurrentList;
 import org.concoursjeunes.FicheConcours;
 import org.concoursjeunes.Target;
 import org.concoursjeunes.TargetPosition;
+import org.concoursjeunes.ConcurrentList.ClubComparator;
+import org.concoursjeunes.ConcurrentList.NameComparator;
+import org.concoursjeunes.ConcurrentList.TargetComparator;
 import org.concoursjeunes.event.FicheConcoursEvent;
 import org.concoursjeunes.event.FicheConcoursListener;
 import org.concoursjeunes.exceptions.FicheConcoursException;
@@ -145,6 +152,10 @@ import org.concoursjeunes.exceptions.PlacementException;
 import org.concoursjeunes.ui.dialog.ConcurrentDialog;
 import org.concoursjeunes.ui.dialog.EquipeDialog;
 import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.JXList;
+import org.jdesktop.swingx.decorator.ColorHighlighter;
+import org.jdesktop.swingx.decorator.HighlightPredicate;
+import org.jdesktop.swingx.decorator.SortOrder;
 import org.jdesktop.swingx.error.ErrorInfo;
 
 /**
@@ -175,7 +186,8 @@ public class FicheConcoursDepartPane extends JPanel
 	@Localisable("radiobutton.club")
 	private JRadioButton jcbSortClub = new JRadioButton();
 
-	private AJList ajlConcurrent = new AJList();
+	private AJXList ajxlConcurrent = new AJXList();
+	private ConcurrentListModel lstModelConcurrent = new ConcurrentListModel();
 	private AJTree treeTarget = new AJTree();
 	private TargetTreeModel treeModel = new TargetTreeModel();
 	private JPopupMenu popup;
@@ -259,7 +271,7 @@ public class FicheConcoursDepartPane extends JPanel
 
 		// creation des tables de tireurs
 		JScrollPane scrollarcher = new JScrollPane();
-		scrollarcher.setViewportView(ajlConcurrent);
+		scrollarcher.setViewportView(ajxlConcurrent);
 
 		jbAjouterArcher.setIcon(new ImageIcon(ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
 				File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.addarcher") //$NON-NLS-1$
@@ -315,12 +327,19 @@ public class FicheConcoursDepartPane extends JPanel
 		pane.add(headerPane, BorderLayout.NORTH);
 		pane.add(scrollarcher, BorderLayout.CENTER);
 
-		ajlConcurrent.addMouseListener(this);
-		ajlConcurrent.addMouseMotionListener(this);
-		ajlConcurrent.addListSelectionListener(this);
-		ajlConcurrent.addKeyListener(this);
-		ajlConcurrent.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		ajlConcurrent.setCellRenderer(new ConcoursListeRenderer());
+		ajxlConcurrent.setModel(lstModelConcurrent);
+		ajxlConcurrent.setFilterEnabled(true);
+		ajxlConcurrent.setComparator(new TargetComparator());
+		ajxlConcurrent.setSortOrder(SortOrder.ASCENDING);
+		ajxlConcurrent.addMouseListener(this);
+		ajxlConcurrent.addMouseMotionListener(this);
+		ajxlConcurrent.addListSelectionListener(this);
+		ajxlConcurrent.addKeyListener(this);
+		ajxlConcurrent.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		ajxlConcurrent.setRolloverEnabled(true);
+		ajxlConcurrent.addHighlighter(new ColorHighlighter(HighlightPredicate.ROLLOVER_ROW, 
+		      null, Color.BLUE)); 
+		ajxlConcurrent.setCellRenderer(new ConcoursListeRenderer());
 
 		return pane;
 	}
@@ -403,12 +422,7 @@ public class FicheConcoursDepartPane extends JPanel
 	 * 
 	 */
 	private void createListeParNom() {
-		if (jcbSortCible.isSelected())
-			ajlConcurrent.setListData(ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), ConcurrentList.SortCriteria.SORT_BY_TARGETS));
-		else if (jcbSortNom.isSelected())
-			ajlConcurrent.setListData(ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), ConcurrentList.SortCriteria.SORT_BY_NAME));
-		else
-			ajlConcurrent.setListData(ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), ConcurrentList.SortCriteria.SORT_BY_CLUBS));
+		lstModelConcurrent.setConcurrents(ficheConcours.getConcurrentList().list(depart));
 	}
 
 	/**
@@ -439,13 +453,30 @@ public class FicheConcoursDepartPane extends JPanel
 			}
 		} while (codeRetour == ConcurrentDialog.CONFIRM_AND_NEXT);
 	}
+	
+	private List<Concurrent> getSortedConcurrentInList() {
+		List<Concurrent> sortedList = new ArrayList<Concurrent>();
+		for(int i = 0; i < ajxlConcurrent.getElementCount(); i++)
+			sortedList.add((Concurrent)ajxlConcurrent.getElementAt(i));
+		
+		return sortedList;
+	}
+	
+	private List<Concurrent> getConcurrentInTree() {
+		List<Concurrent> sortedList = new ArrayList<Concurrent>();
+		for(Target t : treeModel.getTargetChilds()) {
+			for(Concurrent c : t.getAllConcurrents())
+				sortedList.add(c);
+		}
+		return sortedList;
+	}
 
 	/**
 	 * Suppression d'un archer de la liste des concurrents
 	 */
 	private void removeSelectedConcurrent() {
 
-		Concurrent removedConcurrent = (Concurrent) ajlConcurrent.getSelectedValue();
+		Concurrent removedConcurrent = (Concurrent) ajxlConcurrent.getSelectedValue();
 		if(removedConcurrent != null) {
 			if (JOptionPane.showConfirmDialog(this, ficheConcoursPane.getLocalisation().getResourceString("confirmation.suppression"), //$NON-NLS-1$
 					ficheConcoursPane.getLocalisation().getResourceString("confirmation.suppression.titre"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.NO_OPTION) //$NON-NLS-1$
@@ -472,11 +503,6 @@ public class FicheConcoursDepartPane extends JPanel
 			return;
 
 		ficheConcours.getPasDeTir(depart).placementConcurrents();
-
-		if (jcbSortCible.isSelected()) {
-			ajlConcurrent.setListData(ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), ConcurrentList.SortCriteria.SORT_BY_TARGETS));
-		}
-		treeTarget.repaint();
 	}
 
 	/**
@@ -595,11 +621,11 @@ public class FicheConcoursDepartPane extends JPanel
 		switch (e.getEvent()) {
 			case FicheConcoursEvent.ADD_CONCURRENT:
 				if (e.getConcurrent().getDepart() == depart)
-					ajlConcurrent.add(e.getConcurrent());
+					lstModelConcurrent.addConcurrent(e.getConcurrent());
 				break;
 			case FicheConcoursEvent.REMOVE_CONCURRENT:
 				if (e.getConcurrent().getDepart() == depart)
-					ajlConcurrent.remove(e.getConcurrent());
+					lstModelConcurrent.removeConcurrent(e.getConcurrent());
 				break;
 		}
 	}
@@ -635,21 +661,27 @@ public class FicheConcoursDepartPane extends JPanel
 		} else if (source == jbPlacementArcher) {
 			placementConcurrents();
 		} else if (source instanceof JRadioButton) {
-			if (source == jcbSortCible)
-				ajlConcurrent.setListData(ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), ConcurrentList.SortCriteria.SORT_BY_TARGETS));
-			else if (source == jcbSortNom)
-				ajlConcurrent.setListData(ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), ConcurrentList.SortCriteria.SORT_BY_NAME));
-			else if (source == jcbSortClub)
-				ajlConcurrent.setListData(ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), ConcurrentList.SortCriteria.SORT_BY_CLUBS));
-			ajlConcurrent.repaint();
+			if (source == jcbSortCible) {
+				ajxlConcurrent.setComparator(new TargetComparator());
+				ajxlConcurrent.setSortOrder(SortOrder.ASCENDING);
+			} else if (source == jcbSortNom) {
+				ajxlConcurrent.setComparator(new NameComparator());
+				ajxlConcurrent.setSortOrder(SortOrder.ASCENDING);
+			} else if (source == jcbSortClub) {
+				ajxlConcurrent.setComparator(new ClubComparator());
+				ajxlConcurrent.setSortOrder(SortOrder.ASCENDING);
+			}
 		} else if (cmd.equals("popup.edition")) { //$NON-NLS-1$
-			ficheConcoursPane.openConcurrentDialog((Concurrent) ajlConcurrent.getSelectedValue());
+			if(popup.getInvoker() == ajxlConcurrent)
+				ficheConcoursPane.openConcurrentDialog((Concurrent) ajxlConcurrent.getSelectedValue(), getSortedConcurrentInList());
+			else
+				ficheConcoursPane.openConcurrentDialog((Concurrent) treeTarget.getSelectionPath().getLastPathComponent(), getConcurrentInTree());
 		} else if (cmd.equals("popup.suppression")) { //$NON-NLS-1$
 			// Supprime un concurrent à la liste des inscrits
 			removeSelectedConcurrent();
 		} else if (cmd.equals("popup.retrait")) { //$NON-NLS-1$
 			// donne le concurrent à retirer
-			retraitPlacementConcurrent((Concurrent) ajlConcurrent.getSelectedValue());
+			retraitPlacementConcurrent((Concurrent) ajxlConcurrent.getSelectedValue());
 		}
 	}
 
@@ -667,13 +699,9 @@ public class FicheConcoursDepartPane extends JPanel
 					treeTarget.setSelectionPath(destinationPath);
 	
 					if (destinationPath.getLastPathComponent() instanceof Concurrent) {
-						ajlConcurrent.setSelectedValue(destinationPath.getLastPathComponent(), true);
+						ajxlConcurrent.setSelectedValue(destinationPath.getLastPathComponent(), true);
 	
 						popup.show(e.getComponent(), e.getX(), e.getY());
-						ajlConcurrent.repaint();
-						/*popup.setLocation(e.getX(), e.getY());
-						popup.setInvoker(ajlConcurrent);
-						popup.setVisible(true);*/
 					}
 				}
 			} else {
@@ -682,15 +710,15 @@ public class FicheConcoursDepartPane extends JPanel
 					Object selectedTreeNode = treeTarget.getSelectionPath().getLastPathComponent();
 
 					if (selectedTreeNode instanceof Concurrent) {
-						ficheConcoursPane.openConcurrentDialog((Concurrent) selectedTreeNode);
+						ficheConcoursPane.openConcurrentDialog((Concurrent) selectedTreeNode, getConcurrentInTree());
 					} else if (selectedTreeNode instanceof Target) {
 						ficheConcoursPane.index = ((Target) selectedTreeNode).getNumCible();
-						if (ficheConcours.getConcurrentList().list(ficheConcoursPane.index, ficheConcours.getCurrentDepart()).length > 0) {
+						if (ficheConcours.getConcurrentList().list(ficheConcoursPane.index, ficheConcours.getCurrentDepart()).size() > 0) {
 							ficheConcoursPane.openResultatDialog();
 						}
 					} else {
 						ficheConcoursPane.index = 1;
-						if (ficheConcours.getConcurrentList().list(ficheConcoursPane.index, ficheConcours.getCurrentDepart()).length > 0) {
+						if (ficheConcours.getConcurrentList().list(ficheConcoursPane.index, ficheConcours.getCurrentDepart()).size() > 0) {
 							ficheConcoursPane.openResultatDialog();
 						}
 					}
@@ -698,13 +726,13 @@ public class FicheConcoursDepartPane extends JPanel
 			}
 		} else {
 			if (e.getClickCount() == 2) {
-				ficheConcoursPane.openConcurrentDialog((Concurrent) ajlConcurrent.getSelectedValue());
+				ficheConcoursPane.openConcurrentDialog((Concurrent) ajxlConcurrent.getSelectedValue(), getSortedConcurrentInList());
 			} else if (e.getModifiers() == InputEvent.BUTTON3_MASK) { //
-				int elemIndex = ajlConcurrent.locationToIndex(e.getPoint());
+				int elemIndex = ajxlConcurrent.locationToIndex(e.getPoint());
 				if(elemIndex > -1) {
-					ajlConcurrent.setSelectedIndex(elemIndex);
+					ajxlConcurrent.setSelectedIndex(elemIndex);
 	
-					Concurrent tmpConcurrent = (Concurrent) ajlConcurrent.getSelectedValue();
+					Concurrent tmpConcurrent = (Concurrent) ajxlConcurrent.getSelectedValue();
 	
 					if(tmpConcurrent != null) {
 						if (tmpConcurrent.getCible() > 0) {
@@ -740,8 +768,8 @@ public class FicheConcoursDepartPane extends JPanel
 	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
 	 */
 	public void mousePressed(MouseEvent e) {
-		if (e.getSource() == ajlConcurrent) {
-			dragObject = ajlConcurrent.getSelectedValue();
+		if (e.getSource() == ajxlConcurrent) {
+			dragObject = ajxlConcurrent.getSelectedValue();
 		} else if (e.getSource() == treeTarget) {
 			Point p = e.getPoint();
 			TreePath tp = treeTarget.getPathForLocation(p.x, p.y);
@@ -755,9 +783,9 @@ public class FicheConcoursDepartPane extends JPanel
 	 * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
 	 */
 	public void mouseReleased(MouseEvent e) {
-		if (e.getSource() == ajlConcurrent && onDrag) {
+		if (e.getSource() == ajxlConcurrent && onDrag) {
 			Point p = (Point) e.getPoint().clone();
-			SwingUtilities.convertPointToScreen(p, ajlConcurrent);
+			SwingUtilities.convertPointToScreen(p, ajxlConcurrent);
 			SwingUtilities.convertPointFromScreen(p, treeTarget);
 
 			// test si le drop correspond bien à la bonne action
@@ -789,14 +817,14 @@ public class FicheConcoursDepartPane extends JPanel
 				}
 			} else {
 				SwingUtilities.convertPointToScreen(p, treeTarget);
-				SwingUtilities.convertPointFromScreen(p, ajlConcurrent);
-				if (p.x > 0 && p.y > 0 && p.x < ajlConcurrent.getWidth() && p.y < ajlConcurrent.getHeight() && dragObject instanceof Concurrent) {
+				SwingUtilities.convertPointFromScreen(p, ajxlConcurrent);
+				if (p.x > 0 && p.y > 0 && p.x < ajxlConcurrent.getWidth() && p.y < ajxlConcurrent.getHeight() && dragObject instanceof Concurrent) {
 					retraitPlacementConcurrent((Concurrent) dragObject);
 				}
 			}
 		}
 		// dans tous les cas remettre le curseur par defaut à la fin du drag
-		ajlConcurrent.setSelectable(true);
+		ajxlConcurrent.setSelectable(true);
 
 		ficheConcoursPane.getParentframe().getGlassPane().setVisible(false);
 		dragObject = null;
@@ -807,17 +835,17 @@ public class FicheConcoursDepartPane extends JPanel
 	 * @see java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent)
 	 */
 	public void mouseDragged(MouseEvent e) {
-		if (e.getSource() == ajlConcurrent) {
-			if(ajlConcurrent.getSelectedIndex() == -1)
+		if (e.getSource() == ajxlConcurrent) {
+			if(ajxlConcurrent.getSelectedIndex() == -1)
 				return;
 			GhostGlassPane glassPane = (GhostGlassPane) ficheConcoursPane.getParentframe().getGlassPane();
 			if (!onDrag) {
-				ajlConcurrent.setSelectable(false);
-				Rectangle rect = ajlConcurrent.getCellBounds(ajlConcurrent.getSelectedIndex(), ajlConcurrent.getSelectedIndex());
+				ajxlConcurrent.setSelectable(false);
+				Rectangle rect = ajxlConcurrent.getCellBounds(ajxlConcurrent.getSelectedIndex(), ajxlConcurrent.getSelectedIndex());
 
-				BufferedImage image = new BufferedImage(ajlConcurrent.getWidth(), ajlConcurrent.getHeight(), BufferedImage.TYPE_INT_ARGB);
+				BufferedImage image = new BufferedImage(ajxlConcurrent.getWidth(), ajxlConcurrent.getHeight(), BufferedImage.TYPE_INT_ARGB);
 				Graphics g = image.getGraphics();
-				ajlConcurrent.paint(g);
+				ajxlConcurrent.paint(g);
 				image = image.getSubimage(rect.x, rect.y, rect.width, rect.height);
 
 				glassPane.setVisible(true);
@@ -830,7 +858,7 @@ public class FicheConcoursDepartPane extends JPanel
 			}
 
 			Point p = (Point) e.getPoint().clone();
-			SwingUtilities.convertPointToScreen(p, ajlConcurrent);
+			SwingUtilities.convertPointToScreen(p, ajxlConcurrent);
 			SwingUtilities.convertPointFromScreen(p, glassPane);
 
 			glassPane.setPoint(p);
@@ -884,8 +912,8 @@ public class FicheConcoursDepartPane extends JPanel
 	public void valueChanged(ListSelectionEvent e) {
 		jbSupprimerArcher.setEnabled(true);
 
-		if (ajlConcurrent.getSelectedValue() instanceof Concurrent) {
-			Concurrent tmpConcurrent = (Concurrent) ajlConcurrent.getSelectedValue();
+		if (ajxlConcurrent.getSelectedValue() instanceof Concurrent) {
+			Concurrent tmpConcurrent = (Concurrent) ajxlConcurrent.getSelectedValue();
 
 			selectConcurrentInTree(tmpConcurrent);
 		}
@@ -902,7 +930,7 @@ public class FicheConcoursDepartPane extends JPanel
 		// recupere le noeud destination et son parent
 		Object node = destinationPath.getLastPathComponent();
 		if (node instanceof Concurrent) {
-			ajlConcurrent.setSelectedValue(node, true);
+			ajxlConcurrent.setSelectedValue(node, true);
 		}
 	}
 
@@ -914,7 +942,7 @@ public class FicheConcoursDepartPane extends JPanel
 			if (e.getKeyCode() == KeyEvent.VK_DELETE) {
 				removeSelectedConcurrent();
 			} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-				ficheConcoursPane.openConcurrentDialog((Concurrent) ajlConcurrent.getSelectedValue());
+				ficheConcoursPane.openConcurrentDialog((Concurrent) ajxlConcurrent.getSelectedValue(), getSortedConcurrentInList());
 			}
 		} else if (e.getSource() instanceof JTree) {
 			if (e.getKeyCode() == KeyEvent.VK_DELETE) {
@@ -925,7 +953,7 @@ public class FicheConcoursDepartPane extends JPanel
 			} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 				Object node = treeTarget.getSelectionPath().getLastPathComponent();
 				if (node instanceof Concurrent)
-					ficheConcoursPane.openConcurrentDialog((Concurrent) node);
+					ficheConcoursPane.openConcurrentDialog((Concurrent) node, getConcurrentInTree());
 				if (node instanceof Target) {
 					ficheConcoursPane.index = ((Target) node).getNumCible();
 					ficheConcoursPane.openResultatDialog();
@@ -950,8 +978,124 @@ public class FicheConcoursDepartPane extends JPanel
 	public void keyTyped(KeyEvent e) {
 	}
 	
-	/*@Override
-	public void dispose() {
-		System.out.println("Destruction de la fenetre ConcurrentDialog");
-	}*/
+	private class ConcurrentListModel extends AbstractListModel implements PropertyChangeListener {
+		
+		DefaultListModel dlm = new DefaultListModel();
+		
+		private List<Concurrent> concurrents = new ArrayList<Concurrent>();
+		
+		public void addConcurrent(Concurrent concurrent) {
+			concurrents.add(concurrent);
+			
+			concurrent.addPropertyChangeListener(this);
+			
+			fireIntervalAdded(this, concurrents.size()-1, concurrents.size()-1);
+		}
+		
+		public void removeConcurrent(Concurrent concurrent) {
+			int removeindex = concurrents.indexOf(concurrent);
+			if(removeindex > -1) {
+				concurrents.remove(concurrent);
+				
+				concurrent.removePropertyChangeListener(this);
+				
+				fireIntervalRemoved(this, removeindex, removeindex);
+			}
+		}
+		
+		public void setConcurrents(List<Concurrent> concurrents) {
+			if(concurrents == null)
+				concurrents = new ArrayList<Concurrent>();
+			
+			if(this.concurrents.size() > 0)
+				fireIntervalRemoved(this, 0, this.concurrents.size()-1);
+			
+			this.concurrents = concurrents;
+			
+			fireIntervalAdded(this, 0, concurrents.size()-1);
+		}
+		
+		public List<Concurrent> getConcurrents() {
+			return concurrents;
+		}
+
+		@Override
+		public Object getElementAt(int index) {
+			return concurrents.get(index);
+		}
+
+		@Override
+		public int getSize() {
+			return concurrents.size();
+		}
+
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			int index = concurrents.indexOf(evt.getSource());
+			
+			fireContentsChanged(this, index, index);
+		}
+	}
+	
+	private class AJXList extends JXList {
+		boolean selectable = true;
+		
+		 /**
+	     * @see javax.swing.JList#setSelectedIndices(int[])
+	     */
+	    @Override
+	    public void setSelectedIndices(int[] indices) {
+	    	if(selectable) {
+	    		super.setSelectedIndices(indices);
+	    	}
+	    }
+	    
+	    /**
+	     * @see javax.swing.JList#setSelectedValue(java.lang.Object, boolean)
+	     */
+	    @Override
+	    public void setSelectedValue(Object anObject, boolean shouldScroll) {
+	    	if(selectable) {
+	    		super.setSelectedValue(anObject, shouldScroll);
+	    	}
+	    }
+	    
+	    /**
+	     * @see javax.swing.JList#setSelectionInterval(int, int)
+	     */
+	    @Override
+	    public void setSelectionInterval(int anchor, int lead) {
+	    	if(selectable) {
+	    		super.setSelectionInterval(anchor, lead);
+	    	}
+	    }
+	    
+	    /**
+	     * @see javax.swing.JList#setSelectedIndex(int)
+	     */
+	    @Override
+	    public void setSelectedIndex(int index) {
+	    	if(selectable) {
+	    		super.setSelectedIndex(index);
+	    	}
+	    }
+
+		/**
+		 * Détermine si les éléments de la liste sont séléctionnable ou non
+		 * 
+		 * @return  true si séléctionnable, false sinon
+		 */
+		public boolean isSelectable() {
+			return selectable;
+		}
+
+		/**
+		 * Définit si les éléments de la liste sont séléctionnable ou non
+		 * 
+		 * @param selectable true si séléctionnable, false sinon
+		 */
+		public void setSelectable(boolean selectable) {
+			this.selectable = selectable;
+		}
+	}
 }

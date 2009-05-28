@@ -73,7 +73,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -207,33 +207,13 @@ public class Main {
 		});
 
 	}
-	
-	public static String getHexString(byte[] b) {
-		String result = ""; //$NON-NLS-1$
-		for (int i = 0; i < b.length; i++) {
-			//result += Integer.toHexString(b[i]);//Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1);
-			result += Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1);
-		}
-		return result;
-	}
 
-	public static byte[] hexStringToByteArray(String s) {
-	    int len = s.length();
-	    byte[] data = new byte[len / 2];
-	    for (int i = 0; i < len; i += 2) {
-	        data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
-	                             + Character.digit(s.charAt(i+1), 16));
-	    }
-	    return data;
-	}
-	
-	@SuppressWarnings("unchecked")
 	private static void loadStartupPlugin() {
 		PluginLoader pl = new PluginLoader();
 		
 		List<String> disablePlugin = null;
 		try {
-			disablePlugin = (List<String>)XMLSerializer.loadXMLStructure(
+			disablePlugin = XMLSerializer.loadXMLStructure(
 					new File(ApplicationCore.userRessources.getConfigPathForUser(), "disable_plugins.xml"), false);  //$NON-NLS-1$
 		} catch (IOException e) {
 			e.printStackTrace();

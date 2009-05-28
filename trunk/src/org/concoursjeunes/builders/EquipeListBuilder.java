@@ -2,7 +2,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -14,6 +14,8 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 package org.concoursjeunes.builders;
+
+import java.util.List;
 
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.ConcurrentList;
@@ -31,8 +33,8 @@ public class EquipeListBuilder {
 		EquipeList equipeList = new EquipeList(nbMembresRetenu);
 		
 		for(Entite entite : concurrentList.listCompagnie()) {
-			Concurrent[] concurrents = concurrentList.list(entite, null, null);
-			if(concurrents.length >= nbMembresRetenu) {
+			List<Concurrent> concurrents = concurrentList.list(entite, null, null);
+			if(concurrents.size() >= nbMembresRetenu) {
 				Equipe equipe = new Equipe(entite.getNom());
 				
 				concurrents = ConcurrentList.sort(concurrents, ConcurrentList.SortCriteria.SORT_BY_POINTS);

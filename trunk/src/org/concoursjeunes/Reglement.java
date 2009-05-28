@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -88,22 +88,38 @@
  */
 package org.concoursjeunes;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
+import org.ajdeveloppement.commons.sql.SqlField;
+import org.ajdeveloppement.commons.sql.SqlForeignFields;
+import org.ajdeveloppement.commons.sql.SqlPersistance;
+import org.ajdeveloppement.commons.sql.SqlPersistanceException;
+import org.ajdeveloppement.commons.sql.SqlPrimaryKey;
+import org.ajdeveloppement.commons.sql.SqlStoreHelper;
+import org.ajdeveloppement.commons.sql.SqlTable;
 
 /**
  * <p>
@@ -130,7 +146,10 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Reglement {
+@SqlTable(name="REGLEMENT")
+@SqlPrimaryKey(fields="NUMREGLEMENT",generatedidField="NUMREGLEMENT")
+@SqlForeignFields(fields={"NUMFEDERATION"})
+public class Reglement implements SqlPersistance {
 	
 	public enum TypeReglement {
 		/**
@@ -146,16 +165,27 @@ public class Reglement {
 	@XmlAttribute
 	@SuppressWarnings("unused")
 	private int version = 1;
+	@XmlTransient
+	@SqlField(name="NUMREGLEMENT")
+	private int numReglement = 0;
 	@XmlAttribute
+	@XmlID
+	@SqlField(name="NOMREGLEMENT")
 	private String name = "default"; //$NON-NLS-1$
+	@SqlField(name="LIBELLE")
 	private String displayName = ""; //$NON-NLS-1$
 	
 	private TypeReglement reglementType = TypeReglement.TARGET;
 
+	@SqlField(name="NBSERIE")
 	private int nbSerie = 2;
+	@SqlField(name="NBVOLEEPARSERIE")
 	private int nbVoleeParSerie = 6;
+	@SqlField(name="NBFLECHEPARVOLEE")
 	private int nbFlecheParVolee = 3;
+	@SqlField(name="NBMEMBRESEQUIPE")
 	private int nbMembresEquipe = 4;
+	@SqlField(name="NBMEMBRESRETENU")
 	private int nbMembresRetenu = 3;
 
 	@XmlElementWrapper(name="criteria",required=true)
@@ -169,10 +199,26 @@ public class Reglement {
     @XmlElement(name="departage")
 	private List<String> tie = new ArrayList<String>();
 
+	@SqlField(name="ISOFFICIAL")
 	private boolean officialReglement = false;
 	private Federation federation = new Federation();
+	@SqlField(name="NUMCATEGORIE_REGLEMENT")
 	private int category = 0;
+	@SqlField(name="REMOVABLE")
 	private boolean removable = true;
+	
+	private boolean inDatabase = true; 
+	
+	private static SqlStoreHelper<Reglement> helper = null;
+	static {
+		try {
+			helper = new SqlStoreHelper<Reglement>(ApplicationCore.dbConnection, Reglement.class);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
 	/**
 	 * Constructeur java-beans. Initialise un réglement par défaut
@@ -188,6 +234,28 @@ public class Reglement {
 	 */
 	public Reglement(String name) {
 		this.name = name;
+	}
+	
+	public void addPropertyChangeListener(PropertyChangeListener l) {
+		pcs.addPropertyChangeListener(l);
+	}
+	
+	public void removePropertyChangeListener(PropertyChangeListener l) {
+		pcs.removePropertyChangeListener(l);
+	}
+
+	/**
+	 * @return numReglement
+	 */
+	public int getNumReglement() {
+		return numReglement;
+	}
+
+	/**
+	 * @param numReglement numReglement à définir
+	 */
+	public void setNumReglement(int numReglement) {
+		this.numReglement = numReglement;
 	}
 
 	/**
@@ -206,7 +274,11 @@ public class Reglement {
 	 *            le nom à donner au réglement
 	 */
 	public void setName(String name) {
+		Object oldValue = this.name;
+		
 		this.name = name;
+		
+		pcs.firePropertyChange("name", oldValue, name); //$NON-NLS-1$
 	}
 
 	/**
@@ -220,7 +292,11 @@ public class Reglement {
 	 * @param displayName displayName à définir
 	 */
 	public void setDisplayName(String displayName) {
+		Object oldValue = this.displayName;
+		
 		this.displayName = displayName;
+		
+		pcs.firePropertyChange("displayName", oldValue, displayName); //$NON-NLS-1$
 	}
 
 	/**
@@ -234,7 +310,11 @@ public class Reglement {
 	 * @param reglementType reglementType à définir
 	 */
 	public void setReglementType(TypeReglement reglementType) {
+		Object oldValue = this.reglementType;
+		
 		this.reglementType = reglementType;
+		
+		pcs.firePropertyChange("reglementType", oldValue, reglementType); //$NON-NLS-1$
 	}
 
 	/**
@@ -263,7 +343,14 @@ public class Reglement {
 	 *            the listCriteria to set
 	 */
 	public void setListCriteria(List<Criterion> listCriteria) {
+		Object oldValue = this.listCriteria;
+		
 		this.listCriteria = listCriteria;
+		
+		for(Criterion criterion : listCriteria)
+			criterion.setReglement(this);
+		
+		pcs.firePropertyChange("listCriteria", oldValue, listCriteria); //$NON-NLS-1$
 	}
 
 	/**
@@ -283,7 +370,17 @@ public class Reglement {
 	 * @param surclassement le tableau de surclassement
 	 */
 	public void setSurclassement(Map<CriteriaSet, CriteriaSet> surclassement) {
+		Object oldValue = this.surclassement;
+		
 		this.surclassement = surclassement;
+		
+		for(Entry<CriteriaSet, CriteriaSet> entry : surclassement.entrySet()) {
+			entry.getKey().setReglement(this);
+			if(entry.getValue() != null)
+				entry.getValue().setReglement(this);
+		}
+		
+		pcs.firePropertyChange("surclassement", oldValue, surclassement); //$NON-NLS-1$
 	}
 
 	/**
@@ -301,23 +398,28 @@ public class Reglement {
 	 * @param listDistancesEtBlason la liste des couples distances/blasons
 	 */
 	public void setListDistancesEtBlason(List<DistancesEtBlason> listDistancesEtBlason) {
+		Object oldValue = this.listDistancesEtBlason;
+		
 		this.listDistancesEtBlason = listDistancesEtBlason;
+		
+		pcs.firePropertyChange("listDistancesEtBlason", oldValue, listDistancesEtBlason); //$NON-NLS-1$
 	}
 
 	/**
-	 * Retourne le couple distances blason associé à un jeux de critères donnée
+	 * Retourne le couple distances blason associé à un jeux de critères de placement donnée
 	 * 
 	 * @param criteriaSet
 	 *            le jeux de critère pour lequel récuperer le DistancesBlason
 	 * @return le DistancesEtBlason associé au jeux ou null si aucun
 	 */
-	public DistancesEtBlason getDistancesEtBlasonFor(CriteriaSet criteriaSet) {
+	public List<DistancesEtBlason> getDistancesEtBlasonFor(CriteriaSet criteriaSet) {
+		List<DistancesEtBlason> csDB = new ArrayList<DistancesEtBlason>();
 		for (DistancesEtBlason db : listDistancesEtBlason) {
 			if (db.getCriteriaSet().equals(criteriaSet)) {
-				return db;
+				csDB.add(db);
 			}
 		}
-		return null;
+		return csDB;
 	}
 
 	/**
@@ -335,7 +437,7 @@ public class Reglement {
 	 * @return Hashtable<String, Boolean> Renvoi le filtre de critere en place
 	 *         pour le placement des archers
 	 */
-	public Hashtable<Criterion, Boolean> getPlacementFilter() {
+	public Map<Criterion, Boolean> getPlacementFilter() {
 		Hashtable<Criterion, Boolean> filterCriteria = new Hashtable<Criterion, Boolean>();
 		for (Criterion criterion : listCriteria) {
 			filterCriteria.put(criterion, criterion.isPlacement());
@@ -350,7 +452,7 @@ public class Reglement {
 	 * @return Hashtable<String, Boolean> Renvoi le filtre de critere en place
 	 *         pour le classement des archers
 	 */
-	public Hashtable<Criterion, Boolean> getClassementFilter() {
+	public Map<Criterion, Boolean> getClassementFilter() {
 		Hashtable<Criterion, Boolean> filterCriteria = new Hashtable<Criterion, Boolean>();
 		for (Criterion criterion : listCriteria) {
 			filterCriteria.put(criterion, criterion.isClassement());
@@ -420,7 +522,11 @@ public class Reglement {
 	 * @param nbFlecheParVolee le nombre de fleche tiré par voléee
 	 */
 	public void setNbFlecheParVolee(int nbFlecheParVolee) {
+		Object oldValue = this.nbFlecheParVolee;
+		
 		this.nbFlecheParVolee = nbFlecheParVolee;
+		
+		pcs.firePropertyChange("nbFlecheParVolee", oldValue, nbFlecheParVolee); //$NON-NLS-1$
 	}
 
 	/**
@@ -442,7 +548,11 @@ public class Reglement {
 	 * @param nbMembresEquipe le nombre maximum de concurrents que peut contenir une équipe
 	 */
 	public void setNbMembresEquipe(int nbMembresEquipe) {
+		Object oldValue = this.nbMembresEquipe;
+		
 		this.nbMembresEquipe = nbMembresEquipe;
+		
+		pcs.firePropertyChange("nbMembresEquipe", oldValue, nbMembresEquipe); //$NON-NLS-1$
 	}
 
 	/**
@@ -464,7 +574,11 @@ public class Reglement {
 	 * @param nbMembresRetenu le nombre de concurrents d'une équipe dont les points seront comptablisé
 	 */
 	public void setNbMembresRetenu(int nbMembresRetenu) {
+		Object oldValue = this.nbMembresRetenu;
+		
 		this.nbMembresRetenu = nbMembresRetenu;
+		
+		pcs.firePropertyChange("nbMembresRetenu", oldValue, nbMembresRetenu); //$NON-NLS-1$
 	}
 
 	/**
@@ -482,7 +596,11 @@ public class Reglement {
 	 * @param nbSerie le nombre de séries devant être réalisé sur le concours
 	 */
 	public void setNbSerie(int nbSerie) {
+		Object oldValue = this.nbSerie;
+		
 		this.nbSerie = nbSerie;
+		
+		pcs.firePropertyChange("nbSerie", oldValue, nbSerie); //$NON-NLS-1$
 	}
 
 	/**
@@ -500,7 +618,11 @@ public class Reglement {
 	 * @param nbVoleeParSerie le nombre de volées dans une série
 	 */
 	public void setNbVoleeParSerie(int nbVoleeParSerie) {
+		Object oldValue = this.nbVoleeParSerie;
+		
 		this.nbVoleeParSerie = nbVoleeParSerie;
+		
+		pcs.firePropertyChange("nbVoleeParSerie", oldValue, nbVoleeParSerie); //$NON-NLS-1$
 	}
 
 	/**
@@ -518,7 +640,11 @@ public class Reglement {
 	 * @param tie la liste des champs de départage
 	 */
 	public void setTie(List<String> tie) {
+		Object oldValue = this.tie;
+		
 		this.tie = tie;
+		
+		pcs.firePropertyChange("tie", oldValue, tie); //$NON-NLS-1$
 	}
 
 	/**
@@ -545,7 +671,11 @@ public class Reglement {
 	 *            true pour un réglement officiel, false sinon
 	 */
 	public void setOfficialReglement(boolean officialReglement) {
+		Object oldValue = this.officialReglement;
+		
 		this.officialReglement = officialReglement;
+		
+		pcs.firePropertyChange("officialReglement", oldValue, officialReglement); //$NON-NLS-1$
 	}
 
 	/**
@@ -570,7 +700,11 @@ public class Reglement {
 	 * @param federation federation à définir
 	 */
 	public void setFederation(Federation federation) {
+		Object oldValue = this.federation;
+		
 		this.federation = federation;
+		
+		pcs.firePropertyChange("federation", oldValue, federation); //$NON-NLS-1$
 	}
 
 	/**
@@ -588,7 +722,11 @@ public class Reglement {
 	 * @param category le numéro de la catégorie du réglement
 	 */
 	public void setCategory(int category) {
+		Object oldValue = this.category;
+		
 		this.category = category;
+		
+		pcs.firePropertyChange("category", oldValue, category); //$NON-NLS-1$
 	}
 
 	/**
@@ -603,67 +741,107 @@ public class Reglement {
 	}
 
 	/**
-	 * @param removable removable à définir
+	 * Définit si le réglement peut ou non être supprimé de la base de données
+	 * 
+	 * @param removable <code>true</code> si le réglement peut être supprimé.
 	 */
 	public void setRemovable(boolean removable) {
 		this.removable = removable;
 	}
 
 	/**
-	 * @return removable
+	 * Indique si le réglement peut être supprimé de la base ou non
+	 * 
+	 * @return removable <code>true</code> si le réglement peut être supprimé.
 	 */
 	public boolean isRemovable() {
 		return removable;
 	}
 
 	/**
-	 * Rend l'objet persistant. Sauvegarde l'ensemble des données de l'objet
-	 * dans la base de donnée de ConcoursJeunes.
+	 * Indique si le réglement est présent en base ou non. Si le réglement n'est pas
+	 * présent en base, les concurrents se basant sur ce réglements ne peuvent pas
+	 * voir leur catégorie rendu persistant.
 	 * 
+	 * @return <code>true</code> si le réglement est présent en base
 	 */
-	public void save() throws SQLException {
-		String sql = "merge into REGLEMENT (NUMREGLEMENT, NOMREGLEMENT, LIBELLE, NBSERIE, NBVOLEEPARSERIE," + //$NON-NLS-1$
-				"NBFLECHEPARVOLEE, NBMEMBRESEQUIPE, NBMEMBRESRETENU, ISOFFICIAL, NUMFEDERATION, " + //$NON-NLS-1$
-				"NUMCATEGORIE_REGLEMENT, REMOVABLE) " + //$NON-NLS-1$
-				"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"; //$NON-NLS-1$
+	public boolean isInDatabase() {
+		return inDatabase;
+	}
 
-		// Statement stmt = ConcoursJeunes.dbConnection.createStatement();
-		PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
-		int index = 1;
-		pstmt.setInt(index++, hashCode());
-		pstmt.setString(index++, name);
-		pstmt.setString(index++, displayName);
-		pstmt.setInt(index++, nbSerie);
-		pstmt.setInt(index++, nbVoleeParSerie);
-		pstmt.setInt(index++, nbFlecheParVolee);
-		pstmt.setInt(index++, nbMembresEquipe);
-		pstmt.setInt(index++, nbMembresRetenu);
-		pstmt.setBoolean(index++, officialReglement);
-		pstmt.setInt(index++, federation.getNumFederation());
-		pstmt.setInt(index++, category);
-		pstmt.setBoolean(index++, removable);
+	/**
+	 * Définit si le réglement est présent en base ou non. Si le réglement n'est pas
+	 * présent en base, les concurrents se basant sur ce réglements ne peuvent pas
+	 * voir leur catégorie rendu persistant.
+	 * 
+	 * @param inDatabase <code>true</code> si le réglement est présent en base
+	 */
+	public void setInDatabase(boolean inDatabase) {
+		this.inDatabase = inDatabase;
+	}
 
-		pstmt.executeUpdate();
-		pstmt.close();
+	/**
+	 * <p>Rend l'objet persistant. Sauvegarde l'ensemble des données de l'objet
+	 * dans la base de donnée de ConcoursJeunes.</p>
+	 * 
+	 * <p>Les arguments sont ignoré.</p>
+	 */
+	@Override
+	public void save() throws SqlPersistanceException {
+		if(federation.getNumFederation() == 0)
+			federation.save();
+		//si le numero de réglement est à 0, regarde si il n'existe pas malgré tous
+		//une entré en base de données
+		if(numReglement == 0) {
+			try {
+				String sql = "select NUMREGLEMENT from REGLEMENT where NOMREGLEMENT=?"; //$NON-NLS-1$
+				PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
+				try {
+					pstmt.setString(1, name);
+					ResultSet rs = pstmt.executeQuery();
+					try {
+						if(rs.first())
+							numReglement = rs.getInt(1);
+					} finally {
+						rs.close();
+					}
+				} finally {
+					pstmt.close();
+				}
+			} catch (SQLException e) {
+				throw new SqlPersistanceException(e);
+			}
+		}
+		
+		helper.save(this, Collections.singletonMap("NUMFEDERATION", (Object)federation.getNumFederation())); //$NON-NLS-1$
 
-		saveTie();
-		// sauvegarde les tableaux de crières et correspondance
-		saveCriteria();
-		saveDistancesAndBlasons();
-		saveSurclassement();
+		try {
+			saveTie();
+			// sauvegarde les tableaux de crières et correspondance
+			saveCriteria();
+			saveDistancesAndBlasons();
+			saveSurclassement();
+		} catch (SQLException e) {
+			throw new SqlPersistanceException(e);
+		}
 	}
 	
 	private void saveTie() throws SQLException {
 		Statement stmt = ApplicationCore.dbConnection.createStatement();
-		stmt.executeUpdate("delete from DEPARTAGE where NUMREGLEMENT=" + hashCode()); //$NON-NLS-1$
-		stmt.close();
+		try {
+			stmt.executeUpdate("delete from DEPARTAGE where NUMREGLEMENT=" + numReglement); //$NON-NLS-1$
+		} finally {
+			stmt.close();
+		}
 		
-		String sql = "insert into DEPARTAGE (NUMREGLEMENT, FIELDNAME) " + //$NON-NLS-1$
-				"values (?, ?)"; //$NON-NLS-1$
+		String sql = "insert into DEPARTAGE (NUMDEPARTAGE, NUMREGLEMENT, FIELDNAME) " + //$NON-NLS-1$
+				"values (?, ?, ?)"; //$NON-NLS-1$
 		PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
+		int i = 1;
 		for(String d : tie) {
-			pstmt.setInt(1, hashCode());
-			pstmt.setString(2, d);
+			pstmt.setInt(1, i++);
+			pstmt.setInt(2, numReglement);
+			pstmt.setString(3, d);
 			pstmt.executeUpdate();
 		}
 	}
@@ -673,11 +851,30 @@ public class Reglement {
 	 * 
 	 * @throws SQLException
 	 */
-	private void saveCriteria() throws SQLException {
-		int numordre = 1;
-		for (Criterion criterion : listCriteria) {
-			criterion.setNumordre(numordre++);
-			criterion.save(this);
+	@SuppressWarnings("nls")
+	private void saveCriteria() throws SqlPersistanceException {
+		try {
+			Statement stmt = ApplicationCore.dbConnection.createStatement();
+			try {
+				String codesCritere = "";
+				for (Criterion criterion : listCriteria) {
+					if(!codesCritere.isEmpty())
+						codesCritere += ",";
+					codesCritere += "'" + criterion.getCode().replace("'", "''") + "'";
+				}
+
+				stmt.executeUpdate("delete from CRITERE where NUMREGLEMENT=" + numReglement + " and CODECRITERE not in (" + codesCritere + ")");
+			} finally {
+				stmt.close();
+			}
+		
+			int numordre = 1;
+			for (Criterion criterion : listCriteria) {
+				criterion.setNumordre(numordre++);
+				criterion.save();
+			}
+		} catch (SQLException e) {
+			throw new SqlPersistanceException(e);
 		}
 	}
 	
@@ -686,26 +883,36 @@ public class Reglement {
 	 * 
 	 * @throws SQLException
 	 */
-	private void saveSurclassement() throws SQLException {
-		Statement stmt = ApplicationCore.dbConnection.createStatement();
-		stmt.executeUpdate("delete from SURCLASSEMENT where NUMREGLEMENT=" + hashCode()); //$NON-NLS-1$
-		stmt.close();
-		
-		String sql = "insert into SURCLASSEMENT (NUMCRITERIASET, NUMREGLEMENT, NUMCRITERIASET_SURCLASSE) " + //$NON-NLS-1$
-				"values (?, ?, ?)"; //$NON-NLS-1$
-		PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
-		for(Map.Entry<CriteriaSet, CriteriaSet> row : surclassement.entrySet()) {
-			row.getKey().save(this);
-			pstmt.setInt(1, row.getKey().hashCode());
-			pstmt.setInt(2, hashCode());
-			if(row.getValue() != null) {
-				row.getValue().save(this);
-				pstmt.setInt(3, row.getValue().hashCode());
-			} else
-				pstmt.setNull(3, Types.INTEGER);
-			pstmt.executeUpdate();
+	private void saveSurclassement() throws SqlPersistanceException {
+		try {
+			Statement stmt = ApplicationCore.dbConnection.createStatement();
+			try {
+				stmt.executeUpdate("delete from SURCLASSEMENT where NUMREGLEMENT=" + numReglement); //$NON-NLS-1$
+			} finally {
+				stmt.close();
+			}
+			
+			String sql = "insert into SURCLASSEMENT (NUMCRITERIASET, NUMREGLEMENT, NUMCRITERIASET_SURCLASSE) " + //$NON-NLS-1$
+					"values (?, ?, ?)"; //$NON-NLS-1$
+			PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
+			try {
+				for(Map.Entry<CriteriaSet, CriteriaSet> row : surclassement.entrySet()) {
+					row.getKey().save();
+					pstmt.setInt(1, row.getKey().getNumCriteriaSet());
+					pstmt.setInt(2, numReglement);
+					if(row.getValue() != null) {
+						row.getValue().save();
+						pstmt.setInt(3, row.getValue().getNumCriteriaSet());
+					} else
+						pstmt.setNull(3, Types.INTEGER);
+					pstmt.executeUpdate();
+				}
+			} finally {
+				pstmt.close();
+			}
+		} catch (SQLException e) {
+			throw new SqlPersistanceException(e);
 		}
-		pstmt.close();
 	}
 
 	/**
@@ -713,9 +920,22 @@ public class Reglement {
 	 * 
 	 * @throws SQLException
 	 */
-	private void saveDistancesAndBlasons() throws SQLException {
-		for (DistancesEtBlason distancesEtBlason : listDistancesEtBlason) {
-			distancesEtBlason.save(this);
+	private void saveDistancesAndBlasons() throws SqlPersistanceException {
+		try {
+			Statement stmt = ApplicationCore.dbConnection.createStatement();
+			try {
+				stmt.executeUpdate("delete from DISTANCESBLASONS where NUMREGLEMENT=" + numReglement); //$NON-NLS-1$
+			} finally {
+				stmt.close();
+			}
+		
+			int i = 1;
+			for (DistancesEtBlason distancesEtBlason : listDistancesEtBlason) {
+				distancesEtBlason.setNumdistancesblason(i++);
+				distancesEtBlason.save();
+			}
+		} catch (SQLException e) {
+			throw new SqlPersistanceException(e);
 		}
 	}
 
@@ -725,22 +945,28 @@ public class Reglement {
 	 * 
 	 * @return true si suppression effective, false sinon.
 	 */
-	public boolean delete() {
-		boolean success = false;
-
+	@Override
+	public void delete() throws SqlPersistanceException{
 		if (!officialReglement) {
 			try {
 				Statement stmt = ApplicationCore.dbConnection.createStatement();
-
-				stmt.executeUpdate("delete from REGLEMENT where NUMREGLEMENT=" + hashCode()); //$NON-NLS-1$
-
-				success = true;
+				try {
+					stmt.executeUpdate("delete from REGLEMENT where NUMREGLEMENT=" + numReglement); //$NON-NLS-1$
+				} finally {
+					stmt.close();
+				}
 			} catch (SQLException e) {
-				e.printStackTrace();
+				throw new SqlPersistanceException(e);
 			}
+		} else
+			new SqlPersistanceException("delete this Reglement is not authorized because there is official"); //$NON-NLS-1$
+	}
+	
+	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
+		for(Entry<CriteriaSet, CriteriaSet> entry : surclassement.entrySet()) {
+			entry.getKey().setReglement(this);
+			entry.getValue().setReglement(this);
 		}
-
-		return success;
 	}
 
 	/*

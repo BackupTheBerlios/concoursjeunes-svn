@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -88,7 +88,13 @@
  */
 package org.concoursjeunes.state;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -97,16 +103,28 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.concoursjeunes.ApplicationCore;
+import org.concoursjeunes.FicheConcours;
+
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.pdf.PdfWriter;
 
 /**
  * @author Aurélien JEOFFRAY
  *
  */
 @XmlRootElement(name="state")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class State implements Comparable<State> {
 	private String name = ""; //$NON-NLS-1$
 	private String category = ""; //$NON-NLS-1$
@@ -119,6 +137,8 @@ public class State implements Comparable<State> {
 	private String script = ""; //$NON-NLS-1$
 	@XmlTransient
 	private boolean isZipped = false;
+	@XmlTransient
+	private StateScriptInterface stateScript;
 	
 	/**
 	 * 
@@ -289,6 +309,61 @@ public class State implements Comparable<State> {
 	 */
 	public void setZipped(boolean isZipped) {
 		this.isZipped = isZipped;
+	}
+	
+	protected void compileScript() throws IOException, ScriptException {
+		ScriptEngineManager se = new ScriptEngineManager();
+		ScriptEngine scriptEngine = se.getEngineByName("JavaScript"); //$NON-NLS-1$
+		
+		Reader reader = new BufferedReader(new InputStreamReader(
+				new URL(((isZipped) ? "jar:" : "") + getStateURL().toString() + ((isZipped) ? "!" : "") + "/" + script).openStream())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+		scriptEngine.eval(reader);
+		reader.close();
+		
+		stateScript = ((Invocable)scriptEngine).getInterface(StateScriptInterface.class);;
+	}
+	
+	/**
+	 * @return stateURL
+	 * @throws MalformedURLException 
+	 */
+	protected URL getStateURL() throws MalformedURLException {
+		String statePath = ApplicationCore.staticParameters.getResourceString("path.ressources") //$NON-NLS-1$
+				+ File.separator + "states" + File.separator + name; //$NON-NLS-1$
+
+		//test si l'état est dans une archive compressé
+		if(isZipped) {
+			statePath += ".zip"; //$NON-NLS-1$
+		}
+		return new File(statePath).toURI().toURL();
+	}
+
+	public boolean checkPrintable(FicheConcours ficheConcours, StateOptions options) throws ScriptException, NoSuchMethodException {
+		if(stateScript == null) {
+			try {
+				compileScript();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		if(stateScript == null)
+			return false;
+				
+		return stateScript.checkPrintable(ficheConcours, options);
+	}
+	
+	@SuppressWarnings("nls")
+	public boolean printState(FicheConcours ficheConcours, Document document, StateOptions options, File pdfPath) throws ScriptException, NoSuchMethodException, FileNotFoundException, DocumentException, MalformedURLException {
+		if(!checkPrintable(ficheConcours, options))
+			return false;
+		
+		pdfPath.getParentFile().mkdirs();
+		PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(pdfPath));
+		writer.setFullCompression();
+		
+		stateScript.printState(ficheConcours, new URL(((isZipped) ? "jar:" : "") + getStateURL().toString() + ((isZipped) ? "!" : "") + "/" + template), document, writer, options);
+
+		return true;
 	}
 
 	/* (non-Javadoc)

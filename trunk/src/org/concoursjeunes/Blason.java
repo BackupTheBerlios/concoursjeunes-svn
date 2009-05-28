@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -88,20 +88,24 @@
  */
 package org.concoursjeunes;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
+import org.ajdeveloppement.commons.sql.SqlField;
+import org.ajdeveloppement.commons.sql.SqlPersistance;
+import org.ajdeveloppement.commons.sql.SqlPersistanceException;
+import org.ajdeveloppement.commons.sql.SqlPrimaryKey;
+import org.ajdeveloppement.commons.sql.SqlStoreHelper;
+import org.ajdeveloppement.commons.sql.SqlTable;
 import org.concoursjeunes.builders.BlasonBuilder;
 
 /**
@@ -111,21 +115,37 @@ import org.concoursjeunes.builders.BlasonBuilder;
  * @version 1.0
  *
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-public class Blason {
+@SqlTable(name="BLASONS")
+@SqlPrimaryKey(fields={"NUMBLASON"},generatedidField="NUMBLASON")
+public class Blason implements SqlPersistance {
 	
 	@XmlAttribute
+	@SqlField(name="NUMBLASON")
 	private int numblason = 0;
 	
+	@SqlField(name="NOMBLASON")
 	private String name = ""; //$NON-NLS-1$
+	@SqlField(name="HORIZONTAL_RATIO")
 	private double horizontalRatio = 1;
+	@SqlField(name="VERTICAL_RATIO")
 	private double verticalRatio = 1;
+	@SqlField(name="NBARCHER")
 	private int nbArcher = 4;
+	@SqlField(name="NUMORDRE")
 	private int numordre = 0;
+	@SqlField(name="IMAGE")
 	private String targetFaceImage = ""; //$NON-NLS-1$
 	//@XmlJavaTypeAdapter(JAXBMapAdapter.class)
 	private Map<Integer, Ancrage> ancrages = new ConcurrentHashMap<Integer, Ancrage>();
 	
+	private static SqlStoreHelper<Blason> helper = null;
+	static {
+		try {
+			helper = new SqlStoreHelper<Blason>(ApplicationCore.dbConnection, Blason.class);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	public Blason() {
 	}
@@ -341,7 +361,6 @@ public class Blason {
 	public synchronized Map<Integer, Ancrage> getAncrages() {
     	return ancrages;
     }
-	
 
 	/**
 	 * Définit la table des points d'ancarge du blason en fonction de la position
@@ -350,6 +369,10 @@ public class Blason {
 	 */
 	public void setAncrages(ConcurrentMap<Integer, Ancrage> ancrages) {
     	this.ancrages = ancrages;
+    	
+    	for(Entry<Integer, Ancrage> entry : ancrages.entrySet()) {
+			entry.getValue().setBlason(this);
+		}
     }
 	
 	/**
@@ -416,41 +439,25 @@ public class Blason {
 	 * Sauvegarde l'objet dans la base en créant une nouvelle ligne si le numero de blason est à 0
 	 * ou en mettant à jour la ligne existante dans la base et identifié par le numero de blason
 	 * 
-	 * @throws SQLException
+	 * @throws SqlPersistanceException
 	 */
-	public void save() throws SQLException {
-		String sql;
-		if(numblason > 0)
-			sql = "update BLASONS set NOMBLASON=?, HORIZONTAL_RATIO=?, VERTICAL_RATIO=? where NUMBLASON=" + numblason; //$NON-NLS-1$
-		else
-			sql = "insert into BLASONS (NOMBLASON, HORIZONTAL_RATIO, VERTICAL_RATIO) values (?, ?, ?)"; //$NON-NLS-1$
+	@Override
+	public void save() throws SqlPersistanceException {
+		helper.save(this);
 		
-		PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
-		
-		pstmt.setString(1, name);
-		pstmt.setDouble(2, horizontalRatio);
-		pstmt.setDouble(3, verticalRatio);
-		
-		pstmt.executeUpdate();
-		
-		if(numblason == 0) {
-			ResultSet clefs = pstmt.getGeneratedKeys();
-			if (clefs.first()) {
-				numblason = (Integer) clefs.getObject(1);
-			}
+		for(Entry<Integer, Ancrage> entry : ancrages.entrySet()) {
+			entry.getValue().save();
 		}
 	}
 	
 	/**
 	 * Supprime la persistance de l'objet
 	 * 
-	 * @throws SQLException
+	 * @throws SqlPersistanceException
 	 */
-	public void delete() throws SQLException {
-		String sql = "delete from BLASONS where numblason=" + numblason; //$NON-NLS-1$
-		
-		Statement stmt = ApplicationCore.dbConnection.createStatement();
-		stmt.executeUpdate(sql);
+	@Override
+	public void delete() throws SqlPersistanceException {
+		helper.delete(this);
 	}
 
 	/* (non-Javadoc)

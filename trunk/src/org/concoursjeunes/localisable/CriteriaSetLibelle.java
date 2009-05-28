@@ -2,7 +2,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,11 +13,14 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes;
+package org.concoursjeunes.localisable;
 
 import java.util.Map;
 
 import org.ajdeveloppement.commons.AjResourcesReader;
+import org.concoursjeunes.CriteriaSet;
+import org.concoursjeunes.Criterion;
+import org.concoursjeunes.CriterionElement;
 
 /**
  * Permet la génération du libellé représentant un jeux de critères
@@ -40,18 +43,20 @@ public class CriteriaSetLibelle {
         
         String strSCNA = ""; //$NON-NLS-1$
         
-        Map<Criterion, CriterionElement> criteria = criteriaSet.getCriteria();
-        for(Criterion keyCriterion : criteria.keySet()) {
-            
-            if(criteriaSet.getCriterionElement(keyCriterion) != null) {
-                strSCNA += criteria.get(keyCriterion) + " "; //$NON-NLS-1$
-            }
+        if(criteriaSet != null) {
+	        Map<Criterion, CriterionElement> criteria = criteriaSet.getCriteria();
+	        for(Criterion keyCriterion : criteria.keySet()) {
+	            
+	            if(criteriaSet.getCriterionElement(keyCriterion) != null) {
+	                strSCNA += criteria.get(keyCriterion).getLibelle() + " "; //$NON-NLS-1$
+	            }
+	        }
+	        
+	        strSCNA = strSCNA.trim();
+	        
+	        //si la chaine est vide (filtre *false) afficher tous le monde
+	        if(strSCNA.equals("")) strSCNA = localisation.getResourceString("equipe.categorie.tous"); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        
-        strSCNA = strSCNA.trim();
-        
-        //si la chaine est vide (filtre *false) afficher tous le monde
-        if(strSCNA.equals("")) strSCNA = localisation.getResourceString("equipe.categorie.tous"); //$NON-NLS-1$ //$NON-NLS-2$
         
         this.libelle = strSCNA.trim();
     }

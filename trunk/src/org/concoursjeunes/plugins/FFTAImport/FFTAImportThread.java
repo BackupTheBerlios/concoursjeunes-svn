@@ -176,10 +176,11 @@ public class FFTAImportThread extends Thread {
 	private void fftaFTPLoader() {
 		try {
 			SecureProperties secureProperties = new SecureProperties();
-			secureProperties.loadKey(
-					new File(ApplicationCore.staticParameters.getResourceString("path.ressources"), "security/keys/default.key")); //$NON-NLS-1$ //$NON-NLS-2$
+			/*secureProperties.loadKey(
+					new File(ApplicationCore.staticParameters.getResourceString("path.ressources"), "security/keys/ffta.key")); //$NON-NLS-1$ //$NON-NLS-2$*/
 			secureProperties.load(
 					new FileReader(new File(ApplicationCore.staticParameters.getResourceString("path.config"), "ffta.properties"))); //$NON-NLS-1$ //$NON-NLS-2$
+			
 			//URL ftpFFTA = new URL(secureStringsStore.get("ffta.ftp.url")); //$NON-NLS-1$
 			//EncryptedZipInputStream ezis = new EncryptedZipInputStream(ftpFFTA.openStream());
 			//ezis.setEncryptedPassword(secureStringsStore.get("ffta.zip.password").getBytes()); //$NON-NLS-1$

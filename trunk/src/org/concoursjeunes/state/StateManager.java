@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -96,6 +96,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.script.ScriptException;
 import javax.xml.bind.JAXBException;
 
 import org.ajdeveloppement.commons.io.FileUtils;
@@ -112,9 +113,10 @@ public class StateManager {
 	//private Lis
 	private List<State> states = new ArrayList<State>();
 	/**
+	 * @throws ScriptException 
 	 * 
 	 */
-	public StateManager() {
+	public StateManager() throws ScriptException {
 		File statesPath = new File(ApplicationCore.staticParameters.getResourceString("path.ressources"), "states"); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		List<File> stateFolders = FileUtils.listAllFiles(statesPath, ".*",true); //$NON-NLS-1$
@@ -125,6 +127,7 @@ public class StateManager {
 				if(stateFile.exists()) {
 					try {
 						State state = XMLSerializer.loadMarshallStructure(stateFile, State.class);
+						state.compileScript();
 						states.add(state);
 					} catch (JAXBException e) {
 						e.printStackTrace();
@@ -139,6 +142,7 @@ public class StateManager {
 					
 					State state = XMLSerializer.loadMarshallStructure(stateFile, State.class);
 					state.setZipped(true);
+					state.compileScript();
 					states.add(state);
 				} catch (MalformedURLException e) {
 					e.printStackTrace();

@@ -18,6 +18,7 @@ import org.concoursjeunes.builders.FicheConcoursBuilder;
 import org.concoursjeunes.event.ProfileEvent;
 import org.concoursjeunes.event.ProfileListener;
 import org.concoursjeunes.exceptions.NullConfigurationException;
+import org.concoursjeunes.manager.ConfigurationManager;
 
 /**
  * 
@@ -84,6 +85,9 @@ public class Profile {
 	}
 	
 	/**
+	 * Retourne l'objet de localisation du profil. Permet de retourner l'
+	 * ensemble des libellé localisé utile à l'application.
+	 * 
 	 * @return localisation
 	 */
 	public AjResourcesReader getLocalisation() {
@@ -102,10 +106,71 @@ public class Profile {
 	/**
 	 * Définit la configuration de l'application
 	 * 
-	 * @param _configuration la configuration de l'application
+	 * @param configuration la configuration de l'application
 	 */
 	public void setConfiguration(Configuration configuration) {
 		this.configuration = configuration;
+	}
+	
+	/**
+	 * Renomme un profil. Si l'opération réussi, retourne <code>true</code> si une erreur
+	 * dans le renommage des fichiers survient, si c'est le profil par défaut ou si un profil
+	 * porte déjà le nouveau nom, retourne <code>false</code>.
+	 * 
+	 * @param newName le nouveau nom du profil
+	 * @return retourne <code>true</code> en cas de succès du renommage
+	 */
+	public boolean renameProfile(String newName) {
+		
+		boolean success = false;
+		
+		//on interdit de renommer le profil par défaut
+		if(this.name.equals("defaut")) //$NON-NLS-1$
+			return false;
+		
+		//renome le dossier du profil
+		File f = ApplicationCore.userRessources.getProfilePath(this);
+		File fNew = new File(ApplicationCore.userRessources.getProfilePath(this).getParentFile(), newName);
+		
+		if(fNew.exists())
+			return false;
+		
+		
+		if(f.exists() && f.renameTo(fNew)) {
+			//si l'opération de renomage réussi, on supprime le fichier de config
+			f = new File(ApplicationCore.userRessources.getConfigPathForUser(),
+					Configuration.CONFIG_PROFILE + name + Configuration.EXT_XML);
+			if(!f.delete()) {
+				//si on arrive pas à supprimer le fichier on reviens en arrière
+				fNew.renameTo(ApplicationCore.userRessources.getProfilePath(this));
+				
+				return false;
+			}
+
+			name = newName;
+			configuration.setCurProfil(newName);
+			
+			try {
+				configuration.save();
+				
+				success = true;
+			} catch (JAXBException e) {
+				success = false;
+				e.printStackTrace();
+			} catch (IOException e) {
+				success = false;
+				e.printStackTrace();
+			} catch (XMLStreamException e) {
+				success  = false;
+				e.printStackTrace();
+			}
+			
+			if(!success) {
+				fNew.renameTo(ApplicationCore.userRessources.getProfilePath(this));
+			}
+		}
+		
+		return success;
 	}
 	
 	/**

@@ -66,11 +66,14 @@ Correspond à écran à décrire. Cette écran peut être un frame ou un window-
 <!ELEMENT tabbedpane ( method*, tab* ) >
 <!ATTLIST tabbedpane name NMTOKEN #IMPLIED >
 
-<!ELEMENT method ( param* ) >
+<!ELEMENT method ( param*,method* ) >
 <!ATTLIST method name NMTOKEN #REQUIRED >
 
-<!ELEMENT param ( param* ) >
-<!ATTLIST param %param.attributes; >
+<!ELEMENT param ( param*,method* ) >
+<!ATTLIST param 
+	%param.attributes;
+	name		NMTOKEN		#IMPLIED
+>
 
 <!ELEMENT separator EMPTY >
 
@@ -82,7 +85,7 @@ Correspond à écran à décrire. Cette écran peut être un frame ou un window-
 <!ELEMENT layout ( param*, method* ) >
 <!ATTLIST layout %class.attributes; >
 
-<!ELEMENT component ( method*,constraints? ) >
+<!ELEMENT component ( param*,method*,constraints? ) >
 <!ATTLIST component
 	%class.attributes;
 	name		NMTOKEN		#IMPLIED

@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -89,36 +89,46 @@
 package org.concoursjeunes.ui.dialog;
 
 import java.awt.BorderLayout;
+import java.awt.Desktop;
 import java.awt.FlowLayout;
+import java.awt.Desktop.Action;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
+import java.net.URISyntaxException;
+import java.util.logging.Level;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
+import javax.swing.event.HyperlinkEvent.EventType;
+import javax.swing.text.html.HTMLEditorKit;
 
 import org.ajdeveloppement.apps.AppUtilities;
 import org.ajdeveloppement.apps.Localisable;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.concoursjeunes.AppInfos;
 import org.concoursjeunes.ApplicationCore;
-import org.jdesktop.swingx.JXLabel;
+import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.error.ErrorInfo;
 
 /**
  * @author Aurélien JEOFFRAY
  *
  */
-public class AboutDialog extends JDialog implements ActionListener {
+public class AboutDialog extends JDialog implements ActionListener, HyperlinkListener {
 	private AjResourcesReader localisation;
 	
 	@Localisable("bouton.fermer")
 	private JButton jbFermer = new JButton();
-	private JXLabel jlAbout = new JXLabel();
+	private JEditorPane jlAbout = new JEditorPane();
 
 	MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
 	/**
@@ -136,9 +146,14 @@ public class AboutDialog extends JDialog implements ActionListener {
 		
 		jbFermer.addActionListener(this);
 		
-		jlAbout.setIcon(new ImageIcon(ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.about") //$NON-NLS-1$
-		));
+		jlAbout.setEditable(false);
+		jlAbout.setOpaque(false);
+		jlAbout.setEditorKit(new HTMLEditorKit());
+		jlAbout.setFont(getFont());
+		jlAbout.addHyperlinkListener(this);
+		//jlAbout.setIcon(new ImageIcon(ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
+		//		File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.about") //$NON-NLS-1$
+		//));
 		
 		jpAction.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		jpAction.add(jbFermer);
@@ -156,7 +171,12 @@ public class AboutDialog extends JDialog implements ActionListener {
 		
 		AppUtilities.localize(this, localisation);
 		
-		jlAbout.setText("<html>" + AppInfos.NOM + "<br>" + //$NON-NLS-1$ //$NON-NLS-2$
+		String iconURL = ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
+				File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.about"); //$NON-NLS-1$
+		
+		jlAbout.setText("<html><table style=\"font-family: Tahoma, Arial, Verdana, sans-serif; font-size:12pt;\">" + //$NON-NLS-1$
+				"<tr><td><img src=\"file:"	+ iconURL + "\"></td><td><b>"  //$NON-NLS-1$ //$NON-NLS-2$
+				+ AppInfos.NOM + "<br>" + //$NON-NLS-1$ 
 				localisation.getResourceString("apropos.description") + "<br><br>" + //$NON-NLS-1$ //$NON-NLS-2$
 				localisation.getResourceString("apropos.version") + "<br>" +  //$NON-NLS-1$ //$NON-NLS-2$
 				AppInfos.VERSION + "<br>" + //$NON-NLS-1$
@@ -165,7 +185,7 @@ public class AboutDialog extends JDialog implements ActionListener {
 				"version base: " + ApplicationCore.dbVersion + "<br><br>" //$NON-NLS-1$ //$NON-NLS-2$
 				+ "mémoire utilisé: " + ((memoryBean.getHeapMemoryUsage().getUsed() + memoryBean.getNonHeapMemoryUsage().getUsed()) / 1024 / 1024) + "Mo<br>" //$NON-NLS-1$ //$NON-NLS-2$
 				+ "mémoire réservé: " + ((memoryBean.getHeapMemoryUsage().getCommitted() + memoryBean.getNonHeapMemoryUsage().getCommitted()) / 1024 / 1024) + "Mo<br><br>" //$NON-NLS-1$ //$NON-NLS-2$
-				+ localisation.getResourceString("apropos.liens") + "<br></html>"); //$NON-NLS-1$ //$NON-NLS-2$
+				+ localisation.getResourceString("apropos.liens") + "</b></td></tr></table></html>"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
 	public void showAboutDialog() {
@@ -186,6 +206,23 @@ public class AboutDialog extends JDialog implements ActionListener {
 			setVisible(false);
 		}
 	}
-	
-	
+
+	@Override
+	public void hyperlinkUpdate(HyperlinkEvent e) {
+		if(e.getEventType() == EventType.ACTIVATED) {
+			if(Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Action.BROWSE)) {
+				try {
+					Desktop.getDesktop().browse(e.getURL().toURI());
+				} catch (IOException e1) {
+					JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+							null, null, e1, Level.SEVERE, null));
+					e1.printStackTrace();
+				} catch (URISyntaxException e1) {
+					JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+							null, null, e1, Level.SEVERE, null));
+					e1.printStackTrace();
+				}
+			}
+		}
+	}
 }

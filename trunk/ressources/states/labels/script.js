@@ -1,12 +1,10 @@
-//mapping Java/JS:
-//	depart: le depart selectionné
-function checkPrintable(ficheConcours) {
-	if(ficheConcours.getConcurrentList().countArcher(depart))
+function checkPrintable(ficheConcours, options) {
+	if(ficheConcours.getConcurrentList().countArcher(options.getDepart()))
 		return true;
 	return false;
 }
 
-function printState(ficheConcours, template, document, writer) {
+function printState(ficheConcours, template, document, writer, options) {
 	var contexte = JavaImporter(
 						Packages.org.concoursjeunes,
 						Packages.org.ajdeveloppement.commons,
@@ -14,29 +12,31 @@ function printState(ficheConcours, template, document, writer) {
 						Packages.java.util,
 						com.lowagie.text.xml.XmlParser,
 						java.text.DateFormat,
-						java.util.logging.Level,
-						java.io.StringReader,
-						org.jdesktop.swingx.error.ErrorInfo,
-						org.jdesktop.swingx.error.JXErrorPane);
+						java.io.StringReader);
+	
+	var localeReader = options.getLangReader();
+	var serie = options.getSerie();
+	var depart = options.getDepart();
+	var profile = options.getProfile();
 	
 	with(contexte) {
 		var templateEtiquettesXML = new AJTemplate();
 		templateEtiquettesXML.loadTemplate(template);
 	
 		try {
-			var nblarg = ApplicationCore.getConfiguration().getColonneAndLigne()[1];
-			var nbhaut = ApplicationCore.getConfiguration().getColonneAndLigne()[0];
+			var nblarg = profile.getConfiguration().getColonneAndLigne()[1];
+			var nbhaut = profile.getConfiguration().getColonneAndLigne()[0];
 			var depart = 0;
 		
-			var marge_gauche = ApplicationCore.getConfiguration().getMarges().left; // la marge gauche
-			var marge_droite = ApplicationCore.getConfiguration().getMarges().right; // la marge droite
-			var marge_haut = ApplicationCore.getConfiguration().getMarges().top; // la marge haut
-			var marge_bas = ApplicationCore.getConfiguration().getMarges().bottom; // la marge bas
-			var espacement_cellule_h = ApplicationCore.getConfiguration().getEspacements()[0]; // l'espacement horizontal entre cellule
-			var espacement_cellule_v = ApplicationCore.getConfiguration().getEspacements()[1]; // l'espacement vertical entre cellule
-			eval("var pageDimension = PageSize." + ApplicationCore.getConfiguration().getFormatPapier());
+			var marge_gauche = profile.getConfiguration().getMarges().left; // la marge gauche
+			var marge_droite = profile.getConfiguration().getMarges().right; // la marge droite
+			var marge_haut = profile.getConfiguration().getMarges().top; // la marge haut
+			var marge_bas = profile.getConfiguration().getMarges().bottom; // la marge bas
+			var espacement_cellule_h = profile.getConfiguration().getEspacements()[0]; // l'espacement horizontal entre cellule
+			var espacement_cellule_v = profile.getConfiguration().getEspacements()[1]; // l'espacement vertical entre cellule
+			eval("var pageDimension = PageSize." + profile.getConfiguration().getFormatPapier());
 			
-			if(ApplicationCore.getConfiguration().getOrientation().equals("landscape")) //$NON-NLS-1$
+			if(profile.getConfiguration().getOrientation().equals("landscape")) //$NON-NLS-1$
 				pageDimension = pageDimension.rotate();
 				
 			espacement_cellule_h = AJToolKit.centimeterToDpi(espacement_cellule_h);
@@ -60,14 +60,14 @@ function printState(ficheConcours, template, document, writer) {
 			}
 		
 			templateEtiquettesXML.parse("CURRENT_TIME", DateFormat.getDateInstance(DateFormat.FULL).format(new Date())); //$NON-NLS-1$
-			templateEtiquettesXML.parse("producer", ApplicationCore.NOM + " " + ApplicationCore.VERSION); //$NON-NLS-1$ //$NON-NLS-2$
-			templateEtiquettesXML.parse("author", ApplicationCore.getConfiguration().getClub().getNom()); //$NON-NLS-1$
-			templateEtiquettesXML.parse("pagesize", ApplicationCore.getConfiguration().getFormatPapier()); //$NON-NLS-1$
-			templateEtiquettesXML.parse("orientation", ApplicationCore.getConfiguration().getOrientation()); //$NON-NLS-1$
-			templateEtiquettesXML.parse("top", "" + AJToolKit.centimeterToDpi(ApplicationCore.getConfiguration().getMarges().top)); //$NON-NLS-1$ //$NON-NLS-2$
-			templateEtiquettesXML.parse("bottom", "" + AJToolKit.centimeterToDpi(ApplicationCore.getConfiguration().getMarges().bottom)); //$NON-NLS-1$ //$NON-NLS-2$
-			templateEtiquettesXML.parse("left", "" + AJToolKit.centimeterToDpi(ApplicationCore.getConfiguration().getMarges().left)); //$NON-NLS-1$ //$NON-NLS-2$
-			templateEtiquettesXML.parse("right", "" + AJToolKit.centimeterToDpi(ApplicationCore.getConfiguration().getMarges().right)); //$NON-NLS-1$ //$NON-NLS-2$
+			templateEtiquettesXML.parse("producer", AppInfos.NOM + " " + AppInfos.VERSION); //$NON-NLS-1$ //$NON-NLS-2$
+			templateEtiquettesXML.parse("author", profile.getConfiguration().getClub().getNom()); //$NON-NLS-1$
+			templateEtiquettesXML.parse("pagesize", profile.getConfiguration().getFormatPapier()); //$NON-NLS-1$
+			templateEtiquettesXML.parse("orientation", profile.getConfiguration().getOrientation()); //$NON-NLS-1$
+			templateEtiquettesXML.parse("top", "" + AJToolKit.centimeterToDpi(profile.getConfiguration().getMarges().top)); //$NON-NLS-1$ //$NON-NLS-2$
+			templateEtiquettesXML.parse("bottom", "" + AJToolKit.centimeterToDpi(profile.getConfiguration().getMarges().bottom)); //$NON-NLS-1$ //$NON-NLS-2$
+			templateEtiquettesXML.parse("left", "" + AJToolKit.centimeterToDpi(profile.getConfiguration().getMarges().left)); //$NON-NLS-1$ //$NON-NLS-2$
+			templateEtiquettesXML.parse("right", "" + AJToolKit.centimeterToDpi(profile.getConfiguration().getMarges().right)); //$NON-NLS-1$ //$NON-NLS-2$
 			templateEtiquettesXML.parse("page.columns", "" + (nblarg * 3)); //$NON-NLS-1$ //$NON-NLS-2$
 			templateEtiquettesXML.parse("page.widths", tailles_x); //$NON-NLS-1$
 		
@@ -75,17 +75,17 @@ function printState(ficheConcours, template, document, writer) {
 			var ligne = 0;
 			var concurrents = ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), ConcurrentList.SortCriteria.SORT_BY_TARGETS);
 			
-			for (var i = 0; i < concurrents.length; i++) {
+			for (var i = 0; i < concurrents.size(); i++) {
 				
 				if (colonne == 0)
 					if(ligne < nbhaut - 1)
 						templateEtiquettesXML.parse("page.ligne.leading", "" + (zoneaffichable_y * (cellule_y / 100.0) + espacement_cellule_v)); //$NON-NLS-1$ //$NON-NLS-2$
 					else
 						templateEtiquettesXML.parse("page.ligne.leading", "" + (zoneaffichable_y * (cellule_y / 100.0) - 1)); //$NON-NLS-1$ //$NON-NLS-2$
-				templateEtiquettesXML.parse("page.ligne.colonne.cid", concurrents[i].getID()); //$NON-NLS-1$
-				templateEtiquettesXML.parse("page.ligne.colonne.cclub", concurrents[i].getClub().getNom()); //$NON-NLS-1$
-				templateEtiquettesXML.parse("page.ligne.colonne.clicence", concurrents[i].getNumLicenceArcher()); //$NON-NLS-1$
-				templateEtiquettesXML.parse("page.ligne.colonne.emplacement", new TargetPosition(concurrents[i].getCible(), concurrents[i].getPosition()).toString()); //$NON-NLS-1$
+				templateEtiquettesXML.parse("page.ligne.colonne.cid", concurrents.get(i).getID()); //$NON-NLS-1$
+				templateEtiquettesXML.parse("page.ligne.colonne.cclub", concurrents.get(i).getClub().getNom()); //$NON-NLS-1$
+				templateEtiquettesXML.parse("page.ligne.colonne.clicence", concurrents.get(i).getNumLicenceArcher()); //$NON-NLS-1$
+				templateEtiquettesXML.parse("page.ligne.colonne.emplacement", new TargetPosition(concurrents.get(i).getCible(), concurrents.get(i).getPosition()).toString()); //$NON-NLS-1$
 				if (colonne + 1 == nblarg)
 					templateEtiquettesXML.parseBloc("page.ligne.colonne.interbloc", ""); //$NON-NLS-1$ //$NON-NLS-2$
 		

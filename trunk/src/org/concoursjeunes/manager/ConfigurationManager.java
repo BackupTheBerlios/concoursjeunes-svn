@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -86,7 +86,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes;
+package org.concoursjeunes.manager;
 
 import static org.concoursjeunes.ApplicationCore.staticParameters;
 import static org.concoursjeunes.ApplicationCore.userRessources;
@@ -96,17 +96,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-import javax.naming.ConfigurationException;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 
-import org.ajdeveloppement.commons.io.FileUtils;
 import org.ajdeveloppement.commons.io.XMLSerializer;
+import org.concoursjeunes.AppConfiguration;
+import org.concoursjeunes.ApplicationCore;
+import org.concoursjeunes.Configuration;
+import org.concoursjeunes.Entite;
 import org.concoursjeunes.builders.ConfigurationBuilder;
-import org.concoursjeunes.exceptions.NullConfigurationException;
 
 /**
  * Gére le chargement de la configuration du programme
@@ -197,11 +196,9 @@ public class ConfigurationManager {
 					configuration.setEspacements(oldConfig.getEspacements());
 					configuration.setInterfaceResultatCumul(oldConfig.isInterfaceResultatCumul());
 					configuration.setInterfaceAffResultatExEquo(oldConfig.isInterfaceAffResultatExEquo());
-					configuration.setFirstboot(oldConfig.isFirstboot());
 					configuration.setCurProfil(oldConfig.getCurProfil());
 					
 					//ecrase les XML 1.1 du profil par la config 2.0+ 
-					configuration.saveAsDefault();
 					configuration.save();
 				}
 			} catch (IOException e) {
@@ -244,15 +241,15 @@ public class ConfigurationManager {
 				
 				//on crée un fichier de configuration avec les bons paramètres 
 				appConfiguration = new AppConfiguration();
-				appConfiguration.setFirstboot(false);
+				appConfiguration.setFirstboot(true);
 				appConfiguration.setPdfReaderPath(oldConf.getPdfReaderPath());
 				appConfiguration.setProxy(oldConf.getProxy());
 				appConfiguration.setUseProxy(oldConf.isUseProxy());
 				appConfiguration.save();
 				
 				//on reset les paramètres obsoléte
-				oldConf.setFirstboot(true);
-				oldConf.setPdfReaderPath(""); //$NON-NLS-1$
+				//oldConf.setFirstboot(true);
+				oldConf.setPdfReaderPath(null); 
 				oldConf.setProxy(null);
 				oldConf.setUseProxy(false);
 				oldConf.save();
@@ -276,88 +273,5 @@ public class ConfigurationManager {
 		}
 		
 		return appConfiguration;
-	}
-	
-	/**
-	 * Renome un profil
-	 * 
-	 * @param currentName - le nom actuel du profil
-	 * @param newName - le nouveau nom a attribuer au profil
-	 * @return true si le renomage a reussi, false sinon
-	 * 
-	 * @throws ConfigurationException
-	 * @throws IOException
-	 */
-	public static boolean renameConfiguration(Profile profile, String currentName, String newName) 
-			throws NullConfigurationException, IOException, JAXBException, XMLStreamException {
-		
-		boolean success = false;
-		
-		//on interdit de renommer le profil par défaut
-		if(currentName.equals("defaut")) //$NON-NLS-1$
-			return false;
-		
-		List<MetaDataFicheConcours> openedFichesConcours = new ArrayList<MetaDataFicheConcours>();
-		
-		//si le profil à renommer est le profil courrant on ferme tout avant traitement
-		if(profile.getConfiguration().getCurProfil().equals(currentName) && profile.getFichesConcours().size() > 0) {
-			for(FicheConcours ficheConcours : profile.getFichesConcours()) {
-				openedFichesConcours.add(ficheConcours.getMetaDataFicheConcours());
-			}
-			profile.closeAllFichesConcours();
-			profile.getConfiguration().save();
-		}
-		
-		//renome le fichier de configuration
-		File f = new File(ApplicationCore.userRessources.getConfigPathForUser(), 
-				Configuration.CONFIG_PROFILE + currentName + Configuration.EXT_XML);
-		File fNew = new File(ApplicationCore.userRessources.getConfigPathForUser(),
-				Configuration.CONFIG_PROFILE + newName + Configuration.EXT_XML);
-		if(fNew.exists())
-			return false;
-		success = f.renameTo(fNew);
-		
-		//renome le dossier du profil
-		f = new File(ApplicationCore.userRessources.getConfigPathForUser(), "Profile" + File.separator + currentName); //$NON-NLS-1$
-		fNew = new File(ApplicationCore.userRessources.getConfigPathForUser(), "Profile" + File.separator + newName); //$NON-NLS-1$
-		
-		if(success && f.exists() && !f.renameTo(fNew)) {
-			try {
-				FileUtils.deleteFilesPath(fNew);
-				success = f.renameTo(fNew);
-			} catch (IOException e1) {
-				success = false;
-				e1.printStackTrace();
-			}
-			
-			if(!success) {
-				//si le renomage du dossier echoue (pouvant avoir pour seul cause
-				//une erreur système) revenir en arrière
-				f = new File(ApplicationCore.userRessources.getConfigPathForUser(), Configuration.CONFIG_PROFILE + currentName + Configuration.EXT_XML);
-				fNew = new File(ApplicationCore.userRessources.getConfigPathForUser(), Configuration.CONFIG_PROFILE + newName + Configuration.EXT_XML);
-				fNew.renameTo(f);
-			}
-		}
-		
-		//on recharge la configuration après renommage du fichier pour en renommer son contenue
-		Configuration configuration = null;
-		if(success) {
-			configuration = loadConfiguration(newName);
-			configuration.setCurProfil(newName);
-			configuration.save();
-		}
-		
-		//si le profil renommé était le profil courrant, alors le recharger
-		if(profile.getConfiguration().getCurProfil().equals(currentName) && openedFichesConcours.size() > 0) {
-			if(success && configuration != null) {
-				profile.setConfiguration(configuration);
-			}
-			
-			for(MetaDataFicheConcours metaDataFicheConcours : openedFichesConcours) {
-				profile.restoreFicheConcours(metaDataFicheConcours);
-			}
-		}
-		
-		return success;
 	}
 }

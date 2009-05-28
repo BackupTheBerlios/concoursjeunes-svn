@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -95,7 +95,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.net.Authenticator;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -129,7 +130,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.ws.WebServiceException;
 
 import org.ajdeveloppement.commons.AjResourcesReader;
-import org.ajdeveloppement.commons.net.SimpleAuthenticator;
 import org.ajdeveloppement.commons.ui.AJList;
 import org.ajdeveloppement.macosx.PrivilegedRuntime;
 import org.ajdeveloppement.updater.AjUpdater;
@@ -145,9 +145,6 @@ import org.concoursjeunes.plugins.AvailablePluginsManager;
 import org.concoursjeunes.plugins.PluginDescription;
 import org.concoursjeunes.ui.GlassPanePanel;
 import org.jdesktop.swingx.JXErrorPane;
-import org.jdesktop.swingx.JXLoginPane;
-import org.jdesktop.swingx.JXLoginPane.Status;
-import org.jdesktop.swingx.auth.LoginService;
 import org.jdesktop.swingx.error.ErrorInfo;
 import org.jdesktop.swingx.util.OS;
 
@@ -157,10 +154,11 @@ import org.jdesktop.swingx.util.OS;
  */
 public class InstallPluginDialog extends JDialog implements ActionListener, CaretListener, ListSelectionListener, AjUpdaterListener {
 	
+	private Profile profile;
 	private AjResourcesReader localisation;
 	
 	private final JLabel jllCategorie = new JLabel();
-	private final AJList jlCategorie = new AJList();
+	private final AJList<String> jlCategorie = new AJList<String>();
 	
 	private final JLabel jlPlugins = new JLabel();
 	private final JLabel jlSearch = new JLabel();
@@ -182,10 +180,11 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 	private List<PluginDescription> pluginsDetail;
 	private AjUpdater ajUpdater;
 	
-	public InstallPluginDialog(JFrame parentframe, AjResourcesReader localisation) {
+	public InstallPluginDialog(JFrame parentframe, Profile profile) {
 		super(parentframe, true);
 		
-		this.localisation = localisation;
+		this.profile = profile;
+		this.localisation = profile.getLocalisation();
 		
 		init();
 		affectLibelle();
@@ -265,20 +264,20 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 	}
 	
 	private void completePanel() {
-		boolean retry = false;
-		
 		DefaultTableModel dtm = createTableModel();
 		
 		if(ApplicationCore.getAppConfiguration().isUseProxy()) {
 			ApplicationCore.getAppConfiguration().getProxy().activateProxyConfiguration();
 		}
 		
+		boolean disable = false;
 		try {
 			Class<?> clazz = Class.forName(
 					"org.concoursjeunes.webservices.AvailablePluginsManagerImpl", //$NON-NLS-1$
 					true,
 					new URLClassLoader(new URL[] { new URL(ApplicationCore.staticParameters.getResourceString("url.webservices") + "/ConcoursJeunes-webservices.jar") })); //$NON-NLS-1$ //$NON-NLS-2$
-			AvailablePluginsManager apm = (AvailablePluginsManager)clazz.newInstance();
+			Constructor<?> constr = clazz.getConstructor(Profile.class);
+			AvailablePluginsManager apm = (AvailablePluginsManager)constr.newInstance(profile);
 			pluginsDetail = apm.getPluginsDetail();
 			
 			for(PluginDescription pluginDescription : pluginsDetail) {
@@ -308,81 +307,44 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 			}
 			jlCategorie.setSelectedIndex(0);
 		} catch(WebServiceException e1) {
-			
-			if(e1.getCause() != null && e1.getCause() instanceof IOException) {
-				IOException ioe = (IOException)e1.getCause();
-				if(ioe.getMessage().indexOf("HTTP response code: 407") > -1) { //Erreur authentification serveur proxy //$NON-NLS-1$
-					retry = true;
-				} else {
-					e1.printStackTrace();
-					SwingUtilities.invokeLater(new Runnable() {
-						public void run() {
-							GlassPanePanel panel = new GlassPanePanel();
-							
-							panel.setMessage(localisation.getResourceString("installplugindialog.temporary.disable")); //$NON-NLS-1$
-							setGlassPane(panel);
-							panel.setVisible(true);
-						}
-					});
-				}
-			} else {
-				e1.printStackTrace();
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						GlassPanePanel panel = new GlassPanePanel();
-						panel.setMessage(localisation.getResourceString("installplugindialog.temporary.disable")); //$NON-NLS-1$
-						setGlassPane(panel);
-						panel.setVisible(true);
-					}
-				});
-			}
+			e1.printStackTrace();
+			disable = true;
 		} catch(ClassNotFoundException e1) {
 			e1.printStackTrace();
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
-					GlassPanePanel panel = new GlassPanePanel();
-					panel.setMessage(localisation.getResourceString("installplugindialog.temporary.disable")); //$NON-NLS-1$
-					setGlassPane(panel);
-					panel.setVisible(true);
-				}
-			});
+			disable = true;
 		} catch(IllegalAccessException e1) {
 			e1.printStackTrace();
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
-					GlassPanePanel panel = new GlassPanePanel();
-					panel.setMessage(localisation.getResourceString("installplugindialog.temporary.disable")); //$NON-NLS-1$
-					setGlassPane(panel);
-					panel.setVisible(true);
-				}
-			});
+			disable = true;
 		} catch(InstantiationException e1) {
 			e1.printStackTrace();
+			disable = true;
+		} catch(MalformedURLException e1) {
+			e1.printStackTrace();
+			disable = true;
+		} catch (SecurityException e) {
+			e.printStackTrace();
+			disable = true;
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+			disable = true;
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			disable = true;
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+			disable = true;
+		}
+		
+		if(disable) {
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
 					GlassPanePanel panel = new GlassPanePanel();
+					
 					panel.setMessage(localisation.getResourceString("installplugindialog.temporary.disable")); //$NON-NLS-1$
 					setGlassPane(panel);
 					panel.setVisible(true);
 				}
 			});
-		} catch(MalformedURLException e1) {
-			e1.printStackTrace();
-		}
-		
-		if(retry) {
-			LoginService loginService = new LoginService() {
-				@Override
-				public boolean authenticate(String user , char[] password, String server) {
-					Authenticator.setDefault(new SimpleAuthenticator(
-							user,
-							new String(password)));
-					return true;
-				}
-			};
-			Status status = JXLoginPane.showLoginDialog(this, loginService);
-			if(status == Status.SUCCEEDED)
-				completePanel();
 		}
 	}
 	

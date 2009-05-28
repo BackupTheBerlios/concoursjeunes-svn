@@ -1,10 +1,8 @@
-//mapping Java/JS:
-//	depart: le depart selectionné
-function checkPrintable(ficheConcours) {
+function checkPrintable(ficheConcours, options) {
 	return true;
 }
 
-function printState(ficheConcours, template, document, writer) {
+function printState(ficheConcours, template, document, writer, options) {
 	var contexte = JavaImporter(
 						Packages.org.concoursjeunes,
 						Packages.org.ajdeveloppement.commons,
@@ -17,6 +15,11 @@ function printState(ficheConcours, template, document, writer) {
 						org.jdesktop.swingx.error.ErrorInfo,
 						org.jdesktop.swingx.error.JXErrorPane);
 	
+	var localeReader = options.getLangReader();
+	var serie = options.getSerie();
+	var depart = options.getDepart();
+	var profile = options.getProfile();
+	
 	with(contexte) {
 		var templateXML = new AJTemplate();
 		templateXML.setLocalisationReader(localeReader);
@@ -24,10 +27,10 @@ function printState(ficheConcours, template, document, writer) {
 	
 		try {
 			templateXML.parse("CURRENT_TIME", DateFormat.getDateInstance(DateFormat.FULL).format(new Date())); //$NON-NLS-1$
-			templateXML.parse("producer", ApplicationCore.NOM + " " + ApplicationCore.VERSION); //$NON-NLS-1$ //$NON-NLS-2$
-			templateXML.parse("author", ApplicationCore.getConfiguration().getClub().getNom()); //$NON-NLS-1$	
+			templateXML.parse("producer", AppInfos.NOM + " " + AppInfos.VERSION); //$NON-NLS-1$ //$NON-NLS-2$
+			templateXML.parse("author", profile.getConfiguration().getClub().getNom()); //$NON-NLS-1$	
 
-			templateXML.parse("scoresheet.LOGO_CLUB_URI", ApplicationCore.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\"));
+			templateXML.parse("scoresheet.LOGO_CLUB_URI", profile.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\"));
 			templateXML.parse("scoresheet.INTITULE_CLUB", ficheConcours.getParametre().getClub().getNom()); //$NON-NLS-1$
 			templateXML.parse("scoresheet.INTITULE_CONCOURS", ficheConcours.getParametre().getIntituleConcours()); //$NON-NLS-1$
 			templateXML.parse("scoresheet.VILLE_CLUB", ficheConcours.getParametre().getLieuConcours()); //$NON-NLS-1$
@@ -44,7 +47,7 @@ function printState(ficheConcours, template, document, writer) {
 				
 			var nbFlecheParVolee = ficheConcours.getParametre().getReglement().getNbFlecheParVolee();
 			for(var j = 0; j < nbSerie; j++) {
-				var strDistance = getPosition(j+1) + " distance";
+				var strDistance = getPosition(j+1, localeReader) + " distance";
 				templateXML.parse("scoresheet.series.SERIE_NB_COL", 5 + nbFlecheParVolee);
 				templateXML.parse("scoresheet.series.INTITULE_SERIE", strDistance);
 				var colsSize = "";
@@ -69,7 +72,7 @@ function printState(ficheConcours, template, document, writer) {
 					templateXML.loopBloc("scoresheet.series.volees");
 				}
 				templateXML.parse("scoresheet.series.NB_COL_TOTAL", 2 + nbFlecheParVolee);
-				templateXML.parse("scoresheet.series.NUM_DISTANCE", getPosition(j+1));
+				templateXML.parse("scoresheet.series.NUM_DISTANCE", getPosition(j+1, localeReader));
 
 				templateXML.loopBloc("scoresheet.series");
 			}
@@ -79,7 +82,7 @@ function printState(ficheConcours, template, document, writer) {
 			
 			for(var j = 0; j < nbSerie; j++) {
 				templateXML.parse("scoresheet.distances.NB_COL_TOTAL", 2 + nbFlecheParVolee);
-				templateXML.parse("scoresheet.distances.NUM_DISTANCE", getPosition(j+1));
+				templateXML.parse("scoresheet.distances.NUM_DISTANCE", getPosition(j+1, localeReader));
 				
 				templateXML.loopBloc("scoresheet.distances");
 			}
@@ -94,7 +97,7 @@ function printState(ficheConcours, template, document, writer) {
 	}
 }
 
-function getPosition(num) {
+function getPosition(num, localeReader) {
 	switch(num) {
 		case 1:
 			return localeReader.getResourceString("template.first");

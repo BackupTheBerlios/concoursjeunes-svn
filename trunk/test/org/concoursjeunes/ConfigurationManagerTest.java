@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -89,12 +89,10 @@
 package org.concoursjeunes;
 
 import java.io.File;
-import java.io.IOException;
 
 import junit.framework.TestCase;
 
-import org.ajdeveloppement.commons.io.FileUtils;
-import org.concoursjeunes.exceptions.NullConfigurationException;
+import org.concoursjeunes.manager.ConfigurationManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -147,62 +145,4 @@ public class ConfigurationManagerTest extends TestCase {
 		assertNotNull(ConfigurationManager.loadConfiguration(new File(ApplicationCore.userRessources.getConfigPathForUser() 
 				+ File.separator + "configuration_defaut.xml"))); //$NON-NLS-1$
 	}
-
-	/**
-	 * Test method for {@link org.concoursjeunes.ConfigurationManager#renameConfiguration(java.lang.String, java.lang.String)}.
-	 */
-	@Test
-	public void testRenameConfiguration() {
-		Configuration configuration = new Configuration();
-		configuration.setCurProfil("test_rename_orig"); //$NON-NLS-1$
-		configuration.save();
-		
-		String actualProfile = ""; //$NON-NLS-1$
-		
-		try {
-			ApplicationCore concoursJeunes = ApplicationCore.getInstance();
-			
-			actualProfile = ApplicationCore.getConfiguration().getCurProfil();
-			ApplicationCore.getConfiguration().save();
-			
-			configuration.saveAsDefault();
-			ApplicationCore.setConfiguration(configuration);
-		
-		
-			concoursJeunes.createFicheConcours();
-			concoursJeunes.saveAllFichesConcours();
-			concoursJeunes.closeAllFichesConcours();
-			
-			assertFalse("Il est interdit de renommer le profil par defaut", ConfigurationManager.renameConfiguration("defaut", "test_rename")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			//test l'absence d'erreur dans l'etat d'origine
-			assertTrue(new File(ApplicationCore.userRessources.getConfigPathForUser(), "Profile/test_rename_orig").exists()); //$NON-NLS-1$
-			
-			assertTrue(ConfigurationManager.renameConfiguration("test_rename_orig", "test_rename")); //$NON-NLS-1$ //$NON-NLS-2$
-			assertTrue(new File(ApplicationCore.userRessources.getConfigPathForUser(), "configuration_test_rename.xml").exists()); //$NON-NLS-1$
-			assertFalse(new File(ApplicationCore.userRessources.getConfigPathForUser(), "configuration_test_rename_orig.xml").exists()); //$NON-NLS-1$
-			
-			assertTrue(new File(ApplicationCore.userRessources.getConfigPathForUser(), "Profile/test_rename").exists()); //$NON-NLS-1$
-			assertFalse(new File(ApplicationCore.userRessources.getConfigPathForUser(), "Profile/test_rename_orig").exists()); //$NON-NLS-1$
-			assertTrue(new File(ApplicationCore.userRessources.getConfigPathForUser(), "Profile/test_rename").listFiles().length > 0); //$NON-NLS-1$
-		} catch (NullConfigurationException e) {
-			fail(e.toString());
-			e.printStackTrace();
-		} catch (IOException e) {
-			fail(e.toString());
-			e.printStackTrace();
-		}
-		
-		configuration = ConfigurationManager.loadConfiguration(actualProfile);
-		ApplicationCore.setConfiguration(configuration);
-		
-		assertTrue(new File(ApplicationCore.userRessources.getConfigPathForUser(), "configuration_test_rename.xml").delete()); //$NON-NLS-1$
-		try {
-			FileUtils.deleteFilesPath(new File(ApplicationCore.userRessources.getConfigPathForUser(), "Profile/test_rename")); //$NON-NLS-1$
-			assertFalse(new File(ApplicationCore.userRessources.getConfigPathForUser(), "Profile/test_rename").exists()); //$NON-NLS-1$
-		} catch (IOException e) {
-			fail(e.toString());
-			e.printStackTrace();
-		}
-	}
-
 }

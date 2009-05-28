@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -93,6 +93,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,8 +102,8 @@ import java.util.Map;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.CriteriaSet;
 import org.concoursjeunes.Criterion;
+import org.concoursjeunes.CriterionElement;
 import org.concoursjeunes.DistancesEtBlason;
-import org.concoursjeunes.Federation;
 import org.concoursjeunes.Reglement;
 
 /**
@@ -123,7 +125,7 @@ public class ReglementBuilder {
 	 * @return le reglement créer
 	 */
 	public static Reglement createReglement() {
-		return getReglement(0);
+		return getDefaultReglement(); 
 	}
 	
 	/**
@@ -170,16 +172,17 @@ public class ReglementBuilder {
 		try {
 			Statement stmt = ApplicationCore.dbConnection.createStatement();
 			
-			String sql = "select REGLEMENT.*,SIGLEFEDERATION,NOMFEDERATION from REGLEMENT, FEDERATION where REGLEMENT.NUMFEDERATION=FEDERATION.NUMFEDERATION"; //$NON-NLS-1$
+			String sql;
 			if(numreglement != -1)
-				sql += " and NUMREGLEMENT=" + numreglement; //$NON-NLS-1$
+				sql = "select * from REGLEMENT where NUMREGLEMENT=" + numreglement; //$NON-NLS-1$
 			else
-				sql += " and NOMREGLEMENT='" + reglementName + "'"; //$NON-NLS-1$ //$NON-NLS-2$
+				sql = "select * from REGLEMENT where NOMREGLEMENT='" + reglementName + "'"; //$NON-NLS-1$ //$NON-NLS-2$
 			
 			ResultSet rs = stmt.executeQuery(sql);
 			if(rs.first()) {
-				int numreglment = rs.getInt("NUMREGLEMENT"); //$NON-NLS-1$
+				numreglement = rs.getInt("NUMREGLEMENT"); //$NON-NLS-1$
 				
+				reglement.setNumReglement(numreglement);
 				reglement.setName(rs.getString("NOMREGLEMENT")); //$NON-NLS-1$
 				reglement.setDisplayName(rs.getString("LIBELLE")); //$NON-NLS-1$
 				reglement.setNbSerie(rs.getInt("NBSERIE")); //$NON-NLS-1$
@@ -188,39 +191,34 @@ public class ReglementBuilder {
 				reglement.setNbMembresEquipe(rs.getInt("NBMEMBRESEQUIPE")); //$NON-NLS-1$
 				reglement.setNbMembresRetenu(rs.getInt("NBMEMBRESRETENU")); //$NON-NLS-1$
 				reglement.setOfficialReglement(rs.getBoolean("ISOFFICIAL")); //$NON-NLS-1$
-				
-				Federation federation = new Federation();
-				federation.setNumFederation(rs.getInt("NUMFEDERATION")); //$NON-NLS-1$
-				federation.setSigleFederation(rs.getString("SIGLEFEDERATION")); //$NON-NLS-1$
-				federation.setNomFederation(rs.getString("NOMFEDERATION")); //$NON-NLS-1$
-				reglement.setFederation(federation);
+				reglement.setFederation(FederationBuilder.getFederation(rs.getInt("NUMFEDERATION"))); //$NON-NLS-1$
 				reglement.setCategory(rs.getInt("NUMCATEGORIE_REGLEMENT")); //$NON-NLS-1$
 				reglement.setRemovable(rs.getBoolean("REMOVABLE")); //$NON-NLS-1$
 				
 				rs.close();
 				
 				List<String> ties = new ArrayList<String>();
-				rs = stmt.executeQuery("select * from DEPARTAGE where NUMREGLEMENT=" + numreglment + " order by NUMDEPARTAGE");  //$NON-NLS-1$//$NON-NLS-2$
+				rs = stmt.executeQuery("select * from DEPARTAGE where NUMREGLEMENT=" + numreglement + " order by NUMDEPARTAGE");  //$NON-NLS-1$//$NON-NLS-2$
 				while(rs.next()) {
 					ties.add(rs.getString("FIELDNAME")); //$NON-NLS-1$
 				}
 				rs.close();
 				reglement.setTie(ties);
 				
-				ArrayList<Criterion> criteria = new ArrayList<Criterion>();
-				rs = stmt.executeQuery("select CODECRITERE from CRITERE where NUMREGLEMENT=" + numreglment + " order by NUMORDRE"); //$NON-NLS-1$ //$NON-NLS-2$
+				List<Criterion> criteria = new ArrayList<Criterion>();
+				rs = stmt.executeQuery("select CODECRITERE from CRITERE where NUMREGLEMENT=" + numreglement + " order by NUMORDRE"); //$NON-NLS-1$ //$NON-NLS-2$
 				while(rs.next()) {
-					criteria.add(CriterionBuilder.getCriterion(rs.getString("CODECRITERE"), reglement, numreglment)); //$NON-NLS-1$
+					criteria.add(CriterionBuilder.getCriterion(rs.getString("CODECRITERE"), reglement)); //$NON-NLS-1$
 				}
 				rs.close();
 				reglement.setListCriteria(criteria);
 				
-				ArrayList<DistancesEtBlason> listDistancesEtBlason = new ArrayList<DistancesEtBlason>();
-				rs = stmt.executeQuery("select * from DISTANCESBLASONS where NUMREGLEMENT=" + numreglment); //$NON-NLS-1$
+				List<DistancesEtBlason> listDistancesEtBlason = new ArrayList<DistancesEtBlason>();
+				rs = stmt.executeQuery("select * from DISTANCESBLASONS where NUMREGLEMENT=" + numreglement); //$NON-NLS-1$
 				while(rs.next()) {
 					int numdb = rs.getInt("NUMDISTANCESBLASONS"); //$NON-NLS-1$
 					
-					DistancesEtBlason db = DistancesEtBlasonBuilder.getDistancesEtBlason(numdb, reglement, numreglment);
+					DistancesEtBlason db = DistancesEtBlasonBuilder.getDistancesEtBlason(numdb, reglement);
 					CriteriaSet[] criteriaSets = CriteriaSet.listCriteriaSet(reglement, reglement.getPlacementFilter());
 					for(CriteriaSet criteriaSet : criteriaSets) {
 						if(criteriaSet.equals(db.getCriteriaSet().getFilteredCriteriaSet(reglement.getPlacementFilter()))) {
@@ -233,15 +231,15 @@ public class ReglementBuilder {
 				reglement.setListDistancesEtBlason(listDistancesEtBlason);
 				
 				Map<CriteriaSet, CriteriaSet> surclassement = new HashMap<CriteriaSet, CriteriaSet>();
-				rs = stmt.executeQuery("select * from SURCLASSEMENT where NUMREGLEMENT=" + numreglment); //$NON-NLS-1$
+				rs = stmt.executeQuery("select * from SURCLASSEMENT where NUMREGLEMENT=" + numreglement); //$NON-NLS-1$
 				while (rs.next()) {
 					int numCriteriaSet = rs.getInt("NUMCRITERIASET"); //$NON-NLS-1$
 					int numCriteriaSetSurClasse = rs.getInt("NUMCRITERIASET_SURCLASSE"); //$NON-NLS-1$
 					
-					CriteriaSet criteriaSet = CriteriaSetBuilder.getCriteriaSet(numCriteriaSet, reglement, numreglment);
+					CriteriaSet criteriaSet = CriteriaSetBuilder.getCriteriaSet(numCriteriaSet, reglement);
 					CriteriaSet criteriaSetSurClasse = null;
 					if(!rs.wasNull()) {
-						criteriaSetSurClasse = CriteriaSetBuilder.getCriteriaSet(numCriteriaSetSurClasse, reglement, numreglment);
+						criteriaSetSurClasse = CriteriaSetBuilder.getCriteriaSet(numCriteriaSetSurClasse, reglement);
 					}
 					
 					surclassement.put(criteriaSet, criteriaSetSurClasse);
@@ -254,6 +252,66 @@ public class ReglementBuilder {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		
+		return reglement;
+	}
+	
+	@SuppressWarnings("nls")
+	private static Reglement getDefaultReglement() {
+		Reglement reglement = new Reglement();
+		
+		reglement.setName("C"+(new Date().getTime())); //$NON-NLS-1$
+		reglement.setNbSerie(2);
+		reglement.setNbVoleeParSerie(10); 
+		reglement.setNbFlecheParVolee(3); 
+		reglement.setNbMembresEquipe(4); 
+		reglement.setNbMembresRetenu(3); 
+		reglement.setOfficialReglement(false); 
+		//reglement.setFederation(FederationBuilder.getFederation(rs.getInt("NUMFEDERATION"))); //$NON-NLS-1$
+		reglement.setCategory(2); 
+		reglement.setRemovable(true);
+		
+		reglement.setTie(new ArrayList<String>(Arrays.asList(new String[] {"10", "9"}))); //$NON-NLS-1$ //$NON-NLS-2$
+		
+		List<CriterionElement> elementsC1 = new ArrayList<CriterionElement>();
+		elementsC1.add(CriterionElementBuilder.getCriterionElement("H", "Homme", true, 1));
+		elementsC1.add(CriterionElementBuilder.getCriterionElement("D", "Dame", true, 2));
+		
+		List<CriterionElement> elementsC2 = new ArrayList<CriterionElement>();
+		elementsC2.add(CriterionElementBuilder.getCriterionElement("P", "Poussin", true, 1));
+		elementsC2.add(CriterionElementBuilder.getCriterionElement("B", "Benjamin", true, 2));
+		elementsC2.add(CriterionElementBuilder.getCriterionElement("M", "Minime", true, 3));
+		elementsC2.add(CriterionElementBuilder.getCriterionElement("C", "Cadet", true, 4));
+		elementsC2.add(CriterionElementBuilder.getCriterionElement("J", "Junior", true, 5));
+		elementsC2.add(CriterionElementBuilder.getCriterionElement("S", "Sénior", true, 6));
+		elementsC2.add(CriterionElementBuilder.getCriterionElement("V", "Vétéran", true, 7));
+		elementsC2.add(CriterionElementBuilder.getCriterionElement("SV", "Super-Vétéran", true, 8));
+		
+		List<CriterionElement> elementsC3 = new ArrayList<CriterionElement>();
+		elementsC3.add(CriterionElementBuilder.getCriterionElement("0", "", true, 1));
+		elementsC3.add(CriterionElementBuilder.getCriterionElement("P", "Promotion", true, 2));
+		elementsC3.add(CriterionElementBuilder.getCriterionElement("1", "Niveau 1", true, 3));
+		elementsC3.add(CriterionElementBuilder.getCriterionElement("2", "Niveau 2", true, 4));
+		elementsC3.add(CriterionElementBuilder.getCriterionElement("3", "Niveau 3", true, 5));
+		
+		List<CriterionElement> elementsC4 = new ArrayList<CriterionElement>();
+		elementsC4.add(CriterionElementBuilder.getCriterionElement("CL", "Arc Classique", true, 1));
+		elementsC4.add(CriterionElementBuilder.getCriterionElement("CO", "Arc à Poulies", true, 2));
+		elementsC4.add(CriterionElementBuilder.getCriterionElement("AD", "Arc droit", false, 2));
+		elementsC4.add(CriterionElementBuilder.getCriterionElement("AC", "Arc Chasse", false, 2));
+		elementsC4.add(CriterionElementBuilder.getCriterionElement("BB", "Bare Bow", false, 2));
+		elementsC4.add(CriterionElementBuilder.getCriterionElement("TL", "Tir Libre", false, 2));
+		
+		List<Criterion> criteria = new ArrayList<Criterion>();
+		criteria.add(CriterionBuilder.getCriterion("sexe", "Sexe", "sexe", -1, true, false, false, 
+				1, elementsC1));
+		criteria.add(CriterionBuilder.getCriterion("categorie", "Catégorie", "categorie", 1, true, false, true, 
+				2, elementsC2));
+		criteria.add(CriterionBuilder.getCriterion("niveau", "Niveau", "niveau", 1, false, false, false, 
+				3, elementsC3));
+		criteria.add(CriterionBuilder.getCriterion("arme", "Arme", "arme", 1, true, false, true, 
+				4, elementsC4));
+		reglement.setListCriteria(criteria);
 		
 		return reglement;
 	}

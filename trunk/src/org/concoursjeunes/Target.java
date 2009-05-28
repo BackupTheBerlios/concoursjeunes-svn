@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -497,9 +497,10 @@ public class Target implements PropertyChangeListener {
 			throws PlacementException {
 		if (concurrent != null) {
 			if (position == -1) {
-				Repartition repartition = Repartition.ACBD;
+				Repartition repartition = Repartition.ACBD; //par défaut, répartit les archers équitablement entre AB et CD
 				if(concurrents.length == 2)
-					repartition = Repartition.ABCD;
+					repartition = Repartition.ABCD; // si il n'y a pas suffisament d'archer pour justifier une phase CD, regroupe
+													// les archers en AB
 				insertConcurrent(concurrent, repartition);
 				
 				return;
@@ -509,10 +510,14 @@ public class Target implements PropertyChangeListener {
 				
 				assert dbConcurrent != null : "un concururrent doit toujours avoir un DistancesEtBlason associé"; //$NON-NLS-1$
 				
+				//regarde si les distances de la cible sont compatible avec les distances de l'archer
 				if(getDistancesEtBlason().size() > 0 && !Arrays.equals(dbConcurrent.getDistance(), getDistancesEtBlason().get(0).getDistance()))
 					throw new PlacementException(PlacementException.Nature.BAD_DISTANCES);
 				
+				//verifie que la place est disponible en fonction du blason
 				if (isSlotAvailable(dbConcurrent.getTargetFace(), position)) {
+					//verifie que la place n'est pas seulement valide pour
+					//un archer non handicape
 					if(concurrent.isHandicape() && position % 2 != 0)
 						throw new PlacementException(PlacementException.Nature.POSITION_AVAILABLE_FOR_VALID_CONCURRENT);
 					concurrent.setCible(numCible);

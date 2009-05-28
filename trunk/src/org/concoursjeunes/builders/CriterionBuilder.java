@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -91,6 +91,7 @@ package org.concoursjeunes.builders;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Criterion;
@@ -114,36 +115,59 @@ public class CriterionBuilder {
 	 * 
 	 * @return le critère correspondant
 	 */
-	public static Criterion getCriterion(String codeCritere, Reglement reglement, int hashReglement) {
+	public static Criterion getCriterion(String codeCritere, Reglement reglement) {
 		
+		PreparedStatement pstmt = null;
 		try {
 			String sql = "select * from critere where CODECRITERE=? and NUMREGLEMENT=?"; //$NON-NLS-1$
 			
-			PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
+			pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
 			
 			pstmt.setString(1, codeCritere);
-			pstmt.setInt(2, hashReglement);
+			pstmt.setInt(2, reglement.getNumReglement());
 			
 			ResultSet rs = pstmt.executeQuery();
 			if(rs.first()) {
 				Criterion criterion = new Criterion();
+				criterion.setReglement(reglement);
 				criterion.setCode(codeCritere);
 				criterion.setLibelle(rs.getString("LIBELLECRITERE")); //$NON-NLS-1$
-				criterion.setCodeffta(rs.getString("CODEFFTA")); //$NON-NLS-1$
+				criterion.setChampsTableArchers(rs.getString("CODEFFTA")); //$NON-NLS-1$
 				criterion.setSortOrder(rs.getInt("SORTORDERCRITERE")); //$NON-NLS-1$
 				criterion.setClassement(rs.getBoolean("CLASSEMENT")); //$NON-NLS-1$
 				criterion.setClassementEquipe(rs.getBoolean("CLASSEMENTEQUIPE")); //$NON-NLS-1$
 				criterion.setPlacement(rs.getBoolean("PLACEMENT")); //$NON-NLS-1$
 				criterion.setNumordre(rs.getInt("NUMORDRE")); //$NON-NLS-1$
 
-				criterion.setCriterionElements(CriterionElement.getAllCriterionElementsFor(criterion, hashReglement));
+				criterion.setCriterionElements(CriterionElement.getAllCriterionElementsFor(criterion));
+				
+				rs.close();
 				
 				return criterion;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			if(pstmt != null) try {pstmt.close(); } catch(SQLException e) { };
 		}
 
 		return null;
+	}
+	
+	public static Criterion getCriterion(String codeCritere, String libelle, String codeFFTA, int sortOrder,
+			boolean classement, boolean classementEquipe, boolean placement, int numOrdre, List<CriterionElement> elements) {
+		Criterion criterion = new Criterion();
+		criterion.setCode(codeCritere);
+		criterion.setLibelle(libelle); 
+		criterion.setChampsTableArchers(codeFFTA); 
+		criterion.setSortOrder(sortOrder); 
+		criterion.setClassement(classement); 
+		criterion.setClassementEquipe(classementEquipe); 
+		criterion.setPlacement(placement); 
+		criterion.setNumordre(numOrdre); 
+
+		criterion.setCriterionElements(elements);
+		
+		return criterion;
 	}
 }

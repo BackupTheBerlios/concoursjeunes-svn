@@ -1,7 +1,7 @@
 /*
- * Créer le 17 aoû. 08 à 12:54:22 pour ConcoursJeunes
+ * Créer le 5 mai 2009 à 21:26:33 pour ConcoursJeunes
  *
- * Copyright 2002-2008 - Aurélien JEOFFRAY
+ * Copyright 2002-2009 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
  *
@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -86,136 +86,36 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes.ui.dialog;
+package org.concoursjeunes.xml.bind;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.SQLException;
-import java.util.logging.Level;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
-import org.ajdeveloppement.commons.AjResourcesReader;
-import org.ajdeveloppement.commons.ui.GridbagComposer;
-import org.concoursjeunes.Federation;
-import org.jdesktop.swingx.JXErrorPane;
-import org.jdesktop.swingx.error.ErrorInfo;
+import org.concoursjeunes.Blason;
+import org.concoursjeunes.manager.BlasonManager;
 
 /**
+ * La liste des blasons etant figé en base de données, l'adapter permet d'enregistrer
+ * dans le fichier XML uniquement la référence du blason
+ * 
  * @author Aurélien JEOFFRAY
  *
  */
-public class NewFederationDialog extends JDialog implements ActionListener {
-	
-	private AjResourcesReader localisation;
-	
-	private JLabel jlFederationSigle = new JLabel();
-	private JLabel jlFederationName = new JLabel();
-	private JTextField jtfFederatonSigle = new JTextField(10);
-	private JTextField jtfFederatonName = new JTextField(50);
-	
-	private JButton jbValider = new JButton();
-	private JButton jbAnnuler = new JButton();
-	
-	//private JFrame parentframe;
-	
-	private Federation federation = null;
-	
-	public NewFederationDialog(JFrame parentframe, AjResourcesReader localisation) {
-		super(parentframe, true);
-		
-		this.localisation = localisation;
-		
-		init();
-		affectLibelle();
-	}
-	
-	private void init() {
-		JPanel jpPrincipal = new JPanel();
-		JPanel jpAction = new JPanel();
-		
-		GridbagComposer gbComposer = new GridbagComposer();
-		GridBagConstraints c = new GridBagConstraints();
-		
-		jbValider.addActionListener(this);
-		jbAnnuler.addActionListener(this);
-		
-		gbComposer.setParentPanel(jpPrincipal);
-		c.gridy = 0;
-		c.anchor = GridBagConstraints.WEST;
-		gbComposer.addComponentIntoGrid(jlFederationSigle, c);
-		gbComposer.addComponentIntoGrid(jtfFederatonSigle, c);
-		c.gridy++;
-		gbComposer.addComponentIntoGrid(jlFederationName, c);
-		gbComposer.addComponentIntoGrid(jtfFederatonName, c);
-		
-		jpAction.setLayout(new FlowLayout(FlowLayout.RIGHT));
-		jpAction.add(jbValider);
-		jpAction.add(jbAnnuler);
-		
-		getContentPane().setLayout(new BorderLayout());
-		getContentPane().add(jpPrincipal, BorderLayout.CENTER);
-		getContentPane().add(jpAction, BorderLayout.SOUTH);
-	}
-	
-	private void affectLibelle() {
-		setTitle(localisation.getResourceString("newfederation.title")); //$NON-NLS-1$
-		
-		jlFederationSigle.setText(localisation.getResourceString("newfederation.sigle")); //$NON-NLS-1$
-		jlFederationName.setText(localisation.getResourceString("newfederation.name")); //$NON-NLS-1$
-		
-		jbValider.setText(localisation.getResourceString("bouton.valider")); //$NON-NLS-1$
-		jbAnnuler.setText(localisation.getResourceString("bouton.annuler")); //$NON-NLS-1$
-	}
-	
-	private void completePanel() {
-		
-	}
-	
-	/**
-	 * Affiche la boite de dialogue de création de dédération
-	 * 
-	 * @return la federation créer
+public class BlasonAdapter extends XmlAdapter<String, Blason> {
+
+	/* (non-Javadoc)
+	 * @see javax.xml.bind.annotation.adapters.XmlAdapter#marshal(java.lang.Object)
 	 */
-	public Federation showNewFederationDialog() {
-		completePanel();
-		
-		pack();
-		setLocationRelativeTo(null);
-		setVisible(true);
-		
-		return federation;
+	@Override
+	public String marshal(Blason blason) throws Exception {
+		return blason.getName();
 	}
 
 	/* (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 * @see javax.xml.bind.annotation.adapters.XmlAdapter#unmarshal(java.lang.Object)
 	 */
 	@Override
-	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() == jbValider) {
-			federation = new Federation(jtfFederatonName.getText(), jtfFederatonSigle.getText());
-			try {
-				federation.save();
-				
-			} catch (SQLException e1) {
-				federation = null;
-				JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
-						null, null, e1, Level.SEVERE, null));
-				e1.printStackTrace();
-			}
-			setVisible(false);
-		} else if(e.getSource() == jbAnnuler) {
-			setVisible(false);
-		}
+	public Blason unmarshal(String ref) throws Exception {
+		return BlasonManager.findBlasonByName(ref);
 	}
-	
-	
+
 }

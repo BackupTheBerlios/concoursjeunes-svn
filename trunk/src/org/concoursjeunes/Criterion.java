@@ -2,7 +2,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -19,14 +19,25 @@ package org.concoursjeunes;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlTransient;
+
+import org.ajdeveloppement.commons.sql.SqlField;
+import org.ajdeveloppement.commons.sql.SqlForeignFields;
+import org.ajdeveloppement.commons.sql.SqlPersistance;
+import org.ajdeveloppement.commons.sql.SqlPersistanceException;
+import org.ajdeveloppement.commons.sql.SqlPrimaryKey;
+import org.ajdeveloppement.commons.sql.SqlStoreHelper;
+import org.ajdeveloppement.commons.sql.SqlTable;
 
 /**
  * Caractéristique d'un critère de distinction
@@ -34,7 +45,10 @@ import javax.xml.bind.annotation.XmlID;
  * @author Aurélien JEOFFRAY
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Criterion {
+@SqlTable(name="CRITERE")
+@SqlPrimaryKey(fields={"CODECRITERE","NUMREGLEMENT"})
+@SqlForeignFields(fields="NUMREGLEMENT")
+public class Criterion implements SqlPersistance {
 	/**
 	 * Tri des éléments du critères croissant
 	 */
@@ -45,19 +59,46 @@ public class Criterion {
      */
     public static final int SORT_DESC = -1;
     
+    public static final String[] CRITERES_TABLE_ARCHERS = {
+    	"sexe", //$NON-NLS-1$
+    	"categorie", //$NON-NLS-1$
+    	"niveau", //$NON-NLS-1$
+    	"arc" //$NON-NLS-1$
+    };
+    
     @XmlID
     @XmlAttribute
+    @SqlField(name="CODECRITERE")
     private String code = ""; //$NON-NLS-1$
+    @SqlField(name="LIBELLECRITERE")
     private String libelle = ""; //$NON-NLS-1$
+    @SqlField(name="SORTORDERCRITERE")
     private int sortOrder = SORT_ASC;
+    @SqlField(name="CLASSEMENT")
     private boolean classement = false;
+    @SqlField(name="CLASSEMENTEQUIPE")
     private boolean classementEquipe = false;
+    @SqlField(name="PLACEMENT")
     private boolean placement = false;
-    private String codeffta = ""; //$NON-NLS-1$
+    @SqlField(name="CODEFFTA")
+    private String champsTableArchers = ""; //$NON-NLS-1$
+    @SqlField(name="NUMORDRE")
     private int numordre = 0;
     @XmlElementWrapper(name="criterionelements",required=true)
     @XmlElement(name="element")
     private List<CriterionElement> criterionElements = new ArrayList<CriterionElement>();
+    
+    @XmlTransient
+    private Reglement reglement;
+    
+    private static SqlStoreHelper<Criterion> helper = null;
+	static {
+		try {
+			helper = new SqlStoreHelper<Criterion>(ApplicationCore.dbConnection, Criterion.class);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
     
     public Criterion() {
         
@@ -89,6 +130,20 @@ public class Criterion {
     }
 
     /**
+	 * @return reglement
+	 */
+	public Reglement getReglement() {
+		return reglement;
+	}
+
+	/**
+	 * @param reglement reglement à définir
+	 */
+	public void setReglement(Reglement reglement) {
+		this.reglement = reglement;
+	}
+
+	/**
 	 * Renvoie le libellé du critère
 	 * @return  Renvoie libelle.
 	 */
@@ -171,7 +226,7 @@ public class Criterion {
      */
     @Override
     public String toString() {
-        return libelle;
+        return code;
     }
 
     /**
@@ -226,21 +281,44 @@ public class Criterion {
     }
 
     /**
-     * Retourne, si associé, le code FFTA correspondant au critère
+     * Remplacé par {@link #getChampsTableArchers()}
      * 
-	 * @return  Renvoie le code FFTA du critère.
-	 */
+     * @return
+     */
+    @Deprecated
     public String getCodeffta() {
-        return codeffta;
+    	return getChampsTableArchers();
+    }
+    
+    /**
+     * Remplacé par {@link #setChampsTableArchers(String)}
+     * 
+     * @param champTableArchers
+     */
+    @SuppressWarnings("nls")
+    @Deprecated
+    public void setCodeffta(String champTableArchers) {
+    	if(champTableArchers.equals("genre"))
+    		champTableArchers = "sexe";
+    	setChampsTableArchers(champTableArchers);
+    }
+    
+    /**
+     * Retourne, si associé, le champ de la table Archers correspondant au critère
+     * 
+	 * @return  Renvoie le champ de la table Archer du critère.
+	 */
+    public String getChampsTableArchers() {
+        return champsTableArchers;
     }
 
     /**
-     * Définit, si il existe une correspondance, le code FFTA associé
+     * Définit, si il existe une correspondance, le champ de la table Archer associé
      * 
-	 * @param codeffta le code FFTA du critère
+	 * @param champTableArchers le champ de la table Archer du critère
 	 */
-    public void setCodeffta(String codeffta) {
-        this.codeffta = codeffta;
+    public void setChampsTableArchers(String champTableArchers) {
+        this.champsTableArchers = champTableArchers;
     }
 
 	/**
@@ -259,43 +337,59 @@ public class Criterion {
 	 */
 	public void setCriterionElements(List<CriterionElement> criterionElements) {
 		this.criterionElements = criterionElements;
-	}
-	
-	/**
-	 * Sauvegarde le critère en base
-	 * 
-	 * @throws SQLException si une erreur d'integration en base se produit
-	 */
-	public void save(Reglement reglement) throws SQLException {
-
-		Statement stmt = ApplicationCore.dbConnection.createStatement();
 		
-		stmt.executeUpdate("merge into CRITERE (CODECRITERE,NUMREGLEMENT,LIBELLECRITERE,SORTORDERCRITERE," + //$NON-NLS-1$
-				"CLASSEMENT,CLASSEMENTEQUIPE,PLACEMENT,CODEFFTA,NUMORDRE) VALUES ('" + code + "'," +  //$NON-NLS-1$ //$NON-NLS-2$
-				reglement.hashCode() + ",'" + libelle + "'," +  //$NON-NLS-1$ //$NON-NLS-2$
-				sortOrder + "," + //$NON-NLS-1$
-				Boolean.toString(classement).toUpperCase() + "," + //$NON-NLS-1$
-				Boolean.toString(classementEquipe).toUpperCase() + "," + //$NON-NLS-1$
-				Boolean.toString(placement).toUpperCase() + ",'" + //$NON-NLS-1$
-				codeffta + "', " + numordre +")"); //$NON-NLS-1$ //$NON-NLS-2$
+		for(CriterionElement element : criterionElements)
+			element.setCriterion(this);
+	}
+
+	/**
+	 * Sauvegarde le critère en base.  Les arguments sont ignoré
+	 * 
+	 * @see org.ajdeveloppement.commons.sql.SqlPersistance#save(java.lang.Object[])
+	 */
+	@SuppressWarnings("nls")
+	@Override
+	public void save() throws SqlPersistanceException {
+		helper.save(this, Collections.singletonMap("NUMREGLEMENT", (Object)reglement.getNumReglement())); //$NON-NLS-1$
+
+		try {
+			Statement stmt = ApplicationCore.dbConnection.createStatement();
+			try {
+				String codesElement = "";
+				for (CriterionElement element : criterionElements) {
+					if(!codesElement.isEmpty())
+						codesElement += ",";
+					codesElement += "'" + element.getCode().replace("'", "''") + "'";
+				}
+	
+				stmt.executeUpdate("delete from CRITEREELEMENT where NUMREGLEMENT=" + reglement.getNumReglement() 
+						+ " and CODECRITERE='" + code.replace("'", "''") +"' and CODECRITEREELEMENT not in (" + codesElement + ")");
+			} finally {
+				stmt.close();
+			}
+		} catch (SQLException e) {
+			throw new SqlPersistanceException(e);
+		}
+		
 		int numordre = 1;
 		for(CriterionElement criterionElement : criterionElements) {
 			criterionElement.setNumordre(numordre++);
-			criterionElement.save(reglement, this);
+			criterionElement.save();
 		}
 	}
 	
-	/**
-	 * Supprime le critère de la base
+	/** 
+	 * Supprime le critère de la base. Les arguments sont ignoré
+	 * 
+	 * @see org.ajdeveloppement.commons.sql.SqlPersistance#delete(java.lang.Object[])
 	 */
-	public void delete(Reglement reglement) {
-		try {
-			Statement stmt = ApplicationCore.dbConnection.createStatement();
-			
-			stmt.executeUpdate("delete from CRITERE where CODECRITERE='" + code + "' and " + //$NON-NLS-1$ //$NON-NLS-2$
-					"NUMREGLEMENT=" + reglement.hashCode()); //$NON-NLS-1$
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	@Override
+	public void delete() throws SqlPersistanceException {
+		helper.delete(this, Collections.singletonMap("NUMREGLEMENT", (Object)reglement.getNumReglement())); //$NON-NLS-1$
+	}
+	
+	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
+		if(parent instanceof Reglement)
+			reglement = (Reglement)parent;
 	}
 }

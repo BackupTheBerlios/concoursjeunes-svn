@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -89,12 +89,17 @@
 package org.concoursjeunes;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.stream.XMLStreamException;
 
@@ -108,6 +113,7 @@ import org.ajdeveloppement.commons.net.Proxy;
  * @version  3.0
  */
 @XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Configuration extends DefaultParameters implements Cloneable {
 	
 	/**
@@ -118,15 +124,19 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	 * Suffixe des fichiers de configurations
 	 */
 	public static final String EXT_XML = ".xml"; //$NON-NLS-1$
+	
+	private static String[] strLstLangue;
 
 	private String langue           = "fr";               //$NON-NLS-1$
 	private String logoPath         = "ressources/logo_ffta.gif";   //$NON-NLS-1$
 	
 	private Federation federation	= new Federation();
 	private String reglementName	= ""; //$NON-NLS-1$
+	@XmlElementWrapper(name="tarifs",required=true)
 	private List<Tarif> tarifs		= new ArrayList<Tarif>(); 
 
-	private String pdfReaderPath    = "";               //$NON-NLS-1$
+	@XmlElement(required=false)
+	private String pdfReaderPath;
 
 	private String formatPapier     = "A4";             //$NON-NLS-1$
 	private String orientation      = "portrait";       //$NON-NLS-1$
@@ -137,12 +147,13 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	private boolean interfaceResultatCumul = false;     //noreboot
 	private boolean interfaceAffResultatExEquo = true;  //noreboot
 	
-	private boolean useProxy = false;
+	@XmlElement(required=false,defaultValue="false")
+	private boolean useProxy		= false;
+	@XmlElement(required=false)
 	private Proxy proxy;
 
 	//propriete caché
 	private MetaDataFichesConcours metaDataFichesConcours = new MetaDataFichesConcours();
-	private boolean firstboot       = true;            //noreboot
 	private String curProfil        = "defaut";         //noreboot //$NON-NLS-1$
 
 	public Configuration() {
@@ -161,7 +172,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	 * Retourne l'adresse du lecteur pdf. <i>Déplacer dans la class AppConfiguration</i>
 	 * @return  String - l'adresse du lecteur pdf
 	 */
-	@XmlElement(required=false)
 	@Deprecated
 	public String getPdfReaderPath() {
 		return this.pdfReaderPath;
@@ -342,25 +352,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	}
 
 	/**
-	 * Détéremine si c'est le premier lancement de l'application
-	 * @return  Returns the firstboot.
-	 */
-	@XmlElement(required=false)
-	@Deprecated
-	public boolean isFirstboot() {
-		return firstboot;
-	}
-
-	/**
-	 * Place l'application sur premier lancement
-	 * @param firstboot  The firstboot to set.
-	 */
-	@Deprecated
-	public void setFirstboot(boolean firstboot) {
-		this.firstboot = firstboot;
-	}
-
-	/**
 	 * Est ce que les champs de cumul doivent être affiché?
 	 * @return  Renvoie interfaceResultatCumul.
 	 */
@@ -432,7 +423,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	 * 
 	 * @return useProxy true si un proxy doit être utilisé
 	 */
-	@XmlElement(required=false)
 	@Deprecated
 	public boolean isUseProxy() {
 		return useProxy;
@@ -453,7 +443,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	 * 
 	 * @return proxy les parametres de proxy
 	 */
-	@XmlElement(required=false)
 	@Deprecated
 	public Proxy getProxy() {
 		return proxy;
@@ -468,7 +457,42 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	public void setProxy(Proxy proxy) {
 		this.proxy = proxy;
 	}
+	
+	/**
+	 * Renvoie la liste des langues disponibles
+	 * 
+	 * @return String[] - retourne la liste des langues disponible
+	 */
+	public static String[] listLangue() {
+		if (strLstLangue == null) {
+			String[] strLng = new File("lang").list(new FilenameFilter() {  //$NON-NLS-1$
+						public boolean accept(File dir, String name) {
+							if (name.startsWith("libelle_") && name.endsWith(".properties"))  //$NON-NLS-1$ //$NON-NLS-2$
+								return true;
+							return false;
+						}
+					});
 
+			for (int i = 0; i < strLng.length; i++)
+				strLng[i] = strLng[i].substring(8, strLng[i].length() - 11);
+			strLstLangue = strLng;
+		}
+
+		return strLstLangue;
+	}
+	
+	public static String[] getAvailableLanguages() {
+		// liste les langues disponible
+		String[] langues = listLangue();
+		Locale[] locales = new Locale[langues.length];
+		String[] libelleLangues = new String[langues.length];
+		for (int i = 0; i < langues.length; i++) {
+			locales[i] = new Locale(langues[i]);
+			libelleLangues[i] = locales[i].getDisplayLanguage(locales[i]);
+		}
+
+		return libelleLangues;
+	}
 
 	/**
 	 * sauvegarde la configuration général du programme
@@ -478,20 +502,6 @@ public class Configuration extends DefaultParameters implements Cloneable {
 		File f = new File(ApplicationCore.userRessources.getConfigPathForUser(),
 				CONFIG_PROFILE + curProfil + EXT_XML);
 		XMLSerializer.saveMarshallStructure(f, this);
-	}
-	
-	/**
-	 * sauvegarde la configuration courante comme etant la configuration par défaut du programme
-	 */
-	@Deprecated
-	public void saveAsDefault() throws JAXBException, IOException, XMLStreamException {
-		try {
-			File f = new File(ApplicationCore.userRessources.getConfigPathForUser(),
-					ApplicationCore.staticParameters.getResourceString("file.configuration")); //$NON-NLS-1$
-			XMLSerializer.saveMarshallStructure(f, this);
-		} catch(NullPointerException npe) {
-			npe.printStackTrace();
-		}
 	}
 	
 	@Override

@@ -73,7 +73,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -88,12 +88,12 @@ package org.concoursjeunes;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.ajdeveloppement.commons.ArraysUtils;
 
 /**
  * Collection des concurrents présent sur le concours
@@ -205,9 +205,9 @@ public class ConcurrentList {
 	 * 
 	 * @param depart - le départ pour lequelle lister tous les archers ou -1 si tous
 	 * 
-	 * @return tableaux des concurrents du départ choisi
+	 * @return liste des concurrents du départ choisi
 	 */
-	public Concurrent[] list(int depart) {
+	public List<Concurrent> list(int depart) {
 		//buffer de selection
 		ArrayList<Concurrent> sel = new ArrayList<Concurrent>();
 
@@ -217,7 +217,7 @@ public class ConcurrentList {
 				sel.add(concurrent);
 		}
 
-		return sel.toArray(new Concurrent[sel.size()]);
+		return sel;
 	}
 
 	/**
@@ -229,7 +229,7 @@ public class ConcurrentList {
 	 * 
 	 * @return la liste des concurrents appartenant au meme club pour un jeux de critère donné
 	 */
-	public Concurrent[] list(Entite compagnie, CriteriaSet criteriaSet, Hashtable<Criterion, Boolean> criteriaFilter) {
+	public List<Concurrent> list(Entite compagnie, CriteriaSet criteriaSet, Hashtable<Criterion, Boolean> criteriaFilter) {
 		return list(compagnie, criteriaSet, -1, criteriaFilter);
 	}
 
@@ -243,7 +243,7 @@ public class ConcurrentList {
 	 * 
 	 * @return la liste des concurrents appartenant au meme club pour un jeux de critère donné et pour un départ donné
 	 */
-	private Concurrent[] list(Entite compagnie, CriteriaSet criteriaSet, int depart, Hashtable<Criterion, Boolean> criteriaFilter) {
+	private List<Concurrent> list(Entite compagnie, CriteriaSet criteriaSet, int depart, Hashtable<Criterion, Boolean> criteriaFilter) {
 
 		assert compagnie != null;
 
@@ -259,7 +259,7 @@ public class ConcurrentList {
 				sel.add(concurrent);
 		}
 
-		return sel.toArray(new Concurrent[sel.size()]);
+		return sel;
 	}
 
 	/**
@@ -271,7 +271,7 @@ public class ConcurrentList {
 	 * 
 	 * @return la liste des concurrents correspondant aux critere de recherche
 	 */
-	public Concurrent[] list(CriteriaSet criteriaSet, int depart, Hashtable<Criterion, Boolean> criteriaFilter) {
+	public List<Concurrent> list(CriteriaSet criteriaSet, int depart, Map<Criterion, Boolean> criteriaFilter) {
 
 		assert criteriaSet != null;
 
@@ -283,7 +283,7 @@ public class ConcurrentList {
 				sel.add(concurrent);
 		}
 
-		return sel.toArray(new Concurrent[sel.size()]);
+		return sel;
 	}
 
 	/**
@@ -294,7 +294,7 @@ public class ConcurrentList {
 	 * 
 	 * @return la liste des concurrents correspondant aux criteres de recherche
 	 */
-	public Concurrent[] list(Reglement reglement, DistancesEtBlason distancesEtBlason, int depart, boolean handicap) {
+	public List<Concurrent> list(Reglement reglement, DistancesEtBlason distancesEtBlason, int depart, boolean handicap) {
 
 		assert distancesEtBlason != null;
 
@@ -312,7 +312,7 @@ public class ConcurrentList {
 			}
 		}
 
-		return sel.toArray(new Concurrent[sel.size()]);
+		return sel;
 	}
 
 	/**
@@ -323,7 +323,7 @@ public class ConcurrentList {
 	 * 
 	 * @return la liste des archers présent sur la meme cible
 	 */
-	public Concurrent[] list(int cible, int depart) {
+	public List<Concurrent> list(int cible, int depart) {
 		ArrayList<Concurrent> tmp = new ArrayList<Concurrent>();
 		for(Concurrent concurrent : archList) {
 			if(concurrent.getCible() == cible && concurrent.getDepart() == depart) {
@@ -331,7 +331,7 @@ public class ConcurrentList {
 			}
 		}
 
-		return tmp.toArray(new Concurrent[tmp.size()]);
+		return tmp;
 	}
 
 	/**
@@ -348,60 +348,28 @@ public class ConcurrentList {
 	 * 
 	 * @return la liste trié
 	 */
-	public static Concurrent[] sort(Concurrent[] no_sort_list, SortCriteria sortCritere) {
-
-		assert no_sort_list != null;
-
-		int nbconcurrents = no_sort_list.length;
-		Concurrent[] sort_list = no_sort_list;
-
-		switch(sortCritere) {
-			case SORT_BY_NAME:
-				for(int i = 0; i < nbconcurrents-1;i++) {
-					for(int j = i+1; j < nbconcurrents;j++) {
-						String namei = sort_list[i].getID();
-						String namej = sort_list[j].getID();
-						if(namej.compareToIgnoreCase(namei) < 0) {
-							ArraysUtils.swap(sort_list, i, j);
-						}	
-					}	
-				}
-	
-				break;
-			case SORT_BY_POINTS:
-				for(int i = 0; i < nbconcurrents-1;i++) {
-					for(int j = i+1; j < nbconcurrents;j++) {
-						if(sort_list[i].compareScoreWith(sort_list[j]) == -1) {
-							ArraysUtils.swap(sort_list, i, j);
-						}
-					}	
-				}
-	
-				break;
-			case SORT_BY_TARGETS:
-				for(int i = 0; i < nbconcurrents-1;i++) {
-					for(int j = i+1; j < nbconcurrents;j++) {
-						int ciblei = sort_list[i].getCible() * 10 + sort_list[i].getPosition();
-						int ciblej = sort_list[j].getCible() * 10 + sort_list[j].getPosition();
-						if(ciblej < ciblei) {
-							ArraysUtils.swap(sort_list, i, j);
-						}	
-					}	
-				}
-	
-				break;
-			case SORT_BY_CLUBS:
-				for(int i = 0; i < nbconcurrents-1;i++) {
-					for(int j = i+1; j < nbconcurrents;j++) {
-						Entite namei = sort_list[i].getClub();
-						Entite namej = sort_list[j].getClub();
-						if(namej.getNom().compareToIgnoreCase(namei.getNom()) < 0) {
-							ArraysUtils.swap(sort_list, i, j);
-						}	
-					}	
-				}
-	
-				break;
+	public static List<Concurrent> sort(List<Concurrent> no_sort_list, SortCriteria sortCritere) {
+		List<Concurrent> sort_list = no_sort_list;
+		if(no_sort_list != null) {
+			switch(sortCritere) {
+				case SORT_BY_NAME:
+					Collections.sort(sort_list, new NameComparator());
+		
+					break;
+				case SORT_BY_POINTS:
+					Collections.sort(sort_list, new PointsComparator());
+					Collections.reverse(sort_list);
+		
+					break;
+				case SORT_BY_TARGETS:
+					Collections.sort(sort_list, new TargetComparator());
+		
+					break;
+				case SORT_BY_CLUBS:
+					Collections.sort(sort_list, new ClubComparator());
+		
+					break;
+			}
 		}
 		return sort_list;
 	}
@@ -413,6 +381,7 @@ public class ConcurrentList {
 	 * 
 	 * @return le concurrent suivant
 	 */
+	@Deprecated
 	public Concurrent nextConcurrent(Concurrent curConcurrent) {
 		int depart = curConcurrent.getDepart();
 		int cible = curConcurrent.getCible(); 
@@ -428,6 +397,27 @@ public class ConcurrentList {
 
 		return getConcurrentAt(depart, cible, position);
 	}
+	
+	/**
+	 * Retourne le concurrent suivant dans la liste fournit en paramétre en fonction du critère de tri séléctionné
+	 * 
+	 * @param lstConcurrent la liste des concurrent dans lequel récupérer le suivant
+	 * @param curConcurrent le concurrent courrant
+	 * @param sortCritere le critère de tri permettant de retrouver le concurrent suivant ou null si il faut prendre
+	 * l'ordre naturel de la liste
+	 * @return le concurrent suivant ou null si non trouvé
+	 */
+	public static Concurrent nextConcurrent(List<Concurrent> lstConcurrent, Concurrent curConcurrent, SortCriteria sortCritere) {
+		
+		if(sortCritere != null)
+			sort(lstConcurrent, sortCritere);
+		
+		int index = lstConcurrent.indexOf(curConcurrent);
+		if(index != -1 && index < lstConcurrent.size() -1)
+			return lstConcurrent.get(index+1);
+		
+		return null;
+	}
 
 	/**
 	 * Passe au concurrent précédent par ordre de cible/position
@@ -436,6 +426,7 @@ public class ConcurrentList {
 	 * 
 	 * @return le concurrent précedent
 	 */
+	@Deprecated
 	public Concurrent previousConcurrent(Concurrent curConcurrent) {
 		int depart = curConcurrent.getDepart();
 		int cible = curConcurrent.getCible(); 
@@ -450,6 +441,27 @@ public class ConcurrentList {
 		} while(getConcurrentAt(depart, cible, position) == null && cible > 0);
 
 		return getConcurrentAt(depart, cible, position);
+	}
+	
+	/**
+	 * Retourne le concurrent précédent dans la liste fournit en paramétre en fonction du critère de tri séléctionné
+	 * 
+	 * @param lstConcurrent la liste des concurrent dans lequel récupérer le précédent
+	 * @param curConcurrent le concurrent courrant
+	 * @param sortCritere le critère de tri permettant de retrouver le concurrent précédent ou null si il faut prendre
+	 * l'ordre naturel de la liste
+	 * @return le concurrent précédent ou null si non trouvé
+	 */
+	public static Concurrent previousConcurrent(List<Concurrent> lstConcurrent, Concurrent curConcurrent, SortCriteria sortCritere) {
+		
+		if(sortCritere != null)
+			sort(lstConcurrent, sortCritere);
+		
+		int index = lstConcurrent.indexOf(curConcurrent);
+		if(index != -1 && index > 0)
+			return lstConcurrent.get(index-1);
+		
+		return null;
 	}
 
 	/**
@@ -598,7 +610,7 @@ public class ConcurrentList {
 	 * @return le nombre d'archer sur le départ concerné
 	 */
 	public int countArcher(int depart) {
-		return list(depart).length;
+		return list(depart).size();
 	}
 
 	/**
@@ -610,7 +622,7 @@ public class ConcurrentList {
 	 * @return le nombre d'archer sur une distance donné
 	 */
 	public int countArcher(Reglement reglement, DistancesEtBlason distancesEtBlason, int depart) {
-		return list(reglement, distancesEtBlason, depart, false).length;
+		return list(reglement, distancesEtBlason, depart, false).size();
 	}
 	
 	/**
@@ -625,7 +637,7 @@ public class ConcurrentList {
 	 * handicapé si handicap est à <i>true</i>
 	 */
 	public int countArcher(Reglement reglement, DistancesEtBlason distancesEtBlason, int depart, boolean handicap) {
-		return list(reglement, distancesEtBlason, depart, handicap).length;
+		return list(reglement, distancesEtBlason, depart, handicap).size();
 	}
 
 	/**
@@ -708,5 +720,36 @@ public class ConcurrentList {
 	 */
 	public void setParametre(Parametre parametre) {
 		this.parametre = parametre;
+	}
+	
+	public static class NameComparator implements Comparator<Concurrent> {
+		@Override
+		public int compare(Concurrent o1, Concurrent o2) {
+			return o1.getID().compareToIgnoreCase(o2.getID());
+		}
+	}
+	
+	public static class TargetComparator implements Comparator<Concurrent> {
+		@Override
+		public int compare(Concurrent o1, Concurrent o2) {
+			int ciblei = o1.getCible() * 10 + o1.getPosition();
+			int ciblej = o2.getCible() * 10 + o2.getPosition();
+			
+			return ciblej > ciblei ? -1 : (ciblej == ciblei) ? 0 : 1;
+		}
+	}
+	
+	public static class ClubComparator implements Comparator<Concurrent> {
+		@Override
+		public int compare(Concurrent o1, Concurrent o2) {
+			return o1.getClub().getNom().compareToIgnoreCase(o2.getClub().getNom());
+		}
+	}
+	
+	public static class PointsComparator implements Comparator<Concurrent> {
+		@Override
+		public int compare(Concurrent o1, Concurrent o2) {
+			return o1.compareScoreWith(o2);
+		}
 	}
 }

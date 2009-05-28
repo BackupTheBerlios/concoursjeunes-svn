@@ -73,7 +73,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -105,7 +105,6 @@ import javax.swing.event.ChangeListener;
 import org.ajdeveloppement.apps.AppUtilities;
 import org.ajdeveloppement.apps.Localisable;
 import org.ajdeveloppement.commons.AjResourcesReader;
-import org.ajdeveloppement.commons.StringUtils;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.concoursjeunes.Criterion;
 
@@ -114,9 +113,6 @@ import org.concoursjeunes.Criterion;
  * @author Aurélien JEOFFRAY
  */
 public class CriterionDialog extends JDialog implements ActionListener, ChangeListener {
-	
-	public static final int NO_LOCK = 0;
-	public static final int PLACEMENT_LOCK = 1;
     
 	private AjResourcesReader localisation;
     private ReglementDialog parent;
@@ -148,7 +144,7 @@ public class CriterionDialog extends JDialog implements ActionListener, ChangeLi
     @Localisable("bouton.annuler")
     private JButton jbAnnuler = new JButton();
     
-    private int lock = NO_LOCK;
+    private boolean lock = false;
     
     /**
      * 
@@ -189,6 +185,11 @@ public class CriterionDialog extends JDialog implements ActionListener, ChangeLi
         JPanel jpOperation = new JPanel();
         
         jpOperation.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        
+        jcbWinFFTACode.addItem(""); //$NON-NLS-1$
+        for(String critere : Criterion.CRITERES_TABLE_ARCHERS) {
+            jcbWinFFTACode.addItem(critere);
+        }
         
         jcbPlacementCriterion.setEnabled(false);
         jcbPlacementCriterion.addChangeListener(this);
@@ -239,11 +240,6 @@ public class CriterionDialog extends JDialog implements ActionListener, ChangeLi
         jcbSortOrder.removeAllItems();
         jcbSortOrder.addItem(localisation.getResourceString("criterion.ordretri.asc")); //$NON-NLS-1$
         jcbSortOrder.addItem(localisation.getResourceString("criterion.ordretri.desc")); //$NON-NLS-1$
-        jcbWinFFTACode.removeAllItems();
-        jcbWinFFTACode.addItem(""); //$NON-NLS-1$
-        for(String critere : StringUtils.tokenize(localisation.getResourceString("criterion.winfftacode.code"), ",")) { //$NON-NLS-1$ //$NON-NLS-2$
-            jcbWinFFTACode.addItem(critere);
-        }
     }
     
     /**
@@ -262,7 +258,7 @@ public class CriterionDialog extends JDialog implements ActionListener, ChangeLi
             //jcbClassementCriterion.setEnabled(!criterion.isPlacement());
             jcbPlacementCriterion.setSelected(criterion.isPlacement());
             jcbClassementEquipeCriterion.setSelected(criterion.isClassementEquipe());
-            jcbWinFFTACode.setSelectedItem(criterion.getCodeffta());
+            jcbWinFFTACode.setSelectedItem(criterion.getChampsTableArchers());
             
             jcbPlacementCriterion.setEnabled(jcbClassementCriterion.isSelected());
 			jcbClassementCriterion.setEnabled(!jcbPlacementCriterion.isSelected());
@@ -274,8 +270,12 @@ public class CriterionDialog extends JDialog implements ActionListener, ChangeLi
             jcbWinFFTACode.setEnabled(!parent.getReglement().isOfficialReglement());
         }
         
-        if(lock == PLACEMENT_LOCK) {
+        if(lock) {
         	jcbPlacementCriterion.setEnabled(false);
+        	jcbClassementCriterion.setEnabled(false);
+        	jcbClassementEquipeCriterion.setEnabled(false);
+        	jcbWinFFTACode.setEnabled(false);
+        	jcbSortOrder.setEnabled(false);
         }
     }
     
@@ -307,14 +307,14 @@ public class CriterionDialog extends JDialog implements ActionListener, ChangeLi
     /**
 	 * @return lock
 	 */
-	public int getLock() {
+	public boolean getLock() {
 		return lock;
 	}
 
 	/**
 	 * @param lock lock à définir
 	 */
-	public void setLock(int lock) {
+	public void setLock(boolean lock) {
 		this.lock = lock;
 	}
 
@@ -331,12 +331,13 @@ public class CriterionDialog extends JDialog implements ActionListener, ChangeLi
                 parent.getReglement().getListCriteria().add(criterion);
             }
             
+            criterion.setReglement(parent.getReglement());
             criterion.setSortOrder((jcbSortOrder.getSelectedIndex() == 1) ? Criterion.SORT_DESC : Criterion.SORT_ASC);
             criterion.setLibelle(jtfLibelle.getText());
             criterion.setPlacement(jcbPlacementCriterion.isSelected());
             criterion.setClassement(jcbClassementCriterion.isSelected());
             criterion.setClassementEquipe(jcbClassementEquipeCriterion.isSelected());
-            criterion.setCodeffta((String)jcbWinFFTACode.getSelectedItem());
+            criterion.setChampsTableArchers((String)jcbWinFFTACode.getSelectedItem());
             
             setVisible(false);
         } else if(e.getSource() == jbAnnuler) {

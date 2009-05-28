@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -148,22 +148,22 @@ public class BlasonBuilder {
 		double vRatio = 1;
 		int nbArcher = 4;
 		ConcurrentMap<Integer, Ancrage> ancrages = new ConcurrentHashMap<Integer, Ancrage>();
-		ancrages.put(Ancrage.POSITION_ABCD, new Ancrage(0, 0));
+		ancrages.put(Ancrage.POSITION_ABCD, new Ancrage(Ancrage.POSITION_ABCD, 0, 0));
 		if(size <= 60) {
 			hRatio = 0.5;
 			nbArcher = 2;
 			ancrages.clear();
-			ancrages.put(Ancrage.POSITION_AC, new Ancrage(0, 0));
-			ancrages.put(Ancrage.POSITION_BD, new Ancrage(0, 0.5));
+			ancrages.put(Ancrage.POSITION_AC, new Ancrage(Ancrage.POSITION_AC, 0, 0));
+			ancrages.put(Ancrage.POSITION_BD, new Ancrage(Ancrage.POSITION_BD, 0, 0.5));
 		}
 		if(size <= 40) {
 			vRatio = 0.5;
 			nbArcher = 1;
 			ancrages.clear();
-			ancrages.put(Ancrage.POSITION_A, new Ancrage(0, 0));
-			ancrages.put(Ancrage.POSITION_B, new Ancrage(0, 0.5));
-			ancrages.put(Ancrage.POSITION_C, new Ancrage(0.5, 0));
-			ancrages.put(Ancrage.POSITION_D, new Ancrage(0.5, 0.5));
+			ancrages.put(Ancrage.POSITION_A, new Ancrage(Ancrage.POSITION_A, 0, 0));
+			ancrages.put(Ancrage.POSITION_B, new Ancrage(Ancrage.POSITION_B, 0, 0.5));
+			ancrages.put(Ancrage.POSITION_C, new Ancrage(Ancrage.POSITION_C, 0.5, 0));
+			ancrages.put(Ancrage.POSITION_D, new Ancrage(Ancrage.POSITION_D, 0.5, 0.5));
 		}
 		
 		blason = new Blason(size + "cm", hRatio, vRatio); //$NON-NLS-1$

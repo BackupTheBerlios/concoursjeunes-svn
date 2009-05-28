@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -105,9 +105,10 @@ import javax.swing.JTextField;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.concoursjeunes.Federation;
+import org.concoursjeunes.Profile;
 import org.concoursjeunes.Reglement;
-import org.concoursjeunes.ReglementManager;
 import org.concoursjeunes.builders.ReglementBuilder;
+import org.concoursjeunes.manager.FederationManager;
 
 /**
  * @author Aurélien JEOFFRAY
@@ -115,6 +116,7 @@ import org.concoursjeunes.builders.ReglementBuilder;
  */
 public class NewReglementDialog extends JDialog implements ActionListener {
 	
+	private Profile profile;
 	private AjResourcesReader localisation;
 	
 	private JLabel jlReglementName = new JLabel();
@@ -128,18 +130,18 @@ public class NewReglementDialog extends JDialog implements ActionListener {
 	private JButton jbAnnuler = new JButton();
 	
 	private Reglement reglement = null;
-	//private ReglementManager reglementManager = new ReglementManager();
-	
+
 	private JFrame parentframe;
 
 	/**
 	 * 
 	 */
-	public NewReglementDialog(JFrame parentframe, AjResourcesReader localisation) {
+	public NewReglementDialog(JFrame parentframe, Profile profile) {
 		super(parentframe,true);
 		
+		this.profile = profile;
 		this.parentframe = parentframe;
-		this.localisation = localisation;
+		this.localisation = profile.getLocalisation();
 		
 		init();
 		affectLibelle();
@@ -196,7 +198,7 @@ public class NewReglementDialog extends JDialog implements ActionListener {
 	
 	private void completePanel() {
 		jcbFederation.removeAllItems();
-		for(Federation federation : ReglementManager.getAvailableFederations()) {
+		for(Federation federation : FederationManager.getAvailableFederations()) {
 			jcbFederation.addItem(federation);
 		}
 		jcbFederation.addItem(localisation.getResourceString("newreglement.addfederation")); //$NON-NLS-1$
@@ -219,11 +221,11 @@ public class NewReglementDialog extends JDialog implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == jbValider) {
 			Reglement reglement = ReglementBuilder.createReglement();
-			reglement.setName(jtfReglementName.getText());
+			reglement.setDisplayName(jtfReglementName.getText());
 			reglement.setFederation((Federation)jcbFederation.getSelectedItem());
 			reglement.setCategory(jcbCategorie.getSelectedIndex() + 1);
 
-			ReglementDialog reglementDialog = new ReglementDialog(parentframe, reglement, localisation);
+			ReglementDialog reglementDialog = new ReglementDialog(parentframe, reglement, profile);
 			reglement = reglementDialog.showReglementDialog();
 			
 			this.reglement = reglement;
@@ -233,8 +235,8 @@ public class NewReglementDialog extends JDialog implements ActionListener {
 			setVisible(false);
 		} else if(e.getSource() ==jcbFederation) {
 			if(jcbFederation.getSelectedItem() instanceof String) {
-				NewFederationDialog newFederationDialog = new NewFederationDialog(parentframe, localisation);
-				Federation federation = newFederationDialog.showNewFederationDialog();
+				FederationDialog newFederationDialog = new FederationDialog(parentframe, profile);
+				Federation federation = newFederationDialog.showFederationDialog(null);
 				if(federation != null) {
 					completePanel();
 					jcbFederation.setSelectedItem(federation);

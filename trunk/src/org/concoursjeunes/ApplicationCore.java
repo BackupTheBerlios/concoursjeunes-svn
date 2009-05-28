@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -93,6 +93,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.Authenticator;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -120,8 +121,10 @@ import org.ajdeveloppement.commons.io.FileUtils;
 import org.ajdeveloppement.commons.security.CryptUtil;
 import org.ajdeveloppement.commons.security.SecurityImporter;
 import org.ajdeveloppement.commons.sql.SqlManager;
+import org.ajdeveloppement.commons.ui.SwingHttpAuthenticator;
 import org.concoursjeunes.event.ApplicationCoreEvent;
 import org.concoursjeunes.event.ApplicationCoreListener;
+import org.concoursjeunes.manager.ConfigurationManager;
 /**
  * Class principal de l'application, gére l'ensemble des ressources commune tel que
  * <ul>
@@ -131,7 +134,7 @@ import org.concoursjeunes.event.ApplicationCoreListener;
  * <li>La connexion à la base de données</li>
  * </ul>
  * 
- * En outre la class ApplicationCore gére l'ensemble des fiches concours du logiciel (création, ouverture, fermeture, suppression)
+ * En outre la class ApplicationCore conserve la liste des profile actuellement chargé par l'application
  * 
  * @author Aurelien Jeoffray
  * @version 2.0
@@ -173,10 +176,10 @@ public class ApplicationCore {
 	 * constructeur, création de la fenetre principale
 	 */
 	private ApplicationCore() throws SQLException, IOException {
-		loadAppConfiguration();
 		debugLogger();
 		openDatabase();
 		checkUpdateDatabase();
+		loadAppConfiguration();
 	}
 
 	/**
@@ -229,7 +232,8 @@ public class ApplicationCore {
 			    KeyStore.SecretKeyEntry skEntry = new KeyStore.SecretKeyEntry(cryptUtil.getSecretKey());
 				userRessources.getAppKeyStore().setEntry("proxy.pswd",skEntry, new KeyStore.PasswordProtection(AppUtilities.getAppUID(userRessources).toCharArray())); //$NON-NLS-1$
 			}
-			getAppConfiguration().getProxy().setCryptUtil(cryptUtil);
+			if(getAppConfiguration().getProxy() != null)
+				getAppConfiguration().getProxy().setCryptUtil(cryptUtil);
 			
 			userRessources.storeAppKeyStore();
 		} catch (NoSuchAlgorithmException e) {
@@ -247,6 +251,8 @@ public class ApplicationCore {
 		} catch (InvalidAlgorithmParameterException e) {
 			e.printStackTrace();
 		}
+		
+		Authenticator.setDefault(new SwingHttpAuthenticator(getAppConfiguration().getProxy()));
 	}
 	
 	private void debugLogger() {
@@ -332,7 +338,7 @@ public class ApplicationCore {
 	/**
 	 * Définit la configuration de l'application
 	 * 
-	 * @param _configuration la configuration de l'application
+	 * @param appConfiguration la configuration de l'application
 	 */
 	public static void setAppConfiguration(AppConfiguration appConfiguration) {
 		_appConfiguration = appConfiguration;
@@ -360,199 +366,33 @@ public class ApplicationCore {
 	}
 
 	/**
-	 * @return profiles
+	 * Retourne la liste des profils actuellement chargé par l'application
+	 * 
+	 * @return profiles la liste des profils actuellement chargé par l'application
 	 */
 	public List<Profile> getProfiles() {
 		return profiles;
 	}
 	
+	/**
+	 * Associe un profil à l'application.
+	 * 
+	 * @param profile le profil à associé à l'application
+	 */
 	public void addProfile(Profile profile) {
 		profiles.add(profile);
 		fireProfileAdded(profile);
 	}
 	
+	/**
+	 * Désolidarise un profil de l'application
+	 * 
+	 * @param profile le profil à désolidarisé de l'application
+	 */
 	public void removeProfile(Profile profile) {
 		profiles.remove(profile);
 		fireProfileRemoved(profile);
 	}
-
-	/**
-	 * Création d'une nouvelle fiche concours
-	 * 
-	 * @throws ConfigurationException
-	 */
-	/*public void createFicheConcours() throws NullConfigurationException, IOException, JAXBException {
-		createFicheConcours(null);
-	}*/
-	
-	/**
-	 * Création d'une nouvelle fiche concours ayant les parametres fournit
-	 * 
-	 * @param parametre les parametres du concours
-	 * @throws ConfigurationException
-	 */
-	/*public void createFicheConcours(Parametre parametre) throws NullConfigurationException, IOException, JAXBException {
-		if (configuration == null)
-			throw new NullConfigurationException("la configuration est null");   //$NON-NLS-1$
-
-		FicheConcours ficheConcours = new FicheConcours(parametre);
-		fichesConcours.add(ficheConcours);
-		configuration.getMetaDataFichesConcours().add(ficheConcours.getMetaDataFicheConcours());
-
-		configuration.saveAsDefault();
-		ficheConcours.save();
-
-		fireFicheConcoursCreated(ficheConcours);
-	}*/
-
-	/**
-	 * Supprime une fiche concours du système
-	 * 
-	 * @param metaDataFicheConcours le fichier de metadonné contenant les
-	 * informations sur le concours à supprimer
-	 * 
-	 * @throws ConfigurationException
-	 */
-	/*public void deleteFicheConcours(MetaDataFicheConcours metaDataFicheConcours) throws NullConfigurationException, IOException, JAXBException {
-		if (configuration == null)
-			throw new NullConfigurationException("la configuration est null");   //$NON-NLS-1$
-
-		configuration.getMetaDataFichesConcours().remove(metaDataFicheConcours);
-
-		if (new File(userRessources.getConcoursPathForProfile(configuration.getCurProfil()) + File.separator + metaDataFicheConcours.getFilenameConcours()).delete()) {
-			configuration.saveAsDefault();
-
-			fireFicheConcoursDeleted(null);
-		}
-	}*/
-
-	/**
-	 * Referme une fiche de concours
-	 * 
-	 * @param ficheConcours la fiche concours à décharger de la méméoire
-	 * 
-	 * @throws ConfigurationException
-	 */
-	/*public void closeFicheConcours(FicheConcours ficheConcours) throws NullConfigurationException, IOException, JAXBException {
-		if (configuration == null)
-			throw new NullConfigurationException("la configuration est null");   //$NON-NLS-1$
-
-		ficheConcours.save();
-		configuration.saveAsDefault();
-		if (fichesConcours.remove(ficheConcours)) {
-			fireFicheConcoursClosed(ficheConcours);
-		}
-	}*/
-
-	/**
-	 * Décharge de la mémoire l'ensemble des fiches ouvertes
-	 * 
-	 * @throws ConfigurationException
-	 */
-	/*public void closeAllFichesConcours() throws NullConfigurationException, IOException, JAXBException {
-		saveAllFichesConcours();
-
-		ArrayList<FicheConcours> tmpList = new ArrayList<FicheConcours>();
-		tmpList.addAll(fichesConcours);
-		fichesConcours.clear();
-		for (FicheConcours fiche : tmpList) {
-			fireFicheConcoursClosed(fiche);
-		}
-		tmpList.clear();
-		
-		configuration.save();
-	}*/
-
-	/**
-	 * Restaure le coucours dont l'objet de metadonnée est fournit en parametre
-	 * 
-	 * @param metaDataFicheConcours -
-	 *            l'objet metadonnée du concours à restaurer
-	 * 
-	 * @throws ConfigurationException
-	 * @throws IOException
-	 */
-	/*public void restoreFicheConcours(MetaDataFicheConcours metaDataFicheConcours)
-			throws NullConfigurationException, IOException {
-		if (configuration == null)
-			throw new NullConfigurationException("la configuration est null");   //$NON-NLS-1$
-
-		FicheConcours ficheConcours = FicheConcoursBuilder.getFicheConcours(metaDataFicheConcours);
-
-		if (ficheConcours != null) {
-			fichesConcours.add(ficheConcours);
-			fireFicheConcoursRestored(ficheConcours);
-		}
-	}*/
-
-	/**
-	 * Sauvegarde l'ensemble des fiches de concours actuellement ouverte
-	 * 
-	 * @throws NullConfigurationException
-	 * @throws IOException
-	 */
-	/*public void saveAllFichesConcours() throws NullConfigurationException, IOException, JAXBException {
-		if (configuration == null)
-			throw new NullConfigurationException("la configuration est null");   //$NON-NLS-1$
-
-		for (FicheConcours fiche : fichesConcours) {
-			fiche.save();
-		}
-		configuration.saveAsDefault();
-	}*/
-	
-	/**
-	 * Retourne la liste des fiches concours actuellement ouvertent
-	 * 
-	 * @return la liste des fiches concours actuellement ouvertent
-	 */
-	/*public List<FicheConcours> getFichesConcours() {
-		return fichesConcours;
-	}*/
-	
-	/**
-	 * Test si une fiche est déjà ouverte ou non
-	 * 
-	 * @param metaDataFicheConcours - le fichier de metadonnées du concours à tester
-	 * @return true si ouvert, false sinon
-	 */
-	/*public boolean isOpenFicheConcours(MetaDataFicheConcours metaDataFicheConcours) {
-		for(FicheConcours ficheConcours : fichesConcours) {
-			if(ficheConcours.getMetaDataFicheConcours().equals(metaDataFicheConcours))
-				return true;
-		}
-		return false;
-	}*/
-
-	/*private void fireFicheConcoursCreated(FicheConcours ficheConcours) {
-		for (ConcoursJeunesListener concoursJeunesListener : listeners.getListeners(ConcoursJeunesListener.class)) {
-			concoursJeunesListener.ficheConcoursCreated(new ConcoursJeunesEvent(ficheConcours, ConcoursJeunesEvent.Type.CREATE_CONCOURS));
-		}
-	}
-
-	private void fireFicheConcoursDeleted(FicheConcours ficheConcours) {
-		for (ConcoursJeunesListener concoursJeunesListener : listeners.getListeners(ConcoursJeunesListener.class)) {
-			concoursJeunesListener.ficheConcoursDeleted(new ConcoursJeunesEvent(ficheConcours, ConcoursJeunesEvent.Type.DELETE_CONCOURS));
-		}
-	}
-
-	private void fireFicheConcoursClosed(FicheConcours ficheConcours) {
-		for (ConcoursJeunesListener concoursJeunesListener : listeners.getListeners(ConcoursJeunesListener.class)) {
-			concoursJeunesListener.ficheConcoursClosed(new ConcoursJeunesEvent(ficheConcours, ConcoursJeunesEvent.Type.CLOSE_CONCOURS));
-		}
-	}
-
-	private void fireFicheConcoursRestored(FicheConcours ficheConcours) {
-		for (ConcoursJeunesListener concoursJeunesListener : listeners.getListeners(ConcoursJeunesListener.class)) {
-			concoursJeunesListener.ficheConcoursRestored(new ConcoursJeunesEvent(ficheConcours, ConcoursJeunesEvent.Type.OPEN_CONCOURS));
-		}
-	}
-	
-	private void fireConfigurationChanged() {
-		for (ConcoursJeunesListener concoursJeunesListener : listeners.getListeners(ConcoursJeunesListener.class)) {
-			concoursJeunesListener.configurationChanged(new ConcoursJeunesEvent(null, ConcoursJeunesEvent.Type.CONFIGURATION_CHANGED));
-		}
-	}*/
 	
 	private void fireProfileAdded(Profile profile) {
 		for (ApplicationCoreListener applicationCoreListener : listeners.getListeners(ApplicationCoreListener.class)) {

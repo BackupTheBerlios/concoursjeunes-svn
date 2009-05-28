@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -91,6 +91,7 @@ package org.concoursjeunes.ui.dialog;
 import static org.concoursjeunes.ApplicationCore.staticParameters;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -101,29 +102,35 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.logging.Level;
 
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.ajdeveloppement.apps.AppUtilities;
+import org.ajdeveloppement.apps.Localisable;
 import org.ajdeveloppement.commons.AjResourcesReader;
-import org.ajdeveloppement.commons.io.FileChooserFileFilter;
+import org.ajdeveloppement.commons.sql.SqlPersistanceException;
 import org.ajdeveloppement.commons.ui.AJList;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.concoursjeunes.Federation;
+import org.concoursjeunes.Profile;
 import org.concoursjeunes.Reglement;
-import org.concoursjeunes.ReglementManager;
+import org.concoursjeunes.manager.FederationManager;
+import org.concoursjeunes.manager.ReglementManager;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
@@ -131,26 +138,46 @@ import org.jdesktop.swingx.error.ErrorInfo;
  * @author Aurélien JEOFFRAY
  *
  */
+@Localisable(textMethod="setTitle",value="reglementmanager.title")
 public class ReglementManagerDialog extends JDialog implements ListSelectionListener, MouseListener, ActionListener {
 	
 	private JFrame parentframe;
+	private Profile profile;
 	private AjResourcesReader localisation;
 	
+	@Localisable("reglementmanager.federations")
 	private JLabel jlFederations	= new JLabel();
+	@Localisable("reglementmanager.categories")
 	private JLabel jlCategories		= new JLabel();
+	@Localisable("reglementmanager.reglements")
 	private JLabel jlReglements		= new JLabel();
-	private AJList ajlFederations	= new AJList();
-	private AJList ajlCategories	= new AJList();
-	private AJList ajlReglements	= new AJList();
+	private AJList<Federation> ajlFederations	= new AJList<Federation>();
+	private AJList<String> ajlCategories	= new AJList<String>();
+	private AJList<Reglement> ajlReglements	= new AJList<Reglement>();
 	
+	@Localisable(value="",tooltip="reglementmanager.new")
+	private JButton jbNewFederation	= new JButton();
+	@Localisable(value="",tooltip="reglementmanager.edit")
+	private JButton jbEditFederation = new JButton();
+	@Localisable(value="",tooltip="reglementmanager.delete")
+	private JButton jbDeleteFederation = new JButton();
+	
+	@Localisable(value="",tooltip="reglementmanager.new")
 	private JButton jbNew			= new JButton();
+	@Localisable(value="",tooltip="reglementmanager.edit")
 	private JButton jbEdit			= new JButton();
+	@Localisable(value="",tooltip="reglementmanager.delete")
 	private JButton jbDelete		= new JButton();
+	@Localisable("reglementmanager.export")
 	private JButton jbExport		= new JButton();
+	@Localisable("reglementmanager.import")
 	private JButton jbImport		= new JButton();
 	
+	@Localisable("bouton.valider")
 	private JButton jbValider		= new JButton();
+	@Localisable("bouton.annuler")
 	private JButton jbAnnuler		= new JButton();
+	@Localisable("bouton.fermer")
 	private JButton jbFermer		= new JButton();
 	
 	private ReglementManager reglementManager;
@@ -159,11 +186,12 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 	/**
 	 * 
 	 */
-	public ReglementManagerDialog(JFrame parentframe, AjResourcesReader localisation) {
+	public ReglementManagerDialog(JFrame parentframe, Profile profile) {
 		super(parentframe, true);
 		
+		this.profile = profile;
 		this.parentframe = parentframe;
-		this.localisation = localisation;
+		this.localisation = profile.getLocalisation();
 		
 		reglementManager = new ReglementManager();
 		
@@ -178,17 +206,53 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 		GridBagConstraints c = new GridBagConstraints();
 		GridbagComposer gbcomposer = new GridbagComposer(); 
 		
+		jbNewFederation.setIcon(new ImageIcon(staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$ 
+				File.separator + staticParameters.getResourceString("file.icon.addcriteria"))); //$NON-NLS-1$
+		jbEditFederation.setEnabled(false);
+		jbEditFederation.setIcon(new ImageIcon(staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$ 
+				File.separator + staticParameters.getResourceString("file.icon.opendocument"))); //$NON-NLS-1$
+		jbDeleteFederation.setEnabled(false);
+		jbDeleteFederation.setIcon(new ImageIcon(staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$ 
+				File.separator + staticParameters.getResourceString("file.icon.removeelement"))); //$NON-NLS-1$
+		jbNew.setIcon(new ImageIcon(staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$ 
+				File.separator + staticParameters.getResourceString("file.icon.addcriteria"))); //$NON-NLS-1$
+		jbEdit.setIcon(new ImageIcon(staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$ 
+				File.separator + staticParameters.getResourceString("file.icon.opendocument"))); //$NON-NLS-1$
+		jbDelete.setIcon(new ImageIcon(staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$ 
+				File.separator + staticParameters.getResourceString("file.icon.removeelement"))); //$NON-NLS-1$
+		
 		ajlFederations.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		ajlFederations.addListSelectionListener(this);
+		ajlFederations.setCellRenderer(new DefaultListCellRenderer() {
+			/* (non-Javadoc)
+			 * @see javax.swing.DefaultListCellRenderer#getListCellRendererComponent(javax.swing.JList, java.lang.Object, int, boolean, boolean)
+			 */
+			@Override
+			public Component getListCellRendererComponent(JList list,
+					Object value, int index, boolean isSelected,
+					boolean cellHasFocus) {
+				if(value instanceof Federation)
+					value = ((Federation)value).getSigleFederation();
+				return super.getListCellRendererComponent(list, value, index, isSelected,
+						cellHasFocus);
+			}
+		});
 		ajlCategories.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		ajlCategories.addListSelectionListener(this);
 		ajlReglements.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		ajlReglements.addListSelectionListener(this);
 		ajlReglements.addMouseListener(this);
 		
+		jbNewFederation.setMargin(new Insets(0,0,0,0));
+		jbNewFederation.addActionListener(this);
+		jbEditFederation.setMargin(new Insets(0,0,0,0));
+		jbEditFederation.addActionListener(this);
+		jbDeleteFederation.setMargin(new Insets(0,0,0,0));
+		jbDeleteFederation.addActionListener(this);
 		jbNew.setMargin(new Insets(0,0,0,0));
 		jbNew.addActionListener(this);
 		jbEdit.setMargin(new Insets(0,0,0,0));
+		jbEdit.setEnabled(false);
 		jbEdit.addActionListener(this);
 		jbDelete.setMargin(new Insets(0,0,0,0));
 		jbDelete.setEnabled(false);
@@ -211,9 +275,18 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 		c.gridy = 0;
 		c.anchor = GridBagConstraints.WEST;
 		c.fill = GridBagConstraints.BOTH;
+		c.gridwidth = 3;
 		gbcomposer.addComponentIntoGrid(jlFederations, c);
 		c.gridy++;
+		c.fill = GridBagConstraints.NONE;
+		c.gridwidth = 1;
+		gbcomposer.addComponentIntoGrid(jbNewFederation, c);
+		gbcomposer.addComponentIntoGrid(jbEditFederation, c);
+		gbcomposer.addComponentIntoGrid(jbDeleteFederation, c);
+		c.gridy++;
+		c.gridwidth = 3;
 		c.weighty = 1.0;
+		c.fill = GridBagConstraints.BOTH;
 		gbcomposer.addComponentIntoGrid(new JScrollPane(ajlFederations), c);
 		c.gridy++;
 		c.weighty = 0.0;
@@ -258,23 +331,7 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 	}
 	
 	private void affectLibelle() {
-		setTitle(localisation.getResourceString("reglementmanager.title")); //$NON-NLS-1$
-		
-		jlFederations.setText(localisation.getResourceString("reglementmanager.federations")); //$NON-NLS-1$
-		jlCategories.setText(localisation.getResourceString("reglementmanager.categories")); //$NON-NLS-1$
-		jlReglements.setText(localisation.getResourceString("reglementmanager.reglements")); //$NON-NLS-1$
-		
-		jbNew.setIcon(new ImageIcon(staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$ 
-				File.separator + staticParameters.getResourceString("file.icon.addcriteria"))); //$NON-NLS-1$
-		jbNew.setToolTipText(localisation.getResourceString("reglementmanager.new")); //$NON-NLS-1$
-		jbEdit.setIcon(new ImageIcon(staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$ 
-				File.separator + staticParameters.getResourceString("file.icon.opendocument"))); //$NON-NLS-1$
-		jbEdit.setToolTipText(localisation.getResourceString("reglementmanager.edit")); //$NON-NLS-1$
-		jbDelete.setIcon(new ImageIcon(staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$ 
-				File.separator + staticParameters.getResourceString("file.icon.removeelement"))); //$NON-NLS-1$
-		jbDelete.setToolTipText(localisation.getResourceString("reglementmanager.delete")); //$NON-NLS-1$
-		jbExport.setText(localisation.getResourceString("reglementmanager.export")); //$NON-NLS-1$
-		jbImport.setText(localisation.getResourceString("reglementmanager.import")); //$NON-NLS-1$
+		AppUtilities.localize(this, localisation);
 		
 		ajlCategories.clear();
 		ajlCategories.add(localisation.getResourceString("reglementmanager.category.all")); //$NON-NLS-1$
@@ -282,16 +339,12 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 		ajlCategories.add(localisation.getResourceString("reglementmanager.category.indoor")); //$NON-NLS-1$
 		ajlCategories.add(localisation.getResourceString("reglementmanager.category.outdoor")); //$NON-NLS-1$
 		ajlCategories.add(localisation.getResourceString("reglementmanager.category.other")); //$NON-NLS-1$
-		
-		jbValider.setText(localisation.getResourceString("bouton.valider")); //$NON-NLS-1$
-		jbAnnuler.setText(localisation.getResourceString("bouton.annuler")); //$NON-NLS-1$
-		jbFermer.setText(localisation.getResourceString("bouton.fermer")); //$NON-NLS-1$
 	}
 	
 	private void completePanel() {
 		ajlFederations.clear();
 		ajlFederations.add(new Federation("", 0, localisation.getResourceString("reglementmanager.federation.all"))); //$NON-NLS-1$ //$NON-NLS-2$
-		for(Federation federation : reglementManager.getFederations()) {
+		for(Federation federation : FederationManager.getAvailableFederations()) {
 			ajlFederations.add(federation);
 		}
 		ajlFederations.setSelectedIndex(0);
@@ -314,12 +367,12 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 	}
 	
 	private void showReglementDialog() {
-		ReglementDialog reglementDialog = new ReglementDialog(parentframe, (Reglement)ajlReglements.getSelectedValue(), localisation);
+		ReglementDialog reglementDialog = new ReglementDialog(parentframe, (Reglement)ajlReglements.getSelectedValue(), profile);
 		Reglement modifiedReglement = reglementDialog.showReglementDialog();
 		if (modifiedReglement != null) {
 			try {
 				modifiedReglement.save();
-			} catch(SQLException e1) {
+			} catch(SqlPersistanceException e1) {
 				JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
 						null, null, e1, Level.SEVERE, null));
 				e1.printStackTrace();
@@ -334,21 +387,29 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 	public void valueChanged(ListSelectionEvent e) {
 		if(e.getSource() == ajlFederations || e.getSource() == ajlCategories) {
 			if(ajlFederations.getSelectedIndex() == 0 && ajlCategories.getSelectedIndex() == 0) {
+				jbEditFederation.setEnabled(false);
+				jbDeleteFederation.setEnabled(false);
 				ajlReglements.clear();
 				for(Reglement reglement : reglementManager.getAvailableReglements()) {
 					ajlReglements.add(reglement);
 				}
 			} else if(ajlFederations.getSelectedIndex() == 0) {
+				jbEditFederation.setEnabled(false);
+				jbDeleteFederation.setEnabled(false);
 				ajlReglements.clear();
 				for(Reglement reglement : reglementManager.getReglementsForCategory(ajlCategories.getSelectedIndex())) {
 					ajlReglements.add(reglement);
 				}
 			} else if(ajlCategories.getSelectedIndex() == 0) {
+				jbEditFederation.setEnabled(true);
+				jbDeleteFederation.setEnabled(reglementManager.getReglementsForFederation((Federation)ajlFederations.getSelectedValue()).size() == 0);
 				ajlReglements.clear();
 				for(Reglement reglement : reglementManager.getReglementsForFederation((Federation)ajlFederations.getSelectedValue())) {
 					ajlReglements.add(reglement);
 				}
 			} else {
+				jbEditFederation.setEnabled(true);
+				jbDeleteFederation.setEnabled(reglementManager.getReglementsForFederation((Federation)ajlFederations.getSelectedValue()).size() == 0);
 				ajlReglements.clear();
 				for(Reglement reglement : reglementManager.getReglementsForFederationAndCategory(
 						(Federation)ajlFederations.getSelectedValue(), 
@@ -359,9 +420,11 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 		} else if(e.getSource() == ajlReglements) {
 			Reglement reglement = (Reglement)ajlReglements.getSelectedValue();
 			if(reglement != null) {
+				jbEdit.setEnabled(true);
 				jbDelete.setEnabled(reglement.isRemovable());
 				jbExport.setEnabled(true);
 			} else {
+				jbEdit.setEnabled(false);
 				jbDelete.setEnabled(false);
 				jbExport.setEnabled(false);
 			}
@@ -417,12 +480,12 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 		} else if(e.getSource() == jbAnnuler || e.getSource() == jbFermer) {
 			setVisible(false);
 		} else if(e.getSource() == jbNew) {
-			NewReglementDialog newReglementDialog = new NewReglementDialog(parentframe, localisation);
+			NewReglementDialog newReglementDialog = new NewReglementDialog(parentframe, profile);
 			Reglement reglement = newReglementDialog.showNewReglementDialog();
 			if(reglement != null) {
 				try {
 					reglementManager.addReglement(reglement);
-				} catch (SQLException e1) {
+				} catch (SqlPersistanceException e1) {
 					JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 							null, null, e1, Level.SEVERE, null));
 					e1.printStackTrace();
@@ -433,11 +496,19 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 			if(ajlReglements.getSelectedIndex() > -1)
 				showReglementDialog();
 		} else if(e.getSource() == jbDelete) {
-			if(JOptionPane.showConfirmDialog(parentframe, localisation.getResourceString("reglementmanager.delete.confirm")) == JOptionPane.YES_OPTION) { //$NON-NLS-1$
+			if(JOptionPane.showConfirmDialog(parentframe, localisation.getResourceString("reglementmanager.delete.confirm"), "", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) { //$NON-NLS-1$ //$NON-NLS-2$
 				Reglement reglement = (Reglement)ajlReglements.getSelectedValue(); 
-				if(reglement.delete()) {
-					ajlReglements.remove(reglement);
+				try {
 					reglementManager.removeReglement(reglement);
+					ajlReglements.remove(reglement);
+				} catch (SqlPersistanceException e1) {
+					if(e1.getMessage().equals("delete this Reglement is not authorized because there is official")) { //$NON-NLS-1$
+						JOptionPane.showMessageDialog(parentframe, localisation.getResourceString("reglementmanager.delete.unauhorized"), "", JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$ //$NON-NLS-2$
+					} else {
+						e1.printStackTrace();
+						JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+								null, null, e1, Level.SEVERE, null));
+					}
 				}
 			}
 		} else if(e.getSource() == jbExport) {
@@ -445,7 +516,7 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 			
 			if(reglement != null) {
 				JFileChooser fileChooser = new JFileChooser();
-				fileChooser.setFileFilter(new FileChooserFileFilter(new String[] {"reglement"}, localisation.getResourceString("filetype.reglement"))); //$NON-NLS-1$ //$NON-NLS-2$
+				fileChooser.setFileFilter(new FileNameExtensionFilter(localisation.getResourceString("filetype.reglement"), "reglement")); //$NON-NLS-1$ //$NON-NLS-2$
 				fileChooser.setSelectedFile(new File(reglement.getName() + ".reglement")); //$NON-NLS-1$
 				if(fileChooser.showSaveDialog(parentframe) == JFileChooser.APPROVE_OPTION) {
 					try {
@@ -464,7 +535,7 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 			}
 		} else if(e.getSource() == jbImport) {
 			JFileChooser fileChooser = new JFileChooser();
-			fileChooser.setFileFilter(new FileChooserFileFilter(new String[] {"reglement"}, localisation.getResourceString("filetype.reglement"))); //$NON-NLS-1$ //$NON-NLS-2$
+			fileChooser.setFileFilter(new FileNameExtensionFilter(localisation.getResourceString("filetype.reglement"), "reglement")); //$NON-NLS-1$ //$NON-NLS-2$
 			if(fileChooser.showOpenDialog(parentframe) == JFileChooser.APPROVE_OPTION) {
 				try {
 					reglementManager.importReglement(fileChooser.getSelectedFile());
@@ -473,12 +544,43 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 					JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 							null, null, e1, Level.SEVERE, null));
 					e1.printStackTrace();
-				} catch (SQLException e1) {
+				} catch (SqlPersistanceException e1) {
 					JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 							null, null, e1, Level.SEVERE, null));
 					e1.printStackTrace();
 				}
 			}
+		} else if(e.getSource() == jbNewFederation || e.getSource() == jbEditFederation) {
+			Federation federation = null;
+			if(e.getSource() == jbEditFederation && ajlFederations.getSelectedIndex() > 0)
+				federation = (Federation)ajlFederations.getSelectedValue();
+			
+			FederationDialog newFederationDialog = new FederationDialog(parentframe, profile);
+			federation = newFederationDialog.showFederationDialog(federation);
+			if(federation != null) {
+				if(e.getSource() == jbNewFederation)
+					ajlFederations.add(federation);
+				ajlFederations.repaint();
+			}
+		} else if(e.getSource() == jbDeleteFederation) {
+			if(JOptionPane.showConfirmDialog(parentframe, localisation.getResourceString("reglementmanager.deletefederation.confirm"), "", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) { //$NON-NLS-1$ //$NON-NLS-2$
+				Federation federation = (Federation)ajlFederations.getSelectedValue();
+				
+				if(reglementManager.getReglementsForFederation(federation).size() == 0) {
+					try {
+						reglementManager.removeFederation(federation);
+						
+						ajlFederations.remove(federation);
+						
+						ajlFederations.setSelectedIndex(0);
+					} catch (SqlPersistanceException e1) {
+						JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
+								null, null, e1, Level.SEVERE, null));
+						e1.printStackTrace();
+					}
+				}
+			}
+			//ajlFederations.
 		}
 	}
 }

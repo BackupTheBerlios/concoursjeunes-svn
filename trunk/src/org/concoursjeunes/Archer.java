@@ -73,7 +73,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -90,6 +90,8 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.List;
 
+import org.concoursjeunes.manager.ConcurrentManager;
+
 /**
  * Class représentant un archer independament d'un concours
  * 
@@ -105,7 +107,7 @@ public class Archer implements Cloneable {
 	private boolean certificat      = false;
 	private boolean handicape		= false;
 	
-	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+	protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
 	/**
 	 * Constructeur vide nécessaire à l'initialisation correct de l'objet

@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -93,36 +93,77 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
-import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlTransient;
+
+import org.ajdeveloppement.commons.sql.SqlField;
+import org.ajdeveloppement.commons.sql.SqlPersistance;
+import org.ajdeveloppement.commons.sql.SqlPersistanceException;
+import org.ajdeveloppement.commons.sql.SqlPrimaryKey;
+import org.ajdeveloppement.commons.sql.SqlStoreHelper;
+import org.ajdeveloppement.commons.sql.SqlTable;
 
 /**
+ * Représente une fédération de tir à l'arc
+ * 
  * @author Aurélien JEOFFRAY
- *
  */
-public class Federation {
+@XmlAccessorType(XmlAccessType.FIELD)
+@SqlTable(name="FEDERATION")
+@SqlPrimaryKey(fields={"NUMFEDERATION"},generatedidField="NUMFEDERATION")
+public class Federation implements SqlPersistance {
+	@SqlField(name="NUMFEDERATION")
+	@XmlTransient
 	private int numFederation = 0;
+	@SqlField(name="SIGLEFEDERATION")
+	@XmlElement(name="sigle")
 	private String sigleFederation = ""; //$NON-NLS-1$
+	@SqlField(name="NOMFEDERATION")
+	@XmlElement(name="nom")
 	private String nomFederation = ""; //$NON-NLS-1$
+	@XmlElementWrapper(name="niveaux",required=true)
+	@XmlElement(name="niveau")
+	private List<CompetitionLevel> competitionLevels = new ArrayList<CompetitionLevel>();
 	
-	/**
-	 * 
-	 */
+	private static SqlStoreHelper<Federation> helper = null;
+	static {
+		try {
+			helper = new SqlStoreHelper<Federation>(ApplicationCore.dbConnection, Federation.class);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public Federation() {
 	}
 	
 	/**
-	 * @param nomFederation
-	 * @param sigleFederation
+	 * initialise une nouvelle fédération avec sont nom et son sigle
+	 * 
+	 * @param nomFederation le nom de la fédération à initialiser
+	 * @param sigleFederation le sigle de la fédération à initialiser
+	 * @throws SQLException 
 	 */
 	public Federation(String nomFederation, String sigleFederation) {
 		this(nomFederation, 0, sigleFederation);
 	}
+	
 	/**
-	 * @param nomFederation
-	 * @param numFederation
-	 * @param sigleFederation
+	 * initialise une nouvelle fédération avec sont nom, son sigle ainsi que 
+	 * son numéro en base de données.
+	 * 
+	 * @param nomFederation le nom de la fédération à initialiser
+	 * @param numFederation le numéro en base de la fédération
+	 * @param sigleFederation le sigle de la fédération à initialiser
+	 * @throws SQLException 
 	 */
 	public Federation(String nomFederation, int numFederation,
 			String sigleFederation) {
@@ -131,92 +172,193 @@ public class Federation {
 		this.sigleFederation = sigleFederation;
 	}
 
-
-
 	/**
-	 * @return numFederation
+	 * Retourne le numero en base de la fédération
+	 * 
+	 * @return numFederation le numero en base de la fédération
 	 */
-	@XmlAttribute
 	public int getNumFederation() {
 		return numFederation;
 	}
 
 	/**
-	 * @param numFederation numFederation à définir
+	 * Définit le numero de la fédération en base
+	 * 
+	 * @param numFederation le numero en base de la fédération
 	 */
 	public void setNumFederation(int numFederation) {
 		this.numFederation = numFederation;
 	}
 
 	/**
-	 * @return sigleFederation
+	 * Retourne le sigle de la fédération par exemple <i>FITA</i>
+	 * 
+	 * @return le sigle de la fédération
 	 */
 	public String getSigleFederation() {
 		return sigleFederation;
 	}
 
 	/**
-	 * @param sigleFederation sigleFederation à définir
+	 * Définit le sigle de la fédération par exemple <i>FITA</i>
+	 * 
+	 * @param sigleFederation le sigle de la fédération
 	 */
 	public void setSigleFederation(String sigleFederation) {
 		this.sigleFederation = sigleFederation;
 	}
 
 	/**
-	 * @return nomFederation
+	 * Retourne le nom complet de la fédération. Par exemple
+	 * <i>Fédération Internationnal de Tir à l'Arc</i>
+	 *  
+	 * @return le nom de la fédération
 	 */
 	public String getNomFederation() {
 		return nomFederation;
 	}
 
 	/**
-	 * @param nomFederation nomFederation à définir
+	 * Définit le nom complet de la fédération. Par exemple
+	 * <i>Fédération Internationnal de Tir à l'Arc</i>
+	 * 
+	 * @param nomFederation le nom de la fédération
 	 */
 	public void setNomFederation(String nomFederation) {
 		this.nomFederation = nomFederation;
 	}
 	
-	@SuppressWarnings("nls")
+	/**
+	 * <p>Retourne la liste des niveaux de compétition disponible pour cette fédération.</p>
+	 * <p>Un niveau de compétition peut être retourné plusieurs fois si il est disponible
+	 * dans plusieurs lanque, aussi préférrer l'utilisation de {@link #getCompetitionLevels(String)}
+	 * en précisant la langue pour retourner la liste des niveaux.</p>
+	 * 
+	 * @return competitionLevels la liste des niveaux de compétition disponible
+	 */
+	public List<CompetitionLevel> getCompetitionLevels() {
+		return competitionLevels;
+	}
+
+	/**
+	 * <p>Définit la liste des niveaux de compétition disponible.</p>
+	 * <p>Comme aucune vérification de la présence en base des niveaux n'est réalisé,
+	 * cette méthode est uniquement présente pour une utilisation par les
+	 * fonction de sérialisation XML.</p>
+	 * <p>Utiliser à la place les méthodes {@link #addCompetitionLevel(CompetitionLevel)}
+	 * et {@link #removeCompetitionLevel(CompetitionLevel)} qui assure les fonctions
+	 * de persistance</p>
+	 * 
+	 * @param competitionLevels la liste des niveaux de compétition disponible
+	 */
+	public void setCompetitionLevels(List<CompetitionLevel> competitionLevels) {
+		this.competitionLevels = competitionLevels;
+		
+		for(CompetitionLevel competitionLevel : competitionLevels)
+			competitionLevel.setFederation(this);
+	}
+	
+	/**
+	 * Ajoute un niveau de compétition à la fédération. Lorsqu'un niveau
+	 * de compétition est ajouté à la fédération, celui ci est immédiatement 
+	 * enregistrer dans la base de données.
+	 * 
+	 * @param competitionLevel le niveau de compétition à ajouter à la fédération.
+	 */
+	public void addCompetitionLevel(CompetitionLevel competitionLevel) {
+		this.competitionLevels.add(competitionLevel);
+		
+		competitionLevel.setFederation(this);
+	}
+	
+	/**
+	 * Supprime un niveau de compétition de la fédération. Lorsqu'un niveau
+	 * de compétition est supprimé de la fédération, celui ci est immédiatement 
+	 * supprimé dans la base de données.
+	 * 
+	 * @param competitionLevel le niveau de compétition à supprimer de la fédération.
+	 * @throws SQLException
+	 */
+	public void removeCompetitionLevel(CompetitionLevel competitionLevel) {
+		this.competitionLevels.remove(competitionLevel);
+	}
+
+	/**
+	 * <p>Retourne la liste de tous les niveaux de compétition accessible pour la
+	 * fédération en fonction de la langue fournit en paramêtre.</p>
+	 * <p>Si le niveau n'a pas été traduit dans la langue désiré, la valeur
+	 * pour la localisation <i>fr</i> sera retourné.</p>
+	 * 
+	 * @param lang la langue des libellés de niveau de compétition au format ISO 639 (langue sur 2 caractères).
+	 * @return la liste de tous les niveaux de compétition accessible pour la
+	 * fédération
+	 */
 	public List<CompetitionLevel> getCompetitionLevels(String lang) {
 		List<CompetitionLevel> competitionLevelList = new ArrayList<CompetitionLevel>();
-		String sql = "select CODENIVEAU, LIBELLE from NIVEAU_COMPETITION where NUMFEDERATION=" + numFederation 
-				+ " and LANG='" + lang + "'";
-		
-		try {
-			Statement stmt = ApplicationCore.dbConnection.createStatement();
-			ResultSet rs = stmt.executeQuery(sql);
-			while(rs.next()) {
-				CompetitionLevel c = new CompetitionLevel();
-				c.setCode(rs.getString("CODENIVEAU"));
-				c.setLibelle(rs.getString("LIBELLE"));
-				competitionLevelList.add(c);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+
+		for(CompetitionLevel cl : competitionLevels) {
+			if(cl.getLang().equals(lang))
+				competitionLevelList.add(cl);
 		}
+		
+		if(competitionLevelList.size() == 0 && !lang.equals("fr")) //$NON-NLS-1$
+			competitionLevelList = getCompetitionLevels("fr"); //$NON-NLS-1$
 		
 		return competitionLevelList;
 	}
 	
-	public void save() throws SQLException {
-		String sql;
-		if(numFederation == 0)
-			sql = "insert into FEDERATION (SIGLEFEDERATION, NOMFEDERATION) VALUES (?, ?);"; //$NON-NLS-1$
-		else
-			sql = "update FEDERATION set SIGLEFEDERATION=?, NOMFEDERATION=? where NUMFEDERATION=" + numFederation; //$NON-NLS-1$
+	private void checkAlreadyExists() throws SQLException {
+		String sql = "select NUMFEDERATION from FEDERATION where SIGLEFEDERATION=? and NOMFEDERATION=?"; //$NON-NLS-1$
 		
 		PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
 		pstmt.setString(1, sigleFederation);
 		pstmt.setString(2, nomFederation);
-		pstmt.executeUpdate();
-		
-		if(numFederation == 0) {
-			ResultSet clefs = pstmt.getGeneratedKeys();
-			if (clefs.first()) {
-				numFederation = (Integer) clefs.getObject(1);
+		ResultSet rs = pstmt.executeQuery();
+		if(rs.next())
+			numFederation = rs.getInt(1);
+	}
+	
+	/**
+	 * Sauvegarde la fédération en base de données. Les arguments sont ignoré.
+	 */
+	@Override
+	public void save() throws SqlPersistanceException {
+		try {
+			checkAlreadyExists();
+			helper.save(this);
+	
+			String sql = "delete from NIVEAU_COMPETITION where NUMFEDERATION=" + numFederation; //$NON-NLS-1$
+			Statement stmt = ApplicationCore.dbConnection.createStatement();
+			stmt.executeUpdate(sql);
+			
+			Map<String, List<CompetitionLevel>> langFilteredCL = new HashMap<String, List<CompetitionLevel>>();
+			
+			for(CompetitionLevel cl : competitionLevels) {
+				if(!langFilteredCL.containsKey(cl.getLang()))
+					langFilteredCL.put(cl.getLang(), new ArrayList<CompetitionLevel>());
+				langFilteredCL.get(cl.getLang()).add(cl);
 			}
+			
+			for(Entry<String, List<CompetitionLevel>> entry : langFilteredCL.entrySet()) {
+				int i = 1;
+				for(CompetitionLevel cl : entry.getValue()) {
+					cl.setNumLevel(i++);
+					cl.save();
+				}
+			}
+		} catch (SQLException e) {
+			throw new SqlPersistanceException(e);
 		}
-		pstmt.close();
+	}
+
+	/**
+	 * Supprime la fédération de la base de données. Les arguments sont ignoré.
+	 * 
+	 * Tous les réglements attaché à cette fédération seront également supprimés
+	 */
+	@Override
+	public void delete() throws SqlPersistanceException {
+		helper.delete(this);
 	}
 	
 	/* (non-Javadoc)
@@ -258,7 +400,8 @@ public class Federation {
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
+	@SuppressWarnings("nls")
 	public String toString() {
-		return sigleFederation;
+		return nomFederation + " (" + sigleFederation + ")";
 	}
 }

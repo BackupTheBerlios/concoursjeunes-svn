@@ -73,7 +73,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -134,7 +134,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 	private AjResourcesReader localisation;
 	private final Profile profile;
 	private Parametre parametres;
-	private Concurrent[] concurrents;
+	private List<Concurrent> concurrents;
 
 	private JLabel jlCible = new JLabel();
 	private JLabel jlDistance = new JLabel();
@@ -165,7 +165,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 	 * @param parametres les parametre specifique du concours regissant la saisie
 	 */
 	public ResultatDialog(
-			JFrame parentframe, AjResourcesReader localisation, Profile profile, Parametre parametres, Concurrent[] concurrents) {
+			JFrame parentframe, AjResourcesReader localisation, Profile profile, Parametre parametres, List<Concurrent> concurrents) {
 		super(parentframe, "", true); //$NON-NLS-1$
 		
 		this.localisation = localisation;
@@ -263,9 +263,9 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 
 			String libelle = pos + ":"; //$NON-NLS-1$
 			
-			for(int j = 0; j < concurrents.length; j++) {
-				if(concurrents[j].getPosition() == i) {
-					libelle += concurrents[j].getID();
+			for(int j = 0; j < concurrents.size(); j++) {
+				if(concurrents.get(j).getPosition() == i) {
+					libelle += concurrents.get(j).getID();
 					break;
 				}
 			}
@@ -361,7 +361,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 	private void affectLibelle() {
 		setTitle(localisation.getResourceString("resultats.titre")); //$NON-NLS-1$
 		
-		jlCible.setText("<html><font size=\"+1\">" + localisation.getResourceString("resultats.cible") + " " + concurrents[0].getCible() + "</font></html>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		jlCible.setText("<html><font size=\"+1\">" + localisation.getResourceString("resultats.cible") + " " + concurrents.get(0).getCible() + "</font></html>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		jlDistance.setText(localisation.getResourceString("resultats.distances")); //$NON-NLS-1$
 		for(int i = 0; i < jlDistances.length; i++) {
 			jlDistances[i].setText((i==0) ?
@@ -560,7 +560,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 
 		@Override
 		public Component getComponentBefore(Container focusCycleRoot, Component aComponent) {
-			int nbConc = concurrents.length;
+			int nbConc = concurrents.size();
 			int nbDepartages = departages[0].length;
 			Component nextComp = null;
 			for (int i = nbConc - 1; i >= 0; i--) {

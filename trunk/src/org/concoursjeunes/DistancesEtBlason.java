@@ -2,7 +2,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -15,10 +15,30 @@
  */
 package org.concoursjeunes;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import org.ajdeveloppement.commons.sql.SqlField;
+import org.ajdeveloppement.commons.sql.SqlForeignFields;
+import org.ajdeveloppement.commons.sql.SqlPersistance;
+import org.ajdeveloppement.commons.sql.SqlPersistanceException;
+import org.ajdeveloppement.commons.sql.SqlPrimaryKey;
+import org.ajdeveloppement.commons.sql.SqlStoreHelper;
+import org.ajdeveloppement.commons.sql.SqlTable;
+import org.concoursjeunes.xml.bind.BlasonAdapter;
 
 /**
  * parametre de distances et blason pour une cible et un concurrent
@@ -26,14 +46,35 @@ import java.util.Arrays;
  * @author Aurélien Jeoffray
  * @version 1.0
  */
-public class DistancesEtBlason {
+@SqlTable(name="DISTANCESBLASONS")
+@SqlPrimaryKey(fields={"NUMDISTANCESBLASONS","NUMREGLEMENT"},generatedidField="NUMDISTANCESBLASONS")
+@SqlForeignFields(fields={"NUMREGLEMENT","NUMBLASON","NUMCRITERIASET"})
+@XmlAccessorType(XmlAccessType.FIELD)
+public class DistancesEtBlason implements SqlPersistance {
+	@XmlElementWrapper(name="distances",required=true)
+    @XmlElement(name="distance")
 	private int[] distances = new int[] { 18, 18 };
+	@XmlTransient
 	private int blason = 80;
+	@XmlJavaTypeAdapter(BlasonAdapter.class)
 	private Blason targetFace = new Blason();
+	@SqlField(name="DEFAULTTARGETFACE")
+	private boolean defaultTargetFace = true;
 
 	private CriteriaSet criteriaSet = new CriteriaSet();
 
+	@SqlField(name="NUMDISTANCESBLASONS")
+	@XmlTransient
 	private int numdistancesblason = 0;
+	
+	private static SqlStoreHelper<DistancesEtBlason> helper = null;
+	static {
+		try {
+			helper = new SqlStoreHelper<DistancesEtBlason>(ApplicationCore.dbConnection, DistancesEtBlason.class);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * cree un d&b avec les options par défaut (pour sérialisation XML)
@@ -119,6 +160,28 @@ public class DistancesEtBlason {
 	}
 
 	/**
+	 * Indique si c'est le blason par défaut ou si l'objet représente
+	 * représente un blason alternatif.
+	 * 
+	 * @return true si c'est le blason par défaut, false
+	 * si c'est un blason alternatif.
+	 */
+	public boolean isDefaultTargetFace() {
+		return defaultTargetFace;
+	}
+
+	/**
+	 * Définit si c'est le blason par défaut ou si l'objet représente
+	 * représente un blason alternatif.
+	 * 
+	 * @param defaultTargetFace true si c'est le blason par défaut, false
+	 * si c'est un blason alternatif.
+	 */
+	public void setDefaultTargetFace(boolean defaultTargetFace) {
+		this.defaultTargetFace = defaultTargetFace;
+	}
+
+	/**
 	 * Le jeux de critère pour lequel l'objet est définit
 	 * 
 	 * @return le jeux de critére associé
@@ -151,82 +214,49 @@ public class DistancesEtBlason {
 	public void setNumdistancesblason(int numdistancesblason) {
 		this.numdistancesblason = numdistancesblason;
 	}
-
+	
 	/**
-	 * Sauvegarde le couple distances/blasons en base
+	 * Sauvegarde le couple distances/blasons en base.
 	 * 
-	 * @throws SQLException
+	 * @see org.ajdeveloppement.commons.sql.SqlPersistance#save(java.lang.Object[])
+	 * @throws SqlPersistanceException
 	 */
-	public void save(Reglement reglement) throws SQLException {
-		Statement stmt = null;
-		boolean createDB = true;
+	@SuppressWarnings("nls")
+	@Override
+	public void save() throws SqlPersistanceException {
+		criteriaSet.save();
+		
+		Map<String, Object> fk = new HashMap<String, Object>();
+		fk.put("NUMREGLEMENT", criteriaSet.getReglement().getNumReglement()); //$NON-NLS-1$
+		fk.put("NUMBLASON", targetFace.getNumblason()); 
+		fk.put("NUMCRITERIASET", criteriaSet.getNumCriteriaSet()); 
+		helper.save(this, fk);
+		
 		try {
-			stmt = ApplicationCore.dbConnection.createStatement();
-			
-			ResultSet rs = null;
+			Statement stmt = ApplicationCore.dbConnection.createStatement();
 			try {
-				if (numdistancesblason != 0) {
-					rs = stmt.executeQuery("select * from DISTANCESBLASONS where NUMREGLEMENT=" + reglement.hashCode() + " and NUMDISTANCESBLASONS="+numdistancesblason); //$NON-NLS-1$ //$NON-NLS-2$
-					createDB = !rs.first();
+				stmt.executeUpdate("delete from DISTANCES where NUMDISTANCESBLASONS=" + numdistancesblason + " and NUMREGLEMENT=" + criteriaSet.getReglement().getNumReglement()); 
+				int i = 1;
+				for(int distance : distances) {
+					stmt.executeUpdate("insert into DISTANCES (NUMDISTANCES, NUMDISTANCESBLASONS, NUMREGLEMENT, DISTANCE) " + //$NON-NLS-1$
+							"VALUES (" + (i++) +", " + numdistancesblason + ", " + criteriaSet.getReglement().getNumReglement() +", " + distance + ")"); 
 				}
 			} finally {
-				if(rs != null)
-					rs.close();
-			}
-			
-			if (createDB) {
-				stmt.executeUpdate("insert into DISTANCESBLASONS (NUMREGLEMENT, NUMBLASON) VALUES (" + //$NON-NLS-1$
-						reglement.hashCode() + ", " + targetFace.getNumblason() + ")", Statement.RETURN_GENERATED_KEYS); //$NON-NLS-1$ //$NON-NLS-2$
-				ResultSet clefs = null;
-				try {
-					clefs = stmt.getGeneratedKeys();
-					if (clefs.first()) {
-						numdistancesblason = (Integer) clefs.getObject(1);
-					}
-				} finally {
-					if(clefs != null)
-						clefs.close();
-				}
-			} else {
-				stmt.executeUpdate("update DISTANCESBLASONS set NUMBLASON=" + //$NON-NLS-1$
-						targetFace.getNumblason() + " where NUMREGLEMENT=" + reglement.hashCode() + " and NUMDISTANCESBLASONS=" + numdistancesblason); //$NON-NLS-1$ //$NON-NLS-2$
-			}
-	
-			criteriaSet.save(reglement);
-	
-			String sql = "merge into ASSOCIER (NUMDISTANCESBLASONS, " + //$NON-NLS-1$
-					"NUMREGLEMENT, NUMCRITERIASET) " + //$NON-NLS-1$
-					"VALUES (" + numdistancesblason + ", " + //$NON-NLS-1$ //$NON-NLS-2$
-					reglement.hashCode() + "," + //$NON-NLS-1$
-					criteriaSet.hashCode() + ")"; //$NON-NLS-1$
-			stmt.executeUpdate(sql); 
-			
-			stmt.executeUpdate("delete from DISTANCES where NUMDISTANCESBLASONS=" + numdistancesblason + " and NUMREGLEMENT=" + reglement.hashCode()); //$NON-NLS-1$ //$NON-NLS-2$
-			for(int distance : distances) {
-				stmt.executeUpdate("insert into DISTANCES (NUMDISTANCESBLASONS, NUMREGLEMENT, DISTANCE) " + //$NON-NLS-1$
-						"VALUES (" + numdistancesblason + ", " + reglement.hashCode() +", " + distance + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-			}
-		} finally {
-			if(stmt != null)
 				stmt.close();
+			}
+		} catch (SQLException e) {
+			throw new SqlPersistanceException(e);
 		}
 	}
 	
 	/**
-	 * Supprime le distances/blason de la base
-	 * @param reglement
+	 * Supprime le distances/blason de la base.
+	 * 
 	 * @throws SQLException
 	 */
-	public void delete(Reglement reglement) throws SQLException {
-		Statement stmt = null;
-		try {
-			stmt = ApplicationCore.dbConnection.createStatement();
-			
-			stmt.executeUpdate("delete from DISTANCESBLASONS where NUMREGLEMENT=" + reglement.hashCode() + " and NUMDISTANCESBLASONS="+numdistancesblason); //$NON-NLS-1$ //$NON-NLS-2$
-		} finally {
-			if(stmt != null)
-				stmt.close();
-		}
+	@Override
+	public void delete() throws SqlPersistanceException {
+		helper.delete(this, Collections.singletonMap("NUMREGLEMENT", (Object)criteriaSet.getReglement().getNumReglement()));  //$NON-NLS-1$
 	}
 
 	/**
@@ -240,7 +270,19 @@ public class DistancesEtBlason {
 	 * @return l'objet DistancesEtBlason correspondant au concurrent
 	 */
 	public static DistancesEtBlason getDistancesEtBlasonForConcurrent(Reglement reglement, Concurrent concurrent) {
-		return reglement.getDistancesEtBlasonFor(concurrent.getCriteriaSet().getFilteredCriteriaSet(reglement.getPlacementFilter()));
+		List<DistancesEtBlason> ldb = reglement.getDistancesEtBlasonFor(concurrent.getCriteriaSet().getFilteredCriteriaSet(reglement.getPlacementFilter()));
+		if(concurrent.isUseAlternativeTargetFace()) {
+			for(DistancesEtBlason db : ldb) {
+				 if(concurrent.getAlternativeTargetFace().equals(db.getTargetFace()))
+					return db;
+			}
+		}
+		return ldb.get(0);
+	}
+	
+	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
+		if(parent instanceof Reglement)
+			criteriaSet.setReglement((Reglement)parent);
 	}
 
 	/* (non-Javadoc)

@@ -1,7 +1,7 @@
 /*
- * Créer le 18 mai 08 à 11:34:20 pour ConcoursJeunes
+ * Créer le 3 mai 2009 à 17:32:56 pour ConcoursJeunes
  *
- * Copyright 2002-2008 - Aurélien JEOFFRAY
+ * Copyright 2002-2009 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
  *
@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -86,27 +86,67 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes;
+package org.concoursjeunes.builders;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.concoursjeunes.ApplicationCore;
+import org.concoursjeunes.CompetitionLevel;
+import org.concoursjeunes.Federation;
 
 /**
- * Permet à la classe implémentant cet interface de suivre la progression du chargement en mémoire
- * des concurrents recherché par la methode ConcurrentManager.getArchersInDatabase().
- * 
  * @author Aurélien JEOFFRAY
  *
  */
-public interface ConcurrentManagerProgress {
-	/**
-	 * Envoi à le nombre de concurrent à chargé
-	 * 
-	 * @param concurrentCount le nombre de concurrent à charger en mémoire
-	 */
-	public void setConcurrentCount(int concurrentCount);
-	
-	/**
-	 * Revoie le dernier concurrent à être chargé en mémoire
-	 * 
-	 * @param concurrent le dernier concurrent à être chargé
-	 */
-	public void setCurrentConcurrent(Concurrent concurrent);
+public class FederationBuilder {
+	@SuppressWarnings("nls")
+	public static Federation getFederation(int numFederation) throws SQLException {
+		String sql = "select * from FEDERATION where NUMFEDERATION=" + numFederation;
+		Federation federation = null;
+		
+		Statement stmt = ApplicationCore.dbConnection.createStatement();
+		try {
+			ResultSet rs = stmt.executeQuery(sql);
+			try {
+				if(rs.first()) {
+					federation = new Federation(
+							rs.getString("NOMFEDERATION"),
+							rs.getInt("NUMFEDERATION"),
+							rs.getString("SIGLEFEDERATION"));
+					rs.close();
+					
+					//retourne les langues disponible pour les niveaux de compétition
+					List<String> langs = new ArrayList<String>();
+					sql = "select distinct LANG from NIVEAU_COMPETITION where NUMFEDERATION=" + numFederation;
+					rs = stmt.executeQuery(sql);
+					while(rs.next()) {
+						langs.add(rs.getString(1));
+					}
+					rs.close();
+					
+					//construit les niveaux
+					List<CompetitionLevel> competitionLevels = new ArrayList<CompetitionLevel>();
+					sql = "select distinct CODENIVEAU from NIVEAU_COMPETITION where NUMFEDERATION=" + numFederation;
+					rs = stmt.executeQuery(sql);
+					while(rs.next()) {
+						for(String lang : langs) {
+							competitionLevels.add(CompetitionLevelBuilder.getCompetitionLevel(
+									rs.getInt(1), federation, lang));
+						}
+					}
+					federation.setCompetitionLevels(competitionLevels);
+				}
+			} finally {
+				rs.close();
+			}
+		} finally {
+			stmt.close();
+		}
+		
+		return federation;
+	}
 }

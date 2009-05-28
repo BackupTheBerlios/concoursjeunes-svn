@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -102,7 +102,7 @@ public class AllTests {
 		//$JUnit-BEGIN$
 		suite.addTestSuite(ConfigurationManagerTest.class);
 		suite.addTestSuite(FicheConcoursTest.class);
-		suite.addTestSuite(ConcoursJeunesTest.class);
+		suite.addTestSuite(ApplicationCoreTest.class);
 		suite.addTestSuite(PasDeTirTest.class);
 		suite.addTestSuite(TargetTest.class);
 		//$JUnit-END$

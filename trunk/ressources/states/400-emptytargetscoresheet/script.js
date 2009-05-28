@@ -1,10 +1,8 @@
-//mapping Java/JS:
-//	depart: le depart selectionné
-function checkPrintable(ficheConcours) {
+function checkPrintable(ficheConcours, options) {
 	return true;
 }
 
-function printState(ficheConcours, template, document, writer) {
+function printState(ficheConcours, template, document, writer, options) {
 	var contexte = JavaImporter(
 						Packages.org.concoursjeunes,
 						Packages.org.ajdeveloppement.commons,
@@ -12,10 +10,12 @@ function printState(ficheConcours, template, document, writer) {
 						Packages.java.util,
 						com.lowagie.text.xml.XmlParser,
 						java.text.DateFormat,
-						java.util.logging.Level,
-						java.io.StringReader,
-						org.jdesktop.swingx.error.ErrorInfo,
-						org.jdesktop.swingx.error.JXErrorPane);
+						java.io.StringReader);
+	
+	var localeReader = options.getLangReader();
+	var serie = options.getSerie();
+	var depart = options.getDepart();
+	var profile = options.getProfile();
 	
 	with(contexte) {
 		var templateXML = new AJTemplate();
@@ -24,10 +24,10 @@ function printState(ficheConcours, template, document, writer) {
 	
 		try {
 			templateXML.parse("CURRENT_TIME", DateFormat.getDateInstance(DateFormat.FULL).format(new Date()));
-			templateXML.parse("producer", ApplicationCore.NOM + " " + ApplicationCore.VERSION);
-			templateXML.parse("author", ApplicationCore.getConfiguration().getClub().getNom());
+			templateXML.parse("producer", AppInfos.NOM + " " + AppInfos.VERSION);
+			templateXML.parse("author", profile.getConfiguration().getClub().getNom());
 
-			templateXML.parse("scoresheet.LOGO_CLUB_URI", ApplicationCore.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\"));
+			templateXML.parse("scoresheet.LOGO_CLUB_URI", profile.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\"));
 			templateXML.parse("scoresheet.INTITULE_CLUB", ficheConcours.getParametre().getClub().getNom());
 			templateXML.parse("scoresheet.INTITULE_CONCOURS", ficheConcours.getParametre().getIntituleConcours());
 			templateXML.parse("scoresheet.VILLE_CLUB", ficheConcours.getParametre().getLieuConcours());

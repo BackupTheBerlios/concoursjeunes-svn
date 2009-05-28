@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -88,14 +88,52 @@
  */
 package org.concoursjeunes;
 
+import java.sql.SQLException;
+import java.util.Collections;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlTransient;
+
+import org.ajdeveloppement.commons.sql.SqlField;
+import org.ajdeveloppement.commons.sql.SqlForeignFields;
+import org.ajdeveloppement.commons.sql.SqlPersistance;
+import org.ajdeveloppement.commons.sql.SqlPersistanceException;
+import org.ajdeveloppement.commons.sql.SqlPrimaryKey;
+import org.ajdeveloppement.commons.sql.SqlStoreHelper;
+import org.ajdeveloppement.commons.sql.SqlTable;
+
 /**
- * Représente le niveau d'une compétition
+ * Représente le niveau d'une compétition.
  * 
  * @author Aurélien JEOFFRAY
  */
-public class CompetitionLevel {
-	private String code = ""; //$NON-NLS-1$
+@XmlAccessorType(XmlAccessType.FIELD)
+@SqlTable(name="NIVEAU_COMPETITION")
+@SqlPrimaryKey(fields={"CODENIVEAU","NUMFEDERATION","LANG"})
+@SqlForeignFields(fields={"NUMFEDERATION"})
+public class CompetitionLevel implements SqlPersistance {
+	@XmlTransient
+	@SqlField(name="CODENIVEAU")
+	private int numlevel = 0;
+	@SqlField(name="LANG")
+	private String lang = "fr"; //$NON-NLS-1$
+	@SqlField(name="LIBELLE")
 	private String libelle = ""; //$NON-NLS-1$
+	@SqlField(name="DEFAUT")
+	private boolean defaut = false;
+	
+	@XmlTransient
+	private Federation federation;
+	
+	private static SqlStoreHelper<CompetitionLevel> helper = null;
+	static {
+		try {
+			helper = new SqlStoreHelper<CompetitionLevel>(ApplicationCore.dbConnection, CompetitionLevel.class);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	public CompetitionLevel() {
 		
@@ -104,15 +142,43 @@ public class CompetitionLevel {
 	/**
 	 * @return code
 	 */
-	public String getCode() {
-		return code;
+	public int getNumLevel() {
+		return numlevel;
 	}
 
 	/**
 	 * @param code code à définir
 	 */
-	public void setCode(String code) {
-		this.code = code;
+	public void setNumLevel(int code) {
+		this.numlevel = code;
+	}
+	
+	/**
+	 * @return federation
+	 */
+	public Federation getFederation() {
+		return federation;
+	}
+
+	/**
+	 * @param federation federation à définir
+	 */
+	public void setFederation(Federation federation) {
+		this.federation = federation;
+	}
+
+	/**
+	 * @return lang
+	 */
+	public String getLang() {
+		return lang;
+	}
+
+	/**
+	 * @param lang lang à définir
+	 */
+	public void setLang(String lang) {
+		this.lang = lang;
 	}
 
 	/**
@@ -128,6 +194,45 @@ public class CompetitionLevel {
 	public void setLibelle(String libelle) {
 		this.libelle = libelle;
 	}
+	
+	/**
+	 * @param defaut defaut à définir
+	 */
+	public void setDefaut(boolean defaut) {
+		this.defaut = defaut;
+	}
+
+	/**
+	 * @return defaut
+	 */
+	public boolean isDefaut() {
+		return defaut;
+	}
+
+	/** 
+	 * Sauvegarde en base un niveau de compétition
+	 * 
+	 * @see org.ajdeveloppement.commons.sql.SqlPersistance#save(java.lang.Object[])
+	 * 
+	 * @throws SQLException
+	 */
+	@Override
+	public void save() throws SqlPersistanceException {
+		helper.save(this, Collections.singletonMap("NUMFEDERATION", (Object)federation.getNumFederation())); //$NON-NLS-1$
+	}
+
+	/** 
+	 * Sauvegarde de la base le niveau de compétition
+	 * 
+	 * @see org.ajdeveloppement.commons.sql.SqlPersistance#delete(java.lang.Object[])
+	 * compte.
+	 * 
+	 * @throws SQLException
+	 */
+	@Override
+	public void delete() throws SqlPersistanceException {
+		helper.delete(this, Collections.singletonMap("NUMFEDERATION", (Object)federation.getNumFederation())); //$NON-NLS-1$
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
@@ -136,7 +241,7 @@ public class CompetitionLevel {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((code == null) ? 0 : code.hashCode());
+		result = prime * result + numlevel;
 		return result;
 	}
 
@@ -152,14 +257,11 @@ public class CompetitionLevel {
 		if (getClass() != obj.getClass())
 			return false;
 		CompetitionLevel other = (CompetitionLevel) obj;
-		if (code == null) {
-			if (other.code != null)
-				return false;
-		} else if (!code.equals(other.code))
+		if (numlevel != other.numlevel)
 			return false;
 		return true;
 	}
-	
+
 	@Override
 	public String toString() {
 		return libelle;

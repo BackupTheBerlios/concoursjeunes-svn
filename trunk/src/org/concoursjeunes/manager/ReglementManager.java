@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -86,7 +86,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes;
+package org.concoursjeunes.manager;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -100,6 +100,10 @@ import java.util.List;
 import javax.xml.bind.JAXBException;
 
 import org.ajdeveloppement.commons.io.XMLSerializer;
+import org.ajdeveloppement.commons.sql.SqlPersistanceException;
+import org.concoursjeunes.ApplicationCore;
+import org.concoursjeunes.Federation;
+import org.concoursjeunes.Reglement;
 import org.concoursjeunes.builders.ReglementBuilder;
 
 /**
@@ -134,7 +138,7 @@ public class ReglementManager {
 		try {
 			Statement stmt = ApplicationCore.dbConnection.createStatement();
 
-			ResultSet rs = stmt.executeQuery("select NUMREGLEMENT from REGLEMENT where NUMREGLEMENT <> 0 order by LIBELLE"); //$NON-NLS-1$
+			ResultSet rs = stmt.executeQuery("select NUMREGLEMENT from REGLEMENT where NOMREGLEMENT <> 'default' order by LIBELLE"); //$NON-NLS-1$
 
 			while (rs.next()) {
 				Reglement reglement = ReglementBuilder.getReglement(rs.getInt("NUMREGLEMENT")); //$NON-NLS-1$
@@ -155,9 +159,9 @@ public class ReglementManager {
 	 * Ajoute le réglement fournit en parametre à la base et au gestionnaire
 	 * 
 	 * @param reglement le réglement à ajouter
-	 * @throws SQLException
+	 * @throws SqlPersistanceException
 	 */
-	public void addReglement(Reglement reglement) throws SQLException {
+	public void addReglement(Reglement reglement) throws SqlPersistanceException {
 		if(reglement == null)
 			return;
 		
@@ -175,16 +179,15 @@ public class ReglementManager {
 	 * 
 	 * @param reglement le réglement à supprimer
 	 */
-	public void removeReglement(Reglement reglement) {
-		if(reglement.delete()) {
-			availableReglements.remove(reglement);
-			if(getReglementsForCategory(reglement.getCategory()).size() == 0)
-				categorie.remove(new Integer(reglement.getCategory()));
-			if(getReglementsForFederation(reglement.getFederation()).size() == 0)
-				federation.remove(reglement.getFederation());
-			reglement = null;
-		}
-		
+	public void removeReglement(Reglement reglement) throws SqlPersistanceException {
+		reglement.delete();
+	
+		availableReglements.remove(reglement);
+		if(getReglementsForCategory(reglement.getCategory()).size() == 0)
+			categorie.remove(new Integer(reglement.getCategory()));
+		if(getReglementsForFederation(reglement.getFederation()).size() == 0)
+			removeFederation(reglement.getFederation());
+		reglement = null;
 	}
 	
 	/**
@@ -192,15 +195,20 @@ public class ReglementManager {
 	 * Si le réglement n'existe pas en base, se contente de le creer
 	 * 
 	 * @param reglement
-	 * @throws SQLException
+	 * @throws SqlPersistanceException
 	 */
-	public void updateReglement(Reglement reglement) throws SQLException {
+	public void updateReglement(Reglement reglement) throws SqlPersistanceException {
 		availableReglements.remove(reglement);
 		if(getReglementsForCategory(reglement.getCategory()).size() == 0)
 			categorie.remove(new Integer(reglement.getCategory()));
 		if(getReglementsForFederation(reglement.getFederation()).size() == 0)
-			federation.remove(reglement.getFederation());
+			removeFederation(reglement.getFederation());
 		addReglement(reglement);
+	}
+	
+	public void removeFederation(Federation f) throws SqlPersistanceException {
+		federation.remove(f);
+		f.delete();
 	}
 	
 	/**
@@ -291,33 +299,6 @@ public class ReglementManager {
 	}
 	
 	/**
-	 * Liste l'ensemble des fédérations disponible indépendament de l'éxistance
-	 * de réglement associé
-	 * 
-	 * @return la liste des fédérations disponible
-	 */
-	public static List<Federation> getAvailableFederations() {
-		List<Federation> federations = new ArrayList<Federation>();
-		String sql = "select * from FEDERATION order by SIGLEFEDERATION"; //$NON-NLS-1$
-		
-		try {
-			Statement stmt = ApplicationCore.dbConnection.createStatement();
-			ResultSet rs = stmt.executeQuery(sql);
-			while(rs.next()) {
-				federations.add(
-						new Federation(
-								rs.getString("NOMFEDERATION"), //$NON-NLS-1$
-								rs.getInt("NUMFEDERATION"), //$NON-NLS-1$
-								rs.getString("SIGLEFEDERATION"))); //$NON-NLS-1$
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return federations;
-	}
-	
-	/**
 	 * Retourne la liste des catégories représenté par les réglements
 	 * 
 	 * @return la liste des catégories de réglement
@@ -353,7 +334,7 @@ public class ReglementManager {
 	 * @throws IOException
 	 * @throws SQLException
 	 */
-	public Reglement importReglement(File importFile) throws IOException, SQLException {
+	public Reglement importReglement(File importFile) throws IOException, SqlPersistanceException {
 		Reglement reglement = null;
 		try {
 			reglement = XMLSerializer.loadMarshallStructure(importFile, Reglement.class, false);

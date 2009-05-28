@@ -2,7 +2,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -18,8 +18,11 @@ package org.concoursjeunes;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.ajdeveloppement.commons.sql.SqlPersistanceException;
 
 /**
  * Objet de Base de stockage des Information sur un concurrent:
@@ -53,6 +56,7 @@ public class Concurrent extends Archer implements Cloneable {
 	private int inscription             = UNINIT;
 	private boolean	presence			= false;
 	private boolean surclassement		= false;
+	private Blason alternativeTargetFace = new Blason();
 
 	/**
 	 * Constructeur vide obligatoire pour java beans
@@ -127,7 +131,11 @@ public class Concurrent extends Archer implements Cloneable {
 	 * @param departages le tableau de départage des scores
 	 */
 	public void setDepartages(int[] departages) {
+		Object oldValue = this.departages;
+		
 		this.departages = departages;
+		
+		pcs.firePropertyChange("departages", oldValue, departages); //$NON-NLS-1$
 	}
 
 	/**
@@ -187,7 +195,11 @@ public class Concurrent extends Archer implements Cloneable {
 	 * @param depart  The depart to set.
 	 */
 	public void setDepart(int depart) {
+		Object oldValue = this.depart;
+		
 		this.depart = depart;
+		
+		pcs.firePropertyChange("depart", oldValue, depart); //$NON-NLS-1$
 	}
 
 	/**
@@ -203,7 +215,11 @@ public class Concurrent extends Archer implements Cloneable {
 	 * @param  cible
 	 */
 	public void setCible(int cible) {
+		Object oldValue = this.targetPosition.getTarget();
+		
 		this.targetPosition.setTarget(cible);
+		
+		pcs.firePropertyChange("cible", oldValue, cible); //$NON-NLS-1$
 	}
 
 	/**
@@ -219,7 +235,11 @@ public class Concurrent extends Archer implements Cloneable {
 	 * @param  position
 	 */
 	public void setPosition(int position) {
+		Object oldValue = this.targetPosition.getPosition();
+		
 		this.targetPosition.setPosition(position);
+		
+		pcs.firePropertyChange("position", oldValue, position); //$NON-NLS-1$
 	}
 
 	/**
@@ -272,6 +292,35 @@ public class Concurrent extends Archer implements Cloneable {
 	 */
 	public void setSurclassement(boolean surclassement) {
 		this.surclassement = surclassement;
+	}
+
+	/**
+	 * Indique si l'archer utilise ou non le blason alternatif
+	 * (par exemple tri-spot) permis par sa categorie
+	 * 
+	 * @return useAlternativeTargetFace true si l'on doit utiliser le
+	 * blason alternatif
+	 */
+	public boolean isUseAlternativeTargetFace() {
+		return alternativeTargetFace != null && !alternativeTargetFace.getName().isEmpty();
+	}
+	
+	/**
+	 * Retourne le blason alternatif de l'archer si permis par sa categorie
+	 * 
+	 * @return le blason alternatif de l'archer
+	 */
+	public Blason getAlternativeTargetFace() {
+		return alternativeTargetFace;
+	}
+
+	/**
+	 * Définit le blason alternatif de l'archer si permis par sa categorie
+	 * 
+	 * @param alternativeTargetFace le blason alternatif de l'archer
+	 */
+	public void setAlternativeTargetFace(Blason alternativeTargetFace) {
+		this.alternativeTargetFace = alternativeTargetFace;
 	}
 
 	/**
@@ -339,11 +388,32 @@ public class Concurrent extends Archer implements Cloneable {
 	 * 
 	 * @param reglement le réglement pour lequel s'applique le jeux de critère
 	 */
-	public void saveCriteriaSet(Reglement reglement) {
+	public void saveCriteriaSet() throws SqlPersistanceException {
 		if(!getNumLicenceArcher().equals("")) { //$NON-NLS-1$
-			criteriaSet.save(reglement);
 			try {
-				String sql = "select * from ARCHERS where NUMLICENCEARCHER=?"; //$NON-NLS-1$
+				
+				String sql = "select NUMREGLEMENT from REGLEMENT where NOMREGLEMENT='" + criteriaSet.getReglement().getName().replace("'", "''") + "'"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+				Statement stmt = ApplicationCore.dbConnection.createStatement();
+				try {
+					ResultSet rs = stmt.executeQuery(sql);
+					try {
+						if(!rs.first())
+							return;
+						
+						int numreglement = rs.getInt(1);
+						
+						if(criteriaSet.getReglement().getNumReglement() != numreglement)
+							criteriaSet.getReglement().setNumReglement(numreglement);
+					} finally {
+						rs.close();
+					}
+				} finally {
+					stmt.close();
+				}
+			
+				criteriaSet.save();
+			
+				sql = "select * from ARCHERS where NUMLICENCEARCHER=?"; //$NON-NLS-1$
 				PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
 				pstmt.setString(1, getNumLicenceArcher());
 				
@@ -358,14 +428,14 @@ public class Concurrent extends Archer implements Cloneable {
 					pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
 					
 					pstmt.setString(1, getNumLicenceArcher());
-					pstmt.setInt(2, reglement.hashCode());
-					pstmt.setInt(3, criteriaSet.hashCode());
+					pstmt.setInt(2, criteriaSet.getReglement().getNumReglement());
+					pstmt.setInt(3, criteriaSet.getNumCriteriaSet());
 	
 					pstmt.executeUpdate();
 					pstmt.close();
 				}
 			} catch (SQLException e) {
-				e.printStackTrace();
+				throw new SqlPersistanceException(e);
 			}
 		}
 	}

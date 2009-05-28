@@ -73,7 +73,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -115,6 +115,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -251,7 +252,8 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			((JMenu) frameCreator.getNamedComponent("mi.debug")).setVisible(true); //$NON-NLS-1$
 		}
 
-		jepHome = (JEditorPane) frameCreator.getNamedComponent("jepHome"); //$NON-NLS-1$
+
+		jepHome = (JEditorPane)((JScrollPane)frameCreator.getNamedComponent("jepHome")).getViewport().getView(); //$NON-NLS-1$
 		jepHome.addHyperlinkListener(this);
 		((DefaultCaret) jepHome.getCaret()).setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
 
@@ -323,7 +325,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	}
 
 	private void showConfigurationDialog() {	
-		ConfigurationDialog configurationDialog = new ConfigurationDialog(this, profile.getLocalisation(), profile);
+		ConfigurationDialog configurationDialog = new ConfigurationDialog(this, profile);
 		Configuration configuration = configurationDialog.showConfigurationDialog(ApplicationCore.getAppConfiguration().clone(), profile.getConfiguration().clone());
 
 		if (configuration != null) {
@@ -411,7 +413,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	 * @param ficheConcours
 	 */
 	private void addFicheConcours(FicheConcours ficheConcours) {
-		FicheConcoursPane jif = new FicheConcoursPane(this, ficheConcours, profile.getLocalisation());
+		FicheConcoursPane jif = new FicheConcoursPane(this, ficheConcours);
 
 		DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM);
 		// ajoute la fiche à l'espace de travail et l'affiche
@@ -510,13 +512,13 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 				jif.openParametreDialog();
 
 		} else if (cmd.equals("menubar.edition.reglement")) { //$NON-NLS-1$
-			ReglementManagerDialog reglementManagerDialog = new ReglementManagerDialog(this, profile.getLocalisation());
+			ReglementManagerDialog reglementManagerDialog = new ReglementManagerDialog(this, profile);
 			reglementManagerDialog.showReglementManagerDialog(false);
 		} else if (cmd.equals("menubar.tools.disableplugins")) { //$NON-NLS-1$
 			DisablePluginDialog disablePluginDialog = new DisablePluginDialog(this, profile.getLocalisation());
 			disablePluginDialog.showDisablePluginDialog();
 		} else if (cmd.equals("menubar.tools.installplugins")) { //$NON-NLS-1$
-			InstallPluginDialog installPluginDialog = new InstallPluginDialog(this, profile.getLocalisation());
+			InstallPluginDialog installPluginDialog = new InstallPluginDialog(this, profile);
 			installPluginDialog.showInstallPluginDialog();
 		} else if (cmd.equals("menubar.tools.configuration")) { //$NON-NLS-1$
 			showConfigurationDialog();
@@ -755,7 +757,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 					this.jepHome.setEnabled(false);
 					Thread.yield();
 					
-					ParametreDialog parametreDialog = new ParametreDialog(this, profile, null, profile.getLocalisation());
+					ParametreDialog parametreDialog = new ParametreDialog(this, profile, null);
 					parametreDialog.showParametreDialog(parametre);
 					if(parametre.isReglementLock()) {
 						SwingUtilities.invokeLater(new Runnable() {

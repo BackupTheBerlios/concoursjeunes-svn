@@ -73,7 +73,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -96,6 +96,7 @@ import javax.swing.text.PlainDocument;
 
 import org.concoursjeunes.event.AutoCompleteDocumentEvent;
 import org.concoursjeunes.event.AutoCompleteDocumentListener;
+import org.concoursjeunes.manager.ConcurrentManager;
 
 /**
  * Réalise la saisi semi automatique d'un concurrent en fonction de
@@ -137,13 +138,6 @@ public class AutoCompleteDocument extends PlainDocument {
 	}
 	
 	private AutoCompleteDocumentContext context;
-	/*private static Concurrent concurrent;
-	private final Reglement reglement;
-	private static Entite entite;
-	private static boolean autocompleteNom = true;
-	private static boolean autocompleteLicence = true;
-	private static boolean autocompleteClub = true;
-	private static boolean autocompleteAgrement = true;*/
 	
 	private final JTextField textField;
 	private final EventListenerList listeners = new EventListenerList();
@@ -304,7 +298,7 @@ public class AutoCompleteDocument extends PlainDocument {
 	 * @throws BadLocationException
 	 */
 	private void insertConcurrentWithName(int caretpos, boolean strict) throws BadLocationException {
-		if(!context.isAutocompleteNom() || context.getReglement() == null)
+		if(!context.isAutocompleteNom())
 			return;
 		
 		String searchString = getText(0, getLength());
@@ -356,7 +350,7 @@ public class AutoCompleteDocument extends PlainDocument {
 	 * @throws BadLocationException
 	 */
 	private void insertConcurrentWithFirstName(int caretpos, boolean strict) throws BadLocationException {
-		if(!context.isAutocompleteNom() || context.getReglement() == null)
+		if(!context.isAutocompleteNom())
 			return;
 		
 		String searchString = getText(0, getLength());
@@ -409,8 +403,6 @@ public class AutoCompleteDocument extends PlainDocument {
 	 * @throws BadLocationException
 	 */
 	private void insertConcurrentWithNumLicence(int caretpos, boolean strict) throws BadLocationException {
-		if(context.getReglement() == null)
-			return;
 		if(!strict)
 			strict = !context.isAutocompleteLicence();
 		

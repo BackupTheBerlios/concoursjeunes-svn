@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -89,16 +89,24 @@
 package org.concoursjeunes.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
+import javax.script.ScriptException;
 import javax.swing.AbstractButton;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
@@ -108,17 +116,18 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.RowFilter;
+import javax.swing.SortOrder;
 import javax.swing.RowSorter.SortKey;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableRowSorter;
 
 import org.ajdeveloppement.apps.AppUtilities;
 import org.ajdeveloppement.apps.Localisable;
 import org.ajdeveloppement.commons.ui.NumberDocument;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.ConcurrentList;
 import org.concoursjeunes.Criterion;
@@ -129,14 +138,16 @@ import org.concoursjeunes.event.FicheConcoursListener;
 import org.concoursjeunes.state.State;
 import org.concoursjeunes.state.StateManager;
 import org.concoursjeunes.state.StateSelector;
+import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.JXSplitButton;
+import org.jdesktop.swingx.error.ErrorInfo;
 
 /**
  * @author Aurélien JEOFFRAY
  *
  */
 public class GreffePane extends JPanel implements 
-		FicheConcoursListener, CaretListener, ItemListener, TableModelListener, MouseListener, ActionListener {
+		FicheConcoursListener, CaretListener, ItemListener, MouseListener, ActionListener {
 
 	private JTable jtConcurrents = new JTable() {
 		//  Returning the Class of each column will allow different
@@ -146,24 +157,23 @@ public class GreffePane extends JPanel implements
 			return getValueAt(0, column).getClass();
 		}
 	};
-	private TableRowSorter<DefaultTableModel> sorter;
+	private TableRowSorter<GreffeConcurrentTableModel> sorter;
 	
 	@Localisable("greffepane.start")
 	private JLabel jlDepart = new JLabel();
 	@Localisable("greffepane.name")
 	private JLabel jlNom = new JLabel();
-	@Localisable("greffepane.firstname")
-	private JLabel jlPrenom = new JLabel();
 	@Localisable("greffepane.club")
 	private JLabel jlClub = new JLabel();
 	@Localisable("greffepane.licence")
 	private JLabel jlLicence = new JLabel();
 	private JTextField jtfDepart = new JTextField(new NumberDocument(false, false), "", 2); //$NON-NLS-1$
 	private JTextField jtfNom = new JTextField(10);
-	private JTextField jtfPrenom = new JTextField(10);
 	private JTextField jtfClub = new JTextField(10);
 	private JTextField jtfLicence = new JTextField(7);
 	private JComboBox jcbPayee = new JComboBox();
+	@Localisable(value="",tooltip="greffepane.erasefilter")
+	private JButton jbResetFilter = new JButton();
 	@StateSelector(name="200-listgreffe")
 	@Localisable("greffepane.print")
 	private JXSplitButton jbImpression = new JXSplitButton();
@@ -178,15 +188,20 @@ public class GreffePane extends JPanel implements
 	private JMenuItem jmiPrintTarget = new JMenuItem();
 	
 	private FicheConcoursPane ficheConcoursPane;
-	private Concurrent[] concurrents;
+	private GreffeConcurrentTableModel gctm = new GreffeConcurrentTableModel();
 	private StateManager stateManager;
 	
 	public GreffePane(FicheConcoursPane ficheConcoursPane) {
 		this.ficheConcoursPane = ficheConcoursPane;
 		ficheConcoursPane.getFicheConcours().addFicheConcoursListener(this);
 		
-		//charge le gestionnaire d'etat
-		stateManager = new StateManager();
+		try {
+			//charge le gestionnaire d'etat
+			stateManager = new StateManager();
+		} catch (ScriptException e) {
+			JXErrorPane.showDialog(ficheConcoursPane.getParentframe(), new ErrorInfo(ficheConcoursPane.getParentframe().profile.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+					null, null, e, Level.SEVERE, null));
+		}
 		
 		init();
 		affectLibelle();
@@ -199,13 +214,16 @@ public class GreffePane extends JPanel implements
 		
 		jtfDepart.addCaretListener(this);
 		jtfNom.addCaretListener(this);
-		jtfPrenom.addCaretListener(this);
 		jtfClub.addCaretListener(this);
 		jtfLicence.addCaretListener(this);
 		jcbPayee.addItem(ficheConcoursPane.getLocalisation().getResourceString("greffepane.paid.all")); //$NON-NLS-1$
 		jcbPayee.addItem(ficheConcoursPane.getLocalisation().getResourceString("greffepane.paid.true")); //$NON-NLS-1$
 		jcbPayee.addItem(ficheConcoursPane.getLocalisation().getResourceString("greffepane.paid.false")); //$NON-NLS-1$
 		jcbPayee.addItemListener(this);
+		jbResetFilter.addActionListener(this);
+		jbResetFilter.setIcon(new ImageIcon(ApplicationCore.staticParameters.getResourceString("path.ressources") //$NON-NLS-1$
+				+ File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.clear"))); //$NON-NLS-1$
+		jbResetFilter.setMargin(new Insets(1, 1, 1, 1));
 		jtConcurrents.addMouseListener(this);
 		jbImpression.addActionListener(this);
 		jbImpression.setName("jbImpression"); //$NON-NLS-1$
@@ -226,16 +244,13 @@ public class GreffePane extends JPanel implements
 		jpFiltre.add(jtfDepart);
 		jpFiltre.add(jlNom);
 		jpFiltre.add(jtfNom);
-		jpFiltre.add(jlPrenom);
-		jpFiltre.add(jtfPrenom);
 		jpFiltre.add(jlClub);
 		jpFiltre.add(jtfClub);
 		jpFiltre.add(jlLicence);
 		jpFiltre.add(jtfLicence);
 		jpFiltre.add(jcbPayee);
+		jpFiltre.add(jbResetFilter);
 		jpFiltre.add(jbImpression);
-		
-		//jtConcurrents.getColumnModel().getColumn(4).setPreferredWidth(200);
 		
 		setLayout(new BorderLayout());
 		add(jpFiltre, BorderLayout.NORTH);
@@ -247,35 +262,11 @@ public class GreffePane extends JPanel implements
 	}
 	
 	private void completePanel() {
-		DefaultTableModel dtm = createTableModel();
-		
 		if(ficheConcoursPane != null) {
 			ConcurrentList concurrentList = ficheConcoursPane.getFicheConcours().getConcurrentList();
 			
-			concurrents = concurrentList.list(-1);
-			
-			for(Concurrent concurrent : concurrents) {
-				String categorie = ""; //$NON-NLS-1$
-				for (Criterion key : ficheConcoursPane.getFicheConcours().getParametre().getReglement().getListCriteria()) {
-					CriterionElement criterionElement = concurrent.getCriteriaSet().getCriterionElement(key);
-					if (criterionElement != null)
-						categorie += criterionElement.getCode();
-				}
-				
-				Object[] row = new Object[] {
-						concurrent.getDepart() + 1,
-						concurrent.getNomArcher(),
-						concurrent.getPrenomArcher(),
-						concurrent.getClub().getVille(),
-						concurrent.getNumLicenceArcher(),
-						categorie,
-						new TargetPosition(concurrent.getCible(), concurrent.getPosition()).toString(),
-						concurrent.getInscription() == Concurrent.PAYEE,
-						concurrent.isCertificat(),
-						concurrent.isPresence()
-				};
-				
-				dtm.addRow(row);
+			for(Concurrent concurrent : concurrentList.list(-1)) {
+				gctm.addConcurrent(concurrent);
 			}
 		}
 		
@@ -284,74 +275,61 @@ public class GreffePane extends JPanel implements
 			sortKeys = sorter.getSortKeys();
 		}
 		
-		sorter = new TableRowSorter<DefaultTableModel>(dtm);
+		sorter = new TableRowSorter<GreffeConcurrentTableModel>(gctm);
 		if(sortKeys != null)
 			sorter.setSortKeys(sortKeys);
-		jtConcurrents.setModel(dtm);
+		else {
+			List<SortKey> dSortKeys = new ArrayList<SortKey>();
+			dSortKeys.add(new SortKey(1, SortOrder.ASCENDING));
+
+			sorter.setSortKeys(dSortKeys);
+		}
+		jtConcurrents.setModel(gctm);
+		jtConcurrents.setTableHeader(new JTableHeader(jtConcurrents.getColumnModel()) {
+            @Override
+			public String getToolTipText(MouseEvent e) {
+                int index = columnModel.getColumnIndexAtX(e.getPoint().x);
+                int realIndex = columnModel.getColumn(index).getModelIndex();
+                return jtConcurrents.getColumnName(realIndex);
+            }
+        });
 		jtConcurrents.setRowSorter(sorter);
 		jtConcurrents.getColumnModel().getColumn(0).setMaxWidth(40);
 		//jtConcurrents.getColumnModel().getColumn(1).setPreferredWidth(400);
 		//jtConcurrents.getColumnModel().getColumn(2).setPreferredWidth(400);
-		jtConcurrents.getColumnModel().getColumn(4).setMaxWidth(100);
-		jtConcurrents.getColumnModel().getColumn(5).setMaxWidth(70);
-		jtConcurrents.getColumnModel().getColumn(6).setMaxWidth(40);
-		jtConcurrents.getColumnModel().getColumn(7).setMaxWidth(40);
-		jtConcurrents.getColumnModel().getColumn(8).setMaxWidth(70);
-		jtConcurrents.getColumnModel().getColumn(9).setMaxWidth(70);
+		jtConcurrents.getColumnModel().getColumn(3).setMaxWidth(100);
+		jtConcurrents.getColumnModel().getColumn(4).setMaxWidth(70);
+		jtConcurrents.getColumnModel().getColumn(5).setMaxWidth(50);
+		jtConcurrents.getColumnModel().getColumn(6).setMaxWidth(50);
+		jtConcurrents.getColumnModel().getColumn(7).setMaxWidth(80);
+		jtConcurrents.getColumnModel().getColumn(8).setMaxWidth(80);
 		
 		updateTableFilter();
 	}
 	
-	private DefaultTableModel createTableModel() {
-		DefaultTableModel dtm = new DefaultTableModel() {
-			@Override
-			public boolean isCellEditable(int row, int col) {
-				if(col > 5)
-					return true;
-				return false;
-			}
-		};
-		
-		dtm.addColumn(ficheConcoursPane.getLocalisation().getResourceString("greffepane.start")); //$NON-NLS-1$
-		dtm.addColumn(ficheConcoursPane.getLocalisation().getResourceString("greffepane.name")); //$NON-NLS-1$
-		dtm.addColumn(ficheConcoursPane.getLocalisation().getResourceString("greffepane.firstname")); //$NON-NLS-1$
-		dtm.addColumn(ficheConcoursPane.getLocalisation().getResourceString("greffepane.club")); //$NON-NLS-1$
-		dtm.addColumn(ficheConcoursPane.getLocalisation().getResourceString("greffepane.licence")); //$NON-NLS-1$
-		dtm.addColumn(ficheConcoursPane.getLocalisation().getResourceString("greffepane.category")); //$NON-NLS-1$
-		dtm.addColumn(ficheConcoursPane.getLocalisation().getResourceString("greffepane.target")); //$NON-NLS-1$
-		dtm.addColumn(ficheConcoursPane.getLocalisation().getResourceString("greffepane.paid")); //$NON-NLS-1$
-		dtm.addColumn(ficheConcoursPane.getLocalisation().getResourceString("greffepane.medic")); //$NON-NLS-1$
-		dtm.addColumn(ficheConcoursPane.getLocalisation().getResourceString("greffepane.presence")); //$NON-NLS-1$
-		
-		dtm.addTableModelListener(this);
-		
-		return dtm;
-	}
-	
 	private void updateTableFilter() {
 		if(jtConcurrents.getModel().getRowCount() > 0) {
-			List<RowFilter<DefaultTableModel, Integer>> filters = new ArrayList<RowFilter<DefaultTableModel, Integer>>();
+			List<RowFilter<GreffeConcurrentTableModel, Integer>> filters = new ArrayList<RowFilter<GreffeConcurrentTableModel, Integer>>();
 			
-			filters.add(RowFilter.<DefaultTableModel, Integer>regexFilter("(?i)" + jtfDepart.getText(), 0)); //$NON-NLS-1$
-			filters.add(RowFilter.<DefaultTableModel, Integer>regexFilter("^(?i)" + jtfNom.getText().replace("*", ".*"), 1)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			filters.add(RowFilter.<DefaultTableModel, Integer>regexFilter("^(?i)" + jtfPrenom.getText().replace("*", ".*"), 2)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			filters.add(RowFilter.<DefaultTableModel, Integer>regexFilter("^(?i)" + jtfClub.getText().replace("*", ".*"), 3)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			filters.add(RowFilter.<DefaultTableModel, Integer>regexFilter("^(?i)" + jtfLicence.getText().replace("*", ".*"), 4)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			filters.add(new RowFilter<DefaultTableModel, Integer>() {
+			filters.add(RowFilter.<GreffeConcurrentTableModel, Integer>regexFilter("(?i)" + jtfDepart.getText(), 0)); //$NON-NLS-1$
+			filters.add(RowFilter.<GreffeConcurrentTableModel, Integer>regexFilter("^(?i)" + jtfNom.getText().replace("*", ".*"), 1)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			filters.add(RowFilter.<GreffeConcurrentTableModel, Integer>regexFilter("^(?i)" + jtfClub.getText().replace("*", ".*"), 2)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			filters.add(RowFilter.<GreffeConcurrentTableModel, Integer>regexFilter("^(?i)" + jtfLicence.getText().replace("*", ".*"), 3)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			filters.add(new RowFilter<GreffeConcurrentTableModel, Integer>() {
 				@Override
 				public boolean include(
-						javax.swing.RowFilter.Entry<? extends DefaultTableModel, ? extends Integer> entry) {
-					DefaultTableModel model = entry.getModel();
+						javax.swing.RowFilter.Entry<? extends GreffeConcurrentTableModel, ? extends Integer> entry) {
+					GreffeConcurrentTableModel model = entry.getModel();
 					if(jcbPayee.getSelectedIndex() == 0
-							|| (jcbPayee.getSelectedIndex() == 1 && (Boolean)model.getValueAt(entry.getIdentifier(), 7))
-							|| (jcbPayee.getSelectedIndex() == 2 && !(Boolean)model.getValueAt(entry.getIdentifier(), 7)))
+							|| (jcbPayee.getSelectedIndex() == 1 && (Boolean)model.getValueAt(entry.getIdentifier(), 6))
+							|| (jcbPayee.getSelectedIndex() == 2 && !(Boolean)model.getValueAt(entry.getIdentifier(), 6)))
 						return true;
 					return false;
 				}
 				
 			});
 			
-			sorter.setRowFilter(RowFilter.<DefaultTableModel, Integer>andFilter((Iterable<RowFilter<DefaultTableModel, Integer>>)filters));
+			sorter.setRowFilter(RowFilter.<GreffeConcurrentTableModel, Integer>andFilter((Iterable<RowFilter<GreffeConcurrentTableModel, Integer>>)filters));
 			//jtConcurrents.setRowSorter(sorter);
 		}
 	}
@@ -361,7 +339,10 @@ public class GreffePane extends JPanel implements
 	 */
 	@Override
 	public void listConcurrentChanged(FicheConcoursEvent e) {
-		completePanel();
+		if(e.getEvent() == FicheConcoursEvent.ADD_CONCURRENT)
+			gctm.addConcurrent(e.getConcurrent());
+		else if(e.getEvent() == FicheConcoursEvent.REMOVE_CONCURRENT)
+			gctm.removeConcurrent(e.getConcurrent());
 	}
 
 	/* (non-Javadoc)
@@ -369,7 +350,6 @@ public class GreffePane extends JPanel implements
 	 */
 	@Override
 	public void pasDeTirChanged(FicheConcoursEvent e) {
-		completePanel();
 	}
 
 	/* (non-Javadoc)
@@ -381,30 +361,15 @@ public class GreffePane extends JPanel implements
 	}
 
 	/* (non-Javadoc)
-	 * @see javax.swing.event.TableModelListener#tableChanged(javax.swing.event.TableModelEvent)
-	 */
-	@Override
-	public void tableChanged(TableModelEvent e) {
-		if(e.getType() != TableModelEvent.UPDATE)
-			return;
-		
-		int changedRow = e.getFirstRow();
-		DefaultTableModel model = (DefaultTableModel)jtConcurrents.getModel();
-		if(changedRow > -1 && model.getRowCount() > 0 && concurrents.length > 0 && changedRow < model.getRowCount() && changedRow < concurrents.length) {
-			concurrents[changedRow].setCertificat((Boolean)jtConcurrents.getModel().getValueAt(changedRow, 8));
-			concurrents[changedRow].setInscription((Boolean)jtConcurrents.getModel().getValueAt(changedRow, 7) ? Concurrent.PAYEE : Concurrent.RESERVEE);
-			concurrents[changedRow].setPresence((Boolean)jtConcurrents.getModel().getValueAt(changedRow, 9));
-		}
-	}
-
-	/* (non-Javadoc)
 	 * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
 	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (e.getClickCount() == 2) {
-			ficheConcoursPane.openConcurrentDialog(concurrents[jtConcurrents.convertRowIndexToModel(jtConcurrents.getSelectedRow())]);
-			completePanel();
+			List<Concurrent> filteredList = new ArrayList<Concurrent>();
+			for(int i = 0; i < jtConcurrents.getRowCount(); i++)
+				filteredList.add(gctm.getConcurrentAt(jtConcurrents.convertRowIndexToModel(i)));
+			ficheConcoursPane.openConcurrentDialog(gctm.getConcurrentAt(jtConcurrents.convertRowIndexToModel(jtConcurrents.getSelectedRow())), filteredList);
 		}
 	}
 
@@ -444,21 +409,164 @@ public class GreffePane extends JPanel implements
 		Object source = e.getSource();
 		if(source == jbImpression || source == jmiPrintAlpha || source == jmiPrintGreffe || source == jmiPrintTarget) {
 			ficheConcoursPane.switchToEditPane();
-			try {
-				String stateName = this.getClass().getDeclaredField(((AbstractButton)source).getName()).getAnnotation(StateSelector.class).name();
-				State state = stateManager.getState(stateName);
-				if(state != null)
-					ficheConcoursPane.prepareState(state);
-			} catch (SecurityException ex) {
-				ex.printStackTrace();
-			} catch (NoSuchFieldException ex) {
-				ex.printStackTrace();
+			if(stateManager != null) {
+				try {
+					String stateName = this.getClass().getDeclaredField(((AbstractButton)source).getName()).getAnnotation(StateSelector.class).name();
+					State state = stateManager.getState(stateName);
+					if(state != null)
+						ficheConcoursPane.prepareState(state);
+				} catch (SecurityException ex) {
+					ex.printStackTrace();
+				} catch (NoSuchFieldException ex) {
+					ex.printStackTrace();
+				}
 			}
+		} else if(source == jbResetFilter) {
+			jtfDepart.setText(""); //$NON-NLS-1$
+			jtfNom.setText(""); //$NON-NLS-1$
+			jtfClub.setText(""); //$NON-NLS-1$
+			jtfLicence.setText(""); //$NON-NLS-1$
+			jcbPayee.setSelectedIndex(0);
 		}
 	}
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		updateTableFilter();
+	}
+	
+	private class GreffeConcurrentTableModel extends AbstractTableModel implements PropertyChangeListener {
+		
+		private List<Concurrent> concurrents = new ArrayList<Concurrent>();
+		
+		public void addConcurrent(Concurrent concurrent) {
+			concurrents.add(concurrent);
+			
+			concurrent.addPropertyChangeListener(this);
+			
+			fireTableRowsInserted(concurrents.size()-1, concurrents.size()-1);
+		}
+		
+		public void removeConcurrent(Concurrent concurrent) {
+			int index = concurrents.indexOf(concurrent);
+			if(index != -1) {
+				concurrents.remove(concurrent);
+				
+				concurrent.removePropertyChangeListener(this);
+				
+				fireTableRowsDeleted(index, index);
+			}
+		}
+		
+		public List<Concurrent> getConcurrents() {
+			return concurrents;
+		}
+		
+		public Concurrent getConcurrentAt(int row) {
+			return concurrents.get(row);
+		}
+
+		@Override
+		public boolean isCellEditable(int row, int col) {
+			if(col > 5)
+				return true;
+			return false;
+		}
+		
+		@Override
+		public int getColumnCount() {
+			return 9;
+		}
+		
+		@SuppressWarnings("nls")
+		@Override
+		public String getColumnName(int column) {
+			switch (column) {
+				case 0:
+					return ficheConcoursPane.getLocalisation().getResourceString("greffepane.start");
+				case 1:
+					return ficheConcoursPane.getLocalisation().getResourceString("greffepane.name");
+				case 2:
+					return ficheConcoursPane.getLocalisation().getResourceString("greffepane.club");
+				case 3:
+					return ficheConcoursPane.getLocalisation().getResourceString("greffepane.licence");
+				case 4:
+					return ficheConcoursPane.getLocalisation().getResourceString("greffepane.category");
+				case 5:
+					return ficheConcoursPane.getLocalisation().getResourceString("greffepane.target");
+				case 6:
+					return ficheConcoursPane.getLocalisation().getResourceString("greffepane.paid");
+				case 7:
+					return ficheConcoursPane.getLocalisation().getResourceString("greffepane.medic");
+				case 8:
+					return ficheConcoursPane.getLocalisation().getResourceString("greffepane.presence");
+			}
+			return "";
+		}
+
+		@Override
+		public int getRowCount() {
+			return concurrents.size();
+		}
+
+		@Override
+		public Object getValueAt(int rowIndex, int columnIndex) {
+
+			Concurrent concurrent = concurrents.get(rowIndex);
+			
+			switch (columnIndex) {
+				case 0:
+					return concurrent.getDepart() + 1;
+				case 1:
+					return concurrent.getID();
+				case 2:
+					return concurrent.getClub().getVille();
+				case 3:
+					return concurrent.getNumLicenceArcher();
+				case 4:
+					String categorie = ""; //$NON-NLS-1$
+					for (Criterion key : ficheConcoursPane.getFicheConcours().getParametre().getReglement().getListCriteria()) {
+						CriterionElement criterionElement = concurrent.getCriteriaSet().getCriterionElement(key);
+						if (criterionElement != null)
+							categorie += criterionElement.getCode();
+					}
+					return categorie;
+				case 5:
+					return new TargetPosition(concurrent.getCible(), concurrent.getPosition()).toString();
+				case 6:
+					return concurrent.getInscription() == Concurrent.PAYEE;
+				case 7:
+					return concurrent.isCertificat();
+				case 8:
+					return concurrent.isPresence();
+			}
+			return null;
+		}
+		
+		@Override
+		public void setValueAt(Object value, int rowIndex, int columnIndex) {
+			Concurrent concurrent = concurrents.get(rowIndex);
+			
+			switch (columnIndex) {
+				case 6:
+					concurrent.setInscription(((Boolean)value).booleanValue() ? Concurrent.PAYEE : Concurrent.RESERVEE);
+					break;
+				case 7:
+					concurrent.setCertificat((Boolean)value);
+					break;
+				case 8:
+					concurrent.setPresence((Boolean)value);
+					break;
+			}
+			
+			fireTableRowsUpdated(rowIndex, rowIndex);
+		}
+
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			int index = concurrents.indexOf(evt.getSource());
+			
+			fireTableRowsUpdated(index, index);
+		}
 	}
 }

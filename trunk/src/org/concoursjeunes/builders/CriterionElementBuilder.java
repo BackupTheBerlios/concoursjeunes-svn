@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -111,7 +111,7 @@ public class CriterionElementBuilder {
 	 * 
 	 * @return l'élément de critère construit
 	 */
-	public static CriterionElement getCriterionElement(String codeElement, Criterion criterion, int hashReglement) {
+	public static CriterionElement getCriterionElement(String codeElement, Criterion criterion) {
 		try {
 			String sql = "select * from CRITEREELEMENT where CODECRITEREELEMENT=?" + //$NON-NLS-1$
 					" and CODECRITERE=? and NUMREGLEMENT=?"; //$NON-NLS-1$
@@ -120,12 +120,13 @@ public class CriterionElementBuilder {
 
 			pstmt.setString(1, codeElement);
 			pstmt.setString(2, criterion.getCode());
-			pstmt.setInt(3, hashReglement);
+			pstmt.setInt(3, criterion.getReglement().getNumReglement());
 	
 			ResultSet rs = pstmt.executeQuery();
 			
 			if(rs.first()) {
 				CriterionElement criterionElement = new CriterionElement();
+				criterionElement.setCriterion(criterion);
 				criterionElement.setCode(codeElement);
 				criterionElement.setLibelle(rs.getString("LIBELLECRITEREELEMENT")); //$NON-NLS-1$
 				criterionElement.setActive(rs.getBoolean("ACTIF")); //$NON-NLS-1$
@@ -137,5 +138,24 @@ public class CriterionElementBuilder {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	/**
+	 * Construit un element de critère avec l'ensemble des éléments fournit en paramètre.
+	 * 
+	 * @param codeElement le code de l'élément
+	 * @param libelle le libellé de lélément
+	 * @param active element actif ou non
+	 * @param numordre numero d'ordre de l'element
+	 * 
+	 * @return l'element de critére fabriqué
+	 */
+	public static CriterionElement getCriterionElement(String codeElement, String libelle, boolean active, int numordre) {
+		CriterionElement element = new CriterionElement(codeElement);
+		element.setLibelle(libelle);
+		element.setActive(active);
+		element.setNumordre(numordre);
+		
+		return element;
 	}
 }

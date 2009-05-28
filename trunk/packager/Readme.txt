@@ -11,18 +11,23 @@ disponible sur le CD d'instalation ou telecharageable sur
 http://www.java.com.
 
 ConcoursJeunes fonctionne sous toutes les plateformes
-compatible jse 6.0 tel que MS Windows, GNU/Linux, Solaris.
-A ce jour, Mac OS X ne supporte pas encore cette version se
-repporter à la version 1.1 de ConcoursJeunes pour se système.
+compatible jse 6.0 tel que MS Windows, GNU/Linux, Solaris, Mac OS X.
+Sous Mac OS X, seul les systèmes 10.5.2 et ultérieur dans leurs versions
+x86_64 sont supportés.
 
-ConcoursJeunes est distribué sous double licence Open Source
-CeCILL et GPL
+ConcoursJeunes est distribué sous licence Open Source CeCILL.
+Certaines ressources tel que les images (voir le fichier ressources/image-licence.txt pour
+plus d'information) peuvent être soumis à une licence différente.
+
+La documentation utilisateur est soumise à la licence CC-BY-NC-ND
+(Paternité-Pas d'Utilisation Commerciale-Pas de Modification)
 
 Ce Logiciel inclut les Librairies
 -iText (http://www.lowagie.com/iText/) - Licence MPL et LGPL
 -H2 Database (http://www.h2database.com) - Licensed under the H2 License, Version 1.0 (http://h2database.com/html/license.html)
 -SwingX (https://swingx.dev.java.net/) - Licence LGPL
--AJPackage (Librairie personnel libre d'usage source non diffusé à ce jour)
+-AjCommons (http://www.ajdeveloppement.org) - Licence CeCILL-C
+-AjCommons-ext (http://www.ajdeveloppement.org) - Licence GPL V2 with Sun "Classpath" exception
 
 Historique:
 - Mai 2002 Sortie de la version 0.1
@@ -30,3 +35,4 @@ Historique:
 - Avril 2006 Ouverture du site internet
 - Eté 2006 Sortie de la version 1.1
 - Octobre 2007 Sortie de la version 2.0
+- Octobre 2008 Sortie de la version 2.1

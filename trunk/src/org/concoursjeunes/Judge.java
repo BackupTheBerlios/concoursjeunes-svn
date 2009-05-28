@@ -1,7 +1,7 @@
 /*
- * Créer le 01 fev. 08 pour ConcoursJeunes
+ * Créer le 8 mai 2009 à 17:48:51 pour ConcoursJeunes
  *
- * Copyright 2002-2008 - Aurélien JEOFFRAY
+ * Copyright 2002-2009 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
  *
@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -88,70 +88,37 @@
  */
 package org.concoursjeunes;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import org.concoursjeunes.builders.BlasonBuilder;
-
 /**
- * Gére la construction des blasons à partir des données trouvé en base
- * 
  * @author Aurélien JEOFFRAY
  *
  */
-public class BlasonManager {
+public class Judge extends Archer {
+	private boolean responsable = false;
 	
-	/**
-	 * Retourne le blason associé à une ligne distance/blason d'un réglement donnée
-	 * 
-	 * @param numdistanceblason le numero de l'objet distanceEtBlason dont le blason fait partie
-	 * @param numreglement le numrero de reglement
-	 * @return le blason associé à la ligne d/b du réglement donnée
-	 */
-	public static Blason findBlasonAssociateToDistancesEtBlason(int numdistanceblason, int numreglement) {
-		try {
-			String sql = "select BLASONS.* from DISTANCESBLASONS,BLASONS " //$NON-NLS-1$
-				+ "where DISTANCESBLASONS.NUMBLASON=BLASONS.NUMBLASON AND NUMDISTANCESBLASONS=? and NUMREGLEMENT=? order by NUMORDRE DESC"; //$NON-NLS-1$
-			
-			PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
-			
-			pstmt.setInt(1, numdistanceblason);
-			pstmt.setInt(2, numreglement);
-			
-			ResultSet rs = pstmt.executeQuery();
-			
-			if(rs.first()) {		
-				return BlasonBuilder.getBlason(rs);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	public Judge() {
 		
-		return null;
 	}
 	
+	public Judge(Archer archer) {
+		setNomArcher(archer.getNomArcher());
+		setPrenomArcher(archer.getPrenomArcher());
+		setNumLicenceArcher(archer.getNumLicenceArcher());
+		setClub(archer.getClub());
+		setCertificat(archer.isCertificat());
+		setHandicape(archer.isHandicape());
+	}
+
 	/**
-	 * Recherche dans la base le blason correspondant au nom donnée en parametre
-	 * 
-	 * @param name le nom du blason à trouver
-	 * 
-	 * @return l'objet Blason trouvé ou null si inexistant
-	 * @throws SQLException
+	 * @return responsable
 	 */
-	public static Blason findBlasonByName(String name) throws SQLException {
-		Blason blason = null;
-		
-		String sql = "select * from BLASONS where NOMBLASON=?"; //$NON-NLS-1$
-		PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
-		
-		pstmt.setString(1, name);
-		
-		ResultSet rs = pstmt.executeQuery();
-		if(rs.first()) {
-			blason = BlasonBuilder.getBlason(rs);
-		}
-		
-		return blason;
+	public boolean isResponsable() {
+		return responsable;
+	}
+
+	/**
+	 * @param responsable responsable à définir
+	 */
+	public void setResponsable(boolean responsable) {
+		this.responsable = responsable;
 	}
 }

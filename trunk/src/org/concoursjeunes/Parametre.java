@@ -73,7 +73,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -113,6 +113,7 @@ public class Parametre extends DefaultParameters {
 	private boolean duel			= false;
 	private String typeEquipe		= ""; //$NON-NLS-1$
 	private List<String> arbitres	= new ArrayList<String>();
+	private List<Judge> judges		= new ArrayList<Judge>();
 	private Reglement reglement		= new Reglement();
 
 	private String saveName         = System.currentTimeMillis()
@@ -301,6 +302,7 @@ public class Parametre extends DefaultParameters {
 	 * 
 	 * @return la liste des arbitres
 	 */
+	@Deprecated
 	public List<String> getArbitres() {
 		return arbitres;
 	}
@@ -310,10 +312,25 @@ public class Parametre extends DefaultParameters {
 	 * 
 	 * @param vArbitres
 	 */
+	@Deprecated
 	public void setArbitres(List<String> vArbitres) {
-		List<String> oldValue = this.arbitres;
 		this.arbitres = vArbitres;
-		pcs.firePropertyChange("arbitres", oldValue, dateDebutConcours); //$NON-NLS-1$
+	}
+
+	/**
+	 * @return judges
+	 */
+	public List<Judge> getJudges() {
+		return judges;
+	}
+
+	/**
+	 * @param judges judges à définir
+	 */
+	public void setJudges(List<Judge> judges) {
+		List<Judge> oldValue = this.judges;
+		this.judges = judges;
+		pcs.firePropertyChange("arbitres", oldValue, judges); //$NON-NLS-1$
 	}
 
 	/* (non-Javadoc)

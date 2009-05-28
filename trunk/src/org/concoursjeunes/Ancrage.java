@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -88,8 +88,21 @@
  */
 package org.concoursjeunes;
 
+import java.sql.SQLException;
+import java.util.Collections;
+
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlTransient;
+
+import org.ajdeveloppement.commons.sql.SqlField;
+import org.ajdeveloppement.commons.sql.SqlForeignFields;
+import org.ajdeveloppement.commons.sql.SqlPersistance;
+import org.ajdeveloppement.commons.sql.SqlPersistanceException;
+import org.ajdeveloppement.commons.sql.SqlPrimaryKey;
+import org.ajdeveloppement.commons.sql.SqlStoreHelper;
+import org.ajdeveloppement.commons.sql.SqlTable;
 
 
 /**
@@ -99,7 +112,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Ancrage {
+@SqlTable(name="ANCRAGES_BLASONS")
+@SqlPrimaryKey(fields={"NUMBLASON","EMPLACEMENT"})
+@SqlForeignFields(fields={"NUMBLASON"})
+public class Ancrage implements SqlPersistance {
 	public static final int POSITION_A = 0;
 	public static final int POSITION_B = 1;
 	public static final int POSITION_C = 2;
@@ -108,16 +124,92 @@ public class Ancrage {
 	public static final int POSITION_AC = 5;
 	public static final int POSITION_BD = 6;
 	
+	@SqlField(name="EMPLACEMENT")
+	private int emplacement = POSITION_A;
+	
+	@SqlField(name="ANCRAGEX")
 	private double x = 0;
+	@SqlField(name="ANCRAGEY")
 	private double y = 0;
+	
+	@XmlTransient
+	private Blason blason;
+	
+	private static SqlStoreHelper<Ancrage> helper = null;
+	static {
+		try {
+			helper = new SqlStoreHelper<Ancrage>(ApplicationCore.dbConnection, Ancrage.class);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	public Ancrage() {
 		
 	}
 	
+	/**
+	 * Initialise un nouveau point d'ancrage avec les coordonnées
+	 * relative transmis en paramètre.
+	 * 
+	 * @param x valeur entre 0.0 et 1.0 correspondant à la position relative du blason sur l'axe x
+	 * @param y valeur entre 0.0 et 1.0 correspondant à la position relative du blason sur l'axe y
+	 */
 	public Ancrage(double x, double y) {
 		this.x = x;
 		this.y = y;
+	}
+	
+	/**
+	 * Initialise un nouveau point d'ancrage avec les coordonnées
+	 * relative transmis en paramètre et correspondant à une position d'archer déterminé
+	 * 
+	 * @param la position d'archer correpondant au présent ancrage
+	 * @param x valeur entre 0.0 et 1.0 correspondant à la position relative du blason sur l'axe x
+	 * @param y valeur entre 0.0 et 1.0 correspondant à la position relative du blason sur l'axe y
+	 */
+	public Ancrage(int emplacement, double x, double y) {
+		this.emplacement = emplacement;
+		this.x = x;
+		this.y = y;
+	}
+
+	/**
+	 * Retourne le blason associé à l'ancrage
+	 * 
+	 * @return blason le blason associé à l'ancrage
+	 */
+	public Blason getBlason() {
+		return blason;
+	}
+
+	/**
+	 * Définit le blason associé à l'ancrage
+	 * 
+	 * @param blason le blason associé à l'ancrage
+	 */
+	public void setBlason(Blason blason) {
+		this.blason = blason;
+	}
+
+	/**
+	 * Retourne l'emplacement sur la cible de l'ancrage. Correspond aux valeur des
+	 * variables static <code>POSITION_</code>
+	 * 
+	 * @return l'emplacement sur la cible de l'ancrage.
+	 */
+	public int getEmplacement() {
+		return emplacement;
+	}
+
+	/**
+	 * Définit l'emplacement sur cible de l'ancrage. Correspond aux valeur des
+	 * variables static <code>POSITION_</code>
+	 * 
+	 * @param emplacement l'emplacement sur cible de l'ancrage
+	 */
+	public void setEmplacement(int emplacement) {
+		this.emplacement = emplacement;
 	}
 
 	/**
@@ -163,4 +255,19 @@ public class Ancrage {
 	public void setY(double y) {
     	this.y = y;
     }
+	
+	@Override
+	public void save() throws SqlPersistanceException {
+		helper.save(this, Collections.singletonMap("NUMBLASON", (Object)blason.getNumblason())); //$NON-NLS-1$
+	}
+	
+	@Override
+	public void delete() throws SqlPersistanceException {
+		helper.delete(this, Collections.singletonMap("NUMBLASON", (Object)blason.getNumblason())); //$NON-NLS-1$
+	}
+
+	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
+		if(parent instanceof Blason)
+			blason = (Blason)parent;
+	}
 }

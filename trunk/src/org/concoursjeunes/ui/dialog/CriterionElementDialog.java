@@ -73,7 +73,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -211,9 +211,9 @@ public class CriterionElementDialog extends JDialog implements ActionListener {
             jcbActive.setSelected(criterionIndividu.isActive());
             
             jtfCode.setEditable(!parent.getReglement().isOfficialReglement()
-            		&& parent.getVerrou() == ReglementDialog.NO_LOCK);
+            		&& !parent.isVerrou());
             jcbActive.setEnabled(!parent.getReglement().isOfficialReglement()
-            		&& parent.getVerrou() == ReglementDialog.NO_LOCK);
+            		&& !parent.isVerrou());
         }
     }
 
@@ -242,6 +242,7 @@ public class CriterionElementDialog extends JDialog implements ActionListener {
                 criterion.getCriterionElements().add(criterionIndividu);
             }
             
+            criterionIndividu.setCriterion(criterion);
             criterionIndividu.setCode(jtfCode.getText());
             criterionIndividu.setLibelle(jtfLibelle.getText());
             criterionIndividu.setActive(jcbActive.isSelected());

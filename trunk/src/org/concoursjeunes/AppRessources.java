@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -119,13 +119,14 @@ public class AppRessources extends org.ajdeveloppement.apps.AppRessources {
 	public String getUserPath() {
 		return ApplicationCore.staticParameters.getResourceString("path.user", super.getUserPath()); //$NON-NLS-1$
 	}
+	
 	/**
 	 * Retourne le chemin absolu du profile
 	 * 
 	 * @param profile le nom du profil pour lequelle récuperer le chemin
 	 * @return le chemin absolu du profile
 	 */
-	private File getProfilePath(Profile profile) {
+	public File getProfilePath(Profile profile) {
 		File profilePath = new File(
 				ApplicationCore.staticParameters.getResourceString("path.profile", getUserPath()), //$NON-NLS-1$
 				profile.getConfiguration().getCurProfil());
@@ -204,7 +205,7 @@ public class AppRessources extends org.ajdeveloppement.apps.AppRessources {
 	}
 
 	/**
-	 * Retourne la liste des configuration disponaible
+	 * Retourne la liste des configurations disponible
 	 * 
 	 * @return la liste des configurations disponibles
 	 */

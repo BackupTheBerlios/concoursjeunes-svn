@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -89,14 +89,16 @@
 package org.concoursjeunes.state;
 
 import java.awt.Desktop;
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.script.*;
+import javax.script.ScriptException;
 import javax.swing.JOptionPane;
 
 import org.ajdeveloppement.commons.AjResourcesReader;
@@ -106,7 +108,6 @@ import org.concoursjeunes.Profile;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.pdf.PdfWriter;
 
 /**
  * Permet la compilation et l'affichage des éditions. Voir la documentation de 
@@ -147,7 +148,6 @@ public class StateProcessor {
 			throws IOException, ScriptException, FileNotFoundException, DocumentException, NoSuchMethodException {
 		Document document = new Document();
 		String filePath;
-		boolean isZippedState = false;
 		
 		if(!save) {
 			File tmpFile = File.createTempFile("cta", ApplicationCore.staticParameters.getResourceString("extention.pdf")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -161,44 +161,13 @@ public class StateProcessor {
 					+ " - " + DateFormat.getDateInstance().format(new Date()) + " " + new SimpleDateFormat("HH.mm.ss").format(new Date()) + ".pdf";   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
 		}
 		
-		ScriptEngineManager se = new ScriptEngineManager();
-		ScriptEngine scriptEngine = se.getEngineByName("JavaScript"); //$NON-NLS-1$
-		//ScriptEngine scriptEngine = se.getEngineByName("rhino-nonjdk"); //$NON-NLS-1$
-		//scriptEngine.setBindings(new SimpleBindings(Collections.synchronizedMap(new HashMap<String, Object>())), ScriptContext.ENGINE_SCOPE);
-
-		String statePath = ApplicationCore.staticParameters.getResourceString("path.ressources") //$NON-NLS-1$
-				+ File.separator + "states" + File.separator + state.getName(); //$NON-NLS-1$
+		AjResourcesReader langReader = new AjResourcesReader("lang", new URLClassLoader(new URL[] { state.getStateURL() })); //$NON-NLS-1$
 		
-		//test si l'état est dans une archive compressé
-		if(!new File(statePath).exists() && new File(statePath + ".zip").exists()) { //$NON-NLS-1$
-			isZippedState = true;
-			statePath += ".zip"; //$NON-NLS-1$
-		}
-		URL stateURL = new File(statePath).toURI().toURL();
+		StateOptions options = new StateOptions(depart, serie, langReader, profile);
 		
-		AjResourcesReader langReader = new AjResourcesReader("lang", new URLClassLoader(new URL[] { stateURL })); //$NON-NLS-1$
+		boolean isprintable = state.printState(ficheConcours, document, options, new File(filePath));
 		
-		scriptEngine.put("depart", depart); //$NON-NLS-1$
-		scriptEngine.put("serie", serie); //$NON-NLS-1$
-		scriptEngine.put("localeReader", langReader); //$NON-NLS-1$
-		scriptEngine.put("profile", profile); //$NON-NLS-1$
-		
-		Reader reader = new BufferedReader(new InputStreamReader(
-				new URL(((isZippedState) ? "jar:" : "") + stateURL.toString() + ((isZippedState) ? "!" : "") + "/" + state.getScript()).openStream())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-		CompiledScript cs = ((Compilable)scriptEngine).compile(reader);
-		cs.eval();
-		reader.close();
-		
-		Invocable invocable = (Invocable)cs.getEngine();
-		boolean isprintable = (Boolean)invocable.invokeFunction("checkPrintable", ficheConcours); //$NON-NLS-1$
-		
-		if(isprintable) {
-			new File(filePath).getParentFile().mkdirs();
-			PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(new File(filePath)));
-			writer.setFullCompression();
-			
-			invocable.invokeFunction("printState", ficheConcours, new URL(((isZippedState) ? "jar:" : "") + stateURL.toString() + ((isZippedState) ? "!" : "") + "/" + state.getTemplate()), document, writer); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-		} else {
+		if(!isprintable) {
 			JOptionPane.showMessageDialog(null, profile.getLocalisation().getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
 		}
 		
@@ -212,7 +181,6 @@ public class StateProcessor {
 				
 				String NAV = ApplicationCore.getAppConfiguration().getPdfReaderPath();
 
-				System.out.println(NAV + " " + new File(filePath).getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
 				Runtime.getRuntime().exec(NAV + " " + new File(filePath).getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}

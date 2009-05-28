@@ -96,36 +96,36 @@
 				<phrase size="10.0" style="bold">%classement.score%</phrase>
 			</cell>
 			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
-				<phrase size="10.0" style="bold">10-9</phrase>
+				<phrase size="10.0" style="bold">{DEPARTAGE}</phrase>
 			</cell>
 		</row>
 		<bloc::classement>
 		<row>
 			<cell header="false" horizontalalign="Center" top="true" bottom="true" right="true" left="true">
-				<phrase size="10.0" >{PLACE}</phrase>
+				<phrase size="9.0" >{PLACE}</phrase>
 			</cell>
 			<cell header="false" horizontalalign="Default" verticalalign="Middle" top="true" bottom="true" right="true" left="true">
-				<phrase size="10.0" >{IDENTITEE}</phrase>
+				<phrase size="9.0" >{IDENTITEE}</phrase>
 			</cell>
 			<cell header="false" horizontalalign="Default" top="true" bottom="true" right="true" left="true">
-				<phrase size="10.0" >{CLUB}</phrase>
+				<phrase size="9.0" >{CLUB}</phrase>
 			</cell>
 			<cell header="false" horizontalalign="Center" top="true" bottom="true" right="true" left="true">
-				<phrase size="10.0" >{NUM_LICENCE}</phrase>
+				<phrase size="9.0" >{NUM_LICENCE}</phrase>
 			</cell>
 			<cell header="false" horizontalalign="Center" top="true" bottom="true" right="true" left="true">
-				<phrase size="10.0" >{categorie}</phrase>
+				<phrase size="9.0" >{categorie}</phrase>
 			</cell>
 			<bloc::scores>
 			<cell header="false" horizontalalign="Center" top="true" bottom="true" right="true" left="true">
-				<phrase size="10.0" >{PT_DISTANCE}</phrase>
+				<phrase size="9.0" >{PT_DISTANCE}</phrase>
 			</cell>
 			</bloc::scores>
 			<cell header="false" horizontalalign="Center" top="true" bottom="true" right="true" left="true">
-				<phrase size="10.0" >{TOTAL}</phrase>
+				<phrase size="9.0" >{TOTAL}</phrase>
 			</cell>
 			<cell header="false" horizontalalign="Center" top="true" bottom="true" right="true" left="true">
-				<phrase size="10.0" >{0_10_9}</phrase>
+				<phrase size="9.0" >{0_10_9}</phrase>
 			</cell>
 		</row>
 		</bloc::classement>

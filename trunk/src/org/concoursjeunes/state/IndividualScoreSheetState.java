@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -92,6 +92,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.net.URL;
 import java.text.DateFormat;
+import java.util.List;
 
 import org.ajdeveloppement.commons.AJTemplate;
 import org.ajdeveloppement.commons.AjResourcesReader;
@@ -134,18 +135,18 @@ public class IndividualScoreSheetState {
 			templateXML.parse("producer", AppInfos.NOM + " " + AppInfos.VERSION); //$NON-NLS-1$ //$NON-NLS-2$
 			templateXML.parse("author", profile.getConfiguration().getClub().getNom()); //$NON-NLS-1$
 			
-			Concurrent[] concurrents = ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), ConcurrentList.SortCriteria.SORT_BY_TARGETS);
-			for(int i = 0; i < concurrents.length; i++) {
+			List<Concurrent> concurrents = ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), ConcurrentList.SortCriteria.SORT_BY_TARGETS);
+			for(int i = 0; i < concurrents.size(); i++) {
 				templateXML.parse("scoresheet.LOGO_CLUB_URI", profile.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$
 				templateXML.parse("scoresheet.INTITULE_CLUB", ficheConcours.getParametre().getClub().getNom()); //$NON-NLS-1$
 				templateXML.parse("scoresheet.INTITULE_CONCOURS", ficheConcours.getParametre().getIntituleConcours()); //$NON-NLS-1$
 				templateXML.parse("scoresheet.VILLE_CLUB", ficheConcours.getParametre().getLieuConcours()); //$NON-NLS-1$
 				templateXML.parse("scoresheet.DATE_CONCOURS", DateFormat.getDateInstance(DateFormat.LONG).format(ficheConcours.getParametre().getDateDebutConcours())); //$NON-NLS-1$
 				
-				templateXML.parse("scoresheet.cid", concurrents[i].getNomArcher() + " " + concurrents[i].getPrenomArcher()); //$NON-NLS-1$
-				templateXML.parse("scoresheet.cclub", concurrents[i].getClub().getNom()); //$NON-NLS-1$
-				templateXML.parse("scoresheet.clicence", concurrents[i].getNumLicenceArcher()); //$NON-NLS-1$
-				templateXML.parse("scoresheet.emplacement", new TargetPosition(concurrents[i].getCible(), concurrents[i].getPosition()).toString()); //$NON-NLS-1$
+				templateXML.parse("scoresheet.cid", concurrents.get(i).getNomArcher() + " " + concurrents.get(i).getPrenomArcher()); //$NON-NLS-1$
+				templateXML.parse("scoresheet.cclub", concurrents.get(i).getClub().getNom()); //$NON-NLS-1$
+				templateXML.parse("scoresheet.clicence", concurrents.get(i).getNumLicenceArcher()); //$NON-NLS-1$
+				templateXML.parse("scoresheet.emplacement", new TargetPosition(concurrents.get(i).getCible(), concurrents.get(i).getPosition()).toString()); //$NON-NLS-1$
 				
 				int nbSerie = ficheConcours.getParametre().getReglement().getNbSerie();
 				String colsSeriesSize = ""; //$NON-NLS-1$
@@ -158,7 +159,7 @@ public class IndividualScoreSheetState {
 				
 				int nbFlecheParVolee = ficheConcours.getParametre().getReglement().getNbFlecheParVolee();
 				for(int j = 0; j < nbSerie; j++) {
-					String strDistance = getPosition(j+1) + " distance, " + ficheConcours.getParametre().getReglement().getDistancesEtBlasonFor(concurrents[i].getCriteriaSet().getFilteredCriteriaSet(ficheConcours.getParametre().getReglement().getPlacementFilter())).getDistance()[j]+"m";
+					String strDistance = getPosition(j+1) + " distance, " + ficheConcours.getParametre().getReglement().getDistancesEtBlasonFor(concurrents.get(i).getCriteriaSet().getFilteredCriteriaSet(ficheConcours.getParametre().getReglement().getPlacementFilter())).get(0).getDistance()[j]+"m";
 					templateXML.parse("scoresheet.series.SERIE_NB_COL", Integer.toString(5 + nbFlecheParVolee));
 					templateXML.parse("scoresheet.series.INTITULE_SERIE", strDistance);
 					String colsSize = "";

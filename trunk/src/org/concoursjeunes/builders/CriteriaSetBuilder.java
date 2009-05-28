@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -93,7 +93,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Hashtable;
 
-import org.concoursjeunes.*;
+import org.concoursjeunes.ApplicationCore;
+import org.concoursjeunes.CriteriaSet;
+import org.concoursjeunes.Criterion;
+import org.concoursjeunes.CriterionElement;
+import org.concoursjeunes.Reglement;
 
 /**
  * Construit un jeux de critères à partir des données en base
@@ -112,27 +116,27 @@ public class CriteriaSetBuilder {
 	 * 
 	 * @return le jeux de critères concerné
 	 */
-	public static CriteriaSet getCriteriaSet(int numCriteriaSet, Reglement reglement, int hashReglement) {
+	public static CriteriaSet getCriteriaSet(int numCriteriaSet, Reglement reglement) {
 		try {
 			String sql = "select * from POSSEDE where NUMCRITERIASET=? and NUMREGLEMENT=?"; //$NON-NLS-1$
 			
 			PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
 			
 			pstmt.setInt(1, numCriteriaSet);
-			pstmt.setInt(2, hashReglement);
+			pstmt.setInt(2, reglement.getNumReglement());
 			
 			ResultSet rs = pstmt.executeQuery();
 			
 			Hashtable<Criterion, CriterionElement> criteria = new Hashtable<Criterion, CriterionElement>();
 			while(rs.next()) {
-				//Criterion criterion = CriterionBuilder.getCriterion(rs.getString("CODECRITERE"), reglement, hashReglement); //$NON-NLS-1$
 				Criterion criterion = reglement.getListCriteria().get(reglement.getListCriteria().indexOf(new Criterion(rs.getString("CODECRITERE")))); //$NON-NLS-1$
 				criteria.put(
 						criterion,
 						criterion.getCriterionElements().get(criterion.getCriterionElements().indexOf(new CriterionElement(rs.getString("CODECRITEREELEMENT"))))); //$NON-NLS-1$
-						//CriterionElementBuilder.getCriterionElement(rs.getString("CODECRITEREELEMENT"), criterion, hashReglement));//$NON-NLS-1$
 			}
 			CriteriaSet criteriaSet = new CriteriaSet();
+			criteriaSet.setReglement(reglement);
+			criteriaSet.setNumCriteriaSet(numCriteriaSet); 
 			criteriaSet.setCriteria(criteria);
 			
 			return criteriaSet;

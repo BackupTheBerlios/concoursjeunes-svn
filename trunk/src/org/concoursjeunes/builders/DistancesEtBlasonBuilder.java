@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -94,9 +94,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.BlasonManager;
 import org.concoursjeunes.DistancesEtBlason;
 import org.concoursjeunes.Reglement;
+import org.concoursjeunes.manager.BlasonManager;
 
 /**
  * @author Aurélien JEOFFRAY
@@ -113,7 +113,7 @@ public class DistancesEtBlasonBuilder {
 	 * @param hashReglement Le code réglement associé  à l'objet
 	 * @return l'objet DistancesEtBlason généré
 	 */
-	public static DistancesEtBlason getDistancesEtBlason(int numdistancesblason, Reglement reglement, int hashReglement) {
+	public static DistancesEtBlason getDistancesEtBlason(int numdistancesblason, Reglement reglement) {
 		PreparedStatement pstmt = null;
 		DistancesEtBlason distancesEtBlason = null;
 		
@@ -124,41 +124,25 @@ public class DistancesEtBlasonBuilder {
 			pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
 			
 			pstmt.setInt(1, numdistancesblason);
-			pstmt.setInt(2, hashReglement);
+			pstmt.setInt(2, reglement.getNumReglement());
 			
 			ResultSet rs = pstmt.executeQuery();
 			
 			if(rs.first()) {
 				distancesEtBlason = new DistancesEtBlason();
-				if(hashReglement != 0)
-					distancesEtBlason.setNumdistancesblason(numdistancesblason);
-				distancesEtBlason.setTargetFace(BlasonManager.findBlasonAssociateToDistancesEtBlason(numdistancesblason, hashReglement));
-				
-				pstmt.close();
-				
-				sql = "select * from ASSOCIER where " + //$NON-NLS-1$
-						"NUMDISTANCESBLASONS=? and NUMREGLEMENT=?"; //$NON-NLS-1$
-				pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
-				
-				pstmt.setInt(1, numdistancesblason);
-				pstmt.setInt(2, hashReglement);
-				
-				rs = pstmt.executeQuery();
-				
-				if(rs.first()) {
-					distancesEtBlason.setCriteriaSet(CriteriaSetBuilder.getCriteriaSet(rs.getInt("NUMCRITERIASET"), reglement, hashReglement)); //$NON-NLS-1$
-				} else {
-					return null;
-				}
+				distancesEtBlason.setNumdistancesblason(numdistancesblason);
+				distancesEtBlason.setTargetFace(BlasonManager.findBlasonAssociateToDistancesEtBlason(numdistancesblason, reglement.getNumReglement()));
+				distancesEtBlason.setCriteriaSet(CriteriaSetBuilder.getCriteriaSet(rs.getInt("NUMCRITERIASET"), reglement)); //$NON-NLS-1$
+				distancesEtBlason.setDefaultTargetFace(rs.getBoolean("DEFAULTTARGETFACE")); //$NON-NLS-1$
 				
 				pstmt.close();
 				
 				sql = "select * from distances where " + //$NON-NLS-1$
-						"NUMDISTANCESBLASONS=? and NUMREGLEMENT=?"; //$NON-NLS-1$
+						"NUMDISTANCESBLASONS=? and NUMREGLEMENT=? order by NUMDISTANCES"; //$NON-NLS-1$
 				pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
 				
 				pstmt.setInt(1, numdistancesblason);
-				pstmt.setInt(2, hashReglement);
+				pstmt.setInt(2, reglement.getNumReglement());
 				
 				rs = pstmt.executeQuery();
 				ArrayList<Integer> distances = new ArrayList<Integer>();

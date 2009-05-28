@@ -2,7 +2,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ *  any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -27,11 +27,10 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.swing.event.EventListenerList;
@@ -48,6 +47,8 @@ import org.concoursjeunes.event.FicheConcoursListener;
 import org.concoursjeunes.event.PasDeTirListener;
 import org.concoursjeunes.exceptions.FicheConcoursException;
 import org.concoursjeunes.exceptions.FicheConcoursException.Nature;
+import org.concoursjeunes.localisable.CriteriaSetLibelle;
+import org.concoursjeunes.manager.BlasonManager;
 
 /**
  * Represente la fiche concours, regroupe l'ensemble des informations commune à un concours donné
@@ -366,9 +367,9 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	/**
 	 * methode pour le classement des candidats
 	 */
-	public Hashtable<CriteriaSet, Concurrent[]> classement() {
+	public Map<CriteriaSet, List<Concurrent>> classement() {
 
-		Hashtable<CriteriaSet, Concurrent[]> concurrentsClasse = new Hashtable<CriteriaSet, Concurrent[]>();
+		Map<CriteriaSet, List<Concurrent>> concurrentsClasse = new HashMap<CriteriaSet, List<Concurrent>>();
 
 		// Etablit le classement des concurrents en fonction du nombre de points
 		// obtenue.
@@ -381,8 +382,8 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 			ArrayList<Concurrent> unsortList = new ArrayList<Concurrent>();
 			for (Concurrent concurrent : concurrentList.list(catList[i], -1, parametre.getReglement().getClassementFilter()))
 				unsortList.add(concurrent);
-			Concurrent[] sortList = ConcurrentList.sort(unsortList.toArray(new Concurrent[unsortList.size()]), ConcurrentList.SortCriteria.SORT_BY_POINTS);
-			if (sortList.length > 0)
+			List<Concurrent> sortList = ConcurrentList.sort(unsortList, ConcurrentList.SortCriteria.SORT_BY_POINTS);
+			if (sortList.size() > 0)
 				concurrentsClasse.put(catList[i], sortList);
 		}
 
@@ -412,7 +413,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	public String getClassement() {
 		String strClassement = ""; //$NON-NLS-1$
 		if (concurrentList != null && concurrentList.countArcher() > 0) {
-			Hashtable<CriteriaSet, Concurrent[]> concurrentsClasse = classement();
+			Map<CriteriaSet, List<Concurrent>> concurrentsClasse = classement();
 
 			AJTemplate tplClassement = templateClassementHTML;
 			String strArbitreResp = ""; //$NON-NLS-1$
@@ -428,13 +429,13 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 			tplClassement.parse("DATE_CONCOURS", DateFormat.getDateInstance(DateFormat.LONG).format(parametre.getDateDebutConcours())); //$NON-NLS-1$
 			tplClassement.parse("author", parametre.getClub().getNom()); //$NON-NLS-1$
 
-			for (String arbitre : parametre.getArbitres()) {
-				if (arbitre.startsWith("*")) //$NON-NLS-1$
-					strArbitreResp = arbitre.substring(1);
+			for (Judge arbitre : parametre.getJudges()) {
+				if (arbitre.isResponsable())
+					strArbitreResp = arbitre.getID();
 				else {
 					if (!strArbitresAss.equals("")) //$NON-NLS-1$
 						strArbitresAss += ", "; //$NON-NLS-1$
-					strArbitresAss += arbitre;
+					strArbitresAss += arbitre.getID();
 				}
 			}
 			tplClassement.parse("ARBITRE_RESPONSABLE", XmlUtils.sanitizeText(strArbitreResp)); //$NON-NLS-1$
@@ -443,22 +444,19 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 			tplClassement.parse("NB_TIREURS", "" + concurrentList.countArcher()); //$NON-NLS-1$ //$NON-NLS-2$
 			
 			// Entete de categorie
-			Enumeration<CriteriaSet> scnalst = concurrentsClasse.keys();
+			Set<CriteriaSet> scnalst = concurrentsClasse.keySet();
 
-			CriteriaSet[] scnaUse = new CriteriaSet[concurrentsClasse.size()];
-			for (int i = 0; scnalst.hasMoreElements(); i++) {
-				scnaUse[i] = scnalst.nextElement();
-			}
+			List<CriteriaSet> scnaUse = new ArrayList<CriteriaSet>(scnalst);
 
 			CriteriaSet.sortCriteriaSet(scnaUse, parametre.getReglement().getListCriteria());
 
 			for (CriteriaSet scna : scnaUse) {
 
-				Concurrent[] sortList = concurrentsClasse.get(scna);
+				List<Concurrent> sortList = concurrentsClasse.get(scna);
 
 				String strSCNA;
 
-				if (sortList.length > 0) {
+				if (sortList.size() > 0) {
 
 					double tailleChampDistance = 10.5262 / parametre.getReglement().getNbSerie();
 					String strTailleChampsDistance = ""; //$NON-NLS-1$
@@ -471,23 +469,31 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 					tplClassement.parse("categories.TAILLE_CHAMPS_DISTANCE", strTailleChampsDistance); //$NON-NLS-1$
 					tplClassement.parse("categories.CATEGORIE", strSCNA); //$NON-NLS-1$
 					tplClassement.parse("categories.NB_TIREUR_COLS", "" + (4 + parametre.getReglement().getNbSerie())); //$NON-NLS-1$ //$NON-NLS-2$
-					tplClassement.parse("categories.NB_TIREURS", "" + sortList.length); //$NON-NLS-1$ //$NON-NLS-2$
+					tplClassement.parse("categories.NB_TIREURS", "" + sortList.size()); //$NON-NLS-1$ //$NON-NLS-2$
 
 					for (int j = 0; j < parametre.getReglement().getNbSerie(); j++) {
 						tplClassement.parse("categories.distances.DISTANCE", //$NON-NLS-1$
-								parametre.getReglement().getDistancesEtBlasonFor(scna.getFilteredCriteriaSet(parametre.getReglement().getPlacementFilter())).getDistance()[j] + "m"); //$NON-NLS-1$
+								parametre.getReglement().getDistancesEtBlasonFor(scna.getFilteredCriteriaSet(parametre.getReglement().getPlacementFilter())).get(0).getDistance()[j] + "m"); //$NON-NLS-1$
 						tplClassement.loopBloc("categories.distances"); //$NON-NLS-1$
 					}
+					
+					String departages = ""; //$NON-NLS-1$
+					for (String departage : parametre.getReglement().getTie()) {
+						if(!departages.isEmpty())
+							departages += "-"; //$NON-NLS-1$
+						departages += departage;
+					}
+					tplClassement.parse("categories.DEPARTAGE", departages); //$NON-NLS-1$
 
-					if (sortList.length > 0) {
+					if (sortList.size() > 0) {
 						boolean row_exist = false;
-						for (int j = 0; j < sortList.length; j++) {
-							if (sortList[j].getTotalScore() > 0) {
+						for (int j = 0; j < sortList.size(); j++) {
+							if (sortList.get(j).getTotalScore() > 0) {
 								row_exist = true;
 								// test d'ex-Eaquo
 								
-								if ((j < sortList.length - 1 && sortList[j].compareScoreWith(sortList[j + 1]) == 0 && this.profile.getConfiguration().isInterfaceAffResultatExEquo())
-										|| (j > 0 && sortList[j].compareScoreWith(sortList[j - 1]) == 0 && this.profile.getConfiguration().isInterfaceAffResultatExEquo())) {
+								if ((j < sortList.size() - 1 && sortList.get(j).compareScoreWith(sortList.get(j + 1)) == 0 && this.profile.getConfiguration().isInterfaceAffResultatExEquo())
+										|| (j > 0 && sortList.get(j).compareScoreWith(sortList.get(j - 1)) == 0 && this.profile.getConfiguration().isInterfaceAffResultatExEquo())) {
 
 									tplClassement.parse("categories.classement.COULEUR", //$NON-NLS-1$
 											"bgcolor=\"#ff0000\""); //$NON-NLS-1$
@@ -496,29 +502,29 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 								}
 
 								tplClassement.parse("categories.classement.PLACE", "" + (j + 1)); //$NON-NLS-1$ //$NON-NLS-2$
-								tplClassement.parse("categories.classement.POSITION", "" + sortList[j].getDepart()+sortList[j].getPosition() + sortList[j].getCible()); //$NON-NLS-1$ //$NON-NLS-2$
-								tplClassement.parse("categories.classement.IDENTITEE", sortList[j].getID()); //$NON-NLS-1$
-								tplClassement.parse("categories.classement.CLUB", sortList[j].getClub().getNom()); //$NON-NLS-1$
-								tplClassement.parse("categories.classement.NUM_LICENCE", sortList[j].getNumLicenceArcher()); //$NON-NLS-1$
+								tplClassement.parse("categories.classement.POSITION", "" + sortList.get(j).getDepart()+sortList.get(j).getPosition() + sortList.get(j).getCible()); //$NON-NLS-1$ //$NON-NLS-2$
+								tplClassement.parse("categories.classement.IDENTITEE", sortList.get(j).getID()); //$NON-NLS-1$
+								tplClassement.parse("categories.classement.CLUB", sortList.get(j).getClub().getNom()); //$NON-NLS-1$
+								tplClassement.parse("categories.classement.NUM_LICENCE", sortList.get(j).getNumLicenceArcher()); //$NON-NLS-1$
 
 								for (Criterion key : parametre.getReglement().getListCriteria())
 									tplClassement.parse("categories.classement." //$NON-NLS-1$
-											+ key.getCode(), sortList[j].getCriteriaSet().getCriterionElement(key).getCode());
+											+ key.getCode(), sortList.get(j).getCriteriaSet().getCriterionElement(key).getCode());
 
 								for (int k = 0; k < parametre.getReglement().getNbSerie(); k++) {
-									if (sortList[j].getScore() != null)
-										tplClassement.parse("categories.classement.scores.PT_DISTANCE", "" + sortList[j].getScore().get(k)); //$NON-NLS-1$ //$NON-NLS-2$
+									if (sortList.get(j).getScore() != null)
+										tplClassement.parse("categories.classement.scores.PT_DISTANCE", "" + sortList.get(j).getScore().get(k)); //$NON-NLS-1$ //$NON-NLS-2$
 									else
 										tplClassement.parse("categories.classement.scores.PT_DISTANCE", "0"); //$NON-NLS-1$ //$NON-NLS-2$
 
 									tplClassement.loopBloc("categories.classement.scores"); //$NON-NLS-1$
 								}
-								tplClassement.parse("categories.classement.TOTAL", "" + sortList[j].getTotalScore()); //$NON-NLS-1$ //$NON-NLS-2$
+								tplClassement.parse("categories.classement.TOTAL", "" + sortList.get(j).getTotalScore()); //$NON-NLS-1$ //$NON-NLS-2$
 								
-								String departages = ""; //$NON-NLS-1$
-								if(sortList[j].getDepartages().length == parametre.getReglement().getTie().size()) {
+								departages = ""; //$NON-NLS-1$
+								if(sortList.get(j).getDepartages().length == parametre.getReglement().getTie().size()) {
 									for(int k = 0; k < parametre.getReglement().getTie().size(); k++) {
-										departages += sortList[j].getDepartages()[k];
+										departages += sortList.get(j).getDepartages()[k];
 										if(k<parametre.getReglement().getTie().size()-1)
 											departages += "-"; //$NON-NLS-1$
 									}
@@ -561,12 +567,10 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 			tplClassementEquipe.parse("INTITULE_CLUB", XmlUtils.sanitizeText(parametre.getClub().getNom())); //$NON-NLS-1$
 
 			List<CriteriaSet> teamCriteriaSet = equipes.listCriteriaSet();
-			CriteriaSet[] sortedTeamCriteriaSets = new CriteriaSet[teamCriteriaSet.size()];
-			sortedTeamCriteriaSets = teamCriteriaSet.toArray(sortedTeamCriteriaSets);
 			
-			CriteriaSet.sortCriteriaSet(sortedTeamCriteriaSets, parametre.getReglement().getListCriteria());
+			CriteriaSet.sortCriteriaSet(teamCriteriaSet, parametre.getReglement().getListCriteria());
 			
-			for(CriteriaSet criteriaSet : sortedTeamCriteriaSets) {			
+			for(CriteriaSet criteriaSet : teamCriteriaSet) {			
 				tplClassementEquipe.parse("categories.CATEGORIE", new CriteriaSetLibelle(criteriaSet, this.profile.getLocalisation()).toString()); //$NON-NLS-1$
 				tplClassementEquipe.parse("categories.NB_EQUIPES", "" + equipes.countEquipes()); //$NON-NLS-1$ //$NON-NLS-2$
 	
