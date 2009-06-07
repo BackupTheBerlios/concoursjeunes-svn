@@ -17,7 +17,11 @@
 		</taskdef>
 
 		<revisionscreator 
-				revisionpath="${projet.pack.dir}/plugins/PhoenixPlugin/revision.xml.gz">
+				revisionpath="${projet.pack.dir}/plugins/PhoenixPlugin/revision.xml.gz"
+				keystorepath="${projet.keystorepath}"
+				keystorepassword="${projet.keystorepassword}"
+				signkeysalias="${projet.signkeyalias}"
+				signkeysaliaspassword="${projet.signkeyaliaspassword}">
 			<fileset dir="${projet.pack.dir}/plugins/PhoenixPlugin">
 				<include name="plugins/PhoenixPlugin.jar"/>
 				<include name="plugins/properties/PhoenixPlugin.properties" />

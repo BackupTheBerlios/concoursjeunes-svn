@@ -44,6 +44,7 @@ rm -rf $RPM_BUILD_ROOT/Makefile
 
 %files
 %defattr(-,root,root)
+/usr/lib/ConcoursJeunes/*.txt
 /usr/lib/ConcoursJeunes/config/*
 /usr/lib/ConcoursJeunes/lang/*
 /usr/lib/ConcoursJeunes/lib/*

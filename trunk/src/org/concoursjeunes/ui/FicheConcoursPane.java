@@ -155,6 +155,7 @@ import org.concoursjeunes.ui.dialog.ParametreDialog;
 import org.concoursjeunes.ui.dialog.ResultatDialog;
 import org.jdesktop.swingx.JXBusyLabel;
 import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXTaskPane;
 import org.jdesktop.swingx.JXTaskPaneContainer;
 import org.jdesktop.swingx.error.ErrorInfo;
@@ -425,6 +426,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		JPanel panel = new JPanel();
 		
 		JXTaskPaneContainer taskPaneContainer = new JXTaskPaneContainer();
+		taskPaneContainer.setOpaque(false);
 		
 		try {
 			//charge le gestionnaire d'etat
@@ -436,6 +438,8 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 				if(states.size() > 0) {
 					JXTaskPane taskPane = new JXTaskPane();
 					taskPane.setTitle(categorie.getLocalizedLibelle());
+					taskPane.getContentPane().setBackground(Color.WHITE);
+					taskPane.setOpaque(true);
 					
 					for(State state : states)
 						taskPane.add(printGenAction(state));
@@ -461,7 +465,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	private JPanel initOptions() {
 		JPanel panel = new JPanel();
 		
-		JPanel jpInformations = new JPanel();
+		JXPanel jpInformations = new JXPanel();
 		jpInformations.setLayout(new FlowLayout(FlowLayout.LEFT));
 		jpInformations.setBackground(new Color(255, 255, 225));
 		jpInformations.setOpaque(true);

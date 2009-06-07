@@ -30,5 +30,6 @@ Description: Logiciel de Gestion des Concours Jeunes de Tir à l'Arc
  * iText (http://www.lowagie.com/iText/) - Licence MPL et LGPL
  * H2 Database (http://www.h2database.com) - Licensed under the H2 License, Version 1.0 (http://h2database.com/html/license.html)
  * SwingX (https://swingx.dev.java.net/) - Licence LGPL
- * AJPackage (Librairie personnelle libre d'usage source non diffusé à ce jour)
+ * AjCommons (http://www.ajdeveloppement.org) - Licence CeCILL-C
+ * AjCommons-ext (http://www.ajdeveloppement.org) - Licence GPL V2 with Sun "Classpath" exception
 

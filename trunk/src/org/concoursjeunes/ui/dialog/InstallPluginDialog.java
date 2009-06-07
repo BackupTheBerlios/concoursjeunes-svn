@@ -272,10 +272,12 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 		
 		boolean disable = false;
 		try {
+			URL webservicesImplURL = new URL(ApplicationCore.staticParameters.getResourceString("url.webservices") + "/ConcoursJeunes-webservices.jar"); //$NON-NLS-1$ //$NON-NLS-2$
 			Class<?> clazz = Class.forName(
 					"org.concoursjeunes.webservices.AvailablePluginsManagerImpl", //$NON-NLS-1$
 					true,
-					new URLClassLoader(new URL[] { new URL(ApplicationCore.staticParameters.getResourceString("url.webservices") + "/ConcoursJeunes-webservices.jar") })); //$NON-NLS-1$ //$NON-NLS-2$
+					new URLClassLoader(new URL[] { webservicesImplURL  })); 
+			
 			Constructor<?> constr = clazz.getConstructor(Profile.class);
 			AvailablePluginsManager apm = (AvailablePluginsManager)constr.newInstance(profile);
 			pluginsDetail = apm.getPluginsDetail();
@@ -477,8 +479,8 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 	public void updaterStatusChanged(AjUpdaterEvent event) {
 		GlassPanePanel panel;
 		switch (event.getStatus()) {
-			case CONNECTED:
-				break;
+			/*case CONNECTED:
+				break;*/
 			case UPDATE_AVAILABLE:
 				AjUpdaterFrame ajUpdaterFrame = new AjUpdaterFrame(ajUpdater);
 				

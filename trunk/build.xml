@@ -33,6 +33,7 @@
 	</condition>
 	
 	<property file="packager/version.properties" />
+	<property file="packager/security.properties" />
 
 	<import file="plugins/build-ConcoursJeunesUpdate.xml"/>
 	<import file="plugins/build-FFTAImport.xml"/>
@@ -81,7 +82,6 @@
 				<include name="src/**"/>
 				<!--exclu les réference subversion -->
 				<exclude name="**/.svn*" />
-				<exclude name="lib/AuthKit.jar" />
 				<exclude name="ressources/states/**"/>
 			</fileset>
 		</copy>
@@ -124,6 +124,9 @@
 			<fileset dir="packager" >
 				<include name="*.txt" />
 				<include name="MANIFEST.MF" />
+			</fileset>
+			<fileset dir="packager/macosx/ConcoursJeunes.app/Contents/Resources/Java">
+				<include name="**" />
 			</fileset>
 		</copy>
 
@@ -198,15 +201,17 @@
 		<taskdef name="revisionscreator" classname="org.ajdeveloppement.updater.ant.RevisionsCreator">
 			<classpath location="lib/ajcommons.jar"/>
 		</taskdef>
+		
+		<echo message="${projet.keystorepath}" />
 
 		<revisionscreator
 				revisionpath="${projet.pack.dir}/revision.xml.gz"
 				changelogXML="packager/changelog.xml"
 				changelogTXT="${projet.pack.dir}/changelog.txt"
-				keystorepath="/data/developpement/projets/SecurityTools/ajeoffray.jks"
-				keystorepassword="florianne"
-				signkeysalias="ajeoffraysign"
-				signkeysaliaspassword="florianne"
+				keystorepath="${projet.keystorepath}"
+				keystorepassword="${projet.keystorepassword}"
+				signkeysalias="${projet.signkeyalias}"
+				signkeysaliaspassword="${projet.signkeyaliaspassword}"
 			>
 			<fileset dir="${projet.pack.dir}">
 				<include name="config/**"/>
@@ -217,7 +222,16 @@
 				<include name="ConcoursJeunes.jar"/>
 				<include name="*.txt"/>
 				<include name="*.pack"/>
+	
+				<exclude name="lib/js*"/>
 			</fileset>
+			<system name="macosx">
+				<fileset dir="${projet.pack.dir}">
+					<include name="lib/js*"/>
+					<include name="concoursjeunes-applyupdate"/>
+					<include name="libAuthKit.jnilib"/>
+				</fileset>
+			</system>
 		</revisionscreator>
 	</target>
 	
@@ -232,6 +246,9 @@
 				<include name="ressources/**"/>
 				<include name="documentation/**"/>
 				<include name="ConcoursJeunes.jar"/>
+				<include name="*.txt"/>
+				
+				<exclude name="lib/js*"/>
 			</fileset>
 		</copy>
 		

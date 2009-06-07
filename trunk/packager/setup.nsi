@@ -94,7 +94,7 @@ Section "Base" SEC0000
     SetOutPath $INSTDIR\lang
     File /r lang\*
     SetOutPath $INSTDIR\lib
-    File /r lib\*
+    File /r /x "js*.jar" lib\*
     SetOutPath $INSTDIR\ressources
     File /r ressources\*
     SetOutPath $INSTDIR\documentation

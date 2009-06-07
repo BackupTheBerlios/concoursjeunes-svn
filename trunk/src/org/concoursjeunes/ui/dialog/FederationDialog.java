@@ -189,7 +189,7 @@ public class FederationDialog extends JDialog implements ActionListener {
 		GridbagComposer gbComposer = new GridbagComposer();
 		GridBagConstraints c = new GridBagConstraints();
 		
-		GlossPainter<?> gloss = new GlossPainter<Object>();
+		GlossPainter gloss = new GlossPainter();
 		jxhFederation.setBackground(new Color(200,200,255));
 		jxhFederation.setBackgroundPainter(gloss);
 		jxhFederation.setTitleFont(jxhFederation.getTitleFont().deriveFont(16.0f));

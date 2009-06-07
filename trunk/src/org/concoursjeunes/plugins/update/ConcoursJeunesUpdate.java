@@ -201,7 +201,7 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 	@Override
 	public void updaterStatusChanged(AjUpdaterEvent event) {
 		switch (event.getStatus()) {
-		case CONNECTED:
+		/*case CONNECTED:
 			if (SystemTray.isSupported() && tray == null) {
 				tray = SystemTray.getSystemTray();
 				// load an image
@@ -220,8 +220,27 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 					System.err.println(e);
 				}
 			}
-			break;
+			break;*/
 		case UPDATE_AVAILABLE:
+			
+			if (SystemTray.isSupported() && tray == null) {
+				tray = SystemTray.getSystemTray();
+				// load an image
+				Dimension dimension = tray.getTrayIconSize();
+				Image image = Toolkit.getDefaultToolkit().getImage(
+						staticParameters.getResourceString("path.ressources") + File.separator + staticParameters.getResourceString("file.icon.application")).getScaledInstance(dimension.width, //$NON-NLS-1$ //$NON-NLS-2$
+						dimension.height, Image.SCALE_SMOOTH);
+
+				// create a popup menu
+				trayIcon = new TrayIcon(image, pluginLocalisation.getResourceString("tray.name")); //$NON-NLS-1$
+				trayIcon.addMouseListener(this);
+
+				try {
+					tray.add(trayIcon);
+				} catch (AWTException e) {
+					System.err.println(e);
+				}
+			}
 
 			String strSize = AJToolKit.formatFileSize(ajUpdater.getDownloadSize());
 

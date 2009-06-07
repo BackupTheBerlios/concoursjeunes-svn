@@ -117,7 +117,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
@@ -272,21 +271,13 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	private JLabel jlAdresseProxy = new JLabel();
 	@Localisable("configuration.ecran.avance.portproxy")
 	private JLabel jlPortProxy = new JLabel();
-	@Localisable("configuration.ecran.avance.userproxy")
-	private JLabel jlUserProxy = new JLabel();
-	@Localisable("configuration.ecran.avance.passwordproxy")
-	private JLabel jlPasswordProxy = new JLabel();
-	//private JCheckBox jcbUseProxy = new JCheckBox();
+	
 	@Localisable("configuration.ecran.avance.utilisationproxysystem")
 	private JRadioButton jrbUseSystemConfig = new JRadioButton();
 	@Localisable("configuration.ecran.avance.utilisationproxycustom")
 	private JRadioButton jrbUseSpecificConfig = new JRadioButton();
 	private final JTextField jtfAdresseProxy = new JTextField(20);
-	private final JTextField jtfPortProxy = new JTextField(new NumberDocument(false, false), "", 5); //$NON-NLS-1$
-	@Localisable("configuration.ecran.avance.authentificationproxy")
-	private final JCheckBox jcbAuthentificationProxy = new JCheckBox();
-	private final JTextField jtfUserProxy = new JTextField(20);
-	private final JPasswordField jpfPasswordProxy = new JPasswordField(20);
+	private final JTextField jtfPortProxy = new JTextField(new NumberDocument(false, false), "", 5); //$NON-NLS-1$	
 
 	// Ecran avancé option debug
 	@Localisable("configuration.ecran.interface.firstboot")
@@ -572,11 +563,8 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		jrbUseSystemConfig.setSelected(true);
 		jrbUseSystemConfig.addActionListener(this);
 		jrbUseSpecificConfig.addActionListener(this);
-		jcbAuthentificationProxy.addActionListener(this);
 		jlAdresseProxy.setEnabled(false);
 		jlPortProxy.setEnabled(false);
-		jlUserProxy.setEnabled(false);
-		jlPasswordProxy.setEnabled(false);
 
 		gridbagComposer.setParentPanel(panelProxy);
 		c.gridy = 0;
@@ -591,16 +579,6 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		gridbagComposer.addComponentIntoGrid(jtfAdresseProxy, c);
 		gridbagComposer.addComponentIntoGrid(jlPortProxy, c);
 		gridbagComposer.addComponentIntoGrid(jtfPortProxy, c);
-		c.gridy++;
-		c.gridwidth = 4;
-		gridbagComposer.addComponentIntoGrid(jcbAuthentificationProxy, c);
-		c.gridy++;
-		c.gridwidth = 1;
-		gridbagComposer.addComponentIntoGrid(jlUserProxy, c);
-		gridbagComposer.addComponentIntoGrid(jtfUserProxy, c);
-		c.gridy++;
-		gridbagComposer.addComponentIntoGrid(jlPasswordProxy, c);
-		gridbagComposer.addComponentIntoGrid(jpfPasswordProxy, c);
 
 		gridbagComposer.setParentPanel(jpEcranInterface);
 		c.gridy = 0;
@@ -740,13 +718,6 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		if (workAppConfiguration.getProxy() != null) {
 			jtfAdresseProxy.setText(workAppConfiguration.getProxy().getProxyServerAddress());
 			jtfPortProxy.setText(workAppConfiguration.getProxy().getProxyServerPort() + ""); //$NON-NLS-1$
-			jcbAuthentificationProxy.setSelected(workAppConfiguration.getProxy().isUseProxyAuthentification());
-			jlUserProxy.setEnabled(workAppConfiguration.getProxy().isUseProxyAuthentification());
-			jtfUserProxy.setText(workAppConfiguration.getProxy().getProxyAuthLogin());
-			jtfUserProxy.setEnabled(workAppConfiguration.getProxy().isUseProxyAuthentification());
-			jlPasswordProxy.setEnabled(workAppConfiguration.getProxy().isUseProxyAuthentification());
-			jpfPasswordProxy.setText(workAppConfiguration.getProxy().getProxyAuthPassword()); 
-			jpfPasswordProxy.setEnabled(workAppConfiguration.getProxy().isUseProxyAuthentification());
 		}
 	}
 
@@ -956,9 +927,6 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		workAppConfiguration.setUseProxy(jrbUseSpecificConfig.isSelected());
 		workAppConfiguration.getProxy().setProxyServerAddress(jtfAdresseProxy.getText());
 		workAppConfiguration.getProxy().setProxyServerPort(Integer.parseInt("0" + jtfPortProxy.getText()));  //$NON-NLS-1$
-		workAppConfiguration.getProxy().setUseProxyAuthentification(jcbAuthentificationProxy.isSelected());
-		workAppConfiguration.getProxy().setProxyAuthLogin(jtfUserProxy.getText());
-		workAppConfiguration.getProxy().setProxyAuthPassword(new String(jpfPasswordProxy.getPassword()));
 		
 		return true;
 	}
@@ -1060,11 +1028,6 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 			jlPortProxy.setEnabled(jrbUseSpecificConfig.isSelected());
 			jtfAdresseProxy.setEnabled(jrbUseSpecificConfig.isSelected());
 			jtfPortProxy.setEnabled(jrbUseSpecificConfig.isSelected());
-		} else if (source == jcbAuthentificationProxy) {
-			jlUserProxy.setEnabled(jcbAuthentificationProxy.isSelected());
-			jlPasswordProxy.setEnabled(jcbAuthentificationProxy.isSelected());
-			jtfUserProxy.setEnabled(jcbAuthentificationProxy.isSelected());
-			jpfPasswordProxy.setEnabled(jcbAuthentificationProxy.isSelected());
 		} else if (source == jbSelectReglement) {
 			ReglementManagerDialog reglementManagerDialog = new ReglementManagerDialog(parentframe, profile);
 			Reglement reglement = reglementManagerDialog.showReglementManagerDialog(true);

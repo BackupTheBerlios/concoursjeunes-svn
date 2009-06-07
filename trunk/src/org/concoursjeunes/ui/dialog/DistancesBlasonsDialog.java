@@ -90,7 +90,6 @@ package org.concoursjeunes.ui.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
@@ -192,7 +191,7 @@ public class DistancesBlasonsDialog extends JDialog implements ActionListener {
 		GridbagComposer gbc = new GridbagComposer();
 		GridBagConstraints c = new GridBagConstraints();
 		
-		GlossPainter<Component> gloss = new GlossPainter<Component>();
+		GlossPainter gloss = new GlossPainter();
 		jlCriteriaSet.setBackground(new Color(200,200,255));
 		jlCriteriaSet.setBackgroundPainter(gloss);
 		jlCriteriaSet.setTitleFont(jlCriteriaSet.getTitleFont().deriveFont(18.0f));

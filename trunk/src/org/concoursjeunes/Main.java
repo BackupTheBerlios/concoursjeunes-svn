@@ -89,18 +89,35 @@ package org.concoursjeunes;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.Authenticator;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSession;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.xml.bind.JAXBException;
 
+import org.ajdeveloppement.apps.AppUtilities;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.io.XMLSerializer;
+import org.ajdeveloppement.commons.security.SecureSiteAuthenticationStore;
+import org.ajdeveloppement.commons.ui.SwingURLAuthenticator;
 import org.concoursjeunes.exceptions.ExceptionHandlingEventQueue;
 import org.concoursjeunes.plugins.PluginEntry;
 import org.concoursjeunes.plugins.PluginLoader;
@@ -173,6 +190,8 @@ public class Main {
 		
 		core = ApplicationCore.getInstance();
 		
+		initSecureContext();
+		
 		if(System.getProperty("noplugin") == null) { //$NON-NLS-1$
 			loadStartupPlugin();
 		}
@@ -206,6 +225,82 @@ public class Main {
 			}
 		});
 
+	}
+	
+	private static void initSecureContext() {
+		String urlAuthStoreAlias = "urlauthstore"; //$NON-NLS-1$
+		char[] defaultUrlAuthStorePassword = AppUtilities.getAppUID(ApplicationCore.userRessources).toCharArray();
+		
+		try {
+			SecretKey urlAuthStoreKey = (SecretKey)ApplicationCore.userRessources.getAppKeyStore().getKey(
+					urlAuthStoreAlias, defaultUrlAuthStorePassword); 
+			
+			SecureSiteAuthenticationStore urlAuthStore = new SecureSiteAuthenticationStore(urlAuthStoreKey);
+			if(urlAuthStoreKey == null) {
+				 KeyStore.SecretKeyEntry skEntry = new KeyStore.SecretKeyEntry(urlAuthStore.getSecretKey());
+				 ApplicationCore.userRessources.getAppKeyStore().setEntry(
+						 urlAuthStoreAlias,
+						 skEntry, new KeyStore.PasswordProtection(defaultUrlAuthStorePassword)); 
+			}
+			
+			try {
+				urlAuthStore.setStoreFile(new File(ApplicationCore.userRessources.getAllusersDataPath(), ApplicationCore.staticParameters.getResourceString("file.urlauthstore"))); //$NON-NLS-1$
+				urlAuthStore.load(); 
+			} catch (JAXBException e) {
+				e.printStackTrace();
+			} catch (FileNotFoundException e) {
+			}
+			
+			SwingURLAuthenticator urlauth = new SwingURLAuthenticator();
+			urlauth.setUrlAuthenticationStore(urlAuthStore);
+			Authenticator.setDefault(urlauth);
+			
+			ApplicationCore.userRessources.storeAppKeyStore();
+		} catch (UnrecoverableKeyException e) {
+			JXErrorPane.showDialog(null, new ErrorInfo(e.getLocalizedMessage(),
+					e.toString(),
+					null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
+		} catch (KeyStoreException e) {
+			JXErrorPane.showDialog(null, new ErrorInfo(e.getLocalizedMessage(),
+					e.toString(),
+					null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			JXErrorPane.showDialog(null, new ErrorInfo(e.getLocalizedMessage(),
+					e.toString(),
+					null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
+		} catch (NoSuchPaddingException e) {
+			JXErrorPane.showDialog(null, new ErrorInfo(e.getLocalizedMessage(),
+					e.toString(),
+					null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
+		} catch (InvalidAlgorithmParameterException e) {
+			JXErrorPane.showDialog(null, new ErrorInfo(e.getLocalizedMessage(),
+					e.toString(),
+					null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
+		} catch (CertificateException e) {
+			JXErrorPane.showDialog(null, new ErrorInfo(e.getLocalizedMessage(),
+					e.toString(),
+					null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
+		} catch (IOException e) {
+			JXErrorPane.showDialog(null, new ErrorInfo(e.getLocalizedMessage(),
+					e.toString(),
+					null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
+		}
+		
+		//Remplace le vérifieur de nom d'hôte par un autre moins restrictif
+	    HostnameVerifier hostnameVerifier= new HostnameVerifier() {
+			@Override
+			public boolean verify(String hostname, SSLSession session) {
+				return true;
+			}
+	    };
+	    HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
 	}
 
 	private static void loadStartupPlugin() {

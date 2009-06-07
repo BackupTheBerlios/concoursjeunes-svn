@@ -20,13 +20,19 @@
 		</taskdef>
 
 		<revisionscreator 
-				revisionpath="${projet.pack.dir}/plugins/FFTAImport/revision.xml.gz">
-			<fileset dir="${projet.pack.dir}/plugins/FFTAImport/">
-				<include name="plugins/FFTAImport.jar"/>
-				<include name="plugins/properties/FFTAImportPlugin.properties" />
-				<include name="ExportWinFFTA.exe" />
-				<include name="*.DLL" />
-			</fileset>
+				revisionpath="${projet.pack.dir}/plugins/FFTAImport/revision.xml.gz"
+				keystorepath="${projet.keystorepath}"
+				keystorepassword="${projet.keystorepassword}"
+				signkeysalias="${projet.signkeyalias}"
+				signkeysaliaspassword="${projet.signkeyaliaspassword}">
+			<system name="windows">
+				<fileset dir="${projet.pack.dir}/plugins/FFTAImport/">
+					<include name="plugins/FFTAImport.jar"/>
+					<include name="plugins/properties/FFTAImportPlugin.properties" />
+					<include name="ExportWinFFTA.exe" />
+					<include name="*.DLL" />
+				</fileset>
+			</system>
 		</revisionscreator>
 	</target>
 </project>

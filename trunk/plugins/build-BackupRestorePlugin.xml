@@ -18,7 +18,11 @@
 		</taskdef>
 
 		<revisionscreator 
-				revisionpath="${projet.pack.dir}/plugins/BackupRestorePlugin/revision.xml.gz">
+				revisionpath="${projet.pack.dir}/plugins/BackupRestorePlugin/revision.xml.gz"
+				keystorepath="${projet.keystorepath}"
+				keystorepassword="${projet.keystorepassword}"
+				signkeysalias="${projet.signkeyalias}"
+				signkeysaliaspassword="${projet.signkeyaliaspassword}">
 			<fileset dir="${projet.pack.dir}/plugins/BackupRestorePlugin">
 				<include name="plugins/BackupRestorePlugin.jar"/>
 				<include name="plugins/properties/BackupPlugin.properties" />

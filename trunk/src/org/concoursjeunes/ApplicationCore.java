@@ -93,12 +93,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.net.Authenticator;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.KeyStore;
 import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -108,20 +103,15 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.swing.event.EventListenerList;
 
-import org.ajdeveloppement.apps.AppUtilities;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.io.FileUtils;
-import org.ajdeveloppement.commons.security.CryptUtil;
 import org.ajdeveloppement.commons.security.SecurityImporter;
 import org.ajdeveloppement.commons.sql.SqlManager;
-import org.ajdeveloppement.commons.ui.SwingHttpAuthenticator;
 import org.concoursjeunes.event.ApplicationCoreEvent;
 import org.concoursjeunes.event.ApplicationCoreListener;
 import org.concoursjeunes.manager.ConfigurationManager;
@@ -219,40 +209,26 @@ public class ApplicationCore {
 		return instance;
 	}
 	
+	@SuppressWarnings("nls")
 	private void loadAppConfiguration() {
 		setAppConfiguration(ConfigurationManager.loadAppConfiguration());
 		
 		try {
-			SecurityImporter.importCerts(userRessources.getAppKeyStore(), new File(userRessources.getUpdatePath(), "security/certs")); //$NON-NLS-1$
-			
-			SecretKey sKey = (SecretKey)userRessources.getAppKeyStore().getKey("proxy.pswd", AppUtilities.getAppUID(userRessources).toCharArray()); //$NON-NLS-1$
-			
-			CryptUtil cryptUtil = new CryptUtil(sKey);
-			if(sKey == null) {
-			    KeyStore.SecretKeyEntry skEntry = new KeyStore.SecretKeyEntry(cryptUtil.getSecretKey());
-				userRessources.getAppKeyStore().setEntry("proxy.pswd",skEntry, new KeyStore.PasswordProtection(AppUtilities.getAppUID(userRessources).toCharArray())); //$NON-NLS-1$
+			if(!userRessources.getAppKeyStoreFile().exists()) {
+				File defaultSecurity = new File(staticParameters.getResourceString("path.ressources"), "security");
+				for(File f : FileUtils.listAllFiles(defaultSecurity, ".*", false)) {
+					String relativePath = f.getPath().substring(defaultSecurity.getParent().length() + 1);
+					FileUtils.copyFile(f, new File(userRessources.getUpdatePath(),relativePath));
+				}
 			}
-			if(getAppConfiguration().getProxy() != null)
-				getAppConfiguration().getProxy().setCryptUtil(cryptUtil);
-			
-			userRessources.storeAppKeyStore();
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (NoSuchPaddingException e) {
-			e.printStackTrace();
+			SecurityImporter.importCerts(userRessources.getAppKeyStore(), new File(userRessources.getUpdatePath(), "security/certs")); //$NON-NLS-1$
 		} catch (CertificateException e) {
 			e.printStackTrace();
 		} catch (KeyStoreException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		} catch (UnrecoverableKeyException e) {
-			e.printStackTrace();
-		} catch (InvalidAlgorithmParameterException e) {
-			e.printStackTrace();
 		}
-		
-		Authenticator.setDefault(new SwingHttpAuthenticator(getAppConfiguration().getProxy()));
 	}
 	
 	private void debugLogger() {
