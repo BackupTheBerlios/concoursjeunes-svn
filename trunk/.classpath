@@ -10,7 +10,8 @@
 	<classpathentry kind="lib" path="plugins"/>
 	<classpathentry kind="lib" path="lib/ajcommons-ext.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="lib/h2-1.1.114.jar"/>
 	<classpathentry kind="lib" path="lib/swingx-1.0.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/H2 Database"/>
+	<classpathentry kind="lib" path="lib/h2-1.1.114.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

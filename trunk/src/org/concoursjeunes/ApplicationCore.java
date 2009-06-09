@@ -88,18 +88,10 @@
  */
 package org.concoursjeunes;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
 import java.security.KeyStoreException;
 import java.security.cert.CertificateException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -116,27 +108,27 @@ import org.concoursjeunes.event.ApplicationCoreEvent;
 import org.concoursjeunes.event.ApplicationCoreListener;
 import org.concoursjeunes.manager.ConfigurationManager;
 /**
- * Class principal de l'application, gére l'ensemble des ressources commune tel que
+ * Class principal de l'application, gère l'ensemble des ressources commune tel que
  * <ul>
  * <li>Le chargement du fichier de configuration</li>
- * <li>L'accès aux fichiers de parametrage et libellés</li>
+ * <li>L'accès aux fichiers de paramétrage et libellés</li>
  * <li>L'accès aux ressources utilisateurs</li>
  * <li>La connexion à la base de données</li>
  * </ul>
  * 
  * En outre la class ApplicationCore conserve la liste des profile actuellement chargé par l'application
  * 
- * @author Aurelien Jeoffray
+ * @author Aurélien JEOFFRAY
  * @version 2.0
  */
 public class ApplicationCore {
 	/**
-	 * Numero de version de la base de donnée nécessaire au fonctionnement du programme
+	 * Numéro de version de la base de donnée nécessaire au fonctionnement du programme
 	 */
 	public static final int DB_RELEASE_REQUIRED = 20;
 
 	/**
-	 * Chargement des parametrages statiques
+	 * Chargement des paramétrages statiques
 	 */
 	public static AjResourcesReader staticParameters = new AjResourcesReader("parametre");  //$NON-NLS-1$
 
@@ -163,9 +155,9 @@ public class ApplicationCore {
 	private EventListenerList listeners = new EventListenerList();
 
 	/**
-	 * constructeur, création de la fenetre principale
+	 * constructeur, création de la fenêtre principale
 	 */
-	private ApplicationCore() throws SQLException, IOException {
+	private ApplicationCore() throws SQLException {
 		debugLogger();
 		openDatabase();
 		checkUpdateDatabase();
@@ -175,13 +167,13 @@ public class ApplicationCore {
 	/**
 	 * Initialise l'application
 	 */
-	public synchronized static void initializeApplication()  throws SQLException, IOException {
+	public synchronized static void initializeApplication()  throws SQLException {
 		if (null == instance) { // Premier appel
 			instance = new ApplicationCore();
 		}
 	}
 	/**
-	 * Ajoute l'auditeur fournit en parametre aux auditeurs de la class
+	 * Ajoute l'auditeur fournit en paramètre aux auditeurs de la class
 	 * 
 	 * @param listener
 	 */
@@ -190,7 +182,7 @@ public class ApplicationCore {
 	}
 	
 	/**
-	 * Retire l'auditeur fournit en parametre aux auditeurs de la class
+	 * Retire l'auditeur fournit en paramètre aux auditeurs de la class
 	 * 
 	 * @param listener
 	 */
@@ -241,7 +233,7 @@ public class ApplicationCore {
 			}
 		}
 		
-		// Pour le debugage donne le systeme de l'utilisateur
+		// Pour le debugage donne le système de l'utilisateur
 		System.out.println("OS: " + System.getProperty("os.name")); //$NON-NLS-1$ //$NON-NLS-2$
 		System.out.println("Architecture: " + System.getProperty("os.arch"));   //$NON-NLS-1$ //$NON-NLS-2$
 		System.out.println("Version: " + System.getProperty("os.version"));    //$NON-NLS-1$//$NON-NLS-2$

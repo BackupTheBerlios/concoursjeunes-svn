@@ -109,7 +109,7 @@ import org.ajdeveloppement.commons.net.Proxy;
 /**
  * parametre de configuration de l'application
  * 
- * @author  Aurelien Jeoffray
+ * @author  Aurélien Jeoffray
  * @version  3.0
  */
 @XmlRootElement

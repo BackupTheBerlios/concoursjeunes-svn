@@ -120,7 +120,7 @@ import org.concoursjeunes.Profile;
 
 /**
  * Boite de dialogue de saisie des résultats pour une cible
- * @author  Aurelien Jeoffray
+ * @author  Aurélien Jeoffray
  * @version  3.0
  */
 

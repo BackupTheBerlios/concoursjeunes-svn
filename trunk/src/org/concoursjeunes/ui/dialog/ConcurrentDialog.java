@@ -169,7 +169,7 @@ import org.jdesktop.swingx.error.ErrorInfo;
 /**
  * Boite de dialogue de gestion d'un concurrent
  * 
- * @author Aurelien Jeoffray
+ * @author Aurélien Jeoffray
  * @version 5.0
  */
 public class ConcurrentDialog extends JDialog implements ActionListener, FocusListener, AutoCompleteDocumentListener, ItemListener {

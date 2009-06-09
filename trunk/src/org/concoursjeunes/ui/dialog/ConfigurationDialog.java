@@ -155,7 +155,7 @@ import com.lowagie.text.Rectangle;
 /**
  * Ecran de configuration de ConcoursJeunes
  * 
- * @author Aurelien Jeoffray
+ * @author Aurélien Jeoffray
  * @version 2.2
  */
 public class ConfigurationDialog extends JDialog implements ActionListener, AutoCompleteDocumentListener {

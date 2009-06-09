@@ -100,7 +100,7 @@ import org.concoursjeunes.builders.ReglementBuilder;
 /**
  * Parametre d'un concours
  * 
- * @author Aurelien Jeoffray
+ * @author Aurélien Jeoffray
  * @version 3.1
  */
 public class Parametre extends DefaultParameters {

@@ -102,7 +102,7 @@ import org.concoursjeunes.Concurrent;
 /**
  * Applique des icones à la liste des archers
  * 
- * @author Aurelien Jeoffray
+ * @author Aurélien Jeoffray
  * @version 2.0
  *
  */

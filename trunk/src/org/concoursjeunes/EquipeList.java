@@ -23,7 +23,7 @@ import org.ajdeveloppement.commons.ArraysUtils;
 /**
  * Represente la liste des équipes constitué sur un concours
  * 
- * @author  Aurelien Jeoffray
+ * @author  Aurélien Jeoffray
  * @version 1.1
  */
 public class EquipeList implements Cloneable {

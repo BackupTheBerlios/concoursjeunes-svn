@@ -131,7 +131,7 @@ import com.lowagie.text.Font;
 /**
  * Boite de dialogue de gestion des parametre du concours
  * 
- * @author Aurelien Jeoffray
+ * @author Aurélien Jeoffray
  * @version 2.0
  */
 public class ParametreDialog extends JDialog implements ActionListener, ListSelectionListener {

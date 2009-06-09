@@ -28,7 +28,7 @@ import org.ajdeveloppement.commons.sql.SqlPersistanceException;
  * Objet de Base de stockage des Information sur un concurrent:
  *  Nom Categorie Licence Cible Nombre de volée points
  *  
- * @author  Aurelien Jeoffray
+ * @author  Aurélien Jeoffray
  * @version  3.0
  */
 public class Concurrent extends Archer implements Cloneable {

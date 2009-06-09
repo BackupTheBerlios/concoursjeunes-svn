@@ -134,7 +134,7 @@ import org.jdesktop.swingx.JXHyperlink;
 /**
  * La liste des personnes présente daans la base des archers
  * 
- * @author Aurelien Jeoffray
+ * @author Aurélien Jeoffray
  * @version 2.0
  */
 public class ConcurrentListDialog extends JDialog implements ActionListener, MouseListener, CaretListener {

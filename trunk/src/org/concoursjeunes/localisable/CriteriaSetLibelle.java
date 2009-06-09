@@ -25,7 +25,7 @@ import org.concoursjeunes.CriterionElement;
 /**
  * Permet la génération du libellé représentant un jeux de critères
  * 
- * @author Aurelien JEOFFRAY
+ * @author Aurélien JEOFFRAY
  * @version 1.0
  */
 public class CriteriaSetLibelle {

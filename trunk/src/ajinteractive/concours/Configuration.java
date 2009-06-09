@@ -93,7 +93,7 @@ package ajinteractive.concours;
  * 
  * Permet de charger en mémoire les paramètres 1.1 afin de les convertirs au format 2.0
  * 
- * @author Aurelien Jeoffray
+ * @author Aurélien Jeoffray
  * @version 2.1
  *
  */

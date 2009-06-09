@@ -94,11 +94,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.Authenticator;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
+import java.security.*;
 import java.security.cert.CertificateException;
 import java.sql.SQLException;
 import java.util.List;
@@ -131,7 +127,7 @@ import org.jdesktop.swingx.error.ErrorInfo;
 /**
  * Class initial de l'application.
  * 
- * @author Aurelien JEOFFRAY
+ * @author Aurélien JEOFFRAY
  * @version 2.0
  * 
  */
@@ -182,9 +178,6 @@ public class Main {
 				} else {
 					System.exit(1);
 				}
-			} catch(IOException e1) {
-				JOptionPane.showMessageDialog(null, "Application Error!"); //$NON-NLS-1$
-				System.exit(1);
 			}
 		} while(retry);
 		

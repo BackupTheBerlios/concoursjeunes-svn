@@ -98,7 +98,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  * Collection des concurrents présent sur le concours
  * 
- * @author  Aurelien Jeoffray
+ * @author  Aurélien Jeoffray
  * @version  3.3
  */
 @XmlRootElement

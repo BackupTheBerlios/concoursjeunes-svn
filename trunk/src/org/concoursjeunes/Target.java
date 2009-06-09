@@ -104,7 +104,7 @@ import org.concoursjeunes.exceptions.PlacementException;
  * Reprensentation de l'entite 'Cible' avec ses parametres de distances, de
  * blason appliqué et les concurrents qui y sont associés
  * 
- * @author Aurelien Jeoffray
+ * @author Aurélien Jeoffray
  * @version 2.2
  */
 public class Target implements PropertyChangeListener {
