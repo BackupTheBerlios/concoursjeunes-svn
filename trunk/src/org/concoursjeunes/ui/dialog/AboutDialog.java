@@ -174,7 +174,7 @@ public class AboutDialog extends JDialog implements ActionListener, HyperlinkLis
 		String iconURL = ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
 				File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.about"); //$NON-NLS-1$
 		
-		jlAbout.setText("<html><table style=\"font-family: Tahoma, Arial, Verdana, sans-serif; font-size:12pt;\">" + //$NON-NLS-1$
+		jlAbout.setText("<html><table style=\"font-family: Tahoma, Arial, Verdana, sans-serif; font-size:12pt; font-weight:normal;\">" + //$NON-NLS-1$
 				"<tr><td><img src=\"file:"	+ iconURL + "\"></td><td><b>"  //$NON-NLS-1$ //$NON-NLS-2$
 				+ AppInfos.NOM + "<br>" + //$NON-NLS-1$ 
 				localisation.getResourceString("apropos.description") + "<br><br>" + //$NON-NLS-1$ //$NON-NLS-2$
