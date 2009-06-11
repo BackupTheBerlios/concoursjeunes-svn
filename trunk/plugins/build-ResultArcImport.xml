@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="FFTAImport" basedir="../">
-	<target name="pack-FFTAImport">
-		<mkdir dir="${projet.pack.dir}/plugins/FFTAImport/plugins" />
-		<jar jarfile="${projet.pack.dir}/plugins/FFTAImport/plugins/FFTAImport.jar">
+<project name="ResultArcImport" basedir="../">
+	<target name="pack-ResultArcImport">
+		<mkdir dir="${projet.pack.dir}/plugins/ResultArcImport/plugins" />
+		<jar jarfile="${projet.pack.dir}/plugins/ResultArcImport/plugins/ResultArcImport.jar">
 			<fileset dir="${projet.pack.dir}/bin" >
-				<include name="org/concoursjeunes/plugins/FFTAImport/**" />
+				<include name="org/concoursjeunes/plugins/ResultArcImport/**" />
 			</fileset>
 		</jar>
-		<copy todir="${projet.pack.dir}/plugins/FFTAImport/" >
+		<copy todir="${projet.pack.dir}/plugins/ResultArcImport/" >
 			<fileset dir="." >
-				<include name="plugins/properties/FFTAImportPlugin.properties" />
+				<include name="plugins/properties/ResultArcImportPlugin.properties" />
 				<include name="ExportWinFFTA.exe" />
 				<include name="*.DLL" />
 			</fileset>
@@ -20,15 +20,15 @@
 		</taskdef>
 
 		<revisionscreator 
-				revisionpath="${projet.pack.dir}/plugins/FFTAImport/revision.xml.gz"
+				revisionpath="${projet.pack.dir}/plugins/ResultArcImport/revision.xml.gz"
 				keystorepath="${projet.keystorepath}"
 				keystorepassword="${projet.keystorepassword}"
 				signkeysalias="${projet.signkeyalias}"
 				signkeysaliaspassword="${projet.signkeyaliaspassword}">
 			<system name="windows">
-				<fileset dir="${projet.pack.dir}/plugins/FFTAImport/">
-					<include name="plugins/FFTAImport.jar"/>
-					<include name="plugins/properties/FFTAImportPlugin.properties" />
+				<fileset dir="${projet.pack.dir}/plugins/ResultArcImport/">
+					<include name="plugins/ResultArcImport.jar"/>
+					<include name="plugins/properties/ResultArcImportPlugin.properties" />
 					<include name="ExportWinFFTA.exe" />
 					<include name="*.DLL" />
 				</fileset>

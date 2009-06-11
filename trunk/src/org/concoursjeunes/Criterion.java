@@ -388,6 +388,7 @@ public class Criterion implements SqlPersistance {
 		helper.delete(this, Collections.singletonMap("NUMREGLEMENT", (Object)reglement.getNumReglement())); //$NON-NLS-1$
 	}
 	
+	@SuppressWarnings("unused")
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
 		if(parent instanceof Reglement)
 			reglement = (Reglement)parent;

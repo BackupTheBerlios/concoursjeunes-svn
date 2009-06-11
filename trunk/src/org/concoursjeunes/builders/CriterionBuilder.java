@@ -148,7 +148,7 @@ public class CriterionBuilder {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			if(pstmt != null) try {pstmt.close(); } catch(SQLException e) { };
+			if(pstmt != null) try {pstmt.close(); } catch(SQLException e) { }
 		}
 
 		return null;

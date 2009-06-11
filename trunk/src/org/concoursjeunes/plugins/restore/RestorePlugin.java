@@ -107,7 +107,6 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.bind.JAXBException;
-import javax.xml.stream.XMLStreamException;
 
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.io.FileUtils;
@@ -172,10 +171,6 @@ public class RestorePlugin {
 							JXErrorPane.showDialog(parentframe, new ErrorInfo(profile.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 									null, null, e, Level.SEVERE, null));
 							e.printStackTrace();
-						} catch (XMLStreamException e) {
-							JXErrorPane.showDialog(parentframe, new ErrorInfo(profile.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
-									null, null, e, Level.SEVERE, null));
-							e.printStackTrace();
 						}
 						
 						for(MetaDataFicheConcours metaDataFicheConcours : configuration.getMetaDataFichesConcours().getFiches()) {
@@ -203,10 +198,6 @@ public class RestorePlugin {
 						null, null, e, Level.SEVERE, null));
 				e.printStackTrace();
 			} catch (JAXBException e) {
-				JXErrorPane.showDialog(parentframe, new ErrorInfo(profile.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
-						null, null, e, Level.SEVERE, null));
-				e.printStackTrace();
-			} catch (XMLStreamException e) {
 				JXErrorPane.showDialog(parentframe, new ErrorInfo(profile.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 						null, null, e, Level.SEVERE, null));
 				e.printStackTrace();
@@ -252,9 +243,9 @@ public class RestorePlugin {
 			e.printStackTrace();
 		} finally {
 			if(jos != null)
-				try { jos.close(); } catch(IOException e) {};
+				try { jos.close(); } catch(IOException e) {}
 			if(is != null)
-				try { is.close(); } catch(IOException e) {};
+				try { is.close(); } catch(IOException e) {}
 			unpack = null;
 			jos = null;
 		}

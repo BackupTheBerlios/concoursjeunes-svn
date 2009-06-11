@@ -86,7 +86,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes.plugins.FFTAImport;
+package org.concoursjeunes.plugins.ResultArcImport;
 
 import java.util.EventListener;
 
@@ -94,7 +94,7 @@ import java.util.EventListener;
  * @author Aurélien JEOFFRAY
  *
  */
-public interface FFTAImportThreadListener extends EventListener {
+public interface ResultArcImportThreadListener extends EventListener {
 	public void progressionInfo(String info);
 	public void importFinished();
 }

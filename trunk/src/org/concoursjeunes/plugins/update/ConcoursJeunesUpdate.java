@@ -106,7 +106,6 @@ import java.util.Map;
 
 import javax.swing.JOptionPane;
 import javax.xml.bind.JAXBException;
-import javax.xml.stream.XMLStreamException;
 
 import org.ajdeveloppement.apps.AppUtilities;
 import org.ajdeveloppement.commons.AJToolKit;
@@ -285,8 +284,6 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 					} catch (SQLException e) {
 						e.printStackTrace();
 					} catch(JAXBException e) {
-						e.printStackTrace();
-					} catch (XMLStreamException e) {
 						e.printStackTrace();
 					}
 					

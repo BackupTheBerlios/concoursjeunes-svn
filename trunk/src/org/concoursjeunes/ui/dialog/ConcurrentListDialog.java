@@ -99,18 +99,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
-import javax.swing.RowFilter;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
+import javax.swing.*;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.table.AbstractTableModel;
@@ -554,19 +543,10 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 
 		private final ArrayList<String> columnsName = new ArrayList<String>();
 		private List<Concurrent> rows = new ArrayList<Concurrent>();
-		// private ArrayList<SoftReference<Concurrent>> softRows = new ArrayList<SoftReference<Concurrent>>();
-
-		// private ResultSet archersRS;
 
 		private Concurrent curConcurrent = null;
 
-		// private int rowCount = 0;
-
 		public ArchersTableModel() {
-			this(null);
-		}
-
-		public ArchersTableModel(Archer filter) {
 			columnsName.add(localisation.getResourceString("listeconcurrent.numlicence")); //$NON-NLS-1$
 			columnsName.add(localisation.getResourceString("listeconcurrent.nom")); //$NON-NLS-1$
 			columnsName.add(localisation.getResourceString("listeconcurrent.prenom")); //$NON-NLS-1$
@@ -582,7 +562,6 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 				
 				last = rows.size() -1;
 				first = last - concurrents.size();
-				//System.out.println(first + ">" + last);
 				if(last > first)
 					fireTableRowsInserted(first, last);
 			}

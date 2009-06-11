@@ -89,7 +89,6 @@ package org.concoursjeunes;
 import java.io.IOException;
 
 import javax.xml.bind.JAXBException;
-import javax.xml.stream.XMLStreamException;
 
 import junit.framework.TestCase;
 
@@ -191,8 +190,6 @@ public class FicheConcoursTest extends TestCase {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (JAXBException e) {
-			e.printStackTrace();
-		} catch (XMLStreamException e) {
 			e.printStackTrace();
 		}
 	}

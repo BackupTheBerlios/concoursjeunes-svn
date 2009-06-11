@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.xml.bind.JAXBException;
-import javax.xml.stream.XMLStreamException;
 
 import junit.framework.TestCase;
 
@@ -83,8 +82,6 @@ public class ProfileTest extends TestCase {
 			e.printStackTrace();
 		} catch (JAXBException e) {
 			e.printStackTrace();
-		} catch (XMLStreamException e) {
-			e.printStackTrace();
 		}
 		
 		assertTrue(profile.getFichesConcours().size()==1);
@@ -101,10 +98,7 @@ public class ProfileTest extends TestCase {
 			e.printStackTrace();
 		} catch (JAXBException e) {
 			e.printStackTrace();
-		} catch (XMLStreamException e) {
-			e.printStackTrace();
 		}
-		
 		assertFalse(new File(ApplicationCore.userRessources.getConcoursPathForProfile(profile), ficheConcours.getMetaDataFicheConcours().getFilenameConcours()).exists());
 	}
 
@@ -143,8 +137,6 @@ public class ProfileTest extends TestCase {
 			e.printStackTrace();
 		} catch (JAXBException e) {
 			e.printStackTrace();
-		} catch (XMLStreamException e) {
-			e.printStackTrace();
 		}
 		
 		FicheConcours tmp = ficheConcours;
@@ -156,8 +148,6 @@ public class ProfileTest extends TestCase {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (JAXBException e) {
-			e.printStackTrace();
-		} catch (XMLStreamException e) {
 			e.printStackTrace();
 		}
 		assertNull(ficheConcours);

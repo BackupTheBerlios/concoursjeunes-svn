@@ -145,7 +145,7 @@ public class StateProcessor {
 	}
 	
 	public void process(int depart, int serie, boolean save)
-			throws IOException, ScriptException, FileNotFoundException, DocumentException, NoSuchMethodException {
+			throws IOException, ScriptException, FileNotFoundException, DocumentException {
 		Document document = new Document();
 		String filePath;
 		

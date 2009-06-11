@@ -86,7 +86,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes.plugins.FFTAImport;
+package org.concoursjeunes.plugins.ResultArcImport;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -118,7 +118,7 @@ import org.concoursjeunes.plugins.PluginEntry;
  * 
  */
 @Plugin(type = Plugin.Type.ON_DEMAND)
-public class FFTAImportDialog extends JDialog implements ActionListener, FFTAImportThreadListener {
+public class ResultArcImportDialog extends JDialog implements ActionListener, ResultArcImportThreadListener {
 
 	private Profile profile;
 	
@@ -130,9 +130,9 @@ public class FFTAImportDialog extends JDialog implements ActionListener, FFTAImp
 
 	private JButton jbAnnuler = new JButton();
 
-	private AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.FFTAImport.FFTAImportPlugin_libelle", FFTAImportDialog.class.getClassLoader()); //$NON-NLS-1$
+	private AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.ResultArcImport.FFTAImportPlugin_libelle", ResultArcImportDialog.class.getClassLoader()); //$NON-NLS-1$
 
-	public FFTAImportDialog(JFrame parentframe, Profile profile) {
+	public ResultArcImportDialog(JFrame parentframe, Profile profile) {
 		super(parentframe);
 		
 		this.profile = profile;
@@ -213,7 +213,7 @@ public class FFTAImportDialog extends JDialog implements ActionListener, FFTAImp
 				jtfEmplacementLFFTA.setText(jfc.getSelectedFile().getPath());
 			}
 		} else if (e.getSource() == jbSart) {
-			FFTAImportThread fftaIT = new FFTAImportThread(profile.getLocalisation());
+			ResultArcImportThread fftaIT = new ResultArcImportThread(profile.getLocalisation());
 			fftaIT.setParentFrame(this);
 			fftaIT.setFftalogpath(jtfEmplacementLFFTA.getText());
 			fftaIT.addFFTAImportThreadListener(this);
@@ -227,7 +227,7 @@ public class FFTAImportDialog extends JDialog implements ActionListener, FFTAImp
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.concoursjeunes.plugins.FFTAImport.FFTAImportThreadListener#importFinished()
+	 * @see org.concoursjeunes.plugins.ResultArcImport.ResultArcImportThreadListener#importFinished()
 	 */
 	public void importFinished() {
 		JOptionPane.showMessageDialog(this, pluginLocalisation.getResourceString("message.import.fin"), //$NON-NLS-1$
@@ -238,7 +238,7 @@ public class FFTAImportDialog extends JDialog implements ActionListener, FFTAImp
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.concoursjeunes.plugins.FFTAImport.FFTAImportThreadListener#progressionInfo(java.lang.String)
+	 * @see org.concoursjeunes.plugins.ResultArcImport.ResultArcImportThreadListener#progressionInfo(java.lang.String)
 	 */
 	public void progressionInfo(String info) {
 		jpbProgression.setString(info);

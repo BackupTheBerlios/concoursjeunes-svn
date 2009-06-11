@@ -98,7 +98,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.stream.XMLStreamException;
 
 import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.ajdeveloppement.commons.net.Proxy;
@@ -196,7 +195,7 @@ public class AppConfiguration implements Cloneable {
 	 * sauvegarde la configuration général du programme
 	 *
 	 */
-	public void save() throws JAXBException, IOException, XMLStreamException {
+	public void save() throws JAXBException, IOException {
 		File f = new File(ApplicationCore.userRessources.getConfigPathForUser(),
 				ApplicationCore.staticParameters.getResourceString("file.configuration")); //$NON-NLS-1$
 		XMLSerializer.saveMarshallStructure(f, this);

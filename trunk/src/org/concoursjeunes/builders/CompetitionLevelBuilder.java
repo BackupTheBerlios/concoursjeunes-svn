@@ -122,7 +122,7 @@ public class CompetitionLevelBuilder {
 		
 		CompetitionLevel competitionLevel = null;
 		
-		PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);;
+		PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
 		try {
 			pstmt.setInt(1, numLevel);
 			pstmt.setInt(2, federation.getNumFederation());

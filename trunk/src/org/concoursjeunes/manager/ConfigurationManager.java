@@ -98,7 +98,6 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import javax.xml.bind.JAXBException;
-import javax.xml.stream.XMLStreamException;
 
 import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.concoursjeunes.AppConfiguration;
@@ -205,8 +204,6 @@ public class ConfigurationManager {
 				e.printStackTrace();
 			} catch (JAXBException e) {
 				e.printStackTrace();
-			} catch (XMLStreamException e) {
-				e.printStackTrace();
 			}
 		}
 		
@@ -247,7 +244,7 @@ public class ConfigurationManager {
 				appConfiguration.setUseProxy(oldConf.isUseProxy());
 				appConfiguration.save();
 				
-				//on reset les paramètres obsoléte
+				//on reset les paramètres obsolète
 				//oldConf.setFirstboot(true);
 				oldConf.setPdfReaderPath(null); 
 				oldConf.setProxy(null);
@@ -260,9 +257,6 @@ public class ConfigurationManager {
 				//ne rien faire, c'est que la configuration n'a pas été créé
 				appConfiguration = null;
 			} catch (IOException e) {
-				e.printStackTrace();
-				appConfiguration = null;
-			} catch (XMLStreamException e) {
 				e.printStackTrace();
 				appConfiguration = null;
 			}

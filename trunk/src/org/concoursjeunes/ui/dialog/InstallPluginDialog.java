@@ -105,20 +105,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import javax.swing.DefaultListSelectionModel;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
-import javax.swing.ListSelectionModel;
-import javax.swing.RowFilter;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.ListSelectionEvent;
@@ -126,7 +113,6 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import javax.xml.bind.JAXBException;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.ws.WebServiceException;
 
 import org.ajdeveloppement.commons.AjResourcesReader;
@@ -526,10 +512,6 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 							e.printStackTrace();
 							JXErrorPane.showDialog(null, new ErrorInfo(localisation.getResourceString("erreur"), //$NON-NLS-1$
 									e.toString(), null, null, e, Level.SEVERE, null));
-						} catch (XMLStreamException e) {
-							e.printStackTrace();
-							JXErrorPane.showDialog(null, new ErrorInfo(localisation.getResourceString("erreur"), //$NON-NLS-1$
-									e.toString(), null, null, e, Level.SEVERE, null));
 						}
 						
 						Process process = null;
@@ -543,7 +525,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 							
 						} else {
 							//sur les systèmes Windows et Linux, invoque le programme "concoursjeunes-applyupdate"
-							//qui s'occupe d'élever les priviléges utilisateur si nécessaire.				
+							//qui s'occupe d'élever les privilèges utilisateur si nécessaire.				
 							process = Runtime.getRuntime().exec(command); 
 						}
 						if(process != null)

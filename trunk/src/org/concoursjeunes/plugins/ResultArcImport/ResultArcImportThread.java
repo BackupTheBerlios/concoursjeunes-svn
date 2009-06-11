@@ -1,4 +1,4 @@
-package org.concoursjeunes.plugins.FFTAImport;
+package org.concoursjeunes.plugins.ResultArcImport;
 
 import java.io.File;
 import java.io.FileReader;
@@ -24,18 +24,18 @@ import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
 /**
- * Plugin d'import d'une base WinFFTA 2 (Format Windev HF) vers ConcoursJeunes (Format Java XML)
+ * Plugin d'import d'une base Result'Arc (Format Windev HF) vers ConcoursJeunes
  * 
  * @author Aurélien JEOFFRAY
  */
 
-public class FFTAImportThread extends Thread {
+public class ResultArcImportThread extends Thread {
 
 	private JDialog parentframe;
 	private AjResourcesReader localisation;
 
 	private final AjResourcesReader pluginRessources = new AjResourcesReader("properties.FFTAImportPlugin"); //$NON-NLS-1$
-	private final AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.FFTAImport.FFTAImportPlugin_libelle", FFTAImportThread.class.getClassLoader()); //$NON-NLS-1$
+	private final AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.ResultArcImport.FFTAImportPlugin_libelle", ResultArcImportThread.class.getClassLoader()); //$NON-NLS-1$
 	private final EventListenerList listeners = new EventListenerList();
 
 	private String fftalogpath = ""; //$NON-NLS-1$
@@ -44,21 +44,21 @@ public class FFTAImportThread extends Thread {
 	 * 
 	 * 
 	 */
-	public FFTAImportThread(AjResourcesReader localisation) {
-		this.setName("FFTAImportThread"); //$NON-NLS-1$
+	public ResultArcImportThread(AjResourcesReader localisation) {
+		this.setName("ResultArcImportThread"); //$NON-NLS-1$
 		this.localisation = localisation;
 	}
 
-	public void addFFTAImportThreadListener(FFTAImportThreadListener listener) {
-		listeners.add(FFTAImportThreadListener.class, listener);
+	public void addFFTAImportThreadListener(ResultArcImportThreadListener listener) {
+		listeners.add(ResultArcImportThreadListener.class, listener);
 	}
 
-	public void removeFFTAImportThreadListener(FFTAImportThreadListener listener) {
-		listeners.remove(FFTAImportThreadListener.class, listener);
+	public void removeFFTAImportThreadListener(ResultArcImportThreadListener listener) {
+		listeners.remove(ResultArcImportThreadListener.class, listener);
 	}
 
 	/**
-	 * Definit l'objet parent auquel est rattaché le plugin
+	 * Définit l'objet parent auquel est rattaché le plugin
 	 * 
 	 * @param parentframe la boite de dialogue rattaché au thread
 	 */
@@ -237,13 +237,13 @@ public class FFTAImportThread extends Thread {
 	}
 
 	private void fireProgressionInfo(String info) {
-		for (FFTAImportThreadListener listener : listeners.getListeners(FFTAImportThreadListener.class)) {
+		for (ResultArcImportThreadListener listener : listeners.getListeners(ResultArcImportThreadListener.class)) {
 			listener.progressionInfo(info);
 		}
 	}
 
 	private void fireImportFinished() {
-		for (FFTAImportThreadListener listener : listeners.getListeners(FFTAImportThreadListener.class)) {
+		for (ResultArcImportThreadListener listener : listeners.getListeners(ResultArcImportThreadListener.class)) {
 			listener.importFinished();
 		}
 	}

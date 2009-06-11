@@ -101,7 +101,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.stream.XMLStreamException;
 
 import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.ajdeveloppement.commons.net.Proxy;
@@ -498,7 +497,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	 * sauvegarde la configuration général du programme
 	 *
 	 */
-	public void save() throws JAXBException, IOException, XMLStreamException {
+	public void save() throws JAXBException, IOException {
 		File f = new File(ApplicationCore.userRessources.getConfigPathForUser(),
 				CONFIG_PROFILE + curProfil + EXT_XML);
 		XMLSerializer.saveMarshallStructure(f, this);

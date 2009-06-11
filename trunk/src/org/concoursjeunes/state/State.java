@@ -320,7 +320,7 @@ public class State implements Comparable<State> {
 		scriptEngine.eval(reader);
 		reader.close();
 		
-		stateScript = ((Invocable)scriptEngine).getInterface(StateScriptInterface.class);;
+		stateScript = ((Invocable)scriptEngine).getInterface(StateScriptInterface.class);
 	}
 	
 	/**
@@ -338,7 +338,7 @@ public class State implements Comparable<State> {
 		return new File(statePath).toURI().toURL();
 	}
 
-	public boolean checkPrintable(FicheConcours ficheConcours, StateOptions options) throws ScriptException, NoSuchMethodException {
+	public boolean checkPrintable(FicheConcours ficheConcours, StateOptions options) throws ScriptException {
 		if(stateScript == null) {
 			try {
 				compileScript();
@@ -353,7 +353,7 @@ public class State implements Comparable<State> {
 	}
 	
 	@SuppressWarnings("nls")
-	public boolean printState(FicheConcours ficheConcours, Document document, StateOptions options, File pdfPath) throws ScriptException, NoSuchMethodException, FileNotFoundException, DocumentException, MalformedURLException {
+	public boolean printState(FicheConcours ficheConcours, Document document, StateOptions options, File pdfPath) throws ScriptException, FileNotFoundException, DocumentException, MalformedURLException {
 		if(!checkPrintable(ficheConcours, options))
 			return false;
 		

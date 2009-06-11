@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="ConcoursJeunes" default="auto-pack">
+<project name="ConcoursJeunes" default="auto-pack" basedir="./">
 	<description>
 		Generation de ConcoursJeunes
 	</description>
@@ -36,7 +36,7 @@
 	<property file="packager/security.properties" />
 
 	<import file="plugins/build-ConcoursJeunesUpdate.xml"/>
-	<import file="plugins/build-FFTAImport.xml"/>
+	<import file="plugins/build-ResultArcImport.xml"/>
 	<import file="plugins/build-PhoenixPlugin.xml"/>
 	<import file="plugins/build-BackupRestorePlugin.xml"/>
 
@@ -123,7 +123,6 @@
 		<copy todir="${projet.pack.dir}">
 			<fileset dir="packager" >
 				<include name="*.txt" />
-				<include name="MANIFEST.MF" />
 			</fileset>
 			<fileset dir="packager/macosx/ConcoursJeunes.app/Contents/Resources/Java">
 				<include name="**" />
@@ -138,13 +137,6 @@
 			    property="version.numero"/>
 		</replace>
 
-		<replace 
-		    file="${projet.pack.dir}/MANIFEST.MF"
-			propertyFile="packager/version.properties">
-			<replacefilter 
-			    token="@classpath@" 
-			    property="classpath"/>
-		</replace>
 	</target>
 
 	<target name="compile" depends="pack_stage1">
@@ -168,6 +160,10 @@
 
 	<target name="jar" depends="compile">
 
+		<manifest file="${projet.pack.dir}/MANIFEST.MF" mode="update">
+		    <attribute name="Main-Class" value="org.concoursjeunes.Main"/>
+			<attribute name="Class-Path" value="${classpath}"/>
+        </manifest>
 		<jar jarfile="${projet.pack.dir}/ConcoursJeunes.jar"
 			manifest="${projet.pack.dir}/MANIFEST.MF">
 
@@ -198,11 +194,10 @@
 	</target>
 
 	<target name="revisions" description="revisions">
-		<taskdef name="revisionscreator" classname="org.ajdeveloppement.updater.ant.RevisionsCreator">
+		<taskdef name="revisionscreator"
+			classname="org.ajdeveloppement.updater.ant.RevisionsCreator">
 			<classpath location="lib/ajcommons.jar"/>
 		</taskdef>
-		
-		<echo message="${projet.keystorepath}" />
 
 		<revisionscreator
 				revisionpath="${projet.pack.dir}/revision.xml.gz"
@@ -446,7 +441,7 @@
 	
 
 	<target name="windows" description="Pack Windows" if="isWindows">
-		<antcall target="pack-FFTAImport" />
+		<antcall target="pack-ResultArcImport" />
 		<antcall target="makensissetup" />
 	</target>
 	<target name="linux" description="Pack Linux" if="isLinux">
@@ -463,7 +458,7 @@
 		<antcall target="jar" />
 		<antcall target="pack-ConcoursJeunesUpdate" />
 		<antcall target="pack-PhoenixPlugin" />
-		<antcall target="pack-FFTAImport" />
+		<antcall target="pack-ResultArcImport" />
 		<antcall target="pack-BackupRestorePlugin" />
 		<antcall target="revisions" />
 		<antcall target="makensissetup" />

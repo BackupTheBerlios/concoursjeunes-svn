@@ -280,6 +280,7 @@ public class DistancesEtBlason implements SqlPersistance {
 		return ldb.get(0);
 	}
 	
+	@SuppressWarnings("unused")
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
 		if(parent instanceof Reglement)
 			criteriaSet.setReglement((Reglement)parent);

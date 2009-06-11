@@ -105,25 +105,10 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.logging.Level;
 
-import javax.swing.Box;
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.bind.JAXBException;
-import javax.xml.stream.XMLStreamException;
 
 import org.ajdeveloppement.apps.AppUtilities;
 import org.ajdeveloppement.apps.Localisable;
@@ -131,16 +116,7 @@ import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.StringUtils;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
-import org.concoursjeunes.AppConfiguration;
-import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.AutoCompleteDocument;
-import org.concoursjeunes.AutoCompleteDocumentContext;
-import org.concoursjeunes.Configuration;
-import org.concoursjeunes.Entite;
-import org.concoursjeunes.Federation;
-import org.concoursjeunes.Margin;
-import org.concoursjeunes.Profile;
-import org.concoursjeunes.Reglement;
+import org.concoursjeunes.*;
 import org.concoursjeunes.builders.ReglementBuilder;
 import org.concoursjeunes.event.AutoCompleteDocumentEvent;
 import org.concoursjeunes.event.AutoCompleteDocumentListener;
@@ -794,10 +770,6 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 			JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), //$NON-NLS-1$
 					e.toString(), null, null, e, Level.SEVERE, null));
 			e.printStackTrace();
-		} catch (XMLStreamException e) {
-			JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), //$NON-NLS-1$
-					e.toString(), null, null, e, Level.SEVERE, null));
-			e.printStackTrace();
 		}
 		
 		this.workConfiguration = configuration;
@@ -838,7 +810,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		this.workConfiguration = workConfiguration;
 	}
 
-	private void loadProfile() throws IOException {
+	private void loadProfile() {
 		renamedProfile = false;
 		workConfiguration = ConfigurationManager.loadConfiguration((String) jcbProfil.getSelectedItem());
 		completePanel();
@@ -847,7 +819,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	}
 
 	/**
-	 * Détérmine si le profil à été ou non renomé
+	 * Détermine si le profil à été ou non renommé
 	 * 
 	 * @return <code>true</true> si le profil à été renomé, <code>false</code> sinon
 	 */
@@ -972,13 +944,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		} else if (source == jcbProfil) {
 			if (!renameProfile) {
 				if (jcbProfil.getSelectedIndex() > -1 && jcbProfil.getSelectedIndex() < jcbProfil.getItemCount() - 2) {
-					try {
-						loadProfile();
-					} catch (IOException e1) {
-						JXErrorPane.showDialog(null, new ErrorInfo(localisation.getResourceString("erreur"), //$NON-NLS-1$
-								e1.toString(), null, null, e1, Level.SEVERE, null));
-						e1.printStackTrace();
-					}
+					loadProfile();
 				} else if (jcbProfil.getSelectedIndex() == jcbProfil.getItemCount() - 1) {
 					String strP = JOptionPane.showInputDialog(this, localisation.getResourceString("configuration.ecran.general.newprofile")); //$NON-NLS-1$
 					if (strP != null && !strP.equals("")) {  //$NON-NLS-1$
