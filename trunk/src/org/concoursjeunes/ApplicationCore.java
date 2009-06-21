@@ -88,10 +88,18 @@
  */
 package org.concoursjeunes;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.security.KeyStoreException;
 import java.security.cert.CertificateException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -191,13 +199,15 @@ public class ApplicationCore {
 	}
 	
 	/**
-	 * Retourne l'instance unique du moteur du logiciel ou null si le moteur
-	 * n'est pas initialisé.<br>
+	 * Retourne l'instance unique du moteur du logiciel ou renvoie une RuntimeException si
+	 * non initialisé.<br>
 	 * <i>Pour initialisé le moteur, lancer la méthode static {@link ApplicationCore#initializeApplication()}</i>
 	 * 
 	 * @return l'instance de ConcoursJeunes
 	 */
 	public static ApplicationCore getInstance() {
+		if(instance == null)
+			throw new RuntimeException("ApplicationCore is not initialized. Invoke initializeApplication() before"); //$NON-NLS-1$
 		return instance;
 	}
 	

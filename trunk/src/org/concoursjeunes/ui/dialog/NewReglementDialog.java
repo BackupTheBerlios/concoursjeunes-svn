@@ -89,10 +89,12 @@
 package org.concoursjeunes.ui.dialog;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -102,6 +104,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.ajdeveloppement.apps.AppUtilities;
+import org.ajdeveloppement.apps.Localisable;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.concoursjeunes.Federation;
@@ -109,24 +113,38 @@ import org.concoursjeunes.Profile;
 import org.concoursjeunes.Reglement;
 import org.concoursjeunes.builders.ReglementBuilder;
 import org.concoursjeunes.manager.FederationManager;
+import org.concoursjeunes.manager.ReglementManager;
+import org.jdesktop.swingx.JXHeader;
+import org.jdesktop.swingx.painter.GlossPainter;
 
 /**
  * @author Aurélien JEOFFRAY
  *
  */
+@Localisable(textMethod="setTitle",value="newreglement.title")
 public class NewReglementDialog extends JDialog implements ActionListener {
 	
 	private Profile profile;
 	private AjResourcesReader localisation;
 	
+	@Localisable(textMethod="setTitle",value="newreglement.headertitle")
+	private JXHeader headerCreateReglement = new JXHeader();
+	@Localisable("newreglement.name")
 	private JLabel jlReglementName = new JLabel();
+	@Localisable("newreglement.federation")
 	private JLabel jlFederation = new JLabel();
+	@Localisable("newreglement.reference")
+	private JLabel jlReference = new JLabel();
+	@Localisable("newreglement.category")
 	private JLabel jlCategorie = new JLabel();
 	private JTextField jtfReglementName = new JTextField(20);
 	private JComboBox jcbFederation = new JComboBox();
+	private JComboBox jcbReference = new JComboBox();
 	private JComboBox jcbCategorie = new JComboBox();
 	
+	@Localisable("bouton.valider")
 	private JButton jbValider = new JButton();
+	@Localisable("bouton.annuler")
 	private JButton jbAnnuler = new JButton();
 	
 	private Reglement reglement = null;
@@ -154,6 +172,11 @@ public class NewReglementDialog extends JDialog implements ActionListener {
 		GridbagComposer gpComposer = new GridbagComposer();
 		GridBagConstraints c = new GridBagConstraints();
 		
+		GlossPainter gloss = new GlossPainter();
+		headerCreateReglement.setBackground(new Color(200,200,255));
+		headerCreateReglement.setBackgroundPainter(gloss);
+		headerCreateReglement.setTitleFont(headerCreateReglement.getTitleFont().deriveFont(18.0f));
+		
 		jcbCategorie.addItem(localisation.getResourceString("reglementmanager.category.young")); //$NON-NLS-1$
 		jcbCategorie.addItem(localisation.getResourceString("reglementmanager.category.indoor")); //$NON-NLS-1$
 		jcbCategorie.addItem(localisation.getResourceString("reglementmanager.category.outdoor")); //$NON-NLS-1$
@@ -172,6 +195,9 @@ public class NewReglementDialog extends JDialog implements ActionListener {
 		gpComposer.addComponentIntoGrid(jlFederation, c);
 		gpComposer.addComponentIntoGrid(jcbFederation, c);
 		c.gridy++;
+		gpComposer.addComponentIntoGrid(jlReference, c);
+		gpComposer.addComponentIntoGrid(jcbReference, c);
+		c.gridy++;
 		gpComposer.addComponentIntoGrid(jlCategorie, c);
 		gpComposer.addComponentIntoGrid(jcbCategorie, c);
 		
@@ -180,20 +206,14 @@ public class NewReglementDialog extends JDialog implements ActionListener {
 		jpAction.add(jbAnnuler);
 		
 		setLayout(new BorderLayout());
+		add(headerCreateReglement, BorderLayout.NORTH);
 		add(jpPrincipal, BorderLayout.CENTER);
 		add(jpAction, BorderLayout.SOUTH);
 		
 	}
 	
 	private void affectLibelle() {
-		setTitle(localisation.getResourceString("newreglement.title")); //$NON-NLS-1$
-		
-		jlReglementName.setText(localisation.getResourceString("newreglement.name")); //$NON-NLS-1$
-		jlFederation.setText(localisation.getResourceString("newreglement.federation")); //$NON-NLS-1$
-		jlCategorie.setText(localisation.getResourceString("newreglement.category")); //$NON-NLS-1$
-		
-		jbValider.setText(localisation.getResourceString("bouton.valider")); //$NON-NLS-1$
-		jbAnnuler.setText(localisation.getResourceString("bouton.annuler")); //$NON-NLS-1$
+		AppUtilities.localize(this, localisation);
 	}
 	
 	private void completePanel() {
@@ -202,6 +222,14 @@ public class NewReglementDialog extends JDialog implements ActionListener {
 			jcbFederation.addItem(federation);
 		}
 		jcbFederation.addItem(localisation.getResourceString("newreglement.addfederation")); //$NON-NLS-1$
+		
+		ReglementManager reglementManager = new ReglementManager();
+		
+		jcbReference.removeAllItems();
+		jcbReference.addItem(""); //$NON-NLS-1$
+		for(Reglement reglement : reglementManager.getAvailableReglements()) {
+			jcbReference.addItem(reglement);
+		}
 	}
 	
 	public Reglement showNewReglementDialog() {
@@ -221,6 +249,12 @@ public class NewReglementDialog extends JDialog implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == jbValider) {
 			Reglement reglement = ReglementBuilder.createReglement();
+			if(jcbReference.getSelectedItem() instanceof Reglement) {
+				Reglement reference = (Reglement)jcbReference.getSelectedItem();
+				reglement = ReglementBuilder.getReglement(reference.getNumReglement());
+				reglement.setName("C"+(new Date().getTime())); //$NON-NLS-1$
+			}
+			
 			reglement.setDisplayName(jtfReglementName.getText());
 			reglement.setFederation((Federation)jcbFederation.getSelectedItem());
 			reglement.setCategory(jcbCategorie.getSelectedIndex() + 1);

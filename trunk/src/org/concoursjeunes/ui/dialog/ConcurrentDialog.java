@@ -369,10 +369,10 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		jpInscription.add(jcbInscription);
 
 		jpPlaceLibre.setLayout(new BorderLayout());
-		jpPlaceLibre.setPreferredSize(new Dimension(250, 100));
+		jpPlaceLibre.setPreferredSize(new Dimension(300, 100));
 		jpPlaceLibre.setBorder(new TitledBorder("")); //$NON-NLS-1$
-
-		jpPlaceLibre.add(new JScrollPane(jlPlaceLibre), BorderLayout.CENTER);
+		JScrollPane spPlaceLibre = new JScrollPane(jlPlaceLibre);
+		jpPlaceLibre.add(spPlaceLibre, BorderLayout.CENTER);
 
 		jpActionPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 

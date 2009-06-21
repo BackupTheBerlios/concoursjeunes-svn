@@ -218,6 +218,7 @@ public class Reglement implements SqlPersistance {
 		}
 	}
 	
+	@XmlTransient
 	protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
 	/**
@@ -256,6 +257,9 @@ public class Reglement implements SqlPersistance {
 	 */
 	public void setNumReglement(int numReglement) {
 		this.numReglement = numReglement;
+		
+		//force le recalcul du hashCode des Entry
+		surclassement.putAll(new HashMap<CriteriaSet, CriteriaSet>(surclassement));
 	}
 
 	/**
@@ -800,8 +804,9 @@ public class Reglement implements SqlPersistance {
 					pstmt.setString(1, name);
 					ResultSet rs = pstmt.executeQuery();
 					try {
-						if(rs.first())
-							numReglement = rs.getInt(1);
+						if(rs.first()) {
+							setNumReglement(rs.getInt(1));
+						}
 					} finally {
 						rs.close();
 					}
@@ -812,8 +817,14 @@ public class Reglement implements SqlPersistance {
 				throw new SqlPersistanceException(e);
 			}
 		}
-		
+
+		boolean creation = false;
+		if(numReglement == 0)
+			creation = true;
 		helper.save(this, Collections.singletonMap("NUMFEDERATION", (Object)federation.getNumFederation())); //$NON-NLS-1$
+		
+		if(creation)
+			setNumReglement(numReglement); //force le recalcul des hashCode des surclassements
 
 		try {
 			saveTie();
@@ -962,11 +973,11 @@ public class Reglement implements SqlPersistance {
 			new SqlPersistanceException("delete this Reglement is not authorized because there is official"); //$NON-NLS-1$
 	}
 	
-	@SuppressWarnings("unused")
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
 		for(Entry<CriteriaSet, CriteriaSet> entry : surclassement.entrySet()) {
 			entry.getKey().setReglement(this);
-			entry.getValue().setReglement(this);
+			if(entry.getValue() != null)
+				entry.getValue().setReglement(this);
 		}
 	}
 

@@ -102,19 +102,37 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.DefaultListSelectionModel;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.RowFilter;
+import javax.swing.SwingUtilities;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableRowSorter;
 import javax.xml.bind.JAXBException;
 import javax.xml.ws.WebServiceException;
 
+import org.ajdeveloppement.apps.AppUtilities;
+import org.ajdeveloppement.apps.Localisable;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.AJList;
 import org.ajdeveloppement.macosx.PrivilegedRuntime;
@@ -143,10 +161,13 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 	private Profile profile;
 	private AjResourcesReader localisation;
 	
+	@Localisable("installplugindialog.category")
 	private final JLabel jllCategorie = new JLabel();
 	private final AJList<String> jlCategorie = new AJList<String>();
 	
+	@Localisable("installplugindialog.plugins")
 	private final JLabel jlPlugins = new JLabel();
+	@Localisable("installplugindialog.search")
 	private final JLabel jlSearch = new JLabel();
 	private final JTextField jtfSearch = new JTextField();
 	private final JTable jtPlugins = new JTable() {
@@ -157,13 +178,17 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 			return getValueAt(0, column).getClass();
 		}
 	};
-	private TableRowSorter<DefaultTableModel> sorter;
+	private PluginDescriptionTableModel pdtm = new PluginDescriptionTableModel();
+	private TableRowSorter<PluginDescriptionTableModel> sorter = new TableRowSorter<PluginDescriptionTableModel>(pdtm);
 	private final JTextPane jtpDescription = new JTextPane();
 	
+	@Localisable("installplugindialog.addurl")
+	private JButton jbAddURL = new JButton();
+	@Localisable("bouton.valider")
 	private final JButton jbValider = new JButton();
+	@Localisable("bouton.annuler")
 	private final JButton jbAnnuler = new JButton();
 	
-	private List<PluginDescription> pluginsDetail;
 	private AjUpdater ajUpdater;
 	
 	public InstallPluginDialog(JFrame parentframe, Profile profile) {
@@ -187,6 +212,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 		/*GridBagConstraints c = new GridBagConstraints();
 		GridbagComposer gridbagComposer = new GridbagComposer();*/
 		
+		jbAddURL.addActionListener(this);
 		jbValider.addActionListener(this);
 		jbAnnuler.addActionListener(this);
 		
@@ -199,14 +225,15 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 		jlCategorie.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		jlCategorie.setPreferredSize(new Dimension(200, 400));
 		jtfSearch.addCaretListener(this);
-		jtPlugins.setModel(createTableModel());
+		jtPlugins.setModel(pdtm);
+		jtPlugins.setRowSorter(sorter);
 		jtPlugins.getSelectionModel().addListSelectionListener(this);
 		
 		jtPlugins.getColumnModel().getColumn(0).setMaxWidth(20);
 		jtPlugins.getColumnModel().getColumn(1).setPreferredWidth(100);
 		jtPlugins.getColumnModel().getColumn(2).setMaxWidth(70);
-		jtPlugins.getColumnModel().getColumn(4).setPreferredWidth(200);
-		jtPlugins.getColumnModel().removeColumn(jtPlugins.getColumnModel().getColumn(3));
+		jtPlugins.getColumnModel().getColumn(3).setPreferredWidth(200);
+		jtPlugins.getColumnModel().removeColumn(jtPlugins.getColumnModel().getColumn(4));
 		
 		/*c.gridy = 0;
 		c.anchor = GridBagConstraints.CENTER;*/
@@ -232,6 +259,8 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 		jpPrincipal.add(jpPlugins, BorderLayout.CENTER);
 		
 		jpAction.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		jpAction.add(jbAddURL);
+		jpAction.add(Box.createHorizontalStrut(30));
 		jpAction.add(jbValider);
 		jpAction.add(jbAnnuler);
 		
@@ -241,17 +270,10 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 	}
 	
 	private void affectLibelle() {
-		jllCategorie.setText(localisation.getResourceString("installplugindialog.category")); //$NON-NLS-1$
-		jlPlugins.setText(localisation.getResourceString("installplugindialog.plugins")); //$NON-NLS-1$
-		jlSearch.setText(localisation.getResourceString("installplugindialog.search")); //$NON-NLS-1$
-		
-		jbValider.setText(localisation.getResourceString("bouton.valider")); //$NON-NLS-1$
-		jbAnnuler.setText(localisation.getResourceString("bouton.annuler")); //$NON-NLS-1$
+		AppUtilities.localize(this, localisation);
 	}
 	
 	private void completePanel() {
-		DefaultTableModel dtm = createTableModel();
-		
 		if(ApplicationCore.getAppConfiguration().isUseProxy()) {
 			ApplicationCore.getAppConfiguration().getProxy().activateProxyConfiguration();
 		}
@@ -266,30 +288,15 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 			
 			Constructor<?> constr = clazz.getConstructor(Profile.class);
 			AvailablePluginsManager apm = (AvailablePluginsManager)constr.newInstance(profile);
-			pluginsDetail = apm.getPluginsDetail();
+			List<PluginDescription> pluginsDetail = apm.getPluginsDetail();
 			
+			pdtm.clearPluginDescriptions();
 			for(PluginDescription pluginDescription : pluginsDetail) {
-				Object[] row = new Object[] {
-						new Boolean(false),
-						pluginDescription.getDisplayName(),
-						pluginDescription.getVersion(),
-						apm.getCategories().get(pluginDescription.getCategory()),
-						pluginDescription.getShortDescription()
-				};
-				
-				dtm.addRow(row);
+				pdtm.addPluginDescription(pluginDescription);
 			}
 			
-			sorter = new TableRowSorter<DefaultTableModel>(dtm);
-			jtPlugins.setModel(dtm);
-			jtPlugins.getColumnModel().getColumn(0).setMaxWidth(20);
-			jtPlugins.getColumnModel().getColumn(1).setPreferredWidth(100);
-			jtPlugins.getColumnModel().getColumn(2).setMaxWidth(70);
-			jtPlugins.getColumnModel().getColumn(3).setMaxWidth(0);
-			jtPlugins.getColumnModel().getColumn(4).setPreferredWidth(200);
-			jtPlugins.getColumnModel().removeColumn(jtPlugins.getColumnModel().getColumn(3));
-			
 			jlCategorie.add(localisation.getResourceString("installplugindialog.category.all")); //$NON-NLS-1$
+			jlCategorie.add(localisation.getResourceString("installplugindialog.category.manual")); //$NON-NLS-1$
 			for(String category : apm.getCategories().values()) {
 				jlCategorie.add(category);
 			}
@@ -337,28 +344,6 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 	}
 	
 	/**
-	 * 
-	 */
-	private DefaultTableModel createTableModel() {
-		DefaultTableModel dtm = new DefaultTableModel() {
-			@Override
-			public boolean isCellEditable(int row, int col) {
-				if(col == 0)
-					return true;
-				return false;
-			}
-		};
-		
-		dtm.addColumn(""); //$NON-NLS-1$
-		dtm.addColumn(localisation.getResourceString("installplugindialog.plugins.name")); //$NON-NLS-1$
-		dtm.addColumn(localisation.getResourceString("installplugindialog.plugins.version")); //$NON-NLS-1$
-		dtm.addColumn("category_hide"); //$NON-NLS-1$
-		dtm.addColumn(localisation.getResourceString("installplugindialog.plugins.description")); //$NON-NLS-1$
-		
-		return dtm;
-	}
-	
-	/**
 	 * Affiche la boite de dialogue d'intallation de plugin
 	 */
 	public void showInstallPluginDialog() {
@@ -386,13 +371,12 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == jbValider) {
-			DefaultTableModel dtm = (DefaultTableModel)jtPlugins.getModel();
 			List<Repository> pluginsRepos = new ArrayList<Repository>();
-			for(int i = 0; i < dtm.getRowCount(); i++) {
-				if((Boolean)dtm.getValueAt(i, 0) == true) {
+			for(int i = 0; i < pdtm.getRowCount(); i++) {
+				if(pdtm.isSelected(i)) {
 					pluginsRepos.add(new Repository(
-							pluginsDetail.get(i).getLogicalName(),
-							new String[] { pluginsDetail.get(i).getReposURL()},
+							pdtm.getPluginDescriptionAt(i).getLogicalName(),
+							new String[] { pdtm.getPluginDescriptionAt(i).getReposURL()},
 							"0.00.00")); //$NON-NLS-1$ //la version est toujours à 0 car l'extention n'est pas installé
 				}
 			}
@@ -411,14 +395,45 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 					setGlassPane(panel);
 					panel.setVisible(true);
 					ajUpdater.checkUpdate();
+					
+					for(Repository repos : ajUpdater.getRepositories()) {
+						if(repos.getReposStatus() != Repository.Status.REVISION_NOSIGN_FOUND
+								&& repos.getReposStatus() != Repository.Status.REVISION_SIGN_VERIFY_WITH_EXPIRED_CERT
+								&& repos.getReposStatus() != Repository.Status.REVISION_SIGN_VERIFY_WITH_SELFSIGNED_CERT
+								&& repos.getReposStatus() != Repository.Status.REVISION_SIGN_VERIFY_WITH_TRUSTED_CERT) {
+							JOptionPane.showMessageDialog(this, localisation.getResourceString("installplugindialog.installerror", repos.getReposName()), "", //$NON-NLS-1$ //$NON-NLS-2$
+									JOptionPane.WARNING_MESSAGE);
+						}
+					}
 				} catch (UpdateException e1) {
-					System.out.println("Mise à jour impossible"); //$NON-NLS-1$
+					JXErrorPane.showDialog(this,
+							new ErrorInfo(localisation.getResourceString("erreur"), //$NON-NLS-1$
+									e1.toString(),
+							null, null, e1, Level.SEVERE, null));
 					e1.printStackTrace();
 				}
 			}
 			setVisible(false);
 		} else if(e.getSource() == jbAnnuler) {
 			setVisible(false);
+		} else if(e.getSource() == jbAddURL) {
+			String prompturl = JOptionPane.showInputDialog(this, 
+					localisation.getResourceString("installplugindialog.promptaddurl"), "http://"); //$NON-NLS-1$ //$NON-NLS-2$
+			try {
+				URL url = new URL(prompturl);
+				
+				PluginDescription pd = new PluginDescription();
+				pd.setCategory(localisation.getResourceString("installplugindialog.category.manual")); //$NON-NLS-1$
+				pd.setDisplayName(url.toString());
+				pd.setLogicalName(url.toString());
+				pd.setReposURL(url.toString());
+				pdtm.addPluginDescription(pd);
+				pdtm.setSelected(pdtm.getRowCount()-1, true);
+			} catch (MalformedURLException e1) {
+				JOptionPane.showMessageDialog(this, 
+						localisation.getResourceString("installplugindialog.invalidurl"), //$NON-NLS-1$
+						localisation.getResourceString("installplugindialog.invalidurl.title"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
+			}
 		}
 	}
 
@@ -428,12 +443,12 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 	@Override
 	public void caretUpdate(CaretEvent e) {
 		if(jtPlugins.getModel().getRowCount() > 0) {
-			List<RowFilter<DefaultTableModel, Integer>> filters = new ArrayList<RowFilter<DefaultTableModel, Integer>>();
-			filters.add(RowFilter.<DefaultTableModel, Integer>regexFilter("(?i)" + jtfSearch.getText())); //$NON-NLS-1$
+			List<RowFilter<PluginDescriptionTableModel, Integer>> filters = new ArrayList<RowFilter<PluginDescriptionTableModel, Integer>>();
+			filters.add(RowFilter.<PluginDescriptionTableModel, Integer>regexFilter("(?i)" + jtfSearch.getText())); //$NON-NLS-1$
 			if(jlCategorie.getSelectedIndex() > 0)
-				filters.add(RowFilter.<DefaultTableModel, Integer>regexFilter((String)jlCategorie.getSelectedValue()));
+				filters.add(RowFilter.<PluginDescriptionTableModel, Integer>regexFilter((String)jlCategorie.getSelectedValue()));
 			
-			sorter.setRowFilter(RowFilter.<DefaultTableModel, Integer>andFilter((Iterable<RowFilter<DefaultTableModel, Integer>>)filters));
+			sorter.setRowFilter(RowFilter.<PluginDescriptionTableModel, Integer>andFilter((Iterable<RowFilter<PluginDescriptionTableModel, Integer>>)filters));
 			jtPlugins.setRowSorter(sorter);
 		}
 	}
@@ -445,13 +460,13 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 	public void valueChanged(ListSelectionEvent e) {
 		if(e.getSource() instanceof DefaultListSelectionModel) {
 			if(((DefaultListSelectionModel)e.getSource()).getMinSelectionIndex() > -1)
-				jtpDescription.setText(pluginsDetail.get(((DefaultListSelectionModel)e.getSource()).getMinSelectionIndex()).getLongDescription());
+				jtpDescription.setText(pdtm.getPluginDescriptionAt(((DefaultListSelectionModel)e.getSource()).getMinSelectionIndex()).getLongDescription());
 		} else if(e.getSource() == jlCategorie) {
-			List<RowFilter<DefaultTableModel, Integer>> filters = new ArrayList<RowFilter<DefaultTableModel, Integer>>();
-			filters.add(RowFilter.<DefaultTableModel, Integer>regexFilter("(?i)" + jtfSearch.getText())); //$NON-NLS-1$
+			List<RowFilter<PluginDescriptionTableModel, Integer>> filters = new ArrayList<RowFilter<PluginDescriptionTableModel, Integer>>();
+			filters.add(RowFilter.<PluginDescriptionTableModel, Integer>regexFilter("(?i)" + jtfSearch.getText())); //$NON-NLS-1$
 			if(jlCategorie.getSelectedIndex() > 0)
-				filters.add(RowFilter.<DefaultTableModel, Integer>regexFilter((String)jlCategorie.getSelectedValue()));
-			sorter.setRowFilter(RowFilter.<DefaultTableModel, Integer>andFilter((Iterable<RowFilter<DefaultTableModel, Integer>>)filters));
+				filters.add(RowFilter.<PluginDescriptionTableModel, Integer>regexFilter((String)jlCategorie.getSelectedValue()));
+			sorter.setRowFilter(RowFilter.<PluginDescriptionTableModel, Integer>andFilter((Iterable<RowFilter<PluginDescriptionTableModel, Integer>>)filters));
 			jtPlugins.setRowSorter(sorter);
 		}
 	}
@@ -540,6 +555,104 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 				}
 				break;
 			case NO_UPDATE_AVAILABLE:
+		}
+	}
+	
+	private class PluginDescriptionTableModel extends AbstractTableModel {
+		
+		private List<PluginDescription> descriptions = new ArrayList<PluginDescription>();
+		private Map<Integer,  Boolean> selected = new HashMap<Integer, Boolean>();
+		
+		public void addPluginDescription(PluginDescription desc) {
+			descriptions.add(desc);
+			
+			fireTableRowsInserted(descriptions.size()-1, descriptions.size()-1);
+		}
+		
+		public void removePluginDescription(PluginDescription desc) {
+			int index = descriptions.indexOf(desc);
+			if(index != -1) {
+				descriptions.remove(desc);
+				
+				fireTableRowsDeleted(index, index);
+			}
+		}
+		
+		public PluginDescription getPluginDescriptionAt(int row) {
+			return descriptions.get(row);
+		}
+		
+		public boolean isSelected(int row) {
+			return selected.get(row) != null ? selected.get(row) : false;
+		}
+		
+		public void setSelected(int row, boolean selected) {
+			this.selected.put(row, selected);
+			
+			fireTableRowsUpdated(row, row);
+		}
+		
+		public void clearPluginDescriptions() {
+			descriptions.clear();
+			
+			fireTableDataChanged();
+		}
+		
+		
+		@Override
+		public boolean isCellEditable(int row, int col) {
+			if(col == 0)
+				return true;
+			return false;
+		}
+
+		@Override
+		public int getColumnCount() {
+			return 5;
+		}
+		
+		@SuppressWarnings("nls")
+		@Override
+		public String getColumnName(int column) {
+			switch (column) {
+				case 1:
+					return localisation.getResourceString("installplugindialog.plugins.name");
+				case 2:
+					return localisation.getResourceString("installplugindialog.plugins.version");
+				case 3:
+					return localisation.getResourceString("installplugindialog.plugins.description");
+			}
+			return "";
+		}
+
+		@Override
+		public int getRowCount() {
+			return descriptions.size();
+		}
+
+		@Override
+		public Object getValueAt(int rowIndex, int columnIndex) {
+			PluginDescription currentPluginDescription = descriptions.get(rowIndex);
+			switch(columnIndex) {
+				case 0:
+					return selected.get(rowIndex) != null ? selected.get(rowIndex) : false;
+				case 1:
+					return currentPluginDescription.getDisplayName();
+				case 2:
+					return currentPluginDescription.getVersion();
+				case 3:
+					return currentPluginDescription.getShortDescription();
+				case 4:
+					return currentPluginDescription.getCategory();
+			}
+			return null;
+		}
+		
+		@Override
+		public void setValueAt(Object value, int rowIndex, int columnIndex) {
+			selected.put(rowIndex, (Boolean)value);
+			
+			fireTableRowsUpdated(rowIndex, rowIndex);
 		}
 	}
 }

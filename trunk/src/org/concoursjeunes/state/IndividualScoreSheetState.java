@@ -118,7 +118,6 @@ public class IndividualScoreSheetState {
 	private int depart;
 	//private int serie;
 	
-	@SuppressWarnings("unused")
 	public IndividualScoreSheetState(AjResourcesReader localeReader, Profile profile, int depart, int serie) {
 		this.localeReader = localeReader;
 		this.profile = profile;
@@ -126,7 +125,6 @@ public class IndividualScoreSheetState {
 		//this.serie = serie;
 	}
 	
-	@SuppressWarnings("unused")
 	public void printState(FicheConcours ficheConcours, URL template, Document document, PdfWriter writer)
 			throws IOException {
 		AJTemplate templateXML = new AJTemplate();

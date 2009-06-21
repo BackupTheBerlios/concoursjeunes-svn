@@ -141,14 +141,13 @@ import org.jdesktop.swingx.error.ErrorInfo;
  * @author Aurélien JEOFFRAY
  *
  */
+@Localisable(textMethod="setTitle", value="arbitredialog.title")
 public class ArbitreDialog extends JDialog implements AutoCompleteDocumentListener, ActionListener, FocusListener {
 	public static final int CONFIRM = 0;
 	public static final int CANCEL = 1;
 	
 	private static Future<ConcurrentListDialog> concurrentListDialog;
 	
-	//private JFrame parentframe;
-	//private Profile profile;
 	private AjResourcesReader localisation;
 	
 	private Archer filter;
@@ -180,8 +179,6 @@ public class ArbitreDialog extends JDialog implements AutoCompleteDocumentListen
 	public ArbitreDialog(JFrame parentframe, Profile profile) {
 		super(parentframe, true);
 		
-		//this.parentframe = parentframe;
-		//this.profile = profile;
 		this.localisation = profile.getLocalisation();
 		
 		ExecutorService executorService = Executors.newSingleThreadExecutor(new LowFactory());
@@ -250,10 +247,7 @@ public class ArbitreDialog extends JDialog implements AutoCompleteDocumentListen
 		getRootPane().setDefaultButton(jbValider);
 	}
 	
-	@SuppressWarnings("nls")
 	private void affectLibelle() {
-		setTitle(localisation.getResourceString("arbitredialog.title"));
-		
 		AppUtilities.localize(this, localisation);
 	}
 	

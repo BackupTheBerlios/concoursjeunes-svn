@@ -1012,7 +1012,8 @@ public class FicheConcoursDepartPane extends JPanel
 			
 			this.concurrents = concurrents;
 			
-			fireIntervalAdded(this, 0, concurrents.size()-1);
+			if(concurrents.size() > 0)
+				fireIntervalAdded(this, 0, concurrents.size()-1);
 		}
 		
 		public List<Concurrent> getConcurrents() {

@@ -98,6 +98,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -359,6 +360,12 @@ public class Federation implements SqlPersistance {
 	@Override
 	public void delete() throws SqlPersistanceException {
 		helper.delete(this);
+	}
+	
+	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
+		for(CompetitionLevel competitionLevel : competitionLevels) {
+			competitionLevel.setFederation(this);
+		}
 	}
 	
 	/* (non-Javadoc)

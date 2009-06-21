@@ -669,7 +669,6 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		
 		//on liste toutes les catégorie de classement
 		CriteriaSet[] differentiationCriteria = CriteriaSet.listCriteriaSet(reglement, reglement.getClassementFilter());
-		
 		for (int i = 0; i < differentiationCriteria.length; i++) {
 			CriteriaSet criteriaSet = reglement.getSurclassement().get(differentiationCriteria[i]);
 			boolean enable = true;

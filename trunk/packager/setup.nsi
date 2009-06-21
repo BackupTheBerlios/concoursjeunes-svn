@@ -118,7 +118,7 @@ Section "Import Result'Arc" SEC0001
     SectionIn 1 2
     SetOverwrite on
     SetOutPath $INSTDIR
-    File /r plugins\FFTAImport\*
+    File /r plugins\ResultArcImport\*
     WriteRegStr HKLM "${REGKEY}\Components" "Import Result'Arc" 1
 SectionEnd
 
@@ -219,6 +219,34 @@ Function .onInit
     InitPluginsDir
     !insertmacro MUI_LANGDLL_DISPLAY
     
+    System::Call 'kernel32::CreateMutexA(i 0, i 0, t "myMutex") i .r1 ?e'
+	Pop $R0
+	StrCmp $R0 0 +3
+	MessageBox MB_OK|MB_ICONEXCLAMATION "The installer is already running."
+	Abort
+	
+	ReadRegStr $R0 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}" "UninstallString"
+	StrCmp $R0 "" done
+ 
+	MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION \
+		"${PROGRAM_NAME} is already installed. $\n$\nClick `OK` to remove the \
+		previous version or `Cancel` to cancel this upgrade." \
+	IDOK uninst
+	Abort
+ 
+	;Run the uninstaller
+uninst:
+	ClearErrors
+	ExecWait '$R0 _?=$INSTDIR' ;Do not copy the uninstaller to a temp file
+ 
+	IfErrors no_remove_uninstaller
+    ;You can either use Delete /REBOOTOK in the uninstaller or add some code
+    ;here to remove the uninstaller. Use a registry key to check
+    ;whether the user has chosen to uninstall. If you are using an uninstaller
+    ;components page, make sure all sections are uninstalled.
+	no_remove_uninstaller:
+done:
+	
     ${If} ${RunningX64}
         StrCpy '$INSTDIR' '$PROGRAMFILES64\ConcoursJeunes'
         SetRegView 64

@@ -336,11 +336,13 @@ public class CriteriaSet implements SqlPersistance {
 					List<CriteriaSet> childList = getChildrenPopulation(reglement, referents[i], key);
 					children[i] = childList.toArray(new CriteriaSet[childList.size()]);
 				}
-				referents = new CriteriaSet[children[0].length*referents.length];
-				int inc = 0;
-				for(int i = 0; i < children.length; i++) {
-					for(int j = 0; j < children[i].length; j++) {
-						referents[inc++] = children[i][j];
+				if(children.length > 0) {
+					referents = new CriteriaSet[children[0].length*referents.length];
+					int inc = 0;
+					for(int i = 0; i < children.length; i++) {
+						for(int j = 0; j < children[i].length; j++) {
+							referents[inc++] = children[i][j];
+						}
 					}
 				}
 			} /*else {
@@ -395,13 +397,8 @@ public class CriteriaSet implements SqlPersistance {
 		if(criteria.size() != criteriaSet.getCriteria().size())
 			return false;
 
-		for(Criterion criterion : criteria.keySet()) {
-			if(getCriterionElement(criterion) == null 
-					|| criteriaSet.getCriterionElement(criterion) == null 
-					|| !getCriterionElement(criterion).equals(criteriaSet.getCriterionElement(criterion))) {
-				isEquals = false;
-			}
-		}
+		if(!getUID().equals(criteriaSet.getUID()))
+			isEquals = false;
 
 		return isEquals;
 	}

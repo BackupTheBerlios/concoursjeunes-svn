@@ -4,20 +4,15 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Hashtable;
 import java.util.logging.Level;
-import java.util.zip.ZipEntry;
 
-import javax.crypto.NoSuchPaddingException;
 import javax.swing.JDialog;
 import javax.swing.event.EventListenerList;
 
 import org.ajdeveloppement.commons.AjResourcesReader;
-import org.ajdeveloppement.commons.security.SecureProperties;
 import org.ajdeveloppement.commons.sql.SqlParser;
 import org.concoursjeunes.ApplicationCore;
 import org.jdesktop.swingx.JXErrorPane;
@@ -35,7 +30,7 @@ public class ResultArcImportThread extends Thread {
 	private AjResourcesReader localisation;
 
 	private final AjResourcesReader pluginRessources = new AjResourcesReader("properties.FFTAImportPlugin"); //$NON-NLS-1$
-	private final AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.ResultArcImport.FFTAImportPlugin_libelle", ResultArcImportThread.class.getClassLoader()); //$NON-NLS-1$
+	private final AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.ResultArcImport.ResultArcImportPlugin_libelle", ResultArcImportThread.class.getClassLoader()); //$NON-NLS-1$
 	private final EventListenerList listeners = new EventListenerList();
 
 	private String fftalogpath = ""; //$NON-NLS-1$
@@ -86,10 +81,7 @@ public class ResultArcImportThread extends Thread {
 		if (parentframe == null)
 			return;
 		
-		if(pluginRessources.getResourceString("plugin.mode").equals("FTP")) //$NON-NLS-1$ //$NON-NLS-2$
-			fftaFTPLoader();
-		else
-			fftaLoader();
+		fftaLoader();
 		
 		fireImportFinished();
 	}
@@ -167,69 +159,6 @@ public class ResultArcImportThread extends Thread {
 					null, null, oome, Level.SEVERE, null));
 			oome.printStackTrace();
 		} catch (SQLException e) {
-			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
-					null, null, e, Level.SEVERE, null));
-			e.printStackTrace();
-		}
-	}
-	
-	private void fftaFTPLoader() {
-		try {
-			SecureProperties secureProperties = new SecureProperties();
-			/*secureProperties.loadKey(
-					new File(ApplicationCore.staticParameters.getResourceString("path.ressources"), "security/keys/ffta.key")); //$NON-NLS-1$ //$NON-NLS-2$*/
-			secureProperties.load(
-					new FileReader(new File(ApplicationCore.staticParameters.getResourceString("path.config"), "ffta.properties"))); //$NON-NLS-1$ //$NON-NLS-2$
-			
-			//URL ftpFFTA = new URL(secureStringsStore.get("ffta.ftp.url")); //$NON-NLS-1$
-			//EncryptedZipInputStream ezis = new EncryptedZipInputStream(ftpFFTA.openStream());
-			//ezis.setEncryptedPassword(secureStringsStore.get("ffta.zip.password").getBytes()); //$NON-NLS-1$
-			
-			byte[] buffer = new byte[2048];
-			ZipEntry entry;
-            /*while((entry = ezis.getNextEntry())!=null) {
-            	 String outpath = System.getProperty("java.io.tmpdir") + "/" + entry.getName(); //$NON-NLS-1$ //$NON-NLS-2$
-                 FileOutputStream output = null;
-                 
-                 output = new FileOutputStream(outpath);
-                 int len = 0;
-                 while ((len = ezis.read(buffer)) > 0) {
-                     output.write(buffer, 0, len);
-                 }
-            }*/
-            
-            Statement stmt = ApplicationCore.dbConnection.createStatement();
-
-			Hashtable<String, String> ht = new Hashtable<String, String>();
-
-			ht.put("temp", System.getProperty("java.io.tmpdir").replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ 
-
-			SqlParser.createBatch(new File(pluginRessources.getResourceString("sql.importftpffta")), stmt, ht); //$NON-NLS-1$
-
-			fireProgressionInfo(pluginLocalisation.getResourceString("progress.integration")); //$NON-NLS-1$
-			stmt.executeBatch();
-			
-			new File(System.getProperty("java.io.tmpdir"), "result_club.txt").delete(); //$NON-NLS-1$ //$NON-NLS-2$
-			new File(System.getProperty("java.io.tmpdir"), "result_licence.txt").delete(); //$NON-NLS-1$ //$NON-NLS-2$
-
-			stmt.close();
-		} catch (NoSuchAlgorithmException e) {
-			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
-					null, null, e, Level.SEVERE, null));
-			e.printStackTrace();
-		} catch (NoSuchPaddingException e) {
-			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
-					null, null, e, Level.SEVERE, null));
-			e.printStackTrace();
-		} catch (IOException e) {
-			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
-					null, null, e, Level.SEVERE, null));
-			e.printStackTrace();
-		} catch (SQLException e) {
-			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
-					null, null, e, Level.SEVERE, null));
-			e.printStackTrace();
-		} catch (InvalidAlgorithmParameterException e) {
 			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
 					null, null, e, Level.SEVERE, null));
 			e.printStackTrace();

@@ -545,9 +545,9 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 				@Override
 				public void run() {
 					try {
-						System.setProperty("java.net.useSystemProxies","false");  //$NON-NLS-1$//$NON-NLS-2$
+						//System.setProperty("java.net.useSystemProxies","false");  //$NON-NLS-1$//$NON-NLS-2$
 						Server.startWebServer(ApplicationCore.dbConnection);
-						System.setProperty("java.net.useSystemProxies","true"); //$NON-NLS-1$ //$NON-NLS-2$
+						//System.setProperty("java.net.useSystemProxies","true"); //$NON-NLS-1$ //$NON-NLS-2$
 					} catch (SQLException e1) {
 						JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(profile.getLocalisation().getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 								null, null, e1, Level.SEVERE, null));

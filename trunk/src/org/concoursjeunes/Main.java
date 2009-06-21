@@ -94,9 +94,20 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.Authenticator;
-import java.security.*;
+import java.net.InetAddress;
+import java.net.Proxy;
+import java.net.ProxySelector;
+import java.net.SocketAddress;
+import java.net.URI;
+import java.net.UnknownHostException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -160,6 +171,28 @@ public class Main {
 		
 		Thread.setDefaultUncaughtExceptionHandler(handlerException);
 		Toolkit.getDefaultToolkit().getSystemEventQueue().push(new ExceptionHandlingEventQueue());
+		
+		final ProxySelector systemProxySelector = ProxySelector.getDefault();
+		ProxySelector.setDefault(new ProxySelector() {
+
+			@Override
+			public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
+				systemProxySelector.connectFailed(uri, sa, ioe);
+			}
+
+			@Override
+			public List<Proxy> select(URI uri) {
+				try {
+					InetAddress address = InetAddress.getByName(uri.getHost());
+					if(address.isLoopbackAddress() || address.isSiteLocalAddress())
+						return Collections.singletonList(Proxy.NO_PROXY);
+				} catch (UnknownHostException e) {
+					e.printStackTrace();
+				}
+				return systemProxySelector.select(uri);
+			}
+			
+		});
 	
 		boolean retry = false;
 		do {

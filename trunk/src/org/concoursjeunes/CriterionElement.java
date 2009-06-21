@@ -188,7 +188,6 @@ public class CriterionElement implements SqlPersistance {
 		helper.delete(this, fk);
 	}
 
-	@SuppressWarnings("unused")
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
 		if(parent instanceof Criterion)
 			criterion = (Criterion)parent;

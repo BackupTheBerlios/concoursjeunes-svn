@@ -93,7 +93,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -102,7 +101,6 @@ import java.util.Map;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.CriteriaSet;
 import org.concoursjeunes.Criterion;
-import org.concoursjeunes.CriterionElement;
 import org.concoursjeunes.DistancesEtBlason;
 import org.concoursjeunes.Reglement;
 
@@ -256,7 +254,6 @@ public class ReglementBuilder {
 		return reglement;
 	}
 	
-	@SuppressWarnings("nls")
 	private static Reglement getDefaultReglement() {
 		Reglement reglement = new Reglement();
 		
@@ -267,52 +264,9 @@ public class ReglementBuilder {
 		reglement.setNbMembresEquipe(4); 
 		reglement.setNbMembresRetenu(3); 
 		reglement.setOfficialReglement(false); 
-		//reglement.setFederation(FederationBuilder.getFederation(rs.getInt("NUMFEDERATION"))); //$NON-NLS-1$
 		reglement.setCategory(2); 
 		reglement.setRemovable(true);
-		
-		reglement.setTie(new ArrayList<String>(Arrays.asList(new String[] {"10", "9"}))); //$NON-NLS-1$ //$NON-NLS-2$
-		
-		List<CriterionElement> elementsC1 = new ArrayList<CriterionElement>();
-		elementsC1.add(CriterionElementBuilder.getCriterionElement("H", "Homme", true, 1));
-		elementsC1.add(CriterionElementBuilder.getCriterionElement("D", "Dame", true, 2));
-		
-		List<CriterionElement> elementsC2 = new ArrayList<CriterionElement>();
-		elementsC2.add(CriterionElementBuilder.getCriterionElement("P", "Poussin", true, 1));
-		elementsC2.add(CriterionElementBuilder.getCriterionElement("B", "Benjamin", true, 2));
-		elementsC2.add(CriterionElementBuilder.getCriterionElement("M", "Minime", true, 3));
-		elementsC2.add(CriterionElementBuilder.getCriterionElement("C", "Cadet", true, 4));
-		elementsC2.add(CriterionElementBuilder.getCriterionElement("J", "Junior", true, 5));
-		elementsC2.add(CriterionElementBuilder.getCriterionElement("S", "Sénior", true, 6));
-		elementsC2.add(CriterionElementBuilder.getCriterionElement("V", "Vétéran", true, 7));
-		elementsC2.add(CriterionElementBuilder.getCriterionElement("SV", "Super-Vétéran", true, 8));
-		
-		List<CriterionElement> elementsC3 = new ArrayList<CriterionElement>();
-		elementsC3.add(CriterionElementBuilder.getCriterionElement("0", "", true, 1));
-		elementsC3.add(CriterionElementBuilder.getCriterionElement("P", "Promotion", true, 2));
-		elementsC3.add(CriterionElementBuilder.getCriterionElement("1", "Niveau 1", true, 3));
-		elementsC3.add(CriterionElementBuilder.getCriterionElement("2", "Niveau 2", true, 4));
-		elementsC3.add(CriterionElementBuilder.getCriterionElement("3", "Niveau 3", true, 5));
-		
-		List<CriterionElement> elementsC4 = new ArrayList<CriterionElement>();
-		elementsC4.add(CriterionElementBuilder.getCriterionElement("CL", "Arc Classique", true, 1));
-		elementsC4.add(CriterionElementBuilder.getCriterionElement("CO", "Arc à Poulies", true, 2));
-		elementsC4.add(CriterionElementBuilder.getCriterionElement("AD", "Arc droit", false, 2));
-		elementsC4.add(CriterionElementBuilder.getCriterionElement("AC", "Arc Chasse", false, 2));
-		elementsC4.add(CriterionElementBuilder.getCriterionElement("BB", "Bare Bow", false, 2));
-		elementsC4.add(CriterionElementBuilder.getCriterionElement("TL", "Tir Libre", false, 2));
-		
-		List<Criterion> criteria = new ArrayList<Criterion>();
-		criteria.add(CriterionBuilder.getCriterion("sexe", "Sexe", "sexe", -1, true, false, false, 
-				1, elementsC1));
-		criteria.add(CriterionBuilder.getCriterion("categorie", "Catégorie", "categorie", 1, true, false, true, 
-				2, elementsC2));
-		criteria.add(CriterionBuilder.getCriterion("niveau", "Niveau", "niveau", 1, false, false, false, 
-				3, elementsC3));
-		criteria.add(CriterionBuilder.getCriterion("arme", "Arme", "arme", 1, true, false, true, 
-				4, elementsC4));
-		reglement.setListCriteria(criteria);
-		
+
 		return reglement;
 	}
 }
