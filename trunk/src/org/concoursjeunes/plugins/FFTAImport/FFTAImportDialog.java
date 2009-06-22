@@ -97,16 +97,18 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.Locale;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
+import org.ajdeveloppement.apps.AppUtilities;
 import org.ajdeveloppement.apps.Localisable;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
@@ -123,16 +125,20 @@ public class FFTAImportDialog extends JDialog implements ActionListener, FFTAImp
 
 	private Profile profile;
 	
-	@Localisable("emplacement.lffta")
-	private JLabel jlEmplacementLFFTA = new JLabel();
-	private JTextField jtfEmplacementLFFTA = new JTextField("C:\\ResultArc", 30); //$NON-NLS-1$
+	@Localisable("import.download")
+	private JRadioButton jrbFTPDownload = new JRadioButton();
+	@Localisable("import.local")
+	private JRadioButton jrbLocal = new JRadioButton();
+	private JTextField jtfEmplacementLFFTA = new JTextField("", 30); //$NON-NLS-1$
 	private JButton jbParcourir = new JButton();
 	private JButton jbSart = new JButton();
 	private JProgressBar jpbProgression = new JProgressBar();
 
 	private JButton jbAnnuler = new JButton();
 
-	private AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.FFTAImport.FFTAImportPlugin_libelle", FFTAImportDialog.class.getClassLoader()); //$NON-NLS-1$
+	private AjResourcesReader pluginLocalisation = new AjResourcesReader(
+			"org.concoursjeunes.plugins.FFTAImport.FFTAImportPlugin_libelle", //$NON-NLS-1$
+			FFTAImportDialog.class.getClassLoader());
 
 	public FFTAImportDialog(JFrame parentframe, Profile profile) {
 		super(parentframe);
@@ -145,7 +151,7 @@ public class FFTAImportDialog extends JDialog implements ActionListener, FFTAImp
 	}
 
 	private void init() {
-		JPanel jpAnnulation = new JPanel();
+		JPanel jpAction = new JPanel();
 		JPanel jpGeneral = new JPanel();
 
 		GridBagConstraints c = new GridBagConstraints();
@@ -154,35 +160,47 @@ public class FFTAImportDialog extends JDialog implements ActionListener, FFTAImp
 		jbAnnuler.addActionListener(this);
 		jbParcourir.addActionListener(this);
 		jbParcourir.setMargin(new Insets(0, 0, 0, 0));
+		jbParcourir.setEnabled(false);
 		jbSart.addActionListener(this);
+		jrbFTPDownload.setSelected(true);
+		jtfEmplacementLFFTA.setEnabled(false);
+		jrbFTPDownload.addActionListener(this);
+		jrbLocal.addActionListener(this);
 
 		jpbProgression.setStringPainted(true);
+		
+		ButtonGroup group = new ButtonGroup();
+		group.add(jrbFTPDownload);
+		group.add(jrbLocal);
 
 		gridbagComposer.setParentPanel(jpGeneral);
 		c.gridy = 0;
 		c.anchor = GridBagConstraints.WEST;
-		gridbagComposer.addComponentIntoGrid(jlEmplacementLFFTA, c);
+		c.gridwidth = 2;
+		gridbagComposer.addComponentIntoGrid(jrbFTPDownload, c);
 		c.gridy++;
+		gridbagComposer.addComponentIntoGrid(jrbLocal, c);
+		c.gridy++;
+		c.gridwidth = 1;
 		gridbagComposer.addComponentIntoGrid(jtfEmplacementLFFTA, c);
 		gridbagComposer.addComponentIntoGrid(jbParcourir, c);
 		c.gridy++;
 		c.gridwidth = 2;
-		c.anchor = GridBagConstraints.CENTER;
-		gridbagComposer.addComponentIntoGrid(jbSart, c);
-		c.gridy++;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		gridbagComposer.addComponentIntoGrid(jpbProgression, c);
 
-		jpAnnulation.setLayout(new FlowLayout(FlowLayout.RIGHT));
-		jpAnnulation.add(jbAnnuler);
+		jpAction.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		jpAction.add(jbSart);
+		jpAction.add(jbAnnuler);
 
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().add(jpGeneral, BorderLayout.CENTER);
-		getContentPane().add(jpAnnulation, BorderLayout.SOUTH);
+		getContentPane().add(jpAction, BorderLayout.SOUTH);
 	}
 
 	private void affectLibelle() {
-		jlEmplacementLFFTA.setText(pluginLocalisation.getResourceString("emplacement.lffta")); //$NON-NLS-1$
+		AppUtilities.localize(this, pluginLocalisation);
+		
 		jbParcourir.setText(pluginLocalisation.getResourceString("button.parcourir")); //$NON-NLS-1$
 		jbSart.setText(pluginLocalisation.getResourceString("button.start")); //$NON-NLS-1$
 
@@ -208,7 +226,13 @@ public class FFTAImportDialog extends JDialog implements ActionListener, FFTAImp
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == jbParcourir) {
+		if(e.getSource() == jrbFTPDownload) {
+			jtfEmplacementLFFTA.setEnabled(false);
+			jbParcourir.setEnabled(false);
+		} else if (e.getSource() == jrbLocal) {
+			jtfEmplacementLFFTA.setEnabled(true);
+			jbParcourir.setEnabled(true);
+		} else if (e.getSource() == jbParcourir) {
 			JFileChooser jfc = new JFileChooser(new File(jtfEmplacementLFFTA.getText()));
 			jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			if (jfc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
@@ -217,7 +241,8 @@ public class FFTAImportDialog extends JDialog implements ActionListener, FFTAImp
 		} else if (e.getSource() == jbSart) {
 			FFTAImportThread fftaIT = new FFTAImportThread(profile.getLocalisation());
 			fftaIT.setParentFrame(this);
-			fftaIT.setFftalogpath(jtfEmplacementLFFTA.getText());
+			if(jrbFTPDownload.isSelected())
+				fftaIT.setFftalogpath(jtfEmplacementLFFTA.getText());
 			fftaIT.addFFTAImportThreadListener(this);
 			jpbProgression.setIndeterminate(true);
 			fftaIT.start();

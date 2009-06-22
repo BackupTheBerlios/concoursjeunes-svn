@@ -23,6 +23,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.event.EventListenerList;
 
 import org.ajdeveloppement.apps.AppUtilities;
@@ -109,18 +110,20 @@ public class FFTAImportThread extends Thread {
 			SecretKey key = null;
 			if(keyEntry != null)
 				key = keyEntry.getSecretKey();
-			SecureProperties secureProperties = new SecureProperties(key);
-			if(key == null) {
-				key = secureProperties.getSecretKey();
-				ApplicationCore.userRessources.getAppKeyStore().setEntry("ffta", //$NON-NLS-1$
-						new KeyStore.SecretKeyEntry(key),
-						new KeyStore.PasswordProtection(AppUtilities.getAppUID(ApplicationCore.userRessources).toCharArray()));
+			else {
+				JOptionPane.showMessageDialog(parentframe, localisation.getResourceString("erreur.nokey"), "", JOptionPane.WARNING_MESSAGE); //$NON-NLS-1$ //$NON-NLS-2$
+				return;
 			}
+			
+			SecureProperties secureProperties = new SecureProperties(key);
 
 			secureProperties.load(
 					new FileReader(new File(ApplicationCore.staticParameters.getResourceString("path.config"), "ffta.properties"))); //$NON-NLS-1$ //$NON-NLS-2$
-			
-			URL ftpFFTA = new URL(secureProperties.get("ffta.ftp.url")); //$NON-NLS-1$
+			URL ftpFFTA;
+			if(fftalogpath.isEmpty())
+				ftpFFTA = new File(fftalogpath).toURI().toURL();
+			else
+				ftpFFTA = new URL(secureProperties.get("ffta.ftp.url")); //$NON-NLS-1$
 			EncryptedZipInputStream ezis = new EncryptedZipInputStream(ftpFFTA.openStream());
 			ezis.setEncryptedPassword(secureProperties.get("ffta.zip.password").getBytes()); //$NON-NLS-1$
 			
