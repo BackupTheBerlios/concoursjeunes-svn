@@ -218,6 +218,8 @@ public class Main {
 		
 		initSecureContext();
 		
+		//temp();
+		
 		if(System.getProperty("noplugin") == null) { //$NON-NLS-1$
 			loadStartupPlugin();
 		}

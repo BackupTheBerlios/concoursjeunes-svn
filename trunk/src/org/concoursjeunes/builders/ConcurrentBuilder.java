@@ -61,45 +61,55 @@ public class ConcurrentBuilder {
 				pstmt.setString(1, concurrent.getNumLicenceArcher());
 				pstmt.setInt(2, reglement.getNumReglement());
 				
-				ResultSet rsCriteriaSet = pstmt.executeQuery();
-
-				if(rsCriteriaSet.first()) {
-					differentiationCriteria = CriteriaSetBuilder
-							.getCriteriaSet(rsCriteriaSet.getInt("NUMCRITERIASET"), reglement); //$NON-NLS-1$
-				} else {
-					differentiationCriteria = new CriteriaSet();
-					for(Criterion key : reglement.getListCriteria()) {
-						boolean returnfirstval = true;
-						if(!key.getChampsTableArchers().isEmpty()) {
-							try {
-								List<CriterionElement> arrayList = key.getCriterionElements();
-								int valindex = rs.getInt(key.getChampsTableArchers()); 
-								if(valindex >= arrayList.size())
-									valindex = arrayList.size() - 1;
-								if(valindex < 0)
-									valindex = 0;
+				try {
+					ResultSet rsCriteriaSet = pstmt.executeQuery();
+	
+					try {
+						if(rsCriteriaSet.first()) {
+							differentiationCriteria = CriteriaSetBuilder
+									.getCriteriaSet(rsCriteriaSet.getInt("NUMCRITERIASET"), reglement); //$NON-NLS-1$
+						} else {
+							differentiationCriteria = new CriteriaSet();
+							for(Criterion key : reglement.getListCriteria()) {
+								boolean returnfirstval = true;
+								if(!key.getChampsTableArchers().isEmpty()) {
+									try {
+										List<CriterionElement> arrayList = key.getCriterionElements();
+										int valindex = rs.getInt(key.getChampsTableArchers()); 
+										if(valindex >= arrayList.size())
+											valindex = arrayList.size() - 1;
+										if(valindex < 0)
+											valindex = 0;
+										
+										if(key.getCriterionElements().get(valindex).isActive())
+											differentiationCriteria.getCriteria().put(key, key.getCriterionElements().get(valindex));
+										else
+											return null;
+										
+										returnfirstval = false;
+									} catch (SQLException e) {
+									}
+								}
 								
-								if(key.getCriterionElements().get(valindex).isActive())
-									differentiationCriteria.getCriteria().put(key, key.getCriterionElements().get(valindex));
-								else
-									return null;
-								
-								returnfirstval = false;
-							} catch (SQLException e) {
+								if(returnfirstval) {
+									int valindex = 0;
+									while(valindex < key.getCriterionElements().size() 
+											&& !key.getCriterionElements().get(valindex).isActive())
+										valindex++;
+									if(valindex < key.getCriterionElements().size())
+										differentiationCriteria.getCriteria().put(key, key.getCriterionElements().get(valindex));
+									else
+										return null;
+								}
 							}
 						}
-						
-						if(returnfirstval) {
-							int valindex = 0;
-							while(valindex < key.getCriterionElements().size() 
-									&& !key.getCriterionElements().get(valindex).isActive())
-								valindex++;
-							if(valindex < key.getCriterionElements().size())
-								differentiationCriteria.getCriteria().put(key, key.getCriterionElements().get(valindex));
-							else
-								return null;
-						}
+					} finally {
+						rsCriteriaSet.close();
+						rsCriteriaSet = null;
 					}
+				} finally {
+					pstmt.close();
+					pstmt = null;
 				}
 				
 				//régle de surclassement de l'archer

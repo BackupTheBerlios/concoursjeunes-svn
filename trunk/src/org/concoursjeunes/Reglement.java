@@ -163,7 +163,6 @@ public class Reglement implements SqlPersistance {
 	}
 
 	@XmlAttribute
-	@SuppressWarnings("unused")
 	private int version = 1;
 	@XmlTransient
 	@SqlField(name="NUMREGLEMENT")
@@ -246,6 +245,24 @@ public class Reglement implements SqlPersistance {
 	}
 
 	/**
+	 * Retourne le numéro de version interne du réglement.
+	 * 
+	 * @return version le numéro de version du réglement.
+	 */
+	public int getVersion() {
+		return version;
+	}
+
+	/**
+	 * Définit le numéro interne de version du réglement
+	 * 
+	 * @param version le numéro de version du réglement.
+	 */
+	public void setVersion(int version) {
+		this.version = version;
+	}
+
+	/**
 	 * @return numReglement
 	 */
 	public int getNumReglement() {
@@ -259,7 +276,7 @@ public class Reglement implements SqlPersistance {
 		this.numReglement = numReglement;
 		
 		//force le recalcul du hashCode des Entry
-		surclassement.putAll(new HashMap<CriteriaSet, CriteriaSet>(surclassement));
+		surclassement = new HashMap<CriteriaSet, CriteriaSet>(surclassement);
 	}
 
 	/**

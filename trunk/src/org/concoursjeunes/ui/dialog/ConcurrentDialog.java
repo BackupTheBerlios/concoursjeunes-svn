@@ -236,9 +236,6 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	private JLabel jlPoints = new JLabel();
 	private JTextField[] tfpd;
 	private JTextField[] tfDepartages;
-	//private final JTextField tfpd10 = new JTextField(new NumberDocument(false, false), "0", 4); //$NON-NLS-1$
-	//private final JTextField tfpdNeuf = new JTextField(new NumberDocument(false, false), "0", 4); //$NON-NLS-1$
-	//private final JTextField tfpdM = new JTextField(new NumberDocument(false, false), "0", 4); //$NON-NLS-1$
 
 	// inscription
 	private final JPanel jpInscription = new JPanel();

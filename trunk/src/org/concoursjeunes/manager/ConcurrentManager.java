@@ -182,7 +182,8 @@ public class ConcurrentManager {
 	 * 
 	 * @return la liste des archers correspondant aux critères de recherche
 	 */
-	public static List<Concurrent> getArchersInDatabase(Archer aGeneric, Reglement reglement, String orderfield, int nbmaxenreg, ConcurrentManagerProgress concurrentManagerProgress) {
+	public static List<Concurrent> getArchersInDatabase(
+			Archer aGeneric, Reglement reglement, String orderfield, int nbmaxenreg, ConcurrentManagerProgress concurrentManagerProgress) {
 		List<Concurrent> concurrents = new ArrayList<Concurrent>();
 		Statement stmt = null;
 		try {
@@ -192,7 +193,7 @@ public class ConcurrentManager {
 
 			if(aGeneric != null) {
 				sql += "where "; //$NON-NLS-1$
-				ArrayList<String> filters = new ArrayList<String>();
+				List<String> filters = new ArrayList<String>();
 
 				if(!aGeneric.getNumLicenceArcher().isEmpty()) {
 					filters.add("NUMLICENCEARCHER like '" + aGeneric.getNumLicenceArcher() + "'"); //$NON-NLS-1$ //$NON-NLS-2$

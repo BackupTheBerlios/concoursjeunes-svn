@@ -111,6 +111,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.ajdeveloppement.apps.AppUtilities;
+import org.ajdeveloppement.apps.Localisable;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
@@ -123,7 +125,7 @@ import org.concoursjeunes.Profile;
  * @author  Aurélien Jeoffray
  * @version  3.0
  */
-
+@Localisable(textMethod="setTitle",value="resultats.titre")
 public class ResultatDialog extends JDialog implements ActionListener, KeyListener, FocusListener {
 	//static
 	public static final int PREVIOUS_TARGET = 0;
@@ -137,6 +139,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 	private List<Concurrent> concurrents;
 
 	private JLabel jlCible = new JLabel();
+	@Localisable("resultats.distances")
 	private JLabel jlDistance = new JLabel();
 	private JLabel[] jlDepartages;
 	private JLabel[] jlDistances;
@@ -146,13 +149,14 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 	private JTextField[][] pointsCum2V; //cumuls sur 2 volées
 	private JTextField[][] points; //cumuls des points de la série
 	private JTextField[][] departages;
-	//private JTextField[] dix;
-	//private JTextField[] neuf;
-	//private JTextField[] manque;
 	
+	@Localisable("bouton.valider")
 	private final JButton jbValider = new JButton();
+	@Localisable("bouton.suivant")
 	private final JButton jbSuivant = new JButton();
+	@Localisable("bouton.precedent")
 	private final JButton jbPrecedent = new JButton();
+	@Localisable("bouton.annuler")
 	private final JButton jbAnnuler = new JButton();
 
 	private int returnVal = CANCEL;
@@ -200,9 +204,6 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 		pointsCum2V = new JTextField[parametres.getNbTireur()][nbSerie];
 		points = new JTextField[parametres.getNbTireur()][nbSerie];
 		departages = new JTextField[parametres.getNbTireur()][nbDepartages];
-		//dix = new JTextField[parametres.getNbTireur()];
-		//neuf = new JTextField[parametres.getNbTireur()];
-		//manque = new JTextField[parametres.getNbTireur()];
 
 		for(int i = 0; i < parametres.getNbTireur(); i++) {
 			for(int j = 0; j < nbSerie; j++) {
@@ -250,12 +251,9 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 			jlDistances[i] = new JLabel();
 		}
 		jlDepartages = new JLabel[nbDepartages];
-		for(int i = 0; i < nbSerie; i++) {
+		for(int i = 0; i < nbDepartages; i++) {
 			jlDepartages[i] = new JLabel();
 		}
-		//JLabel ldix = new JLabel("10"); //$NON-NLS-1$
-		//JLabel lneuf = new JLabel("9"); //$NON-NLS-1$
-		//JLabel lmanque = new JLabel("M"); //$NON-NLS-1$
 
 		lPoints = new JLabel[parametres.getNbTireur()];
 		for(int i = 0; i < parametres.getNbTireur(); i++) {
@@ -292,9 +290,6 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 			c.gridx++;
 			gridbagComposer.addComponentIntoGrid(jlDepartages[i], c);
 		}
-		//c.gridx++;
-		//gridbagComposer.addComponentIntoGrid(lneuf, c);
-
 
 		c.gridx = GridBagConstraints.RELATIVE;
 		JPanel[][] ppoints = new JPanel[parametres.getNbTireur()][nbSerie];
@@ -346,23 +341,20 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 				points[concurrent.getPosition()][j].setText(p.get(j)+""); //$NON-NLS-1$
 				points[concurrent.getPosition()][j].setEnabled(true);
 				lPoints[concurrent.getPosition()].setEnabled(true);
-				
-				/*dix[concurrent.getPosition()].setText(concurrent.getDix()+""); //$NON-NLS-1$
-				dix[concurrent.getPosition()].setEnabled(true);
-				neuf[concurrent.getPosition()].setText(concurrent.getNeuf()+""); //$NON-NLS-1$
-				neuf[concurrent.getPosition()].setEnabled(true);*/
 			}
 			for(int j = 0; j < departages[concurrent.getPosition()].length; j++) {
-				departages[concurrent.getPosition()][j].setText(concurrent.getDepartages()[j]+""); //$NON-NLS-1$
+				if(concurrent.getDepartages().length > j)
+					departages[concurrent.getPosition()][j].setText(String.valueOf(concurrent.getDepartages()[j]));
+				else
+					departages[concurrent.getPosition()][j].setText(String.valueOf(0));
 			}
 		}
 	}
 	
 	private void affectLibelle() {
-		setTitle(localisation.getResourceString("resultats.titre")); //$NON-NLS-1$
+		AppUtilities.localize(this, localisation);
 		
-		jlCible.setText("<html><font size=\"+1\">" + localisation.getResourceString("resultats.cible") + " " + concurrents.get(0).getCible() + "</font></html>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		jlDistance.setText(localisation.getResourceString("resultats.distances")); //$NON-NLS-1$
+		jlCible.setText(localisation.getResourceString("resultats.cible", concurrents.get(0).getCible())); //$NON-NLS-1$
 		for(int i = 0; i < jlDistances.length; i++) {
 			jlDistances[i].setText((i==0) ?
 					localisation.getResourceString("resultats.distance1") + " " //$NON-NLS-1$ //$NON-NLS-2$
@@ -370,11 +362,6 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 		}
 		for(int i = 0 ; i < jlDepartages.length; i++)
 			jlDepartages[i].setText(parametres.getReglement().getTie().get(i));
-		
-		jbValider.setText(localisation.getResourceString("bouton.valider")); //$NON-NLS-1$
-		jbSuivant.setText(localisation.getResourceString("bouton.suivant")); //$NON-NLS-1$
-		jbPrecedent.setText(localisation.getResourceString("bouton.precedent")); //$NON-NLS-1$
-		jbAnnuler.setText(localisation.getResourceString("bouton.annuler")); //$NON-NLS-1$
 	}
 	
 	public int showResultatDialog() {
@@ -427,8 +414,6 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 					concurrent.setScore(concPoints);
 					//intégre les 10/9/M si nécessaire
 					concurrent.setDepartages(concDepartages);
-					//concurrent.setDix(Integer.parseInt(dix[concurrent.getPosition()].getText()));
-					//concurrent.setNeuf(Integer.parseInt(neuf[concurrent.getPosition()].getText()));
 
 				}
 		

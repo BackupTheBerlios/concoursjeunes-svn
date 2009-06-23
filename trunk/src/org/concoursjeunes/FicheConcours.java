@@ -26,6 +26,7 @@ import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -304,6 +305,12 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	@SuppressWarnings("deprecation")
 	private void checkFiche() {
 		Reglement reglement = parametre.getReglement();
+		
+		if(reglement.getVersion() == 1) {
+			reglement.setTie(new ArrayList<String>(Arrays.asList(new String[] { "10","9" }))); //$NON-NLS-1$ //$NON-NLS-2$
+			reglement.setDisplayName(reglement.getName());
+			reglement.setVersion(2);
+		}
 		
 		DistancesEtBlason defaultDistancesEtBlason = new DistancesEtBlason();
 		for(DistancesEtBlason distancesEtBlason : reglement.getListDistancesEtBlason()) {

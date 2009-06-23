@@ -134,6 +134,7 @@ import javax.xml.ws.WebServiceException;
 import org.ajdeveloppement.apps.AppUtilities;
 import org.ajdeveloppement.apps.Localisable;
 import org.ajdeveloppement.commons.AjResourcesReader;
+import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.ajdeveloppement.commons.ui.AJList;
 import org.ajdeveloppement.macosx.PrivilegedRuntime;
 import org.ajdeveloppement.updater.AjUpdater;
@@ -420,19 +421,29 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 			String prompturl = JOptionPane.showInputDialog(this, 
 					localisation.getResourceString("installplugindialog.promptaddurl"), "http://"); //$NON-NLS-1$ //$NON-NLS-2$
 			try {
+				if(!prompturl.endsWith("/")) //$NON-NLS-1$
+					prompturl += "/"; //$NON-NLS-1$
 				URL url = new URL(prompturl);
 				
-				PluginDescription pd = new PluginDescription();
-				pd.setCategory(localisation.getResourceString("installplugindialog.category.manual")); //$NON-NLS-1$
-				pd.setDisplayName(url.toString());
-				pd.setLogicalName(url.toString());
-				pd.setReposURL(url.toString());
+				PluginDescription pd = XMLSerializer.loadMarshallStructure(new URL(url, "plugindescription.xml"), PluginDescription.class); //$NON-NLS-1$
 				pdtm.addPluginDescription(pd);
 				pdtm.setSelected(pdtm.getRowCount()-1, true);
 			} catch (MalformedURLException e1) {
 				JOptionPane.showMessageDialog(this, 
 						localisation.getResourceString("installplugindialog.invalidurl"), //$NON-NLS-1$
 						localisation.getResourceString("installplugindialog.invalidurl.title"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
+			} catch (JAXBException e1) {
+				JXErrorPane.showDialog(this,
+						new ErrorInfo(localisation.getResourceString("erreur"), //$NON-NLS-1$
+								e1.toString(),
+						null, null, e1, Level.WARNING, null));
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				JXErrorPane.showDialog(this,
+						new ErrorInfo(localisation.getResourceString("erreur"), //$NON-NLS-1$
+								e1.toString(),
+						null, null, e1, Level.WARNING, null));
+				e1.printStackTrace();
 			}
 		}
 	}

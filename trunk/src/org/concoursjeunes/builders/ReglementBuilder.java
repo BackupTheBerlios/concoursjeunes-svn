@@ -180,6 +180,7 @@ public class ReglementBuilder {
 			if(rs.first()) {
 				numreglement = rs.getInt("NUMREGLEMENT"); //$NON-NLS-1$
 				
+				reglement.setVersion(2);
 				reglement.setNumReglement(numreglement);
 				reglement.setName(rs.getString("NOMREGLEMENT")); //$NON-NLS-1$
 				reglement.setDisplayName(rs.getString("LIBELLE")); //$NON-NLS-1$
@@ -257,15 +258,9 @@ public class ReglementBuilder {
 	private static Reglement getDefaultReglement() {
 		Reglement reglement = new Reglement();
 		
+		reglement.setVersion(2);
 		reglement.setName("C"+(new Date().getTime())); //$NON-NLS-1$
-		reglement.setNbSerie(2);
-		reglement.setNbVoleeParSerie(10); 
-		reglement.setNbFlecheParVolee(3); 
-		reglement.setNbMembresEquipe(4); 
-		reglement.setNbMembresRetenu(3); 
-		reglement.setOfficialReglement(false); 
-		reglement.setCategory(2); 
-		reglement.setRemovable(true);
+		reglement.setNbVoleeParSerie(10);
 
 		return reglement;
 	}

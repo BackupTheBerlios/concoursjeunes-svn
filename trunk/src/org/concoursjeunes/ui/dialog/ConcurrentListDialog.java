@@ -99,13 +99,26 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.RowFilter;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 
+import org.ajdeveloppement.apps.AppUtilities;
+import org.ajdeveloppement.apps.Localisable;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.concoursjeunes.Archer;
@@ -126,18 +139,22 @@ import org.jdesktop.swingx.JXHyperlink;
  * @author Aurélien Jeoffray
  * @version 2.0
  */
+@Localisable(textMethod="setTitle",value="concurrent.nouveau.titre")
 public class ConcurrentListDialog extends JDialog implements ActionListener, MouseListener, CaretListener {
 	private AjResourcesReader localisation;
 	
-	private ArchersTableModel dtm = null;
-	private TableRowSorter<ArchersTableModel> sorter;
+	private ArchersTableModel dtm = new ArchersTableModel();
+	private TableRowSorter<ArchersTableModel> sorter = new TableRowSorter<ArchersTableModel>(dtm);
 
 	private final Reglement reglement;
 
+	@Localisable("concurrent.nouveau.licence")
 	private JLabel jlFilterLicence = null;
 	private JTextField jtfFilterLicence = null;
+	@Localisable("concurrent.nouveau.nom")
 	private JLabel jlFilterNom = null;
 	private JTextField jtfFilterNom = null;
+	@Localisable("concurrent.nouveau.club")
 	private JLabel jlFilterClub = null;
 	private JTextField jtfFilterClub = null;
 	private JTable jTable = null;
@@ -161,7 +178,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	 *            la fenetre principal de l'application (pour le point modal)
 	 */
 	public ConcurrentListDialog(JDialog parentframe, Profile profile, Reglement reglement, Archer filter) {
-		super(parentframe, profile.getLocalisation().getResourceString("concurrent.nouveau.titre"), ModalityType.APPLICATION_MODAL); //$NON-NLS-1$
+		super(parentframe, "", ModalityType.APPLICATION_MODAL); //$NON-NLS-1$
 		this.reglement = reglement;
 		this.localisation = profile.getLocalisation();
 
@@ -176,8 +193,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		}
 		if(filter != null)
 			filtre = true;
-		//dtm = new ArchersTableModel(filter);
-		dtm = new ArchersTableModel();
+
 		ArchersTableLoader loader = new ArchersTableLoader(filter);
 		loadingProgress(loader);
 		loader.execute();
@@ -222,9 +238,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	}
 
 	private void affectLibelle() {
-		jlFilterLicence.setText(localisation.getResourceString("concurrent.nouveau.licence")); //$NON-NLS-1$
-		jlFilterNom.setText(localisation.getResourceString("concurrent.nouveau.nom")); //$NON-NLS-1$
-		jlFilterClub.setText(localisation.getResourceString("concurrent.nouveau.club")); //$NON-NLS-1$
+		AppUtilities.localize(this, localisation);
 	}
 
 	/**
@@ -277,10 +291,9 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	private JTable getJTable() {
 		if (this.jTable == null) {
 
-			this.sorter = new TableRowSorter<ArchersTableModel>(dtm);
 			this.jTable = new JTable(dtm);
-			this.jTable.setAutoCreateRowSorter(true);
-			// this.sorter.setTableHeader(this.jTable.getTableHeader());
+			jTable.setRowSorter(sorter);
+
 			this.jTable.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
 			this.jTable.setPreferredScrollableViewportSize(new Dimension(640, 480));
 			this.jTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -394,7 +407,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
             public void propertyChange(PropertyChangeEvent event) {
                 if (event.getPropertyName().equals("progress")) { //$NON-NLS-1$
                     int progress = ((Integer) event.getNewValue()).intValue();
-                    //progressBar.setValue(progress);
+
                     loadingProgressLabel.setText(localisation.getResourceString("listeconcurrent.loading", progress)); //$NON-NLS-1$
 
                     if (progress == 100) {
@@ -406,6 +419,11 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
         });
 	}
 
+	/**
+	 * Filtre la liste des archers afficher avec le l'archer générique fournit en paramêtre
+	 * 
+	 * @param filter objet archer de filtrage
+	 */
 	public void setFilter(Archer filter) {
 		if(filter == null)
 			return;
@@ -472,27 +490,12 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 			jxhDisableFilter.removeActionListener(this);
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
-					dtm = new ArchersTableModel();
+					dtm.clear();
 					ArchersTableLoader loader = new ArchersTableLoader(null);
 					loadingProgress(loader);
 					loadingProgressLabel.setText(localisation.getResourceString("listeconcurrent.loading", 0)); //$NON-NLS-1$
 					loader.execute();
 					loading.setBusy(true);
-					
-					
-					sorter = new TableRowSorter<ArchersTableModel>(dtm);
-					jTable.setModel(dtm);
-					sorter.toggleSortOrder(1);
-
-					Thread.yield();
-
-					if (jtfFilterLicence.getText().length() > 0)
-						sorter.setRowFilter(RowFilter.regexFilter("^" + jtfFilterLicence.getText().toUpperCase(), 0)); //$NON-NLS-1$
-					else if (jtfFilterNom.getText().length() > 0)
-						sorter.setRowFilter(RowFilter.regexFilter("^" + jtfFilterNom.getText().toUpperCase(), 1)); //$NON-NLS-1$
-					else if (jtfFilterClub.getText().length() > 0)
-						sorter.setRowFilter(RowFilter.regexFilter(jtfFilterClub.getText().toUpperCase(), 3));
-					jTable.setRowSorter(sorter);
 				}
 			});
 		}
@@ -500,15 +503,25 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 
 	public void caretUpdate(CaretEvent e) {
 		if (e.getSource() == jtfFilterLicence && jtfFilterLicence.hasFocus()) {
-			sorter.setRowFilter(RowFilter.regexFilter("^" + jtfFilterLicence.getText().toUpperCase(), 0)); //$NON-NLS-1$
-			jTable.setRowSorter(sorter);
-			jtfFilterNom.setText(""); //$NON-NLS-1$
-			jtfFilterClub.setText(""); //$NON-NLS-1$
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					sorter.setRowFilter(RowFilter.regexFilter("^" + jtfFilterLicence.getText().toUpperCase(), 0)); //$NON-NLS-1$
+					jTable.setRowSorter(sorter);
+					jtfFilterNom.setText(""); //$NON-NLS-1$
+					jtfFilterClub.setText(""); //$NON-NLS-1$
+				}
+			});
 		} else if (e.getSource() == jtfFilterNom && jtfFilterNom.hasFocus()) {
-			sorter.setRowFilter(RowFilter.regexFilter("^" + jtfFilterNom.getText().toUpperCase(), 1)); //$NON-NLS-1$
-			jTable.setRowSorter(sorter);
-			jtfFilterLicence.setText(""); //$NON-NLS-1$
-			jtfFilterClub.setText(""); //$NON-NLS-1$
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					synchronized (dtm) {
+						sorter.setRowFilter(RowFilter.regexFilter("^" + jtfFilterNom.getText().toUpperCase(), 1)); //$NON-NLS-1$
+						jTable.setRowSorter(sorter);
+						jtfFilterLicence.setText(""); //$NON-NLS-1$
+						jtfFilterClub.setText(""); //$NON-NLS-1$
+					}
+				}
+			});
 		} else if (e.getSource() == jtfFilterClub && jtfFilterClub.hasFocus()) {
 			sorter.setRowFilter(RowFilter.regexFilter(jtfFilterClub.getText().toUpperCase(), 3));
 			jTable.setRowSorter(sorter);
@@ -541,17 +554,11 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	 */
 	private class ArchersTableModel extends AbstractTableModel {
 
-		private final ArrayList<String> columnsName = new ArrayList<String>();
 		private List<Concurrent> rows = new ArrayList<Concurrent>();
 
 		private Concurrent curConcurrent = null;
 
 		public ArchersTableModel() {
-			columnsName.add(localisation.getResourceString("listeconcurrent.numlicence")); //$NON-NLS-1$
-			columnsName.add(localisation.getResourceString("listeconcurrent.nom")); //$NON-NLS-1$
-			columnsName.add(localisation.getResourceString("listeconcurrent.prenom")); //$NON-NLS-1$
-			columnsName.add(localisation.getResourceString("listeconcurrent.club")); //$NON-NLS-1$
-			columnsName.add(localisation.getResourceString("listeconcurrent.categorie")); //$NON-NLS-1$
 		}
 		
 		public void add(List<Concurrent> concurrents) {
@@ -562,9 +569,16 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 				
 				last = rows.size() -1;
 				first = last - concurrents.size();
-				if(last > first)
-					fireTableRowsInserted(first, last);
+				if(last > first) {
+					fireTableRowsInserted(first, first);
+				}
 			}
+		}
+		
+		public void clear() {
+			rows.clear();
+			
+			fireTableDataChanged();
 		}
 
 		/**
@@ -579,7 +593,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		 * @see javax.swing.table.TableModel#getColumnCount()
 		 */
 		public int getColumnCount() {
-			return columnsName.size();
+			return 5;
 		}
 
 		/**
@@ -587,7 +601,19 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		 */
 		@Override
 		public String getColumnName(int columnIndex) {
-			return columnsName.get(columnIndex);
+			switch (columnIndex) {
+				case 0:
+					return localisation.getResourceString("listeconcurrent.numlicence"); //$NON-NLS-1$
+				case 1:
+					return localisation.getResourceString("listeconcurrent.nom"); //$NON-NLS-1$
+				case 2:
+					return localisation.getResourceString("listeconcurrent.prenom"); //$NON-NLS-1$
+				case 3:
+					return localisation.getResourceString("listeconcurrent.club"); //$NON-NLS-1$
+				case 4:
+					return localisation.getResourceString("listeconcurrent.categorie"); //$NON-NLS-1$
+			}
+			return ""; //$NON-NLS-1$
 		}
 
 		/**

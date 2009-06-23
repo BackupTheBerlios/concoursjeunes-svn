@@ -2,9 +2,9 @@
 -- bonne base
 -- @author Aurélien JEOFFRAY
 
-drop table NIVEAU_COMPETITION;
+--drop table NIVEAU_COMPETITION;
 drop table FEDERATION;
-drop table TYPE_EQUIPE;
+--drop table TYPE_EQUIPE;
 drop table DISTANCESBLASONS;
 drop table POSSEDE;
 drop table DISTINGUER;
@@ -17,7 +17,7 @@ drop table CRITERIASET;
 drop table ANCRAGES_BLASONS;
 drop table DISTANCES;
 drop table PARAM;
-drop table DEPARTAGE;
+--drop table DEPARTAGE;
 drop table CRITEREELEMENT;
 drop table BLASONS;
 drop table CRITERE;

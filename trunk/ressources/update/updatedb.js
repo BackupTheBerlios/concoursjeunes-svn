@@ -3,22 +3,12 @@
 // SqlManager sql - moteur de base de données
 
 function updateReglements() {
-	var contexte = JavaImporter(
-			Packages.org.concoursjeunes,
-			Packages.org.concoursjeunes.manager,
-			Packages.org.ajdeveloppement.commons,
-			Packages.org.ajdeveloppement.commons.io,
-			Packages.java.util,
-			Packages.java.io);
-
-	with(contexte) {
-		//liste l'ensemble des fichiers de réglements
-		var updatePath = new File(ApplicationCore.staticParameters.getResourceString("path.ressources"), "update");
-		var reglements = FileUtils.listAllFiles(updatePath, ".*\\.reglement");
-		var rManager = new ReglementManager();
-		for(var i = 0; i < reglements.size(); i++) {
-			rManager.importReglement(reglements.get(i));
-		}
+	//liste l'ensemble des fichiers de réglements
+	var updatePath = new File(org.concoursjeunes.ApplicationCore.staticParameters.getResourceString("path.ressources"), "update");
+	var reglements = org.ajdeveloppement.commons.io.FileUtils.listAllFiles(updatePath, ".*\\.reglement");
+	var rManager = new org.concoursjeunes.manager.ReglementManager();
+	for(var i = 0; i < reglements.size(); i++) {
+		rManager.importReglement(reglements.get(i));
 	}
 }
 

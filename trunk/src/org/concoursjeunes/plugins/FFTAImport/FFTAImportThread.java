@@ -120,7 +120,7 @@ public class FFTAImportThread extends Thread {
 			secureProperties.load(
 					new FileReader(new File(ApplicationCore.staticParameters.getResourceString("path.config"), "ffta.properties"))); //$NON-NLS-1$ //$NON-NLS-2$
 			URL ftpFFTA;
-			if(fftalogpath.isEmpty())
+			if(!fftalogpath.isEmpty())
 				ftpFFTA = new File(fftalogpath).toURI().toURL();
 			else
 				ftpFFTA = new URL(secureProperties.get("ffta.ftp.url")); //$NON-NLS-1$
