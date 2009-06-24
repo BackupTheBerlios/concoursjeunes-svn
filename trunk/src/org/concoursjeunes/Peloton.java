@@ -117,7 +117,7 @@ public class Peloton extends Target {
 	 * Retourne true si la place est libre, false dans le cas contraire
 	 * 
 	 * @param blason Conservé par héritage, donner la valeur null
-	 * @param position, la postion sur laquelle tester la présence d'un blason
+	 * @param position la postion sur laquelle tester la présence d'un blason
 	 */
 	@Override
 	public boolean isSlotAvailable(Blason blason, int position) {

@@ -110,7 +110,7 @@ public class DistancesEtBlasonBuilder {
 	 * 
 	 * @param numdistancesblason Le numero de la ligne en base
 	 * @param reglement Le réglement à lié
-	 * @param hashReglement Le code réglement associé  à l'objet
+	 * 
 	 * @return l'objet DistancesEtBlason généré
 	 */
 	public static DistancesEtBlason getDistancesEtBlason(int numdistancesblason, Reglement reglement) {

@@ -197,7 +197,7 @@ public class CriteriaSet implements SqlPersistance {
 	/**
 	 * Sauvegarde en base le jeux de critère. Les arguments sont ignoré
 	 * 
-	 * @see org.ajdeveloppement.commons.sql.SqlPersistance#save(java.lang.Object[])
+	 * @see org.ajdeveloppement.commons.sql.SqlPersistance#save()
 	 * 
 	 */
 	@Override

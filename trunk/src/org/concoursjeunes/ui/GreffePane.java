@@ -458,9 +458,9 @@ public class GreffePane extends JPanel implements
 			}
 		}
 		
-		public List<Concurrent> getConcurrents() {
+		/*public List<Concurrent> getConcurrents() {
 			return concurrents;
-		}
+		}*/
 		
 		public Concurrent getConcurrentAt(int row) {
 			return concurrents.get(row);

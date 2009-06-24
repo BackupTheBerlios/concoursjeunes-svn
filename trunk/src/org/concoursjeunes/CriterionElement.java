@@ -163,7 +163,7 @@ public class CriterionElement implements SqlPersistance {
 	/**
 	 * Sauvegarde l'élement de critére dans la base.  Les arguments sont ignoré
 	 * 
-	 * @see org.ajdeveloppement.commons.sql.SqlPersistance#save(java.lang.Object[])
+	 * @see org.ajdeveloppement.commons.sql.SqlPersistance#save()
 	 */
 	@SuppressWarnings("nls")
 	@Override
@@ -177,7 +177,7 @@ public class CriterionElement implements SqlPersistance {
 	/**
 	 * Supprime de la base le présent élément. Les arguments sont ignoré
 	 * 
-	 * @see org.ajdeveloppement.commons.sql.SqlPersistance#delete(java.lang.Object[])
+	 * @see org.ajdeveloppement.commons.sql.SqlPersistance#delete()
 	 */
 	@SuppressWarnings("nls")
 	@Override

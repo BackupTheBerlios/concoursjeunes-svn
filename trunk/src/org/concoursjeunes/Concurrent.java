@@ -140,7 +140,8 @@ public class Concurrent extends Archer implements Cloneable {
 
 	/**
 	 * Affecte le nombre de dix total du concurrent
-	 * @param  dix
+	 * 
+	 * @param  neuf
 	 */
 	@Deprecated
 	public void setNeuf(int neuf) {
@@ -162,7 +163,7 @@ public class Concurrent extends Archer implements Cloneable {
 
 	/**
 	 * Affecte le nombre de 10+ total du concurrent
-	 * @param  dixPlus
+	 * @param  dix
 	 */
 	@Deprecated
 	public void setDix(int dix) {
@@ -385,8 +386,6 @@ public class Concurrent extends Archer implements Cloneable {
 	
 	/**
 	 * Sauvegarde le jeux de critère associé à l'archer
-	 * 
-	 * @param reglement le réglement pour lequel s'applique le jeux de critère
 	 */
 	public void saveCriteriaSet() throws SqlPersistanceException {
 		if(!getNumLicenceArcher().equals("")) { //$NON-NLS-1$

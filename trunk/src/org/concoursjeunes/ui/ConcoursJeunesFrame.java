@@ -177,7 +177,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	/**
 	 * Construction de l'interface graphique
 	 * 
-	 * @param concoursJeunes
+	 * @param profile le profile associé à l'interface
 	 */
 	public ConcoursJeunesFrame(Profile profile) {
 		this.profile = profile;

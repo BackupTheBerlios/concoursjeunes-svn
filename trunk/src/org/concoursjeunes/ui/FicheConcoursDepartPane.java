@@ -112,7 +112,6 @@ import java.util.logging.Level;
 import javax.swing.AbstractListModel;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
-import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -980,8 +979,6 @@ public class FicheConcoursDepartPane extends JPanel
 	
 	private class ConcurrentListModel extends AbstractListModel implements PropertyChangeListener {
 		
-		DefaultListModel dlm = new DefaultListModel();
-		
 		private List<Concurrent> concurrents = new ArrayList<Concurrent>();
 		
 		public void addConcurrent(Concurrent concurrent) {
@@ -1016,9 +1013,9 @@ public class FicheConcoursDepartPane extends JPanel
 				fireIntervalAdded(this, 0, concurrents.size()-1);
 		}
 		
-		public List<Concurrent> getConcurrents() {
+		/*public List<Concurrent> getConcurrents() {
 			return concurrents;
-		}
+		}*/
 
 		@Override
 		public Object getElementAt(int index) {
@@ -1086,9 +1083,9 @@ public class FicheConcoursDepartPane extends JPanel
 		 * 
 		 * @return  true si séléctionnable, false sinon
 		 */
-		public boolean isSelectable() {
+		/*public boolean isSelectable() {
 			return selectable;
-		}
+		}*/
 
 		/**
 		 * Définit si les éléments de la liste sont séléctionnable ou non

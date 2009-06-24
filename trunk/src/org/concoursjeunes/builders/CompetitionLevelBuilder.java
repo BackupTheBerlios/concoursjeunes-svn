@@ -110,9 +110,10 @@ public class CompetitionLevelBuilder {
 	 * alors c'est le libellé français qui est utilisé.</p>
 	 * <p>Si le niveau n'est pas trouvé, le génére en mettant le code comme libellé.</p>
 	 * 
-	 * @param codeNiveau le code du niveau à retourner
-	 * @param numFederation la fédération associé au niveau
+	 * @param numLevel le code du niveau à retourner
+	 * @param federation la fédération associé au niveau
 	 * @param lang la langue du libellé.
+	 * 
 	 * @return le niveau de compétition généré.
 	 * @throws SQLException
 	 */

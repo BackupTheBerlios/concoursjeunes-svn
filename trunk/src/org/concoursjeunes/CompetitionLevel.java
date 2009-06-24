@@ -212,7 +212,7 @@ public class CompetitionLevel implements SqlPersistance {
 	/** 
 	 * Sauvegarde en base un niveau de compétition
 	 * 
-	 * @see org.ajdeveloppement.commons.sql.SqlPersistance#save(java.lang.Object[])
+	 * @see org.ajdeveloppement.commons.sql.SqlPersistance#save()
 	 * 
 	 * @throws SQLException
 	 */
@@ -224,7 +224,7 @@ public class CompetitionLevel implements SqlPersistance {
 	/** 
 	 * Sauvegarde de la base le niveau de compétition
 	 * 
-	 * @see org.ajdeveloppement.commons.sql.SqlPersistance#delete(java.lang.Object[])
+	 * @see org.ajdeveloppement.commons.sql.SqlPersistance#delete()
 	 * compte.
 	 * 
 	 * @throws SQLException

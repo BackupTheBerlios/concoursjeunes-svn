@@ -107,7 +107,6 @@ public class CriterionElementBuilder {
 	 * 
 	 * @param codeElement le code de l'élément à charger
 	 * @param criterion le critère parent de l'élément
-	 * @param hashReglement le code du réglement associé à l'élément
 	 * 
 	 * @return l'élément de critère construit
 	 */

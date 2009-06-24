@@ -37,6 +37,7 @@
 
 	<import file="plugins/build-ConcoursJeunesUpdate.xml"/>
 	<import file="plugins/build-ResultArcImport.xml"/>
+	<import file="plugins/build-FFTAImport.xml"/>
 	<import file="plugins/build-PhoenixPlugin.xml"/>
 	<import file="plugins/build-BackupRestorePlugin.xml"/>
 
@@ -83,6 +84,7 @@
 				<!--exclu les réference subversion -->
 				<exclude name="**/.svn*" />
 				<exclude name="ressources/states/**"/>
+				<exclude name="config/ffta.properties" />
 			</fileset>
 		</copy>
 		
@@ -433,6 +435,7 @@
 		<antcall target="pack-ConcoursJeunesUpdate" />
 		<antcall target="pack-PhoenixPlugin" />
 		<antcall target="pack-BackupRestorePlugin" />
+		<antcall target="pack-FFTAImport" />
 		<antcall target="revisions" />
 		<antcall target="windows" />
 		<antcall target="linux" />
@@ -459,6 +462,7 @@
 		<antcall target="pack-ConcoursJeunesUpdate" />
 		<antcall target="pack-PhoenixPlugin" />
 		<antcall target="pack-ResultArcImport" />
+		<antcall target="pack-FFTAImport" />
 		<antcall target="pack-BackupRestorePlugin" />
 		<antcall target="revisions" />
 		<antcall target="makensissetup" />

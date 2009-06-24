@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="FFTAImport" basedir="../">
+	<target name="pack-FFTAImport">
+		<mkdir dir="${projet.pack.dir}/plugins/FFTAImport/plugins" />
+		<jar jarfile="${projet.pack.dir}/plugins/FFTAImport/plugins/FFTAImport.jar">
+			<fileset dir="${projet.pack.dir}/bin" >
+				<include name="org/concoursjeunes/plugins/FFTAImport/**" />
+			</fileset>
+		</jar>
+		<copy todir="${projet.pack.dir}/plugins/FFTAImport/" >
+			<fileset dir="." >
+				<include name="plugins/properties/FFTAImportPlugin.properties" />
+				<include name="plugins/plugindescription-fftaimport.xml" />
+				<include name="config/ffta.properties" />
+			</fileset>
+		</copy>
+		<mkdir dir="${projet.pack.dir}/plugins/FFTAImport/security/keys" />
+		<copy todir="${projet.pack.dir}/plugins/FFTAImport/security/keys/">
+			<fileset dir="${projet.fftaimport.securitypath}" >
+				<include name="ffta.key"/>
+			</fileset>
+		</copy>
+		<move tofile="${projet.pack.dir}/plugins/FFTAImport/plugindescription.xml"
+			file="${projet.pack.dir}/plugins/FFTAImport/plugins/plugindescription-fftaimport.xml"/>
+		
+		<taskdef name="revisionscreator" classname="org.ajdeveloppement.updater.ant.RevisionsCreator">
+			<classpath location="lib/ajcommons.jar"/>
+		</taskdef>
+
+		<revisionscreator 
+				revisionpath="${projet.pack.dir}/plugins/FFTAImport/revision.xml.gz"
+				keystorepath="${projet.keystorepath}"
+				keystorepassword="${projet.keystorepassword}"
+				signkeysalias="${projet.signkeyalias}"
+				signkeysaliaspassword="${projet.signkeyaliaspassword}">
+			
+			<fileset dir="${projet.pack.dir}/plugins/FFTAImport/">
+				<include name="plugins/FFTAImport.jar"/>
+				<include name="plugins/properties/FFTAImportPlugin.properties" />
+				<include name="config/ffta.properties" />
+			</fileset>
+			<keysandcerts dir="${projet.pack.dir}/plugins/FFTAImport/security/">
+				<include name="keys/**" />
+			</keysandcerts>
+			
+		</revisionscreator>
+	</target>
+</project>

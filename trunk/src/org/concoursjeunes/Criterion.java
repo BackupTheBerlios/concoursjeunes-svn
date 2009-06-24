@@ -283,7 +283,7 @@ public class Criterion implements SqlPersistance {
     /**
      * Remplacé par {@link #getChampsTableArchers()}
      * 
-     * @return
+     * @return le champs de la table archer correspondant au critère
      */
     @Deprecated
     public String getCodeffta() {
@@ -345,7 +345,7 @@ public class Criterion implements SqlPersistance {
 	/**
 	 * Sauvegarde le critère en base.  Les arguments sont ignoré
 	 * 
-	 * @see org.ajdeveloppement.commons.sql.SqlPersistance#save(java.lang.Object[])
+	 * @see org.ajdeveloppement.commons.sql.SqlPersistance#save()
 	 */
 	@SuppressWarnings("nls")
 	@Override
@@ -381,7 +381,7 @@ public class Criterion implements SqlPersistance {
 	/** 
 	 * Supprime le critère de la base. Les arguments sont ignoré
 	 * 
-	 * @see org.ajdeveloppement.commons.sql.SqlPersistance#delete(java.lang.Object[])
+	 * @see org.ajdeveloppement.commons.sql.SqlPersistance#delete()
 	 */
 	@Override
 	public void delete() throws SqlPersistanceException {

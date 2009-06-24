@@ -971,7 +971,7 @@ public class Reglement implements SqlPersistance {
 	 * Supprime la persistance du réglement. Cette persistance ne peut être
 	 * supprimé qu'à la condition que le réglement ne soit pas officiel
 	 * 
-	 * @return true si suppression effective, false sinon.
+	 * @throws SqlPersistanceException
 	 */
 	@Override
 	public void delete() throws SqlPersistanceException{

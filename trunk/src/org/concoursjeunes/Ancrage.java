@@ -164,7 +164,7 @@ public class Ancrage implements SqlPersistance {
 	 * Initialise un nouveau point d'ancrage avec les coordonnées
 	 * relative transmis en paramètre et correspondant à une position d'archer déterminé
 	 * 
-	 * @param la position d'archer correpondant au présent ancrage
+	 * @param emplacement la position d'archer correpondant au présent ancrage
 	 * @param x valeur entre 0.0 et 1.0 correspondant à la position relative du blason sur l'axe x
 	 * @param y valeur entre 0.0 et 1.0 correspondant à la position relative du blason sur l'axe y
 	 */

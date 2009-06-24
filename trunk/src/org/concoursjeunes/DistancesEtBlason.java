@@ -218,7 +218,7 @@ public class DistancesEtBlason implements SqlPersistance {
 	/**
 	 * Sauvegarde le couple distances/blasons en base.
 	 * 
-	 * @see org.ajdeveloppement.commons.sql.SqlPersistance#save(java.lang.Object[])
+	 * @see org.ajdeveloppement.commons.sql.SqlPersistance#save()
 	 * @throws SqlPersistanceException
 	 */
 	@SuppressWarnings("nls")

@@ -112,7 +112,6 @@ public class CriteriaSetBuilder {
 	 * 
 	 * @param numCriteriaSet le numero d'identifiant du jeux de critères dans la base
 	 * @param reglement le reglement concerné par le jeux de critères
-	 * @param hashReglement le numero d'identification en base du reglement
 	 * 
 	 * @return le jeux de critères concerné
 	 */

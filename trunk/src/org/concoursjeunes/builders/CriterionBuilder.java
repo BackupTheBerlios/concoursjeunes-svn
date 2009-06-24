@@ -111,7 +111,6 @@ public class CriterionBuilder {
 	 * 
 	 * @param codeCritere le code du critère à construire
 	 * @param reglement le réglement parent du critère
-	 * @param hashReglement le clé du réglement parent du critére
 	 * 
 	 * @return le critère correspondant
 	 */

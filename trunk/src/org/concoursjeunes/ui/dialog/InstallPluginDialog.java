@@ -580,14 +580,14 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 			fireTableRowsInserted(descriptions.size()-1, descriptions.size()-1);
 		}
 		
-		public void removePluginDescription(PluginDescription desc) {
+		/*public void removePluginDescription(PluginDescription desc) {
 			int index = descriptions.indexOf(desc);
 			if(index != -1) {
 				descriptions.remove(desc);
 				
 				fireTableRowsDeleted(index, index);
 			}
-		}
+		}*/
 		
 		public PluginDescription getPluginDescriptionAt(int row) {
 			return descriptions.get(row);

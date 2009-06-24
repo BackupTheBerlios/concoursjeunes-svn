@@ -1008,8 +1008,8 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	private class DistancesBlasonsSet {
 		private List<DistancesEtBlason> dbList = new ArrayList<DistancesEtBlason>();
 		
-		public DistancesBlasonsSet() {
-		}
+		/*public DistancesBlasonsSet() {
+		}*/
 		
 		public DistancesBlasonsSet(List<DistancesEtBlason> dbList) {
 			set(dbList);
@@ -1020,17 +1020,17 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		}
 		
 		public void set(List<DistancesEtBlason> dbList) {
-			if(!(dbList instanceof ArrayList))
+			if(!(dbList instanceof ArrayList<?>))
 				dbList = new ArrayList<DistancesEtBlason>(dbList);
 			this.dbList = dbList;
 		}
 		
-		public void add(DistancesEtBlason distancesEtBlason) {
+		/*public void add(DistancesEtBlason distancesEtBlason) {
 			dbList.add(distancesEtBlason);
-		}
+		}*/
 		
-		public void remove(DistancesEtBlason distancesEtBlason) {
+		/*public void remove(DistancesEtBlason distancesEtBlason) {
 			dbList.remove(distancesEtBlason);
-		}
+		}*/
 	}
 }
