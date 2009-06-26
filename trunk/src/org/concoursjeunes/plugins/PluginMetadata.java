@@ -101,7 +101,6 @@ public class PluginMetadata {
 	private String optionLabel = ""; //$NON-NLS-1$
 	private Type pluginType = Type.ALL;
 	private String className = ""; //$NON-NLS-1$
-	private String reposURL = ""; //$NON-NLS-1$
 	private String version = ""; //$NON-NLS-1$
 	private String[] menuPath;
 	private Class<?> pluginClass;
@@ -179,14 +178,6 @@ public class PluginMetadata {
 	 */
 	public void setClassName(String className) {
 		this.className = className;
-	}
-
-	public String getReposURL() {
-		return reposURL;
-	}
-
-	public void setReposURL(String reposURL) {
-		this.reposURL = reposURL;
 	}
 
 	/**

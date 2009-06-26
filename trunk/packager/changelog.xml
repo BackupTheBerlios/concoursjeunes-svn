@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?> 
-<java version="1.6.0_10-rc" class="java.beans.XMLDecoder"> 
+<java version="1.6.0_14" class="java.beans.XMLDecoder"> 
  <object class="java.util.ArrayList"> 
   <void method="add"> 
    <object class="org.ajdeveloppement.updater.Version"> 
@@ -10,15 +10,27 @@
      <string>Aurélien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
     </void> 
     <void property="changeInfos"> 
-     <string>  * Test Change Log V2.0</string> 
+     <string>  * Amélioration générale de l&apos;ergonomie
+  * Ajout de l&apos;autocomplement sur les arbitres (si base d&apos;archer remplit)
+  * Réglement: Ajout de la notion de blason alternatif
+  * Réglement: Assouplissement du système de départage
+  * Réglement: Nouveau système d&apos;import/export
+  * Réglement: Amélioration de la gestion des fédérations
+  * Téchnique: Refonte du système de persistance
+  * Téchnique: Amélioration des performances de génération d&apos;éditions
+  * Téchnique: Amélioration de la stabilité
+  * Téchnique: Amélioration du système de mise à jour
+  * Correction de divers problèmes de fonctionnement
+
+  Attention cette version réinitialise la base de données. En outre les réglements exportés généré en 2.1 ne peuvent être réimporté.</string> 
     </void> 
     <void property="dateVersion"> 
      <object class="java.util.Date"> 
-      <long>1238240925418</long> 
+      <long>1245949605871</long> 
      </object> 
     </void> 
     <void property="version"> 
-     <string>2.19.00</string> 
+     <string>2.19.01</string> 
     </void> 
    </object> 
   </void> 

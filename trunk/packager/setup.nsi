@@ -225,11 +225,11 @@ Function .onInit
 	MessageBox MB_OK|MB_ICONEXCLAMATION "The installer is already running."
 	Abort
 	
-	ReadRegStr $R0 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PROGRAM_NAME}" "UninstallString"
+	ReadRegStr $R0 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" "UninstallString"
 	StrCmp $R0 "" done
  
 	MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION \
-		"${PROGRAM_NAME} is already installed. $\n$\nClick `OK` to remove the \
+		"$(^Name) is already installed. $\n$\nClick `OK` to remove the \
 		previous version or `Cancel` to cancel this upgrade." \
 	IDOK uninst
 	Abort

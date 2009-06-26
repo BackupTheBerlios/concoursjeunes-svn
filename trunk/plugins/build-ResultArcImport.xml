@@ -12,6 +12,7 @@
 				<include name="plugins/properties/ResultArcImportPlugin.properties" />
 				<include name="ExportWinFFTA.exe" />
 				<include name="*.DLL" />
+				<include name="ressources/repositories/ResultArcImport.xml"/>
 			</fileset>
 		</copy>
 		
@@ -27,10 +28,7 @@
 				signkeysaliaspassword="${projet.signkeyaliaspassword}">
 			<system name="windows">
 				<fileset dir="${projet.pack.dir}/plugins/ResultArcImport/">
-					<include name="plugins/ResultArcImport.jar"/>
-					<include name="plugins/properties/ResultArcImportPlugin.properties" />
-					<include name="ExportWinFFTA.exe" />
-					<include name="*.DLL" />
+					<include name="**/**"/>
 				</fileset>
 			</system>
 		</revisionscreator>

@@ -84,10 +84,17 @@
 				<!--exclu les réference subversion -->
 				<exclude name="**/.svn*" />
 				<exclude name="ressources/states/**"/>
+				<exclude name="ressources/repositories/**"/>
 				<exclude name="config/ffta.properties" />
 			</fileset>
 		</copy>
 		
+		<copy todir="${projet.pack.dir}" >
+			<fileset dir="." >
+				<include name="ressources/repositories/ConcoursJeunes.xml"/>
+			</fileset>
+		</copy>
+
 		<!--Copie et commpression des états -->
 		<copy todir="${projet.pack.dir}" >
 			<fileset dir="." >
@@ -253,6 +260,7 @@
 		    <dirset dir="${projet.pack.dir}/plugins/">
 		    	<include name="**/plugins"/>
 		    	<exclude name="FFTAImport/plugins/**"/>
+		    	<exclude name="ResultArcImport/plugins/**"/>
 		    </dirset>
 			<sequential>
 				<copy todir="${projet.pack.dir}/linux/tar/usr/lib/ConcoursJeunes/plugins" >
@@ -392,6 +400,7 @@
 		    <dirset dir="${projet.pack.dir}/plugins/">
 		    	<include name="**/plugins"/>
 		    	<exclude name="FFTAImport/plugins/**"/>
+		    	<exclude name="ResultArcImport/plugins/**"/>
 		    </dirset>
 			<sequential>
 				<copy todir="${projet.pack.dir}/macosx/${version.name}.app/Contents/Resources/Java/plugins" >

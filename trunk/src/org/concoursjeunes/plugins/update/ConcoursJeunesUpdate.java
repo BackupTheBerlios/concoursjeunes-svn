@@ -99,6 +99,7 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -110,6 +111,8 @@ import javax.xml.bind.JAXBException;
 import org.ajdeveloppement.apps.AppUtilities;
 import org.ajdeveloppement.commons.AJToolKit;
 import org.ajdeveloppement.commons.AjResourcesReader;
+import org.ajdeveloppement.commons.io.FileUtils;
+import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.ajdeveloppement.macosx.PrivilegedRuntime;
 import org.ajdeveloppement.updater.AjUpdater;
 import org.ajdeveloppement.updater.AjUpdaterEvent;
@@ -124,9 +127,6 @@ import org.concoursjeunes.Profile;
 import org.concoursjeunes.exceptions.NullConfigurationException;
 import org.concoursjeunes.plugins.Plugin;
 import org.concoursjeunes.plugins.PluginEntry;
-import org.concoursjeunes.plugins.PluginLoader;
-import org.concoursjeunes.plugins.PluginMetadata;
-import org.concoursjeunes.plugins.Plugin.Type;
 import org.jdesktop.swingx.util.OS;
 
 @Plugin(type = Plugin.Type.STARTUP)
@@ -136,7 +136,6 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 	private TrayIcon trayIcon;
 	private AjUpdater ajUpdater;
 	private Map<Repository, List<FileMetaData>> updateFiles = new Hashtable<Repository, List<FileMetaData>>();
-	private final AjResourcesReader pluginRessources = new AjResourcesReader("properties.ConcoursJeunesUpdate"); //$NON-NLS-1$
 	private final AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.update.ConcoursJeunesUpdate_libelle", ConcoursJeunesUpdate.class.getClassLoader()); //$NON-NLS-1$
 	private enum Status {
 		NONE,
@@ -162,18 +161,15 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 
 	@Override
 	public void run() {
-		PluginLoader pl = new PluginLoader();
-
 		ajUpdater = new AjUpdater(ApplicationCore.userRessources.getUpdatePath().getPath(), "."); //$NON-NLS-1$
 		ajUpdater.addAjUpdaterListener(this);
 		ajUpdater.setAppKeyStore(ApplicationCore.userRessources.getAppKeyStore());
+		
 		ajUpdater.setUserAgent(AppInfos.NOM + " " + AppInfos.VERSION //$NON-NLS-1$
 				+ " (" + AppUtilities.getAppUID(ApplicationCore.userRessources) + "; " + AppInfos.CODENAME + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		
-		ajUpdater.addRepository(new Repository(AppInfos.NOM, new String[] { pluginRessources.getResourceString("url.reference") }, AppInfos.VERSION)); //$NON-NLS-1$
-		for (PluginMetadata pm : pl.getPlugins(Type.ALL)) {
-			if(!pm.getReposURL().equals("plugin.repos")) //$NON-NLS-1$
-				ajUpdater.addRepository(new Repository(pm.getName(), new String[] { pm.getReposURL() }, pm.getVersion()));
+		for(Repository repository : getRepositories()) {
+			ajUpdater.addRepository(repository);
 		}
 		
 		if (ApplicationCore.getAppConfiguration().isUseProxy()) {
@@ -191,6 +187,25 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 			}
 		}
 	}
+	
+	private List<Repository> getRepositories() {
+		List<Repository> repositories = new ArrayList<Repository>();
+		
+		List<File> reposFiles = FileUtils.listAllFiles(new File(ApplicationCore.staticParameters.getResourceString("path.ressources"), //$NON-NLS-1$
+				"repositories"), ".*\\.xml"); //$NON-NLS-1$ //$NON-NLS-2$
+		
+		for(File file : reposFiles) {
+			try {
+				repositories.add(XMLSerializer.loadMarshallStructure(file, Repository.class));
+			} catch (JAXBException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return repositories;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -200,26 +215,6 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 	@Override
 	public void updaterStatusChanged(AjUpdaterEvent event) {
 		switch (event.getStatus()) {
-		/*case CONNECTED:
-			if (SystemTray.isSupported() && tray == null) {
-				tray = SystemTray.getSystemTray();
-				// load an image
-				Dimension dimension = tray.getTrayIconSize();
-				Image image = Toolkit.getDefaultToolkit().getImage(
-						staticParameters.getResourceString("path.ressources") + File.separator + staticParameters.getResourceString("file.icon.application")).getScaledInstance(dimension.width, //$NON-NLS-1$ //$NON-NLS-2$
-						dimension.height, Image.SCALE_SMOOTH);
-
-				// create a popup menu
-				trayIcon = new TrayIcon(image, pluginLocalisation.getResourceString("tray.name")); //$NON-NLS-1$
-				trayIcon.addMouseListener(this);
-
-				try {
-					tray.add(trayIcon);
-				} catch (AWTException e) {
-					System.err.println(e);
-				}
-			}
-			break;*/
 		case UPDATE_AVAILABLE:
 			
 			if (SystemTray.isSupported() && tray == null) {

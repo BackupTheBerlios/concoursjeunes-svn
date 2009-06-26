@@ -1,4 +1,4 @@
 #!/bin/sh
 
 cd $2
-java -cp lib/ajcommons.jar org.ajdeveloppement.updater.AjUpdaterApply "$1" "$2"
+java -cp lib/ajcommons.jar org.ajdeveloppement.updater.tools.AjUpdaterApply "$1" "$2"

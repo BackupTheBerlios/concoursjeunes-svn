@@ -9,6 +9,7 @@
 		<copy todir="${projet.pack.dir}/plugins/PhoenixPlugin" >
 			<fileset dir="." >
 				<include name="plugins/properties/PhoenixPlugin.properties" />
+				<include name="ressources/repositories/PhoenixPlugin.xml"/>
 			</fileset>
 		</copy>
 		
@@ -23,8 +24,7 @@
 				signkeysalias="${projet.signkeyalias}"
 				signkeysaliaspassword="${projet.signkeyaliaspassword}">
 			<fileset dir="${projet.pack.dir}/plugins/PhoenixPlugin">
-				<include name="plugins/PhoenixPlugin.jar"/>
-				<include name="plugins/properties/PhoenixPlugin.properties" />
+				<include name="**/**"/>
 			</fileset>
 		</revisionscreator>
 	</target>

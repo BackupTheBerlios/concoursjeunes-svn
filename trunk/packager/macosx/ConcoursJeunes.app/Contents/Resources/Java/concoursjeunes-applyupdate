@@ -1,4 +1,4 @@
 #!/bin/sh
 
 cd $2
-/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Commands/java -cp lib/ajcommons.jar org.ajdeveloppement.updater.AjUpdaterApply "$1" "$2"
+/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Commands/java -cp lib/ajcommons.jar:lib/js.jar:lib/js-engine.jar org.ajdeveloppement.updater.tools.AjUpdaterApply "$1" "$2"

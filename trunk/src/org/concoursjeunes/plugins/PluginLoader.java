@@ -129,7 +129,6 @@ public class PluginLoader {
 						pluginMetadata.setOptionLabel(pluginLocalInfo.getResourceString("plugin.optionlabel")); //$NON-NLS-1$
 						pluginMetadata.setPluginType(cla.getAnnotation(Plugin.class).type());
 						pluginMetadata.setClassName(pluginProperties.getResourceString("plugin.class")); //$NON-NLS-1$
-						pluginMetadata.setReposURL(pluginProperties.getResourceString("plugin.repos")); //$NON-NLS-1$
 						pluginMetadata.setVersion(pluginProperties.getResourceString("plugin.version")); //$NON-NLS-1$
 						pluginMetadata.setMenuPath(StringUtils.tokenize(pluginProperties.getResourceString("plugin.menu"), "/")); //$NON-NLS-1$ //$NON-NLS-2$
 						pluginMetadata.setPluginClass(cla);

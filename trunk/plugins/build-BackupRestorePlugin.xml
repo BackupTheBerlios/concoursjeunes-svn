@@ -10,6 +10,7 @@
 			<fileset dir="." >
 				<include name="plugins/properties/BackupPlugin.properties" />
 				<include name="plugins/properties/RestorePlugin.properties" />
+				<include name="ressources/repositories/BackupRestorePlugin.xml"/>
 			</fileset>
 		</copy>
 		
@@ -24,9 +25,7 @@
 				signkeysalias="${projet.signkeyalias}"
 				signkeysaliaspassword="${projet.signkeyaliaspassword}">
 			<fileset dir="${projet.pack.dir}/plugins/BackupRestorePlugin">
-				<include name="plugins/BackupRestorePlugin.jar"/>
-				<include name="plugins/properties/BackupPlugin.properties" />
-				<include name="plugins/properties/RestorePlugin.properties" />
+				<include name="**/**"/>
 			</fileset>
 		</revisionscreator>
 	</target>

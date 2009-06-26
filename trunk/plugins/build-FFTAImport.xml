@@ -12,6 +12,7 @@
 				<include name="plugins/properties/FFTAImportPlugin.properties" />
 				<include name="plugins/plugindescription-fftaimport.xml" />
 				<include name="config/ffta.properties" />
+				<include name="ressources/repositories/FFTAImport.xml"/>
 			</fileset>
 		</copy>
 		<mkdir dir="${projet.pack.dir}/plugins/FFTAImport/security/keys" />
@@ -35,9 +36,8 @@
 				signkeysaliaspassword="${projet.signkeyaliaspassword}">
 			
 			<fileset dir="${projet.pack.dir}/plugins/FFTAImport/">
-				<include name="plugins/FFTAImport.jar"/>
-				<include name="plugins/properties/FFTAImportPlugin.properties" />
-				<include name="config/ffta.properties" />
+				<include name="**/**"/>
+				<exclude name="plugindescription.xml"/>
 			</fileset>
 			<keysandcerts dir="${projet.pack.dir}/plugins/FFTAImport/security/">
 				<include name="keys/**" />
