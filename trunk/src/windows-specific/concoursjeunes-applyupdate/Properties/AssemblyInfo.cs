@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("concoursjeunes-applyupdate")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("etude")]
+[assembly: AssemblyCompany("ajdeveloppement.org")]
 [assembly: AssemblyProduct("concoursjeunes-applyupdate")]
-[assembly: AssemblyCopyright("Copyright © etude 2007")]
+[assembly: AssemblyCopyright("Copyright © ajdeveloppement.org 2009")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -29,5 +29,5 @@ using System.Runtime.InteropServices;
 //      Numéro de build
 //      Révision
 //
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.1.0.0")]
+[assembly: AssemblyFileVersion("1.1.0.0")]
