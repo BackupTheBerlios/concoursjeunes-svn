@@ -264,7 +264,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		tabbedPane.addTab(localisation.getResourceString("reglement.general.title"), initGeneral()); //$NON-NLS-1$
 		tabbedPane.addTab(localisation.getResourceString("reglement.criteres.title"), initCriteria()); //$NON-NLS-1$
 		tabbedPane.addTab(localisation.getResourceString("reglement.surclassement.title"), initCriteriaSet()); //$NON-NLS-1$
-		tabbedPane.addTab(localisation.getResourceString("reglement.categories.title"), initDistancesEtBlasons()); //$NON-NLS-1$
+		tabbedPane.addTab(localisation.getResourceString("reglement.placements.title"), initDistancesEtBlasons()); //$NON-NLS-1$
 
 		jpAction.add(jbValider);
 		jpAction.add(jbAnnuler);
@@ -301,8 +301,8 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 						distances += dist + "m"; //$NON-NLS-1$
 					}
 					formattedString += "<br><span style=\"font-weight: normal;\">"; //$NON-NLS-1$
-					formattedString += "&nbsp;&nbsp;&nbsp;" + localisation.getResourceString("reglement.distance") + ": " + distances + "<br>";  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-					formattedString += "&nbsp;&nbsp;&nbsp;" + localisation.getResourceString("reglement.blason") + ": " + fisrtDB.getTargetFace().getName() + "<br>";  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+					formattedString += "&nbsp;&nbsp;&nbsp;" + localisation.getResourceString("reglement.distance") + ": <span style=\"font-style: italic; color: #777777;\">" + distances + "</span><br>";  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+					formattedString += "&nbsp;&nbsp;&nbsp;" + localisation.getResourceString("reglement.blason") + ": <span style=\"font-style: italic; color: #777777;\">" + fisrtDB.getTargetFace().getName() + "</span><br>";  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 					if(dbSet.get().size() > 1) {
 						String blasonsalt = ""; //$NON-NLS-1$
 						boolean first = true;
@@ -315,7 +315,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 								blasonsalt += ", "; //$NON-NLS-1$
 							blasonsalt += db.getTargetFace().getName();
 						}
-						formattedString += "&nbsp;&nbsp;&nbsp;" + localisation.getResourceString("reglement.blasonsalt") + " " + blasonsalt; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+						formattedString += "&nbsp;&nbsp;&nbsp;" + localisation.getResourceString("reglement.blasonsalt") + " <span style=\"font-style: italic; color: #777777;\">" + blasonsalt + "</span>"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 					} else {
 						formattedString += "&nbsp;&nbsp;&nbsp;" + localisation.getResourceString("reglement.blasonsaltnull"); //$NON-NLS-1$ //$NON-NLS-2$
 					}
@@ -627,7 +627,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		//s'assure que le nombre de serie est correct
 		reglement.setNbSerie(Integer.parseInt(jtfNbSerie.getText()));
 		
-		CriteriaSet[] differentiationCriteria = reglement.getValidPlacementCriteriaSet();
+		List<CriteriaSet> differentiationCriteria = reglement.getValidPlacementCriteriaSet();
 		
 		ajlDistancesBlasons.clear();
 		for (CriteriaSet plCS : differentiationCriteria) {

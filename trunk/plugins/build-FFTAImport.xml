@@ -30,6 +30,7 @@
 
 		<revisionscreator 
 				revisionpath="${projet.pack.dir}/plugins/FFTAImport/revision.xml.gz"
+				reposname="FFTAImport"
 				keystorepath="${projet.keystorepath}"
 				keystorepassword="${projet.keystorepassword}"
 				signkeysalias="${projet.signkeyalias}"
@@ -37,6 +38,8 @@
 			
 			<fileset dir="${projet.pack.dir}/plugins/FFTAImport/">
 				<include name="**/**"/>
+				
+				<exclude name="*-filelist.txt"/>
 				<exclude name="plugindescription.xml"/>
 			</fileset>
 			<keysandcerts dir="${projet.pack.dir}/plugins/FFTAImport/security/">

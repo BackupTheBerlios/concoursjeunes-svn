@@ -164,6 +164,7 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 		ajUpdater = new AjUpdater(ApplicationCore.userRessources.getUpdatePath().getPath(), "."); //$NON-NLS-1$
 		ajUpdater.addAjUpdaterListener(this);
 		ajUpdater.setAppKeyStore(ApplicationCore.userRessources.getAppKeyStore());
+		ajUpdater.setSecretKeyPassword(AppUtilities.getAppUID(ApplicationCore.userRessources).toCharArray());
 		
 		ajUpdater.setUserAgent(AppInfos.NOM + " " + AppInfos.VERSION //$NON-NLS-1$
 				+ " (" + AppUtilities.getAppUID(ApplicationCore.userRessources) + "; " + AppInfos.CODENAME + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

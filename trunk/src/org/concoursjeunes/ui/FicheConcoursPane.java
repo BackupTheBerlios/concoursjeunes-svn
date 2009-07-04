@@ -107,7 +107,23 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.script.ScriptException;
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.Box;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JEditorPane;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.ListCellRenderer;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -851,7 +867,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 					if(concurrent.getCible() == 0) {
 						JOptionPane.showMessageDialog(this,
 								parentframe.profile.getLocalisation().getResourceString("erreur.nocible"), //$NON-NLS-1$ 
-								parentframe.profile.getLocalisation().getResourceString("erreur.nocible.titre"),JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
+								parentframe.profile.getLocalisation().getResourceString("erreur.nocible.titre"),JOptionPane.WARNING_MESSAGE); //$NON-NLS-1$
 						break;
 					}
 				}
@@ -873,7 +889,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 				if(concurrent.getCible() == 0) {
 					JOptionPane.showMessageDialog(this,
 							parentframe.profile.getLocalisation().getResourceString("erreur.nocible"), //$NON-NLS-1$ 
-							parentframe.profile.getLocalisation().getResourceString("erreur.nocible.titre"),JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
+							parentframe.profile.getLocalisation().getResourceString("erreur.nocible.titre"),JOptionPane.WARNING_MESSAGE); //$NON-NLS-1$
 					break;
 				}
 			}

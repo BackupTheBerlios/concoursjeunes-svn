@@ -92,14 +92,17 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
 import javax.swing.Box;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -114,6 +117,7 @@ import org.ajdeveloppement.apps.Localisable;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Blason;
 import org.concoursjeunes.DistancesEtBlason;
 import org.concoursjeunes.Profile;
@@ -305,17 +309,7 @@ public class DistancesBlasonsDialog extends JDialog implements ActionListener {
 				first = false;
 				continue;
 			}
-			cBlasonsAlt.gridy++;
-			JComboBox jcbBlasons = new JComboBox();
-
-			for(Blason b : availableBlason) {
-				jcbBlasons.addItem(b);
-			}
-
-			jcbBlasons.setSelectedItem(db.getTargetFace());
-			lcbBlasonsAlt.add(jcbBlasons);
-			gbcBlasonsAlt.addComponentIntoGrid(new JLabel(localisation.getResourceString("distancesblasons.alt") + " " + lcbBlasonsAlt.size() + ":"), cBlasonsAlt);  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
-			gbcBlasonsAlt.addComponentIntoGrid(jcbBlasons, cBlasonsAlt);
+			addBlasonAlterantif(db);
 		}
 	}
 	
@@ -329,6 +323,45 @@ public class DistancesBlasonsDialog extends JDialog implements ActionListener {
 		setVisible(true);
 		
 		return this.distancesblasons;
+	}
+	
+	private void addBlasonAlterantif(DistancesEtBlason db) {
+		final JPanel jpanel = new JPanel();
+		
+		final JComboBox jcbBlasons = new JComboBox();
+		JButton jbDeleteBlasonAlt = new JButton();
+		jbDeleteBlasonAlt.setIcon(new ImageIcon(new File(
+				ApplicationCore.staticParameters.getResourceString("path.ressources"), //$NON-NLS-1$
+				ApplicationCore.staticParameters.getResourceString("file.icon.removeelement")).getPath())); //$NON-NLS-1$
+		jbDeleteBlasonAlt.setMargin(new Insets(1, 0, 1, 0));
+		jbDeleteBlasonAlt.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				jpBlasonsAlt.remove(jpanel);
+				lcbBlasonsAlt.remove(jcbBlasons);
+				jpBlasonsAlt.repaint();
+			}
+		});
+		
+		for(Blason b : availableBlason) {
+			jcbBlasons.addItem(b);
+		}
+		if(db != null)
+			jcbBlasons.setSelectedItem(db.getTargetFace());
+		
+		lcbBlasonsAlt.add(jcbBlasons);
+		
+		jpanel.add(new JLabel(localisation.getResourceString("distancesblasons.alt") + " " + lcbBlasonsAlt.size() + ":")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		jpanel.add(jcbBlasons);
+		jpanel.add(jbDeleteBlasonAlt);
+		
+		cBlasonsAlt.gridy++;
+		gbcBlasonsAlt.addComponentIntoGrid(jpanel, cBlasonsAlt);
+
+		/*lbdBlasonsAlt.add(jbDeleteBlasonAlt);
+		gbcBlasonsAlt.addComponentIntoGrid(new JLabel(localisation.getResourceString("distancesblasons.alt") + " " + lcbBlasonsAlt.size() + ":"), cBlasonsAlt);  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+		gbcBlasonsAlt.addComponentIntoGrid(jcbBlasons, cBlasonsAlt);
+		gbcBlasonsAlt.addComponentIntoGrid(jbDeleteBlasonAlt, cBlasonsAlt);*/
 	}
 
 	@Override
@@ -346,6 +379,12 @@ public class DistancesBlasonsDialog extends JDialog implements ActionListener {
 			distancesblasons.get(0).setDistance(distances);
 			distancesblasons.get(0).setTargetFace((Blason)jcbBlason.getSelectedItem());
 			
+			if(distancesblasons.size() > lcbBlasonsAlt.size()+1) {
+				int oldsize = distancesblasons.size();
+				for(int i = lcbBlasonsAlt.size()+1; i < oldsize; i++)
+					distancesblasons.remove(lcbBlasonsAlt.size()+1);
+			}
+				
 			for(int i = 0; i < lcbBlasonsAlt.size(); i++) {
 				if(i+1 > distancesblasons.size()-1)
 					distancesblasons.add(new DistancesEtBlason());
@@ -359,15 +398,15 @@ public class DistancesBlasonsDialog extends JDialog implements ActionListener {
 		} else if(e.getSource() == jbAnnuler) {
 			setVisible(false);
 		} else if(e.getSource() == jbAddBlasonAlt) {
-			jpBlasonsAlt.remove(jbAddBlasonAlt);
-			cBlasonsAlt.gridy++;
+			addBlasonAlterantif(null);
+			/*cBlasonsAlt.gridy++;
 			JComboBox jcbBlasons = new JComboBox();
 			for(Blason b : availableBlason) {
 				jcbBlasons.addItem(b);
 			}
 			lcbBlasonsAlt.add(jcbBlasons);
 			gbcBlasonsAlt.addComponentIntoGrid(new JLabel(localisation.getResourceString("distancesblasons.alt") + " " + lcbBlasonsAlt.size() + ":"), cBlasonsAlt);  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
-			gbcBlasonsAlt.addComponentIntoGrid(jcbBlasons, cBlasonsAlt);
+			gbcBlasonsAlt.addComponentIntoGrid(jcbBlasons, cBlasonsAlt);*/
 			
 			pack();
 		}

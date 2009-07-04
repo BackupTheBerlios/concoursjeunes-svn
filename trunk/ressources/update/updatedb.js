@@ -4,7 +4,7 @@
 
 function updateReglements() {
 	//liste l'ensemble des fichiers de réglements
-	var updatePath = new File(org.concoursjeunes.ApplicationCore.staticParameters.getResourceString("path.ressources"), "update");
+	var updatePath = new java.io.File(org.concoursjeunes.ApplicationCore.staticParameters.getResourceString("path.ressources"), "update");
 	var reglements = org.ajdeveloppement.commons.io.FileUtils.listAllFiles(updatePath, ".*\\.reglement");
 	var rManager = new org.concoursjeunes.manager.ReglementManager();
 	for(var i = 0; i < reglements.size(); i++) {

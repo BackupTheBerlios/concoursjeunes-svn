@@ -19,6 +19,7 @@
 		
 		<revisionscreator 
 				revisionpath="${projet.pack.dir}/plugins/ConcoursJeunesUpdate/revision.xml.gz"
+				reposname="ConcoursJeunesUpdate"
 				keystorepath="${projet.keystorepath}"
 				keystorepassword="${projet.keystorepassword}"
 				signkeysalias="${projet.signkeyalias}"
@@ -26,6 +27,8 @@
 			>
 			<fileset dir="${projet.pack.dir}/plugins/ConcoursJeunesUpdate">
 				<include name="**/**"/>
+				
+				<exclude name="*-filelist.txt"/>
 			</fileset>
 		</revisionscreator>
 	</target>

@@ -138,7 +138,6 @@ import javax.swing.text.PlainDocument;
 import org.ajdeveloppement.apps.AppUtilities;
 import org.ajdeveloppement.apps.Localisable;
 import org.ajdeveloppement.commons.AjResourcesReader;
-import org.ajdeveloppement.commons.ArraysUtils;
 import org.ajdeveloppement.commons.StringUtils;
 import org.ajdeveloppement.commons.sql.SqlPersistanceException;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
@@ -515,18 +514,15 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 
 
 		jlDescription.setBackground(new Color(255, 255, 225));
-		//jlDepartages.setText(ApplicationCore.ajrLibelle.getResourceString("concurrent.dix")); //$NON-NLS-1$
 
 		for (Criterion key : ficheConcours.getParametre().getReglement().getListCriteria()) {
 			jlCategrieTable.get(key).setText(key.getLibelle());
 			jcbCategorieTable.get(key).removeAllItems();
-			//jcbCategorieTable.get(key).removeActionListener(this);
 			jcbCategorieTable.get(key).removeItemListener(this);
 			for (CriterionElement element : key.getCriterionElements()) {
 				if (element.isActive())
 					jcbCategorieTable.get(key).addItem(element);
 			}
-			//jcbCategorieTable.get(key).addActionListener(this);
 			jcbCategorieTable.get(key).addItemListener(this);
 		}
 
@@ -721,9 +717,6 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	 * @return le code de retour de la boite de dialogue
 	 */
 	public int showConcurrentDialog(Concurrent concurrent, boolean hasPrevious, boolean hasNext) {
-		
-		//initConcurrentListDialog();
-
 		jlDescription.setText(localisation.getResourceString("concurrent.description")); //$NON-NLS-1$
 		jlDescription.setBackground(new Color(255, 255, 225));
 
@@ -834,10 +827,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		ArrayList<Integer> points = new ArrayList<Integer>();
 		try {
 			for (int i = 0; i < tfpd.length; i++) {
-				if (points.size() > i)
-					points.set(i, Integer.parseInt(tfpd[i].getText()));
-				else
-					points.add(Integer.parseInt(tfpd[i].getText()));
+				points.add(Integer.parseInt(tfpd[i].getText()));
 			}
 		} catch(NumberFormatException e) {
 			throw e;
@@ -945,6 +935,14 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			
 			// fixe le jeux de critères definissant le concurrent
 			tempConcurrent.setCriteriaSet(readCriteriaSet());
+			//vérifie la validité du jeux
+			if(!ficheConcours.getParametre().getReglement().getValidClassementCriteriaSet().contains(tempConcurrent.getCriteriaSet())) {
+				JOptionPane.showMessageDialog(this, 
+						localisation.getResourceString("concurrent.invalidcriteriaset"), //$NON-NLS-1$
+						localisation.getResourceString("concurrent.invalidcriteriaset.title"), //$NON-NLS-1$
+						JOptionPane.WARNING_MESSAGE);
+				return;
+			}
 			DistancesEtBlason db2 = DistancesEtBlason.getDistancesEtBlasonForConcurrent(ficheConcours.getParametre().getReglement(), tempConcurrent);
 			
 			tempConcurrent.setHandicape(jcbHandicape.isSelected());
@@ -1113,8 +1111,8 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			if(e.getStateChange() == ItemEvent.SELECTED) {
 				CriteriaSet currentCS = readCriteriaSet();
 				CriteriaSet classementCS = currentCS.getFilteredCriteriaSet(ficheConcours.getParametre().getReglement().getClassementFilter());
-				CriteriaSet[] validClassementCS = ficheConcours.getParametre().getReglement().getValidClassementCriteriaSet();
-				if(!ArraysUtils.contains(validClassementCS, classementCS)) {
+				List<CriteriaSet> validClassementCS = ficheConcours.getParametre().getReglement().getValidClassementCriteriaSet();
+				if(!validClassementCS.contains(classementCS)) {
 					CriteriaSet surclassement = ficheConcours.getParametre().getReglement().getSurclassement().get(classementCS);
 					if(surclassement == null) {
 						JOptionPane.showMessageDialog(this, 

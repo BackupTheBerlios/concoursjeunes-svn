@@ -111,7 +111,7 @@ public class FFTAImportThread extends Thread {
 			if(keyEntry != null)
 				key = keyEntry.getSecretKey();
 			else {
-				JOptionPane.showMessageDialog(parentframe, localisation.getResourceString("erreur.nokey"), "", JOptionPane.WARNING_MESSAGE); //$NON-NLS-1$ //$NON-NLS-2$
+				JOptionPane.showMessageDialog(parentframe, pluginLocalisation.getResourceString("erreur.nokey"), "", JOptionPane.WARNING_MESSAGE); //$NON-NLS-1$ //$NON-NLS-2$
 				return;
 			}
 			

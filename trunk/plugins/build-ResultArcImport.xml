@@ -22,6 +22,7 @@
 
 		<revisionscreator 
 				revisionpath="${projet.pack.dir}/plugins/ResultArcImport/revision.xml.gz"
+				reposname="ResultArcImport"
 				keystorepath="${projet.keystorepath}"
 				keystorepassword="${projet.keystorepassword}"
 				signkeysalias="${projet.signkeyalias}"
@@ -29,6 +30,8 @@
 			<system name="windows">
 				<fileset dir="${projet.pack.dir}/plugins/ResultArcImport/">
 					<include name="**/**"/>
+					
+					<exclude name="*-filelist.txt"/>
 				</fileset>
 			</system>
 		</revisionscreator>

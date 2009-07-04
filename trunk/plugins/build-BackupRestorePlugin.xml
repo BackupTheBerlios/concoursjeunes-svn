@@ -20,12 +20,15 @@
 
 		<revisionscreator 
 				revisionpath="${projet.pack.dir}/plugins/BackupRestorePlugin/revision.xml.gz"
+				reposname="BackupRestorePlugin"
 				keystorepath="${projet.keystorepath}"
 				keystorepassword="${projet.keystorepassword}"
 				signkeysalias="${projet.signkeyalias}"
 				signkeysaliaspassword="${projet.signkeyaliaspassword}">
 			<fileset dir="${projet.pack.dir}/plugins/BackupRestorePlugin">
 				<include name="**/**"/>
+				
+				<exclude name="*-filelist.txt"/>
 			</fileset>
 		</revisionscreator>
 	</target>

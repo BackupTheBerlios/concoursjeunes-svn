@@ -210,6 +210,7 @@
 
 		<revisionscreator
 				revisionpath="${projet.pack.dir}/revision.xml.gz"
+				reposname="ConcoursJeunes"
 				changelogXML="packager/changelog.xml"
 				changelogTXT="${projet.pack.dir}/changelog.txt"
 				keystorepath="${projet.keystorepath}"
@@ -227,6 +228,7 @@
 				<include name="*.txt"/>
 				<include name="*.pack"/>
 	
+				<exclude name="*-filelist.txt"/>
 				<exclude name="lib/js*"/>
 			</fileset>
 			<system name="macosx">

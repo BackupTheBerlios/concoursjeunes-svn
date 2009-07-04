@@ -277,7 +277,9 @@ public class DistancesEtBlason implements SqlPersistance {
 					return db;
 			}
 		}
-		return ldb.get(0);
+		if(ldb.size() > 0)
+			return ldb.get(0);
+		return null;
 	}
 	
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {

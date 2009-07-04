@@ -56,7 +56,7 @@ public class CriteriaSet implements SqlPersistance {
 	@SqlField(name="NUMCRITERIASET")
 	private int numCriteriaSet = 0;
 	@XmlTransient
-	private Reglement reglement = new Reglement();
+	private Reglement reglement;
 	@XmlJavaTypeAdapter(JAXBMapRefAdapter.class)
 	private Map<Criterion, CriterionElement> criteria = new HashMap<Criterion, CriterionElement>();
 	
@@ -191,7 +191,10 @@ public class CriteriaSet implements SqlPersistance {
 			uid += e;
 		}
 		uid += "}";
-		return "R=" + reglement.getNumReglement() + ",S=" + uid;
+		int numReglement = 0;
+		if(reglement != null)
+			numReglement = reglement.getNumReglement();
+		return "R=" + numReglement + ",S=" + uid;
 	}
 	
 	/**

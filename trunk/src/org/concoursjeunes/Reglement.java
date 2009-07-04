@@ -488,7 +488,7 @@ public class Reglement implements SqlPersistance {
 	 * 
 	 * @return liste des critères de classement valide sur le réglement
 	 */
-	public CriteriaSet[] getValidClassementCriteriaSet() {
+	public List<CriteriaSet> getValidClassementCriteriaSet() {
 		CriteriaSet[] lccs = CriteriaSet.listCriteriaSet(this, getClassementFilter());
 		List<CriteriaSet> validCS = new ArrayList<CriteriaSet>();
 		
@@ -497,7 +497,7 @@ public class Reglement implements SqlPersistance {
 				validCS.add(cs);
 		}
 		
-		return validCS.toArray(new CriteriaSet[validCS.size()]);
+		return validCS;
 	}
 	
 	/**
@@ -506,7 +506,7 @@ public class Reglement implements SqlPersistance {
 	 * 
 	 * @return liste des critères de placement valide sur le réglement
 	 */
-	public CriteriaSet[] getValidPlacementCriteriaSet() {
+	public List<CriteriaSet> getValidPlacementCriteriaSet() {
 		List<CriteriaSet> validCS = new ArrayList<CriteriaSet>();
 		List<CriteriaSet> placementCS = new ArrayList<CriteriaSet>();
 		CriteriaSet[] lccs = CriteriaSet.listCriteriaSet(this, getClassementFilter());
@@ -523,7 +523,7 @@ public class Reglement implements SqlPersistance {
 				placementCS.add(cs);
 		}
 		
-		return placementCS.toArray(new CriteriaSet[placementCS.size()]);
+		return placementCS;
 	}
 
 	/**
