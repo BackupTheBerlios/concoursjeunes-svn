@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<reglement name="Savoie" version="2">
+    <displayName>Savoie</displayName>
+    <reglementType>TARGET</reglementType>
+    <nbSerie>2</nbSerie>
+    <nbVoleeParSerie>6</nbVoleeParSerie>
+    <nbFlecheParVolee>3</nbFlecheParVolee>
+    <nbMembresEquipe>4</nbMembresEquipe>
+    <nbMembresRetenu>3</nbMembresRetenu>
+    <criteria>
+        <criterion code="genre">
+            <libelle>Genre</libelle>
+            <sortOrder>-1</sortOrder>
+            <classement>true</classement>
+            <classementEquipe>false</classementEquipe>
+            <placement>false</placement>
+            <champsTableArchers>sexe</champsTableArchers>
+            <numordre>1</numordre>
+            <criterionelements>
+                <element code="H">
+                    <libelle>Homme</libelle>
+                    <active>true</active>
+                    <numordre>1</numordre>
+                </element>
+                <element code="D">
+                    <libelle>Dame</libelle>
+                    <active>true</active>
+                    <numordre>2</numordre>
+                </element>
+            </criterionelements>
+        </criterion>
+        <criterion code="categorie">
+            <libelle>Categorie</libelle>
+            <sortOrder>1</sortOrder>
+            <classement>false</classement>
+            <classementEquipe>false</classementEquipe>
+            <placement>false</placement>
+            <champsTableArchers>categorie</champsTableArchers>
+            <numordre>2</numordre>
+            <criterionelements>
+                <element code="P">
+                    <libelle>Poussin</libelle>
+                    <active>true</active>
+                    <numordre>1</numordre>
+                </element>
+                <element code="B">
+                    <libelle>Benjamin</libelle>
+                    <active>true</active>
+                    <numordre>2</numordre>
+                </element>
+                <element code="M">
+                    <libelle>Minime</libelle>
+                    <active>true</active>
+                    <numordre>3</numordre>
+                </element>
+                <element code="C">
+                    <libelle>Cadet</libelle>
+                    <active>true</active>
+                    <numordre>4</numordre>
+                </element>
+                <element code="J">
+                    <libelle>Junior</libelle>
+                    <active>true</active>
+                    <numordre>5</numordre>
+                </element>
+                <element code="S">
+                    <libelle>Senior</libelle>
+                    <active>false</active>
+                    <numordre>6</numordre>
+                </element>
+                <element code="V">
+                    <libelle>Vétéran</libelle>
+                    <active>false</active>
+                    <numordre>7</numordre>
+                </element>
+                <element code="SV">
+                    <libelle>Super-Vétéran</libelle>
+                    <active>false</active>
+                    <numordre>8</numordre>
+                </element>
+            </criterionelements>
+        </criterion>
+        <criterion code="niveau">
+            <libelle>Niveau</libelle>
+            <sortOrder>1</sortOrder>
+            <classement>true</classement>
+            <classementEquipe>false</classementEquipe>
+            <placement>true</placement>
+            <champsTableArchers>niveau</champsTableArchers>
+            <numordre>3</numordre>
+            <criterionelements>
+                <element code="0">
+                    <libelle>Niveau 0</libelle>
+                    <active>true</active>
+                    <numordre>1</numordre>
+                </element>
+                <element code="1">
+                    <libelle>Niveau 1</libelle>
+                    <active>true</active>
+                    <numordre>2</numordre>
+                </element>
+                <element code="2">
+                    <libelle>Niveau 2</libelle>
+                    <active>true</active>
+                    <numordre>3</numordre>
+                </element>
+                <element code="3">
+                    <libelle>Niveau 3</libelle>
+                    <active>true</active>
+                    <numordre>4</numordre>
+                </element>
+            </criterionelements>
+        </criterion>
+        <criterion code="arc">
+            <libelle>Arc</libelle>
+            <sortOrder>1</sortOrder>
+            <classement>false</classement>
+            <classementEquipe>false</classementEquipe>
+            <placement>false</placement>
+            <champsTableArchers>arc</champsTableArchers>
+            <numordre>4</numordre>
+            <criterionelements>
+                <element code="CL">
+                    <libelle>Classique</libelle>
+                    <active>true</active>
+                    <numordre>1</numordre>
+                </element>
+                <element code="CO">
+                    <libelle>Arc à poulies</libelle>
+                    <active>true</active>
+                    <numordre>2</numordre>
+                </element>
+                <element code="AD">
+                    <libelle>Arc droit</libelle>
+                    <active>true</active>
+                    <numordre>3</numordre>
+                </element>
+                <element code="AC">
+                    <libelle>Arc chasse</libelle>
+                    <active>true</active>
+                    <numordre>4</numordre>
+                </element>
+                <element code="BB">
+                    <libelle>Bare Bow</libelle>
+                    <active>true</active>
+                    <numordre>5</numordre>
+                </element>
+                <element code="TL">
+                    <libelle>Tir Libre</libelle>
+                    <active>true</active>
+                    <numordre>6</numordre>
+                </element>
+            </criterionelements>
+        </criterion>
+    </criteria>
+    <surclassement/>
+    <listdistancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>10</distance>
+                <distance>10</distance>
+            </distances>
+            <targetFace>80cm</targetFace>
+            <defaultTargetFace>true</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>niveau</key>
+                        <value>0</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>15</distance>
+                <distance>15</distance>
+            </distances>
+            <targetFace>80cm</targetFace>
+            <defaultTargetFace>true</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>niveau</key>
+                        <value>1</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>18</distance>
+                <distance>18</distance>
+            </distances>
+            <targetFace>80cm</targetFace>
+            <defaultTargetFace>true</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>niveau</key>
+                        <value>2</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>18</distance>
+                <distance>18</distance>
+            </distances>
+            <targetFace>60cm</targetFace>
+            <defaultTargetFace>true</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>niveau</key>
+                        <value>3</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+    </listdistancesetblason>
+    <departages>
+        <departage>10</departage>
+        <departage>9</departage>
+    </departages>
+    <officialReglement>false</officialReglement>
+    <federation>
+        <sigle>FFTA</sigle>
+        <nom>Fédération Française de Tir à l'Arc</nom>
+        <niveaux>
+            <niveau>
+                <lang>fr</lang>
+                <libelle>Qualificatif</libelle>
+                <defaut>true</defaut>
+            </niveau>
+            <niveau>
+                <lang>fr</lang>
+                <libelle>Départemental</libelle>
+                <defaut>false</defaut>
+            </niveau>
+            <niveau>
+                <lang>fr</lang>
+                <libelle>Régional</libelle>
+                <defaut>false</defaut>
+            </niveau>
+            <niveau>
+                <lang>fr</lang>
+                <libelle>Championnat de France</libelle>
+                <defaut>false</defaut>
+            </niveau>
+            <niveau>
+                <lang>fr</lang>
+                <libelle>Championnat d'Europe</libelle>
+                <defaut>false</defaut>
+            </niveau>
+            <niveau>
+                <lang>fr</lang>
+                <libelle>Coupe du Monde</libelle>
+                <defaut>false</defaut>
+            </niveau>
+            <niveau>
+                <lang>fr</lang>
+                <libelle>Jeux Olympique</libelle>
+                <defaut>false</defaut>
+            </niveau>
+        </niveaux>
+    </federation>
+    <category>1</category>
+    <removable>false</removable>
+    <inDatabase>true</inDatabase>
+</reglement>

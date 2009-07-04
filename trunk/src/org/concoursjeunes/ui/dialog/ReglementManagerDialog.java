@@ -520,8 +520,7 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 				fileChooser.setSelectedFile(new File(reglement.getName() + ".reglement")); //$NON-NLS-1$
 				if(fileChooser.showSaveDialog(parentframe) == JFileChooser.APPROVE_OPTION) {
 					try {
-						reglementManager.exportReglement(reglement, 
-								fileChooser.getSelectedFile());
+						ReglementManager.exportReglement(reglement, fileChooser.getSelectedFile());
 					} catch (FileNotFoundException e1) {
 						JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 								null, null, e1, Level.SEVERE, null));

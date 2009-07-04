@@ -701,6 +701,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 						Thread.yield();
 						launchFiche.start();
 					} else {
+						ConcoursJeunesFrame.this.setCursor(Cursor.getDefaultCursor());
 						JOptionPane.showMessageDialog(this, 
 								profile.getLocalisation().getResourceString("home.warning.alreadyopen"), //$NON-NLS-1$
 								profile.getLocalisation().getResourceString("home.warning.alreadyopen.title"), //$NON-NLS-1$

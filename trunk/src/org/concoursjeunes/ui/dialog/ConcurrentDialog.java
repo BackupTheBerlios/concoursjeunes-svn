@@ -936,7 +936,8 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			// fixe le jeux de critères definissant le concurrent
 			tempConcurrent.setCriteriaSet(readCriteriaSet());
 			//vérifie la validité du jeux
-			if(!ficheConcours.getParametre().getReglement().getValidClassementCriteriaSet().contains(tempConcurrent.getCriteriaSet())) {
+			if(!ficheConcours.getParametre().getReglement().getValidClassementCriteriaSet().contains(
+					tempConcurrent.getCriteriaSet().getFilteredCriteriaSet(ficheConcours.getParametre().getReglement().getClassementFilter()))) {
 				JOptionPane.showMessageDialog(this, 
 						localisation.getResourceString("concurrent.invalidcriteriaset"), //$NON-NLS-1$
 						localisation.getResourceString("concurrent.invalidcriteriaset.title"), //$NON-NLS-1$

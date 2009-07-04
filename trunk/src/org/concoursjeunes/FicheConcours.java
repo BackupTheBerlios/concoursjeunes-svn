@@ -312,8 +312,17 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 			reglement.setVersion(2);
 		}
 		
+		//contrôle l'affectation du réglement
+		for(Concurrent concurrent : concurrentList.list(-1)) {
+			if(concurrent.getCriteriaSet().getReglement() == null)
+				concurrent.getCriteriaSet().setReglement(reglement);
+		}
+		
 		DistancesEtBlason defaultDistancesEtBlason = new DistancesEtBlason();
 		for(DistancesEtBlason distancesEtBlason : reglement.getListDistancesEtBlason()) {
+			
+			if(distancesEtBlason.getCriteriaSet().getReglement() == null)
+				distancesEtBlason.getCriteriaSet().setReglement(reglement);
 			
 			//si le blason n'est pas initialiser 
 			if(distancesEtBlason.getTargetFace() == null || distancesEtBlason.getTargetFace().equals(new Blason())) {

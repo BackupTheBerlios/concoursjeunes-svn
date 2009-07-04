@@ -316,8 +316,7 @@ public class ReglementManager {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public void exportReglement(Reglement reglement, File exportFile) throws FileNotFoundException, IOException {
-		//XMLSerializer.saveXMLStructure(exportFile, reglement, false);
+	public static void exportReglement(Reglement reglement, File exportFile) throws FileNotFoundException, IOException {
 		try {
 			XMLSerializer.saveMarshallStructure(exportFile, reglement);
 		} catch (JAXBException e) {
