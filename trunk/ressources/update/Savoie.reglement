@@ -9,7 +9,7 @@
     <nbMembresRetenu>3</nbMembresRetenu>
     <criteria>
         <criterion code="genre">
-            <libelle>Genre</libelle>
+            <libelle>Sexe</libelle>
             <sortOrder>-1</sortOrder>
             <classement>true</classement>
             <classementEquipe>false</classementEquipe>
@@ -17,12 +17,14 @@
             <champsTableArchers>sexe</champsTableArchers>
             <numordre>1</numordre>
             <criterionelements>
-                <element code="H">
+                <element id="bb8d0897-17da-46fa-bf6b-62e4ae7e674d">
+                    <code>H</code>
                     <libelle>Homme</libelle>
                     <active>true</active>
                     <numordre>1</numordre>
                 </element>
-                <element code="D">
+                <element id="afb9ffb3-f28d-4452-8e63-787dd79842c3">
+                    <code>D</code>
                     <libelle>Dame</libelle>
                     <active>true</active>
                     <numordre>2</numordre>
@@ -38,42 +40,50 @@
             <champsTableArchers>categorie</champsTableArchers>
             <numordre>2</numordre>
             <criterionelements>
-                <element code="P">
+                <element id="466ecc7c-458a-4a3b-b8ed-0035d5431091">
+                    <code>P</code>
                     <libelle>Poussin</libelle>
                     <active>true</active>
                     <numordre>1</numordre>
                 </element>
-                <element code="B">
+                <element id="9d66f6a2-5934-455c-b222-e04731306274">
+                    <code>B</code>
                     <libelle>Benjamin</libelle>
                     <active>true</active>
                     <numordre>2</numordre>
                 </element>
-                <element code="M">
+                <element id="6317dcb3-5c33-426b-b573-50283fc7e4ee">
+                    <code>M</code>
                     <libelle>Minime</libelle>
                     <active>true</active>
                     <numordre>3</numordre>
                 </element>
-                <element code="C">
+                <element id="926b01f7-0083-4ade-b887-e600fc2e1310">
+                    <code>C</code>
                     <libelle>Cadet</libelle>
                     <active>true</active>
                     <numordre>4</numordre>
                 </element>
-                <element code="J">
+                <element id="933b8144-aeb2-446f-a550-2f18c781c4c4">
+                    <code>J</code>
                     <libelle>Junior</libelle>
                     <active>true</active>
                     <numordre>5</numordre>
                 </element>
-                <element code="S">
+                <element id="54e2a0ee-b18b-44c9-bf79-ca0bed5ec60e">
+                    <code>S</code>
                     <libelle>Senior</libelle>
                     <active>false</active>
                     <numordre>6</numordre>
                 </element>
-                <element code="V">
+                <element id="0bf6553e-69a9-4180-8d9c-df54727b1693">
+                    <code>V</code>
                     <libelle>Vétéran</libelle>
                     <active>false</active>
                     <numordre>7</numordre>
                 </element>
-                <element code="SV">
+                <element id="85fce7f6-aeda-4f13-8853-08157a5743d3">
+                    <code>SV</code>
                     <libelle>Super-Vétéran</libelle>
                     <active>false</active>
                     <numordre>8</numordre>
@@ -86,25 +96,29 @@
             <classement>true</classement>
             <classementEquipe>false</classementEquipe>
             <placement>true</placement>
-            <champsTableArchers>niveau</champsTableArchers>
+            <champsTableArchers></champsTableArchers>
             <numordre>3</numordre>
             <criterionelements>
-                <element code="0">
+                <element id="e9dc9824-f633-489d-8765-e74daaeae943">
+                    <code>0</code>
                     <libelle>Niveau 0</libelle>
                     <active>true</active>
                     <numordre>1</numordre>
                 </element>
-                <element code="1">
+                <element id="7e174cd9-8e42-440e-a494-b784396325a0">
+                    <code>1</code>
                     <libelle>Niveau 1</libelle>
                     <active>true</active>
                     <numordre>2</numordre>
                 </element>
-                <element code="2">
+                <element id="afe580e7-259d-4637-aa37-aa2e1f38b9dc">
+                    <code>2</code>
                     <libelle>Niveau 2</libelle>
                     <active>true</active>
                     <numordre>3</numordre>
                 </element>
-                <element code="3">
+                <element id="fa131d14-7f3d-414b-a0bb-f1448759d0a7">
+                    <code>3</code>
                     <libelle>Niveau 3</libelle>
                     <active>true</active>
                     <numordre>4</numordre>
@@ -120,32 +134,38 @@
             <champsTableArchers>arc</champsTableArchers>
             <numordre>4</numordre>
             <criterionelements>
-                <element code="CL">
+                <element id="e999d25d-dcc4-408c-b129-ae9885e06c97">
+                    <code>CL</code>
                     <libelle>Classique</libelle>
                     <active>true</active>
                     <numordre>1</numordre>
                 </element>
-                <element code="CO">
+                <element id="5cc62d8b-9434-448c-adf2-ad31dd42d590">
+                    <code>CO</code>
                     <libelle>Arc à poulies</libelle>
                     <active>true</active>
                     <numordre>2</numordre>
                 </element>
-                <element code="AD">
+                <element id="383aacf3-b02f-4ded-b8e6-9baaa56d0d0e">
+                    <code>AD</code>
                     <libelle>Arc droit</libelle>
                     <active>true</active>
                     <numordre>3</numordre>
                 </element>
-                <element code="AC">
+                <element id="bd2b6952-6555-46f1-92fa-1bd2ff998f37">
+                    <code>AC</code>
                     <libelle>Arc chasse</libelle>
                     <active>true</active>
                     <numordre>4</numordre>
                 </element>
-                <element code="BB">
+                <element id="1edd5bc5-8e52-4399-bde9-0b134ce79678">
+                    <code>BB</code>
                     <libelle>Bare Bow</libelle>
                     <active>true</active>
                     <numordre>5</numordre>
                 </element>
-                <element code="TL">
+                <element id="e69bfd12-2b18-40c6-9fef-37d97c808d0e">
+                    <code>TL</code>
                     <libelle>Tir Libre</libelle>
                     <active>true</active>
                     <numordre>6</numordre>
@@ -166,7 +186,7 @@
                 <criteria>
                     <entry>
                         <key>niveau</key>
-                        <value>0</value>
+                        <value>e9dc9824-f633-489d-8765-e74daaeae943</value>
                     </entry>
                 </criteria>
             </criteriaSet>
@@ -182,7 +202,7 @@
                 <criteria>
                     <entry>
                         <key>niveau</key>
-                        <value>1</value>
+                        <value>7e174cd9-8e42-440e-a494-b784396325a0</value>
                     </entry>
                 </criteria>
             </criteriaSet>
@@ -198,7 +218,7 @@
                 <criteria>
                     <entry>
                         <key>niveau</key>
-                        <value>2</value>
+                        <value>afe580e7-259d-4637-aa37-aa2e1f38b9dc</value>
                     </entry>
                 </criteria>
             </criteriaSet>
@@ -214,7 +234,7 @@
                 <criteria>
                     <entry>
                         <key>niveau</key>
-                        <value>3</value>
+                        <value>fa131d14-7f3d-414b-a0bb-f1448759d0a7</value>
                     </entry>
                 </criteria>
             </criteriaSet>

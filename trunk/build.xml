@@ -200,6 +200,12 @@
 				<include name="org/concoursjeunes/webservices/**" />
 			</fileset>
 		</jar>
+		<signjar
+				jar="${projet.pack.dir}/ConcoursJeunes-webservices.jar"
+				alias="${projet.signkeyalias}" keystore="${projet.keystorepath}"
+				storepass="${projet.keystorepassword}"
+				keypass="${projet.signkeyaliaspassword}"
+				lazy="true" />
 	</target>
 
 	<target name="revisions" description="revisions">

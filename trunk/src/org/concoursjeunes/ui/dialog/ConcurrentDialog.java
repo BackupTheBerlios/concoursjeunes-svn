@@ -841,7 +841,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		differentiationCriteria.setReglement(ficheConcours.getParametre().getReglement());
 		for (Criterion key : ficheConcours.getParametre().getReglement().getListCriteria()) {
 			CriterionElement criterionElement = (CriterionElement)jcbCategorieTable.get(key).getSelectedItem();
-			differentiationCriteria.setCriterionElement(key, criterionElement);
+			differentiationCriteria.addCriterionElement(criterionElement);
 		}
 
 		return differentiationCriteria;

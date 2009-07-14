@@ -1,4 +1,4 @@
--- @release 1
+-- @author Aurélien JEOFFRAY
 SET MULTI_THREADED 1;
 SET LOG 0;
 

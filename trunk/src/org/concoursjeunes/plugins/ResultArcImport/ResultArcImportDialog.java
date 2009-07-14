@@ -132,7 +132,7 @@ public class ResultArcImportDialog extends JDialog implements ActionListener, Re
 
 	private JButton jbAnnuler = new JButton();
 
-	private AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.ResultArcImport.FFTAImportPlugin_libelle", ResultArcImportDialog.class.getClassLoader()); //$NON-NLS-1$
+	private AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.ResultArcImport.ResultArcImportPlugin_libelle", ResultArcImportDialog.class.getClassLoader()); //$NON-NLS-1$
 
 	public ResultArcImportDialog(JFrame parentframe, Profile profile) {
 		super(parentframe);
@@ -218,7 +218,7 @@ public class ResultArcImportDialog extends JDialog implements ActionListener, Re
 			ResultArcImportThread fftaIT = new ResultArcImportThread(profile.getLocalisation());
 			fftaIT.setParentFrame(this);
 			fftaIT.setFftalogpath(jtfEmplacementLFFTA.getText());
-			fftaIT.addFFTAImportThreadListener(this);
+			fftaIT.addResultArcImportThreadListener(this);
 			jpbProgression.setIndeterminate(true);
 			fftaIT.start();
 		} else if (e.getSource() == jbAnnuler) {

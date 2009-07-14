@@ -100,6 +100,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertPathValidatorException;
+import java.security.cert.CertificateException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -134,7 +139,9 @@ import javax.xml.ws.WebServiceException;
 import org.ajdeveloppement.apps.AppUtilities;
 import org.ajdeveloppement.apps.Localisable;
 import org.ajdeveloppement.commons.AjResourcesReader;
+import org.ajdeveloppement.commons.io.FileUtils;
 import org.ajdeveloppement.commons.io.XMLSerializer;
+import org.ajdeveloppement.commons.security.JarVerifier;
 import org.ajdeveloppement.commons.ui.AJList;
 import org.ajdeveloppement.macosx.PrivilegedRuntime;
 import org.ajdeveloppement.updater.AjUpdater;
@@ -280,28 +287,41 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 		}
 		
 		boolean disable = false;
+		File tmJar = null;
 		try {
+			tmJar = File.createTempFile("csws", ".jar"); //$NON-NLS-1$ //$NON-NLS-2$
 			URL webservicesImplURL = new URL(ApplicationCore.staticParameters.getResourceString("url.webservices") + "/ConcoursJeunes-webservices.jar"); //$NON-NLS-1$ //$NON-NLS-2$
-			Class<?> clazz = Class.forName(
-					"org.concoursjeunes.webservices.AvailablePluginsManagerImpl", //$NON-NLS-1$
-					true,
-					new URLClassLoader(new URL[] { webservicesImplURL  })); 
+			//charge l'implémentation dans un fichier temporaire
+			FileUtils.dumpStreamToFile(webservicesImplURL.openStream(), tmJar);
 			
-			Constructor<?> constr = clazz.getConstructor(Profile.class);
-			AvailablePluginsManager apm = (AvailablePluginsManager)constr.newInstance(profile);
-			List<PluginDescription> pluginsDetail = apm.getPluginsDetail();
+			//On vérifie la signature de l'archive
+			JarVerifier verifier = new JarVerifier(ApplicationCore.userRessources.getAppKeyStore());
+			verifier.verifyJar(tmJar);
 			
-			pdtm.clearPluginDescriptions();
-			for(PluginDescription pluginDescription : pluginsDetail) {
-				pdtm.addPluginDescription(pluginDescription);
-			}
-			
-			jlCategorie.add(localisation.getResourceString("installplugindialog.category.all")); //$NON-NLS-1$
-			jlCategorie.add(localisation.getResourceString("installplugindialog.category.manual")); //$NON-NLS-1$
-			for(String category : apm.getCategories().values()) {
-				jlCategorie.add(category);
-			}
-			jlCategorie.setSelectedIndex(0);
+			//on s'assure que l'archive a bien été signé
+			if(verifier.isSignedJar()) {
+				Class<?> clazz = Class.forName(
+						"org.concoursjeunes.webservices.AvailablePluginsManagerImpl", //$NON-NLS-1$
+						true,
+						new URLClassLoader(new URL[] { tmJar.toURI().toURL()  }));
+				
+				Constructor<?> constr = clazz.getConstructor(Profile.class);
+				AvailablePluginsManager apm = (AvailablePluginsManager)constr.newInstance(profile);
+				List<PluginDescription> pluginsDetail = apm.getPluginsDetail();
+				
+				pdtm.clearPluginDescriptions();
+				for(PluginDescription pluginDescription : pluginsDetail) {
+					pdtm.addPluginDescription(pluginDescription);
+				}
+				
+				jlCategorie.add(localisation.getResourceString("installplugindialog.category.all")); //$NON-NLS-1$
+				jlCategorie.add(localisation.getResourceString("installplugindialog.category.manual")); //$NON-NLS-1$
+				for(String category : apm.getCategories().values()) {
+					jlCategorie.add(category);
+				}
+				jlCategorie.setSelectedIndex(0);
+			} else
+				disable = true;
 		} catch(WebServiceException e1) {
 			e1.printStackTrace();
 			disable = true;
@@ -329,6 +349,27 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
 			disable = true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			disable = true;
+		} catch (CertificateException e) {
+			e.printStackTrace();
+			disable = true;
+		} catch (KeyStoreException e) {
+			e.printStackTrace();
+			disable = true;
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+			disable = true;
+		} catch (InvalidAlgorithmParameterException e) {
+			e.printStackTrace();
+			disable = true;
+		} catch (CertPathValidatorException e) {
+			e.printStackTrace();
+			disable = true;
+		} finally {
+			if(tmJar != null)
+				tmJar.delete();
 		}
 		
 		if(disable) {
@@ -386,6 +427,8 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 				ajUpdater = new AjUpdater(ApplicationCore.userRessources.getAllusersDataPath() + File.separator + "update", //$NON-NLS-1$
 						"."); //$NON-NLS-1$
 				ajUpdater.addAjUpdaterListener(this);
+				ajUpdater.setAppKeyStore(ApplicationCore.userRessources.getAppKeyStore());
+				ajUpdater.setSecretKeyPassword(AppUtilities.getAppUID(ApplicationCore.userRessources).toCharArray());
 				
 				for(Repository repos : pluginsRepos) {
 					ajUpdater.addRepository(repos);
@@ -420,6 +463,9 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 		} else if(e.getSource() == jbAddURL) {
 			String prompturl = JOptionPane.showInputDialog(this, 
 					localisation.getResourceString("installplugindialog.promptaddurl"), "http://"); //$NON-NLS-1$ //$NON-NLS-2$
+			if(prompturl == null)
+				return;
+			
 			try {
 				if(!prompturl.endsWith("/")) //$NON-NLS-1$
 					prompturl += "/"; //$NON-NLS-1$
@@ -491,8 +537,6 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 	public void updaterStatusChanged(AjUpdaterEvent event) {
 		GlassPanePanel panel;
 		switch (event.getStatus()) {
-			/*case CONNECTED:
-				break;*/
 			case UPDATE_AVAILABLE:
 				AjUpdaterFrame ajUpdaterFrame = new AjUpdaterFrame(ajUpdater);
 				

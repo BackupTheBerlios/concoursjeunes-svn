@@ -70,6 +70,7 @@ public class ConcurrentBuilder {
 									.getCriteriaSet(rsCriteriaSet.getInt("NUMCRITERIASET"), reglement); //$NON-NLS-1$
 						} else {
 							differentiationCriteria = new CriteriaSet();
+							differentiationCriteria.setReglement(reglement);
 							for(Criterion key : reglement.getListCriteria()) {
 								boolean returnfirstval = true;
 								if(!key.getChampsTableArchers().isEmpty()) {

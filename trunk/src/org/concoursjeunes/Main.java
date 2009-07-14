@@ -280,7 +280,7 @@ public class Main {
 			}
 			
 			SwingURLAuthenticator urlauth = new SwingURLAuthenticator();
-			urlauth.setUrlAuthenticationStore(urlAuthStore);
+			urlauth.setSecureSiteAuthenticationStore(urlAuthStore);
 			Authenticator.setDefault(urlauth);
 			
 			ApplicationCore.userRessources.storeAppKeyStore();

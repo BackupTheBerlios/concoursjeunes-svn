@@ -135,6 +135,8 @@ INSERT INTO BLASONS VALUES (4, '40cm', 0.5, 0.5, 1, 40, 'targetface_fita_40.png'
 INSERT INTO BLASONS VALUES (5, 'Tri Spot "Vegas"', 0.5, 0.5, 1, 39, 'targetface_fita_trispot_vegas.png');
 INSERT INTO BLASONS VALUES (6, 'Tri Spot Vertical', 0.25, 1, 1, 24, 'targetface_fita_trispot.png');
 INSERT INTO BLASONS VALUES (7, 'Tri Spot 60 Vertical', 0.25, 1, 1, 59, 'targetface_fita_trispot_60.png');
+INSERT INTO BLASONS VALUES (8, 'Carte Beursault (Championnats)', 1, 1, 4, 23, 'targetface_ffta_beursault.png');
+INSERT INTO BLASONS VALUES (9, 'Carte Beursault (Bouquet)', 1, 1, 4, 23, 'targetface_ffta_beursault_bouquet.png');
 
 CREATE TABLE ANCRAGES_BLASONS (
 		NUMBLASON INTEGER NOT NULL,
@@ -167,6 +169,8 @@ INSERT INTO ANCRAGES_BLASONS VALUES (7, 0, 0, 0);
 INSERT INTO ANCRAGES_BLASONS VALUES (7, 1, 0.5, 0);
 INSERT INTO ANCRAGES_BLASONS VALUES (7, 2, 0.25, 0);
 INSERT INTO ANCRAGES_BLASONS VALUES (7, 3, 0.75, 0);
+INSERT INTO ANCRAGES_BLASONS VALUES (8, 4, 0, 0);
+INSERT INTO ANCRAGES_BLASONS VALUES (9, 4, 0, 0);
 
 CREATE TABLE CRITERIASET (
 		NUMCRITERIASET INTEGER AUTO_INCREMENT NOT NULL,

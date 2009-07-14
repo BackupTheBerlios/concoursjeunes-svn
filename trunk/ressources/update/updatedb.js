@@ -26,7 +26,7 @@ if(dbVersion == 0) {
 	
 	sql.executeScript("../sql/ImportClubFFTA.sql");
 	
-	//updateReglements();
+	updateReglements();
 }
 
 if(dbVersion != org.concoursjeunes.ApplicationCore.DB_RELEASE_REQUIRED) {

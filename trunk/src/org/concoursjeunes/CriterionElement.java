@@ -22,7 +22,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -49,8 +51,13 @@ import org.concoursjeunes.builders.CriterionElementBuilder;
 @SqlPrimaryKey(fields={"CODECRITEREELEMENT","CODECRITERE","NUMREGLEMENT"})
 @SqlForeignFields(fields={"CODECRITERE","NUMREGLEMENT"})
 public class CriterionElement implements SqlPersistance {
+	
+	//utilisé pour donnée un identifiant unique à la sérialisation de l'objet
 	@XmlID
-	@XmlAttribute
+	@XmlAttribute(name="id")
+	@SuppressWarnings("unused")
+	private String xmlId;
+	
 	@SqlField(name="CODECRITEREELEMENT")
     private String code = ""; //$NON-NLS-1$
 	@SqlField(name="LIBELLECRITEREELEMENT")
@@ -186,6 +193,10 @@ public class CriterionElement implements SqlPersistance {
 		fk.put("NUMREGLEMENT", criterion.getReglement().getNumReglement());
 		fk.put("CODECRITERE", criterion.getCode());
 		helper.delete(this, fk);
+	}
+	
+	protected void beforeMarshal(Marshaller marshaller) {
+		xmlId = UUID.randomUUID().toString();
 	}
 
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {

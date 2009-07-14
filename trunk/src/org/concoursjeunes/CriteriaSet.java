@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
@@ -96,10 +98,10 @@ public class CriteriaSet implements SqlPersistance {
 	public void setReglement(Reglement reglement) {
 		this.reglement = reglement;
 		
-		for(Entry<Criterion, CriterionElement> entry : criteria.entrySet()) {
+		/*for(Entry<Criterion, CriterionElement> entry : criteria.entrySet()) {
 			entry.getKey().setReglement(reglement);
 			entry.getValue().setCriterion(entry.getKey());
-		}
+		}*/
 	}
 
 	/**
@@ -127,11 +129,9 @@ public class CriteriaSet implements SqlPersistance {
 	 * @param criterion le critère pour lequel d"finir l'élément
 	 * @param element l'element à définir
 	 */
-	public void setCriterionElement(Criterion criterion, CriterionElement element) {
+	public void addCriterionElement(CriterionElement element) {
 		if(element != null) {
-			criteria.put(criterion, element);
-			criterion.setReglement(reglement);
-			element.setCriterion(criterion);
+			criteria.put(element.getCriterion(), element);
 		}
 	}
 
@@ -170,9 +170,7 @@ public class CriteriaSet implements SqlPersistance {
 		criteriaSet.setReglement(reglement);
 		for(Criterion criterion : criteria.keySet()) {
 			if(criteriaFilter.get(criterion))
-				criteriaSet.setCriterionElement(criterion, criteria.get(criterion));
-			else
-				criteriaSet.setCriterionElement(criterion, null);
+				criteriaSet.addCriterionElement(criteria.get(criterion));
 		}
 		return criteriaSet;
 	}
@@ -263,6 +261,27 @@ public class CriteriaSet implements SqlPersistance {
 	@Override
 	public void delete() throws SqlPersistanceException {
 		helper.delete(this);
+	}
+	
+	protected void beforeMarshal(Marshaller marshaller) {
+		/*jaxbCriteria = new HashMap<String, String>();
+		for(Entry<Criterion, CriterionElement> entry : criteria.entrySet()) {
+			jaxbCriteria.put(entry.getKey().getCode(), entry.getValue().getCode());
+		}*/
+	}
+	
+	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
+		/*if(parent instanceof Reglement) {
+			Reglement reglement = (Reglement)parent;
+			for(Entry<String, String> entry : jaxbCriteria.entrySet()) {
+				Criterion criterion = reglement.getListCriteria().get(
+						reglement.getListCriteria().indexOf(new Criterion(entry.getKey())));
+				CriterionElement element = criterion.getCriterionElements().get(
+						criterion.getCriterionElements().indexOf(new CriterionElement(entry.getValue())));
+				
+				criteria.put(criterion, element);
+			}
+		}*/
 	}
 	
 	/**
@@ -378,9 +397,9 @@ public class CriteriaSet implements SqlPersistance {
 
 				for(Criterion curCriterion : reglement.getListCriteria()) {
 					if(referent.getCriterionElement(curCriterion) != null)
-						tempCrit.setCriterionElement(curCriterion, referent.getCriterionElement(curCriterion));
+						tempCrit.addCriterionElement(referent.getCriterionElement(curCriterion));
 				}
-				tempCrit.setCriterionElement(criterion, criterion.getCriterionElements().get(i));
+				tempCrit.addCriterionElement(criterion.getCriterionElements().get(i));
 				children.add(tempCrit);
 			}
 		}

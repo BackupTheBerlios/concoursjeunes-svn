@@ -29,7 +29,7 @@ public class ResultArcImportThread extends Thread {
 	private JDialog parentframe;
 	private AjResourcesReader localisation;
 
-	private final AjResourcesReader pluginRessources = new AjResourcesReader("properties.FFTAImportPlugin"); //$NON-NLS-1$
+	private final AjResourcesReader pluginRessources = new AjResourcesReader("properties.ResultArcImportPlugin"); //$NON-NLS-1$
 	private final AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.ResultArcImport.ResultArcImportPlugin_libelle", ResultArcImportThread.class.getClassLoader()); //$NON-NLS-1$
 	private final EventListenerList listeners = new EventListenerList();
 
@@ -44,11 +44,11 @@ public class ResultArcImportThread extends Thread {
 		this.localisation = localisation;
 	}
 
-	public void addFFTAImportThreadListener(ResultArcImportThreadListener listener) {
+	public void addResultArcImportThreadListener(ResultArcImportThreadListener listener) {
 		listeners.add(ResultArcImportThreadListener.class, listener);
 	}
 
-	public void removeFFTAImportThreadListener(ResultArcImportThreadListener listener) {
+	public void removeResultArcImportThreadListener(ResultArcImportThreadListener listener) {
 		listeners.remove(ResultArcImportThreadListener.class, listener);
 	}
 
