@@ -1,5 +1,5 @@
 /*
- * Créer le 15 déc. 07 à 17:58:51 pour ConcoursJeunes
+ * Créé le 15 déc. 07 à 17:58:51 pour ConcoursJeunes
  *
  * Copyright 2002-2007 - Aurélien JEOFFRAY
  *

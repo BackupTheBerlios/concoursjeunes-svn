@@ -1,5 +1,5 @@
 /*
- * Créer le 19 janv. 08 à 21:50:36 pour ConcoursJeunes
+ * Créé le 19 janv. 08 à 21:50:36 pour ConcoursJeunes
  *
  * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
@@ -88,7 +88,11 @@
  */
 package org.concoursjeunes.ui;
 
-import java.awt.*;
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 import javax.swing.JComponent;
 

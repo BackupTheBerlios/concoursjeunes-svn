@@ -1,5 +1,5 @@
 /*
- * Créer le 15 mars 2009 à 16:49:04 pour ConcoursJeunes
+ * Créé le 15 mars 2009 à 16:49:04 pour ConcoursJeunes
  *
  * Copyright 2002-2009 - Aurélien JEOFFRAY
  *

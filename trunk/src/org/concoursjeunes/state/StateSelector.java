@@ -1,5 +1,5 @@
 /*
- * Créer le 29 juil. 2008 à 17:03:30 pour ConcoursJeunes
+ * Créé le 29 juil. 2008 à 17:03:30 pour ConcoursJeunes
  *
  * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
@@ -88,7 +88,11 @@
  */
 package org.concoursjeunes.state;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author Aurélien JEOFFRAY

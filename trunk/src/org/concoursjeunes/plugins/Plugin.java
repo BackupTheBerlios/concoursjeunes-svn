@@ -1,5 +1,5 @@
 /*
- * Créer le 10 mai 07 à 10:39:57 pour ConcoursJeunes
+ * Créé le 10 mai 07 à 10:39:57 pour ConcoursJeunes
  *
  * Copyright 2002-2007 - Aurélien JEOFFRAY
  *
@@ -88,7 +88,11 @@
  */
 package org.concoursjeunes.plugins;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Permet d'annoter une class comme etant la class principal d'un plugin

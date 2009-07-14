@@ -1,5 +1,5 @@
 /*
- * Créer le 15 juin 08 à 14:06:02 pour ConcoursJeunes
+ * Créé le 15 juin 08 à 14:06:02 pour ConcoursJeunes
  *
  * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
@@ -93,7 +93,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
