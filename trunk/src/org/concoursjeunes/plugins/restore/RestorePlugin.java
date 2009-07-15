@@ -154,7 +154,14 @@ public class RestorePlugin {
 			try {
 				//On transforme le pack200 en jar
 				//On décompresse le contenue du jar dans un répertoire temporaire
-				tempPath = extractJarContent(unpack(chooser.getSelectedFile()));
+				//try {
+				if(isZipFile(chooser.getSelectedFile()))
+					tempPath = extractJarContent(chooser.getSelectedFile());
+				else
+					tempPath = extractJarContent(unpack(chooser.getSelectedFile()));
+				//} catch(IOException e) {
+					
+				//}
 				
 				File configFile = new File(tempPath, "configuration.xml"); //$NON-NLS-1$
 				
@@ -299,5 +306,23 @@ public class RestorePlugin {
 		jarFile.delete();
 		
 		return extractedPath;
+	}
+	
+	private boolean isZipFile(File file) {
+		FileInputStream fis = null;
+		try {
+			byte[] fheader = new byte[2];
+			fis = new FileInputStream(file);
+			fis.read(fheader);
+			
+			return new String(fheader).equals("PK"); //$NON-NLS-1$
+		} catch(IOException e) {
+			
+		} finally {
+			if(fis != null)
+				try { fis.close(); } catch(IOException e) { }
+		}
+		
+		return false;
 	}
 }

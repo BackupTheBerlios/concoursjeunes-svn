@@ -24,7 +24,7 @@ namespace concoursjeunes_applyupdate {
                     object javaPath = javaReg.OpenSubKey((string)version).GetValue("JavaHome");
 
 					ProcessStartInfo startInfo = new ProcessStartInfo(javaPath + @"\bin\javaw.exe");
-					startInfo.Arguments = "-cp lib/AJPackage.jar org.ajdeveloppement.updater.tools.AjUpdaterApply \"" + args[0] + "\" \"" + args[1] + "\"";
+					startInfo.Arguments = "-cp lib/ajcommons.jar org.ajdeveloppement.updater.tools.AjUpdaterApply \"" + args[0] + "\" \"" + args[1] + "\"";
                     startInfo.Verb = "runas";
 					Process updateProcess = Process.Start(startInfo);
                     updateProcess.WaitForExit();

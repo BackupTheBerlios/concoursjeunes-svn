@@ -67,7 +67,7 @@ InstallDir $PROGRAMFILES\ConcoursJeunes
 CRCCheck on
 XPStyle on
 ShowInstDetails show
-RequestExecutionLevel admin
+RequestExecutionLevel highest
 VIProductVersion 1.1.0.0
 VIAddVersionKey ProductName "ConcoursJeunes Setup"
 VIAddVersionKey ProductVersion "${VERSION}"

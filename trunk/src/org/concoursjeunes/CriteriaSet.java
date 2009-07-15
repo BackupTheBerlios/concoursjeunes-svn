@@ -144,9 +144,20 @@ public class CriteriaSet implements SqlPersistance {
 
 	public CriteriaSet() {
 	}
+	
+	public CriteriaSet(Reglement reglement) {
+		this(reglement, null);
+	}
 
 	public CriteriaSet(Map<Criterion, CriterionElement> criteria) {
-		this.criteria = criteria;
+		this(null, criteria);
+	}
+	
+	public CriteriaSet(Reglement reglement, Map<Criterion, CriterionElement> criteria) {
+		if(reglement != null)
+			this.reglement = reglement;
+		if(criteria != null)
+			this.criteria = criteria;
 	}
 
 	/**
@@ -418,7 +429,7 @@ public class CriteriaSet implements SqlPersistance {
 	public static CriteriaSet[] listCriteriaSet(Reglement reglement, Map<Criterion, Boolean> criteriaFilter) {       
 		//cré la population complete pour l'ensemble des critéres
 		//objet de référence
-		CriteriaSet[] referents = new CriteriaSet[] { new CriteriaSet() };
+		CriteriaSet[] referents = new CriteriaSet[] { new CriteriaSet(reglement) };
 
 		//boucle sur les critères du reglement
 		for(Criterion key : reglement.getListCriteria()) {

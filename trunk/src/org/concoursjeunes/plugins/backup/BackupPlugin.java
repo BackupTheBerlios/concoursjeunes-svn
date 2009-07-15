@@ -94,12 +94,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
-import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
-import java.util.jar.Pack200;
-import java.util.jar.Pack200.Packer;
 import java.util.logging.Level;
-import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 
 import javax.swing.JFileChooser;
@@ -147,31 +143,22 @@ public class BackupPlugin {
 	    chooser.setSelectedFile(new File(configuration.getCurProfil() + ".backup")); //$NON-NLS-1$
 	   // chooser.setFileView(FileSystemView.getFileSystemView().);
 	    int returnVal = chooser.showSaveDialog(parentframe);
-	    if(returnVal == JFileChooser.APPROVE_OPTION) {       
-
+	    if(returnVal == JFileChooser.APPROVE_OPTION) {
+	    	JarOutputStream jos = null;
 			try {
 				List<File> concoursFiles = FileUtils.listAllFiles(concoursPath, ".*\\.cta", false); //$NON-NLS-1$
-				
-				File tempJar = File.createTempFile("profilecj_", ".jar"); //$NON-NLS-1$ //$NON-NLS-2$
-				
-				JarOutputStream jos = new JarOutputStream(new FileOutputStream(tempJar));
-				
-				for(File concoursFile : concoursFiles) {
-					addEntryToJar(concoursFile, jos);
-				}
-				
-				addEntryToJar(new File(ApplicationCore.userRessources.getConfigPathForUser(), "configuration.xml"), jos); //$NON-NLS-1$
-				
-				jos.close();
 				
 				File backupFile = chooser.getSelectedFile();
 				if(!backupFile.getName().endsWith(".backup")) //$NON-NLS-1$
 					backupFile = new File(backupFile.getParent(), backupFile.getName() + ".backup"); //$NON-NLS-1$
 				
-				Packer packer = Pack200.newPacker();
-				packer.pack(new JarFile(tempJar), new GZIPOutputStream(new FileOutputStream(backupFile)));
-
-				tempJar.delete();
+				jos = new JarOutputStream(new FileOutputStream(backupFile));
+				
+				for(File concoursFile : concoursFiles) {
+					addEntryToJar(concoursFile, jos);
+				}
+				
+				addEntryToJar(new File(ApplicationCore.userRessources.getConfigPathForUser(), "configuration_" + configuration.getCurProfil() + ".xml"), "configuration.xml", jos); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				
 				JOptionPane.showMessageDialog(parentframe, pluginLocalisation.getResourceString("backupdialog.success")); //$NON-NLS-1$
 			} catch (IOException e) {
@@ -179,13 +166,20 @@ public class BackupPlugin {
 				JXErrorPane.showDialog(parentframe, new ErrorInfo(profile.getLocalisation().getResourceString("erreur"), //$NON-NLS-1$
 						e.toString(),
 						null, null, e, Level.SEVERE, null));
+			} finally {
+				if(jos != null)
+					try { jos.close(); } catch (IOException e) { }
 			}
 	    }
 	}
 	
-	private void addEntryToJar(File fileEntry, JarOutputStream jos)
+	private void addEntryToJar(File fileEntry, JarOutputStream jos) throws IOException {
+		addEntryToJar(fileEntry, fileEntry.getName(), jos);
+	}
+	
+	private void addEntryToJar(File fileEntry, String newEntryName, JarOutputStream jos)
 			throws IOException {
-		ZipEntry ze = new ZipEntry(fileEntry.getName());
+		ZipEntry ze = new ZipEntry(newEntryName);
 		BufferedInputStream bis = new BufferedInputStream(new FileInputStream(fileEntry));
 		jos.putNextEntry(ze);
 		

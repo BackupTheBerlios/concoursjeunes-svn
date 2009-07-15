@@ -1,4 +1,4 @@
-#Tue Jul 14 16:11:19 CEST 2009
+#Wed Jul 15 18:52:13 CEST 2009
 eclipse.preferences.version=1
 encoding//config/parametre.properties=UTF-8
 encoding//lang/libelle.properties=UTF-8
@@ -17,4 +17,5 @@ encoding//src/org/concoursjeunes/plugins/FFTAImport/FFTAImportPlugin_libelle.pro
 encoding//src/org/concoursjeunes/plugins/ResultArcImport/ResultArcImportPlugin_libelle.properties=UTF-8
 encoding//src/org/concoursjeunes/plugins/update/ConcoursJeunesUpdate_libelle.properties=UTF-8
 encoding//src/org/concoursjeunes/plugins/update/ConcoursJeunesUpdate_libelle_en.properties=UTF-8
+encoding//src/windows-specific/concoursjeunes-applyupdate/Program.cs=ISO-8859-1
 instance/org.eclipse.core.net/org.eclipse.core.net.hasMigrated=true
