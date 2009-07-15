@@ -182,56 +182,67 @@ public class ConcurrentManager {
 	 * 
 	 * @return la liste des archers correspondant aux critères de recherche
 	 */
+	@SuppressWarnings("nls")
 	public static List<Concurrent> getArchersInDatabase(
 			Archer aGeneric, Reglement reglement, String orderfield, int nbmaxenreg, ConcurrentManagerProgress concurrentManagerProgress) {
 		List<Concurrent> concurrents = new ArrayList<Concurrent>();
 		Statement stmt = null;
 		try {
-			stmt = ApplicationCore.dbConnection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			stmt = ApplicationCore.dbConnection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 
-			String sql = "select * from archers "; //$NON-NLS-1$
+			String sql = "select %s from archers ";
 
 			if(aGeneric != null) {
-				sql += "where "; //$NON-NLS-1$
+				sql += "where ";
 				List<String> filters = new ArrayList<String>();
 
 				if(!aGeneric.getNumLicenceArcher().isEmpty()) {
-					filters.add("NUMLICENCEARCHER like '" + aGeneric.getNumLicenceArcher() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+					filters.add("NUMLICENCEARCHER like '" + aGeneric.getNumLicenceArcher().replaceAll("'", "''").replaceAll("%", "%%") + "'");
 				}
 				if(!aGeneric.getNomArcher().isEmpty()) {
-					filters.add("NOMARCHER like '" + aGeneric.getNomArcher().replaceAll("'", "''") + "'"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+					filters.add("NOMARCHER like '" + aGeneric.getNomArcher().replaceAll("'", "''").replaceAll("%", "%%") + "'");
 				}
 				if(!aGeneric.getPrenomArcher().isEmpty()) {
-					filters.add("UPPER(PRENOMARCHER) like '" + aGeneric.getPrenomArcher().toUpperCase().replaceAll("'", "''") + "'"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+					filters.add("UPPER(PRENOMARCHER) like '" + aGeneric.getPrenomArcher().toUpperCase().replaceAll("'", "''").replaceAll("%", "%%") + "'");
 				}
 				if(!aGeneric.getClub().getAgrement().isEmpty()) {
-					filters.add("AGREMENTENTITE like '" + aGeneric.getClub().getAgrement() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+					filters.add("AGREMENTENTITE like '" + aGeneric.getClub().getAgrement().replaceAll("'", "''").replaceAll("%", "%%") + "'");
 				}
 
 				for(String filter : filters) {
-					sql += " and " + filter; //$NON-NLS-1$
+					sql += " and " + filter;
 				}
 			}
-			sql = sql.replaceFirst(" and ", ""); //$NON-NLS-1$ //$NON-NLS-2$
+			sql = sql.replaceFirst(" and ", "");
+
+			ResultSet rs = stmt.executeQuery(String.format(sql, "count(*)"));
+			try {
+				rs.next();
+				if(concurrentManagerProgress != null)
+					concurrentManagerProgress.setConcurrentCount(rs.getInt(1));
+			} finally {
+				rs.close();
+			}
+			
 			if(!orderfield.isEmpty())
-				sql += " order by " + orderfield; //$NON-NLS-1$
-
-			ResultSet rs = stmt.executeQuery(sql);
-			rs.last();
-			if(concurrentManagerProgress != null)
-				concurrentManagerProgress.setConcurrentCount(rs.getRow());
-			rs.beforeFirst();
-
-			int iEnreg = 0;
-			while(rs.next() && (nbmaxenreg == -1 || iEnreg < nbmaxenreg)) {
-				
-				Concurrent concurrent = ConcurrentBuilder.getConcurrent(rs, reglement);
-				if(concurrent != null) {
-					concurrents.add(concurrent);
-					if(concurrentManagerProgress != null)
-						concurrentManagerProgress.setCurrentConcurrent(concurrent);
-					iEnreg++;
+				sql += " order by " + orderfield;
+			
+			rs = stmt.executeQuery(String.format(sql, "*"));
+			try {
+				int iEnreg = 0;
+				while(rs.next() && (nbmaxenreg == -1 || iEnreg < nbmaxenreg)) {
+					
+					Concurrent concurrent = ConcurrentBuilder.getConcurrent(rs, reglement);
+					if(concurrent != null) {
+						concurrents.add(concurrent);
+						if(concurrentManagerProgress != null)
+							concurrentManagerProgress.setCurrentConcurrent(concurrent);
+						iEnreg++;
+					}
 				}
+			} finally {
+				rs.close();
+				rs = null;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

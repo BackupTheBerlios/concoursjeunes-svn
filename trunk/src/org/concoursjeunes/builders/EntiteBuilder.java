@@ -109,20 +109,26 @@ public class EntiteBuilder {
 		Entite entite = new Entite();
 		try {
 			Statement stmt = ApplicationCore.dbConnection.createStatement();
-
-			ResultSet rs = stmt.executeQuery("select * from Entite where AgrementEntite = '" + numAgrement + "'"); //$NON-NLS-1$ //$NON-NLS-2$
-
-			if(rs.next()) {
-				entite.setAgrement(rs.getString("AgrementEntite")); //$NON-NLS-1$
-				entite.setNom(rs.getString("NomEntite")); //$NON-NLS-1$
-				entite.setAdresse(rs.getString("AdresseEntite")); //$NON-NLS-1$
-				entite.setCodePostal(rs.getString("CodePostalEntite")); //$NON-NLS-1$
-				entite.setVille(rs.getString("VilleEntite")); //$NON-NLS-1$
-				entite.setNote(rs.getString("NoteEntite")); //$NON-NLS-1$
-				entite.setType(rs.getInt("TypeEntite")); //$NON-NLS-1$
+			try {
+				ResultSet rs = stmt.executeQuery("select * from Entite where AgrementEntite = '" + numAgrement + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+				try {
+					if(rs.next()) {
+						entite.setAgrement(rs.getString("AgrementEntite")); //$NON-NLS-1$
+						entite.setNom(rs.getString("NomEntite")); //$NON-NLS-1$
+						entite.setAdresse(rs.getString("AdresseEntite")); //$NON-NLS-1$
+						entite.setCodePostal(rs.getString("CodePostalEntite")); //$NON-NLS-1$
+						entite.setVille(rs.getString("VilleEntite")); //$NON-NLS-1$
+						entite.setNote(rs.getString("NoteEntite")); //$NON-NLS-1$
+						entite.setType(rs.getInt("TypeEntite")); //$NON-NLS-1$
+					}
+				} finally {
+					rs.close();
+					rs = null;
+				}
+			} finally {
+				stmt.close();
+				stmt = null;
 			}
-
-			stmt.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

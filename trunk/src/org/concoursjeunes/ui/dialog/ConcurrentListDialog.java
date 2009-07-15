@@ -674,6 +674,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		}
 
 		public Concurrent getConcurrentAtRow(int rowIndex) {
+			//ConcurrentManager.
 			return rows.get(rowIndex);
 		}
 		
@@ -688,7 +689,8 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 
 		private Archer filter;
 		private int nbConcurrent = 0;
-		private List<Concurrent> concurrents = new ArrayList<Concurrent>();
+		private int nbLoadedConcurrent = 0;
+		//private List<Concurrent> concurrents = new ArrayList<Concurrent>();
 		/**
 		 * 
 		 */
@@ -709,9 +711,9 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 
 				@Override
 				public void setCurrentConcurrent(Concurrent concurrent) {
-					concurrents.add(concurrent);
+					nbLoadedConcurrent++;
 					publish(concurrent);
-					setProgress(100 * concurrents.size() / nbConcurrent);
+					setProgress(100 * nbLoadedConcurrent / nbConcurrent);
 				}
 				
 			});
