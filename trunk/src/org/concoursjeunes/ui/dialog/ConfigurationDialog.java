@@ -105,7 +105,21 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.logging.Level;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.bind.JAXBException;
@@ -116,7 +130,16 @@ import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.StringUtils;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
-import org.concoursjeunes.*;
+import org.concoursjeunes.AppConfiguration;
+import org.concoursjeunes.ApplicationCore;
+import org.concoursjeunes.AutoCompleteDocument;
+import org.concoursjeunes.AutoCompleteDocumentContext;
+import org.concoursjeunes.Configuration;
+import org.concoursjeunes.Entite;
+import org.concoursjeunes.Federation;
+import org.concoursjeunes.Margin;
+import org.concoursjeunes.Profile;
+import org.concoursjeunes.Reglement;
 import org.concoursjeunes.builders.ReglementBuilder;
 import org.concoursjeunes.event.AutoCompleteDocumentEvent;
 import org.concoursjeunes.event.AutoCompleteDocumentListener;
@@ -134,6 +157,7 @@ import com.lowagie.text.Rectangle;
  * @author Aurélien Jeoffray
  * @version 2.2
  */
+@Localisable(textMethod="setTitle",value="configuration.title")
 public class ConfigurationDialog extends JDialog implements ActionListener, AutoCompleteDocumentListener {
 
 	private JFrame parentframe;
@@ -142,6 +166,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	private Configuration workConfiguration;
 	private AppConfiguration workAppConfiguration;
 	
+	@Localisable("configuration.onglet")
 	private JTabbedPane tabbedpane = new JTabbedPane();
 	@Localisable(value="configuration.ecran.general.titre0",textMethod="setTitle")
 	private TitledBorder tbProfil = new TitledBorder(""); //$NON-NLS-1$
@@ -582,16 +607,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	}
 
 	private void affectLibelle() {
-		setTitle(localisation.getResourceString("configuration.title")); //$NON-NLS-1$
-		
 		AppUtilities.localize(this, localisation);
-		
-		if (tabbedpane.getTabCount() > 0) {
-			tabbedpane.setTitleAt(0, localisation.getResourceString("configuration.onglet.genral")); //$NON-NLS-1$
-			tabbedpane.setTitleAt(1, localisation.getResourceString("configuration.onglet.concours")); //$NON-NLS-1$
-			tabbedpane.setTitleAt(2, localisation.getResourceString("configuration.onglet.etiquettes")); //$NON-NLS-1$
-			tabbedpane.setTitleAt(3, localisation.getResourceString("configuration.onglet.avance")); //$NON-NLS-1$
-		}
 	}
 
 	private void completePanel() {

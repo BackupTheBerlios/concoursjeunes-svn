@@ -141,7 +141,7 @@ public class BackupPlugin {
 	    		pluginLocalisation.getResourceString("description.type.file"), "backup"); //$NON-NLS-1$ //$NON-NLS-2$
 	    chooser.setFileFilter(filter);
 	    chooser.setSelectedFile(new File(configuration.getCurProfil() + ".backup")); //$NON-NLS-1$
-	   // chooser.setFileView(FileSystemView.getFileSystemView().);
+
 	    int returnVal = chooser.showSaveDialog(parentframe);
 	    if(returnVal == JFileChooser.APPROVE_OPTION) {
 	    	JarOutputStream jos = null;

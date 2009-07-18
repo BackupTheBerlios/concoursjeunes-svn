@@ -174,7 +174,9 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	private ConcoursJeunesFrame parentframe;
 	private AjResourcesReader localisation;
 
+	@Localisable("onglet.ficheconcours")
 	private JTabbedPane tabbedpane		= new JTabbedPane();
+	@Localisable("onglet.classements")
 	private JTabbedPane jtbClassement	= new JTabbedPane();
 
 	private JPanel fichesDepart			= new JPanel();
@@ -578,14 +580,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	private void affectLibelle() {
 		AppUtilities.localize(this, parentframe.profile.getLocalisation());
 		
-		tabbedpane.setTitleAt(0, parentframe.profile.getLocalisation().getResourceString("onglet.gestionarcher")); //$NON-NLS-1$
 		tabbedpane.setTabComponentAt(0, getGestArchersTabComponent());
-		tabbedpane.setTitleAt(1, parentframe.profile.getLocalisation().getResourceString("onglet.pointage.greffe")); //$NON-NLS-1$
-		tabbedpane.setTitleAt(2, parentframe.profile.getLocalisation().getResourceString("onglet.classement")); //$NON-NLS-1$
-		tabbedpane.setTitleAt(3, parentframe.profile.getLocalisation().getResourceString("onglet.edition")); //$NON-NLS-1$
-		jtbClassement.setTitleAt(0, parentframe.profile.getLocalisation().getResourceString("onglet.classementindividuel")); //$NON-NLS-1$
-		jtbClassement.setTitleAt(1, parentframe.profile.getLocalisation().getResourceString("onglet.classementequipe")); //$NON-NLS-1$
-		jtbClassement.setTitleAt(2, parentframe.profile.getLocalisation().getResourceString("onglet.classementclub")); //$NON-NLS-1$
 		
 		for(int i = 1; i <= ficheConcours.getParametre().getNbDepart(); i++)
 			jcbDeparts.addItem(
