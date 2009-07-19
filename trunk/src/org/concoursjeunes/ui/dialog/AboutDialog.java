@@ -196,6 +196,7 @@ public class AboutDialog extends JDialog implements ActionListener, HyperlinkLis
 		
 		//setSize(new Dimension(640, 480));
 		pack();
+		setResizable(false);
 		setLocationRelativeTo(null);
 		setVisible(true);
 	}

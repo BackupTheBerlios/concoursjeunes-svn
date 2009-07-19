@@ -140,8 +140,7 @@ public class ConcurrentBuilder {
 							differentiationCriteria = CriteriaSetBuilder
 									.getCriteriaSet(rsCriteriaSet.getInt("NUMCRITERIASET"), reglement); //$NON-NLS-1$
 						} else {
-							differentiationCriteria = new CriteriaSet();
-							differentiationCriteria.setReglement(reglement);
+							differentiationCriteria = new CriteriaSet(reglement);
 							for(Criterion key : reglement.getListCriteria()) {
 								boolean returnfirstval = true;
 								if(!key.getChampsTableArchers().isEmpty()) {
@@ -192,7 +191,7 @@ public class ConcurrentBuilder {
 						return null;
 					differentiationCriteria = tmpCS; //sinon retourner sa catégorie de surclassement
 					concurrent.setSurclassement(true);
-				}
+				}				
 
 				concurrent.setCriteriaSet(differentiationCriteria);
 			}

@@ -103,6 +103,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.swing.event.EventListenerList;
@@ -381,12 +382,27 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 			reglement.setTie(new ArrayList<String>(Arrays.asList(new String[] { "10","9" }))); //$NON-NLS-1$ //$NON-NLS-2$
 			reglement.setDisplayName(reglement.getName());
 			reglement.setVersion(2);
+			
+			for(Entry<CriteriaSet, CriteriaSet> entry : reglement.getSurclassement().entrySet()) {
+				for(Entry<Criterion, CriterionElement> entry2 : entry.getKey().getCriteria().entrySet()) {
+					if(entry2.getValue().getCriterion() == null)
+						entry2.getValue().setCriterion(entry2.getKey());
+				}
+				for(Entry<Criterion, CriterionElement> entry2 : entry.getValue().getCriteria().entrySet()) {
+					if(entry2.getValue() != null && entry2.getValue().getCriterion() == null)
+						entry2.getValue().setCriterion(entry2.getKey());
+				}
+			}
 		}
 		
-		//contrôle l'affectation du réglement
+		//contrôle l'affectation du réglement et des critères
 		for(Concurrent concurrent : concurrentList.list(-1)) {
 			if(concurrent.getCriteriaSet().getReglement() == null)
 				concurrent.getCriteriaSet().setReglement(reglement);
+			for(Entry<Criterion, CriterionElement> entry : concurrent.getCriteriaSet().getCriteria().entrySet()) {
+				if(entry.getValue().getCriterion() == null)
+					entry.getValue().setCriterion(entry.getKey());
+			}
 		}
 		
 		DistancesEtBlason defaultDistancesEtBlason = new DistancesEtBlason();

@@ -91,7 +91,7 @@ package org.concoursjeunes.builders;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.CriteriaSet;
@@ -117,22 +117,28 @@ public class CriteriaSetBuilder {
 	 */
 	public static CriteriaSet getCriteriaSet(int numCriteriaSet, Reglement reglement) {
 		try {
+			HashMap<Criterion, CriterionElement> criteria = new HashMap<Criterion, CriterionElement>();
 			String sql = "select * from POSSEDE where NUMCRITERIASET=? and NUMREGLEMENT=?"; //$NON-NLS-1$
 			
 			PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
-			
-			pstmt.setInt(1, numCriteriaSet);
-			pstmt.setInt(2, reglement.getNumReglement());
-			
-			ResultSet rs = pstmt.executeQuery();
-			
-			Hashtable<Criterion, CriterionElement> criteria = new Hashtable<Criterion, CriterionElement>();
-			while(rs.next()) {
-				Criterion criterion = reglement.getListCriteria().get(reglement.getListCriteria().indexOf(new Criterion(rs.getString("CODECRITERE")))); //$NON-NLS-1$
-				criteria.put(
-						criterion,
-						criterion.getCriterionElements().get(criterion.getCriterionElements().indexOf(new CriterionElement(rs.getString("CODECRITEREELEMENT"))))); //$NON-NLS-1$
+			try {
+				pstmt.setInt(1, numCriteriaSet);
+				pstmt.setInt(2, reglement.getNumReglement());
+				
+				ResultSet rs = pstmt.executeQuery();
+				
+				
+				while(rs.next()) {
+					Criterion criterion = reglement.getListCriteria().get(reglement.getListCriteria().indexOf(new Criterion(rs.getString("CODECRITERE")))); //$NON-NLS-1$
+					criteria.put(
+							criterion,
+							criterion.getCriterionElements().get(criterion.getCriterionElements().indexOf(new CriterionElement(rs.getString("CODECRITEREELEMENT"))))); //$NON-NLS-1$
+				}
+			} finally {
+				pstmt.close();
+				pstmt = null;
 			}
+			
 			CriteriaSet criteriaSet = new CriteriaSet();
 			criteriaSet.setReglement(reglement);
 			criteriaSet.setNumCriteriaSet(numCriteriaSet); 

@@ -157,6 +157,9 @@ public class ConcurrentManager {
 	 * @param orderfield l'ordre de trie des objets retourné. Doivent être listé dans 
 	 * l'ordre les champs de la base de données (table ARCHERS) servant au trie.
 	 * 
+	 * @param nbmaxenreg définit le nombre maximum d'enregistrement qui doit être
+	 * retourné par la methode
+	 * 
 	 * @return la liste des archers correspondant aux critères de recherche
 	 */
 	public static List<Concurrent> getArchersInDatabase(Archer aGeneric, Reglement reglement, String orderfield, int nbmaxenreg) {
@@ -227,17 +230,20 @@ public class ConcurrentManager {
 			if(!orderfield.isEmpty())
 				sql += " order by " + orderfield;
 			
+			if(nbmaxenreg > 0)
+				sql += " limit " + nbmaxenreg;
+			
 			rs = stmt.executeQuery(String.format(sql, "*"));
 			try {
-				int iEnreg = 0;
-				while(rs.next() && (nbmaxenreg == -1 || iEnreg < nbmaxenreg)) {
+				//int iEnreg = 0;
+				while(rs.next() /*&& (nbmaxenreg == -1 || iEnreg < nbmaxenreg)*/) {
 					
 					Concurrent concurrent = ConcurrentBuilder.getConcurrent(rs, reglement);
 					if(concurrent != null) {
 						concurrents.add(concurrent);
 						if(concurrentManagerProgress != null)
 							concurrentManagerProgress.setCurrentConcurrent(concurrent);
-						iEnreg++;
+						//iEnreg++;
 					}
 				}
 			} finally {
