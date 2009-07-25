@@ -104,8 +104,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.ajdeveloppement.apps.AppUtilities;
-import org.ajdeveloppement.apps.Localisable;
+import org.ajdeveloppement.apps.localisation.Localisable;
+import org.ajdeveloppement.apps.localisation.Localisator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.concoursjeunes.Federation;
@@ -213,7 +213,7 @@ public class NewReglementDialog extends JDialog implements ActionListener {
 	}
 	
 	private void affectLibelle() {
-		AppUtilities.localize(this, localisation);
+		Localisator.localize(this, localisation);
 	}
 	
 	private void completePanel() {

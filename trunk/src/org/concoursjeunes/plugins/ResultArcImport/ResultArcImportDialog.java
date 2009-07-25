@@ -107,7 +107,8 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 
-import org.ajdeveloppement.apps.Localisable;
+import org.ajdeveloppement.apps.localisation.Localisable;
+import org.ajdeveloppement.apps.localisation.Localisator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.concoursjeunes.Profile;
@@ -126,13 +127,16 @@ public class ResultArcImportDialog extends JDialog implements ActionListener, Re
 	@Localisable("emplacement.lffta")
 	private JLabel jlEmplacementLFFTA = new JLabel();
 	private JTextField jtfEmplacementLFFTA = new JTextField("C:\\ResultArc", 30); //$NON-NLS-1$
+	@Localisable("button.parcourir")
 	private JButton jbParcourir = new JButton();
+	@Localisable("button.start")
 	private JButton jbSart = new JButton();
 	private JProgressBar jpbProgression = new JProgressBar();
 
+	@Localisable("bouton.annuler")
 	private JButton jbAnnuler = new JButton();
 
-	private AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.ResultArcImport.ResultArcImportPlugin_libelle", ResultArcImportDialog.class.getClassLoader()); //$NON-NLS-1$
+	private AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.ResultArcImport.ResultArcImportPlugin_libelle", ResultArcImportDialog.class.getClassLoader());  //$NON-NLS-1$
 
 	public ResultArcImportDialog(JFrame parentframe, Profile profile) {
 		super(parentframe);
@@ -182,11 +186,7 @@ public class ResultArcImportDialog extends JDialog implements ActionListener, Re
 	}
 
 	private void affectLibelle() {
-		jlEmplacementLFFTA.setText(pluginLocalisation.getResourceString("emplacement.lffta")); //$NON-NLS-1$
-		jbParcourir.setText(pluginLocalisation.getResourceString("button.parcourir")); //$NON-NLS-1$
-		jbSart.setText(pluginLocalisation.getResourceString("button.start")); //$NON-NLS-1$
-
-		jbAnnuler.setText(profile.getLocalisation().getResourceString("bouton.annuler")); //$NON-NLS-1$
+		Localisator.localize(this, pluginLocalisation);
 	}
 
 	private void completePane() {
@@ -233,7 +233,7 @@ public class ResultArcImportDialog extends JDialog implements ActionListener, Re
 	 */
 	public void importFinished() {
 		JOptionPane.showMessageDialog(this, pluginLocalisation.getResourceString("message.import.fin"), //$NON-NLS-1$
-				pluginLocalisation.getResourceString("message.import"), JOptionPane.INFORMATION_MESSAGE); //$NON-NLS-1$
+				pluginLocalisation.getResourceString("message.import"), JOptionPane.INFORMATION_MESSAGE);  //$NON-NLS-1$
 		setVisible(false);
 	}
 

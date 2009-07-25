@@ -124,8 +124,8 @@ import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.bind.JAXBException;
 
-import org.ajdeveloppement.apps.AppUtilities;
-import org.ajdeveloppement.apps.Localisable;
+import org.ajdeveloppement.apps.localisation.Localisable;
+import org.ajdeveloppement.apps.localisation.Localisator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.StringUtils;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
@@ -607,7 +607,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	}
 
 	private void affectLibelle() {
-		AppUtilities.localize(this, localisation);
+		Localisator.localize(this, localisation);
 	}
 
 	private void completePanel() {

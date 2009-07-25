@@ -116,8 +116,8 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
-import org.ajdeveloppement.apps.AppUtilities;
-import org.ajdeveloppement.apps.Localisable;
+import org.ajdeveloppement.apps.localisation.Localisable;
+import org.ajdeveloppement.apps.localisation.Localisator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Entite;
@@ -207,7 +207,7 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 	}
 	
 	private void affectLibelle() {
-		AppUtilities.localize(this, localisation);
+		Localisator.localize(this, localisation);
 	}
 
 	/**

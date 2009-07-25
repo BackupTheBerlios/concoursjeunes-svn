@@ -124,8 +124,8 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableRowSorter;
 
-import org.ajdeveloppement.apps.AppUtilities;
-import org.ajdeveloppement.apps.Localisable;
+import org.ajdeveloppement.apps.localisation.Localisable;
+import org.ajdeveloppement.apps.localisation.Localisator;
 import org.ajdeveloppement.commons.ui.NumberDocument;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Concurrent;
@@ -258,7 +258,7 @@ public class GreffePane extends JPanel implements
 	}
 	
 	private void affectLibelle() {
-		AppUtilities.localize(this, ficheConcoursPane.getLocalisation());
+		Localisator.localize(this, ficheConcoursPane.getLocalisation());
 	}
 	
 	private void completePanel() {

@@ -106,8 +106,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 
-import org.ajdeveloppement.apps.AppUtilities;
-import org.ajdeveloppement.apps.Localisable;
+import org.ajdeveloppement.apps.localisation.Localisable;
+import org.ajdeveloppement.apps.localisation.Localisator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 
 /**
@@ -147,7 +147,7 @@ public class TextDialog extends JDialog implements ActionListener {
 	}
 	
 	private void affectLibelle() {
-		AppUtilities.localize(this, localisation);
+		Localisator.localize(this, localisation);
 	}
 	
 	private void completePane() {

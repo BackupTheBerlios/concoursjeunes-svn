@@ -117,8 +117,8 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 
-import org.ajdeveloppement.apps.AppUtilities;
-import org.ajdeveloppement.apps.Localisable;
+import org.ajdeveloppement.apps.localisation.Localisable;
+import org.ajdeveloppement.apps.localisation.Localisator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.concoursjeunes.Archer;
@@ -238,7 +238,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	}
 
 	private void affectLibelle() {
-		AppUtilities.localize(this, localisation);
+		Localisator.localize(this, localisation);
 	}
 
 	/**

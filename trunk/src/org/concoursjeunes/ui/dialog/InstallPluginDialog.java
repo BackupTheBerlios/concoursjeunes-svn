@@ -137,7 +137,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.ws.WebServiceException;
 
 import org.ajdeveloppement.apps.AppUtilities;
-import org.ajdeveloppement.apps.Localisable;
+import org.ajdeveloppement.apps.localisation.Localisable;
+import org.ajdeveloppement.apps.localisation.Localisator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.io.FileUtils;
 import org.ajdeveloppement.commons.io.XMLSerializer;
@@ -278,7 +279,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 	}
 	
 	private void affectLibelle() {
-		AppUtilities.localize(this, localisation);
+		Localisator.localize(this, localisation);
 	}
 	
 	private void completePanel() {

@@ -134,8 +134,8 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
-import org.ajdeveloppement.apps.AppUtilities;
-import org.ajdeveloppement.apps.Localisable;
+import org.ajdeveloppement.apps.localisation.Localisable;
+import org.ajdeveloppement.apps.localisation.Localisator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.StringUtils;
 import org.ajdeveloppement.commons.ui.AJList;
@@ -156,6 +156,7 @@ import org.concoursjeunes.localisable.CriteriaSetLibelle;
  * @author Aurélien JEOFFRAY
  * 
  */
+@Localisable(textMethod="setTitle",value="reglement.titre")
 public class ReglementDialog extends JDialog implements ActionListener, MouseListener, TableModelListener {
 	private JFrame parentframe;
 	private Profile profile;
@@ -509,9 +510,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	}
 
 	private void affectLibelle() {
-		setTitle(localisation.getResourceString("reglement.titre")); //$NON-NLS-1$
-		
-		AppUtilities.localize(this, localisation);	
+		Localisator.localize(this, localisation);	
 	}
 
 	private void completePanel() {

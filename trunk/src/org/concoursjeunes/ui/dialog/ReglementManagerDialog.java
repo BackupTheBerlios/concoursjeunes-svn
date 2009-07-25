@@ -120,8 +120,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import org.ajdeveloppement.apps.AppUtilities;
-import org.ajdeveloppement.apps.Localisable;
+import org.ajdeveloppement.apps.localisation.Localisable;
+import org.ajdeveloppement.apps.localisation.Localisator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.sql.SqlPersistanceException;
 import org.ajdeveloppement.commons.ui.AJList;
@@ -331,7 +331,7 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 	}
 	
 	private void affectLibelle() {
-		AppUtilities.localize(this, localisation);
+		Localisator.localize(this, localisation);
 		
 		ajlCategories.clear();
 		ajlCategories.add(localisation.getResourceString("reglementmanager.category.all")); //$NON-NLS-1$

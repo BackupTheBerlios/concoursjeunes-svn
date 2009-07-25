@@ -132,8 +132,8 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
-import org.ajdeveloppement.apps.AppUtilities;
-import org.ajdeveloppement.apps.Localisable;
+import org.ajdeveloppement.apps.localisation.Localisable;
+import org.ajdeveloppement.apps.localisation.Localisator;
 import org.ajdeveloppement.commons.ui.AJTree;
 import org.ajdeveloppement.commons.ui.GhostGlassPane;
 import org.concoursjeunes.ApplicationCore;
@@ -403,7 +403,7 @@ public class FicheConcoursDepartPane extends JPanel
 	 * Affecte les libellés localisé au composant de l'interface
 	 */
 	private void affectLibelle() {
-		AppUtilities.localize(this, ficheConcoursPane.getLocalisation());
+		Localisator.localize(this, ficheConcoursPane.getLocalisation());
 
 		treeModel.setRootLabel(ficheConcoursPane.getLocalisation().getResourceString("treenode.racine")); //$NON-NLS-1$
 	}

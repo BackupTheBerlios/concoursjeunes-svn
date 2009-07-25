@@ -135,8 +135,8 @@ import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.PlainDocument;
 
-import org.ajdeveloppement.apps.AppUtilities;
-import org.ajdeveloppement.apps.Localisable;
+import org.ajdeveloppement.apps.localisation.Localisable;
+import org.ajdeveloppement.apps.localisation.Localisator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.StringUtils;
 import org.ajdeveloppement.commons.sql.SqlPersistanceException;
@@ -171,6 +171,7 @@ import org.jdesktop.swingx.error.ErrorInfo;
  * @author Aurélien Jeoffray
  * @version 5.0
  */
+@Localisable(textMethod="setTitle",value="concurrent.titre.edition")
 public class ConcurrentDialog extends JDialog implements ActionListener, FocusListener, AutoCompleteDocumentListener, ItemListener {
 
 	public static final int CONFIRM_AND_CLOSE = 1;
@@ -502,15 +503,13 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	 * affecte les libellé localisé à l'interface
 	 */
 	private void affectLibelle() {
-		setTitle(localisation.getResourceString("concurrent.titre.edition")); //$NON-NLS-1$
-
 		((TitledBorder) jpConcurrent.getBorder()).setTitle(localisation.getResourceString("concurrent.panel.tireur")); //$NON-NLS-1$
 		((TitledBorder) jpClub.getBorder()).setTitle(localisation.getResourceString("concurrent.panel.club")); //$NON-NLS-1$
 		((TitledBorder) jpCible.getBorder()).setTitle(localisation.getResourceString("concurrent.panel.cible")); //$NON-NLS-1$
 		((TitledBorder) jpInscription.getBorder()).setTitle(localisation.getResourceString("concurrent.inscription.titre")); //$NON-NLS-1$
 		((TitledBorder) jpPlaceLibre.getBorder()).setTitle(localisation.getResourceString("concurrent.placelibre.titre")); //$NON-NLS-1$
 		
-		AppUtilities.localize(this, localisation);
+		Localisator.localize(this, localisation);
 
 
 		jlDescription.setBackground(new Color(255, 255, 225));

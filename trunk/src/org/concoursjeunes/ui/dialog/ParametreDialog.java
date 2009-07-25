@@ -112,8 +112,8 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import org.ajdeveloppement.apps.AppUtilities;
-import org.ajdeveloppement.apps.Localisable;
+import org.ajdeveloppement.apps.localisation.Localisable;
+import org.ajdeveloppement.apps.localisation.Localisator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.AJList;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
@@ -134,6 +134,7 @@ import com.lowagie.text.Font;
  * @author Aurélien Jeoffray
  * @version 2.0
  */
+@Localisable(textMethod="setTitle",value="parametre.titre")
 public class ParametreDialog extends JDialog implements ActionListener, ListSelectionListener {
 
 	private AjResourcesReader localisation;
@@ -411,9 +412,7 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 	}
 
 	private void affectLibelle() {
-		setTitle(localisation.getResourceString("parametre.titre")); //$NON-NLS-1$
-		
-		AppUtilities.localize(this, localisation);
+		Localisator.localize(this, localisation);
 	}
 
 	private void completePanel() {

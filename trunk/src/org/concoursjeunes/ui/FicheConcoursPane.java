@@ -135,8 +135,8 @@ import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 
-import org.ajdeveloppement.apps.AppUtilities;
-import org.ajdeveloppement.apps.Localisable;
+import org.ajdeveloppement.apps.localisation.Localisable;
+import org.ajdeveloppement.apps.localisation.Localisator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.io.FileUtils;
 import org.ajdeveloppement.commons.ui.AJList;
@@ -578,7 +578,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	 *
 	 */
 	private void affectLibelle() {
-		AppUtilities.localize(this, parentframe.profile.getLocalisation());
+		Localisator.localize(this, parentframe.profile.getLocalisation());
 		
 		tabbedpane.setTabComponentAt(0, getGestArchersTabComponent());
 		

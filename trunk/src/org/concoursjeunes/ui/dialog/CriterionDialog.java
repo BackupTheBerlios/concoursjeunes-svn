@@ -102,8 +102,8 @@ import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.ajdeveloppement.apps.AppUtilities;
-import org.ajdeveloppement.apps.Localisable;
+import org.ajdeveloppement.apps.localisation.Localisable;
+import org.ajdeveloppement.apps.localisation.Localisator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.concoursjeunes.Criterion;
@@ -112,6 +112,7 @@ import org.concoursjeunes.Criterion;
  * Boite de dialogue de gestion des critère de distinction des archers
  * @author Aurélien JEOFFRAY
  */
+@Localisable(textMethod="setTitle",value="criterion.titre")
 public class CriterionDialog extends JDialog implements ActionListener, ChangeListener {
     
 	private AjResourcesReader localisation;
@@ -233,9 +234,7 @@ public class CriterionDialog extends JDialog implements ActionListener, ChangeLi
      *
      */
     private void affectLibelle() {
-        setTitle(localisation.getResourceString("criterion.titre")); //$NON-NLS-1$
-        
-        AppUtilities.localize(this, localisation);
+        Localisator.localize(this, localisation);
         
         jcbSortOrder.removeAllItems();
         jcbSortOrder.addItem(localisation.getResourceString("criterion.ordretri.asc")); //$NON-NLS-1$

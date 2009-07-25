@@ -108,8 +108,8 @@ import javax.swing.JProgressBar;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
-import org.ajdeveloppement.apps.AppUtilities;
-import org.ajdeveloppement.apps.Localisable;
+import org.ajdeveloppement.apps.localisation.Localisable;
+import org.ajdeveloppement.apps.localisation.Localisator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.concoursjeunes.Profile;
@@ -199,7 +199,7 @@ public class FFTAImportDialog extends JDialog implements ActionListener, FFTAImp
 	}
 
 	private void affectLibelle() {
-		AppUtilities.localize(this, pluginLocalisation);
+		Localisator.localize(this, pluginLocalisation);
 		
 		jbParcourir.setText(pluginLocalisation.getResourceString("button.parcourir")); //$NON-NLS-1$
 		jbSart.setText(pluginLocalisation.getResourceString("button.start")); //$NON-NLS-1$

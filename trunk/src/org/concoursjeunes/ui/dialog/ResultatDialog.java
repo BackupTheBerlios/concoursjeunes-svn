@@ -111,8 +111,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.ajdeveloppement.apps.AppUtilities;
-import org.ajdeveloppement.apps.Localisable;
+import org.ajdeveloppement.apps.localisation.Localisable;
+import org.ajdeveloppement.apps.localisation.Localisator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
@@ -352,7 +352,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 	}
 	
 	private void affectLibelle() {
-		AppUtilities.localize(this, localisation);
+		Localisator.localize(this, localisation);
 		
 		jlCible.setText(localisation.getResourceString("resultats.cible", concurrents.get(0).getCible())); //$NON-NLS-1$
 		for(int i = 0; i < jlDistances.length; i++) {
