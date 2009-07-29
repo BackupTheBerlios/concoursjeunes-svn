@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<project name="ConcoursJeunes.makeappinfos" default="buildgenaratedressources" basedir=".">
+		<property file="packager/version.properties" />
+		<tstamp>
+			<format property="version.date" pattern="dd/MM/yyyy" />
+		</tstamp>
+   
+		<target name ="buildgenaratedressources" description="Construit la class AppInfos">
+			<copy file="packager/AppInfos.java.tpl" tofile="src/org/concoursjeunes/AppInfos.java" overwrite="true" />
+			<replace 
+			    file="src/org/concoursjeunes/AppInfos.java"
+				propertyFile="packager/version.properties"
+				encoding="UTF-8" >
+				<replacefilter 
+				    token="{versionName}" 
+				    property="version.name" />
+				<replacefilter
+				    token="{versionNumero}" 
+				    property="version.numero" />
+				<replacefilter 
+				    token="{versionCodename}" 
+				    property="version.codename" />
+				<replacefilter 
+				    token="{versionAuthor}" 
+				    property="version.author" />
+				<replacefilter 
+				    token="{versionCopyr}" 
+				    property="version.copyr" />
+			</replace>
+			<replace 
+				file="src/org/concoursjeunes/AppInfos.java"
+				token="{versionDate}" 
+				value="${version.date}"
+				encoding="UTF-8" /> 
+			
+			<copy todir="ressources/repositories/" overwrite="true">
+				<fileset dir="packager/repositories-template/"/>
+			</copy>
+			<replace 
+				    dir="ressources/repositories/"
+					propertyFile="packager/version.properties"
+					encoding="UTF-8" >
+				<replacefilter 
+				    token="{versionNumero}" 
+				    property="version.numero" />
+				<include name="*.xml"/>
+			</replace>
+		</target>
+</project>
