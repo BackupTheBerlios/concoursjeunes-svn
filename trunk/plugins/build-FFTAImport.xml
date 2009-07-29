@@ -13,6 +13,8 @@
 				<include name="plugins/plugindescription-fftaimport.xml" />
 				<include name="config/ffta.properties" />
 				<include name="ressources/repositories/FFTAImport.xml"/>
+				
+				<exclude name="security/**"/>
 			</fileset>
 		</copy>
 		<mkdir dir="${projet.pack.dir}/plugins/FFTAImport/security/keys" />
@@ -39,6 +41,7 @@
 			<fileset dir="${projet.pack.dir}/plugins/FFTAImport/">
 				<include name="**/**"/>
 				
+				<exclude name="security/**"/>
 				<exclude name="*-filelist.txt"/>
 				<exclude name="plugindescription.xml"/>
 			</fileset>

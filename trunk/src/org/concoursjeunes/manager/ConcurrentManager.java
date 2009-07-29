@@ -235,15 +235,13 @@ public class ConcurrentManager {
 			
 			rs = stmt.executeQuery(String.format(sql, "*"));
 			try {
-				//int iEnreg = 0;
-				while(rs.next() /*&& (nbmaxenreg == -1 || iEnreg < nbmaxenreg)*/) {
+				while(rs.next()) {
 					
 					Concurrent concurrent = ConcurrentBuilder.getConcurrent(rs, reglement);
 					if(concurrent != null) {
 						concurrents.add(concurrent);
 						if(concurrentManagerProgress != null)
 							concurrentManagerProgress.setCurrentConcurrent(concurrent);
-						//iEnreg++;
 					}
 				}
 			} finally {

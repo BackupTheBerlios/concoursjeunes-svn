@@ -117,8 +117,10 @@ import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
 import org.concoursjeunes.Concurrent;
+import org.concoursjeunes.ConcurrentList;
 import org.concoursjeunes.Parametre;
 import org.concoursjeunes.Profile;
+import org.concoursjeunes.ConcurrentList.SortCriteria;
 
 /**
  * Boite de dialogue de saisie des résultats pour une cible
@@ -176,6 +178,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 		this.profile = profile;
 		this.parametres = parametres;
 		this.concurrents = concurrents;
+		ConcurrentList.sort(this.concurrents, SortCriteria.SORT_BY_TARGETS);
 
 		init();
 		completePanel();
@@ -207,15 +210,19 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 
 		for(int i = 0; i < parametres.getNbTireur(); i++) {
 			for(int j = 0; j < nbSerie; j++) {
+				//ancien score
 				oldPoints[i][j] = new JTextField(new NumberDocument(false, false),"0",3); //$NON-NLS-1$
 				oldPoints[i][j].addKeyListener(this);
 				oldPoints[i][j].addFocusListener(this);
 				oldPoints[i][j].setEnabled(false);
+				oldPoints[i][j].setName("oldpoints." + i + "." + j);  //$NON-NLS-1$//$NON-NLS-2$
 
+				//points cumulé sur 2 volées
 				pointsCum2V[i][j] = new JTextField(new NumberDocument(false, false),"0",3); //$NON-NLS-1$
 				pointsCum2V[i][j].addKeyListener(this);
 				pointsCum2V[i][j].addFocusListener(this);
 				pointsCum2V[i][j].setEnabled(false);
+				pointsCum2V[i][j].setName("pointscum2v." + i + "." + j);  //$NON-NLS-1$//$NON-NLS-2$
 
 				points[i][j] = new JTextField(new NumberDocument(false, false), "0",3); //$NON-NLS-1$
 				if(profile.getConfiguration().isInterfaceResultatCumul()) {
@@ -226,6 +233,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 					points[i][j].addFocusListener(this);
 				}
 				points[i][j].setEnabled(false);
+				points[i][j].setName("points." + i + "." + j);  //$NON-NLS-1$//$NON-NLS-2$
 
 			}
 			for(int j = 0; j < departages[i].length; j++) {
@@ -233,6 +241,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 				departages[i][j].addKeyListener(this);
 				departages[i][j].addFocusListener(this);
 				departages[i][j].setEnabled(false);
+				departages[i][j].setName("departages." + i + "." + j); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}
 
@@ -347,6 +356,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 					departages[concurrent.getPosition()][j].setText(String.valueOf(concurrent.getDepartages()[j]));
 				else
 					departages[concurrent.getPosition()][j].setText(String.valueOf(0));
+				departages[concurrent.getPosition()][j].setEnabled(true);
 			}
 		}
 	}
@@ -474,163 +484,202 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 	}
 
 	public class ResultatDialogFocusTraversalPolicy extends FocusTraversalPolicy {
+		private int getIndexConcurrentAtPosition(int position) {
+			for(int i = 0; i < concurrents.size(); i++)
+				if(concurrents.get(i).getPosition() == position)
+					return i;
+			return -1;
+		}
+		
 		@Override
 		public Component getComponentAfter(Container focusCycleRoot, Component aComponent) {
-			Component nextComp = null;
-			for (int i = 0; i < parametres.getNbTireur(); i++) {
-				for (int j = 0; j < parametres.getReglement().getNbSerie(); j++) {
-					for (int k = 0; k < parametres.getReglement().getTie().size(); k++) {
-						if (aComponent == oldPoints[i][j]) {
-							if (i + 1 < parametres.getNbTireur() && oldPoints[i + 1][j].isEnabled())
-								nextComp = oldPoints[i + 1][j];
-							else if (j + 1 < parametres.getReglement().getNbSerie())
-								nextComp = oldPoints[0][j + 1];
-							else if (departages[0][0].isEnabled())
-								nextComp = departages[0][0];
-							else
-								nextComp = oldPoints[0][0];
-							break;
-						} else if (aComponent == pointsCum2V[i][j]) {
-							if (i + 1 < parametres.getNbTireur() && pointsCum2V[i + 1][j].isEnabled())
-								nextComp = pointsCum2V[i + 1][j];
-							else if (j + 1 < parametres.getReglement().getNbSerie())
-								nextComp = pointsCum2V[0][j + 1];
-							else if (departages[0][0].isEnabled())
-								nextComp = departages[0][0];
-							else
-								nextComp = pointsCum2V[0][0];
-							break;
-						} else if (aComponent == points[i][j]) {
-							if (i + 1 < parametres.getNbTireur() && points[i + 1][j].isEnabled())
-								nextComp = points[i + 1][j];
-							else if (j + 1 < parametres.getReglement().getNbSerie())
-								nextComp = points[0][j + 1];
-							else if (departages[0][0].isEnabled())
-								nextComp = departages[0][0];
-							else
-								nextComp = points[0][0];
-							break;
-						} else if (aComponent == departages[i][k]) {
-							if(k + 1 < departages[i].length)
-								nextComp = departages[i][k + 1];
-							else if(i + 1 < parametres.getNbTireur() && departages[i + 1][0].isEnabled())
-								nextComp = departages[i + 1][0];
-							else if (profile.getConfiguration().isInterfaceResultatCumul())
-								nextComp = oldPoints[0][0];
-							else
-								nextComp = jbSuivant;
-							break;
-						} else if (aComponent == jbSuivant) {
-							nextComp = jbAnnuler;
-							break;
-						} else if (aComponent == jbAnnuler) {
-							nextComp = jbValider;
-							break;
-						} else if (aComponent == jbValider) {
-							nextComp = jbPrecedent;
-							break;
-						} else if (aComponent == jbPrecedent) {
-							nextComp = points[0][0];
-							break;
+			if(aComponent.getName() != null) {
+				String prefix =  "oldpoints."; //$NON-NLS-1$
+				int rowIndex = Integer.parseInt(aComponent.getName().substring(aComponent.getName().indexOf('.')+1, aComponent.getName().lastIndexOf('.')));
+				int colIndex = Integer.parseInt(aComponent.getName().substring(aComponent.getName().lastIndexOf('.')+1));
+				if(aComponent.getName().startsWith(prefix)) {
+					if(rowIndex == concurrents.get(concurrents.size()-1).getPosition()) { // si on est à la dernière position
+						if(colIndex < parametres.getReglement().getNbSerie() - 1) //si on est pas sur la dernière série
+							return oldPoints[concurrents.get(0).getPosition()][colIndex+1];
+						else if(departages != null && departages.length > 0)
+							return departages[concurrents.get(0).getPosition()][0];
+					} else {
+						int indexConcurrent = getIndexConcurrentAtPosition(rowIndex);
+						
+						assert indexConcurrent != -1 : "La position courante devrait toujours être occupé"; //$NON-NLS-1$
+						
+						return oldPoints[concurrents.get(indexConcurrent+1).getPosition()][colIndex];
+					}
+				}
+				prefix = "pointscum2v."; //$NON-NLS-1$
+				if(aComponent.getName().startsWith(prefix)) {
+					if(rowIndex == concurrents.get(concurrents.size()-1).getPosition()) { // si on est à la dernière position
+						if(colIndex < parametres.getReglement().getNbSerie() - 1) { //si on est pas sur la dernière série
+							return pointsCum2V[concurrents.get(0).getPosition()][colIndex+1];
+						} else if(departages != null && departages.length > 0) {
+							return departages[concurrents.get(0).getPosition()][0];
+						}
+					} else {
+						int indexConcurrent = getIndexConcurrentAtPosition(rowIndex);
+						
+						assert indexConcurrent != -1 : "La position courante devrait toujours être occupé"; //$NON-NLS-1$
+						
+						return pointsCum2V[concurrents.get(indexConcurrent+1).getPosition()][colIndex];
+					}
+				}
+				prefix = "points."; //$NON-NLS-1$
+				if(aComponent.getName().startsWith(prefix)) {
+					if(rowIndex == concurrents.get(concurrents.size()-1).getPosition()) { // si on est à la dernière position
+						if(colIndex < parametres.getReglement().getNbSerie() - 1) { //si on est pas sur la dernière série
+							return points[concurrents.get(0).getPosition()][colIndex+1];
+						} else if(departages != null && departages.length > 0) {
+							return departages[concurrents.get(0).getPosition()][0];
+						}
+					} else {
+						int indexConcurrent = getIndexConcurrentAtPosition(rowIndex);
+						
+						assert indexConcurrent != -1 : "La position courante devrait toujours être occupé"; //$NON-NLS-1$
+						
+						return points[concurrents.get(indexConcurrent+1).getPosition()][colIndex];
+					}
+				}
+				prefix = "departages.";  //$NON-NLS-1$
+				if(aComponent.getName().startsWith(prefix)) {
+					if(colIndex < parametres.getReglement().getTie().size() -1) {
+						return departages[rowIndex][colIndex+1];
+					} else {
+						if(rowIndex == concurrents.get(concurrents.size()-1).getPosition()) { // si on est à la dernière position
+							return jbSuivant;
+						} else {
+							int indexConcurrent = getIndexConcurrentAtPosition(rowIndex);
+							
+							assert indexConcurrent != -1 : "La position courante devrait toujours être occupé"; //$NON-NLS-1$
+							
+							return departages[concurrents.get(indexConcurrent+1).getPosition()][0];
 						}
 					}
-					if (nextComp != null)
-						break;
 				}
-				if (nextComp != null)
-					break;
+			} else if (aComponent == jbSuivant) {
+				return jbAnnuler;
+			} else if (aComponent == jbAnnuler) {
+				return jbValider;
+			} else if (aComponent == jbValider) {
+				return jbPrecedent;
+			} else if (aComponent == jbPrecedent) {
+				int firstPosition = concurrents.get(0).getPosition();
+				
+				if(points[firstPosition][0].isEditable())
+					return points[firstPosition][0];
+				else
+					return pointsCum2V[firstPosition][0];
 			}
-			return nextComp;
+
+			return null;
 		}
 
 		@Override
 		public Component getComponentBefore(Container focusCycleRoot, Component aComponent) {
-			int nbConc = concurrents.size();
-			int nbDepartages = departages[0].length;
-			Component nextComp = null;
-			for (int i = nbConc - 1; i >= 0; i--) {
-				for (int j = parametres.getReglement().getNbSerie() - 1; j >= 0; j--) {
-					for(int k = nbDepartages -1;  k >= 0; k--) {
-						if (aComponent == oldPoints[i][j]) {
-							if (i - 1 >= 0)
-								nextComp = oldPoints[i - 1][j];
-							else if (j - 1 >= 0)
-								nextComp = oldPoints[nbConc - 1][j - 1];
-							else if (departages[nbConc - 1][departages[nbConc - 1].length - 1].isEnabled())
-								nextComp = jbPrecedent;
+			
+			if(aComponent.getName() != null) {
+				String prefix =  "oldpoints."; //$NON-NLS-1$
+				int rowIndex = Integer.parseInt(aComponent.getName().substring(aComponent.getName().indexOf('.')+1, aComponent.getName().lastIndexOf('.')));
+				int colIndex = Integer.parseInt(aComponent.getName().substring(aComponent.getName().lastIndexOf('.')+1));
+				if(aComponent.getName().startsWith(prefix)) {
+					if(rowIndex == concurrents.get(0).getPosition()) { // si on est à la première position
+						if(colIndex > 0) //si on est pas sur la première série
+							return oldPoints[concurrents.get(concurrents.size()-1).getPosition()][colIndex-1];
+						else
+							return jbPrecedent;
+					} else {
+						int indexConcurrent = getIndexConcurrentAtPosition(rowIndex);
+						
+						assert indexConcurrent != -1 : "La position courante devrait toujours être occupé"; //$NON-NLS-1$
+						
+						return oldPoints[concurrents.get(indexConcurrent-1).getPosition()][colIndex];
+					}
+				}
+				prefix = "pointscum2v."; //$NON-NLS-1$
+				if(aComponent.getName().startsWith(prefix)) {
+					if(rowIndex == concurrents.get(0).getPosition()) { // si on est à la première position
+						if(colIndex > 0) { //si on est pas sur la première série
+							return pointsCum2V[concurrents.get(concurrents.size()-1).getPosition()][colIndex-1];
+						} else {
+							return jbPrecedent;
+						}
+					} else {
+						int indexConcurrent = getIndexConcurrentAtPosition(rowIndex);
+						
+						assert indexConcurrent != -1 : "La position courante devrait toujours être occupé"; //$NON-NLS-1$
+						
+						return pointsCum2V[concurrents.get(indexConcurrent-1).getPosition()][colIndex];
+					}
+				}
+				prefix = "points."; //$NON-NLS-1$
+				if(aComponent.getName().startsWith(prefix)) {
+					if(rowIndex == concurrents.get(0).getPosition()) { // si on est à la première position
+						if(colIndex > 0) { //si on est pas sur la première série
+							return points[concurrents.get(concurrents.size()-1).getPosition()][colIndex-1];
+						} else {
+							return jbPrecedent;
+						}
+					} else {
+						int indexConcurrent = getIndexConcurrentAtPosition(rowIndex);
+						
+						assert indexConcurrent != -1 : "La position courante devrait toujours être occupé"; //$NON-NLS-1$
+						
+						return points[concurrents.get(indexConcurrent-1).getPosition()][colIndex];
+					}
+				}
+				prefix = "departages.";  //$NON-NLS-1$
+				if(aComponent.getName().startsWith(prefix)) {
+					if(colIndex > 0) {
+						return departages[rowIndex][colIndex-1];
+					} else {
+						if(rowIndex == concurrents.get(0).getPosition()) { // si on est à la première position
+							int lastPosition = concurrents.get(concurrents.size()-1).getPosition();
+							if(points[lastPosition][0].isEditable())
+								return points[lastPosition][parametres.getReglement().getNbSerie()-1];
 							else
-								nextComp = oldPoints[nbConc - 1][parametres.getReglement().getNbSerie() - 1];
-							break;
-						} else if (aComponent == pointsCum2V[i][j]) {
-							if (i - 1 >= 0)
-								nextComp = pointsCum2V[i - 1][j];
-							else if (j - 1 >= 0)
-								nextComp = pointsCum2V[nbConc - 1][j - 1];
-							else if (departages[nbConc - 1][departages[nbConc - 1].length - 1].isEnabled())
-								nextComp = jbPrecedent;
-							else
-								nextComp = pointsCum2V[nbConc - 1][parametres.getReglement().getNbSerie() - 1];
-							break;
-						} else if (aComponent == points[i][j]) {
-							if (i - 1 >= 0)
-								nextComp = points[i - 1][j];
-							else if (j - 1 >= 0)
-								nextComp = points[nbConc - 1][j - 1];
-							else if (departages[nbConc - 1][departages[nbConc - 1].length - 1].isEnabled())
-								nextComp = jbPrecedent;
-							else
-								nextComp = points[nbConc - 1][parametres.getReglement().getNbSerie() - 1];
-							break;
-						} else if (aComponent == departages[i][k]) {
-							if(k - 1 >= 0)
-								nextComp = departages[i][k - 1];
-							else if (i - 1 >= 0)
-								nextComp = departages[i - 1][nbDepartages - 1];
-							else if (profile.getConfiguration().isInterfaceResultatCumul())
-								nextComp = oldPoints[nbConc - 1][parametres.getReglement().getNbSerie() - 1];
-							else
-								nextComp = points[nbConc - 1][parametres.getReglement().getNbSerie() - 1];
-							break;
-						} else if (aComponent == jbSuivant) {
-							nextComp = departages[nbConc - 1][departages[nbConc - 1].length - 1];
-							break;
-						} else if (aComponent == jbAnnuler) {
-							nextComp = jbSuivant;
-							break;
-						} else if (aComponent == jbValider) {
-							nextComp = jbAnnuler;
-							break;
-						} else if (aComponent == jbPrecedent) {
-							nextComp = jbValider;
-							break;
+								return pointsCum2V[lastPosition][parametres.getReglement().getNbSerie()-1];
+						} else {
+							int indexConcurrent = getIndexConcurrentAtPosition(rowIndex);
+							
+							assert indexConcurrent != -1 : "La position courante devrait toujours être occupé"; //$NON-NLS-1$
+							
+							return departages[concurrents.get(indexConcurrent-1).getPosition()][parametres.getReglement().getTie().size()-1];
 						}
 					}
-					if (nextComp != null)
-						break;
 				}
-				if (nextComp != null)
-					break;
+			} else if (aComponent == jbSuivant) {
+				return departages[concurrents.get(concurrents.size()-1).getPosition()][parametres.getReglement().getTie().size()-1];
+			} else if (aComponent == jbAnnuler) {
+				return jbSuivant;
+			} else if (aComponent == jbValider) {
+				return jbAnnuler;
+			} else if (aComponent == jbPrecedent) {
+				return jbValider;
 			}
-			return nextComp;
+			
+			return null;
 		}
 
 		@Override
 		public Component getDefaultComponent(Container focusCycleRoot) {
-			if(oldPoints[0][0].isEditable())
-				return oldPoints[0][0];
-			return points[0][0];
+			if(points[concurrents.get(0).getPosition()][0].isEditable())
+				return pointsCum2V[concurrents.get(0).getPosition()][0];
+			return points[concurrents.get(0).getPosition()][0];
 		}
 
 		@Override
 		public Component getLastComponent(Container focusCycleRoot) {
-			return departages[departages.length-1][departages[departages.length-1].length - 1];
+			return departages[concurrents.get(concurrents.size()-1).getPosition()][parametres.getReglement().getTie().size()-1];
 		}
 
 		@Override
 		public Component getFirstComponent(Container focusCycleRoot) {
-			if(oldPoints[0][0].isEditable())
-				return oldPoints[0][0];
-			return points[0][0];
+			if(points[concurrents.get(0).getPosition()][0].isEditable())
+				return pointsCum2V[concurrents.get(0).getPosition()][0];
+			return points[concurrents.get(0).getPosition()][0];
 		}
 	}
 }

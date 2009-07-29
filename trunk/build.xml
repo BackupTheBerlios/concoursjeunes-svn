@@ -266,12 +266,12 @@
 		
 		<for param="plugin">
 		    <dirset dir="${projet.pack.dir}/plugins/">
-		    	<include name="**/plugins"/>
-		    	<exclude name="FFTAImport/plugins/**"/>
-		    	<exclude name="ResultArcImport/plugins/**"/>
+		    	<include name="*"/>
+		    	<exclude name="FFTAImport"/>
+		    	<exclude name="ResultArcImport"/>
 		    </dirset>
 			<sequential>
-				<copy todir="${projet.pack.dir}/linux/tar/usr/lib/ConcoursJeunes/plugins" >
+				<copy todir="${projet.pack.dir}/linux/tar/usr/lib/ConcoursJeunes" >
 					<fileset dir="@{plugin}" >
 						<include name="**/**"/>
 					</fileset>
@@ -406,12 +406,12 @@
 		
 		<for param="plugin">
 		    <dirset dir="${projet.pack.dir}/plugins/">
-		    	<include name="**/plugins"/>
-		    	<exclude name="FFTAImport/plugins/**"/>
-		    	<exclude name="ResultArcImport/plugins/**"/>
+		    	<include name="*"/>
+		    	<exclude name="FFTAImport"/>
+		    	<exclude name="ResultArcImport"/>
 		    </dirset>
 			<sequential>
-				<copy todir="${projet.pack.dir}/macosx/${version.name}.app/Contents/Resources/Java/plugins" >
+				<copy todir="${projet.pack.dir}/macosx/${version.name}.app/Contents/Resources/Java" >
 					<fileset dir="@{plugin}" >
 						<include name="**/**"/>
 					</fileset>

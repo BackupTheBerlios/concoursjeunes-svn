@@ -534,7 +534,7 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 				tempReglement = reglement;
 				jlSelectedReglement.setText(reglement.getDisplayName());
 				jcbNiveauChampionnat.removeAllItems();
-				for(CompetitionLevel cl : parametre.getReglement().getFederation().getCompetitionLevels(profile.getConfiguration().getLangue()))
+				for(CompetitionLevel cl : tempReglement.getFederation().getCompetitionLevels(profile.getConfiguration().getLangue()))
 					jcbNiveauChampionnat.addItem(cl);
 				jcbNiveauChampionnat.setSelectedItem(parametre.getNiveauChampionnat());
 			}

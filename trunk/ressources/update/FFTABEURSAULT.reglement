@@ -17,13 +17,13 @@
             <champsTableArchers>sexe</champsTableArchers>
             <numordre>1</numordre>
             <criterionelements>
-                <element id="e05f05d0-1ecc-4290-8eb1-3944d862bd58">
+                <element id="b1a66b50-e3e4-41fc-abac-507ee2cb9040">
                     <code>H</code>
                     <libelle>Homme</libelle>
                     <active>true</active>
                     <numordre>1</numordre>
                 </element>
-                <element id="113a2492-5d9c-4bd8-9704-8088a1d57903">
+                <element id="cc5db49a-40ea-495c-ae5c-fab991aada8f">
                     <code>D</code>
                     <libelle>Dame</libelle>
                     <active>true</active>
@@ -40,49 +40,49 @@
             <champsTableArchers>categorie</champsTableArchers>
             <numordre>2</numordre>
             <criterionelements>
-                <element id="edacf9fc-e40b-480b-9103-fa4b80a2d4b4">
+                <element id="2486f0a1-f662-49f7-a2c2-2ab82603556f">
                     <code>P</code>
                     <libelle>Poussin</libelle>
                     <active>false</active>
                     <numordre>1</numordre>
                 </element>
-                <element id="1c50e606-dca4-4bfb-8548-d9d4ae8806d9">
+                <element id="e605a52e-a484-4067-b914-d0dff0a20832">
                     <code>B</code>
                     <libelle>Benjamin</libelle>
                     <active>true</active>
                     <numordre>2</numordre>
                 </element>
-                <element id="9d913c1b-592e-4cc9-b42f-9ac36e51bd93">
+                <element id="a5ee38e9-0aed-4987-9b73-14cf899e4bc8">
                     <code>M</code>
                     <libelle>Minime</libelle>
                     <active>true</active>
                     <numordre>3</numordre>
                 </element>
-                <element id="71fcaeec-bfc1-49de-bf9c-934344f77141">
+                <element id="6b405d3a-a1e0-4ded-8c8f-9107624ac52b">
                     <code>C</code>
                     <libelle>Cadet</libelle>
                     <active>true</active>
                     <numordre>4</numordre>
                 </element>
-                <element id="a7776e4d-44af-498a-acaa-bd5b9b069111">
+                <element id="b9fbf7e5-8c4a-4c37-815f-08093e1ce182">
                     <code>J</code>
                     <libelle>Junior</libelle>
                     <active>true</active>
                     <numordre>5</numordre>
                 </element>
-                <element id="bd823663-79d6-4225-b109-c2a33295309a">
+                <element id="c6fdee1b-020d-40af-a591-64db4ac1de42">
                     <code>S</code>
                     <libelle>Sénior</libelle>
                     <active>true</active>
                     <numordre>6</numordre>
                 </element>
-                <element id="cfd0d2bc-4270-4b23-9b4c-6ee42b6d37d3">
+                <element id="1bf42b11-3112-4851-ac83-6c28db1dd04d">
                     <code>V</code>
                     <libelle>Vétéran</libelle>
                     <active>true</active>
                     <numordre>7</numordre>
                 </element>
-                <element id="a85dc6f4-8509-4f6b-b72c-c2399dafb5bd">
+                <element id="3f15c599-171c-4cd6-b541-a36252074ab6">
                     <code>SV</code>
                     <libelle>Super-Vétéran</libelle>
                     <active>true</active>
@@ -99,43 +99,43 @@
             <champsTableArchers>arc</champsTableArchers>
             <numordre>3</numordre>
             <criterionelements>
-                <element id="266c2cee-3800-49f3-853b-c330996b8b42">
+                <element id="a28e6589-9271-483f-829a-60bb7b32c8f7">
                     <code>CL</code>
                     <libelle>Classique</libelle>
                     <active>true</active>
                     <numordre>1</numordre>
                 </element>
-                <element id="f6ce87d8-0654-4126-9bf9-48a3b250481f">
+                <element id="b677f915-5da1-45e8-bdcf-121928662123">
                     <code>CO</code>
                     <libelle>Arc à poulies</libelle>
                     <active>true</active>
                     <numordre>2</numordre>
                 </element>
-                <element id="f42f3a67-921e-4fa4-a653-dc0dcced1edf">
+                <element id="0571dbe1-a1b6-4fb5-ac0a-449b399868c1">
                     <code>AD</code>
                     <libelle>Arc Droit</libelle>
                     <active>false</active>
                     <numordre>3</numordre>
                 </element>
-                <element id="15f7ca60-6044-4f4a-bbe5-077cf7356fd7">
+                <element id="eed7f662-e3d4-47cc-b31d-3d57bf4f7a6c">
                     <code>AC</code>
                     <libelle>Arc de Chasse</libelle>
                     <active>false</active>
                     <numordre>4</numordre>
                 </element>
-                <element id="9d2c50cf-7bd0-4e11-bbf8-febf16835565">
+                <element id="dc831b85-0210-48e0-ab6a-b992541e0cc0">
                     <code>BB</code>
                     <libelle>Bare Bow</libelle>
                     <active>false</active>
                     <numordre>5</numordre>
                 </element>
-                <element id="d779ef63-37fa-4f05-9b3d-b02c4e509de5">
+                <element id="c73a222a-5c1e-4d5f-bd81-fb06cb88fe14">
                     <code>TL</code>
                     <libelle>Tir libre</libelle>
                     <active>false</active>
                     <numordre>6</numordre>
                 </element>
-                <element id="8bfc3214-3d46-4564-97bf-a1ee620c462f">
+                <element id="660bdd4f-62f3-4a1f-bc30-6cf5f91475c9">
                     <code>AN</code>
                     <libelle>Arc Nu</libelle>
                     <active>false</active>
@@ -149,32 +149,32 @@
             <key>
                 <criteria>
                     <entry>
-                        <key>sexe</key>
-                        <value>e05f05d0-1ecc-4290-8eb1-3944d862bd58</value>
+                        <key>arme</key>
+                        <value>b677f915-5da1-45e8-bdcf-121928662123</value>
                     </entry>
                     <entry>
                         <key>categorie</key>
-                        <value>71fcaeec-bfc1-49de-bf9c-934344f77141</value>
+                        <value>e605a52e-a484-4067-b914-d0dff0a20832</value>
                     </entry>
                     <entry>
-                        <key>arme</key>
-                        <value>f6ce87d8-0654-4126-9bf9-48a3b250481f</value>
+                        <key>sexe</key>
+                        <value>cc5db49a-40ea-495c-ae5c-fab991aada8f</value>
                     </entry>
                 </criteria>
             </key>
             <value>
                 <criteria>
                     <entry>
-                        <key>sexe</key>
-                        <value>e05f05d0-1ecc-4290-8eb1-3944d862bd58</value>
-                    </entry>
-                    <entry>
                         <key>categorie</key>
-                        <value>a7776e4d-44af-498a-acaa-bd5b9b069111</value>
+                        <value>a5ee38e9-0aed-4987-9b73-14cf899e4bc8</value>
                     </entry>
                     <entry>
                         <key>arme</key>
-                        <value>f6ce87d8-0654-4126-9bf9-48a3b250481f</value>
+                        <value>b677f915-5da1-45e8-bdcf-121928662123</value>
+                    </entry>
+                    <entry>
+                        <key>sexe</key>
+                        <value>cc5db49a-40ea-495c-ae5c-fab991aada8f</value>
                     </entry>
                 </criteria>
             </value>
@@ -183,32 +183,32 @@
             <key>
                 <criteria>
                     <entry>
-                        <key>sexe</key>
-                        <value>e05f05d0-1ecc-4290-8eb1-3944d862bd58</value>
+                        <key>arme</key>
+                        <value>b677f915-5da1-45e8-bdcf-121928662123</value>
                     </entry>
                     <entry>
                         <key>categorie</key>
-                        <value>71fcaeec-bfc1-49de-bf9c-934344f77141</value>
+                        <value>6b405d3a-a1e0-4ded-8c8f-9107624ac52b</value>
                     </entry>
                     <entry>
-                        <key>arme</key>
-                        <value>266c2cee-3800-49f3-853b-c330996b8b42</value>
+                        <key>sexe</key>
+                        <value>b1a66b50-e3e4-41fc-abac-507ee2cb9040</value>
                     </entry>
                 </criteria>
             </key>
             <value>
                 <criteria>
                     <entry>
-                        <key>sexe</key>
-                        <value>e05f05d0-1ecc-4290-8eb1-3944d862bd58</value>
-                    </entry>
-                    <entry>
                         <key>categorie</key>
-                        <value>a7776e4d-44af-498a-acaa-bd5b9b069111</value>
+                        <value>b9fbf7e5-8c4a-4c37-815f-08093e1ce182</value>
                     </entry>
                     <entry>
                         <key>arme</key>
-                        <value>f6ce87d8-0654-4126-9bf9-48a3b250481f</value>
+                        <value>b677f915-5da1-45e8-bdcf-121928662123</value>
+                    </entry>
+                    <entry>
+                        <key>sexe</key>
+                        <value>b1a66b50-e3e4-41fc-abac-507ee2cb9040</value>
                     </entry>
                 </criteria>
             </value>
@@ -217,32 +217,32 @@
             <key>
                 <criteria>
                     <entry>
-                        <key>sexe</key>
-                        <value>113a2492-5d9c-4bd8-9704-8088a1d57903</value>
+                        <key>arme</key>
+                        <value>b677f915-5da1-45e8-bdcf-121928662123</value>
                     </entry>
                     <entry>
                         <key>categorie</key>
-                        <value>71fcaeec-bfc1-49de-bf9c-934344f77141</value>
+                        <value>e605a52e-a484-4067-b914-d0dff0a20832</value>
                     </entry>
                     <entry>
-                        <key>arme</key>
-                        <value>f6ce87d8-0654-4126-9bf9-48a3b250481f</value>
+                        <key>sexe</key>
+                        <value>b1a66b50-e3e4-41fc-abac-507ee2cb9040</value>
                     </entry>
                 </criteria>
             </key>
             <value>
                 <criteria>
                     <entry>
-                        <key>sexe</key>
-                        <value>113a2492-5d9c-4bd8-9704-8088a1d57903</value>
-                    </entry>
-                    <entry>
                         <key>categorie</key>
-                        <value>a7776e4d-44af-498a-acaa-bd5b9b069111</value>
+                        <value>a5ee38e9-0aed-4987-9b73-14cf899e4bc8</value>
                     </entry>
                     <entry>
                         <key>arme</key>
-                        <value>f6ce87d8-0654-4126-9bf9-48a3b250481f</value>
+                        <value>b677f915-5da1-45e8-bdcf-121928662123</value>
+                    </entry>
+                    <entry>
+                        <key>sexe</key>
+                        <value>b1a66b50-e3e4-41fc-abac-507ee2cb9040</value>
                     </entry>
                 </criteria>
             </value>
@@ -251,32 +251,50 @@
             <key>
                 <criteria>
                     <entry>
-                        <key>sexe</key>
-                        <value>e05f05d0-1ecc-4290-8eb1-3944d862bd58</value>
-                    </entry>
-                    <entry>
                         <key>categorie</key>
-                        <value>1c50e606-dca4-4bfb-8548-d9d4ae8806d9</value>
+                        <value>6b405d3a-a1e0-4ded-8c8f-9107624ac52b</value>
                     </entry>
                     <entry>
                         <key>arme</key>
-                        <value>f6ce87d8-0654-4126-9bf9-48a3b250481f</value>
+                        <value>660bdd4f-62f3-4a1f-bc30-6cf5f91475c9</value>
+                    </entry>
+                    <entry>
+                        <key>sexe</key>
+                        <value>cc5db49a-40ea-495c-ae5c-fab991aada8f</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>arme</key>
+                        <value>a28e6589-9271-483f-829a-60bb7b32c8f7</value>
+                    </entry>
+                    <entry>
+                        <key>categorie</key>
+                        <value>6b405d3a-a1e0-4ded-8c8f-9107624ac52b</value>
+                    </entry>
+                    <entry>
+                        <key>sexe</key>
+                        <value>b1a66b50-e3e4-41fc-abac-507ee2cb9040</value>
                     </entry>
                 </criteria>
             </key>
             <value>
                 <criteria>
                     <entry>
-                        <key>sexe</key>
-                        <value>e05f05d0-1ecc-4290-8eb1-3944d862bd58</value>
-                    </entry>
-                    <entry>
                         <key>categorie</key>
-                        <value>9d913c1b-592e-4cc9-b42f-9ac36e51bd93</value>
+                        <value>b9fbf7e5-8c4a-4c37-815f-08093e1ce182</value>
                     </entry>
                     <entry>
                         <key>arme</key>
-                        <value>f6ce87d8-0654-4126-9bf9-48a3b250481f</value>
+                        <value>b677f915-5da1-45e8-bdcf-121928662123</value>
+                    </entry>
+                    <entry>
+                        <key>sexe</key>
+                        <value>b1a66b50-e3e4-41fc-abac-507ee2cb9040</value>
                     </entry>
                 </criteria>
             </value>
@@ -285,53 +303,35 @@
             <key>
                 <criteria>
                     <entry>
-                        <key>sexe</key>
-                        <value>113a2492-5d9c-4bd8-9704-8088a1d57903</value>
+                        <key>arme</key>
+                        <value>b677f915-5da1-45e8-bdcf-121928662123</value>
                     </entry>
                     <entry>
                         <key>categorie</key>
-                        <value>1c50e606-dca4-4bfb-8548-d9d4ae8806d9</value>
+                        <value>6b405d3a-a1e0-4ded-8c8f-9107624ac52b</value>
                     </entry>
                     <entry>
-                        <key>arme</key>
-                        <value>f6ce87d8-0654-4126-9bf9-48a3b250481f</value>
+                        <key>sexe</key>
+                        <value>cc5db49a-40ea-495c-ae5c-fab991aada8f</value>
                     </entry>
                 </criteria>
             </key>
             <value>
                 <criteria>
                     <entry>
-                        <key>sexe</key>
-                        <value>113a2492-5d9c-4bd8-9704-8088a1d57903</value>
-                    </entry>
-                    <entry>
                         <key>categorie</key>
-                        <value>9d913c1b-592e-4cc9-b42f-9ac36e51bd93</value>
+                        <value>b9fbf7e5-8c4a-4c37-815f-08093e1ce182</value>
                     </entry>
                     <entry>
                         <key>arme</key>
-                        <value>f6ce87d8-0654-4126-9bf9-48a3b250481f</value>
+                        <value>b677f915-5da1-45e8-bdcf-121928662123</value>
+                    </entry>
+                    <entry>
+                        <key>sexe</key>
+                        <value>cc5db49a-40ea-495c-ae5c-fab991aada8f</value>
                     </entry>
                 </criteria>
             </value>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>sexe</key>
-                        <value>113a2492-5d9c-4bd8-9704-8088a1d57903</value>
-                    </entry>
-                    <entry>
-                        <key>categorie</key>
-                        <value>71fcaeec-bfc1-49de-bf9c-934344f77141</value>
-                    </entry>
-                    <entry>
-                        <key>arme</key>
-                        <value>8bfc3214-3d46-4564-97bf-a1ee620c462f</value>
-                    </entry>
-                </criteria>
-            </key>
         </entry>
     </surclassement>
     <listdistancesetblason>
@@ -345,7 +345,7 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>1c50e606-dca4-4bfb-8548-d9d4ae8806d9</value>
+                        <value>e605a52e-a484-4067-b914-d0dff0a20832</value>
                     </entry>
                 </criteria>
             </criteriaSet>
@@ -360,7 +360,7 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>9d913c1b-592e-4cc9-b42f-9ac36e51bd93</value>
+                        <value>a5ee38e9-0aed-4987-9b73-14cf899e4bc8</value>
                     </entry>
                 </criteria>
             </criteriaSet>
@@ -375,7 +375,7 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>71fcaeec-bfc1-49de-bf9c-934344f77141</value>
+                        <value>6b405d3a-a1e0-4ded-8c8f-9107624ac52b</value>
                     </entry>
                 </criteria>
             </criteriaSet>
@@ -390,7 +390,7 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>a7776e4d-44af-498a-acaa-bd5b9b069111</value>
+                        <value>b9fbf7e5-8c4a-4c37-815f-08093e1ce182</value>
                     </entry>
                 </criteria>
             </criteriaSet>
@@ -405,7 +405,7 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>bd823663-79d6-4225-b109-c2a33295309a</value>
+                        <value>c6fdee1b-020d-40af-a591-64db4ac1de42</value>
                     </entry>
                 </criteria>
             </criteriaSet>
@@ -420,7 +420,7 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>cfd0d2bc-4270-4b23-9b4c-6ee42b6d37d3</value>
+                        <value>1bf42b11-3112-4851-ac83-6c28db1dd04d</value>
                     </entry>
                 </criteria>
             </criteriaSet>
@@ -435,7 +435,7 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>a85dc6f4-8509-4f6b-b72c-c2399dafb5bd</value>
+                        <value>3f15c599-171c-4cd6-b541-a36252074ab6</value>
                     </entry>
                 </criteria>
             </criteriaSet>
@@ -446,7 +446,7 @@
         <departage>Noir</departage>
         <departage>Chapelet</departage>
     </departages>
-    <officialReglement>false</officialReglement>
+    <officialReglement>true</officialReglement>
     <federation>
         <sigle>FFTA</sigle>
         <nom>Fédération Française de Tir à l'Arc</nom>

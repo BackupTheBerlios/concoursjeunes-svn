@@ -127,7 +127,7 @@ public class Concurrent extends Archer implements Cloneable {
 	private int inscription             = UNINIT;
 	private boolean	presence			= false;
 	private boolean surclassement		= false;
-	private Blason alternativeTargetFace = new Blason();
+	private Blason alternativeTargetFace = null;
 
 	/**
 	 * Constructeur vide obligatoire pour java beans
