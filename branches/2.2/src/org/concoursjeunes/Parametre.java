@@ -34,7 +34,7 @@
  * à l'utiliser et l'exploiter dans les mêmes conditions de sécurité. 
  * 
  * Le fait que vous puissiez accéder à cet en-tête signifie que vous avez 
- * pri connaissance de la licence CeCILL, et que vous en avez accepté les
+ * pris connaissance de la licence CeCILL, et que vous en avez accepté les
  * termes.
  *
  * ENGLISH:
@@ -94,11 +94,12 @@ import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.concoursjeunes.builders.ReglementBuilder;
 
 /**
- * Parametre d'un concours
+ * Paramètre d'un concours
  * 
  * @author Aurélien Jeoffray
  * @version 3.1
@@ -111,12 +112,11 @@ public class Parametre extends DefaultParameters {
 	private Date dateFinConcours	= new Date();
 	private boolean open			= true;
 	private boolean duel			= false;
-	private String typeEquipe		= ""; //$NON-NLS-1$
 	private List<String> arbitres	= new ArrayList<String>();
 	private List<Judge> judges		= new ArrayList<Judge>();
 	private Reglement reglement		= new Reglement();
 
-	private String saveName         = System.currentTimeMillis()
+	private String saveName         = UUID.randomUUID().toString()
 			+ staticParameters.getResourceString("extention.concours"); //$NON-NLS-1$
 	
 	private boolean reglementLock = false;
@@ -132,7 +132,7 @@ public class Parametre extends DefaultParameters {
 	}
 	
 	/**
-	 * Construit un nouvel objet parametre en initialisant ses valeurs par defaut
+	 * Construit un nouvel objet paramètre en initialisant ses valeurs par défaut
 	 * à partir d'une configuration.
 	 * 
 	 * @param configuration la configuration servant de référence pour l'attribution des
@@ -177,14 +177,18 @@ public class Parametre extends DefaultParameters {
 	}
 
 	/**
-	 * @return dateFinConcours
+	 * Retourne la date de fin du concours
+	 * 
+	 * @return dateFinConcours la date de fin du concours
 	 */
 	public Date getDateFinConcours() {
 		return dateFinConcours;
 	}
 
 	/**
-	 * @param dateFinConcours dateFinConcours à définir
+	 * Définit la date de fin du concours
+	 * 
+	 * @param dateFinConcours la date de fin du concours
 	 */
 	public void setDateFinConcours(Date dateFinConcours) {
 		Date oldValue = this.dateFinConcours;
@@ -194,7 +198,8 @@ public class Parametre extends DefaultParameters {
 
 	/**
 	 * Donne la date de début du concours
-	 * <i>Remplacé par {@link Parametre#getDateDebutConcours()}</i>
+	 * 
+	 * <i>Remplacé par {@link #getDateDebutConcours()}</i>
 	 * 
 	 * @return Date - la date du concours;
 	 */
@@ -213,8 +218,8 @@ public class Parametre extends DefaultParameters {
 	}
 
 	/**
-	 * specifie la date du concours
-	 * <i>Remplacé par {@link Parametre#setDateDebutConcours(Date)}</i>
+	 * Spécifie la date du concours
+	 * <i>Remplacé par {@link #setDateDebutConcours(Date)}</i>
 	 * 
 	 * @param dDateConcours la date du concours
 	 */
@@ -222,8 +227,9 @@ public class Parametre extends DefaultParameters {
 	public void setDate(Date dDateConcours) {
 		setDateDebutConcours(dDateConcours);
 	}
+	
 	/**
-	 * specifie la date de début du concours
+	 * Spécifie la date de début du concours
 	 * 
 	 * @param dDateConcours la date du concours
 	 */
@@ -234,14 +240,18 @@ public class Parametre extends DefaultParameters {
 	}
 	
 	/**
-	 * @return niveauChampionnat
+	 * Retourne le niveau de la compétition
+	 * 
+	 * @return niveauChampionnat le niveau de la compétition
 	 */
 	public CompetitionLevel getNiveauChampionnat() {
 		return niveauChampionnat;
 	}
 
 	/**
-	 * @param niveauChampionnat niveauChampionnat à définir
+	 * Définit le niveau de la compétition
+	 * 
+	 * @param niveauChampionnat le niveau de la compétition
 	 */
 	public void setNiveauChampionnat(CompetitionLevel niveauChampionnat) {
 		CompetitionLevel oldValue = this.niveauChampionnat;
@@ -250,14 +260,18 @@ public class Parametre extends DefaultParameters {
 	}
 
 	/**
-	 * @return open
+	 * Indique si c'est un concours ouvert ou fermé.
+	 * 
+	 * @return open true si le concours est ouvert
 	 */
 	public boolean isOpen() {
 		return open;
 	}
 
 	/**
-	 * @param open open à définir
+	 * Définit si c'est un concours ouvert ou fermé.
+	 * 
+	 * @param open true si le concours est ouvert
 	 */
 	public void setOpen(boolean open) {
 		boolean oldValue = this.open;
@@ -266,14 +280,18 @@ public class Parametre extends DefaultParameters {
 	}
 
 	/**
-	 * @return duel
+	 * Indique si on a une gestion des duels sur le concours ou non
+	 * 
+	 * @return true si on a une gestion des duels
 	 */
 	public boolean isDuel() {
 		return duel;
 	}
 
 	/**
-	 * @param duel duel à définir
+	 * Définit si on a une gestion des duels sur le concours ou non
+	 * 
+	 * @param duel true si on a une gestion des duels
 	 */
 	public void setDuel(boolean duel) {
 		boolean oldValue = this.duel;
@@ -282,23 +300,9 @@ public class Parametre extends DefaultParameters {
 	}
 
 	/**
-	 * @return typeEquipe
-	 */
-	public String getTypeEquipe() {
-		return typeEquipe;
-	}
-
-	/**
-	 * @param typeEquipe typeEquipe à définir
-	 */
-	public void setTypeEquipe(String typeEquipe) {
-		String oldValue = this.typeEquipe;
-		this.typeEquipe = typeEquipe;
-		pcs.firePropertyChange("typeEquipe", oldValue, typeEquipe); //$NON-NLS-1$
-	}
-
-	/**
 	 * Donne la liste des arbitres
+	 * 
+	 * @deprecated replacé par {@link #getJudges()}
 	 * 
 	 * @return la liste des arbitres
 	 */
@@ -308,24 +312,30 @@ public class Parametre extends DefaultParameters {
 	}
 
 	/**
-	 * specifie la liste des arbitres
+	 * Spécifie la liste des arbitres
 	 * 
-	 * @param vArbitres
+	 * @deprecated remplacé par [{@link #setJudges(List)}
+	 * 
+	 * @param arbitres
 	 */
 	@Deprecated
-	public void setArbitres(List<String> vArbitres) {
-		this.arbitres = vArbitres;
+	public void setArbitres(List<String> arbitres) {
+		this.arbitres = arbitres;
 	}
 
 	/**
-	 * @return judges
+	 * Donne la liste des arbitres
+	 * 
+	 * @return judges la liste des arbitres
 	 */
 	public List<Judge> getJudges() {
 		return judges;
 	}
 
 	/**
-	 * @param judges judges à définir
+	 * Définit la liste des arbitres
+	 * 
+	 * @param judges la liste des arbitres du concours
 	 */
 	public void setJudges(List<Judge> judges) {
 		List<Judge> oldValue = this.judges;
@@ -344,18 +354,18 @@ public class Parametre extends DefaultParameters {
 	}
 	
 	/**
-	 * Donne le chemin du fichier de sauvegarde du concours
+	 * Donne le nom du fichier de sauvegarde du concours
 	 * 
-	 * @return  String
+	 * @return le nom du fichier de sauvegarde du concours
 	 */
 	public String getSaveName() {
 		return saveName;
 	}
 
 	/**
-	 * specifie le nom de sauvegarde des infos du concours
+	 * définit le nom de sauvegarde des infos du concours
 	 * 
-	 * @param  saveName
+	 * @param saveName le nom de sauvegarde des infos du concours
 	 */
 	public void setSaveName(String saveName) {
 		String oldValue = this.saveName; 
@@ -364,18 +374,18 @@ public class Parametre extends DefaultParameters {
 	}
 	
 	/**
-	 * Retourne le reglement appliqué au concours
+	 * Retourne le règlement appliqué au concours
 	 * 
-	 * @return le reglement appliqué 
+	 * @return le règlement appliqué 
 	 */
 	public Reglement getReglement() {
 		return reglement;
 	}
 
 	/**
-	 * Définit le réglement à appliqué au concours
+	 * Définit le règlement à appliqué au concours
 	 * 
-	 * @param reglement le réglement à appliquer
+	 * @param reglement le règlement à appliquer
 	 */
 	public void setReglement(Reglement reglement) {
 		Reglement oldValue = this.reglement;
@@ -384,18 +394,18 @@ public class Parametre extends DefaultParameters {
 	}
 
 	/**
-	 * Indique si le reglement du concours peut ou non être changé
+	 * Indique si le règlement du concours peut ou non être changé
 	 * 
-	 * @return true si le reglement peut être choisi, false sinon
+	 * @return true si le règlement peut être choisi, false sinon
 	 */
 	public boolean isReglementLock() {
 		return reglementLock;
 	}
 
 	/**
-	 * Definit le statut de changement du reglement
+	 * Définit le statut de changement du règlement
 	 * 
-	 * @param reglementLock true le reglement peut être changé, false il ne peut pas
+	 * @param reglementLock true le règlement peut être changé, false il ne peut pas
 	 */
 	public void setReglementLock(boolean reglementLock) {
 		boolean oldValue = this.reglementLock;

@@ -109,7 +109,7 @@ import org.ajdeveloppement.commons.sql.SqlTable;
 import org.concoursjeunes.builders.BlasonBuilder;
 
 /**
- * Bean representant un blason de tir et ses caracteristiques
+ * Bean représentant un blason de tir et ses caractéristiques
  * 
  * @author Aurélien JEOFFRAY
  * @version 1.0
@@ -151,7 +151,7 @@ public class Blason implements SqlPersistance {
 	}
 
 	/**
-	 * Construit un nouveau blason portant le nom donnée en parametre
+	 * Construit un nouveau blason portant le nom donnée en paramètre
 	 * 
 	 * @param name le nom du blason à construire
 	 */
@@ -160,7 +160,7 @@ public class Blason implements SqlPersistance {
 	}
 
 	/**
-	 * <p>Construit un nouveau blason ayant le nom donnée en parametre ainsi
+	 * <p>Construit un nouveau blason ayant le nom donnée en paramètre ainsi
 	 * que les caractéristiques de ratio de cible horizontal et vertical.</p>
 	 * <p>le ratio correspond à une valeur entre 0 et 1 correspondant à la
 	 * fraction de cible occupé par le blason dans les dimensions horizontal
@@ -178,19 +178,19 @@ public class Blason implements SqlPersistance {
 	}
 	
 	/**
-	 * <p>Construit un nouveau blason ayant le nom donnée en parametre ainsi
+	 * <p>Construit un nouveau blason ayant le nom donnée en paramètre ainsi
 	 * que les caractéristiques de ratio de cible horizontal et vertical ainsi
-	 * que son numero d'ordre.</p>
+	 * que son numéro d'ordre.</p>
 	 * <p>le ratio correspond à une valeur entre 0 et 1 correspondant à la
 	 * fraction de cible occupé par le blason dans les dimensions horizontal
 	 * et vertical</p>
-	 * <p>le numero d'ordre permet de trié les blasons du plus gros (en taille) au plus petit
+	 * <p>le numéro d'ordre permet de trié les blasons du plus gros (en taille) au plus petit
 	 * afin de les ordonner correctement sur le pas de tir</p>
 	 * 
 	 * @param name le nom du blason
 	 * @param horizontalRatio le ratio horizontal exprimé en fraction de cible (valeur entre 0 et 1)
 	 * @param verticalRatio le ratio vertical exprimé en fraction de cible (valeur entre 0 et 1)
-	 * @param numordre le numero d'ordre de disposition sur le pas de tir
+	 * @param numordre le numéro d'ordre de disposition sur le pas de tir
 	 * @param nbArcher le nombre d'archer pouvant tirer sur le blason
 	 */
 	public Blason(String name, double horizontalRatio, double verticalRatio,
@@ -274,12 +274,12 @@ public class Blason implements SqlPersistance {
 	}
 
 	/**
-	 * Definit le ratio d'occupation vertical de la cible.
-	 * Le ratio est une valeur entre 0 et 1 representant la fraction de cible
+	 * Définit le ratio d'occupation vertical de la cible.
+	 * Le ratio est une valeur entre 0 et 1 représentant la fraction de cible
 	 * occupé par le blason.<br>
 	 * <br>
-	 * Si la valeur definit est superieur à 1 alors celle ci est considere
-	 * comme egal à 1. De même, une valeur negative est consideré comme egal à 0
+	 * Si la valeur définit est supérieur à 1 alors celle ci est considère
+	 * comme égal à 1. De même, une valeur negative est considéré comme égal à 0
 	 * 
 	 * @param verticalRatio le ratio d'occupation cible
 	 */
@@ -294,7 +294,7 @@ public class Blason implements SqlPersistance {
 	 * <i>par exemple un blason de 40 ne peut supporter qu'un seul archer,
 	 * alors qu'un blason de 80 supporte jusqu'à 4 archers</i>
 	 * 
-	 * @return nbArcher le nombre d'archer pouvant tiré sur le même blason
+	 * @return le nombre d'archer pouvant tiré sur le même blason
 	 */
 	public int getNbArcher() {
 		return nbArcher;
@@ -312,42 +312,42 @@ public class Blason implements SqlPersistance {
 	}
 
 	/**
-	 * Le numero d'ordre de la cible. Le numero d'ordre permet de classer
+	 * Le numéro d'ordre de la cible. Le numéro d'ordre permet de classer
 	 * les blasons dans l'ordre.
 	 * 
-	 * @return numordre le numero d'ordre du blason
+	 * @return le numéro d'ordre du blason
 	 */
 	public int getNumordre() {
 		return numordre;
 	}
 
 	/**
-	 * Définit le numero d'ordre de la cible. Le numero d'ordre permet de classer
+	 * Définit le numéro d'ordre de la cible. Le numéro d'ordre permet de classer
 	 * les blasons dans l'ordre.
 	 * 
-	 * @param numordre le numero d'ordre du blason
+	 * @param numordre le numéro d'ordre du blason
 	 */
 	public void setNumordre(int numordre) {
 		this.numordre = numordre;
 	}
 
 	/**
-	 * Le numero de blason tel que définit dans la base.<br>
-	 * Ce numero n'est pas destiné à être utilisé directement,
+	 * Le numéro de blason tel que définit dans la base.<br>
+	 * Ce numéro n'est pas destiné à être utilisé directement,
 	 * mais uniquement par afin de permettre la persistance de l'objet
 	 * 
-	 * @return numblason le numero de reference du blason dans la base ou 0 si non définit 
+	 * @return le numéro de reference du blason dans la base ou 0 si non définit 
 	 */
 	public int getNumblason() {
 		return numblason;
 	}
 
 	/**
-	 * Définit le numero de blason tel que définit dans la base.<br>
-	 * Ce numero n'est pas destiné à être utilisé directement,
+	 * Définit le numéro de blason tel que définit dans la base.<br>
+	 * Ce numéro n'est pas destiné à être utilisé directement,
 	 * mais uniquement par afin de permettre la persistance de l'objet
 	 * 
-	 * @param numblason le numero de reference du blason dans la base ou 0 si non définit
+	 * @param numblason le numéro de reference du blason dans la base ou 0 si non définit
 	 */
 	public void setNumblason(int numblason) {
 		this.numblason = numblason;
@@ -401,12 +401,12 @@ public class Blason implements SqlPersistance {
 	}
 	
 	/**
-	 * Détermine si blason2 se supperpose ou non au blason représenté par l'objet
+	 * Détermine si blason2 se superpose ou non au blason représenté par l'objet
 	 * 
 	 * @param positionBlason la position logique du blason représenté par l'objet
 	 * @param blason2 le blason à comparer
 	 * @param positionBlason2 la position logique de ce blason
-	 * @return <i>true</i> si les 2 blasons se supperpose, <i>false</i> sinon
+	 * @return <i>true</i> si les 2 blasons se superpose, <i>false</i> sinon
 	 */
 	public boolean isOver(int positionBlason, Blason blason2, int positionBlason2) {
 		Ancrage ancrageBlason = getAncrage(positionBlason);
@@ -500,7 +500,7 @@ public class Blason implements SqlPersistance {
 	}
 
 	/**
-	 * Retourne le nom du fichier image représantant le blason
+	 * Retourne le nom du fichier image représentant le blason
 	 * 
 	 * @return le nom de l'image du blason
 	 */
@@ -509,8 +509,8 @@ public class Blason implements SqlPersistance {
 	}
 
 	/**
-	 * Définit le nom du fichier image représantant le blason
-	 * @param targetFaceImage le nom de l'image du blasonr
+	 * Définit le nom du fichier image représentant le blason
+	 * @param targetFaceImage le nom de l'image du blason
 	 */
 	public void setTargetFaceImage(String targetFaceImage) {
 		this.targetFaceImage = targetFaceImage;

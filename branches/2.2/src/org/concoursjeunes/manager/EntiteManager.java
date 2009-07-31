@@ -1,4 +1,6 @@
 /*
+ * Créé le 30 juil. 2009 à 11:34:57 pour ConcoursJeunes
+ *
  * Copyright 2002-2009 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
@@ -69,11 +71,11 @@
  * knowledge of the CeCILL license and that you accept its terms.
  *
  *  *** GNU GPL Terms *** 
- *  
+ * 
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  any later version.
+ *  (at your option) any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -82,135 +84,84 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. 
+ *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes;
+package org.concoursjeunes.manager;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.concoursjeunes.ApplicationCore;
+import org.concoursjeunes.Entite;
+import org.concoursjeunes.builders.EntiteBuilder;
 
 /**
- * Paramétrage commun à Configuration et Paramètre
+ * Gére le chargement des Entités à partir de la base de données
  * 
  * @author Aurélien JEOFFRAY
+ *
  */
-public class DefaultParameters {
-	private Entite club = new Entite();
-	private String intituleConcours = "Concours Jeunes"; //$NON-NLS-1$
-	
-	private int nbCible             = 10;
-	private int nbTireur            = 4;
-	private int nbDepart            = 1;
-
-	public DefaultParameters() {
-
-	}
-
+public class EntiteManager {
 	/**
-	 * Retourne l'intitulé du concours
+	 * Liste les entités stocké dans la base correspondant à l'entite générique
+	 * transmis en paramètre et ordonné par le nom du champs fournit<br>
+	 * <br>
+	 * Une entité générique est une entité ou seul l'une des 3 propriétés
+	 * (Nom, Agrément, Ville) est renseigné. L'utilisation des wildcards SQL
+	 * est possible (%, _)
 	 * 
-	 * @return Renvoie l'intitulé du concours
+	 * @param eGeneric l'entite générique permettant de filtré les résultats
+	 * @param orderfield le champs de tri de la liste
+	 * 
+	 * @return la liste des entité répondant aux critères de recherche
 	 */
-	public String getIntituleConcours() {
-		return intituleConcours;
-	}
+	public static List<Entite> getEntitesInDatabase(Entite eGeneric, String orderfield) {
+		List<Entite> entites = new ArrayList<Entite>();
+		Statement stmt = null;
+		
+		try {
+			stmt = ApplicationCore.dbConnection.createStatement();
+			
+			String sql = "select * from Entite "; //$NON-NLS-1$
+			if(eGeneric != null) {
+				sql += "where "; //$NON-NLS-1$
+				ArrayList<String> filters = new ArrayList<String>();
+				if(eGeneric.getNom().length() > 0) {
+					filters.add("NOMENTITE like '" + eGeneric.getNom().toUpperCase() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+				}
+				if(eGeneric.getAgrement().length() > 0) {
+					filters.add("AGREMENTENTITE like '" + eGeneric.getAgrement().toUpperCase() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+				}
+				if(eGeneric.getVille().length() > 0) {
+					filters.add("VILLEENTITE like '" + eGeneric.getVille().toUpperCase() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+				}
+				
+				for(String filter : filters) {
+					sql += " and " + filter; //$NON-NLS-1$
+				}
+			}
+			sql = sql.replaceFirst(" and ", ""); //$NON-NLS-1$ //$NON-NLS-2$
+			if(orderfield.length() > 0)
+				sql += "order by " + orderfield; //$NON-NLS-1$
+			
+			ResultSet rs = stmt.executeQuery(sql);
 
-	/**
-	 * Définit l'intitulé du concours ou intitulé par défaut
-	 * 
-	 * @param intituleConcours l'intitulé du concours
-	 */
-	public void setIntituleConcours(String intituleConcours) {
-		this.intituleConcours = intituleConcours;
-	}
-	
-	/**
-	 * Retourne le nombre de cible sur le concours
-	 * 
-	 * @return le nombre de cible
-	 */
-	public int getNbCible() {
-		return nbCible;
-	}
-
-	/**
-	 * Définit le nombre de cible sur le concours
-	 * 
-	 * @param nbCible le nombre de cible
-	 */
-	public void setNbCible(int nbCible) {
-		this.nbCible = nbCible;
-	}
-
-	/**
-	 * Retourne le nombre de départ sur le concours
-	 * 
-	 * @return le nombre de départ
-	 */
-	public int getNbDepart() {
-		return nbDepart;
-	}
-
-	/**
-	 * Définit le nombre de départ sur le concours. Ce nombre de ne peut excédé 9
-	 * 
-	 * @param nbDepart le nombre de départ du concours. Si le nombre fournit est supérieur à 9,
-	 * 9 sera enregistré
-	 */
-	public void setNbDepart(int nbDepart) {
-		if(nbDepart > 9)
-			nbDepart = 9;
-		this.nbDepart = nbDepart;
-	}
-
-	/**
-	 * Retourne le nombre de tireur par cible accepté sur le concours<br>
-	 * Ce nombre est de:
-	 * <ul>
-	 * <li>2 pour un rythme AB</li>
-	 * <li>3 pour un rythme ABC (Rare)</li>
-	 * <li>4 pour un rythme AB.CD</li>
-	 * <li>6 pour un rythme ABC.DEF (Rare)</li>
-	 * </ul>
-	 * A l'heure actuel, l'interface graphique ne supporte que les modes 2 et 4,
-	 * les modes 3 et 6 sont déconseillé car pouvant entraîner des cas non déterminé
-	 * 
-	 * @return renvoie le nombre de tireur par cible
-	 */
-	public int getNbTireur() {
-		return nbTireur;
-	}
-
-	/**
-	 * Définit le nombre de tireur par cible accepté sur le concours<br>
-	 * Ce nombre est de:
-	 * <ul>
-	 * <li>2 pour un rythme AB</li>
-	 * <li>3 pour un rythme ABC (Rare)</li>
-	 * <li>4 pour un rythme AB.CD</li>
-	 * <li>6 pour un rythme ABC.DEF (Rare)</li>
-	 * </ul>
-	 * A l'heure actuel, l'interface graphique ne supporte que les modes 2 et 4,
-	 * les modes 3 et 6 sont déconseillé car pouvant entraîner des cas non déterminé
-	 * 
-	 * @param nbTireur le nombre de tireur par cible
-	 */
-	public void setNbTireur(int nbTireur) {
-		this.nbTireur = nbTireur;
-	}
-
-	/**
-	 * Retourne le club organisateur du concours
-	 * 
-	 * @return le club organisateur
-	 */
-	public Entite getClub() {
-		return club;
-	}
-
-	/**
-	 * Définit le club organisateur du concours
-	 * 
-	 * @param club le club organisateur
-	 */
-	public void setClub(Entite club) {
-		this.club = club;
+			while(rs.next()) {
+				String numAgrement = rs.getString("AgrementEntite"); //$NON-NLS-1$
+				
+				Entite entite = EntiteBuilder.getEntite(numAgrement);
+				
+				entites.add(entite);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try { if(stmt != null) stmt.close(); } catch(Exception e) { }
+		}
+		
+		return entites;
 	}
 }

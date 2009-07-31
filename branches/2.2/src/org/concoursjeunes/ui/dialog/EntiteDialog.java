@@ -92,6 +92,7 @@ import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
+import java.util.logging.Level;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -108,8 +109,11 @@ import javax.swing.text.MaskFormatter;
 import org.ajdeveloppement.apps.localisation.Localisable;
 import org.ajdeveloppement.apps.localisation.Localisator;
 import org.ajdeveloppement.commons.AjResourcesReader;
+import org.ajdeveloppement.commons.sql.SqlPersistanceException;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.concoursjeunes.Entite;
+import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.error.ErrorInfo;
 
 /**
  * @author Aurélien JEOFFRAY
@@ -284,8 +288,14 @@ public class EntiteDialog extends JDialog implements ActionListener {
 			entite.setNote(jtaNote.getText());
 			entite.setAgrement(jftfAgrement.getText());
 			entite.setCodePostal((String) jftfCodePostal.getValue());
-
-			entite.save();
+			
+			try {
+				entite.save();
+			} catch (SqlPersistanceException e) {
+				JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+            			null, null, e, Level.SEVERE, null));
+				e.printStackTrace();
+			}
 
 			setVisible(false);
 		}

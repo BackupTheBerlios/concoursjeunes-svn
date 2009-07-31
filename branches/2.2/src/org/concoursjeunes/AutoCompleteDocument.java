@@ -97,10 +97,11 @@ import javax.swing.text.PlainDocument;
 import org.concoursjeunes.event.AutoCompleteDocumentEvent;
 import org.concoursjeunes.event.AutoCompleteDocumentListener;
 import org.concoursjeunes.manager.ConcurrentManager;
+import org.concoursjeunes.manager.EntiteManager;
 
 /**
  * Réalise la saisi semi automatique d'un concurrent en fonction de
- * la chaine saisi manuellement et des informations présente en base
+ * la chaîne saisi manuellement et des informations présente en base
  * de données
  * 
  * @author  Aurélien JEOFFRAY
@@ -120,11 +121,11 @@ public class AutoCompleteDocument extends PlainDocument {
 		 */
 		NAME_SEARCH,
 		/**
-		 * Type de recherche : recherche par le numero de licence
+		 * Type de recherche : recherche par le numéro de licence
 		 */
 		NUMLICENCE_SEARCH,
 		/**
-		 * Type de recherche : recherche par le prenom
+		 * Type de recherche : recherche par le prénom
 		 */
 		FIRSTNAME_SEARCH,
 		/**
@@ -132,7 +133,7 @@ public class AutoCompleteDocument extends PlainDocument {
 		 */
 		CLUB_SEARCH,
 		/**
-		 * Type de recherche : recherche par le numero d'agrement du club
+		 * Type de recherche : recherche par le numéro d'agrement du club
 		 */
 		AGREMENT_SEARCH
 	}
@@ -150,9 +151,9 @@ public class AutoCompleteDocument extends PlainDocument {
 	 * 
 	 * @param textField - le champs de reference pour la saisi
 	 * semi automatique
-	 * @param typeSearch - le type de recherche à effectuer (represente
+	 * @param typeSearch - le type de recherche à effectuer (représente
 	 * la nature de la saisi)
-	 * @param context Définit le contexte d'autocomplement du doument. Le contexte ne doit pas être null
+	 * @param context Définit le contexte d'autocomplement du document. Le contexte ne doit pas être null
 	 */
 	public AutoCompleteDocument(JTextField textField, SearchType typeSearch, AutoCompleteDocumentContext context) {
 		this.textField = textField;
@@ -161,7 +162,7 @@ public class AutoCompleteDocument extends PlainDocument {
 	}
 	
 	/**
-	 * Ajoute un auditeur aux evenments d'autocomplement
+	 * Ajoute un auditeur aux évènements d'autocomplement
 	 * 
 	 * @param autoCompleteDocumentListener - l'objet auditeur
 	 */
@@ -170,7 +171,7 @@ public class AutoCompleteDocument extends PlainDocument {
 	}
 	
 	/**
-	 * supprime un auditeur aux evenments d'autocomplement
+	 * supprime un auditeur aux évènements d'autocomplement
 	 * 
 	 * @param autoCompleteDocumentListener - l'objet auditeur
 	 */
@@ -179,10 +180,10 @@ public class AutoCompleteDocument extends PlainDocument {
 	}
 	
 	/**
-	 * Invoqué a l'insertion du chaine dans le champs de saisi
+	 * Invoqué a l'insertion du chaîne dans le champs de saisi
 	 * 
 	 * @param offs - position du début de l'insertion
-	 * @param str - la chaine à inserer
+	 * @param str - la chaîne à insérer
 	 * @param a - les attributs d'insertions
 	 * 
 	 * @throws BadLocationException
@@ -215,10 +216,10 @@ public class AutoCompleteDocument extends PlainDocument {
 	}
 	
 	/**
-	 * Invoqué à la suppression d'une chaine dans le champs de saisi
+	 * Invoqué à la suppression d'une chaîne dans le champs de saisi
 	 * 
-	 * @param offs - la position du debut de la zone à supprimer
-	 * @param len - la taille de la chaine à supprimer
+	 * @param offs - la position du début de la zone à supprimer
+	 * @param len - la taille de la chaîne à supprimer
 	 * 
 	 * @throws BadLocationException
 	 */
@@ -249,11 +250,11 @@ public class AutoCompleteDocument extends PlainDocument {
 	}
 	
 	/**
-	 * Invoqué au remplacement d'une portion de la chaine du champs de saisi
+	 * Invoqué au remplacement d'une portion de la chaîne du champs de saisi
 	 * 
-	 * @param offset - la position du debut de la chaine à remplacer
-	 * @param length - la taille de la chaine à remplacer
-	 * @param text - la chaine de remplacement
+	 * @param offset - la position du début de la chaîne à remplacer
+	 * @param length - la taille de la chaîne à remplacer
+	 * @param text - la chaîne de remplacement
 	 * @param attrs - les attributs de remplacement
 	 * 
 	 * @throws BadLocationException
@@ -286,8 +287,8 @@ public class AutoCompleteDocument extends PlainDocument {
 	}
 	
 	/**
-	 * Recherche le concurrent à afficher en fonction de la chaine actuellement
-	 * dans le modéle et des informations en base. La chaine du modèle doit
+	 * Recherche le concurrent à afficher en fonction de la chaîne actuellement
+	 * dans le modèle et des informations en base. La chaîne du modèle doit
 	 * représenter le nom du concurrent
 	 * 
 	 * @param caretpos - la position du curseur d'insertion
@@ -338,9 +339,9 @@ public class AutoCompleteDocument extends PlainDocument {
 	}
 	
 	/**
-	 * Recherche le concurrent à afficher en fonction de la chaine actuellement
-	 * dans le modéle et des informations en base. La chaine du modèle doit
-	 * représenter le prenom du concurrent
+	 * Recherche le concurrent à afficher en fonction de la chaîne actuellement
+	 * dans le modèle et des informations en base. La chaîne du modèle doit
+	 * représenter le prénom du concurrent
 	 * 
 	 * @param caretpos - la position du curseur d'insertion
 	 * @param strict - si true ne renvoyé que les résultats correspondant
@@ -391,9 +392,9 @@ public class AutoCompleteDocument extends PlainDocument {
 	}
 	
 	/**
-	 * Recherche le concurrent à afficher en fonction de la chaine actuellement
-	 * dans le modéle et des informations en base. La chaine du modèle doit
-	 * représenter le numero de licence du concurrent
+	 * Recherche le concurrent à afficher en fonction de la chaîne actuellement
+	 * dans le modèle et des informations en base. La chaîne du modèle doit
+	 * représenter le numéro de licence du concurrent
 	 * 
 	 * @param caretpos - la position du curseur d'insertion
 	 * @param strict - si true ne renvoyé que les résultats correspondant
@@ -441,8 +442,8 @@ public class AutoCompleteDocument extends PlainDocument {
 	}
 	
 	/**
-	 * Recherche le club (Entite) à afficher en fonction de la chaine actuellement
-	 * dans le modéle et des informations en base. La chaine du modèle doit
+	 * Recherche le club (Entite) à afficher en fonction de la chaîne actuellement
+	 * dans le modèle et des informations en base. La chaîne du modèle doit
 	 * représenter le nom de l'Entite recherché
 	 * 
 	 * @param caretpos - la position du curseur d'insertion
@@ -460,7 +461,7 @@ public class AutoCompleteDocument extends PlainDocument {
 		Entite searchEntite = new Entite();
 		searchEntite.setVille(searchString.toUpperCase() + "%"); //$NON-NLS-1$
 		if(getLength() > 0) {
-			List<Entite> entites = Entite.getEntitesInDatabase(searchEntite, "VILLEENTITE"); //$NON-NLS-1$
+			List<Entite> entites = EntiteManager.getEntitesInDatabase(searchEntite, "VILLEENTITE"); //$NON-NLS-1$
 			if(entites.size() > 0)
 				context.setEntite(entites.get(0));
 			else
@@ -489,9 +490,9 @@ public class AutoCompleteDocument extends PlainDocument {
 	}
 	
 	/**
-	 * Recherche le club (Entite) à afficher en fonction de la chaine actuellement
-	 * dans le modéle et des informations en base. La chaine du modèle doit
-	 * représenter le numéron d'agrément de l'Entite recherché
+	 * Recherche le club (Entite) à afficher en fonction de la chaîne actuellement
+	 * dans le modèle et des informations en base. La chaîne du modèle doit
+	 * représenter le numéro d'agrément de l'Entite recherché
 	 * 
 	 * @param caretpos - la position du curseur d'insertion
 	 * @param strict - si true ne renvoyé que les résultats correspondant
@@ -508,9 +509,9 @@ public class AutoCompleteDocument extends PlainDocument {
 		Entite searchEntite = new Entite();
 		searchEntite.setAgrement(searchString.toUpperCase() + "%"); //$NON-NLS-1$
 		if(getLength() > 0) {
-			List<Entite> entites = Entite.getEntitesInDatabase(searchEntite, "AGREMENTENTITE"); //$NON-NLS-1$
+			List<Entite> entites = EntiteManager.getEntitesInDatabase(searchEntite, "AGREMENTENTITE"); //$NON-NLS-1$
 			if(entites.size() > 0)
-				context.setEntite(Entite.getEntitesInDatabase(searchEntite, "AGREMENTENTITE").get(0)); //$NON-NLS-1$
+				context.setEntite(EntiteManager.getEntitesInDatabase(searchEntite, "AGREMENTENTITE").get(0)); //$NON-NLS-1$
 			else
 				context.setEntite(null);
 		} else {
@@ -542,7 +543,7 @@ public class AutoCompleteDocument extends PlainDocument {
 	 * Envoi aux auditeurs l'information comme quoi un concurrent a été trouvé
 	 * 
 	 * @param concurrent - le concurrent trouvé
-	 * @param searchArcher - l'objet générique correspondant à la requéte de recherche produite
+	 * @param searchArcher - l'objet générique correspondant à la requête de recherche produite
 	 */
 	private void fireConcurrendFinded(Concurrent concurrent, Archer searchArcher) {
 		for(AutoCompleteDocumentListener acdl : listeners.getListeners(AutoCompleteDocumentListener.class)) {
@@ -563,10 +564,10 @@ public class AutoCompleteDocument extends PlainDocument {
 	}
 	
 	/**
-	 * Envoi aux auditeurs l'information comme quoi une entite a été trouvé
+	 * Envoi aux auditeurs l'information comme quoi une entité a été trouvé
 	 * 
 	 * @param entite - l'entite trouvé
-	 * @param searchEntite - l'objet générique correspondant à la requéte de recherche produite
+	 * @param searchEntite - l'objet générique correspondant à la requête de recherche produite
 	 */
 	private void fireEntiteFinded(Entite entite, Entite searchEntite) {
 		for(AutoCompleteDocumentListener acdl : listeners.getListeners(AutoCompleteDocumentListener.class)) {
@@ -577,7 +578,7 @@ public class AutoCompleteDocument extends PlainDocument {
 	}
 	
 	/**
-	 * Envoi aux auditeurs l'information comme quoi aucune entite n'a été trouvé
+	 * Envoi aux auditeurs l'information comme quoi aucune entité n'a été trouvé
 	 *
 	 */
 	private void fireEntiteNotFound() {

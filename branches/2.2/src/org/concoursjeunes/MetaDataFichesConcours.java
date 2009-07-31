@@ -89,6 +89,8 @@ package org.concoursjeunes;
 import java.util.ArrayList;
 
 /**
+ * Représente la collection des informations générale sur les fiches concours
+ * 
  * @author Aurélien JEOFFRAY
  */
 public class MetaDataFichesConcours {
@@ -132,15 +134,22 @@ public class MetaDataFichesConcours {
 	}
 	
 	/**
-	 * Retourne les metadonnées de la fiche spécifié en parametre par son index 
+	 * Retourne les metadonnées de la fiche spécifié en paramètre par son index 
 	 * 
-	 * @param index - l'index de la fiche pour laquelle récuperer les metadonnées
-	 * @return les metadonnées de la fiche idiqué en parametre
+	 * @param index - l'index de la fiche pour laquelle récupérer les metadonnées
+	 * @return les metadonnées de la fiche indiqué en paramètre
 	 */
 	public MetaDataFicheConcours get(int index) {
 		return fiches.get(index);
 	}
 	
+	/**
+	 * Indique si la collection contient les méta-données fournit en paramètre
+	 * ou non
+	 * 
+	 * @param metaDataFicheConcours les méta-données à vérifier
+	 * @return true si existant, false sinon
+	 */
 	public boolean contains(MetaDataFicheConcours metaDataFicheConcours) {
 		return fiches.contains(metaDataFicheConcours);
 	}

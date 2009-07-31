@@ -36,7 +36,7 @@
  * à l'utiliser et l'exploiter dans les mêmes conditions de sécurité. 
  * 
  * Le fait que vous puissiez accéder à cet en-tête signifie que vous avez 
- * pri connaissance de la licence CeCILL, et que vous en avez accepté les
+ * pris connaissance de la licence CeCILL, et que vous en avez accepté les
  * termes.
  *
  * ENGLISH:
@@ -102,13 +102,13 @@ import org.concoursjeunes.exceptions.PlacementException;
 
 /**
  * <p>
- * Réprésente le pas de tir d'un départ de concours. Un pas de tir est associé à un concours
+ * Représente le pas de tir d'un départ de concours. Un pas de tir est associé à un concours
  * et à un départ donné. Il liste l'ensemble des cibles (et leurs archers associé) présentes
  * sur celui-ci.
  * </p>
  * <p>
- * La class <i>PasDeTir</i> va fournir des methodes permettant de placer un archer sur le pas
- * de tir du concours ainsi que des methodes permettant de calculer l'occupation de celui-ci et
+ * La class <i>PasDeTir</i> va fournir des méthodes permettant de placer un archer sur le pas
+ * de tir du concours ainsi que des méthodes permettant de calculer l'occupation de celui-ci et
  * bloquer l'insertion en cas de dépassement.
  * </p>
  * 
@@ -164,10 +164,10 @@ public class PasDeTir implements FicheConcoursListener {
 	}
 	
 	/**
-	 * defini le nombre de tireur par cible en fonction du nombre de tireurs
+	 * défini le nombre de tireur par cible en fonction du nombre de tireurs
 	 * max acceptés et du nombre de tireur présent
 	 * 
-	 * @param lDB la liste des DistancesEtBlason utilisé sur le pas de ti
+	 * @param lDB la liste des DistancesEtBlason utilisé sur le pas de tir
 	 * @return le nombre de tireur par cible à utiliser
 	 */
 	private int getOptimalRythme(List<DistancesEtBlason> lDB) {
@@ -240,9 +240,9 @@ public class PasDeTir implements FicheConcoursListener {
 	}
 	
 	/**
-	 * Détermine, pour un concurrent donnée, si une place est diponible sur le pas de tir
+	 * Détermine, pour un concurrent donnée, si une place est disponible sur le pas de tir
 	 * 
-	 * @param concurrent - le concuurent à tester
+	 * @param concurrent - le concurrent à tester
 	 * @return true si une place est disponible pour le concurrent, false sinon
 	 */
 	public boolean havePlaceForConcurrent(Concurrent concurrent) {
@@ -266,13 +266,13 @@ public class PasDeTir implements FicheConcoursListener {
 			return true;
 		}
 
-		//si il reste de la place dans la nouvelle categorie pas de pb
+		//si il reste de la place dans la nouvelle catégorie pas de pb
 		place = getTargetsOccupation(ficheConcours.getParametre().getNbTireur()).get(db1);
 		if(place.getPlaceLibre() > (concurrent.isHandicape()?1:0) || getNbFreeTargets(ficheConcours.getParametre().getNbTireur()) > 0) {
 			return true;
 		}
 
-		//si le retrait du concurrent libere une cible ok
+		//si le retrait du concurrent libère une cible ok
 		place = getTargetsOccupation(ficheConcours.getParametre().getNbTireur()).get(db2);
 		if(place.getPlaceOccupe() % ficheConcours.getParametre().getNbTireur() == (concurrent.isHandicape()?2:1)) {
 			return true;
@@ -284,7 +284,7 @@ public class PasDeTir implements FicheConcoursListener {
 	
 	/**
 	 * Place les archers sur le pas de tir
-	 * La methode de placement utilisé permet d'éviter, dans la mesure du possible,
+	 * La méthode de placement utilisé permet d'éviter, dans la mesure du possible,
 	 * de placer les archers d'un même club sur la même cible
 	 */
 	public void placementConcurrents() {
@@ -293,15 +293,15 @@ public class PasDeTir implements FicheConcoursListener {
 	
 	/**
 	 * Place les archers sur le pas de tir
-	 * La methode de placement utilisé permet d'éviter, dans la mesure du possible,
+	 * La méthode de placement utilisé permet d'éviter, dans la mesure du possible,
 	 * de placer les archers d'un même club sur la même cible
 	 * 
 	 * @param nbtireurparcible le nombre de tireur par cible à considérer dans le cas
 	 * s'une simulation. Si on est pas en simulation, la valeur est ignoré
 	 * 
 	 * @param simulationMode si <i>true</i> se contente de simulé le placement sans
-	 * le réaliser concraitement en placant les archers dans simulationTargets en lieu
-	 * et place de targets. Le but est simplement de détérminer la place disponible restante
+	 * le réaliser concrètement en plaçant les archers dans simulationTargets en lieu
+	 * et place de targets. Le but est simplement de déterminer la place disponible restante
 	 */
 	private void placementConcurrents(int nbtireurparcible, boolean simulationMode) {
 		int curCible = 1;

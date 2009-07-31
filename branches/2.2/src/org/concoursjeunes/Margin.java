@@ -34,7 +34,7 @@
  * à l'utiliser et l'exploiter dans les mêmes conditions de sécurité. 
  * 
  * Le fait que vous puissiez accéder à cet en-tête signifie que vous avez 
- * pri connaissance de la licence CeCILL, et que vous en avez accepté les
+ * pris connaissance de la licence CeCILL, et que vous en avez accepté les
  * termes.
  *
  * ENGLISH:
@@ -88,7 +88,7 @@ package org.concoursjeunes;
 
 /**
  * Représente les marges de tour de page à utiliser sur les éditions pdf.<br>
- * Les dimensions sont représentées en centimetres
+ * Les dimensions sont représentées en centimètres
  * 
  * @author Aurélien JEOFFRAY
  *
@@ -103,7 +103,7 @@ public class Margin {
 		
 	}
 	/**
-	 * Initialise un nouvel objet marge en specifiant celle ci pour les
+	 * Initialise un nouvel objet marge en spécifiant celle ci pour les
 	 * 4 dimensions
 	 * 
 	 * @param top marge de haut de page

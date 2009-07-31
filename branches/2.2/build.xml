@@ -47,10 +47,12 @@
 		<!--création du répertoire de documentation-->
 		<mkdir dir="docs" />
 		<javadoc
+			access="package"
 			sourcepath="src"
 			destdir="docs"
 			classpath="${compilclasspath}" >
 			<link href="http://java.sun.com/javase/6/docs/api/" />
+			<link href="http://ajmaster.free.fr/docs/"/>
 			<!--<packageset dir="src" defaultexcludes="yes">
 				<include name="**/**" />
 				<exclude name="org/concoursjeunes/test/**" />
@@ -274,6 +276,8 @@
 				<copy todir="${projet.pack.dir}/linux/tar/usr/lib/ConcoursJeunes" >
 					<fileset dir="@{plugin}" >
 						<include name="**/**"/>
+						
+						<exclude name="revision.xml.gz"/>
 					</fileset>
 				</copy>
 			</sequential>
@@ -414,6 +418,8 @@
 				<copy todir="${projet.pack.dir}/macosx/${version.name}.app/Contents/Resources/Java" >
 					<fileset dir="@{plugin}" >
 						<include name="**/**"/>
+						
+						<exclude name="revision.xml.gz"/>
 					</fileset>
 				</copy>
 			</sequential>

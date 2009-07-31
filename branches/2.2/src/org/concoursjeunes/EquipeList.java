@@ -92,7 +92,7 @@ import java.util.List;
 import org.ajdeveloppement.commons.ArraysUtils;
 
 /**
- * Represente la liste des équipes constitué sur un concours
+ * Représente la liste des équipes constitué sur un concours
  * 
  * @author  Aurélien Jeoffray
  * @version 1.1
@@ -107,6 +107,14 @@ public class EquipeList implements Cloneable {
     public EquipeList() {
     	
     }
+    
+    /**
+     * Construit une nouvelle collection d'équipe dont le nombre
+     * de membre retenue pour le classement est fournit en paramètre.
+     * 
+     * @param nbMembresRetenu le nombre de membre retenue pour le classement pour
+     * chaque équipe
+     */
     public EquipeList(int nbMembresRetenu) { 
     	this.nbMembresRetenu = nbMembresRetenu;
     }
@@ -140,15 +148,15 @@ public class EquipeList implements Cloneable {
     /**
      * Donne l'équipe à l'index donné
      * 
-     * @param index - l'index de l'équipe
-     * @return Equipe l'équipe à l'index donné
+     * @param index l'index de l'équipe
+     * @return l'équipe à l'index donné
      */
     public Equipe get(int index) {
         return equipeList.get(index);
     }
     
     /**
-     * Détermine si l'équipe nommé transmis en paramêtre existe déjà sur le concours
+     * Détermine si l'équipe nommé transmis en paramètre existe déjà sur le concours
      * 
      * @param teamName le nom de l'équipe à tester
      * @return true si l'équipe existe, false sinon 
@@ -162,7 +170,7 @@ public class EquipeList implements Cloneable {
     }
     
     /**
-     * Retourne l'équipe contenant le concourrent donné ou null si inexistant
+     * Retourne l'équipe contenant le concurrent donné ou null si inexistant
      * 
      * @param concurrent - le concurrent à rechercher
      * @return l'Equipe à renvoyer
@@ -202,7 +210,7 @@ public class EquipeList implements Cloneable {
     /**
      * retire une équipe complete
      * 
-     * @param equipe
+     * @param equipe l'équipe à retirer
      */
     public void remove(Equipe equipe) {
         equipeList.remove(equipe);
@@ -224,7 +232,8 @@ public class EquipeList implements Cloneable {
     
     /**
      * retire toutes les équipes
-     * @deprecated remplacé par {@link EquipeList#clear()}
+     * 
+     * @deprecated remplacé par {@link #clear()}
      */
     @Deprecated
     public void removeAll() {
@@ -241,8 +250,11 @@ public class EquipeList implements Cloneable {
     /**
      * Retourne la liste complete des équipes
      * 
-     * @return Equipe[]
+     * @deprecated replacé par {@link #getEquipeList()}
+     * 
+     * @return la liste complete des équipes
      */
+	@Deprecated
     public Equipe[] list() {
         Equipe[] equipes = new Equipe[equipeList.size()];
         equipeList.toArray(equipes);
@@ -253,8 +265,8 @@ public class EquipeList implements Cloneable {
     /**
      * Retourne la liste des équipes correspondant au critère donné
      * 
-     * @param scna - le filtre de tri des équipes
-     * @return Equipe[]
+     * @param scna le filtre de tri des équipes
+     * @return la liste des équipes
      */
     public Equipe[] list(CriteriaSet scna) {
         ArrayList<Equipe> sel = new ArrayList<Equipe>();
@@ -272,7 +284,7 @@ public class EquipeList implements Cloneable {
      * Tri les équipe sur la base de leurs points
      * 
      * @param no_sort_list - La liste des équipes à trier
-     * @return Equipe[] - la liste des équipe fournit en parametre mais trié
+     * @return la liste des équipe fournit en paramètre mais trié
      */
     public static Equipe[] sort(Equipe[] no_sort_list) {
         if(no_sort_list != null && no_sort_list.length > 0) {
@@ -308,15 +320,16 @@ public class EquipeList implements Cloneable {
     /**
      * Donne le nombre d'équipe enregistré
      * 
-     * @return int le nombre d'équipe
+     * @return le nombre d'équipe
      */
     public int countEquipes() {
         return equipeList.size();
     }
 
     /**
-	 * Pour la sérialisation, la table des équipes
-	 * @return  Renvoie equipeList.
+	 * Retourne la liste des équipes
+	 * 
+	 * @return la liste des équipes
 	 */
     public List<Equipe> getEquipeList() {
         return equipeList;
@@ -324,7 +337,8 @@ public class EquipeList implements Cloneable {
 
     /**
 	 * Pour la sérialisation, la table des équipes
-	 * @param equipeList  equipeList à définir.
+	 * 
+	 * @param equipeList la liste des équipes
 	 */
     public void setEquipeList(List<Equipe> equipeList) {
         this.equipeList = equipeList;

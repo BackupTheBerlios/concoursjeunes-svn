@@ -106,7 +106,7 @@ import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.ajdeveloppement.commons.net.Proxy;
 
 /**
- * parametre de configuration de l'application
+ * paramètre de configuration du profile utilisateur
  * 
  * @author  Aurélien Jeoffray
  * @version  3.0
@@ -143,17 +143,17 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	private Margin marges           = new Margin(0, 0, 0, 0);
 	private double[] espacements    = new double[] {0.5, 0.5};
 
-	private boolean interfaceResultatCumul = false;     //noreboot
-	private boolean interfaceAffResultatExEquo = true;  //noreboot
+	private boolean interfaceResultatCumul = false;
+	private boolean interfaceAffResultatExEquo = true;
 	
 	@XmlElement(required=false,defaultValue="false")
 	private boolean useProxy		= false;
 	@XmlElement(required=false)
 	private Proxy proxy;
 
-	//propriete caché
+	//propriété caché
 	private MetaDataFichesConcours metaDataFichesConcours = new MetaDataFichesConcours();
-	private String curProfil        = "defaut";         //noreboot //$NON-NLS-1$
+	private String curProfil        = "defaut";          //$NON-NLS-1$
 
 	public Configuration() {
 
@@ -177,7 +177,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	}
 	
 	/**
-	 * defini l'adresse du lecteur pdf
+	 * défini l'adresse du lecteur pdf
 	 * @param pdfReaderPath  - l'adresse du lecteur pdf
 	 */
 	@Deprecated
@@ -186,7 +186,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	}
 
 	/**
-	 * defini la langue de l'IHM
+	 * défini la langue de l'IHM
 	 * @param langue  - la langue de l'application
 	 */
 	public void setLangue(String langue) {
@@ -194,18 +194,18 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	}
 
 	/**
-	 * Retourne le nom du réglement définit par défaut pour la configuration
+	 * Retourne le nom du règlement définit par défaut pour la configuration
 	 * 
-	 * @return le nom du réglement
+	 * @return le nom du règlement
 	 */
 	public String getReglementName() {
 		return reglementName;
 	}
 
 	/**
-	 * Définit le nom du réglement définit par défaut pour la configuration
+	 * Définit le nom du règlement définit par défaut pour la configuration
 	 * 
-	 * @param reglementName le nom du réglement
+	 * @param reglementName le nom du règlement
 	 */
 	public void setReglementName(String reglementName) {
 		this.reglementName = reglementName;
@@ -213,9 +213,9 @@ public class Configuration extends DefaultParameters implements Cloneable {
 
 	/**
 	 * <p>Retourne la fédération définit pour le profil. La fédération définit le
-	 * choix des réglements propsé par défaut.</p>
+	 * choix des règlements proposé par défaut.</p>
 	 * <p>Dans le futur, permettra le choix du club et des archers en fonction de la
-	 * fédération. Mais n'est pas iplémenté à ce jour.</p>
+	 * fédération. Mais n'est pas implémenté à ce jour.</p>
 	 * 
 	 * @return federation la fédération définit pour le profil
 	 */
@@ -224,7 +224,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	}
 
 	/**
-	 * Définit la fédération  attaché au profil courrant.
+	 * Définit la fédération  attaché au profil courant.
 	 * 
 	 * @param federation la fédération attaché au profil
 	 */
@@ -302,7 +302,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	}
 
 	/**
-	 * Définit les espacementes entres cellules d'étiquettes
+	 * Définit les espacements entres cellules d'étiquettes
 	 * @param espacements  The espacements to set.
 	 */
 	public void setEspacements(double[] espacements) {
@@ -334,7 +334,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	}
 
 	/**
-	 * Donne le nom du profil courrant
+	 * Donne le nom du profil courant
 	 * @return  Returns the curProfil.
 	 */
 	public String getCurProfil() {
@@ -343,7 +343,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 
 
 	/**
-	 * Définit le nom du profil courrant
+	 * Définit le nom du profil courant
 	 * @param curProfil  The curProfil to set.
 	 */
 	public void setCurProfil(String curProfil) {
@@ -420,7 +420,8 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	/**
 	 * Est ce qu'un proxy doit être utilisé pour la connectivité réseau?
 	 * 
-	 * @return useProxy true si un proxy doit être utilisé
+	 * @deprecated remplacé par {@link AppConfiguration#isUseProxy()}
+	 * @return true si un proxy doit être utilisé
 	 */
 	@Deprecated
 	public boolean isUseProxy() {
@@ -428,8 +429,9 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	}
 
 	/**
-	 * Définit l'utilisation ou nom d'un serveur mendataire pour la connectivité réseau
+	 * Définit l'utilisation ou nom d'un serveur mandataire pour la connectivité réseau
 	 * 
+	 * @deprecated remplacé par {@link AppConfiguration#setUseProxy(boolean)}
 	 * @param useProxy true si un proxy doit être utilisé, false sinon
 	 */
 	@Deprecated
@@ -438,9 +440,9 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	}
 
 	/**
-	 * Retourne les parametres du proxy qui doit être utilisé pour les connections http
+	 * Retourne les paramètres du proxy qui doit être utilisé pour les connections http
 	 * 
-	 * @return proxy les parametres de proxy
+	 * @return les paramètres de proxy
 	 */
 	@Deprecated
 	public Proxy getProxy() {
@@ -448,9 +450,9 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	}
 
 	/**
-	 * Définit les parametres du proxy qui doit être utilisé pour les connections http
+	 * Définit les paramètres du proxy qui doit être utilisé pour les connections http
 	 * 
-	 * @param proxy les parametres de proxy
+	 * @param proxy les paramètres de proxy
 	 */
 	@Deprecated
 	public void setProxy(Proxy proxy) {
@@ -480,6 +482,11 @@ public class Configuration extends DefaultParameters implements Cloneable {
 		return strLstLangue;
 	}
 	
+	/**
+	 * Retourne les libellées localisé des locales supporté par l'application
+	 * 
+	 * @return les libellées localisé des locales supporté
+	 */
 	public static String[] getAvailableLanguages() {
 		// liste les langues disponible
 		String[] langues = listLangue();

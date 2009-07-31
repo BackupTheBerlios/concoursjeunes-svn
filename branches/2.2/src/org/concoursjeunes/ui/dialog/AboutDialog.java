@@ -90,6 +90,7 @@ package org.concoursjeunes.ui.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.Desktop;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Desktop.Action;
 import java.awt.event.ActionEvent;
@@ -189,10 +190,11 @@ public class AboutDialog extends JDialog implements ActionListener, HyperlinkLis
 	}
 	
 	public void showAboutDialog() {
- 		//setSize(new Dimension(640, 480));
-		pack();
+ 		setSize(new Dimension(427, 376));
+		//pack();
 		setResizable(false);
 		setLocationRelativeTo(null);
+		//System.out.println(getSize());
 		setVisible(true);
 	}
 	

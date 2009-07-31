@@ -103,6 +103,9 @@ import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.ajdeveloppement.commons.net.Proxy;
 
 /**
+ * <p>Représente la configuration générale de l'application.</p>
+ * <p>La class est sérialisable avec JAXB</p>
+ * 
  * @author Aurélien JEOFFRAY
  *
  */
@@ -149,7 +152,7 @@ public class AppConfiguration implements Cloneable {
 	}
 
 	/**
-	 * Définit l'utilisation ou nom d'un serveur mendataire pour la connectivité réseau
+	 * Définit l'utilisation ou nom d'un serveur mandataire pour la connectivité réseau
 	 * 
 	 * @param useProxy true si un proxy doit être utilisé, false sinon
 	 */
@@ -158,25 +161,25 @@ public class AppConfiguration implements Cloneable {
 	}
 
 	/**
-	 * Retourne les parametres du proxy qui doit être utilisé pour les connections http
+	 * Retourne les paramètres du proxy qui doit être utilisé pour les connections http
 	 * 
-	 * @return proxy les parametres de proxy
+	 * @return proxy les paramètres de proxy
 	 */
 	public Proxy getProxy() {
 		return proxy;
 	}
 
 	/**
-	 * Définit les parametres du proxy qui doit être utilisé pour les connections http
+	 * Définit les paramètres du proxy qui doit être utilisé pour les connections http
 	 * 
-	 * @param proxy les parametres de proxy
+	 * @param proxy les paramètres de proxy
 	 */
 	public void setProxy(Proxy proxy) {
 		this.proxy = proxy;
 	}
 
 	/**
-	 * Détéremine si c'est le premier lancement de l'application
+	 * Détermine si c'est le premier lancement de l'application
 	 * @return <code>true</code> si l'application est lancé pour la première fois, <code><false</code> sinon
 	 */
 	public boolean isFirstboot() {

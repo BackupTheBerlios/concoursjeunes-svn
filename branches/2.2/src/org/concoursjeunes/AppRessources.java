@@ -36,7 +36,7 @@
  * à l'utiliser et l'exploiter dans les mêmes conditions de sécurité. 
  * 
  * Le fait que vous puissiez accéder à cet en-tête signifie que vous avez 
- * pri connaissance de la licence CeCILL, et que vous en avez accepté les
+ * pris connaissance de la licence CeCILL, et que vous en avez accepté les
  * termes.
  *
  * ENGLISH:
@@ -92,8 +92,8 @@ import java.io.File;
 import java.io.FilenameFilter;
 
 /**
- * <p>Gére et retourne le chemin des différentes ressources utilisateur pour le programme.</p>
- * <p>Les chemins retournés sont fonction du sytème d'exploitation de l'utilisateur, ainsi que
+ * <p>Gère et retourne le chemin des différentes ressources utilisateur pour le programme.</p>
+ * <p>Les chemins retournés sont fonction du système d'exploitation de l'utilisateur, ainsi que
  * de sa session</p>
  * 
  * @author Aurélien Jeoffray
@@ -103,7 +103,7 @@ public class AppRessources extends org.ajdeveloppement.apps.AppRessources {
 	private static String EXT_XML = ".xml"; //$NON-NLS-1$
 
 	/**
-	 * Construit le répertoire utilisateur selon le systeme
+	 * Construit le répertoire utilisateur selon le système
 	 * 
 	 * @param progname
 	 *            nom du programme
@@ -123,7 +123,7 @@ public class AppRessources extends org.ajdeveloppement.apps.AppRessources {
 	/**
 	 * Retourne le chemin absolu du profile
 	 * 
-	 * @param profile le nom du profil pour lequelle récuperer le chemin
+	 * @param profile le nom du profil pour lequel récupérer le chemin
 	 * @return le chemin absolu du profile
 	 */
 	public File getProfilePath(Profile profile) {
@@ -173,10 +173,10 @@ public class AppRessources extends org.ajdeveloppement.apps.AppRessources {
 
 	/**
 	 * Donne le répertoire ou sont stocké les concours pour le profil donné en
-	 * parametre
+	 * paramètre
 	 * 
 	 * @param profile
-	 *            le nom du profile pour lequel récuperer le chemin des concours
+	 *            le nom du profile pour lequel récupérer le chemin des concours
 	 * @return le chemin des concours
 	 */
 	public File getConcoursPathForProfile(Profile profile) {
@@ -191,8 +191,7 @@ public class AppRessources extends org.ajdeveloppement.apps.AppRessources {
 	/**
 	 * Retourne le chemin des logs en fonction du profil
 	 * 
-	 * @param profile -
-	 *            le profil pour lequelle renvouyé le chemin des logs
+	 * @param profile le profil pour lequel renvoyer le chemin des logs
 	 * @return le chemin des logs du profil
 	 */
 	public File getLogPathForProfile(Profile profile) {

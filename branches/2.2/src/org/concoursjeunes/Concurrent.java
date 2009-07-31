@@ -97,7 +97,7 @@ import org.ajdeveloppement.commons.sql.SqlPersistanceException;
 
 /**
  * Objet de Base de stockage des Information sur un concurrent:
- *  Nom Categorie Licence Cible Nombre de volée points
+ *  Nom Catégorie Licence Cible Nombre de volée points
  *  
  * @author  Aurélien Jeoffray
  * @version  3.0
@@ -175,7 +175,7 @@ public class Concurrent extends Archer implements Cloneable {
 	 * Donne le total des points du concurrent
 	 * pour classement
 	 * 
-	 * @return int - le total des points
+	 * @return le total des points
 	 */
 	public int getTotalScore() {
 		int total = 0;
@@ -212,6 +212,7 @@ public class Concurrent extends Archer implements Cloneable {
 	/**
 	 * Affecte le nombre de dix total du concurrent
 	 * 
+	 * @deprecated remplacé par {@link #setDepartages(int[])}
 	 * @param  neuf
 	 */
 	@Deprecated
@@ -224,8 +225,8 @@ public class Concurrent extends Archer implements Cloneable {
 	}
 
 	/**
-	 * Déprecié, retourne toujours 0
-	 * @return  int
+	 * @deprecated retourne toujours 0, utiliser {@link #getDepartages()} à la place
+	 * @return  toujours 0
 	 */
 	@Deprecated
 	public int getNeuf() {
@@ -234,6 +235,8 @@ public class Concurrent extends Archer implements Cloneable {
 
 	/**
 	 * Affecte le nombre de 10+ total du concurrent
+	 * 
+	 * @deprecated remplacé par {@link #setDepartages(int[])}
 	 * @param  dix
 	 */
 	@Deprecated
@@ -246,8 +249,8 @@ public class Concurrent extends Archer implements Cloneable {
 	}
 
 	/**
-	 * Déprecié, retourne toujours 0
-	 * @return  int
+	 * @deprecated retourne toujours 0, utiliser {@link #getDepartages()} à la place
+	 * @return  toujours 0
 	 */
 	@Deprecated
 	public int getDix() {
@@ -255,16 +258,18 @@ public class Concurrent extends Archer implements Cloneable {
 	}
 
 	/**
-	 * Retourne le numero de départ de l'archer
-	 * @return  Returns the depart.
+	 * Retourne le numéro de départ de l'archer
+	 * 
+	 * @return retourne le numéro du départ
 	 */
 	public int getDepart() {
 		return depart;
 	}
 
 	/**
-	 * Définit le n° de départ de l'archer
-	 * @param depart  The depart to set.
+	 * Définit le n° de départ du concurrent
+	 * 
+	 * @param depart le numéro du départ associé au concurrent
 	 */
 	public void setDepart(int depart) {
 		Object oldValue = this.depart;
@@ -275,16 +280,18 @@ public class Concurrent extends Archer implements Cloneable {
 	}
 
 	/**
-	 * Donne le numero de cible du concurrent
-	 * @return  int
+	 * Donne le numéro de cible du concurrent
+	 * 
+	 * @return le numéro de cible du concurrent
 	 */
 	public int getCible() {
 		return this.targetPosition.getTarget();
 	}
 
 	/**
-	 * Affecte le numero de cible du concurrent
-	 * @param  cible
+	 * Affecte le numéro de cible du concurrent
+	 * 
+	 * @param  cible le numéro de cible du concurrent
 	 */
 	public void setCible(int cible) {
 		Object oldValue = this.targetPosition.getTarget();
@@ -296,7 +303,8 @@ public class Concurrent extends Archer implements Cloneable {
 
 	/**
 	 * Donne la position sur cible du concurrent
-	 * @return  int
+	 * 
+	 * @return la position sur cible du concurrent
 	 */
 	public int getPosition() {
 		return this.targetPosition.getPosition();
@@ -304,7 +312,8 @@ public class Concurrent extends Archer implements Cloneable {
 
 	/**
 	 * Affecte la position sur cible du concurrent
-	 * @param  position
+	 * 
+	 * @param position la position sur cible du concurrent
 	 */
 	public void setPosition(int position) {
 		Object oldValue = this.targetPosition.getPosition();
@@ -315,16 +324,18 @@ public class Concurrent extends Archer implements Cloneable {
 	}
 
 	/**
-	 * Donne l'etat d'inscription du concurennt, réservé/payée
-	 * @return  int
+	 * Donne l'etat d'inscription du concurrent, réservé/payée
+	 * 
+	 * @return l'etat d'inscription du concurrent
 	 */
 	public int getInscription() {
-		return this.inscription;
+		return inscription;
 	}
 
 	/**
-	 * Affecte l'etat d'inscription du concurennt, réservé/payée
-	 * @param  inscription
+	 * Affecte l'etat d'inscription du concurrent, réservé/payée
+	 * 
+	 * @param  inscription l'etat d'inscription du concurrent
 	 */
 	public void setInscription(int inscription) {
 		this.inscription = inscription;
@@ -358,7 +369,7 @@ public class Concurrent extends Archer implements Cloneable {
 	}
 
 	/**
-	 * définit si l'archer est suclassé ou non
+	 * définit si l'archer est surclassé ou non
 	 * 
 	 * @param surclassement <i>true</i> si l'archer est surclassé, <i>false</i> sinon
 	 */
@@ -368,7 +379,7 @@ public class Concurrent extends Archer implements Cloneable {
 
 	/**
 	 * Indique si l'archer utilise ou non le blason alternatif
-	 * (par exemple tri-spot) permis par sa categorie
+	 * (par exemple tri-spot) permis par sa catégorie
 	 * 
 	 * @return useAlternativeTargetFace true si l'on doit utiliser le
 	 * blason alternatif
@@ -430,10 +441,10 @@ public class Concurrent extends Archer implements Cloneable {
 	}
 	
 	/**
-	 * compare de maniere récursive les départages d'ex-equo
+	 * compare de manière récursive les départages d'ex-aequo
 	 * 
 	 * @param other le concurrent avec lequel comparer
-	 * @return 1 si le concurrent à le score le plus élevé, 0 si ex equo, -1 si le second concurrent à le meilleur score.
+	 * @return 1 si le concurrent à le score le plus élevé, 0 si ex aequo, -1 si le second concurrent à le meilleur score.
 	 */
 	public int compareDepartageWith(Concurrent other) {
 		return compareDepartageWith(other, 0);
