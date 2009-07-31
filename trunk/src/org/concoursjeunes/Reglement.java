@@ -96,7 +96,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -114,12 +113,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.ajdeveloppement.commons.sql.SqlField;
-import org.ajdeveloppement.commons.sql.SqlForeignFields;
+import org.ajdeveloppement.commons.sql.SqlForeignKey;
 import org.ajdeveloppement.commons.sql.SqlPersistance;
 import org.ajdeveloppement.commons.sql.SqlPersistanceException;
 import org.ajdeveloppement.commons.sql.SqlPrimaryKey;
 import org.ajdeveloppement.commons.sql.SqlStoreHelper;
 import org.ajdeveloppement.commons.sql.SqlTable;
+import org.ajdeveloppement.commons.sql.SqlUnmappedFields;
 
 /**
  * <p>
@@ -148,7 +148,7 @@ import org.ajdeveloppement.commons.sql.SqlTable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @SqlTable(name="REGLEMENT")
 @SqlPrimaryKey(fields="NUMREGLEMENT",generatedidField="NUMREGLEMENT")
-@SqlForeignFields(fields={"NUMFEDERATION"})
+@SqlUnmappedFields(fields={"NUMFEDERATION"})
 public class Reglement implements SqlPersistance {
 	
 	public enum TypeReglement {
@@ -200,6 +200,7 @@ public class Reglement implements SqlPersistance {
 
 	@SqlField(name="ISOFFICIAL")
 	private boolean officialReglement = false;
+	@SqlForeignKey(mappedTo={"NUMFEDERATION"})
 	private Federation federation = new Federation();
 	@SqlField(name="NUMCATEGORIE_REGLEMENT")
 	private int category = 0;
@@ -847,7 +848,7 @@ public class Reglement implements SqlPersistance {
 		boolean creation = false;
 		if(numReglement == 0)
 			creation = true;
-		helper.save(this, Collections.singletonMap("NUMFEDERATION", (Object)federation.getNumFederation())); //$NON-NLS-1$
+		helper.save(this);
 		
 		if(creation)
 			setNumReglement(numReglement); //force le recalcule des hashCode des surclassements
@@ -984,19 +985,11 @@ public class Reglement implements SqlPersistance {
 	 */
 	@Override
 	public void delete() throws SqlPersistanceException{
+		
 		if (!officialReglement) {
-			try {
-				Statement stmt = ApplicationCore.dbConnection.createStatement();
-				try {
-					stmt.executeUpdate("delete from REGLEMENT where NUMREGLEMENT=" + numReglement); //$NON-NLS-1$
-				} finally {
-					stmt.close();
-				}
-			} catch (SQLException e) {
-				throw new SqlPersistanceException(e);
-			}
+			helper.delete(this);
 		} else
-			new SqlPersistanceException("delete this Reglement is not authorized because there is official"); //$NON-NLS-1$
+			throw new SqlPersistanceException("delete this Reglement is not authorized because there is official"); //$NON-NLS-1$
 	}
 	
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {

@@ -106,12 +106,13 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.ajdeveloppement.commons.JAXBMapRefAdapter;
 import org.ajdeveloppement.commons.sql.SqlField;
-import org.ajdeveloppement.commons.sql.SqlForeignFields;
+import org.ajdeveloppement.commons.sql.SqlForeignKey;
 import org.ajdeveloppement.commons.sql.SqlPersistance;
 import org.ajdeveloppement.commons.sql.SqlPersistanceException;
 import org.ajdeveloppement.commons.sql.SqlPrimaryKey;
 import org.ajdeveloppement.commons.sql.SqlStoreHelper;
 import org.ajdeveloppement.commons.sql.SqlTable;
+import org.ajdeveloppement.commons.sql.SqlUnmappedFields;
 
 /**
  * Jeux de critères utilisé pour distinguer un archer a des fins
@@ -122,12 +123,13 @@ import org.ajdeveloppement.commons.sql.SqlTable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @SqlTable(name="CRITERIASET")
 @SqlPrimaryKey(fields="NUMCRITERIASET",generatedidField="NUMCRITERIASET")
-@SqlForeignFields(fields={"IDCRITERIASET", "NUMREGLEMENT"})
+@SqlUnmappedFields(fields={"IDCRITERIASET"})
 public class CriteriaSet implements SqlPersistance {
 
 	@XmlTransient
 	@SqlField(name="NUMCRITERIASET")
 	private int numCriteriaSet = 0;
+	@SqlForeignKey(mappedTo="NUMREGLEMENT")
 	@XmlTransient
 	private Reglement reglement;
 	@XmlJavaTypeAdapter(JAXBMapRefAdapter.class)
@@ -309,10 +311,7 @@ public class CriteriaSet implements SqlPersistance {
 			throw new SqlPersistanceException(e);
 		}
 
-		Map<String, Object> fk = new HashMap<String, Object>();
-		fk.put("NUMREGLEMENT", reglement.getNumReglement()); //$NON-NLS-1$
-		fk.put("IDCRITERIASET", uid); //$NON-NLS-1$
-		helper.save(this, fk); 
+		helper.save(this, Collections.singletonMap("IDCRITERIASET", (Object)uid));  //$NON-NLS-1$
 		
 		try {
 			sql =  "merge into POSSEDE (NUMCRITERIASET, CODECRITEREELEMENT, " //$NON-NLS-1$

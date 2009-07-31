@@ -90,9 +90,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.xml.bind.Marshaller;
@@ -104,7 +102,7 @@ import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.ajdeveloppement.commons.sql.SqlField;
-import org.ajdeveloppement.commons.sql.SqlForeignFields;
+import org.ajdeveloppement.commons.sql.SqlForeignKey;
 import org.ajdeveloppement.commons.sql.SqlPersistance;
 import org.ajdeveloppement.commons.sql.SqlPersistanceException;
 import org.ajdeveloppement.commons.sql.SqlPrimaryKey;
@@ -120,7 +118,7 @@ import org.concoursjeunes.builders.CriterionElementBuilder;
 @XmlAccessorType(XmlAccessType.FIELD)
 @SqlTable(name="CRITEREELEMENT")
 @SqlPrimaryKey(fields={"CODECRITEREELEMENT","CODECRITERE","NUMREGLEMENT"})
-@SqlForeignFields(fields={"CODECRITERE","NUMREGLEMENT"})
+//@SqlUnmappedFields(fields={"CODECRITERE","NUMREGLEMENT"})
 public class CriterionElement implements SqlPersistance {
 	
 	//utilisé pour donnée un identifiant unique à la sérialisation de l'objet
@@ -138,6 +136,7 @@ public class CriterionElement implements SqlPersistance {
 	@SqlField(name="NUMORDRE")
     private int numordre = 0;
 	
+	@SqlForeignKey(mappedTo={"CODECRITERE","NUMREGLEMENT"})
 	@XmlTransient
 	private Criterion criterion;
 	
@@ -258,13 +257,9 @@ public class CriterionElement implements SqlPersistance {
 	 * 
 	 * @see org.ajdeveloppement.commons.sql.SqlPersistance#save()
 	 */
-	@SuppressWarnings("nls")
 	@Override
 	public void save() throws SqlPersistanceException {
-		Map<String, Object> fk = new HashMap<String, Object>();
-		fk.put("NUMREGLEMENT", criterion.getReglement().getNumReglement());
-		fk.put("CODECRITERE", criterion.getCode());
-		helper.save(this, fk);
+		helper.save(this);
 	}
 	
 	/**
@@ -272,13 +267,9 @@ public class CriterionElement implements SqlPersistance {
 	 * 
 	 * @see org.ajdeveloppement.commons.sql.SqlPersistance#delete()
 	 */
-	@SuppressWarnings("nls")
 	@Override
 	public void delete() throws SqlPersistanceException {
-		Map<String, Object> fk = new HashMap<String, Object>();
-		fk.put("NUMREGLEMENT", criterion.getReglement().getNumReglement());
-		fk.put("CODECRITERE", criterion.getCode());
-		helper.delete(this, fk);
+		helper.delete(this);
 	}
 	
 	protected void beforeMarshal(Marshaller marshaller) {

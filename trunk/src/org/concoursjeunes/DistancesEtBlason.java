@@ -90,9 +90,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -103,23 +101,24 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.ajdeveloppement.commons.sql.SqlField;
-import org.ajdeveloppement.commons.sql.SqlForeignFields;
+import org.ajdeveloppement.commons.sql.SqlForeignKey;
 import org.ajdeveloppement.commons.sql.SqlPersistance;
 import org.ajdeveloppement.commons.sql.SqlPersistanceException;
 import org.ajdeveloppement.commons.sql.SqlPrimaryKey;
 import org.ajdeveloppement.commons.sql.SqlStoreHelper;
 import org.ajdeveloppement.commons.sql.SqlTable;
+import org.ajdeveloppement.commons.sql.SqlUnmappedFields;
 import org.concoursjeunes.xml.bind.BlasonAdapter;
 
 /**
- * parametre de distances et blason pour une cible et un concurrent
+ * paramètre de distances et blason pour une cible et un concurrent
  * 
  * @author Aurélien Jeoffray
  * @version 1.0
  */
 @SqlTable(name="DISTANCESBLASONS")
 @SqlPrimaryKey(fields={"NUMDISTANCESBLASONS","NUMREGLEMENT"},generatedidField="NUMDISTANCESBLASONS")
-@SqlForeignFields(fields={"NUMREGLEMENT","NUMBLASON","NUMCRITERIASET"})
+@SqlUnmappedFields(fields={"NUMREGLEMENT"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class DistancesEtBlason implements SqlPersistance {
 	@XmlElementWrapper(name="distances",required=true)
@@ -127,11 +126,13 @@ public class DistancesEtBlason implements SqlPersistance {
 	private int[] distances = new int[] { 18, 18 };
 	@XmlTransient
 	private int blason = 80;
+	@SqlForeignKey(mappedTo="NUMBLASON")
 	@XmlJavaTypeAdapter(BlasonAdapter.class)
 	private Blason targetFace = new Blason();
 	@SqlField(name="DEFAULTTARGETFACE")
 	private boolean defaultTargetFace = true;
 
+	@SqlForeignKey(mappedTo="NUMCRITERIASET")
 	private CriteriaSet criteriaSet = new CriteriaSet();
 
 	@SqlField(name="NUMDISTANCESBLASONS")
@@ -298,11 +299,7 @@ public class DistancesEtBlason implements SqlPersistance {
 	public void save() throws SqlPersistanceException {
 		criteriaSet.save();
 		
-		Map<String, Object> fk = new HashMap<String, Object>();
-		fk.put("NUMREGLEMENT", criteriaSet.getReglement().getNumReglement()); //$NON-NLS-1$
-		fk.put("NUMBLASON", targetFace.getNumblason()); 
-		fk.put("NUMCRITERIASET", criteriaSet.getNumCriteriaSet()); 
-		helper.save(this, fk);
+		helper.save(this, Collections.singletonMap("NUMREGLEMENT", (Object)criteriaSet.getReglement().getNumReglement()));
 		
 		try {
 			Statement stmt = ApplicationCore.dbConnection.createStatement();

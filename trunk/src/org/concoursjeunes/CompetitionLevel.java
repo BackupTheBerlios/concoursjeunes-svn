@@ -89,14 +89,13 @@
 package org.concoursjeunes;
 
 import java.sql.SQLException;
-import java.util.Collections;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.ajdeveloppement.commons.sql.SqlField;
-import org.ajdeveloppement.commons.sql.SqlForeignFields;
+import org.ajdeveloppement.commons.sql.SqlForeignKey;
 import org.ajdeveloppement.commons.sql.SqlPersistance;
 import org.ajdeveloppement.commons.sql.SqlPersistanceException;
 import org.ajdeveloppement.commons.sql.SqlPrimaryKey;
@@ -111,7 +110,7 @@ import org.ajdeveloppement.commons.sql.SqlTable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @SqlTable(name="NIVEAU_COMPETITION")
 @SqlPrimaryKey(fields={"CODENIVEAU","NUMFEDERATION","LANG"})
-@SqlForeignFields(fields={"NUMFEDERATION"})
+//@SqlUnmappedFields(fields={"NUMFEDERATION"})
 public class CompetitionLevel implements SqlPersistance {
 	@XmlTransient
 	@SqlField(name="CODENIVEAU")
@@ -123,6 +122,7 @@ public class CompetitionLevel implements SqlPersistance {
 	@SqlField(name="DEFAUT")
 	private boolean defaut = false;
 	
+	@SqlForeignKey(mappedTo={"NUMFEDERATION"})
 	@XmlTransient
 	private Federation federation;
 	
@@ -140,70 +140,95 @@ public class CompetitionLevel implements SqlPersistance {
 	}
 
 	/**
-	 * @return code
+	 * Retourne le numéro du niveau de compétition
+	 * 
+	 * @return le numéro du niveau de compétition
 	 */
 	public int getNumLevel() {
 		return numlevel;
 	}
 
 	/**
-	 * @param code code à définir
+	 * Définit le numéro du niveau de compétition
+	 * 
+	 * @param code le numéro du niveau de compétition
 	 */
 	public void setNumLevel(int code) {
 		this.numlevel = code;
 	}
 	
 	/**
-	 * @return federation
+	 * Retourne la fédération attaché au niveau de compétition
+	 * 
+	 * @return federation la fédération attaché au niveau de compétition
 	 */
 	public Federation getFederation() {
 		return federation;
 	}
 
 	/**
-	 * @param federation federation à définir
+	 * Définit la fédération attaché au niveau de compétition
+	 * 
+	 * @param federation la fédération attaché au niveau de compétition
 	 */
 	public void setFederation(Federation federation) {
 		this.federation = federation;
 	}
 
 	/**
-	 * @return lang
+	 * Retourne le code de la langue (au format ISO) utilisé pour le niveau
+	 *  
+	 * @return le code de la langue du niveau
 	 */
 	public String getLang() {
 		return lang;
 	}
 
 	/**
-	 * @param lang lang à définir
+	 * Définit le code de la langue (au format ISO) utilisé pour le niveau
+	 * 
+	 * @param lang le code de la langue du niveau
 	 */
 	public void setLang(String lang) {
 		this.lang = lang;
 	}
 
 	/**
-	 * @return libelle
+	 * Retourne le libellé du niveau de compétition
+	 * 
+	 * @return le libellé du niveau de compétition
 	 */
 	public String getLibelle() {
 		return libelle;
 	}
 
 	/**
-	 * @param libelle libelle à définir
+	 * Définit le libellé du niveau de compétition. La langue du libellé doit
+	 * correspondre à la langue retourné par {@link #getLang()}.
+	 * 
+	 * @param libelle le libellé du niveau de compétition.
 	 */
 	public void setLibelle(String libelle) {
 		this.libelle = libelle;
 	}
 	
 	/**
-	 * @param defaut defaut à définir
+	 * Définit si c'est le niveau de compétition par défaut ou non.
+	 * Attention, il ne doit y avoir qu'un niveau de compétition par
+	 * défaut par langue et fédération.
+	 * 
+	 * @param defaut true si c'est le niveau de compétition par défaut de la
+	 * fédération.
 	 */
 	public void setDefaut(boolean defaut) {
 		this.defaut = defaut;
 	}
 
 	/**
-	 * @return defaut
+	 * Indique si c'est le niveau de compétition par défaut ou non.
+	 * 
+	 * @return true si c'est le niveau de compétition par défaut de la
+	 * fédération.
 	 */
 	public boolean isDefaut() {
 		return defaut;
@@ -218,7 +243,7 @@ public class CompetitionLevel implements SqlPersistance {
 	 */
 	@Override
 	public void save() throws SqlPersistanceException {
-		helper.save(this, Collections.singletonMap("NUMFEDERATION", (Object)federation.getNumFederation())); //$NON-NLS-1$
+		helper.save(this);
 	}
 
 	/** 
@@ -231,7 +256,7 @@ public class CompetitionLevel implements SqlPersistance {
 	 */
 	@Override
 	public void delete() throws SqlPersistanceException {
-		helper.delete(this, Collections.singletonMap("NUMFEDERATION", (Object)federation.getNumFederation())); //$NON-NLS-1$
+		helper.delete(this);
 	}
 
 	/* (non-Javadoc)

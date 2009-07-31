@@ -89,7 +89,6 @@ package org.concoursjeunes;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.xml.bind.Unmarshaller;
@@ -102,7 +101,7 @@ import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.ajdeveloppement.commons.sql.SqlField;
-import org.ajdeveloppement.commons.sql.SqlForeignFields;
+import org.ajdeveloppement.commons.sql.SqlForeignKey;
 import org.ajdeveloppement.commons.sql.SqlPersistance;
 import org.ajdeveloppement.commons.sql.SqlPersistanceException;
 import org.ajdeveloppement.commons.sql.SqlPrimaryKey;
@@ -117,7 +116,7 @@ import org.ajdeveloppement.commons.sql.SqlTable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @SqlTable(name="CRITERE")
 @SqlPrimaryKey(fields={"CODECRITERE","NUMREGLEMENT"})
-@SqlForeignFields(fields="NUMREGLEMENT")
+//@SqlUnmappedFields(fields="NUMREGLEMENT")
 public class Criterion implements SqlPersistance {
 	/**
 	 * Tri des éléments du critères croissant
@@ -158,6 +157,7 @@ public class Criterion implements SqlPersistance {
     @XmlElement(name="element")
     private List<CriterionElement> criterionElements = new ArrayList<CriterionElement>();
     
+    @SqlForeignKey(mappedTo="NUMREGLEMENT")
     @XmlTransient
     private Reglement reglement;
     
@@ -433,7 +433,7 @@ public class Criterion implements SqlPersistance {
 	@SuppressWarnings("nls")
 	@Override
 	public void save() throws SqlPersistanceException {
-		helper.save(this, Collections.singletonMap("NUMREGLEMENT", (Object)reglement.getNumReglement())); //$NON-NLS-1$
+		helper.save(this);
 
 		try {
 			Statement stmt = ApplicationCore.dbConnection.createStatement();
@@ -468,7 +468,7 @@ public class Criterion implements SqlPersistance {
 	 */
 	@Override
 	public void delete() throws SqlPersistanceException {
-		helper.delete(this, Collections.singletonMap("NUMREGLEMENT", (Object)reglement.getNumReglement())); //$NON-NLS-1$
+		helper.delete(this);
 	}
 	
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
