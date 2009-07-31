@@ -154,13 +154,19 @@ public class CriterionElement implements SqlPersistance {
         
     }
     
+    /**
+     * Construit un nouvel élément de critère avec le code fournit en paramètre
+     * 
+     * @param code le code de l'élément
+     */
     public CriterionElement(String code) {
         this.code = code;
     }
 
     /**
 	 * Renvoie le code de l'élément
-	 * @return  Renvoie code.
+	 * 
+	 * @return le code de l'élément
 	 */
     public String getCode() {
         return code;
@@ -168,21 +174,26 @@ public class CriterionElement implements SqlPersistance {
 
     /**
 	 * Définit le code de l'élément
-	 * @param code  code à définir.
+	 * 
+	 * @param code le code de l'élément
 	 */
     public void setCode(String code) {
         this.code = code;
     }
 
 	/**
-	 * @return criterion
+	 * Retourne le critère parent de l'élément
+	 * 
+	 * @return criterion le critère parent de l'élément
 	 */
 	public Criterion getCriterion() {
 		return criterion;
 	}
 
 	/**
-	 * @param criterion criterion à définir
+	 * Définit le critère parent de l'élément
+	 * 
+	 * @param criterion le critère parent de l'élément
 	 */
 	public void setCriterion(Criterion criterion) {
 		this.criterion = criterion;
@@ -190,7 +201,8 @@ public class CriterionElement implements SqlPersistance {
 
 	/**
 	 * Est-ce que l'élément est utilisé?
-	 * @return  Renvoie isactive.
+	 * 
+	 * @return <code>true</code> si l'élément est actif
 	 */
     public boolean isActive() {
         return active;
@@ -198,7 +210,8 @@ public class CriterionElement implements SqlPersistance {
 
     /**
 	 * Détermine si l'élément doit être utilisé
-	 * @param active  - Etat de l'élément (actif ou non).
+	 * 
+	 * @param active État de l'élément (actif ou non).
 	 */
     public void setActive(boolean active) {
         this.active = active;
@@ -206,7 +219,8 @@ public class CriterionElement implements SqlPersistance {
 
     /**
 	 * Renvoi le libellé de l'élément
-	 * @return  Renvoie libelle.
+	 * 
+	 * @return le libellé de l'élément
 	 */
     public String getLibelle() {
         return libelle;
@@ -214,32 +228,33 @@ public class CriterionElement implements SqlPersistance {
 
     /**
 	 * Définit le libelle de l'élément
-	 * @param libelle  libelle à définir.
+	 * 
+	 * @param libelle le libellé de l'élément
 	 */
     public void setLibelle(String libelle) {
         this.libelle = libelle;
     }
 
     /**
-     * Retourne le numero d'ordre d'affichage de l'élément
+     * Retourne le numéro d'ordre d'affichage de l'élément
      * 
-     * @return le numero d'ordre d'affichage de l'élément
+     * @return le numéro d'ordre d'affichage de l'élément
      */
     public int getNumordre() {
     	return numordre;
     }
 
     /**
-     * Définit le numero d'ordre d'affichage de l'élément
+     * Définit le numéro d'ordre d'affichage de l'élément
      * 
-     * @param numordre le numero d'ordre d'affichage de l'élément
+     * @param numordre le numéro d'ordre d'affichage de l'élément
      */
 	public void setNumordre(int numordre) {
     	this.numordre = numordre;
     }
 	
 	/**
-	 * Sauvegarde l'élement de critére dans la base.  Les arguments sont ignoré
+	 * Sauvegarde l'élement de critère dans la base.  Les arguments sont ignoré
 	 * 
 	 * @see org.ajdeveloppement.commons.sql.SqlPersistance#save()
 	 */
@@ -284,10 +299,10 @@ public class CriterionElement implements SqlPersistance {
     }
     
     /**
-     * Test si deux élements de critères sont équivalent
+     * Test si deux éléments de critères sont équivalent
      * 
-     * @param criterionElement - l'objet à comaré
-     * @return boolean - le résulats de la comparaison de critères
+     * @param criterionElement - l'objet à comparer
+     * @return boolean - le résultats de la comparaison de critères
      */
     public boolean equals(CriterionElement criterionElement) {
         return code.equals(criterionElement.getCode());
@@ -296,8 +311,8 @@ public class CriterionElement implements SqlPersistance {
     /**
      * Test si deux critères sont équivalent en se basant sur la comparaison d'objet
      * 
-     * @param criterionElement - l'objet à comaré
-     * @return boolean - le résulats de la comparaison de critères
+     * @param criterionElement - l'objet à comparer
+     * @return boolean - le résultats de la comparaison de critères
      */
     @Override
     public boolean equals(Object criterionElement) {
@@ -315,7 +330,9 @@ public class CriterionElement implements SqlPersistance {
     }
     
     /**
-     * Retourne l'ensemble des éléments de critére associé à un critére donné
+     * Retourne l'ensemble des éléments de critère associé à un critère donné
+     * 
+     * TODO à revoir
      */
     public static List<CriterionElement> getAllCriterionElementsFor(Criterion criterion) {
     	List<CriterionElement> elements = new ArrayList<CriterionElement>();

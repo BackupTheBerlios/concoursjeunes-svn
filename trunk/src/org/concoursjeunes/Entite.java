@@ -86,16 +86,18 @@
  */
 package org.concoursjeunes;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
+
+import org.ajdeveloppement.commons.sql.SqlField;
+import org.ajdeveloppement.commons.sql.SqlPersistance;
+import org.ajdeveloppement.commons.sql.SqlPersistanceException;
+import org.ajdeveloppement.commons.sql.SqlPrimaryKey;
+import org.ajdeveloppement.commons.sql.SqlStoreHelper;
+import org.ajdeveloppement.commons.sql.SqlTable;
 
 /**
- * Entite organisationnelle.<br>
- * Une entite peut représenté
+ * Entité organisationnelle.<br>
+ * Une entité peut représenté
  * <ul>
  * <li>Une Fédération</li>
  * <li>Une ligue</li>
@@ -105,20 +107,38 @@ import java.util.List;
  * 
  * @author Aurélien JEOFFRAY
  */
-public class Entite {
-    
-    private String nom        	= ""; //$NON-NLS-1$
-    private String agrement		= ""; //$NON-NLS-1$
-    private String adresse   	= ""; //$NON-NLS-1$
-    private String codePostal	= ""; //$NON-NLS-1$
-    private String ville      	= ""; //$NON-NLS-1$
-    private String note		 	= ""; //$NON-NLS-1$
-    private int type          	= CLUB;
-    
-    public static final int FEDERATION = 0;
+@SqlTable(name="ENTITE")
+@SqlPrimaryKey(fields={"AGREMENTENTITE"})
+public class Entite implements SqlPersistance {
+	
+	public static final int FEDERATION = 0;
     public static final int LIGUE = 1;
     public static final int CD = 2;
     public static final int CLUB = 3;
+    
+    @SqlField(name="NOMENTITE")
+    private String nom        	= ""; //$NON-NLS-1$
+    @SqlField(name="AGREMENTENTITE")
+    private String agrement		= ""; //$NON-NLS-1$
+    @SqlField(name="ADRESSEENTITE")
+    private String adresse   	= ""; //$NON-NLS-1$
+    @SqlField(name="CODEPOSTALENTITE")
+    private String codePostal	= ""; //$NON-NLS-1$
+    @SqlField(name="VILLEENTITE")
+    private String ville      	= ""; //$NON-NLS-1$
+    @SqlField(name="NOTEENTITE")
+    private String note		 	= ""; //$NON-NLS-1$
+    @SqlField(name="TYPEENTITE")
+    private int type          	= CLUB;
+
+    private static SqlStoreHelper<Entite> helper = null;
+	static {
+		try {
+			helper = new SqlStoreHelper<Entite>(ApplicationCore.dbConnection, Entite.class);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
     
     public Entite() {
         
@@ -146,9 +166,9 @@ public class Entite {
     
 
     /**
-     * Retourne le numero d'agrement identifiant de manière unique l'entite
+     * Retourne le numéro d'agrement identifiant de manière unique l'entite
      * 
-	 * @return le numero d'agrement
+	 * @return le numéro d'agrement
 	 */
     public String getAgrement() {
         return agrement;
@@ -210,9 +230,9 @@ public class Entite {
     
 
     /**
-     * Définit le numero d'agrement identifiant de manière unique l'entite
+     * Définit le numéro d'agrement identifiant de manière unique l'entite
      * 
-	 * @param agrement le numero d'agrement
+	 * @param agrement le numéro d'agrement
 	 */
     public void setAgrement(String agrement) {
         this.agrement = agrement;
@@ -291,89 +311,14 @@ public class Entite {
 	/**
 	 * Sauvegarde l'entite dans la base de donnée
 	 */
-	public void save() {
-		try {
-			String sql = "MERGE INTO Entite (AGREMENTENTITE, NOMENTITE, " + //$NON-NLS-1$
-					"ADRESSEENTITE, CODEPOSTALENTITE, VILLEENTITE, NOTEENTITE, TYPEENTITE) " + //$NON-NLS-1$
-					"VALUES (?, ?, ?, ?, ?, ?, ?)"; //$NON-NLS-1$
-			PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
-			pstmt.setString(1, agrement);
-			pstmt.setString(2, nom);
-			pstmt.setString(3, adresse);
-			pstmt.setString(4, codePostal);
-			pstmt.setString(5, ville);
-			pstmt.setString(6, note);
-			pstmt.setInt(7, type);
-			pstmt.executeUpdate();
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	@Override
+	public void save() throws SqlPersistanceException {
+		helper.save(this);
 	}
 	
-	/**
-	 * Liste les entites stocké dans la base correspondant à l'entite generique
-	 * transmis en parametre et ordonné par le nom du champs fournit<br>
-	 * <br>
-	 * Une entite générique est une entite ou seul l'une des 3 propriétés
-	 * (Nom, Agrement, Ville) est renseigné. L'utilisation des wildcards SQL
-	 * est possible (%, _)
-	 * 
-	 * @param eGeneric l'entite générique permettant de filtré les résultats
-	 * @param orderfield le champs de tri de la liste
-	 * 
-	 * @return la liste des entite répondant aux critères de recherche
-	 */
-	public static List<Entite> getEntitesInDatabase(Entite eGeneric, String orderfield) {
-		List<Entite> entites = new ArrayList<Entite>();
-		Statement stmt = null;
-		
-		try {
-			stmt = ApplicationCore.dbConnection.createStatement();
-			
-			String sql = "select * from Entite "; //$NON-NLS-1$
-			if(eGeneric != null) {
-				sql += "where "; //$NON-NLS-1$
-				ArrayList<String> filters = new ArrayList<String>();
-				if(eGeneric.getNom().length() > 0) {
-					filters.add("NOMENTITE like '" + eGeneric.getNom().toUpperCase() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
-				}
-				if(eGeneric.getAgrement().length() > 0) {
-					filters.add("AGREMENTENTITE like '" + eGeneric.getAgrement().toUpperCase() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
-				}
-				if(eGeneric.getVille().length() > 0) {
-					filters.add("VILLEENTITE like '" + eGeneric.getVille().toUpperCase() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
-				}
-				
-				for(String filter : filters) {
-					sql += " and " + filter; //$NON-NLS-1$
-				}
-			}
-			sql = sql.replaceFirst(" and ", ""); //$NON-NLS-1$ //$NON-NLS-2$
-			if(orderfield.length() > 0)
-				sql += "order by " + orderfield; //$NON-NLS-1$
-			
-			ResultSet rs = stmt.executeQuery(sql);
-
-			if(rs.next()) {
-				Entite entite = new Entite();
-				entite.setAgrement(rs.getString("AgrementEntite")); //$NON-NLS-1$
-				entite.setNom(rs.getString("NomEntite")); //$NON-NLS-1$
-				entite.setAdresse(rs.getString("AdresseEntite")); //$NON-NLS-1$
-				entite.setCodePostal(rs.getString("CodePostalEntite")); //$NON-NLS-1$
-				entite.setVille(rs.getString("VilleEntite")); //$NON-NLS-1$
-				entite.setNote(rs.getString("NoteEntite")); //$NON-NLS-1$
-				entite.setType(rs.getInt("TypeEntite")); //$NON-NLS-1$
-				
-				entites.add(entite);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try { if(stmt != null) stmt.close(); } catch(Exception e) { }
-		}
-		
-		return entites;
+	@Override
+	public void delete() throws SqlPersistanceException {
+		helper.delete(this);
 	}
 
 	/* (non-Javadoc)

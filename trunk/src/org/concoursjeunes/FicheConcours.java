@@ -34,7 +34,7 @@
  * à l'utiliser et l'exploiter dans les mêmes conditions de sécurité. 
  * 
  * Le fait que vous puissiez accéder à cet en-tête signifie que vous avez 
- * pri connaissance de la licence CeCILL, et que vous en avez accepté les
+ * pris connaissance de la licence CeCILL, et que vous en avez accepté les
  * termes.
  *
  * ENGLISH:
@@ -124,7 +124,7 @@ import org.concoursjeunes.localisable.CriteriaSetLibelle;
 import org.concoursjeunes.manager.BlasonManager;
 
 /**
- * Represente la fiche concours, regroupe l'ensemble des informations commune à un concours donné
+ * Représente la fiche concours, regroupe l'ensemble des informations commune à un concours donné
  * 
  * @author Aurélien Jeoffray
  */
@@ -154,9 +154,9 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	}
 	
 	/**
-	 * Initialise une nouvelle fiche concours avec les parametres fournit
+	 * Initialise une nouvelle fiche concours avec les paramètres fournit
 	 * 
-	 * @param parametre les parametres du concours ou null si laisser les parametres par défaut
+	 * @param parametre les paramètres du concours ou null si laisser ceux par défaut
 	 */
 	public FicheConcours(Profile profile, Parametre parametre)
 			throws UnsupportedEncodingException, FileNotFoundException, IOException {
@@ -178,7 +178,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	}
 
 	/**
-	 * Enregistre un auditeur aux evenements d'un concours
+	 * Enregistre un auditeur aux évènements d'un concours
 	 * 
 	 * @param ficheConcoursListener l'auditeur à abonner
 	 */
@@ -187,7 +187,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	}
 
 	/**
-	 * Supprime un auditeur des evenements du concours
+	 * Supprime un auditeur des évènements du concours
 	 * 
 	 * @param ficheConcoursListener l'auditeur à résilier
 	 */
@@ -205,16 +205,16 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	}
 
 	/**
-	 * Donne la liste des equipes enregistré sur le concours
+	 * Donne la liste des équipes enregistré sur le concours
 	 * 
-	 * @return equipes - la liste des équipes
+	 * @return la liste des équipes
 	 */
 	public EquipeList getEquipes() {
 		return equipes;
 	}
 
 	/**
-	 * Définit la liste des équipes inscritent sur le concours
+	 * Définit la liste des équipes inscrite sur le concours
 	 * 
 	 * @param equipeList la liste des équipes
 	 */
@@ -223,9 +223,9 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	}
 
 	/**
-	 * Retourne les parametres propre au concours
+	 * Retourne les paramètres propre au concours
 	 * 
-	 * @return les parametres du concours
+	 * @return les paramètres du concours
 	 */
 	public Parametre getParametre() {
 		return parametre;
@@ -236,8 +236,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	 * 
 	 * TODO ajouter une verification que le jeux de critère du concurrent est valide sur le concours
 	 * 
-	 * @param concurrent -
-	 *            le concurrent à ajouter au concours
+	 * @param concurrent le concurrent à ajouter au concours
 	 * 
 	 * @throws IOException
 	 * @throws FicheConcoursException
@@ -264,13 +263,12 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	/**
 	 * retire un concurrent du concours
 	 * 
-	 * @param removedConcurrent -
-	 *            Le concurrent à supprimer
+	 * @param removedConcurrent le concurrent à supprimer
 	 *            
 	 * @throws FicheConcoursException
 	 */
 	public void removeConcurrent(Concurrent removedConcurrent) throws FicheConcoursException {
-		// suppression dans l'equipe si presence dans equipe
+		// suppression dans l'equipe si presence dans equipes
 		equipes.removeConcurrent(removedConcurrent);
 		// suppression dans la liste
 		if (concurrentList.remove(removedConcurrent) != null)
@@ -284,28 +282,27 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	}
 
 	/**
-	 * Retourne le numero du départ courrant (actuellement actif)
+	 * Retourne le numéro du départ courant (actuellement actif)
 	 * 
-	 * @return le numero du départ
+	 * @return le numéro du départ
 	 */
 	public int getCurrentDepart() {
 		return currentDepart;
 	}
 
 	/**
-	 * Définit le numero du départ courrant
+	 * Définit le numéro du départ courant
 	 * 
-	 * @param currentDepart -
-	 *            le numero du départ
+	 * @param currentDepart le numéro du départ
 	 */
 	public void setCurrentDepart(int currentDepart) {
 		this.currentDepart = currentDepart;
 	}
 
 	/**
-	 * Retourne le pas de tir du départ donné en parametre
+	 * Retourne le pas de tir du départ donné en paramètre
 	 * 
-	 * @return pasDeTir le pas de tir du départ en parametre
+	 * @return pasDeTir le pas de tir du départ en paramètre
 	 */
 	public PasDeTir getPasDeTir(int depart) {
 		return pasDeTir.get(depart);
@@ -326,8 +323,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	/**
 	 * Restaure une fiche concours
 	 * 
-	 * @param fiche -
-	 *            la fiche à restaurer
+	 * @param fiche la fiche à restaurer
 	 */
 	public void setFiche(Object[] fiche, MetaDataFicheConcours metaDataFicheConcours) {
 		
@@ -348,7 +344,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	/**
 	 * Retourne les métadonnées associé à un concours
 	 * 
-	 * @return l'objet de métédonnée du concours
+	 * @return l'objet de méta-données du concours
 	 */
 	public MetaDataFicheConcours getMetaDataFicheConcours() {
 		MetaDataFicheConcours metaDataFicheConcours = new MetaDataFicheConcours(parametre.getDateDebutConcours(), parametre.getIntituleConcours(), parametre.getSaveName());
@@ -369,9 +365,9 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	}
 	
 	/**
-	 * <p>Controle la cohérance d'une fiche et effectue une mise
+	 * <p>Contrôle la cohérence d'une fiche et effectue une mise
 	 * à niveau si besoin.</p>
-	 * <p>Permet de mettre à niveau les fiches serialisé dans des versions
+	 * <p>Permet de mettre à niveau les fiches sérialisé dans des versions
 	 * inférieur du programme</p>
 	 */
 	@SuppressWarnings("deprecation")
@@ -395,7 +391,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 			}
 		}
 		
-		//contrôle l'affectation du réglement et des critères
+		//contrôle l'affectation du règlement et des critères
 		for(Concurrent concurrent : concurrentList.list(-1)) {
 			if(concurrent.getCriteriaSet().getReglement() == null)
 				concurrent.getCriteriaSet().setReglement(reglement);
@@ -413,7 +409,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 			
 			//si le blason n'est pas initialiser 
 			if(distancesEtBlason.getTargetFace() == null || distancesEtBlason.getTargetFace().equals(new Blason())) {
-				if(distancesEtBlason.getNumdistancesblason() > 0) { //si le reglement est dans la base
+				if(distancesEtBlason.getNumdistancesblason() > 0) { //si le règlement est dans la base
 					distancesEtBlason.setTargetFace(BlasonManager.findBlasonAssociateToDistancesEtBlason(distancesEtBlason.getNumdistancesblason(), reglement.hashCode()));
 				} else {
 					Blason targetFace = null;
@@ -426,11 +422,11 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	                	targetFace = BlasonBuilder.getBlason(distancesEtBlason.getBlason());
 	                }
 				}
-				//remet la valeur par defaut pour supprimer la section du XML de persistance à la prochaine sauvergarde
+				//remet la valeur par défaut pour supprimer la section du XML de persistance à la prochaine sauvegarde
 				distancesEtBlason.setBlason(defaultDistancesEtBlason.getBlason());
 			
 			} else {
-				//si il est initialisé mais ne possede pas d'ancrage
+				//si il est initialisé mais ne possède pas d'ancrage
 				if(distancesEtBlason.getTargetFace().getAncrages().size() == 0) {
 					//si le blason est present dans la base
 					if(distancesEtBlason.getTargetFace().getNumblason() > 0) {
@@ -468,19 +464,19 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	}
 
 	/**
-	 * methode pour le classement des candidats
+	 * méthode pour le classement des candidats
 	 */
 	public Map<CriteriaSet, List<Concurrent>> classement() {
 
 		Map<CriteriaSet, List<Concurrent>> concurrentsClasse = new HashMap<CriteriaSet, List<Concurrent>>();
 
-		// Etablit le classement des concurrents en fonction du nombre de points
+		// Établit le classement des concurrents en fonction du nombre de points
 		// obtenue.
 		CriteriaSet[] catList = CriteriaSet.listCriteriaSet(parametre.getReglement(), parametre.getReglement().getClassementFilter());
 
 		// Affectation des valeurs
 		for (int i = 0; i < catList.length; i++) {
-			// sort la liste des concurrents correspondant aux critéres de
+			// sort la liste des concurrents correspondant aux critères de
 			// recherche
 			ArrayList<Concurrent> unsortList = new ArrayList<Concurrent>();
 			for (Concurrent concurrent : concurrentList.list(catList[i], -1, parametre.getReglement().getClassementFilter()))
@@ -506,10 +502,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	}
 
 	/**
-	 * Donne le XML de l'etat de classement individuel<br>
-	 * L'etat peut être retourné au format XML iText en
-	 * specifiant le type OUT_XMLen parametre<br>
-	 * ou au format HTML en specifiant OUT_HTML en parametre 
+	 * Donne le HTML de l'etat de classement individuel
 	 * 
 	 * @return le HTML de l'edition
 	 */
@@ -546,7 +539,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 			tplClassement.parse("NB_CLUB", "" + concurrentList.countCompagnie()); //$NON-NLS-1$ //$NON-NLS-2$
 			tplClassement.parse("NB_TIREURS", "" + concurrentList.countArcher()); //$NON-NLS-1$ //$NON-NLS-2$
 			
-			// Entete de categorie
+			// Entête de catégorie
 			Set<CriteriaSet> scnalst = concurrentsClasse.keySet();
 
 			List<CriteriaSet> scnaUse = new ArrayList<CriteriaSet>(scnalst);
@@ -705,7 +698,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 
 	/**
 	 * Retourne, au format html, l'etat de classement
-	 * par equipe automatique de club 
+	 * par équipe automatique de club 
 	 * 
 	 * @return l'etat de classment
 	 */

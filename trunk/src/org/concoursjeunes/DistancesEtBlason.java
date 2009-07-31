@@ -148,17 +148,17 @@ public class DistancesEtBlason implements SqlPersistance {
 	}
 
 	/**
-	 * cree un d&b avec les options par défaut (pour sérialisation XML)
+	 * construit un DistancesEtBlason avec les options par défaut (pour sérialisation XML)
 	 * 
 	 */
 	public DistancesEtBlason() {
 	}
 
 	/**
-	 * Cree un distance et blason avec les bon param
+	 * Construit un distance et blason avec les bons paramètre
 	 * 
 	 * @param distances tableau des distances représenté. 1 distance par série.
-	 * 	Les distances sont représenté en metre
+	 * 	Les distances sont représenté en mètre
 	 * @param targetFace le blason associé
 	 */
 	public DistancesEtBlason(int[] distances, Blason targetFace) {
@@ -167,8 +167,8 @@ public class DistancesEtBlason implements SqlPersistance {
 	}
 
 	/**
-	 * <p>Conserver pour compatibilite avec les concours réalisé avant la création
-	 * de la propriete targetFace.</p>
+	 * <p>Conserver pour compatibilité avec les concours réalisé avant la création
+	 * de la propriété targetFace.</p>
 	 * 
 	 * @deprecated remplacer par <b><i>{@link DistancesEtBlason#getTargetFace()}</i></b>
 	 * 
@@ -180,10 +180,10 @@ public class DistancesEtBlason implements SqlPersistance {
 	}
 	
 	/**
-	 * <p>Conserver pour compatibilite avec les concours réalisé avant la création
-	 * de la propriete targetFace.</p>
+	 * <p>Conserver pour compatibilité avec les concours réalisé avant la création
+	 * de la propriété targetFace.</p>
 	 * 
-	 * @deprecated remplacer par <b><i>{@link DistancesEtBlason#setTargetFace(Blason)}</i></b>
+	 * @deprecated remplacé par {@link DistancesEtBlason#setTargetFace(Blason)}
 	 * 
 	 * @param blason
 	 *            The blason to set.
@@ -203,9 +203,9 @@ public class DistancesEtBlason implements SqlPersistance {
 	}
 
 	/**
-	 * Retourne le blason
+	 * Retourne le blason de l'objet
 	 * 
-	 * @return targetFace le blason
+	 * @return le blason
 	 */
 	public Blason getTargetFace() {
 		return targetFace;
@@ -223,8 +223,7 @@ public class DistancesEtBlason implements SqlPersistance {
 	/**
 	 * Définit le tableau des distances
 	 * 
-	 * @param distances
-	 *            The distance to set.
+	 * @param distances le tableau des distances de l'objet
 	 */
 	public void setDistance(int[] distances) {
 		this.distances = distances;
@@ -255,7 +254,7 @@ public class DistancesEtBlason implements SqlPersistance {
 	/**
 	 * Le jeux de critère pour lequel l'objet est définit
 	 * 
-	 * @return le jeux de critére associé
+	 * @return le jeux de critère associé
 	 */
 	public CriteriaSet getCriteriaSet() {
 		return criteriaSet;
@@ -264,23 +263,25 @@ public class DistancesEtBlason implements SqlPersistance {
 	/**
 	 * Définit le jeux de critère que représente l'objet
 	 * 
-	 * @param criteriaSet
-	 *            le jeux de critére associé
+	 * @param criteriaSet le jeux de critère associé
 	 */
 	public void setCriteriaSet(CriteriaSet criteriaSet) {
 		this.criteriaSet = criteriaSet;
 	}
 
 	/**
-	 * @return numdistancesblason
+	 * Retourne le numéro en base de l'objet
+	 * 
+	 * @return le numéro en base de l'objet
 	 */
 	public int getNumdistancesblason() {
 		return numdistancesblason;
 	}
 
 	/**
-	 * @param numdistancesblason
-	 *            numdistancesblason à définir
+	 * Définit le numéro en base de l'objet
+	 * 
+	 * @param numdistancesblason le numéro en base de l'objet
 	 */
 	public void setNumdistancesblason(int numdistancesblason) {
 		this.numdistancesblason = numdistancesblason;
@@ -332,12 +333,12 @@ public class DistancesEtBlason implements SqlPersistance {
 
 	/**
 	 * Retourne l'objet DistancesEtBlason associé à un concurrent pour
-	 * un réglement donné.
+	 * un règlement donné.
 	 * 
-	 * @param reglement le reglement detreminant le DistancesEtBlason
+	 * @param reglement le règlement déterminant le DistancesEtBlason
 	 * du concurrent
-	 * @param concurrent
-	 *            le concurrent pour lequel retourné l'objet
+	 * @param concurrent le concurrent pour lequel retourné l'objet
+	 * 
 	 * @return l'objet DistancesEtBlason correspondant au concurrent
 	 */
 	public static DistancesEtBlason getDistancesEtBlasonForConcurrent(Reglement reglement, Concurrent concurrent) {

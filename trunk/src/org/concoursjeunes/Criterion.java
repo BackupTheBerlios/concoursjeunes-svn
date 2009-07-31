@@ -177,7 +177,7 @@ public class Criterion implements SqlPersistance {
     /**
      * Initialise un nouveau critère avec le code "code"
      * 
-     * @param code - le code du citère
+     * @param code le code du critère
      */
     public Criterion(String code) {
         this.code = code;
@@ -185,7 +185,7 @@ public class Criterion implements SqlPersistance {
 
     /**
 	 * Renvoi le code du critère
-	 * @return  Renvoie code.
+	 * @return le code du critère
 	 */
     public String getCode() {
         return code;
@@ -193,21 +193,26 @@ public class Criterion implements SqlPersistance {
 
     /**
 	 * Définit le code du critère
-	 * @param code  code à définir.
+	 * 
+	 * @param code le code du critère
 	 */
     public void setCode(String code) {
         this.code = code;
     }
 
     /**
-	 * @return reglement
+     * Retourne le règlement associé au critère
+     * 
+	 * @return le règlement associé au critère
 	 */
 	public Reglement getReglement() {
 		return reglement;
 	}
 
 	/**
-	 * @param reglement reglement à définir
+	 * Associe un règlement au critère
+	 * 
+	 * @param reglement le règlement associé au critère
 	 */
 	public void setReglement(Reglement reglement) {
 		this.reglement = reglement;
@@ -215,7 +220,8 @@ public class Criterion implements SqlPersistance {
 
 	/**
 	 * Renvoie le libellé du critère
-	 * @return  Renvoie libelle.
+	 * 
+	 * @return le libellé du critère
 	 */
     public String getLibelle() {
         return libelle;
@@ -223,7 +229,8 @@ public class Criterion implements SqlPersistance {
 
     /**
 	 * Définit le libellé du critère
-	 * @param libelle  libelle à définir.
+	 * 
+	 * @param libelle le libellé du critère
 	 */
     public void setLibelle(String libelle) {
         this.libelle = libelle;
@@ -231,7 +238,8 @@ public class Criterion implements SqlPersistance {
     
     /**
 	 * Renvoie l'ordre de tri du critère
-	 * @return  Renvoie sortOrder.
+	 * 
+	 * @return l'ordre de tri du critère
 	 */
     public int getSortOrder() {
         return sortOrder;
@@ -239,25 +247,26 @@ public class Criterion implements SqlPersistance {
 
     /**
 	 * Définit l'ordre de tri du critère
-	 * @param sortOrder  - Ordre de tri à appliquer pour le critère.
+	 * 
+	 * @param sortOrder  Ordre de tri à appliquer pour le critère.
 	 */
     public void setSortOrder(int sortOrder) {
         this.sortOrder = sortOrder;
     }
 
     /**
-     * Retourne le numero d'ordre d'affichage du critère
+     * Retourne le numéro d'ordre d'affichage du critère
      * 
-     * @return le numero d'ordre d'affichage du critère
+     * @return le numéro d'ordre d'affichage du critère
      */
     public int getNumordre() {
     	return numordre;
     }
 
     /**
-     * Définit le numero d'ordre d'affichage du critère
+     * Définit le numéro d'ordre d'affichage du critère
      * 
-     * @param numordre le numero d'ordre d'affichage du critère
+     * @param numordre le numéro d'ordre d'affichage du critère
      */
 	public void setNumordre(int numordre) {
     	this.numordre = numordre;
@@ -267,7 +276,7 @@ public class Criterion implements SqlPersistance {
      * Test si deux critères sont équivalent
      * 
      * @param criterion
-     * @return boolean - le résulats de la comparaison de critères
+     * @return boolean - le résultats de la comparaison de critères
      */
     public boolean equals(Criterion criterion) {
         return code.equals(criterion.getCode());
@@ -301,7 +310,8 @@ public class Criterion implements SqlPersistance {
 
     /**
 	 * Est ce que c'est un critère de classement?
-	 * @return  Renvoie classement.
+	 * 
+	 * @return <code>true</code> si c'est un critère de classement, <code>false</code> sinon
 	 */
     public boolean isClassement() {
         return classement;
@@ -309,7 +319,8 @@ public class Criterion implements SqlPersistance {
 
     /**
 	 * Définit si c'est un critère de classement
-	 * @param classement  classement à définir.
+	 * 
+	 * @param classement <code>true</code> si c'est un critère de classement, <code>false</code> sinon
 	 */
     public void setClassement(boolean classement) {
         this.classement = classement;
@@ -319,7 +330,7 @@ public class Criterion implements SqlPersistance {
      * Donne si le critère est utilisé ou non à des fins de classement
      * par équipe
      * 
-     * @return <i>true</i> si utilisé pour le classement par equipe, <i>false</i> sinon
+     * @return <i>true</i> si utilisé pour le classement par équipe, <i>false</i> sinon
      */
     public boolean isClassementEquipe() {
 		return classementEquipe;
@@ -328,7 +339,7 @@ public class Criterion implements SqlPersistance {
     /**
      * Définit si le critère est utilisé ou non à des fins de classement
      * 
-     * @param classementEquipe
+     * @param classementEquipe <i>true</i> si utilisé pour le classement par équipe, <i>false</i> sinon
      */
 	public void setClassementEquipe(boolean classementEquipe) {
 		this.classementEquipe = classementEquipe;
@@ -336,15 +347,17 @@ public class Criterion implements SqlPersistance {
 
 	/**
 	 * Est ce que c'est un critère de placement?
-	 * @return  Renvoie placement.
+	 * 
+	 * @return <code>true</code> si c'est un critère de placement, <code>false</code> sinon
 	 */
     public boolean isPlacement() {
         return placement;
     }
 
     /**
-	 * Definit si c'est un critère de placement
-	 * @param placement  placement à définir.
+	 * Définit si c'est un critère de placement
+	 * 
+	 * @param placement <code>true</code> si c'est un critère de placement, <code>false</code> sinon
 	 */
     public void setPlacement(boolean placement) {
         this.placement = placement;
@@ -394,7 +407,7 @@ public class Criterion implements SqlPersistance {
 	/**
 	 * Retourne la liste des éléments lié au critère
 	 * 
-	 * @return la liste des élements du critère
+	 * @return la liste des éléments du critère
 	 */
 	public List<CriterionElement> getCriterionElements() {
 		return criterionElements;
@@ -403,7 +416,7 @@ public class Criterion implements SqlPersistance {
 	/**
 	 * Définit la liste des éléments lié au critère
 	 * 
-	 * @param criterionElements la liste des élements du critère
+	 * @param criterionElements la liste des éléments du critère
 	 */
 	public void setCriterionElements(List<CriterionElement> criterionElements) {
 		this.criterionElements = criterionElements;
@@ -413,7 +426,7 @@ public class Criterion implements SqlPersistance {
 	}
 
 	/**
-	 * Sauvegarde le critère en base.  Les arguments sont ignoré
+	 * Sauvegarde le critère en base.
 	 * 
 	 * @see org.ajdeveloppement.commons.sql.SqlPersistance#save()
 	 */
@@ -449,7 +462,7 @@ public class Criterion implements SqlPersistance {
 	}
 	
 	/** 
-	 * Supprime le critère de la base. Les arguments sont ignoré
+	 * Supprime le critère de la base.
 	 * 
 	 * @see org.ajdeveloppement.commons.sql.SqlPersistance#delete()
 	 */

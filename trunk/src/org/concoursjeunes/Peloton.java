@@ -36,7 +36,7 @@
  * à l'utiliser et l'exploiter dans les mêmes conditions de sécurité. 
  * 
  * Le fait que vous puissiez accéder à cet en-tête signifie que vous avez 
- * pri connaissance de la licence CeCILL, et que vous en avez accepté les
+ * pris connaissance de la licence CeCILL, et que vous en avez accepté les
  * termes.
  *
  * ENGLISH:
@@ -117,7 +117,7 @@ public class Peloton extends Target {
 	 * Retourne true si la place est libre, false dans le cas contraire
 	 * 
 	 * @param blason Conservé par héritage, donner la valeur null
-	 * @param position la postion sur laquelle tester la présence d'un blason
+	 * @param position la position sur laquelle tester la présence d'un blason
 	 */
 	@Override
 	public boolean isSlotAvailable(Blason blason, int position) {

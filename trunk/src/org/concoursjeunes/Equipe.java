@@ -90,7 +90,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Class represantant une Equipe d'archer pour le concours
+ * Class représentant une équipe d'archer pour le concours
+ * 
  * @author  Aurélien Jeoffray
  * @version  2.0
  */
@@ -104,15 +105,15 @@ public class Equipe implements Cloneable, Comparable<Equipe> {
     private CriteriaSet differentiationCriteria;
 	
     /**
-     * Constructeur vide pour la serialisation XML
+     * Constructeur vide pour la sérialisation XML
      */
     public Equipe() { 
     }
 	
     /**
-     * crer une équipe portant le nom nomEquipe
+     * construit une équipe portant le nom nomEquipe
      * 
-     * @param nomEquipe
+     * @param nomEquipe le nom de l'équipe à construire
      */
 	public Equipe(String nomEquipe) {
 		this.nomEquipe = nomEquipe;
@@ -128,9 +129,9 @@ public class Equipe implements Cloneable, Comparable<Equipe> {
     }
     
     /**
-     * Retourne les concurrents ayant été selectionné pour pouvoir comptabiliser le score
+     * Retourne les concurrents ayant été sélectionné pour pouvoir comptabiliser le score
      * 
-	 * @return  Retourne les archers retenu pour le comptage des points
+	 * @return les archers retenu pour le comptage des points
 	 */
     public List<Concurrent> getSelection() {
     	List<Concurrent> selection = new ArrayList<Concurrent>();
@@ -148,7 +149,7 @@ public class Equipe implements Cloneable, Comparable<Equipe> {
 			}	
 		}
 
-		//selectionne les 3 meilleurs score
+		//sélectionne les 3 meilleurs score
 		if(this.membresEquipe.size() >= nbRetenu) {
 			for(int i = 0; i < nbRetenu; i++)
                 selection.add(this.membresEquipe.get(i));
@@ -167,7 +168,7 @@ public class Equipe implements Cloneable, Comparable<Equipe> {
     
 
     /**
-     * Definit le nombre d'archer retenu dans la comptabilite des scores
+     * Définit le nombre d'archer retenu dans la comptabilité des scores
      * 
 	 * @param nbRetenu  The nbRetenu to set.
 	 */
@@ -179,7 +180,7 @@ public class Equipe implements Cloneable, Comparable<Equipe> {
     /**
      * Renvoie Le critère de distinction de l'équipe.
      *  
-	 * @return  DifferentiationCriteria - Le critère de distinction de l'équipe.
+	 * @return Le critère de distinction de l'équipe.
 	 */
     public CriteriaSet getDifferentiationCriteria() {
         if(differentiationCriteria == null)
@@ -191,14 +192,14 @@ public class Equipe implements Cloneable, Comparable<Equipe> {
     /**
      * Définit le critère de distinction de l'équipe.
      * 
-	 * @param differentiationCriteria  - Le critère de distinction de l'équipe.
+	 * @param differentiationCriteria  le critère de distinction de l'équipe.
 	 */
     public void setDifferentiationCriteria(CriteriaSet differentiationCriteria) {
         this.differentiationCriteria = differentiationCriteria;
     }
 
     /**
-     * Definit la liste des membres de l'equipe
+     * Définit la liste des membres de l'equipe
      * 
 	 * @param equipe la liste des membres de l'equipe
 	 */
@@ -209,7 +210,7 @@ public class Equipe implements Cloneable, Comparable<Equipe> {
     /**
      * Ajoute un concurrent à l'Equipe
      * 
-     * @param concurrent
+     * @param concurrent le concurrent à ajouter
      */
     public void addConcurrent(Concurrent concurrent) {
         if(concurrent != null && !this.membresEquipe.contains(concurrent))
@@ -219,7 +220,7 @@ public class Equipe implements Cloneable, Comparable<Equipe> {
     /**
      * retire un concurrent de l'Equipe
      * 
-     * @param concurrent
+     * @param concurrent le concurrent à retirer
      */
     public void removeConcurrent(Concurrent concurrent) {
         if(concurrent != null && this.membresEquipe.contains(concurrent))
@@ -227,9 +228,9 @@ public class Equipe implements Cloneable, Comparable<Equipe> {
     }
     
     /**
-     * verifie si l'Equipe contient ou non le concurrent donné en parametre
+     * Vérifie si l'équipe contient ou non le concurrent donné en paramètre
      * 
-     * @param concurrent - le concurrent à vérifier
+     * @param concurrent le concurrent à vérifier
      * @return true si present, false sinon
      */
     public boolean contains(Concurrent concurrent) {
@@ -237,40 +238,27 @@ public class Equipe implements Cloneable, Comparable<Equipe> {
     }
     
     /**
-	 * renvoie le nom de l'Equipe
+	 * renvoie le nom de l'équipe
 	 * 
-	 * @return  String
+	 * @return le nom de l'équipe
 	 */
     public String getNomEquipe() {
         return this.nomEquipe;
     }
     
     /**
-	 * defini le nom de l'Equipe
+	 * Défini le nom de l'Equipe
 	 * 
-	 * @param  nomEquipe
+	 * @param nomEquipe le nom de l'Equipe
 	 */
     public void setNomEquipe(String nomEquipe) {
         this.nomEquipe = nomEquipe;
     }
     
     /**
-     * renvoie les score individuel de chacun des membre séléctionné de l'equipes
+     * renvoie le score total obtenu par la sélection
      * 
-     * @return int[]
-     */
-    public int[] getScore() {
-    	List<Concurrent> selection = getSelection();
-        int[] scoreSelection = new int[selection.size()];
-        for(int i = 0; i < scoreSelection.length; i++)
-            scoreSelection[i] = selection.get(i).getTotalScore();
-        return scoreSelection;
-    }
-    
-    /**
-     * renvoie le score total obtenu par la selection
-     * 
-     * @return int
+     * @return le score total de la sélection de l'équipe
      */
     public int getTotalScore() {
     	List<Concurrent> selection = getSelection();

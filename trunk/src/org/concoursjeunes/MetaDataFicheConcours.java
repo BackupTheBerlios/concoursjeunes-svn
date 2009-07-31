@@ -34,7 +34,7 @@
  * à l'utiliser et l'exploiter dans les mêmes conditions de sécurité. 
  * 
  * Le fait que vous puissiez accéder à cet en-tête signifie que vous avez 
- * pri connaissance de la licence CeCILL, et que vous en avez accepté les
+ * pris connaissance de la licence CeCILL, et que vous en avez accepté les
  * termes.
  *
  * ENGLISH:
@@ -91,6 +91,9 @@ import java.beans.PropertyChangeListener;
 import java.util.Date;
 
 /**
+ * Informations générale sur une fiche concours. Permet de disposer d'information
+ * sur un concours sans avoir à charger intégralement sa fiche.
+ * 
  * @author Aurélien JEOFFRAY
  */
 public class MetaDataFicheConcours implements PropertyChangeListener {
@@ -101,8 +104,11 @@ public class MetaDataFicheConcours implements PropertyChangeListener {
 	public MetaDataFicheConcours() { }
 	
 	/**
-	 * @param dateConcours
-	 * @param intituleConcours
+	 * Construit un fichier d'information sur une fiche concours avec les informations fournit en paramètre.
+	 * 
+	 * @param dateConcours la date du concours
+	 * @param intituleConcours l'intitulé du concours
+	 * @param filenameConcours le nom du fichier physique stockant la sérialisation d'un concours 
 	 */
 	public MetaDataFicheConcours(Date dateConcours, String intituleConcours, String filenameConcours) {
 		this.dateConcours = dateConcours;
@@ -111,42 +117,54 @@ public class MetaDataFicheConcours implements PropertyChangeListener {
 	}
 
 	/**
-	 * @return  dateConcours
+	 * Retourne la date de début du concours
+	 * 
+	 * @return la date de début du concours
 	 */
 	public Date getDateConcours() {
 		return dateConcours;
 	}
 
 	/**
-	 * @param dateConcours  dateConcours à définir
+	 * Définit la date de début du concours
+	 * 
+	 * @param dateConcours la date de début du concours
 	 */
 	public void setDateConcours(Date dateConcours) {
 		this.dateConcours = dateConcours;
 	}
 
 	/**
-	 * @return  intituleConcours
+	 * Retourne l'intitulé du concours
+	 * 
+	 * @return l'intitulé du concours
 	 */
 	public String getIntituleConcours() {
 		return intituleConcours;
 	}
 
 	/**
-	 * @param intituleConcours  intituleConcours à définir
+	 * Définit l'intitulé du concours
+	 * 
+	 * @param intituleConcours l'intitulé du concours
 	 */
 	public void setIntituleConcours(String intituleConcours) {
 		this.intituleConcours = intituleConcours;
 	}
 
 	/**
-	 * @return  filenameConcours
+	 * Retourne le nom du fichier sérialisé de la fiche concours
+	 * 
+	 * @return le nom du fichier physique de la fiche concours
 	 */
 	public String getFilenameConcours() {
 		return filenameConcours;
 	}
 
 	/**
-	 * @param filenameConcours  filenameConcours à définir
+	 * Définit le nom du fichier sérialisé de la fiche concours
+	 * 
+	 * @param filenameConcours le nom du fichier physique de la fiche concours
 	 */
 	public void setFilenameConcours(String filenameConcours) {
 		this.filenameConcours = filenameConcours;

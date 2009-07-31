@@ -36,7 +36,7 @@
  * à l'utiliser et l'exploiter dans les mêmes conditions de sécurité. 
  * 
  * Le fait que vous puissiez accéder à cet en-tête signifie que vous avez 
- * pri connaissance de la licence CeCILL, et que vous en avez accepté les
+ * pris connaissance de la licence CeCILL, et que vous en avez accepté les
  * termes.
  *
  * ENGLISH:
@@ -174,18 +174,18 @@ public class Federation implements SqlPersistance {
 	}
 
 	/**
-	 * Retourne le numero en base de la fédération
+	 * Retourne le numéro en base de la fédération
 	 * 
-	 * @return numFederation le numero en base de la fédération
+	 * @return numFederation le numéro en base de la fédération
 	 */
 	public int getNumFederation() {
 		return numFederation;
 	}
 
 	/**
-	 * Définit le numero de la fédération en base
+	 * Définit le numéro de la fédération en base
 	 * 
-	 * @param numFederation le numero en base de la fédération
+	 * @param numFederation le numéro en base de la fédération
 	 */
 	public void setNumFederation(int numFederation) {
 		this.numFederation = numFederation;
@@ -211,7 +211,7 @@ public class Federation implements SqlPersistance {
 
 	/**
 	 * Retourne le nom complet de la fédération. Par exemple
-	 * <i>Fédération Internationnal de Tir à l'Arc</i>
+	 * <i>Fédération International de Tir à l'Arc</i>
 	 *  
 	 * @return le nom de la fédération
 	 */
@@ -221,7 +221,7 @@ public class Federation implements SqlPersistance {
 
 	/**
 	 * Définit le nom complet de la fédération. Par exemple
-	 * <i>Fédération Internationnal de Tir à l'Arc</i>
+	 * <i>Fédération International de Tir à l'Arc</i>
 	 * 
 	 * @param nomFederation le nom de la fédération
 	 */
@@ -232,7 +232,7 @@ public class Federation implements SqlPersistance {
 	/**
 	 * <p>Retourne la liste des niveaux de compétition disponible pour cette fédération.</p>
 	 * <p>Un niveau de compétition peut être retourné plusieurs fois si il est disponible
-	 * dans plusieurs lanque, aussi préférrer l'utilisation de {@link #getCompetitionLevels(String)}
+	 * dans plusieurs langues, aussi préférer l'utilisation de {@link #getCompetitionLevels(String)}
 	 * en précisant la langue pour retourner la liste des niveaux.</p>
 	 * 
 	 * @return competitionLevels la liste des niveaux de compétition disponible
@@ -286,7 +286,7 @@ public class Federation implements SqlPersistance {
 
 	/**
 	 * <p>Retourne la liste de tous les niveaux de compétition accessible pour la
-	 * fédération en fonction de la langue fournit en paramêtre.</p>
+	 * fédération en fonction de la langue fournit en paramètre.</p>
 	 * <p>Si le niveau n'a pas été traduit dans la langue désiré, la valeur
 	 * pour la localisation <i>fr</i> sera retourné.</p>
 	 * 
@@ -355,7 +355,7 @@ public class Federation implements SqlPersistance {
 	/**
 	 * Supprime la fédération de la base de données. Les arguments sont ignoré.
 	 * 
-	 * Tous les réglements attaché à cette fédération seront également supprimés
+	 * Tous les règlements attaché à cette fédération seront également supprimés
 	 */
 	@Override
 	public void delete() throws SqlPersistanceException {

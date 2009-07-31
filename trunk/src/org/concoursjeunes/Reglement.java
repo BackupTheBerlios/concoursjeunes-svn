@@ -123,22 +123,22 @@ import org.ajdeveloppement.commons.sql.SqlTable;
 
 /**
  * <p>
- * Représentation d'un réglement de concours. Un réglement fixe les régles
- * arbitral appliqué à un concours. Un seur réglement peut être appliqué sur un
+ * Représentation d'un règlement de concours. Un règlement fixe les règles
+ * arbitral appliqué à un concours. Un seul règlement peut être appliqué sur un
  * concours, et à plus forte raison à tous les archers du concours.
  * </p>
  * <p>
- * On retrouve dans un réglement les éléments essentiel afin de compter les
+ * On retrouve dans un règlement les éléments essentiel afin de compter les
  * points ainsi que l'ensemble des critères de classement et de placement qui
  * doivent être appliqué sur un concours.
  * </p>
  * <p>
- * Un réglement peut être qualifié d'"officiel" ou non. Si il est qualifié
- * d'officiel, celui ci ne devrait pas être altéré par les vue/controlleur. La
- * methode <i>isOfficialReglement()</i> est utilisé pour déterminé si le
- * réglement doit être considéré ou non comme officiel. Cette qualification doit
+ * Un règlement peut être qualifié d'"officiel" ou non. Si il est qualifié
+ * d'officiel, celui ci ne devrait pas être altéré par les vue/contrôleur. La
+ * méthode {@link #isOfficialReglement()}</i> est utilisé pour déterminé si le
+ * règlement doit être considéré ou non comme officiel. Cette qualification doit
  * permettre d'effectuer des classement inter-club, inter-concours avec
- * l'assurance que les cirtères d'évaluation sont en tout point identique.
+ * l'assurance que les critères d'évaluation sont en tout point identique.
  * </p>
  * 
  * @author Aurélien JEOFFRAY
@@ -153,11 +153,11 @@ public class Reglement implements SqlPersistance {
 	
 	public enum TypeReglement {
 		/**
-		 * Réglement sur cible anglaise
+		 * Règlement sur cible anglaise
 		 */
 		TARGET,
 		/**
-		 * Réglement nature (3D, Campagne, Tir Nature)
+		 * Règlement nature (3D, Campagne, Tir Nature)
 		 */
 		NATURE
 	}
@@ -221,16 +221,16 @@ public class Reglement implements SqlPersistance {
 	protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
 	/**
-	 * Constructeur java-beans. Initialise un réglement par défaut
+	 * Constructeur java-beans. Initialise un règlement par défaut
 	 * 
 	 */
 	public Reglement() {
 	}
 
 	/**
-	 * Initialise un réglement par défaut en le nommant
+	 * Initialise un règlement par défaut en le nommant
 	 * 
-	 * @param name le nom du reglement à créer
+	 * @param name le nom du règlement à créer
 	 */
 	public Reglement(String name) {
 		this.name = name;
@@ -245,18 +245,18 @@ public class Reglement implements SqlPersistance {
 	}
 
 	/**
-	 * Retourne le numéro de version interne du réglement.
+	 * Retourne le numéro de version interne du règlement.
 	 * 
-	 * @return version le numéro de version du réglement.
+	 * @return version le numéro de version du règlement.
 	 */
 	public int getVersion() {
 		return version;
 	}
 
 	/**
-	 * Définit le numéro interne de version du réglement
+	 * Définit le numéro interne de version du règlement
 	 * 
-	 * @param version le numéro de version du réglement.
+	 * @param version le numéro de version du règlement.
 	 */
 	public void setVersion(int version) {
 		this.version = version;
@@ -280,19 +280,18 @@ public class Reglement implements SqlPersistance {
 	}
 
 	/**
-	 * Retourne le nom du réglement
+	 * Retourne le nom du règlement
 	 * 
-	 * @return le nom du réglement
+	 * @return le nom du règlement
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * Donne ou change le nom du réglement
+	 * Donne ou change le nom du règlement
 	 * 
-	 * @param name
-	 *            le nom à donner au réglement
+	 * @param name le nom à donner au règlement
 	 */
 	public void setName(String name) {
 		Object oldValue = this.name;
@@ -303,14 +302,18 @@ public class Reglement implements SqlPersistance {
 	}
 
 	/**
-	 * @return displayName
+	 * Retourne le nom à afficher du règlement
+	 * 
+	 * @return displayName le nom à afficher du règlement
 	 */
 	public String getDisplayName() {
 		return displayName;
 	}
 
 	/**
-	 * @param displayName displayName à définir
+	 * Définit le nom à afficher du règlement
+	 * 
+	 * @param displayName le nom à afficher du règlement
 	 */
 	public void setDisplayName(String displayName) {
 		Object oldValue = this.displayName;
@@ -321,14 +324,18 @@ public class Reglement implements SqlPersistance {
 	}
 
 	/**
-	 * @return reglementType
+	 * Retourne le type de règlement
+	 * 
+	 * @return reglementType le type de règlement
 	 */
 	public TypeReglement getReglementType() {
 		return reglementType;
 	}
 
 	/**
-	 * @param reglementType reglementType à définir
+	 * Définit le type de règlement
+	 * 
+	 * @param reglementType le type de règlement
 	 */
 	public void setReglementType(TypeReglement reglementType) {
 		Object oldValue = this.reglementType;
@@ -341,27 +348,26 @@ public class Reglement implements SqlPersistance {
 	/**
 	 * <p>
 	 * Retourne la liste des critères de distinction des archers pouvant être
-	 * utilisé sur les concours exploitant ce réglement.
+	 * utilisé sur les concours exploitant ce règlement.
 	 * </p>
 	 * <p>
 	 * Les critères retournés peuvent être soit determinant pour le classement,
 	 * le placement, les deux ou simplement informatif.
 	 * </p>
 	 * 
-	 * @return la liste des critéres de distinction utilisé pour le réglement
+	 * @return la liste des critères de distinction utilisé pour le règlement
 	 */
 	public List<Criterion> getListCriteria() {
 		return listCriteria;
 	}
 
 	/**
-	 * Définit la liste des critères de distinction du réglement.
+	 * Définit la liste des critères de distinction du règlement.
 	 * 
-	 * <i>Methode essentielement utile à la déserialisation. Ne devrait pas être
+	 * <i>Méthode essentiellement utile à la déserialisation. Ne devrait pas être
 	 * utilisé directement.</i>
 	 * 
-	 * @param listCriteria
-	 *            the listCriteria to set
+	 * @param listCriteria la liste des critères de distinction du règlement.
 	 */
 	public void setListCriteria(List<Criterion> listCriteria) {
 		Object oldValue = this.listCriteria;
@@ -376,7 +382,7 @@ public class Reglement implements SqlPersistance {
 
 	/**
 	 * Retourne le tableau de surclassement à appliquer sur
-	 * le réglement
+	 * le règlement
 	 * 
 	 * @return le tableau de surclassement
 	 */
@@ -386,7 +392,7 @@ public class Reglement implements SqlPersistance {
 
 	/**
 	 * Définit le tableau de surclassement à appliquer sur
-	 * le réglement
+	 * le règlement
 	 * 
 	 * @param surclassement le tableau de surclassement
 	 */
@@ -405,7 +411,7 @@ public class Reglement implements SqlPersistance {
 	}
 
 	/**
-	 * Retourne la liste des couples distances/blasons exploité avec le réglement
+	 * Retourne la liste des couples distances/blasons exploité avec le règlement
 	 * 
 	 * @return la liste des couples distances/blasons
 	 */
@@ -414,7 +420,7 @@ public class Reglement implements SqlPersistance {
 	}
 
 	/**
-	 * Définit la liste des couples distances/blasons exploité avec le réglement
+	 * Définit la liste des couples distances/blasons exploité avec le règlement
 	 * 
 	 * @param listDistancesEtBlason la liste des couples distances/blasons
 	 */
@@ -430,7 +436,7 @@ public class Reglement implements SqlPersistance {
 	 * Retourne le couple distances blason associé à un jeux de critères de placement donnée
 	 * 
 	 * @param criteriaSet
-	 *            le jeux de critère pour lequel récuperer le DistancesBlason
+	 *            le jeux de critère pour lequel récupérer le DistancesBlason
 	 * @return le DistancesEtBlason associé au jeux ou null si aucun
 	 */
 	public List<DistancesEtBlason> getDistancesEtBlasonFor(CriteriaSet criteriaSet) {
@@ -444,7 +450,7 @@ public class Reglement implements SqlPersistance {
 	}
 
 	/**
-	 * Ajoute un couple distances/Blasons au réglement
+	 * Ajoute un couple distances/Blasons au règlement
 	 * 
 	 * @param distancesEtBlason le distances/Blasons à rajouter
 	 */
@@ -455,7 +461,7 @@ public class Reglement implements SqlPersistance {
 	/**
 	 * Renvoi la politique de placement.
 	 * 
-	 * @return Hashtable<String, Boolean> Renvoi le filtre de critere en place
+	 * @return Renvoi le filtre de critère en place
 	 *         pour le placement des archers
 	 */
 	public Map<Criterion, Boolean> getPlacementFilter() {
@@ -470,7 +476,7 @@ public class Reglement implements SqlPersistance {
 	/**
 	 * Renvoi la politique de classement
 	 * 
-	 * @return Hashtable<String, Boolean> Renvoi le filtre de critere en place
+	 * @return Renvoi le filtre de critère en place
 	 *         pour le classement des archers
 	 */
 	public Map<Criterion, Boolean> getClassementFilter() {
@@ -483,10 +489,10 @@ public class Reglement implements SqlPersistance {
 	}
 	
 	/**
-	 * Retourne la liste des critères de classement valide sur le réglement,
+	 * Retourne la liste des critères de classement valide sur le règlement,
 	 * sont donc exclue de la liste les jeux de critères surclassé ou interdit
 	 * 
-	 * @return liste des critères de classement valide sur le réglement
+	 * @return liste des critères de classement valide sur le règlement
 	 */
 	public List<CriteriaSet> getValidClassementCriteriaSet() {
 		CriteriaSet[] lccs = CriteriaSet.listCriteriaSet(this, getClassementFilter());
@@ -501,10 +507,10 @@ public class Reglement implements SqlPersistance {
 	}
 	
 	/**
-	 * Retourne la liste des critères de placement valide sur le réglement,
+	 * Retourne la liste des critères de placement valide sur le règlement,
 	 * sont donc exclue de la liste les jeux de critères surclassé ou interdit
 	 * 
-	 * @return liste des critères de placement valide sur le réglement
+	 * @return liste des critères de placement valide sur le règlement
 	 */
 	public List<CriteriaSet> getValidPlacementCriteriaSet() {
 		List<CriteriaSet> validCS = new ArrayList<CriteriaSet>();
@@ -527,20 +533,20 @@ public class Reglement implements SqlPersistance {
 	}
 
 	/**
-	 * Retourne le nombre de fleche tiré par volée imposé par le réglement
+	 * Retourne le nombre de flèche tiré par volée imposé par le règlement
 	 * <p>
 	 * La valeur par défaut est fixé à 3
 	 * 
-	 * @return le nombre de fleche tiré par voléee
+	 * @return le nombre de flèches tiré par volée
 	 */
 	public int getNbFlecheParVolee() {
 		return nbFlecheParVolee;
 	}
 
 	/**
-	 * Définit le nombre de fleche tiré par volée imposé par le réglement
+	 * Définit le nombre de flèches tiré par volée imposé par le règlement
 	 * 
-	 * @param nbFlecheParVolee le nombre de fleche tiré par voléee
+	 * @param nbFlecheParVolee le nombre de flèches tiré par volée
 	 */
 	public void setNbFlecheParVolee(int nbFlecheParVolee) {
 		Object oldValue = this.nbFlecheParVolee;
@@ -552,7 +558,7 @@ public class Reglement implements SqlPersistance {
 
 	/**
 	 * Retourne le nombre maximum de concurrents que peut contenir une équipe
-	 * sur un concours avec ce réglement
+	 * sur un concours avec ce règlement
 	 * <p>
 	 * La valeur par défaut est fixé à 4
 	 * 
@@ -564,7 +570,7 @@ public class Reglement implements SqlPersistance {
 
 	/**
 	 * Définit le nombre maximum de concurrents que peut contenir une équipe
-	 * sur un concours avec ce réglement
+	 * sur un concours avec ce règlement
 	 * 
 	 * @param nbMembresEquipe le nombre maximum de concurrents que peut contenir une équipe
 	 */
@@ -578,11 +584,11 @@ public class Reglement implements SqlPersistance {
 
 	/**
 	 * Retourne le nombre de concurrents, membre d'une équipe dont les points seront
-	 * comptablisé pour le classement par équipe
+	 * comptabilisés pour le classement par équipe
 	 * <p>
 	 * La valeur par défaut est fixé à 3
 	 * 
-	 * @return le nombre de concurrents d'une équipe dont les points seront comptablisé
+	 * @return le nombre de concurrents d'une équipe dont les points seront comptabilisés
 	 */
 	public int getNbMembresRetenu() {
 		return nbMembresRetenu;
@@ -590,9 +596,9 @@ public class Reglement implements SqlPersistance {
 
 	/**
 	 * Définit le nombre de concurrents, membre d'une équipe dont les points seront
-	 * comptablisé pour le classement par équipe
+	 * comptabilisés pour le classement par équipe
 	 * 
-	 * @param nbMembresRetenu le nombre de concurrents d'une équipe dont les points seront comptablisé
+	 * @param nbMembresRetenu le nombre de concurrents d'une équipe dont les points seront comptabilisés
 	 */
 	public void setNbMembresRetenu(int nbMembresRetenu) {
 		Object oldValue = this.nbMembresRetenu;
@@ -669,10 +675,10 @@ public class Reglement implements SqlPersistance {
 	}
 
 	/**
-	 * Permet d'identifié le réglement comme officiel ou non.<br>
-	 * Un réglement officiel ne devrait pas être altéré au cours de sa vie.
+	 * Permet d'identifié le règlement comme officiel ou non.<br>
+	 * Un règlement officiel ne devrait pas être altéré au cours de sa vie.
 	 * 
-	 * @return true si le réglement est qualifié d'officiel, false dans le cas
+	 * @return true si le règlement est qualifié d'officiel, false dans le cas
 	 *         contraire.
 	 */
 	public boolean isOfficialReglement() {
@@ -681,15 +687,15 @@ public class Reglement implements SqlPersistance {
 
 	/**
 	 * <p>
-	 * Définit si le réglement est ou non officiel
+	 * Définit si le règlement est ou non officiel
 	 * </p>
 	 * <p>
-	 * <i>Methode essentielement utile à la déserialisation et aux outils de
+	 * <i>Méthode essentiellement utile à la déserialisation et aux outils de
 	 * débugage. Ne devrait pas être utilisé directement.</i>
 	 * </p>
 	 * 
 	 * @param officialReglement
-	 *            true pour un réglement officiel, false sinon
+	 *            true pour un règlement officiel, false sinon
 	 */
 	public void setOfficialReglement(boolean officialReglement) {
 		Object oldValue = this.officialReglement;
@@ -700,10 +706,9 @@ public class Reglement implements SqlPersistance {
 	}
 
 	/**
-	 * Détermine si un tableau de score donnée est ou non valide su le réglement
+	 * Détermine si un tableau de score donnée est ou non valide su le règlement
 	 * 
-	 * @param scores
-	 *            le tableau de score à validé
+	 * @param scores le tableau de score à validé
 	 * @return true si le score est valide, false dans le cas contraire
 	 */
 	public boolean isValidScore(List<Integer> scores) {
@@ -718,7 +723,9 @@ public class Reglement implements SqlPersistance {
 	}
 
 	/**
-	 * @param federation federation à définir
+	 * Définit la fédération associé à un règlement
+	 * 
+	 * @param federation la fédération associé à un règlement
 	 */
 	public void setFederation(Federation federation) {
 		Object oldValue = this.federation;
@@ -729,18 +736,20 @@ public class Reglement implements SqlPersistance {
 	}
 
 	/**
-	 * @return federation
+	 * Retourne la fédération associé à un règlement
+	 * 
+	 * @return la fédération associé à un règlement
 	 */
 	public Federation getFederation() {
 		return federation;
 	}
 
 	/**
-	 * Définit le numéro de la catégorie du réglement<br>
-	 * La correspondance entre les numéros de catégorie et leurs libéllé
+	 * Définit le numéro de la catégorie du règlement<br>
+	 * La correspondance entre les numéros de catégorie et leurs libellé
 	 * est stocké dans la table CATEGORIE_REGLEMENT   
 	 * 
-	 * @param category le numéro de la catégorie du réglement
+	 * @param category le numéro de la catégorie du règlement
 	 */
 	public void setCategory(int category) {
 		Object oldValue = this.category;
@@ -751,51 +760,51 @@ public class Reglement implements SqlPersistance {
 	}
 
 	/**
-	 * Retourne le numéro de la catégorie du réglement<br>
-	 * La correspondance entre les numéros de catégorie et leurs libéllé
+	 * Retourne le numéro de la catégorie du règlement<br>
+	 * La correspondance entre les numéros de catégorie et leurs libellé
 	 * sont stockés dans la table CATEGORIE_REGLEMENT
 	 * 
-	 * @return le numéro de la catégorie du réglement
+	 * @return le numéro de la catégorie du règlement
 	 */
 	public int getCategory() {
 		return category;
 	}
 
 	/**
-	 * Définit si le réglement peut ou non être supprimé de la base de données
+	 * Définit si le règlement peut ou non être supprimé de la base de données
 	 * 
-	 * @param removable <code>true</code> si le réglement peut être supprimé.
+	 * @param removable <code>true</code> si le règlement peut être supprimé.
 	 */
 	public void setRemovable(boolean removable) {
 		this.removable = removable;
 	}
 
 	/**
-	 * Indique si le réglement peut être supprimé de la base ou non
+	 * Indique si le règlement peut être supprimé de la base ou non
 	 * 
-	 * @return removable <code>true</code> si le réglement peut être supprimé.
+	 * @return removable <code>true</code> si le règlement peut être supprimé.
 	 */
 	public boolean isRemovable() {
 		return removable;
 	}
 
 	/**
-	 * Indique si le réglement est présent en base ou non. Si le réglement n'est pas
-	 * présent en base, les concurrents se basant sur ce réglements ne peuvent pas
+	 * Indique si le règlement est présent en base ou non. Si le règlement n'est pas
+	 * présent en base, les concurrents se basant sur ce règlement ne peuvent pas
 	 * voir leur catégorie rendu persistant.
 	 * 
-	 * @return <code>true</code> si le réglement est présent en base
+	 * @return <code>true</code> si le règlement est présent en base
 	 */
 	public boolean isInDatabase() {
 		return inDatabase;
 	}
 
 	/**
-	 * Définit si le réglement est présent en base ou non. Si le réglement n'est pas
-	 * présent en base, les concurrents se basant sur ce réglements ne peuvent pas
+	 * Définit si le règlement est présent en base ou non. Si le règlement n'est pas
+	 * présent en base, les concurrents se basant sur ce règlement ne peuvent pas
 	 * voir leur catégorie rendu persistant.
 	 * 
-	 * @param inDatabase <code>true</code> si le réglement est présent en base
+	 * @param inDatabase <code>true</code> si le règlement est présent en base
 	 */
 	public void setInDatabase(boolean inDatabase) {
 		this.inDatabase = inDatabase;
@@ -811,7 +820,7 @@ public class Reglement implements SqlPersistance {
 	public void save() throws SqlPersistanceException {
 		if(federation.getNumFederation() == 0)
 			federation.save();
-		//si le numero de réglement est à 0, regarde si il n'existe pas malgré tous
+		//si le numéro de règlement est à 0, regarde si il n'existe pas malgré tous
 		//une entré en base de données
 		if(numReglement == 0) {
 			try {
@@ -841,11 +850,11 @@ public class Reglement implements SqlPersistance {
 		helper.save(this, Collections.singletonMap("NUMFEDERATION", (Object)federation.getNumFederation())); //$NON-NLS-1$
 		
 		if(creation)
-			setNumReglement(numReglement); //force le recalcul des hashCode des surclassements
+			setNumReglement(numReglement); //force le recalcule des hashCode des surclassements
 
 		try {
 			saveTie();
-			// sauvegarde les tableaux de crières et correspondance
+			// sauvegarde les tableaux de critères et correspondance
 			saveCriteria();
 			saveDistancesAndBlasons();
 			saveSurclassement();
@@ -968,8 +977,8 @@ public class Reglement implements SqlPersistance {
 	}
 
 	/**
-	 * Supprime la persistance du réglement. Cette persistance ne peut être
-	 * supprimé qu'à la condition que le réglement ne soit pas officiel
+	 * Supprime la persistance du règlement. Cette persistance ne peut être
+	 * supprimé qu'à la condition que le règlement ne soit pas officiel
 	 * 
 	 * @throws SqlPersistanceException
 	 */

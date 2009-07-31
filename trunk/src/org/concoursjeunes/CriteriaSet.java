@@ -208,7 +208,6 @@ public class CriteriaSet implements SqlPersistance {
 	/**
 	 * Définit un element pour un critère donné
 	 * 
-	 * @param criterion le critère pour lequel d"finir l'élément
 	 * @param element l'element à définir
 	 */
 	public void addCriterionElement(CriterionElement element) {
@@ -241,8 +240,8 @@ public class CriteriaSet implements SqlPersistance {
 	}
 
 	/**
-	 * Retourne le jeux de critère courrant, filtré en fonction de la table de filtrage
-	 * fournit en parametre
+	 * Retourne le jeux de critère courant, filtré en fonction de la table de filtrage
+	 * fournit en paramètre
 	 * 
 	 * @param criteriaFilter la table de filtrage des critères inclue dans le jeux retourné
 	 * @return le jeux de critères filtré.
@@ -367,7 +366,7 @@ public class CriteriaSet implements SqlPersistance {
 	}
 	
 	/**
-	 * Tri les criteres de distinction selon l'ordre de la table listCriteria
+	 * Tri les critères de distinction selon l'ordre de la table listCriteria
 	 * 
 	 * @param differentiationCriteriaTable
 	 * @param listCriteria
@@ -376,12 +375,12 @@ public class CriteriaSet implements SqlPersistance {
 
 		//boucle sur a liste des critères disponible dans l'ordre d'affichage
 		for(int i = 0; i < listCriteria.size(); i++) {
-			//boucle sur la liste de ritere de distiction retourné (comparaison d'élément
+			//boucle sur la liste de critère de distinction retourné (comparaison d'élément
 			for(int j = 0; j < differentiationCriteriaTable.size() - 1; j++) {
 
 				for(int k = j + 1; k < differentiationCriteriaTable.size(); k++) {
 					Criterion testedCriterion = listCriteria.get(i);
-					//recuperation des valeurs de critère
+					//récupération des valeurs de critère
 					CriterionElement result1 = differentiationCriteriaTable.get(j).getCriterionElement(testedCriterion);
 					CriterionElement result2 = differentiationCriteriaTable.get(k).getCriterionElement(testedCriterion);
 
@@ -398,7 +397,7 @@ public class CriteriaSet implements SqlPersistance {
 					} else
 						regle = index1 < index2;
 
-					//pour les critères déjà passé en revue, verifie qu'il y est egalite
+					//pour les critères déjà passé en revue, vérifie qu'il y ai égalité
 					for(int l = 0; l < i; l++) {
 						Criterion otherCriterion = listCriteria.get(l);
 
@@ -420,18 +419,18 @@ public class CriteriaSet implements SqlPersistance {
 	}
 
 	/**
-	 * Retourne le liste des jeux de critères possible pour un réglement donné en fonction du filtre appliqué
+	 * Retourne le liste des jeux de critères possible pour un règlement donné en fonction du filtre appliqué
 	 * 
-	 * @param reglement - le reglement servant de base à la génération du jeux de critère
+	 * @param reglement - le règlement servant de base à la génération du jeux de critère
 	 * @param criteriaFilter - le filtre du jeux
 	 * @return la liste des jeux de critères retourné
 	 */
 	public static CriteriaSet[] listCriteriaSet(Reglement reglement, Map<Criterion, Boolean> criteriaFilter) {       
-		//cré la population complete pour l'ensemble des critéres
+		//crée la population complete pour l'ensemble des critères
 		//objet de référence
 		CriteriaSet[] referents = new CriteriaSet[] { new CriteriaSet(reglement) };
 
-		//boucle sur les critères du reglement
+		//boucle sur les critères du règlement
 		for(Criterion key : reglement.getListCriteria()) {
 			CriteriaSet[][] children = new CriteriaSet[referents.length][];
 
@@ -462,13 +461,13 @@ public class CriteriaSet implements SqlPersistance {
 	/**
 	 * Retourne une liste de jeux de critères enfant par rapport au jeux de reference
 	 * 
-	 * @param reglement - le reglement servant de basze
-	 * @param referent - le jeux de critère de reference
-	 * @param criterion - le critère de reference
+	 * @param reglement le règlement servant de base
+	 * @param referent le jeux de critère de reference
+	 * @param criterion le critère de reference
 	 * @return les enfants
 	 */
 	private static List<CriteriaSet> getChildrenPopulation(Reglement reglement, CriteriaSet referent, Criterion criterion) {
-		//cré la table des enfants
+		//crée la table des enfants
 		List<CriteriaSet> children = new ArrayList<CriteriaSet>();
 
 		for(int i = 0; i < criterion.getCriterionElements().size(); i++) {

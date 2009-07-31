@@ -335,7 +335,7 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 
 		Hashtable<CriteriaSet, ArrayList<Equipe>> equipes = new Hashtable<CriteriaSet, ArrayList<Equipe>>();
 
-		for (Equipe equipe : tempEquipes.list()) {
+		for (Equipe equipe : tempEquipes.getEquipeList()) {
 			if(equipes.get(equipe.getDifferentiationCriteria()) == null) {
 				equipes.put(equipe.getDifferentiationCriteria(), new ArrayList<Equipe>());
 			}
@@ -561,7 +561,7 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 			validation = false;
 			setVisible(false);
 		} else if (e.getSource() == jbValider) {
-			for(Equipe equipe : tempEquipes.list()) {
+			for(Equipe equipe : tempEquipes.getEquipeList()) {
 	            if(equipe.getMembresEquipe().size() < ficheConcours.getParametre().getReglement().getNbMembresRetenu()) {
 	                if(JOptionPane.showConfirmDialog(this, 
 	                		localisation.getResourceString("equipe.warning.incomplete"), //$NON-NLS-1$

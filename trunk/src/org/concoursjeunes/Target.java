@@ -36,7 +36,7 @@
  * à l'utiliser et l'exploiter dans les mêmes conditions de sécurité. 
  * 
  * Le fait que vous puissiez accéder à cet en-tête signifie que vous avez 
- * pri connaissance de la licence CeCILL, et que vous en avez accepté les
+ * pris connaissance de la licence CeCILL, et que vous en avez accepté les
  * termes.
  *
  * ENGLISH:
@@ -101,7 +101,7 @@ import org.concoursjeunes.event.TargetListener;
 import org.concoursjeunes.exceptions.PlacementException;
 
 /**
- * Reprensentation de l'entite 'Cible' avec ses parametres de distances, de
+ * Representation de l'entite 'Cible' avec ses paramètres de distances, de
  * blason appliqué et les concurrents qui y sont associés
  * 
  * @author Aurélien Jeoffray
@@ -114,23 +114,21 @@ public class Target implements PropertyChangeListener {
 		ACBD
 	}
 
-	private int numCible = 0; // le numero de la cible
-	private final Concurrent[] concurrents; // le liste des concurrents présents
-	// sur la cible
+	private int numCible = 0; // le numéro de la cible
+	private final Concurrent[] concurrents; // le liste des concurrents présents sur la cible
 	private int nbArcher = 0; // le nombre d'archer sur la cible
 	private int nbHandicap = 0;
 	
-	//private int tailleCible = 0;
 	private Reglement reglement;
 
 	private final EventListenerList listeners = new EventListenerList();
 
 	/**
-	 * Initialise une cible avec son numero et son nombre max d'archer<br>
-	 * la numerotation est de type 1 à n et non de 0 à n-1
+	 * Initialise une cible avec son numéro et son nombre max d'archer<br>
+	 * la numérotation est de type 1 à n et non de 0 à n-1
 	 * 
-	 * @param numCible le numero de la cible
-	 * @param reglement le reglement régissant la cible
+	 * @param numCible le numéro de la cible
+	 * @param reglement le règlement régissant la cible
 	 * @param nbTireurMaxparCible le nombre de tireur maximum pouvant être présent sur la cible
 	 */
 	public Target(int numCible, Reglement reglement, int nbTireurMaxparCible) {
@@ -143,9 +141,7 @@ public class Target implements PropertyChangeListener {
 	/**
 	 * Ajoute un auditeur à la cible
 	 * 
-	 * @param cibleListener -
-	 *            l'auditeur devant être mis au courrant des évenements de la
-	 *            cible
+	 * @param cibleListener l'auditeur devant être mis au courant des évènements de la cible
 	 */
 	public void addTargetListener(TargetListener cibleListener) {
 		listeners.add(TargetListener.class, cibleListener);
@@ -154,17 +150,16 @@ public class Target implements PropertyChangeListener {
 	/**
 	 * Désabonne un auditeur de la cible
 	 * 
-	 * @param cibleListener -
-	 *            l'auditeur devant être supprimé de la liste de notification
+	 * @param cibleListener l'auditeur devant être supprimé de la liste de notification
 	 */
 	public void removeTargetListener(TargetListener cibleListener) {
 		listeners.remove(TargetListener.class, cibleListener);
 	}
 
 	/**
-	 * Retourne le numero de la cible
+	 * Retourne le numéro de la cible
 	 * 
-	 * @return int - le numero de la cible
+	 * @return le numéro de la cible
 	 */
 	public int getNumCible() {
 		return numCible;
@@ -173,7 +168,7 @@ public class Target implements PropertyChangeListener {
 	/**
 	 * Retourne le nombre d'archer present sur la cible
 	 * 
-	 * @return int - le nombre d'archer sur la cible
+	 * @return le nombre d'archer sur la cible
 	 */
 	public int getNbArcher() {
 		return nbArcher;
@@ -182,7 +177,7 @@ public class Target implements PropertyChangeListener {
 	/**
 	 * Retourne le nombre d'archer present sur la cible pour un DistancesEtBlason donnée
 	 * 
-	 * @param db le DistancesEtBlason pour lequelle retourner le nombre d'archers
+	 * @param db le DistancesEtBlason pour lequel retourner le nombre d'archers
 	 * @return le nombre d'archer sur le DistancesEtBlason présent sur la cible
 	 */
 	public int getNbArcherFor(DistancesEtBlason db) {
@@ -218,7 +213,7 @@ public class Target implements PropertyChangeListener {
 	
 	/**
 	 * Retourne le nombre de position disponible pour l'objet DistancesEtBlason
-	 * fournit en parametre
+	 * fournit en paramètre
 	 * 
 	 * @param distancesEtBlason l'objet DistancesEtBlason permettant de déterminer
 	 * le nombre de position disponible
@@ -242,11 +237,11 @@ public class Target implements PropertyChangeListener {
 	}
 	
 	/**
-	 * Determine si une position est reservé pour un archer handicape
+	 * Determine si une position est réservé pour un archer handicape
 	 * ou non
 	 * 
 	 * @param position la position à tester
-	 * @return true si la position est reservé, false sinon
+	 * @return true si la position est réservé, false sinon
 	 */
 	public boolean isReservedPosition(int position) {
 		if(position % 2 == 1 && concurrents[position-1] != null && concurrents[position-1].isHandicape())
@@ -255,10 +250,10 @@ public class Target implements PropertyChangeListener {
 	}
 
 	/**
-	 * insere un concurrent à la premiere position libre et retourne cette
+	 * Insère un concurrent à la premiere position libre et retourne cette
 	 * position ou produit une exception PlacementException en cas d'echec
 	 * 
-	 * @param concurrent le concurrent à inserer
+	 * @param concurrent le concurrent à insérer
 	 * @param repartition le mode de distribution des archers sur la cible
 	 * 
 	 * @return la position de concurrent
@@ -271,7 +266,7 @@ public class Target implements PropertyChangeListener {
 	
 	/**
 	 * <p>
-	 * insere un concurrent à la premiere position libre et retourne cette
+	 * Insère un concurrent à la premiere position libre et retourne cette
 	 * position ou produit une exception PlacementException en cas d'echec
 	 * </p>
 	 * <p>
@@ -281,7 +276,7 @@ public class Target implements PropertyChangeListener {
 	 * affecter les valeurs de placement au concurrent.
 	 * </p>
 	 * 
-	 * @param concurrent le concurrent à inserer
+	 * @param concurrent le concurrent à insérer
 	 * @param repartition le mode de distribution des archers sur la cible
 	 * @param simulationMode <i>true</i> si l'on souhaite une insertion en mode simulation,
 	 * 	<i>false</i> sinon
@@ -294,12 +289,12 @@ public class Target implements PropertyChangeListener {
 		int position = -1;
 
 		if (concurrent != null) {
-			//verifie qu'il reste des places disponible
+			//vérifie qu'il reste des places disponible
 			if(nbArcher < concurrents.length - nbHandicap) {
 				DistancesEtBlason concurrentDb = DistancesEtBlason.getDistancesEtBlasonForConcurrent(reglement, concurrent);
 				List<DistancesEtBlason> targetDbs = getDistancesEtBlason();
 				
-				//verifie que la distance est bonne
+				//vérifie que la distance est bonne
 				if(targetDbs.size() > 0 && !Arrays.equals(concurrentDb.getDistance(), targetDbs.get(0).getDistance()))
 					throw new PlacementException(PlacementException.Nature.BAD_DISTANCES);
 				
@@ -327,7 +322,7 @@ public class Target implements PropertyChangeListener {
 						//on boucle sur les emplacements et on remplit le premier qui est libre
 						for (int i = 0; i < concurrents.length; i++) {
 							if (isSlotAvailable(concurrentDb.getTargetFace(), i)) {
-								if(isReservedPosition(i)) //la position est libre mais reservé pour un archer handicapé
+								if(isReservedPosition(i)) //la position est libre mais réservé pour un archer handicapé
 									continue;
 								placeConcurrent(concurrent, i, simulationMode);
 		
@@ -347,11 +342,11 @@ public class Target implements PropertyChangeListener {
 								break;
 							}
 						}
-						//si AC en echec tente en BD
+						//si AC en échec tente en BD
 						if(position == -1) {
 							for (int i = 1; i < concurrents.length; i+=2) {
 								if (isSlotAvailable(concurrentDb.getTargetFace(), i)) {
-									if(isReservedPosition(i)) //la position est libre mais reservé pour un archer handicapé
+									if(isReservedPosition(i)) //la position est libre mais réservé pour un archer handicapé
 										continue;
 									placeConcurrent(concurrent, i, simulationMode);
 			
@@ -391,10 +386,8 @@ public class Target implements PropertyChangeListener {
 		if(concurrents[position] != null)
 			return false;
 		
-		//Ancrage ancrage = blason.getAncrage(position);
 		for(int i = 0; i < concurrents.length; i++) {
 			if(concurrents[i] != null) {
-				//int otherPosition = concurrent.getPosition();
 				DistancesEtBlason db = DistancesEtBlason.getDistancesEtBlasonForConcurrent(reglement, concurrents[i]);
 				Blason otherBlason = db.getTargetFace();
 				
@@ -435,7 +428,7 @@ public class Target implements PropertyChangeListener {
 	}
 
 	/**
-	 * Donne le concurrent à la postition x
+	 * Donne le concurrent à la position x
 	 * 
 	 * @param position
 	 * @return Concurrent - le concurrent à la position donnée ou <i>null</i>
@@ -475,7 +468,7 @@ public class Target implements PropertyChangeListener {
 	}
 
 	/**
-	 * Test si le concurrent transmis en parametre est affecté ou non à la cible
+	 * Test si le concurrent transmis en paramètre est affecté ou non à la cible
 	 * 
 	 * @param concurrent le concurrent à tester
 	 * @return true si le concurrent est présent sur la cible, false sinon
@@ -488,7 +481,7 @@ public class Target implements PropertyChangeListener {
 	 * Place un concurrent sur la cible à la position donné
 	 * 
 	 * @param concurrent le concurrent à placer
-	 * @param position la positionn de ce concurrent
+	 * @param position la position de ce concurrent
 	 * 
 	 * @throws PlacementException invoqué en cas d'echec
 	 * d'insertion du concurrent
@@ -514,9 +507,9 @@ public class Target implements PropertyChangeListener {
 				if(getDistancesEtBlason().size() > 0 && !Arrays.equals(dbConcurrent.getDistance(), getDistancesEtBlason().get(0).getDistance()))
 					throw new PlacementException(PlacementException.Nature.BAD_DISTANCES);
 				
-				//verifie que la place est disponible en fonction du blason
+				//vérifie que la place est disponible en fonction du blason
 				if (isSlotAvailable(dbConcurrent.getTargetFace(), position)) {
-					//verifie que la place n'est pas seulement valide pour
+					//vérifie que la place n'est pas seulement valide pour
 					//un archer non handicape
 					if(concurrent.isHandicape() && position % 2 != 0)
 						throw new PlacementException(PlacementException.Nature.POSITION_AVAILABLE_FOR_VALID_CONCURRENT);
@@ -553,8 +546,7 @@ public class Target implements PropertyChangeListener {
 	/**
 	 * Supprime un concurrent à la position donnée
 	 * 
-	 * @param position -
-	 *            la position du concurrent à supprimer
+	 * @param position la position du concurrent à supprimer
 	 */
 	protected void removeConcurrentAt(int position) {
 		removeConcurrentAt(position, false);
@@ -565,7 +557,7 @@ public class Target implements PropertyChangeListener {
 	 * 
 	 * @param position -
 	 *            la position du concurrent à supprimer
-	 * @param simulationMode ne fait pas rééllement la suppression en mode simulation
+	 * @param simulationMode ne fait pas réellement la suppression en mode simulation
 	 */
 	private void removeConcurrentAt(int position, boolean simulationMode) {
 		if (position < concurrents.length && concurrents[position] != null) {
@@ -588,8 +580,7 @@ public class Target implements PropertyChangeListener {
 	/**
 	 * Supprime un concurrent donné
 	 * 
-	 * @param concurrent -
-	 *            le concurrent à supprimer
+	 * @param concurrent le concurrent à supprimer
 	 */
 	protected void removeConcurrent(Concurrent concurrent) {
 		for (int i = 0; i < concurrents.length; i++) {
@@ -624,22 +615,16 @@ public class Target implements PropertyChangeListener {
 	 * @return DistancesEtBlason - la disposition de la cible
 	 */
 	public List<DistancesEtBlason> getDistancesEtBlason() {
-		//DistancesEtBlason db = null;
 		List<DistancesEtBlason> dbs = new ArrayList<DistancesEtBlason>();
 
 		if (nbArcher > 0) {
-			//Concurrent firstConcurrent = null;
 			for (Concurrent concurrent : concurrents) {
 				if (concurrent != null) {
 					DistancesEtBlason db = DistancesEtBlason.getDistancesEtBlasonForConcurrent(reglement, concurrent);
 					if(!dbs.contains(db))
 						dbs.add(db);
-					//firstConcurrent = concurrent;
-					//break;
 				}
 			}
-
-			//db = DistancesEtBlason.getDistancesEtBlasonForConcurrent(reglement, firstConcurrent);
 		}
 
 		return dbs;

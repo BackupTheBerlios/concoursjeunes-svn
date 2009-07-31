@@ -34,7 +34,7 @@
  * à l'utiliser et l'exploiter dans les mêmes conditions de sécurité. 
  * 
  * Le fait que vous puissiez accéder à cet en-tête signifie que vous avez 
- * pri connaissance de la licence CeCILL, et que vous en avez accepté les
+ * pris connaissance de la licence CeCILL, et que vous en avez accepté les
  * termes.
  *
  * ENGLISH:
@@ -218,8 +218,6 @@ public class Main {
 		
 		initSecureContext();
 		
-		//temp();
-		
 		if(System.getProperty("noplugin") == null) { //$NON-NLS-1$
 			loadStartupPlugin();
 		}
@@ -231,7 +229,7 @@ public class Main {
 					Thread.setDefaultUncaughtExceptionHandler(null);
 
 					// rend l'ensemble des fichier de la base accessible en lecture/ecriture pour permettre
-					// le multiutilisateur
+					// le multi-utilisateur
 					File[] dbfiles = new File(ApplicationCore.userRessources.getAllusersDataPath(), "base").listFiles(); //$NON-NLS-1$
 					for (File dbfile : dbfiles) {
 						if (dbfile.isFile()) {

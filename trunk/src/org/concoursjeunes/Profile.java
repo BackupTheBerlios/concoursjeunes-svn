@@ -106,7 +106,8 @@ import org.concoursjeunes.exceptions.NullConfigurationException;
 import org.concoursjeunes.manager.ConfigurationManager;
 
 /**
- * 
+ * <p>Représente un profile applicatif sous lequel vont être gérer les compétitions.</p>
+ * <p>Un profil est généralement associé à un club donné</p>
  * 
  * @author Aurélien JEOFFRAY
  *
@@ -120,21 +121,37 @@ public class Profile {
 	private List<FicheConcours> fichesConcours = new ArrayList<FicheConcours>();
 	private EventListenerList listeners = new EventListenerList();
 	
+	/**
+	 * Initialise un profile par défaut. Si un fichier de configuration
+	 * est associé à ce profil par défaut, alors celui-ci est chargé.
+	 */
 	public Profile() {
 		this((String)null);
 	}
 	
+	/**
+	 * Initialise un profil nommé. Si un fichier de configuration
+	 * est associé à ce profil, alors celui-ci est chargé.
+	 * 
+	 * @param name le nom du profil à initaliser.
+	 */
 	public Profile(String name){
 		this.name = name;
 		loadConfiguration();
 	}
 	
+	/**
+	 * Charge le profil associé au fichier de configuration fournit
+	 * en paramètre. Si le fichier n'existe pas génère un profil par défaut
+	 * 
+	 * @param profilepath le fichier de configuration à charger.
+	 */
 	public Profile(File profilepath) {
 		loadConfiguration(profilepath);
 	}
 	
 	/**
-	 * tente de recuperer la configuration générale du programme
+	 * tente de récupérer la configuration générale du programme
 	 */
 	private void loadConfiguration() {
 		if(this.name == null) {
@@ -153,7 +170,7 @@ public class Profile {
 	}
 	
 	/**
-	 * Ajoute un auditeur aux evenements du Singleton ConcoursJeunes
+	 * Ajoute un auditeur aux évènements du Singleton ConcoursJeunes
 	 * 
 	 * @param profileListener l'auditeur qui s'enregistre à la class
 	 */
@@ -162,7 +179,7 @@ public class Profile {
 	}
 
 	/**
-	 * Retire un auditeur aux evenements du Singleton ConcoursJeunes
+	 * Retire un auditeur aux évènements du Singleton ConcoursJeunes
 	 * @param profileListener l'auditeur qui résilie à la class
 	 */
 	public void removeProfileListener(ProfileListener profileListener) {
@@ -213,7 +230,7 @@ public class Profile {
 		if(this.name.equals("defaut")) //$NON-NLS-1$
 			return false;
 		
-		//renome le dossier du profil
+		//renomme le dossier du profil
 		File f = ApplicationCore.userRessources.getProfilePath(this);
 		File fNew = new File(ApplicationCore.userRessources.getProfilePath(this).getParentFile(), newName);
 		
@@ -222,7 +239,7 @@ public class Profile {
 		
 		
 		if(f.exists() && f.renameTo(fNew)) {
-			//si l'opération de renomage réussi, on supprime le fichier de config
+			//si l'opération de renommage réussi, on supprime le fichier de config
 			f = new File(ApplicationCore.userRessources.getConfigPathForUser(),
 					Configuration.CONFIG_PROFILE + name + Configuration.EXT_XML);
 			if(!f.delete()) {
@@ -266,9 +283,9 @@ public class Profile {
 	}
 	
 	/**
-	 * Création d'une nouvelle fiche concours ayant les parametres fournit
+	 * Création d'une nouvelle fiche concours ayant les paramètres fournit
 	 * 
-	 * @param parametre les parametres du concours
+	 * @param parametre les paramètres du concours
 	 * @throws ConfigurationException
 	 */
 	public void createFicheConcours(Parametre parametre)
@@ -289,7 +306,7 @@ public class Profile {
 	/**
 	 * Supprime une fiche concours du système
 	 * 
-	 * @param metaDataFicheConcours le fichier de metadonné contenant les
+	 * @param metaDataFicheConcours le fichier de meta-données contenant les
 	 * informations sur le concours à supprimer
 	 * 
 	 * @throws ConfigurationException
@@ -311,7 +328,7 @@ public class Profile {
 	/**
 	 * Referme une fiche de concours
 	 * 
-	 * @param ficheConcours la fiche concours à décharger de la méméoire
+	 * @param ficheConcours la fiche concours à décharger de la mémoire
 	 * 
 	 * @throws ConfigurationException
 	 */
@@ -348,10 +365,9 @@ public class Profile {
 	}
 
 	/**
-	 * Restaure le coucours dont l'objet de metadonnée est fournit en parametre
+	 * Restaure le concours dont l'objet de meta-données est fournit en paramètre
 	 * 
-	 * @param metaDataFicheConcours -
-	 *            l'objet metadonnée du concours à restaurer
+	 * @param metaDataFicheConcours l'objet meta-données du concours à restaurer
 	 * 
 	 * @throws ConfigurationException
 	 * @throws IOException
@@ -386,9 +402,9 @@ public class Profile {
 	}
 	
 	/**
-	 * Retourne la liste des fiches concours actuellement ouvertent
+	 * Retourne la liste des fiches concours actuellement ouvertes
 	 * 
-	 * @return la liste des fiches concours actuellement ouvertent
+	 * @return la liste des fiches concours actuellement ouvertes
 	 */
 	public List<FicheConcours> getFichesConcours() {
 		return fichesConcours;

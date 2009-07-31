@@ -34,7 +34,7 @@
  * à l'utiliser et l'exploiter dans les mêmes conditions de sécurité. 
  * 
  * Le fait que vous puissiez accéder à cet en-tête signifie que vous avez 
- * pri connaissance de la licence CeCILL, et que vous en avez accepté les
+ * pris connaissance de la licence CeCILL, et que vous en avez accepté les
  * termes.
  *
  * ENGLISH:
@@ -93,7 +93,7 @@ import java.util.List;
 import org.concoursjeunes.manager.ConcurrentManager;
 
 /**
- * Class représentant un archer independament d'un concours
+ * Class représentant un archer indépendamment d'un concours
  * 
  * @author Aurélien JEOFFRAY
  * @version 1.0
@@ -111,7 +111,7 @@ public class Archer implements Cloneable {
 
 	/**
 	 * Constructeur vide nécessaire à l'initialisation correct de l'objet
-	 * dans le cas d'une deserialisation XML
+	 * dans le cas d'une déserialisation XML
 	 *
 	 */
 	public Archer() { }
@@ -134,18 +134,18 @@ public class Archer implements Cloneable {
 	}
 
 	/**
-	 * Retourne le numero de licence de l'archer
+	 * Retourne le numéro de licence de l'archer
 	 * 
-	 * @return le numero de licence (pour la ffta, 6 chiffres + 1 lettre)
+	 * @return le numéro de licence (pour la ffta, 6 chiffres + 1 lettre)
 	 */
 	public String getNumLicenceArcher() {
 		return numLicenceArcher;
 	}
 
 	/**
-	 * Définit le numero de licence de l'archer
+	 * Définit le numéro de licence de l'archer
 	 * 
-	 * @param numLicenceArcher le numero de licence de l'archer
+	 * @param numLicenceArcher le numéro de licence de l'archer
 	 */
 	public void setNumLicenceArcher(String numLicenceArcher) {
 		String oldValue = this.numLicenceArcher;
@@ -180,7 +180,7 @@ public class Archer implements Cloneable {
 	/**
 	 * Retourne le prénom de l'archer
 	 * 
-	 * @return le prenom de l'archer
+	 * @return le prénom de l'archer
 	 */
 	public String getPrenomArcher() {
 		return prenomArcher;
@@ -189,7 +189,7 @@ public class Archer implements Cloneable {
 	/**
 	 * Définit le prénom de l'archer
 	 * 
-	 * @param prenomArcher le prenom de l'archer
+	 * @param prenomArcher le prénom de l'archer
 	 */
 	public void setPrenomArcher(String prenomArcher) {
 		String oldValue = this.prenomArcher;
@@ -211,7 +211,7 @@ public class Archer implements Cloneable {
 	/**
 	 * Définit le club (Entite legal) de l'archer
 	 * 
-	 * @param club l'objet Entite representant le club de l'archer
+	 * @param club l'objet Entite représentant le club de l'archer
 	 */
 	public void setClub(Entite club) {
 		Entite oldValue = this.club;
@@ -220,20 +220,21 @@ public class Archer implements Cloneable {
 		
 		pcs.firePropertyChange("club", oldValue, club); //$NON-NLS-1$
 	}
+	
 	/**
-	 * Indique si l'archer possede ou non un certificat medical de non contre indiquation
+	 * Indique si l'archer possède ou non un certificat medical de non contre indiquation
 	 * à la pratique du tir à l'arc en competition
 	 * 
-	 * @return true si l'archer possede un certificat, false sinon
+	 * @return true si l'archer possède un certificat, false sinon
 	 */
 	public boolean isCertificat() {
 		return certificat;
 	}
 
 	/**
-	 * Définit si l'archer possede (true) ou non (false) un certificat
+	 * Définit si l'archer possède (true) ou non (false) un certificat médical
 	 * 
-	 * @param certificat true si l'archer possede un certificat, false sinon
+	 * @param certificat true si l'archer possède un certificat, false sinon
 	 */
 	public void setCertificat(boolean certificat) {
 		boolean oldValue = this.certificat;
@@ -275,9 +276,9 @@ public class Archer implements Cloneable {
 	}
 	
 	/**
-	 * Test si l'archer possede dans la base des homonymes (même nom et prenom)
+	 * Test si l'archer possède dans la base des homonymes (même nom et prenom)
 	 * 
-	 * @return true su l'archer possede des homonyme, false sinon
+	 * @return true su l'archer possède des homonyme, false sinon
 	 */
 	public boolean haveHomonyme() {
 		Archer aComparant = new Archer();

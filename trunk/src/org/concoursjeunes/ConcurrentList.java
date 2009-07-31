@@ -130,9 +130,9 @@ public class ConcurrentList {
 	public ConcurrentList() { }
 
 	/**
-	 * Construit la liste d'archer sur les parametre donnée
+	 * Construit la liste d'archer sur les paramètre donnée
 	 * 
-	 * @param parametre - les parametres de réference de la liste
+	 * @param parametre - les paramètres de référence de la liste
 	 */
 	public ConcurrentList(Parametre parametre) {
 		this.parametre = parametre;
@@ -142,7 +142,7 @@ public class ConcurrentList {
 	 *
 	 * @param concurrent - le concurrent à ajouter
 	 * 
-	 * @return true si ajouté avec succés, false sinon
+	 * @return true si ajouté avec succès, false sinon
 	 */
 	public boolean add(Concurrent concurrent) {
 		if(concurrent != null)
@@ -203,7 +203,7 @@ public class ConcurrentList {
 	/**
 	 * Extrait la liste complete des concurrents pour un depart donnée
 	 * 
-	 * @param depart - le départ pour lequelle lister tous les archers ou -1 si tous
+	 * @param depart - le départ pour lequel lister tous les archers ou -1 si tous
 	 * 
 	 * @return liste des concurrents du départ choisi
 	 */
@@ -227,7 +227,7 @@ public class ConcurrentList {
 	 * @param criteriaSet - le filtre de selection ou null pour tout prendre
 	 * @param criteriaFilter filtre à appliquer sur le jeux de critère criteriaSet ou null
 	 * 
-	 * @return la liste des concurrents appartenant au meme club pour un jeux de critère donné
+	 * @return la liste des concurrents appartenant au même club pour un jeux de critère donné
 	 */
 	public List<Concurrent> list(Entite compagnie, CriteriaSet criteriaSet, Hashtable<Criterion, Boolean> criteriaFilter) {
 		return list(compagnie, criteriaSet, -1, criteriaFilter);
@@ -241,7 +241,7 @@ public class ConcurrentList {
 	 * @param depart - le depart concerne
 	 * @param criteriaFilter filtre à appliquer sur le jeux de critère criteriaSet ou null
 	 * 
-	 * @return la liste des concurrents appartenant au meme club pour un jeux de critère donné et pour un départ donné
+	 * @return la liste des concurrents appartenant au même club pour un jeux de critère donné et pour un départ donné
 	 */
 	private List<Concurrent> list(Entite compagnie, CriteriaSet criteriaSet, int depart, Hashtable<Criterion, Boolean> criteriaFilter) {
 
@@ -263,13 +263,13 @@ public class ConcurrentList {
 	}
 
 	/**
-	 * Extrait la liste des concurrents pour une categorie donnée
+	 * Extrait la liste des concurrents pour une catégorie donnée
 	 * 
-	 * @param criteriaSet - points commun des archers à récuperer
+	 * @param criteriaSet - points commun des archers à récupérer
 	 * @param depart - le depart concerné
 	 * @param criteriaFilter filtre à appliquer sur le jeux de critère criteriaSet ou null
 	 * 
-	 * @return la liste des concurrents correspondant aux critere de recherche
+	 * @return la liste des concurrents correspondant aux critère de recherche
 	 */
 	public List<Concurrent> list(CriteriaSet criteriaSet, int depart, Map<Criterion, Boolean> criteriaFilter) {
 
@@ -292,7 +292,7 @@ public class ConcurrentList {
 	 * @param distancesEtBlason - le D/B concerné
 	 * @param depart - le départ concerné ou -1 si tous
 	 * 
-	 * @return la liste des concurrents correspondant aux criteres de recherche
+	 * @return la liste des concurrents correspondant aux critères de recherche
 	 */
 	public List<Concurrent> list(Reglement reglement, DistancesEtBlason distancesEtBlason, int depart, boolean handicap) {
 
@@ -321,7 +321,7 @@ public class ConcurrentList {
 	 * @param cible - la cible concerné
 	 * @param depart - le depart concerné
 	 * 
-	 * @return la liste des archers présent sur la meme cible
+	 * @return la liste des archers présent sur la même cible
 	 */
 	public List<Concurrent> list(int cible, int depart) {
 		ArrayList<Concurrent> tmp = new ArrayList<Concurrent>();
@@ -335,9 +335,9 @@ public class ConcurrentList {
 	}
 
 	/**
-	 * trie une liste de concurrent en fonction des critere de trie
+	 * trie une liste de concurrent en fonction des critère de trie
 	 * <ul>
-	 * <li>SORT_BY_NAME - tri par ordre alphabetique</li>
+	 * <li>SORT_BY_NAME - tri par ordre alphabétique</li>
 	 * <li>SORT_BY_POINTS - classement par points</li>
 	 * <li>SORT_BY_CIBLES - tri par position sur cible</li>
 	 * <li>SORT_BY_CLUBS - tri par clubs</li>
@@ -376,9 +376,9 @@ public class ConcurrentList {
 	
 	/**
 	 * Passe au concurrent suivant par ordre de cible/position
-	 * 
-	 * @param curConcurrent - le concurrent courrant
-	 * 
+	 *
+	 * @deprecated utiliser {@link #nextConcurrent(List, Concurrent, SortCriteria)} à la place
+	 * @param curConcurrent - le concurrent courant
 	 * @return le concurrent suivant
 	 */
 	@Deprecated
@@ -399,10 +399,10 @@ public class ConcurrentList {
 	}
 	
 	/**
-	 * Retourne le concurrent suivant dans la liste fournit en paramétre en fonction du critère de tri séléctionné
+	 * Retourne le concurrent suivant dans la liste fournit en paramètre en fonction du critère de tri sélectionné
 	 * 
 	 * @param lstConcurrent la liste des concurrent dans lequel récupérer le suivant
-	 * @param curConcurrent le concurrent courrant
+	 * @param curConcurrent le concurrent courant
 	 * @param sortCritere le critère de tri permettant de retrouver le concurrent suivant ou null si il faut prendre
 	 * l'ordre naturel de la liste
 	 * @return le concurrent suivant ou null si non trouvé
@@ -422,9 +422,10 @@ public class ConcurrentList {
 	/**
 	 * Passe au concurrent précédent par ordre de cible/position
 	 * 
-	 * @param curConcurrent - le concurrent courrant
+	 * @deprecated utiliser {@link #previousConcurrent(List, Concurrent, SortCriteria)} à la place
+	 * @param curConcurrent - le concurrent courant
 	 * 
-	 * @return le concurrent précedent
+	 * @return le concurrent précèdent
 	 */
 	@Deprecated
 	public Concurrent previousConcurrent(Concurrent curConcurrent) {
@@ -444,10 +445,11 @@ public class ConcurrentList {
 	}
 	
 	/**
-	 * Retourne le concurrent précédent dans la liste fournit en paramétre en fonction du critère de tri séléctionné
+	 * Retourne le concurrent précédent dans la liste fournit en paramètre en fonction du critère
+	 * de tri sélectionné
 	 * 
 	 * @param lstConcurrent la liste des concurrent dans lequel récupérer le précédent
-	 * @param curConcurrent le concurrent courrant
+	 * @param curConcurrent le concurrent courant
 	 * @param sortCritere le critère de tri permettant de retrouver le concurrent précédent ou null si il faut prendre
 	 * l'ordre naturel de la liste
 	 * @return le concurrent précédent ou null si non trouvé
@@ -503,25 +505,25 @@ public class ConcurrentList {
 	}
 
 	/**
-	 * Donne la liste des distances/blasons utilisé pour un départ donnée en fonction du réglement donnée
+	 * Donne la liste des distances/blasons utilisé pour un départ donnée en fonction du règlement donnée
 	 * 
-	 * @param reglement le réglement permettant de détérminer les distances/blasons
+	 * @param reglement le règlement permettant de déterminer les distances/blasons
 	 * @param depart le départ concerné
 	 * 
-	 * @return la liste des distances/blasons du déprt
+	 * @return la liste des distances/blasons du départ
 	 */
 	public List<DistancesEtBlason> listDistancesEtBlason(Reglement reglement, int depart) {
 		return listDistancesEtBlason(reglement, false, depart);
 	}
 
 	/**
-	 * Donne la liste des distance blason utilise trie ou non par db pour un départ donné
+	 * Donne la liste des distances/blasons utilisé, trié ou non pour un départ donné.
 	 * 
-	 * @param reglement le reglement determinant les D/B
-	 * @param depart - le départ concerné
-	 * @param sort - est ce que la liste doit être trié?
+	 * @param reglement le règlement determinant les D/B
+	 * @param depart le départ concerné ou -1 pour prendre tout les départs
+	 * @param sort est ce que la liste doit être trié?
 	 * 
-	 * @return DistancesEtBlason
+	 * @return la liste des distances/blasons utilisé pour un départ donné
 	 */
 	public List<DistancesEtBlason> listDistancesEtBlason(Reglement reglement, boolean sort, int depart) {
 		List<DistancesEtBlason> alDB = new ArrayList<DistancesEtBlason>();
@@ -563,7 +565,7 @@ public class ConcurrentList {
 	}
 
 	/**
-	 * test si la ConcurrentList contient le concurrent donnée en parametre
+	 * test si la ConcurrentList contient le concurrent donnée en paramètre
 	 * 
 	 * @param concurrent - le concurrent à tester
 	 * @return true si concurrent est présent
@@ -616,9 +618,9 @@ public class ConcurrentList {
 	/**
 	 * Donne le nombre de concurrent pour le distance/blason donné
 	 * 
-	 * @param reglement le reglement permettant de calculer les distances/blasons
+	 * @param reglement le règlement permettant de calculer les distances/blasons
 	 * @param distancesEtBlason le pas de tir pour lequel retourné le nombre d'archer
-	 * @param depart le numero du depart pour lequel retourner le nombre d'archer ou -1 si tous les départs
+	 * @param depart le numéro du depart pour lequel retourner le nombre d'archer ou -1 si tous les départs
 	 * @return le nombre d'archer sur une distance donné
 	 */
 	public int countArcher(Reglement reglement, DistancesEtBlason distancesEtBlason, int depart) {
@@ -627,11 +629,11 @@ public class ConcurrentList {
 	
 	/**
 	 * Donne le nombre de concurrent pour le distance/blason donné en comptant ou non les
-	 * places suppléméntaire réservé aux archer handicapé
+	 * places supplémentaire réservé aux archer handicapé
 	 * 
-	 * @param reglement le reglement permettant de calculer les distances/blasons
+	 * @param reglement le règlement permettant de calculer les distances/blasons
 	 * @param distancesEtBlason le pas de tir pour lequel retourné le nombre d'archer
-	 * @param depart le numero du depart pour lequel retourner le nombre d'archer ou -1 si tous les départs
+	 * @param depart le numéro du depart pour lequel retourner le nombre d'archer ou -1 si tous les départs
 	 * @param handicap si <i>true</i>, alors compter 2 places par archers handicapé
 	 * @return le nombre d'archer sur une distance donné + le nombre de place bloqué par les archers
 	 * handicapé si handicap est à <i>true</i>
@@ -674,7 +676,7 @@ public class ConcurrentList {
 	 * Donne le concurrent à la position cible,position sur le pas de tir
 	 * 
 	 * @param depart
-	 * @param cible - la cible ou se trouve le concurrent à recuperer
+	 * @param cible - la cible ou se trouve le concurrent à récupérer
 	 * @param position - la position ou se trouve le concurrent
 	 * @return Concurrent - le concurrent à la position ou null si aucun
 	 */
@@ -689,7 +691,7 @@ public class ConcurrentList {
 	}
 
 	/**
-	 * <i>Methode necessaire à la deserialisation</i> Donne la liste des archers à l'objet
+	 * <i>Méthode nécessaire à la deserialisation</i> Donne la liste des archers à l'objet
 	 * @return  Returns the archList.
 	 */
 	public ArrayList<Concurrent> getArchList() {
@@ -697,7 +699,7 @@ public class ConcurrentList {
 	}
 
 	/**
-	 * <i>Methode necessaire à la deserialisation</i> Affecte la liste des archers à l'objet
+	 * <i>Méthode nécessaire à la deserialisation</i> Affecte la liste des archers à l'objet
 	 * 
 	 * @param archList  The archList to set.
 	 */
@@ -706,7 +708,7 @@ public class ConcurrentList {
 	}
 
 	/**
-	 * <i>Methode necessaire à la serialisation</i>
+	 * <i>Méthode nécessaire à la sérialisation</i>
 	 * @return  parametre
 	 */
 	public Parametre getParametre() {
@@ -714,14 +716,20 @@ public class ConcurrentList {
 	}
 
 	/**
-	 * <i>Methode necessaire à la deserialisation</i>
+	 * <i>Méthode nécessaire à la deserialisation</i>
 	 * 
-	 * @param parametre  parametre à définir
+	 * @param parametre  paramètre à définir
 	 */
 	public void setParametre(Parametre parametre) {
 		this.parametre = parametre;
 	}
 	
+	/**
+	 * Compare les concurrents par leurs noms/prénoms
+	 * 
+	 * @author Aurélien JEOFFRAY
+	 *
+	 */
 	public static class NameComparator implements Comparator<Concurrent> {
 		@Override
 		public int compare(Concurrent o1, Concurrent o2) {
@@ -729,6 +737,12 @@ public class ConcurrentList {
 		}
 	}
 	
+	/**
+	 * Compare les concurrents par leurs positions sur le pas de tir
+	 *  
+	 * @author Aurélien JEOFFRAY
+	 *
+	 */
 	public static class TargetComparator implements Comparator<Concurrent> {
 		@Override
 		public int compare(Concurrent o1, Concurrent o2) {
@@ -739,6 +753,12 @@ public class ConcurrentList {
 		}
 	}
 	
+	/**
+	 * Compare les concurrents par le nom de leurs clubs d'appartenance
+	 * 
+	 * @author Aurélien JEOFFRAY
+	 *
+	 */
 	public static class ClubComparator implements Comparator<Concurrent> {
 		@Override
 		public int compare(Concurrent o1, Concurrent o2) {
@@ -746,6 +766,12 @@ public class ConcurrentList {
 		}
 	}
 	
+	/**
+	 * Compare les concurrents par leurs scores
+	 * 
+	 * @author Aurélien JEOFFRAY
+	 *
+	 */
 	public static class PointsComparator implements Comparator<Concurrent> {
 		@Override
 		public int compare(Concurrent o1, Concurrent o2) {
