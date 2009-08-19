@@ -129,14 +129,20 @@ public class AppConfiguration implements Cloneable {
 	}
 
 	/**
-	 * @return pdfReaderPath
+	 * Retourne le chemin du lecteur PDF (utile uniquement sur les système
+	 * ne supportant pas la class Desktop)
+	 * 
+	 * @return le chemin du lecteur PDF
 	 */
 	public String getPdfReaderPath() {
 		return pdfReaderPath;
 	}
 
 	/**
-	 * @param pdfReaderPath pdfReaderPath à définir
+	 * Définit le chemin du lecteur PDF (utile uniquement sur les système
+	 * ne supportant pas la class Desktop)
+	 * 
+	 * @param pdfReaderPath le chemin du lecteur PDF
 	 */
 	public void setPdfReaderPath(String pdfReaderPath) {
 		this.pdfReaderPath = pdfReaderPath;
@@ -188,6 +194,7 @@ public class AppConfiguration implements Cloneable {
 
 	/**
 	 * Place l'application sur premier lancement
+	 * 
 	 * @param firstboot <code>true</code> si l'application est lancé pour la première fois, <code><false</code> sinon
 	 */
 	public void setFirstboot(boolean firstboot) {

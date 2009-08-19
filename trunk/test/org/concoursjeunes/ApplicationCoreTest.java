@@ -87,7 +87,10 @@
 package org.concoursjeunes;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
+
+import javax.xml.bind.JAXBException;
 
 import junit.framework.TestCase;
 
@@ -151,11 +154,22 @@ public class ApplicationCoreTest extends TestCase {
 			}
 			
 		});
-		Profile p = new Profile();
-		concoursJeunes.addProfile(p);
-		assertNotNull(profile);
-		profile = null;
-		concoursJeunes.removeProfile(p);
-		assertNotNull(profile);
+		Profile p;
+		try {
+			p = new Profile();
+			
+			concoursJeunes.addProfile(p);
+			assertNotNull(profile);
+			profile = null;
+			concoursJeunes.removeProfile(p);
+			assertNotNull(profile);
+		} catch (JAXBException e1) {
+			fail(e1.getLocalizedMessage());
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			fail(e1.getLocalizedMessage());
+			e1.printStackTrace();
+		}
+		
 	}
 }

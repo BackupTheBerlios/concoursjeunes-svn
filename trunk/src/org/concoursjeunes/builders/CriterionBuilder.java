@@ -97,6 +97,7 @@ import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Criterion;
 import org.concoursjeunes.CriterionElement;
 import org.concoursjeunes.Reglement;
+import org.concoursjeunes.manager.CriterionElementManager;
 
 /**
  * Permet l'instanciation d'un objet critère
@@ -110,11 +111,12 @@ public class CriterionBuilder {
 	 * Construit un critère à partir des informations en base
 	 * 
 	 * @param codeCritere le code du critère à construire
-	 * @param reglement le réglement parent du critère
+	 * @param reglement le règlement parent du critère
 	 * 
 	 * @return le critère correspondant
 	 */
-	public static Criterion getCriterion(String codeCritere, Reglement reglement) {
+	public static Criterion getCriterion(String codeCritere, Reglement reglement)
+			throws SQLException {
 		
 		PreparedStatement pstmt = null;
 		try {
@@ -126,26 +128,28 @@ public class CriterionBuilder {
 			pstmt.setInt(2, reglement.getNumReglement());
 			
 			ResultSet rs = pstmt.executeQuery();
-			if(rs.first()) {
-				Criterion criterion = new Criterion();
-				criterion.setReglement(reglement);
-				criterion.setCode(codeCritere);
-				criterion.setLibelle(rs.getString("LIBELLECRITERE")); //$NON-NLS-1$
-				criterion.setChampsTableArchers(rs.getString("CODEFFTA")); //$NON-NLS-1$
-				criterion.setSortOrder(rs.getInt("SORTORDERCRITERE")); //$NON-NLS-1$
-				criterion.setClassement(rs.getBoolean("CLASSEMENT")); //$NON-NLS-1$
-				criterion.setClassementEquipe(rs.getBoolean("CLASSEMENTEQUIPE")); //$NON-NLS-1$
-				criterion.setPlacement(rs.getBoolean("PLACEMENT")); //$NON-NLS-1$
-				criterion.setNumordre(rs.getInt("NUMORDRE")); //$NON-NLS-1$
-
-				criterion.setCriterionElements(CriterionElement.getAllCriterionElementsFor(criterion));
-				
-				rs.close();
-				
-				return criterion;
+			try {
+				if(rs.first()) {
+					Criterion criterion = new Criterion();
+					criterion.setReglement(reglement);
+					criterion.setCode(codeCritere);
+					criterion.setLibelle(rs.getString("LIBELLECRITERE")); //$NON-NLS-1$
+					criterion.setChampsTableArchers(rs.getString("CODEFFTA")); //$NON-NLS-1$
+					criterion.setSortOrder(rs.getInt("SORTORDERCRITERE")); //$NON-NLS-1$
+					criterion.setClassement(rs.getBoolean("CLASSEMENT")); //$NON-NLS-1$
+					criterion.setClassementEquipe(rs.getBoolean("CLASSEMENTEQUIPE")); //$NON-NLS-1$
+					criterion.setPlacement(rs.getBoolean("PLACEMENT")); //$NON-NLS-1$
+					criterion.setNumordre(rs.getInt("NUMORDRE")); //$NON-NLS-1$
+	
+					criterion.setCriterionElements(CriterionElementManager.getCriterionElementsFor(criterion));
+					
+					rs.close();
+					
+					return criterion;
+				}
+			} finally {
+				if(rs != null) try { rs.close(); } catch(SQLException e) { }
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
 		} finally {
 			if(pstmt != null) try {pstmt.close(); } catch(SQLException e) { }
 		}

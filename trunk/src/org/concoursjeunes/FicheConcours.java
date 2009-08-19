@@ -98,6 +98,7 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -325,7 +326,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	 * 
 	 * @param fiche la fiche à restaurer
 	 */
-	public void setFiche(Object[] fiche, MetaDataFicheConcours metaDataFicheConcours) {
+	public void setFiche(Object[] fiche, MetaDataFicheConcours metaDataFicheConcours) throws SQLException {
 		
 		parametre = (Parametre) fiche[0];
 		concurrentList = (ConcurrentList) fiche[1];
@@ -371,7 +372,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	 * inférieur du programme</p>
 	 */
 	@SuppressWarnings("deprecation")
-	private void checkFiche() {
+	private void checkFiche() throws SQLException {
 		Reglement reglement = parametre.getReglement();
 		
 		if(reglement.getVersion() == 1) {
@@ -718,22 +719,23 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 
 			tplClassementEquipe.parse("categories.CATEGORIE", this.profile.getLocalisation().getResourceString("equipe.composition")); //$NON-NLS-1$ //$NON-NLS-2$
 
-			Equipe[] sortEquipes = EquipeList.sort(clubList.list());
+			List<Equipe> sortEquipes = clubList.getEquipeList();
+			Collections.sort(sortEquipes);
 
-			for (int i = 0; i < sortEquipes.length; i++) {
+			for (int i = 0; i < sortEquipes.size(); i++) {
 
 				tplClassementEquipe.parse("categories.classement.PLACE", "" + (i + 1)); //$NON-NLS-1$ //$NON-NLS-2$
 
 				String idsXML = ""; //$NON-NLS-1$
 				String ptsXML = ""; //$NON-NLS-1$
-				for (Concurrent concurrent : sortEquipes[i].getMembresEquipe()) {
+				for (Concurrent concurrent : sortEquipes.get(i).getMembresEquipe()) {
 					idsXML += concurrent.getID() + "<br>"; //$NON-NLS-1$
 					ptsXML += concurrent.getTotalScore() + "<br>"; //$NON-NLS-1$
 				}
 				tplClassementEquipe.parse("categories.classement.IDENTITEES", idsXML); //$NON-NLS-1$
-				tplClassementEquipe.parse("categories.classement.NOM_EQUIPE", sortEquipes[i].getNomEquipe()); //$NON-NLS-1$
+				tplClassementEquipe.parse("categories.classement.NOM_EQUIPE", sortEquipes.get(i).getNomEquipe()); //$NON-NLS-1$
 				tplClassementEquipe.parse("categories.classement.TOTAL_INDIVIDUEL", ptsXML); //$NON-NLS-1$
-				tplClassementEquipe.parse("categories.classement.TOTAL_GENERAL", "" + sortEquipes[i].getTotalScore()); //$NON-NLS-1$ //$NON-NLS-2$
+				tplClassementEquipe.parse("categories.classement.TOTAL_GENERAL", "" + sortEquipes.get(i).getTotalScore()); //$NON-NLS-1$ //$NON-NLS-2$
 
 				tplClassementEquipe.loopBloc("categories.classement"); //$NON-NLS-1$
 			}

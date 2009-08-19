@@ -351,7 +351,7 @@ public class DistancesEtBlason implements SqlPersistance {
 		return null;
 	}
 	
-	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
+	protected void afterUnmarshal(@SuppressWarnings("unused") Unmarshaller unmarshaller, Object parent) {
 		if(parent instanceof Reglement)
 			criteriaSet.setReglement((Reglement)parent);
 	}

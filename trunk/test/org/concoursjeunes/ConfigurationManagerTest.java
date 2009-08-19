@@ -89,6 +89,9 @@
 package org.concoursjeunes;
 
 import java.io.File;
+import java.io.IOException;
+
+import javax.xml.bind.JAXBException;
 
 import junit.framework.TestCase;
 
@@ -126,7 +129,13 @@ public class ConfigurationManagerTest extends TestCase {
 	 */
 	@Test
 	public void testLoadCurrentConfiguration() {
-		assertNotNull(ConfigurationManager.loadCurrentConfiguration());
+		try {
+			assertNotNull(ConfigurationManager.loadCurrentConfiguration());
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -134,7 +143,13 @@ public class ConfigurationManagerTest extends TestCase {
 	 */
 	@Test
 	public void testLoadConfigurationString() {
-		assertNotNull(ConfigurationManager.loadConfiguration("defaut")); //$NON-NLS-1$
+		try {
+			assertNotNull(ConfigurationManager.loadConfiguration("defaut")); //$NON-NLS-1$
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
 	}
 
 	/**
@@ -142,7 +157,13 @@ public class ConfigurationManagerTest extends TestCase {
 	 */
 	@Test
 	public void testLoadConfigurationFile() {
-		assertNotNull(ConfigurationManager.loadConfiguration(new File(ApplicationCore.userRessources.getConfigPathForUser() 
-				+ File.separator + "configuration_defaut.xml"))); //$NON-NLS-1$
+		try {
+			assertNotNull(ConfigurationManager.loadConfiguration(new File(ApplicationCore.userRessources.getConfigPathForUser() 
+					+ File.separator + "configuration_defaut.xml"))); //$NON-NLS-1$
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
 	}
 }

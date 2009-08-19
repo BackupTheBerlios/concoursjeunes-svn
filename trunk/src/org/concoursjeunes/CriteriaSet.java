@@ -343,14 +343,14 @@ public class CriteriaSet implements SqlPersistance {
 		helper.delete(this);
 	}
 	
-	protected void beforeMarshal(Marshaller marshaller) {
+	protected void beforeMarshal(@SuppressWarnings("unused") Marshaller marshaller) {
 		/*jaxbCriteria = new HashMap<String, String>();
 		for(Entry<Criterion, CriterionElement> entry : criteria.entrySet()) {
 			jaxbCriteria.put(entry.getKey().getCode(), entry.getValue().getCode());
 		}*/
 	}
 	
-	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
+	protected void afterUnmarshal(@SuppressWarnings("unused") Unmarshaller unmarshaller, @SuppressWarnings("unused") Object parent) {
 		/*if(parent instanceof Reglement) {
 			Reglement reglement = (Reglement)parent;
 			for(Entry<String, String> entry : jaxbCriteria.entrySet()) {

@@ -1,5 +1,7 @@
 /*
- * Copyright 2002-2007 - Aurélien JEOFFRAY
+ * Créé le 19 août 2009 à 11:30:00 pour ConcoursJeunes
+ *
+ * Copyright 2002-2009 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
  *
@@ -34,7 +36,7 @@
  * à l'utiliser et l'exploiter dans les mêmes conditions de sécurité. 
  * 
  * Le fait que vous puissiez accéder à cet en-tête signifie que vous avez 
- * pri connaissance de la licence CeCILL, et que vous en avez accepté les
+ * pris connaissance de la licence CeCILL, et que vous en avez accepté les
  * termes.
  *
  * ENGLISH:
@@ -73,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  any later version.
+ *  (at your option) any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -84,70 +86,54 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package ajinteractive.concours;
+package org.concoursjeunes.manager;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.concoursjeunes.ApplicationCore;
+import org.concoursjeunes.Criterion;
+import org.concoursjeunes.CriterionElement;
+import org.concoursjeunes.builders.CriterionElementBuilder;
 
 /**
- * Marges d'impression d'une page format 1.1
- * 
  * @author Aurélien JEOFFRAY
- * @version 1.1
+ *
  */
-@Deprecated
-public class Marges extends org.concoursjeunes.Margin {
-
-    /**
+public class CriterionElementManager {
+	/**
+     * Retourne l'ensemble des éléments de critère associé à un critère donné
      * 
+     * @param criterion Le critère pour lequel retourner les éléments
+     * @return la liste des éléments du critère
      */
-    public Marges() {
-        super();
-    }
+    public static List<CriterionElement> getCriterionElementsFor(Criterion criterion) throws SQLException {
+    	List<CriterionElement> elements = new ArrayList<CriterionElement>();
+    	
+		String sql = "select CODECRITEREELEMENT from critereelement where " + //$NON-NLS-1$
+				"codecritere=? and numreglement=? order by NUMORDRE"; //$NON-NLS-1$
+		
+		PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
+		
+		try {
+			pstmt.setString(1, criterion.getCode());
+			pstmt.setInt(2, criterion.getReglement().getNumReglement());
+			
+			ResultSet rs = pstmt.executeQuery();
+			try {
+				while(rs.next()) {
+					elements.add(CriterionElementBuilder.getCriterionElement(rs.getString("CODECRITEREELEMENT"), criterion)); //$NON-NLS-1$
+				}
+			} finally {
+				if(rs != null) try { rs.close(); } catch(SQLException e) { }
+			}
+		} finally {
+			if(pstmt != null) try { pstmt.close(); } catch(SQLException e) { }
+		}
 
-    /**
-     * @return Renvoie bas.
-     */
-    public double getBas() {
-        return getBottom();
-    }
-    /**
-     * @param bas bas à définir.
-     */
-    public void setBas(double bas) {
-        setBottom(bas);
-    }
-    /**
-     * @return Renvoie droite.
-     */
-    public double getDroite() {
-        return getRight();
-    }
-    /**
-     * @param droite droite à définir.
-     */
-    public void setDroite(double droite) {
-        setRight(droite);
-    }
-    /**
-     * @return Renvoie gauche.
-     */
-    public double getGauche() {
-        return getLeft();
-    }
-    /**
-     * @param gauche gauche à définir.
-     */
-    public void setGauche(double gauche) {
-        setLeft(gauche);
-    }
-    /**
-     * @return Renvoie haut.
-     */
-    public double getHaut() {
-        return getTop();
-    }
-    /**
-     * @param haut haut à définir.
-     */
-    public void setHaut(double haut) {
-        setTop(haut);
+    	return elements;
     }
 }

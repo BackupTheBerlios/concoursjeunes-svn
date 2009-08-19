@@ -545,6 +545,7 @@ public class ConcurrentList {
 		}
 
 		if(sort) {
+			//TODO Utiliser un comparator
 			for(int i = 0; i < alDB.size() - 1; i++) {
 				for(int j = i + 1; j < alDB.size(); j++) {
 					if(alDB.get(i).getDistance()[0] < alDB.get(j).getDistance()[0]) {

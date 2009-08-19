@@ -211,6 +211,16 @@ public class Main {
 				} else {
 					System.exit(1);
 				}
+			} catch (JAXBException e) {
+				JXErrorPane.showDialog(null,new ErrorInfo( "Application Fatal Error", e.toString(), //$NON-NLS-1$
+						null, null, e, Level.SEVERE, null));
+				e.printStackTrace();
+				System.exit(1);
+			} catch (IOException e) {
+				JXErrorPane.showDialog(null,new ErrorInfo( "Application Fatal Error", e.toString(), //$NON-NLS-1$
+						null, null, e, Level.SEVERE, null));
+				e.printStackTrace();
+				System.exit(1);
 			}
 		} while(retry);
 		
@@ -245,9 +255,17 @@ public class Main {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				Profile profile = new Profile();
-				core.addProfile(profile);
-				new ConcoursJeunesFrame(profile);
+				try {
+					Profile profile = new Profile();
+					core.addProfile(profile);
+					new ConcoursJeunesFrame(profile);
+				} catch (JAXBException e) {
+					JXErrorPane.showDialog(null,new ErrorInfo( "Profile Error", e.toString(), //$NON-NLS-1$
+							null, null, e, Level.SEVERE, null));
+				} catch (IOException e) {
+					JXErrorPane.showDialog(null,new ErrorInfo( "Profile Error", e.toString(), //$NON-NLS-1$
+							null, null, e, Level.SEVERE, null));
+				}
 			}
 		});
 

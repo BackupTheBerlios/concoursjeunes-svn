@@ -103,7 +103,6 @@ import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.concoursjeunes.AppConfiguration;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Configuration;
-import org.concoursjeunes.Entite;
 import org.concoursjeunes.builders.ConfigurationBuilder;
 
 /**
@@ -119,7 +118,7 @@ public class ConfigurationManager {
 	 * 
 	 * @return la configuation courante
 	 */
-	public static Configuration loadCurrentConfiguration() {
+	public static Configuration loadCurrentConfiguration() throws JAXBException, IOException {
 		File profileChoice = new File(userRessources.getConfigPathForUser(),
 				"currentprofile"); //$NON-NLS-1$
 		String curentProfile = "defaut"; //$NON-NLS-1$
@@ -127,8 +126,6 @@ public class ConfigurationManager {
 		try {
 			reader = new BufferedReader(new FileReader(profileChoice));
 			curentProfile = reader.readLine();
-		} catch (FileNotFoundException e) {
-		} catch (IOException e) {
 		} finally {
 			if(reader != null)
 				try { reader.close(); } catch(IOException e) { }
@@ -143,7 +140,7 @@ public class ConfigurationManager {
 	 * @param profilename
 	 * @return la configuration nommé
 	 */
-	public static Configuration loadConfiguration(String profilename) {
+	public static Configuration loadConfiguration(String profilename) throws JAXBException, IOException {
 		return loadConfiguration(new File(ApplicationCore.userRessources.getConfigPathForUser(), "configuration_" + profilename + ".xml")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
@@ -153,60 +150,15 @@ public class ConfigurationManager {
 	 * @param confFile le fichier de configuration à charger
 	 * @return l'objet configuration chargé
 	 */
-	@SuppressWarnings("deprecation")
-	public static Configuration loadConfiguration(File confFile) {
+	public static Configuration loadConfiguration(File confFile) throws JAXBException, IOException {
 		Configuration configuration = null;
-		boolean oldConfigFormat = false;
 		//tente de charger la configuration
 		try {
 			configuration = XMLSerializer.loadMarshallStructure(confFile, Configuration.class);
-		//si il n'y arrive pas vérifie que ce n'est pas une config 1.1
-		} catch (JAXBException e) {
-			oldConfigFormat = true;
-			e.printStackTrace();
 		} catch(FileNotFoundException e) {
 			//ne rien faire, c'est que la configuration n'a pas été créé
-		} catch (IOException e) {
-			oldConfigFormat = true;
-			e.printStackTrace();
 		}
-		if(oldConfigFormat) {
-			try {
-				//couche de compatibilite avec le XML de la 1.1
-				ajinteractive.concours.Configuration oldConfig = XMLSerializer.loadXMLStructure(confFile, false);
-				configuration = ConfigurationBuilder.getDefaultConfiguration();
-				if(oldConfig != null) {
-					//Etablie la correspondance entre les methodes 2.0+ et les 1.1
-					Entite entite = new Entite(oldConfig.getNomClub(), Entite.CLUB);
-					entite.setAgrement(oldConfig.getNumAgrement());
-					
-					configuration.setClub(entite);
-					configuration.setIntituleConcours(oldConfig.getIntituleConcours());
-					configuration.setNbCible(oldConfig.getNbCible());
-					configuration.setNbTireur(oldConfig.getNbTireur());
-					configuration.setNbDepart(oldConfig.getNbDepart());
-					configuration.setLangue(oldConfig.getLangue());
-					configuration.setLogoPath(oldConfig.getLogoPath());
-					configuration.setPdfReaderPath(oldConfig.getPdfReaderPath());
-					configuration.setFormatPapier(oldConfig.getFormatPapier());
-					configuration.setOrientation(oldConfig.getOrientation());
-					configuration.setColonneAndLigne(oldConfig.getColonneAndLigne());
-					configuration.setMarges(oldConfig.getMarges());
-					configuration.setEspacements(oldConfig.getEspacements());
-					configuration.setInterfaceResultatCumul(oldConfig.isInterfaceResultatCumul());
-					configuration.setInterfaceAffResultatExEquo(oldConfig.isInterfaceAffResultatExEquo());
-					configuration.setCurProfil(oldConfig.getCurProfil());
-					
-					//ecrase les XML 1.1 du profil par la config 2.0+ 
-					configuration.save();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (JAXBException e) {
-				e.printStackTrace();
-			}
-		}
-		
+
 		if(configuration == null) {
 			configuration = ConfigurationBuilder.getDefaultConfiguration();
 		}
@@ -215,7 +167,7 @@ public class ConfigurationManager {
 	}
 	
 	@SuppressWarnings("deprecation")
-	public static AppConfiguration loadAppConfiguration() {
+	public static AppConfiguration loadAppConfiguration() throws JAXBException, IOException {
 		File confFile = new File(
 				userRessources.getConfigPathForUser(),
 				staticParameters.getResourceString("file.configuration")); //$NON-NLS-1$
@@ -224,12 +176,7 @@ public class ConfigurationManager {
 		
 		try {
 			appConfiguration = XMLSerializer.loadMarshallStructure(confFile, AppConfiguration.class);
-		} catch (JAXBException e) {
-			e.printStackTrace();
 		} catch(FileNotFoundException e) {
-			//ne rien faire, c'est que la configuration n'a pas été créé
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 		
 		if(appConfiguration == null) {

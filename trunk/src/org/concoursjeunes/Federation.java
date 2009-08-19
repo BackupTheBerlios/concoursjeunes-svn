@@ -362,7 +362,7 @@ public class Federation implements SqlPersistance {
 		helper.delete(this);
 	}
 	
-	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
+	protected void afterUnmarshal(@SuppressWarnings("unused") Unmarshaller unmarshaller, @SuppressWarnings("unused") Object parent) {
 		for(CompetitionLevel competitionLevel : competitionLevels) {
 			competitionLevel.setFederation(this);
 		}

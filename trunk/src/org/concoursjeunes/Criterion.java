@@ -471,7 +471,7 @@ public class Criterion implements SqlPersistance {
 		helper.delete(this);
 	}
 	
-	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
+	protected void afterUnmarshal(@SuppressWarnings("unused") Unmarshaller unmarshaller, Object parent) {
 		if(parent instanceof Reglement)
 			reglement = (Reglement)parent;
 	}

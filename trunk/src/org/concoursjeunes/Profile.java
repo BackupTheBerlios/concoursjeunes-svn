@@ -90,6 +90,7 @@ import static org.concoursjeunes.ApplicationCore.userRessources;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -124,8 +125,10 @@ public class Profile {
 	/**
 	 * Initialise un profile par défaut. Si un fichier de configuration
 	 * est associé à ce profil par défaut, alors celui-ci est chargé.
+	 * @throws IOException 
+	 * @throws JAXBException 
 	 */
-	public Profile() {
+	public Profile() throws JAXBException, IOException {
 		this((String)null);
 	}
 	
@@ -133,9 +136,11 @@ public class Profile {
 	 * Initialise un profil nommé. Si un fichier de configuration
 	 * est associé à ce profil, alors celui-ci est chargé.
 	 * 
-	 * @param name le nom du profil à initaliser.
+	 * @param name le nom du profil à initialiser.
+	 * @throws IOException 
+	 * @throws JAXBException 
 	 */
-	public Profile(String name){
+	public Profile(String name) throws JAXBException, IOException{
 		this.name = name;
 		loadConfiguration();
 	}
@@ -145,15 +150,19 @@ public class Profile {
 	 * en paramètre. Si le fichier n'existe pas génère un profil par défaut
 	 * 
 	 * @param profilepath le fichier de configuration à charger.
+	 * @throws IOException 
+	 * @throws JAXBException 
 	 */
-	public Profile(File profilepath) {
+	public Profile(File profilepath) throws JAXBException, IOException {
 		loadConfiguration(profilepath);
 	}
 	
 	/**
 	 * tente de récupérer la configuration générale du programme
+	 * @throws IOException 
+	 * @throws JAXBException 
 	 */
-	private void loadConfiguration() {
+	private void loadConfiguration() throws JAXBException, IOException {
 		if(this.name == null) {
 			configuration = ConfigurationManager.loadCurrentConfiguration();
 			this.name = configuration.getCurProfil();
@@ -163,8 +172,9 @@ public class Profile {
 		localisation.setLocale(new Locale(configuration.getLangue()));
 	}
 	
-	private void loadConfiguration(File profilepath) {
+	private void loadConfiguration(File profilepath) throws JAXBException, IOException {
 		configuration = ConfigurationManager.loadConfiguration(profilepath);
+		
 		this.name = configuration.getCurProfil();
 		localisation.setLocale(new Locale(configuration.getLangue()));
 	}
@@ -373,7 +383,7 @@ public class Profile {
 	 * @throws IOException
 	 */
 	public void restoreFicheConcours(MetaDataFicheConcours metaDataFicheConcours)
-			throws NullConfigurationException, IOException {
+			throws NullConfigurationException, IOException, SQLException {
 		if (configuration == null)
 			throw new NullConfigurationException("la configuration est null"); //$NON-NLS-1$
 

@@ -689,6 +689,10 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 									JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(profile.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 											null, null, e, Level.SEVERE, null));
 									e.printStackTrace();
+								} catch (SQLException e) {
+									JXErrorPane.showDialog(ConcoursJeunesFrame.this, new ErrorInfo(profile.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+											null, null, e, Level.SEVERE, null));
+									e.printStackTrace();
 								}
 								ConcoursJeunesFrame.this.setCursor(Cursor.getDefaultCursor());
 								//ConcoursJeunesFrame.this.jepHome.setCursor(Cursor.getDefaultCursor());

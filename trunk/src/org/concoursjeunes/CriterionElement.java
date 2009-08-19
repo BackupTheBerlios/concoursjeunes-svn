@@ -86,11 +86,7 @@
  */
 package org.concoursjeunes;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import javax.xml.bind.Marshaller;
@@ -108,7 +104,6 @@ import org.ajdeveloppement.commons.sql.SqlPersistanceException;
 import org.ajdeveloppement.commons.sql.SqlPrimaryKey;
 import org.ajdeveloppement.commons.sql.SqlStoreHelper;
 import org.ajdeveloppement.commons.sql.SqlTable;
-import org.concoursjeunes.builders.CriterionElementBuilder;
 
 /**
  * Element de critère
@@ -272,11 +267,11 @@ public class CriterionElement implements SqlPersistance {
 		helper.delete(this);
 	}
 	
-	protected void beforeMarshal(Marshaller marshaller) {
+	protected void beforeMarshal(@SuppressWarnings("unused") Marshaller marshaller) {
 		xmlId = UUID.randomUUID().toString();
 	}
 
-	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
+	protected void afterUnmarshal(@SuppressWarnings("unused") Unmarshaller unmarshaller, Object parent) {
 		if(parent instanceof Criterion)
 			criterion = (Criterion)parent;
 	}
@@ -318,31 +313,5 @@ public class CriterionElement implements SqlPersistance {
     @Override
     public int hashCode() {
         return code.hashCode();
-    }
-    
-    /**
-     * Retourne l'ensemble des éléments de critère associé à un critère donné
-     * 
-     * TODO à revoir
-     */
-    public static List<CriterionElement> getAllCriterionElementsFor(Criterion criterion) {
-    	List<CriterionElement> elements = new ArrayList<CriterionElement>();
-    	
-    	try {
-			Statement stmt = ApplicationCore.dbConnection.createStatement();
-			
-			String sql = "select CODECRITEREELEMENT from critereelement where " + //$NON-NLS-1$
-					"codecritere='" + criterion.getCode() + "' " + //$NON-NLS-1$ //$NON-NLS-2$
-					"and numreglement=" + criterion.getReglement().getNumReglement() + " order by NUMORDRE"; //$NON-NLS-1$ //$NON-NLS-2$
-			
-			ResultSet rs = stmt.executeQuery(sql);
-			
-			while(rs.next()) {
-				elements.add(CriterionElementBuilder.getCriterionElement(rs.getString("CODECRITEREELEMENT"), criterion)); //$NON-NLS-1$
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-    	return elements;
     }
 }

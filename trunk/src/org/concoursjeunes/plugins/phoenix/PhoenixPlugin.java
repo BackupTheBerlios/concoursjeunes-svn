@@ -206,7 +206,5 @@ public class PhoenixPlugin implements ProfileListener, ApplicationCoreListener {
 
 	@Override
 	public void profileRemoved(ApplicationCoreEvent e) {
-		// TODO Raccord de méthode auto-généré
-		
 	}
 }
