@@ -1,19 +1,19 @@
 !define JRE_MAJOR "1"
 !define JRE_MINOR "6"
-!define JRE_URL "http://javadl.sun.com/webapps/download/AutoDL?BundleId=23111"
+!define JRE_URL "http://javadl.sun.com/webapps/download/AutoDL?BundleId=33232"
 
 Function GetJRE
-    IfFileExists "jre-6u7-windows-i586-p-s.exe" lbl_NoDownloadRequired lbl_DownloadRequired
+    IfFileExists "jre-6u15-windows-i586-s.exe" lbl_NoDownloadRequired lbl_DownloadRequired
 	
     lbl_NoDownloadRequired:
-      ExecWait jre-6u7-windows-i586-p-s.exe
+      ExecWait jre-6u15-windows-i586-s.exe
       GoTo done
 	
     lbl_DownloadRequired:
 	MessageBox MB_OK "$(^Name) uses Java ${JRE_MAJOR}.${JRE_MINOR}, it will now \
                          be downloaded and installed"
  
-	StrCpy $2 "$TEMP\jre-6u7-windows-i586-p-s.exe"
+	StrCpy $2 "$TEMP\jre-6u15-windows-i586-s.exe"
 	nsisdl::download /TIMEOUT=30000 ${JRE_URL} $2
 	Pop $R0 ;Get the return value
 	StrCmp $R0 "success" +3
