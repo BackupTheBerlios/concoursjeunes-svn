@@ -36,7 +36,7 @@
  * à l'utiliser et l'exploiter dans les mêmes conditions de sécurité. 
  * 
  * Le fait que vous puissiez accéder à cet en-tête signifie que vous avez 
- * pri connaissance de la licence CeCILL, et que vous en avez accepté les
+ * pris connaissance de la licence CeCILL, et que vous en avez accepté les
  * termes.
  *
  * ENGLISH:
@@ -96,7 +96,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Annotation à placer sur la methode représentant le point d'enter de l'execution du plugin
+ * Annotation à placer sur la méthode représentant le point d'enter de l'execution du plugin
  * 
  * @author Aurélien JEOFFRAY
  *

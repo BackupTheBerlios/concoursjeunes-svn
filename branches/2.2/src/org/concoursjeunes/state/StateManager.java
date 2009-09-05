@@ -104,7 +104,8 @@ import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.concoursjeunes.ApplicationCore;
 
 /**
- * Référence et gére les états disponible pour le logiciel
+ * Référence et gère les états disponible pour le logiciel
+ * 
  * @author Aurélien JEOFFRAY
  *
  */
@@ -113,6 +114,8 @@ public class StateManager {
 	//private Lis
 	private List<State> states = new ArrayList<State>();
 	/**
+	 * Charge et initialise l'ensemble des états disponible
+	 * 
 	 * @throws ScriptException 
 	 * 
 	 */
@@ -158,12 +161,20 @@ public class StateManager {
 	}
 	
 	/**
-	 * @return states
+	 * Retourne l'ensemble des états disponible
+	 * 
+	 * @return states l'ensemble des états disponible
 	 */
 	public List<State> getStates() {
 		return states;
 	}
 	
+	/**
+	 * Retourne la liste des états associé à la catégorie en paramètre
+	 * 
+	 * @param category la catégorie pour laquelle retourner les états
+	 * @return les états de la catégorie
+	 */
 	public List<State> getStates(String category) {
 		List<State> categoryStates = new ArrayList<State>();
 		for(State state : states) {
@@ -175,8 +186,9 @@ public class StateManager {
 	}
 	
 	/**
-	 * Retourne l'état correspondant au nom donnée en parametre
+	 * Retourne l'état correspondant au nom donnée en paramètre
 	 * ou null si non trouvé
+	 * 
 	 * @param stateName le nom de l'etat à retourner
 	 * @return l'etat correspondant ou null si inexistant
 	 */
@@ -188,6 +200,11 @@ public class StateManager {
 		return null;
 	}
 	
+	/**
+	 * Retourne les catégories d'état disponible
+	 * 
+	 * @return les catégories d'état disponible
+	 */
 	public Categories getCategories() {
 		File statesPath = new File(ApplicationCore.staticParameters.getResourceString("path.ressources"), "states" + File.separator + "categories.xml"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		try {

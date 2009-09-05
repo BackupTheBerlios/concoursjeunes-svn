@@ -96,11 +96,29 @@ import com.lowagie.text.Document;
 import com.lowagie.text.pdf.PdfWriter;
 
 /**
+ * Interface définissant les méthodes que le script d'un état doit implémenté
+ * 
  * @author Aurélien JEOFFRAY
  *
  */
 public interface StateScriptInterface {
+	/**
+	 * Test si l'édition est réalisable ou non
+	 * 
+	 * @param ficheConcours la fiche concours pour laquelle réaliser l'édition
+	 * @param options les options d'éditions voulue
+	 * @return true si on peut générer l'édition
+	 */
 	public boolean checkPrintable(FicheConcours ficheConcours, StateOptions options);
 	
+	/**
+	 * Génère l'édition
+	 * 
+	 * @param ficheConcours la fiche concours pour laquelle réaliser l'édition
+	 * @param template l'url du XML du template de l'état
+	 * @param document l'objet représentation du pdf
+	 * @param writer le générateur de pdf
+	 * @param options les options d'éditions
+	 */
 	public void printState(FicheConcours ficheConcours, URL template, Document document, PdfWriter writer, StateOptions options);
 }

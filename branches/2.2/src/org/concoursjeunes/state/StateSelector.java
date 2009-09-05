@@ -95,6 +95,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Permet d'associé un bouton à la sélection d'un état
+ * 
  * @author Aurélien JEOFFRAY
  *
  */

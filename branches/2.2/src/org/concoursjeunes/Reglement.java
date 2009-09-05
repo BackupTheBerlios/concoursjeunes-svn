@@ -985,18 +985,9 @@ public class Reglement implements SqlPersistance {
 	@Override
 	public void delete() throws SqlPersistanceException{
 		if (!officialReglement) {
-			try {
-				Statement stmt = ApplicationCore.dbConnection.createStatement();
-				try {
-					stmt.executeUpdate("delete from REGLEMENT where NUMREGLEMENT=" + numReglement); //$NON-NLS-1$
-				} finally {
-					stmt.close();
-				}
-			} catch (SQLException e) {
-				throw new SqlPersistanceException(e);
-			}
+			helper.delete(this);
 		} else
-			new SqlPersistanceException("delete this Reglement is not authorized because there is official"); //$NON-NLS-1$
+			throw new SqlPersistanceException("delete this Reglement is not authorized because there is official"); //$NON-NLS-1$
 	}
 	
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
@@ -1042,7 +1033,7 @@ public class Reglement implements SqlPersistance {
 	}
 
 	/**
-	 * @return le nom du réglement
+	 * @return le nom du règlement
 	 */
 	@Override
 	public String toString() {

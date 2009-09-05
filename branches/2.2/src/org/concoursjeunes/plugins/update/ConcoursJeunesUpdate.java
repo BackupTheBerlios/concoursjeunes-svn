@@ -98,6 +98,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -179,6 +182,8 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 		
 		try {
 			updateFiles = ajUpdater.checkUpdate();
+			
+			ApplicationCore.userRessources.storeAppKeyStore();
 		} catch (UpdateException e) {
 			System.out.println("update disable"); //$NON-NLS-1$
 			e.printStackTrace();
@@ -186,6 +191,14 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 			if (trayIcon != null) {
 				tray.remove(trayIcon);
 			}
+		} catch (KeyStoreException e) {
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (CertificateException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	

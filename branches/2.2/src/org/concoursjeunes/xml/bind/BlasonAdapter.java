@@ -94,7 +94,7 @@ import org.concoursjeunes.Blason;
 import org.concoursjeunes.manager.BlasonManager;
 
 /**
- * La liste des blasons etant figé en base de données, l'adapter permet d'enregistrer
+ * La liste des blasons étant figé en base de données, l'adapter permet d'enregistrer
  * dans le fichier XML uniquement la référence du blason
  * 
  * @author Aurélien JEOFFRAY

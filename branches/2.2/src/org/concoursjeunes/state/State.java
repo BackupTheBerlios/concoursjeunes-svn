@@ -120,6 +120,8 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.PdfWriter;
 
 /**
+ * Représente un état d'édition
+ * 
  * @author Aurélien JEOFFRAY
  *
  */
@@ -141,46 +143,61 @@ public class State implements Comparable<State> {
 	private StateScriptInterface stateScript;
 	
 	/**
-	 * 
+	 * Initialise un nouvel état
 	 */
 	public State() {
 	}
 
 	/**
-	 * @return name
+	 * Retourne le nom de l'état
+	 * 
+	 * @return le nom de l'état
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * @param name name à définir
+	 * Définit le nom de l'état
+	 * 
+	 * @param name le nom de l'état
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
 	/**
-	 * @return category
+	 * Retourne le nom de la catégorie rattaché à l'état
+	 * 
+	 * @return le nom de la catégorie rattaché à l'état
 	 */
 	public String getCategory() {
 		return category;
 	}
 
 	/**
-	 * @param category category à définir
+	 * Définit le nom de la catégorie rattaché à l'état
+	 * 
+	 * @param category le nom de la catégorie rattaché à l'état
 	 */
 	public void setCategory(String category) {
 		this.category = category;
 	}
 	
 	/**
-	 * @return displayName
+	 * Retourne le nom à afficher pour l'état (non localisé)
+	 * 
+	 * @return le nom à afficher pour l'état (non localisé)
 	 */
 	public String getDisplayName() {
 		return displayName;
 	}
 	
+	/**
+	 * Retourne le nom à afficher pour l'état dans sa forme localisé
+	 * 
+	 * @return le nom à afficher pour l'état dans sa forme localisé
+	 */
 	public String getLocalizedDisplayName() {
 		String actionName = displayName;
 		String statePath = ApplicationCore.staticParameters.getResourceString("path.ressources") //$NON-NLS-1$
@@ -207,49 +224,63 @@ public class State implements Comparable<State> {
 	}
 	
 	/**
-	 * @param displayName displayName à définir
+	 * Définit le nom à afficher pour l'état (non localisé)
+	 * 
+	 * @param displayName le nom à afficher pour l'état (non localisé)
 	 */
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
 	}
 
 	/**
-	 * @return serie
+	 * Indique si l'utilisateur doit choisir la série pour cette état
+	 * 
+	 * @return true si l'utilisateur doit choisir la série pour cette état
 	 */
 	public boolean isSerie() {
 		return serie;
 	}
 
 	/**
-	 * @param serie serie à définir
+	 * Définit si l'utilisateur doit choisir la série pour cette état
+	 * 
+	 * @param serie true si l'utilisateur doit choisir la série pour cette état
 	 */
 	public void setSerie(boolean serie) {
 		this.serie = serie;
 	}
 
 	/**
-	 * @return start
+	 * Indique si l'utilisateur doit choisir le départ pour cette état
+	 * 
+	 * @return true si l'utilisateur doit choisir le départ pour cette état
 	 */
 	public boolean isStart() {
 		return start;
 	}
 
 	/**
-	 * @param start start à définir
+	 * Définit si l'utilisateur doit choisir le départ pour cette état
+	 * 
+	 * @param start true si l'utilisateur doit choisir le départ pour cette état
 	 */
 	public void setStart(boolean start) {
 		this.start = start;
 	}
 
 	/**
-	 * @return save
+	 * Indique si, par défaut, l'édition doit ou non être sauvegardé
+	 * 
+	 * @return true si l'édition doit être sauvegardé par défaut
 	 */
 	public boolean isSave() {
 		return save;
 	}
 
 	/**
-	 * @param save save à définir
+	 * Définit si, par défaut, l'édition doit ou non être sauvegardé
+	 * 
+	 * @param save true si l'édition doit être sauvegardé par défaut
 	 */
 	public void setSave(boolean save) {
 		this.save = save;
@@ -270,47 +301,67 @@ public class State implements Comparable<State> {
 	}
 
 	/**
-	 * @return template
+	 * Retourne le template XML de l'édition
+	 * 
+	 * @return template le template XML de l'édition
 	 */
 	public String getTemplate() {
 		return template;
 	}
 
 	/**
-	 * @param template template à définir
+	 * Définit le template XML de l'édition
+	 * 
+	 * @param template le template XML de l'édition
 	 */
 	public void setTemplate(String template) {
 		this.template = template;
 	}
 
 	/**
-	 * @return script
+	 * Retourne le script de génération de l'édition
+	 * 
+	 * @return script le script de génération de l'édition
 	 */
 	public String getScript() {
 		return script;
 	}
 
 	/**
-	 * @param script script à définir
+	 * Définit le script de génération de l'édition
+	 * 
+	 * @param script le script de génération de l'édition
 	 */
 	public void setScript(String script) {
 		this.script = script;
 	}
 
 	/**
-	 * @return isZipped
+	 * Indique si les fichiers de l'état sont stocké dans une archive zip ou
+	 * dans un dossier 
+	 * 
+	 * @return isZipped true si les fichiers de l'état sont dans une archive zip
 	 */
 	public boolean isZipped() {
 		return isZipped;
 	}
 
 	/**
-	 * @param isZipped isZipped à définir
+	 * Définit si les fichiers de l'état sont stocké dans une archive zip ou
+	 * dans un dossier
+	 * 
+	 * @param isZipped true si les fichiers de l'état sont dans une archive zip
 	 */
 	public void setZipped(boolean isZipped) {
 		this.isZipped = isZipped;
 	}
 	
+	/**
+	 * Compile le script javascript de l'état pour une exécution plus rapide
+	 * 
+	 * @throws IOException
+	 * @throws ScriptException
+	 */
 	protected void compileScript() throws IOException, ScriptException {
 		ScriptEngineManager se = new ScriptEngineManager();
 		ScriptEngine scriptEngine = se.getEngineByName("JavaScript"); //$NON-NLS-1$
@@ -324,6 +375,8 @@ public class State implements Comparable<State> {
 	}
 	
 	/**
+	 * Retourne l'url du fichier ou répertoire de l'état
+	 * 
 	 * @return stateURL
 	 * @throws MalformedURLException 
 	 */
@@ -338,6 +391,14 @@ public class State implements Comparable<State> {
 		return new File(statePath).toURI().toURL();
 	}
 
+	/**
+	 * Test si l'état est générable pour la fiche et les options fournit en paramètre
+	 * 
+	 * @param ficheConcours la fiche avec laquelle tester l'état
+	 * @param options les options d'édition
+	 * @return true si l'état est générable
+	 * @throws ScriptException
+	 */
 	public boolean checkPrintable(FicheConcours ficheConcours, StateOptions options) throws ScriptException {
 		if(stateScript == null) {
 			try {
@@ -352,6 +413,20 @@ public class State implements Comparable<State> {
 		return stateScript.checkPrintable(ficheConcours, options);
 	}
 	
+	/**
+	 * Génère l'état
+	 * 
+	 * @param ficheConcours la fiche concours pour laquelle générer l'état
+	 * @param document la représentation objet du pdf de l'état
+	 * @param options les options d'éditions
+	 * @param pdfPath le chemin du pdf à générer
+	 * @return true si la génération a put être réalisé
+	 * 
+	 * @throws ScriptException
+	 * @throws FileNotFoundException
+	 * @throws DocumentException
+	 * @throws MalformedURLException
+	 */
 	@SuppressWarnings("nls")
 	public boolean printState(FicheConcours ficheConcours, Document document, StateOptions options, File pdfPath) throws ScriptException, FileNotFoundException, DocumentException, MalformedURLException {
 		if(!checkPrintable(ficheConcours, options))
@@ -366,7 +441,9 @@ public class State implements Comparable<State> {
 		return true;
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * Permet de trier les états par ordre alphabétique sur leurs nom
+	 * 
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */
 	@Override

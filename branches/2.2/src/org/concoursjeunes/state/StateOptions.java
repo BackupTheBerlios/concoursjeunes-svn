@@ -34,7 +34,7 @@
  * à l'utiliser et l'exploiter dans les mêmes conditions de sécurité. 
  * 
  * Le fait que vous puissiez accéder à cet en-tête signifie que vous avez 
- * pri connaissance de la licence CeCILL, et que vous en avez accepté les
+ * pris connaissance de la licence CeCILL, et que vous en avez accepté les
  * termes.
  *
  * ENGLISH:
@@ -89,6 +89,12 @@ package org.concoursjeunes.state;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.concoursjeunes.Profile;
 
+/**
+ * Regroupe l'ensemble des options d'édition d'un état
+ * 
+ * @author Aurélien JEOFFRAY
+ *
+ */
 public class StateOptions {
 	private int depart;
 	private int serie;
@@ -98,6 +104,14 @@ public class StateOptions {
 	public StateOptions() {
 	}
 	
+	/**
+	 * Initialise les options d'édition
+	 * 
+	 * @param depart le numéro du départ à éditer
+	 * @param serie le numéro de la série à éditer
+	 * @param langReader la source de localisation
+	 * @param profile le profile utilisateur associé
+	 */
 	public StateOptions(int depart, int serie, AjResourcesReader langReader,
 			Profile profile) {
 		super();
@@ -108,56 +122,72 @@ public class StateOptions {
 	}
 
 	/**
-	 * @return depart
+	 * Retourne le numéro de départ à éditer
+	 * 
+	 * @return le numéro de départ à éditer
 	 */
 	public int getDepart() {
 		return depart;
 	}
 
 	/**
-	 * @param depart depart à définir
+	 * Définit le numéro de départ à éditer
+	 * 
+	 * @param depart le numéro de départ à éditer
 	 */
 	public void setDepart(int depart) {
 		this.depart = depart;
 	}
 
 	/**
-	 * @return serie
+	 * Retourne le numéro de la série à éditer
+	 * 
+	 * @return le numéro de la série à éditer
 	 */
 	public int getSerie() {
 		return serie;
 	}
 
 	/**
-	 * @param serie serie à définir
+	 * Définit le numéro de la série à éditer
+	 * 
+	 * @param serie le numéro de la série à éditer
 	 */
 	public void setSerie(int serie) {
 		this.serie = serie;
 	}
 
 	/**
-	 * @return langReader
+	 * Retourne la source de localisation
+	 * 
+	 * @return la source de localisation
 	 */
 	public AjResourcesReader getLangReader() {
 		return langReader;
 	}
 
 	/**
-	 * @param langReader langReader à définir
+	 * Définit la source de localisation
+	 * 
+	 * @param langReader la source de localisation
 	 */
 	public void setLangReader(AjResourcesReader langReader) {
 		this.langReader = langReader;
 	}
 
 	/**
-	 * @return profile
+	 * Retourne le profil utilisateur associé
+	 * 
+	 * @return le profil utilisateur associé 
 	 */
 	public Profile getProfile() {
 		return profile;
 	}
 
 	/**
-	 * @param profile profile à définir
+	 * Définit le profil utilisateur associé
+	 * 
+	 * @param profile le profil utilisateur associé
 	 */
 	public void setProfile(Profile profile) {
 		this.profile = profile;

@@ -36,7 +36,7 @@
  * à l'utiliser et l'exploiter dans les mêmes conditions de sécurité. 
  * 
  * Le fait que vous puissiez accéder à cet en-tête signifie que vous avez 
- * pri connaissance de la licence CeCILL, et que vous en avez accepté les
+ * pris connaissance de la licence CeCILL, et que vous en avez accepté les
  * termes.
  *
  * ENGLISH:
@@ -122,7 +122,11 @@ public class StateProcessor {
 	private FicheConcours ficheConcours;
 	
 	/**
+	 * Initialise un nouveau processeur d'état pour l'état et les informations fournit en paramètre
 	 * 
+	 * @param state l'état de l'édition à traiter
+	 * @param profile le profile associé
+	 * @param ficheConcours la fiche concours pour laquelle générer l'édition
 	 */
 	public StateProcessor(State state, Profile profile, FicheConcours ficheConcours) {
 		this.state = state;
@@ -131,19 +135,34 @@ public class StateProcessor {
 	}
 	
 	/**
-	 * @return state
+	 * Retourne l'état associé au processeur
+	 * 
+	 * @return l'état associé au processeur
 	 */
 	public State getState() {
 		return state;
 	}
 	
 	/**
-	 * @param state state à définir
+	 * Définit l'état associé au processeur
+	 * 
+	 * @param state l'état associé au processeur
 	 */
 	public void setState(State state) {
 		this.state = state;
 	}
 	
+	/**
+	 * Génère l'édition de l'état avec les options fournit en paramètre
+	 * 
+	 * @param depart le numéro du départ à éditer
+	 * @param serie le numéro de la série à éditer
+	 * @param save true si l'édition réalisé doit être sauvegardé
+	 * @throws IOException
+	 * @throws ScriptException
+	 * @throws FileNotFoundException
+	 * @throws DocumentException
+	 */
 	public void process(int depart, int serie, boolean save)
 			throws IOException, ScriptException, FileNotFoundException, DocumentException {
 		Document document = new Document();

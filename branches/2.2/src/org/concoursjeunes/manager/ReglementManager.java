@@ -36,7 +36,7 @@
  * à l'utiliser et l'exploiter dans les mêmes conditions de sécurité. 
  * 
  * Le fait que vous puissiez accéder à cet en-tête signifie que vous avez 
- * pri connaissance de la licence CeCILL, et que vous en avez accepté les
+ * pris connaissance de la licence CeCILL, et que vous en avez accepté les
  * termes.
  *
  * ENGLISH:
@@ -107,8 +107,8 @@ import org.concoursjeunes.Reglement;
 import org.concoursjeunes.builders.ReglementBuilder;
 
 /**
- * Permet la gestion listage, séléction, ajout et suppression des
- * réglements en fonction de leurs catégories et de leurs fédération
+ * Permet la gestion listage, sélection, ajout et suppression des
+ * règlements en fonction de leurs catégories et de leurs fédération
  * 
  * @author Aurélien JEOFFRAY
  *
@@ -120,15 +120,15 @@ public class ReglementManager {
 	private List<Integer> categorie = new ArrayList<Integer>();
 	
 	/**
-	 * Construit une nouvelle instance du gestionnaire de réglement, listant
-	 * tout les réglements présent en base.
+	 * Construit une nouvelle instance du gestionnaire de règlement, listant
+	 * tout les règlements présent en base.
 	 */
 	public ReglementManager() {
 		listReglement();
 	}
 	
 	/**
-	 * Liste tout les réglements présent en base
+	 * Liste tout les règlements présent en base
 	 */
 	private void listReglement() {
 		availableReglements.clear();
@@ -156,9 +156,9 @@ public class ReglementManager {
 	}
 	
 	/**
-	 * Ajoute le réglement fournit en parametre à la base et au gestionnaire
+	 * Ajoute le règlement fournit en paramètre à la base et au gestionnaire
 	 * 
-	 * @param reglement le réglement à ajouter
+	 * @param reglement le règlement à ajouter
 	 * @throws SqlPersistanceException
 	 */
 	public void addReglement(Reglement reglement) throws SqlPersistanceException {
@@ -175,9 +175,9 @@ public class ReglementManager {
 	}
 	
 	/**
-	 * Supprime un réglement de la base et du gestionnaire
+	 * Supprime un règlement de la base et du gestionnaire
 	 * 
-	 * @param reglement le réglement à supprimer
+	 * @param reglement le règlement à supprimer
 	 */
 	public void removeReglement(Reglement reglement) throws SqlPersistanceException {
 		reglement.delete();
@@ -191,8 +191,8 @@ public class ReglementManager {
 	}
 	
 	/**
-	 * Met à jour un réglement en base à partir de sa référence objet.
-	 * Si le réglement n'existe pas en base, se contente de le creer
+	 * Met à jour un règlement en base à partir de sa référence objet.
+	 * Si le règlement n'existe pas en base, se contente de le créer
 	 * 
 	 * @param reglement
 	 * @throws SqlPersistanceException
@@ -213,24 +213,24 @@ public class ReglementManager {
 	
 	/**
 	 * <p>
-	 * Retourne la liste des réglement disponible en base de donnée.
+	 * Retourne la liste des règlement disponible en base de donnée.
 	 * </p>
 	 * <p>
-	 * Des mises à jour du programme peuvent apporter de nouveau réglement sous
+	 * Des mises à jour du programme peuvent apporter de nouveau règlement sous
 	 * forme de script sql
 	 * </p>
 	 * 
-	 * @return la liste des réglement disponible
+	 * @return la liste des règlement disponible
 	 */
 	public List<Reglement> getAvailableReglements() {
 		return availableReglements;
 	}
 	
 	/**
-	 * Retourne la liste des réglements pour la categorie nommé
+	 * Retourne la liste des règlements pour la categorie nommé
 	 * 
-	 * @param category le nom de la catégorie des réglements à retourner
-	 * @return la liste des réglements de la catégorie
+	 * @param category le nom de la catégorie des règlements à retourner
+	 * @return la liste des règlements de la catégorie
 	 */
 	public List<Reglement> getReglementsForCategory(int category) {
 		List<Reglement> reglements = new ArrayList<Reglement>();
@@ -243,10 +243,10 @@ public class ReglementManager {
 	}
 	
 	/**
-	 * Retourne la liste des réglements pour une fédération donné
+	 * Retourne la liste des règlements pour une fédération donné
 	 * 
-	 * @param federation la fédération pour laquelle retourner les réglements
-	 * @return la liste des réglements
+	 * @param federation la fédération pour laquelle retourner les règlements
+	 * @return la liste des règlements
 	 */
 	public List<Reglement> getReglementsForFederation(Federation federation) {
 		List<Reglement> reglements = new ArrayList<Reglement>();
@@ -259,11 +259,11 @@ public class ReglementManager {
 	}
 	
 	/**
-	 * Retourne la liste des reglements pour une federation et une categorie
+	 * Retourne la liste des règlements pour une federation et une catégorie
 	 * 
-	 * @param federation la federation des réglements à retourner
-	 * @param category le numero de la categorie des réglements à retourner
-	 * @return la liste des réglements
+	 * @param federation la federation des règlements à retourner
+	 * @param category le numéro de la catégorie des règlements à retourner
+	 * @return la liste des règlements
 	 */
 	public List<Reglement> getReglementsForFederationAndCategory(Federation federation, int category) {
 		List<Reglement> reglements = new ArrayList<Reglement>();
@@ -276,10 +276,10 @@ public class ReglementManager {
 	}
 	
 	/**
-	 * Retourne le reglement qualifié par son nom ou null si inexistant
+	 * Retourne le règlement qualifié par son nom ou null si inexistant
 	 * 
-	 * @param name le nom du reglement à retourner
-	 * @return le reglement correspondant
+	 * @param name le nom du règlement à retourner
+	 * @return le règlement correspondant
 	 */
 	public Reglement getReglementByName(String name) {
 		for(Reglement reglement : availableReglements) {
@@ -290,7 +290,7 @@ public class ReglementManager {
 	}
 	
 	/**
-	 * Retourne les fédération représenté par les réglements
+	 * Retourne les fédération représenté par les règlements
 	 * 
 	 * @return la liste des fédération représenté
 	 */
@@ -299,19 +299,19 @@ public class ReglementManager {
 	}
 	
 	/**
-	 * Retourne la liste des catégories représenté par les réglements
+	 * Retourne la liste des catégories représenté par les règlements
 	 * 
-	 * @return la liste des catégories de réglement
+	 * @return la liste des catégories de règlement
 	 */
 	public List<Integer> getCategories() {
 		return categorie;
 	}
 	
 	/**
-	 * Exporte un reglement sous la forme d'un fichier XML
+	 * Exporte un règlement sous la forme d'un fichier XML
 	 * 
-	 * @param reglement le réglement à exporter
-	 * @param exportFile le fichier dans lequel exporter le réglement
+	 * @param reglement le règlement à exporter
+	 * @param exportFile le fichier dans lequel exporter le règlement
 	 * 
 	 * @throws FileNotFoundException
 	 * @throws IOException
@@ -325,10 +325,10 @@ public class ReglementManager {
 	}
 	
 	/**
-	 * Importe un réglement à partir d'un fichier XML
+	 * Importe un règlement à partir d'un fichier XML
 	 * 
-	 * @param importFile le fichier XML contenant le réglement
-	 * @return l'objet réglement résultant
+	 * @param importFile le fichier XML contenant le règlement
+	 * @return l'objet règlement résultant
 	 * 
 	 * @throws IOException
 	 * @throws SQLException
@@ -341,8 +341,6 @@ public class ReglementManager {
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}
-		//reglement = XMLSerializer.loadXMLStructure(importFile, false);
-		//updateReglement(reglement);
 		
 		return reglement;
 	}
