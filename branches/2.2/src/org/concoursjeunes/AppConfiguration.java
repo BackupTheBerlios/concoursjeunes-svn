@@ -111,7 +111,7 @@ import org.ajdeveloppement.commons.net.Proxy;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={"firstboot", "pdfReaderPath", "useProxy", "proxy"})
+@XmlType(propOrder={"firstboot", "pdfReaderPath", "useProxy", "proxy", "lastProfile"})
 public class AppConfiguration implements Cloneable {
 	@XmlAttribute
 	@SuppressWarnings("unused")
@@ -121,6 +121,7 @@ public class AppConfiguration implements Cloneable {
 	private String pdfReaderPath    = null; 
 	private boolean useProxy		= false;
 	private Proxy proxy				= new Proxy();
+	private String lastProfile		= "defaut"; //$NON-NLS-1$
 	
 	private boolean firstboot       = true;
 	
@@ -176,6 +177,20 @@ public class AppConfiguration implements Cloneable {
 	 */
 	public void setProxy(Proxy proxy) {
 		this.proxy = proxy;
+	}
+
+	/**
+	 * @param lastProfile lastProfile à définir
+	 */
+	public void setLastProfile(String lastProfile) {
+		this.lastProfile = lastProfile;
+	}
+
+	/**
+	 * @return lastProfile
+	 */
+	public String getLastProfile() {
+		return lastProfile;
 	}
 
 	/**

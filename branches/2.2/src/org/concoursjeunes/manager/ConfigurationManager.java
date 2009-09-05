@@ -122,7 +122,7 @@ public class ConfigurationManager {
 	public static Configuration loadCurrentConfiguration() {
 		File profileChoice = new File(userRessources.getConfigPathForUser(),
 				"currentprofile"); //$NON-NLS-1$
-		String curentProfile = "defaut"; //$NON-NLS-1$
+		String curentProfile = ApplicationCore.getAppConfiguration().getLastProfile();
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new FileReader(profileChoice));

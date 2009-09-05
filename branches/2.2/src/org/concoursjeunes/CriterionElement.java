@@ -198,6 +198,18 @@ public class CriterionElement implements SqlPersistance {
 	public void setCriterion(Criterion criterion) {
 		this.criterion = criterion;
 	}
+	
+	/**
+	 * Définit le critère parent de l'élément
+	 * 
+	 * @deprecated remplacé par {@link #setCriterion(Criterion)}
+	 * 
+	 * @param criterion le critère parent de l'élément
+	 */
+	@Deprecated
+	public void setCriterionParent(Criterion criterion) {
+		setCriterion(criterion);
+	}
 
 	/**
 	 * Est-ce que l'élément est utilisé?

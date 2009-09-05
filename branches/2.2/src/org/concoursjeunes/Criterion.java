@@ -217,6 +217,18 @@ public class Criterion implements SqlPersistance {
 	public void setReglement(Reglement reglement) {
 		this.reglement = reglement;
 	}
+	
+	/**
+	 * Associe un règlement au critère
+	 * 
+	 * @deprecated Remplacé par {@link #setReglement(Reglement)}
+	 * 
+	 * @param reglement le règlement associé au critère
+	 */
+	@Deprecated
+	public void setReglementParent(Reglement reglement) {
+		setReglement(reglement);
+	}
 
 	/**
 	 * Renvoie le libellé du critère

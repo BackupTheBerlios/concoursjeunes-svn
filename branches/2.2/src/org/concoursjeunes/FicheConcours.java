@@ -392,6 +392,15 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 		}
 		
 		//contrôle l'affectation du règlement et des critères
+		for(Criterion criterion : reglement.getListCriteria()) {
+			if(criterion.getReglement() == null)
+				criterion.setReglement(reglement);
+			for(CriterionElement element : criterion.getCriterionElements()) {
+				if(element.getCriterion() == null)
+					element.setCriterion(criterion);
+			}
+		}
+		
 		for(Concurrent concurrent : concurrentList.list(-1)) {
 			if(concurrent.getCriteriaSet().getReglement() == null)
 				concurrent.getCriteriaSet().setReglement(reglement);

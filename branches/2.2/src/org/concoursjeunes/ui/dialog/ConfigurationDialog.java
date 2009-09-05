@@ -915,6 +915,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		workAppConfiguration.setUseProxy(jrbUseSpecificConfig.isSelected());
 		workAppConfiguration.getProxy().setProxyServerAddress(jtfAdresseProxy.getText());
 		workAppConfiguration.getProxy().setProxyServerPort(Integer.parseInt("0" + jtfPortProxy.getText()));  //$NON-NLS-1$
+		workAppConfiguration.setLastProfile(workConfiguration.getCurProfil());
 		
 		return true;
 	}

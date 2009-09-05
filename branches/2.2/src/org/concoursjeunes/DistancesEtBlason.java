@@ -268,6 +268,11 @@ public class DistancesEtBlason implements SqlPersistance {
 	public void setCriteriaSet(CriteriaSet criteriaSet) {
 		this.criteriaSet = criteriaSet;
 	}
+	
+	@Deprecated
+	public void setReglement(Reglement reglement) {
+		
+	}
 
 	/**
 	 * Retourne le numéro en base de l'objet
