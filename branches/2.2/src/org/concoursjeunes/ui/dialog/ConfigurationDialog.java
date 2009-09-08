@@ -897,7 +897,8 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		workConfiguration.getClub().setAgrement(jtfAgrClub.getText());
 		workConfiguration.setIntituleConcours(jtfIntConc.getText());
 		workConfiguration.setLangue(Configuration.listLangue()[jcbLangue.getSelectedIndex()]);
-		workAppConfiguration.setPdfReaderPath(jcbPathPdf.getSelectedItem().toString());
+		if(jcbPathPdf.getSelectedItem() != null)
+			workAppConfiguration.setPdfReaderPath(jcbPathPdf.getSelectedItem().toString());
 
 		workConfiguration.setNbCible(Integer.parseInt(jtfNbCible.getText()));
 		workConfiguration.setNbTireur((jcbNbTireur.getSelectedIndex() == 0) ? 2 : 4);

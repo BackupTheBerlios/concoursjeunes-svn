@@ -167,6 +167,8 @@ public class AppConfiguration implements Cloneable {
 	 * @return proxy les paramètres de proxy
 	 */
 	public Proxy getProxy() {
+		if(proxy == null)
+			proxy = new Proxy();
 		return proxy;
 	}
 
