@@ -721,7 +721,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	private ArrayList<String> getPdfPath(Configuration configuration) {
 		ArrayList<String> pdfPath = new ArrayList<String>();
 
-		if (!workAppConfiguration.getPdfReaderPath().equals("")) {  //$NON-NLS-1$
+		if (workAppConfiguration.getPdfReaderPath() != null && !workAppConfiguration.getPdfReaderPath().equals("")) {  //$NON-NLS-1$
 			pdfPath.add(workAppConfiguration.getPdfReaderPath());
 		}
 		// Recherche d'un lecteur pdf en fonction du syteme
