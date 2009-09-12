@@ -1,0 +1,40 @@
+Les images référencé ci dessous sont soumis à la licence Creative Commons by-nc-nd 2.0
+(Paternité-Pas d'Utilisation Commerciale-Pas de Modification)
+voir http://creativecommons.org/licenses/by-nc-nd/2.0/fr/
+Les images concerné sont la propriété exclusive de Aurélien JEOFFRAY et du projet ConcoursJeunes.
+
+The referenced images under the line was submit on Creative Commons by-nc-nd 2.0 licence
+(Attribution-Noncommercial-No Derivative Works)
+see http://creativecommons.org/licenses/by-nc-nd/2.0/
+Concerned images are exclusive property of Aurélien JEOFFRAY and ConcoursJeunes project
+
+- about.jpg
+- archer16x16.png
+- archer24x24.png
+- archer_rouge24x24.png
+- archer_handicap24x24.png
+- archer_handicap_rouge24x24.png
+- archersAdd16x16.png
+- archersDel16x16.png
+- b_down.png
+- b_up.png
+- close.png
+- Equipes16x16.png
+- fnd.jpg
+- iconCible.jpg
+- iconCJ.ico
+- iconCJ.jpg
+- iconCJ.xpm
+- lock.png
+- open.png
+- targetface_fita_4O.png
+- targetface_fita_6O.png
+- targetface_fita_8O.png
+- targetface_fita_122.png
+- targetface_fita_trispot.png
+- targetface_fita_trispot_vegas.png
+- top.png
+- trispotflou.png
+
+L'image "logo_ffta.gif" est la propriété exclusive de la Fédération Française de Tir à l'Arc
+L'image "tiralarc.gif" est la propriété exclusive de la 1ère Compagnie de Tir à l'Arc d'Aix les Bains
