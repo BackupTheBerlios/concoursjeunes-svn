@@ -241,7 +241,7 @@ public class FFTAImportDialog extends JDialog implements ActionListener, FFTAImp
 		} else if (e.getSource() == jbSart) {
 			FFTAImportThread fftaIT = new FFTAImportThread(profile.getLocalisation());
 			fftaIT.setParentFrame(this);
-			if(jrbFTPDownload.isSelected())
+			if(jrbLocal.isSelected())
 				fftaIT.setFftalogpath(jtfEmplacementLFFTA.getText());
 			fftaIT.addFFTAImportThreadListener(this);
 			jpbProgression.setIndeterminate(true);

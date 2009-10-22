@@ -104,6 +104,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.concoursjeunes.ApplicationCore;
 
 /**
+ * Représente la collection des catégories d'états d'édition
+ * 
  * @author Aurélien JEOFFRAY
  *
  */
@@ -112,57 +114,79 @@ public class Categories {
 	private List<Category> categorie = new ArrayList<Category>();
 	
 	/**
-	 * @return categorie
+	 * Retourne la collection de catégories d'édition
+	 * 
+	 * @return la collection de catégories d'édition
 	 */
 	public List<Category> getCategorie() {
 		return categorie;
 	}
 
 	/**
-	 * @param categorie categorie à définir
+	 * Définit la collection de catégories d'édition
+	 * 
+	 * @param categorie la collection de catégories d'édition
 	 */
 	public void setCategorie(List<Category> categorie) {
 		this.categorie = categorie;
 	}
 	
+	/**
+	 * Représente une catégorie d'état d'édition
+	 * 
+	 * @author Aurélien JEOFFRAY
+	 *
+	 */
 	public static class Category {
 		private String name = ""; //$NON-NLS-1$
 		private String libelle = ""; //$NON-NLS-1$
 		
 		/**
-		 * 
+		 * Initialise une nouvelle catégorie
 		 */
 		public Category() {
 		}
 		
 		/**
-		 * @return name
+		 * Retourne le nom de la catégorie
+		 * 
+		 * @return le nom de la catégorie
 		 */
 		public String getName() {
 			return name;
 		}
 		
 		/**
-		 * @param name name à définir
+		 * Définit le nom de la catégorie
+		 * @param name le nom de la catégorie
 		 */
 		public void setName(String name) {
 			this.name = name;
 		}
 		
 		/**
-		 * @return libelle
+		 * Retourne le libellé de la catégorie
+		 * 
+		 * @return le libellé de la catégorie
 		 */
 		public String getLibelle() {
 			return libelle;
 		}
 		
 		/**
-		 * @param libelle libelle à définir
+		 * Définit le libellé de la catégorie
+		 * 
+		 * @param libelle le libellé de la catégorie
 		 */
 		public void setLibelle(String libelle) {
 			this.libelle = libelle;
 		}
 		
+		/**
+		 * Retourne le libellé localisé de la catégorie
+		 * 
+		 * @return le libellé localisé de la catégorie
+		 */
 		public String getLocalizedLibelle() {
 			String localizedLibelle = libelle;
 			String statePath = ApplicationCore.staticParameters.getResourceString("path.ressources") //$NON-NLS-1$

@@ -92,11 +92,24 @@ import java.util.Hashtable;
 import java.util.List;
 
 /**
+ * Abstraction à disposition des web services et définissant les informations
+ * à retourné aux client sur les plugins
+ * 
  * @author Aurélien JEOFFRAY
  *
  */
 public abstract class AvailablePluginsManager {
+	/**
+	 * Retourne les informations détaillé de chaque plugin disponible sur internet
+	 * 
+	 * @return les informations détaillé de chaque plugin disponible sur internet
+	 */
 	public abstract List<PluginDescription> getPluginsDetail();
 	
+	/**
+	 * Retourne l'ensemble des catégories d'extensions représenté sur internet
+	 * 
+	 * @return l'ensemble des catégories d'extensions représenté sur internet
+	 */
 	public abstract Hashtable<String, String> getCategories();
 }

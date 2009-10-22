@@ -98,7 +98,6 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -326,7 +325,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	 * 
 	 * @param fiche la fiche à restaurer
 	 */
-	public void setFiche(Object[] fiche, MetaDataFicheConcours metaDataFicheConcours) throws SQLException {
+	public void setFiche(Object[] fiche, MetaDataFicheConcours metaDataFicheConcours) {
 		
 		parametre = (Parametre) fiche[0];
 		concurrentList = (ConcurrentList) fiche[1];
@@ -372,7 +371,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	 * inférieur du programme</p>
 	 */
 	@SuppressWarnings("deprecation")
-	private void checkFiche() throws SQLException {
+	private void checkFiche() {
 		Reglement reglement = parametre.getReglement();
 		
 		if(reglement.getVersion() == 1) {
@@ -393,6 +392,15 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 		}
 		
 		//contrôle l'affectation du règlement et des critères
+		for(Criterion criterion : reglement.getListCriteria()) {
+			if(criterion.getReglement() == null)
+				criterion.setReglement(reglement);
+			for(CriterionElement element : criterion.getCriterionElements()) {
+				if(element.getCriterion() == null)
+					element.setCriterion(criterion);
+			}
+		}
+		
 		for(Concurrent concurrent : concurrentList.list(-1)) {
 			if(concurrent.getCriteriaSet().getReglement() == null)
 				concurrent.getCriteriaSet().setReglement(reglement);
@@ -408,10 +416,10 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 			if(distancesEtBlason.getCriteriaSet().getReglement() == null)
 				distancesEtBlason.getCriteriaSet().setReglement(reglement);
 			
-			//si le blason n'est pas initialiser 
+			//si le blason n'est pas initialiser
 			if(distancesEtBlason.getTargetFace() == null || distancesEtBlason.getTargetFace().equals(new Blason())) {
-				if(distancesEtBlason.getNumdistancesblason() > 0) { //si le règlement est dans la base
-					distancesEtBlason.setTargetFace(BlasonManager.findBlasonAssociateToDistancesEtBlason(distancesEtBlason.getNumdistancesblason(), reglement.hashCode()));
+				if(distancesEtBlason.getNumdistancesblason() > 0 && reglement.getNumReglement() > 0) { //si le règlement est dans la base
+					distancesEtBlason.setTargetFace(BlasonManager.findBlasonAssociateToDistancesEtBlason(distancesEtBlason.getNumdistancesblason(), reglement.getNumReglement()));
 				} else {
 					Blason targetFace = null;
 					try { //on tente de retrouver une correspondance pour le blason dans la base
@@ -719,23 +727,22 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 
 			tplClassementEquipe.parse("categories.CATEGORIE", this.profile.getLocalisation().getResourceString("equipe.composition")); //$NON-NLS-1$ //$NON-NLS-2$
 
-			List<Equipe> sortEquipes = clubList.getEquipeList();
-			Collections.sort(sortEquipes);
+			Equipe[] sortEquipes = EquipeList.sort(clubList.list());
 
-			for (int i = 0; i < sortEquipes.size(); i++) {
+			for (int i = 0; i < sortEquipes.length; i++) {
 
 				tplClassementEquipe.parse("categories.classement.PLACE", "" + (i + 1)); //$NON-NLS-1$ //$NON-NLS-2$
 
 				String idsXML = ""; //$NON-NLS-1$
 				String ptsXML = ""; //$NON-NLS-1$
-				for (Concurrent concurrent : sortEquipes.get(i).getMembresEquipe()) {
+				for (Concurrent concurrent : sortEquipes[i].getMembresEquipe()) {
 					idsXML += concurrent.getID() + "<br>"; //$NON-NLS-1$
 					ptsXML += concurrent.getTotalScore() + "<br>"; //$NON-NLS-1$
 				}
 				tplClassementEquipe.parse("categories.classement.IDENTITEES", idsXML); //$NON-NLS-1$
-				tplClassementEquipe.parse("categories.classement.NOM_EQUIPE", sortEquipes.get(i).getNomEquipe()); //$NON-NLS-1$
+				tplClassementEquipe.parse("categories.classement.NOM_EQUIPE", sortEquipes[i].getNomEquipe()); //$NON-NLS-1$
 				tplClassementEquipe.parse("categories.classement.TOTAL_INDIVIDUEL", ptsXML); //$NON-NLS-1$
-				tplClassementEquipe.parse("categories.classement.TOTAL_GENERAL", "" + sortEquipes.get(i).getTotalScore()); //$NON-NLS-1$ //$NON-NLS-2$
+				tplClassementEquipe.parse("categories.classement.TOTAL_GENERAL", "" + sortEquipes[i].getTotalScore()); //$NON-NLS-1$ //$NON-NLS-2$
 
 				tplClassementEquipe.loopBloc("categories.classement"); //$NON-NLS-1$
 			}

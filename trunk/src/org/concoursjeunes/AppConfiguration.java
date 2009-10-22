@@ -111,7 +111,7 @@ import org.ajdeveloppement.commons.net.Proxy;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={"firstboot", "pdfReaderPath", "useProxy", "proxy"})
+@XmlType(propOrder={"firstboot", "pdfReaderPath", "useProxy", "proxy", "lastProfile"})
 public class AppConfiguration implements Cloneable {
 	@XmlAttribute
 	@SuppressWarnings("unused")
@@ -121,6 +121,7 @@ public class AppConfiguration implements Cloneable {
 	private String pdfReaderPath    = null; 
 	private boolean useProxy		= false;
 	private Proxy proxy				= new Proxy();
+	private String lastProfile		= "defaut"; //$NON-NLS-1$
 	
 	private boolean firstboot       = true;
 	
@@ -129,20 +130,14 @@ public class AppConfiguration implements Cloneable {
 	}
 
 	/**
-	 * Retourne le chemin du lecteur PDF (utile uniquement sur les système
-	 * ne supportant pas la class Desktop)
-	 * 
-	 * @return le chemin du lecteur PDF
+	 * @return pdfReaderPath
 	 */
 	public String getPdfReaderPath() {
 		return pdfReaderPath;
 	}
 
 	/**
-	 * Définit le chemin du lecteur PDF (utile uniquement sur les système
-	 * ne supportant pas la class Desktop)
-	 * 
-	 * @param pdfReaderPath le chemin du lecteur PDF
+	 * @param pdfReaderPath pdfReaderPath à définir
 	 */
 	public void setPdfReaderPath(String pdfReaderPath) {
 		this.pdfReaderPath = pdfReaderPath;
@@ -172,6 +167,8 @@ public class AppConfiguration implements Cloneable {
 	 * @return proxy les paramètres de proxy
 	 */
 	public Proxy getProxy() {
+		if(proxy == null)
+			proxy = new Proxy();
 		return proxy;
 	}
 
@@ -185,6 +182,20 @@ public class AppConfiguration implements Cloneable {
 	}
 
 	/**
+	 * @param lastProfile lastProfile à définir
+	 */
+	public void setLastProfile(String lastProfile) {
+		this.lastProfile = lastProfile;
+	}
+
+	/**
+	 * @return lastProfile
+	 */
+	public String getLastProfile() {
+		return lastProfile;
+	}
+
+	/**
 	 * Détermine si c'est le premier lancement de l'application
 	 * @return <code>true</code> si l'application est lancé pour la première fois, <code><false</code> sinon
 	 */
@@ -194,7 +205,6 @@ public class AppConfiguration implements Cloneable {
 
 	/**
 	 * Place l'application sur premier lancement
-	 * 
 	 * @param firstboot <code>true</code> si l'application est lancé pour la première fois, <code><false</code> sinon
 	 */
 	public void setFirstboot(boolean firstboot) {

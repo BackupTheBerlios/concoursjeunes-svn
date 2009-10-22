@@ -103,6 +103,7 @@ import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.concoursjeunes.AppConfiguration;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Configuration;
+import org.concoursjeunes.Entite;
 import org.concoursjeunes.builders.ConfigurationBuilder;
 
 /**
@@ -118,14 +119,16 @@ public class ConfigurationManager {
 	 * 
 	 * @return la configuation courante
 	 */
-	public static Configuration loadCurrentConfiguration() throws JAXBException, IOException {
+	public static Configuration loadCurrentConfiguration() {
 		File profileChoice = new File(userRessources.getConfigPathForUser(),
 				"currentprofile"); //$NON-NLS-1$
-		String curentProfile = "defaut"; //$NON-NLS-1$
+		String curentProfile = ApplicationCore.getAppConfiguration().getLastProfile();
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new FileReader(profileChoice));
 			curentProfile = reader.readLine();
+		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
 		} finally {
 			if(reader != null)
 				try { reader.close(); } catch(IOException e) { }
@@ -140,7 +143,7 @@ public class ConfigurationManager {
 	 * @param profilename
 	 * @return la configuration nommé
 	 */
-	public static Configuration loadConfiguration(String profilename) throws JAXBException, IOException {
+	public static Configuration loadConfiguration(String profilename) {
 		return loadConfiguration(new File(ApplicationCore.userRessources.getConfigPathForUser(), "configuration_" + profilename + ".xml")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
@@ -150,15 +153,19 @@ public class ConfigurationManager {
 	 * @param confFile le fichier de configuration à charger
 	 * @return l'objet configuration chargé
 	 */
-	public static Configuration loadConfiguration(File confFile) throws JAXBException, IOException {
+	public static Configuration loadConfiguration(File confFile) {
 		Configuration configuration = null;
 		//tente de charger la configuration
 		try {
 			configuration = XMLSerializer.loadMarshallStructure(confFile, Configuration.class);
 		} catch(FileNotFoundException e) {
 			//ne rien faire, c'est que la configuration n'a pas été créé
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-
+		
 		if(configuration == null) {
 			configuration = ConfigurationBuilder.getDefaultConfiguration();
 		}
@@ -167,7 +174,7 @@ public class ConfigurationManager {
 	}
 	
 	@SuppressWarnings("deprecation")
-	public static AppConfiguration loadAppConfiguration() throws JAXBException, IOException {
+	public static AppConfiguration loadAppConfiguration() {
 		File confFile = new File(
 				userRessources.getConfigPathForUser(),
 				staticParameters.getResourceString("file.configuration")); //$NON-NLS-1$
@@ -177,6 +184,10 @@ public class ConfigurationManager {
 		try {
 			appConfiguration = XMLSerializer.loadMarshallStructure(confFile, AppConfiguration.class);
 		} catch(FileNotFoundException e) {
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		
 		if(appConfiguration == null) {

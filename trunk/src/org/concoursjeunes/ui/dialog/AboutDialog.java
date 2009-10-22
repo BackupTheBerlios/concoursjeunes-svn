@@ -121,6 +121,8 @@ import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
 /**
+ * Boite de dialogue "à propos" de l'application
+ * 
  * @author Aurélien JEOFFRAY
  *
  */
@@ -153,9 +155,6 @@ public class AboutDialog extends JDialog implements ActionListener, HyperlinkLis
 		jlAbout.setEditorKit(new HTMLEditorKit());
 		jlAbout.setFont(getFont());
 		jlAbout.addHyperlinkListener(this);
-		//jlAbout.setIcon(new ImageIcon(ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
-		//		File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.about") //$NON-NLS-1$
-		//));
 		
 		jpAction.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		jpAction.add(jbFermer);

@@ -86,7 +86,13 @@
  */
 package org.concoursjeunes;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.xml.bind.Marshaller;
@@ -98,12 +104,13 @@ import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.ajdeveloppement.commons.sql.SqlField;
-import org.ajdeveloppement.commons.sql.SqlForeignKey;
+import org.ajdeveloppement.commons.sql.SqlForeignFields;
 import org.ajdeveloppement.commons.sql.SqlPersistance;
 import org.ajdeveloppement.commons.sql.SqlPersistanceException;
 import org.ajdeveloppement.commons.sql.SqlPrimaryKey;
 import org.ajdeveloppement.commons.sql.SqlStoreHelper;
 import org.ajdeveloppement.commons.sql.SqlTable;
+import org.concoursjeunes.builders.CriterionElementBuilder;
 
 /**
  * Element de critère
@@ -113,7 +120,7 @@ import org.ajdeveloppement.commons.sql.SqlTable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @SqlTable(name="CRITEREELEMENT")
 @SqlPrimaryKey(fields={"CODECRITEREELEMENT","CODECRITERE","NUMREGLEMENT"})
-//@SqlUnmappedFields(fields={"CODECRITERE","NUMREGLEMENT"})
+@SqlForeignFields(fields={"CODECRITERE","NUMREGLEMENT"})
 public class CriterionElement implements SqlPersistance {
 	
 	//utilisé pour donnée un identifiant unique à la sérialisation de l'objet
@@ -131,7 +138,6 @@ public class CriterionElement implements SqlPersistance {
 	@SqlField(name="NUMORDRE")
     private int numordre = 0;
 	
-	@SqlForeignKey(mappedTo={"CODECRITERE","NUMREGLEMENT"})
 	@XmlTransient
 	private Criterion criterion;
 	
@@ -191,6 +197,18 @@ public class CriterionElement implements SqlPersistance {
 	 */
 	public void setCriterion(Criterion criterion) {
 		this.criterion = criterion;
+	}
+	
+	/**
+	 * Définit le critère parent de l'élément
+	 * 
+	 * @deprecated remplacé par {@link #setCriterion(Criterion)}
+	 * 
+	 * @param criterion le critère parent de l'élément
+	 */
+	@Deprecated
+	public void setCriterionParent(Criterion criterion) {
+		setCriterion(criterion);
 	}
 
 	/**
@@ -252,9 +270,13 @@ public class CriterionElement implements SqlPersistance {
 	 * 
 	 * @see org.ajdeveloppement.commons.sql.SqlPersistance#save()
 	 */
+	@SuppressWarnings("nls")
 	@Override
 	public void save() throws SqlPersistanceException {
-		helper.save(this);
+		Map<String, Object> fk = new HashMap<String, Object>();
+		fk.put("NUMREGLEMENT", criterion.getReglement().getNumReglement());
+		fk.put("CODECRITERE", criterion.getCode());
+		helper.save(this, fk);
 	}
 	
 	/**
@@ -262,16 +284,20 @@ public class CriterionElement implements SqlPersistance {
 	 * 
 	 * @see org.ajdeveloppement.commons.sql.SqlPersistance#delete()
 	 */
+	@SuppressWarnings("nls")
 	@Override
 	public void delete() throws SqlPersistanceException {
-		helper.delete(this);
+		Map<String, Object> fk = new HashMap<String, Object>();
+		fk.put("NUMREGLEMENT", criterion.getReglement().getNumReglement());
+		fk.put("CODECRITERE", criterion.getCode());
+		helper.delete(this, fk);
 	}
 	
-	protected void beforeMarshal(@SuppressWarnings("unused") Marshaller marshaller) {
+	protected void beforeMarshal(Marshaller marshaller) {
 		xmlId = UUID.randomUUID().toString();
 	}
 
-	protected void afterUnmarshal(@SuppressWarnings("unused") Unmarshaller unmarshaller, Object parent) {
+	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
 		if(parent instanceof Criterion)
 			criterion = (Criterion)parent;
 	}
@@ -313,5 +339,31 @@ public class CriterionElement implements SqlPersistance {
     @Override
     public int hashCode() {
         return code.hashCode();
+    }
+    
+    /**
+     * Retourne l'ensemble des éléments de critère associé à un critère donné
+     * 
+     * TODO à revoir
+     */
+    public static List<CriterionElement> getAllCriterionElementsFor(Criterion criterion) {
+    	List<CriterionElement> elements = new ArrayList<CriterionElement>();
+    	
+    	try {
+			Statement stmt = ApplicationCore.dbConnection.createStatement();
+			
+			String sql = "select CODECRITEREELEMENT from critereelement where " + //$NON-NLS-1$
+					"codecritere='" + criterion.getCode() + "' " + //$NON-NLS-1$ //$NON-NLS-2$
+					"and numreglement=" + criterion.getReglement().getNumReglement() + " order by NUMORDRE"; //$NON-NLS-1$ //$NON-NLS-2$
+			
+			ResultSet rs = stmt.executeQuery(sql);
+			
+			while(rs.next()) {
+				elements.add(CriterionElementBuilder.getCriterionElement(rs.getString("CODECRITEREELEMENT"), criterion)); //$NON-NLS-1$
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+    	return elements;
     }
 }

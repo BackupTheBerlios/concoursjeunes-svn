@@ -90,7 +90,6 @@ package org.concoursjeunes.builders;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 
 import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.concoursjeunes.ApplicationCore;
@@ -113,7 +112,7 @@ public class FicheConcoursBuilder {
 	 * @throws IOException
 	 */
 	public static FicheConcours getFicheConcours(MetaDataFicheConcours metaDataFicheConcours, Profile profile) 
-			throws IOException, SQLException {
+			throws IOException {
 		File fFiche = new File(ApplicationCore.userRessources.getConcoursPathForProfile(profile),
 				metaDataFicheConcours.getFilenameConcours());
 		Object[] savedStructure = XMLSerializer.loadXMLStructure(fFiche, true);

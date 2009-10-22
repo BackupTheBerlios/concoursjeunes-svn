@@ -107,7 +107,6 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.swing.event.EventListenerList;
-import javax.xml.bind.JAXBException;
 
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.io.FileUtils;
@@ -165,12 +164,8 @@ public class ApplicationCore {
 
 	/**
 	 * constructeur, création de la fenêtre principale
-	 * 
-	 * @throws SQLException
-	 * @throws IOException 
-	 * @throws JAXBException 
 	 */
-	private ApplicationCore() throws SQLException, JAXBException, IOException {
+	private ApplicationCore() throws SQLException {
 		debugLogger();
 		openDatabase();
 		checkUpdateDatabase();
@@ -179,12 +174,8 @@ public class ApplicationCore {
 
 	/**
 	 * Initialise l'application
-	 * 
-	 * @throws SQLException
-	 * @throws IOException 
-	 * @throws JAXBException 
 	 */
-	public synchronized static void initializeApplication()  throws SQLException, JAXBException, IOException {
+	public synchronized static void initializeApplication()  throws SQLException {
 		if (null == instance) { // Premier appel
 			instance = new ApplicationCore();
 		}
@@ -221,7 +212,7 @@ public class ApplicationCore {
 	}
 	
 	@SuppressWarnings("nls")
-	private void loadAppConfiguration() throws JAXBException, IOException {
+	private void loadAppConfiguration() {
 		setAppConfiguration(ConfigurationManager.loadAppConfiguration());
 		
 		try {

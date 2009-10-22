@@ -127,10 +127,10 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	private static String[] strLstLangue;
 
 	private String langue           = "fr";               //$NON-NLS-1$
-	private String logoPath         = "ressources/logo_ffta.gif";   //$NON-NLS-1$
+	private String logoPath         = "ressources/fnd.jpg";   //$NON-NLS-1$
 	
 	private Federation federation	= new Federation();
-	private String reglementName	= ""; //$NON-NLS-1$
+	private String reglementName	= "FFTASJF"; //$NON-NLS-1$
 	@XmlElementWrapper(name="tarifs",required=true)
 	private List<Tarif> tarifs		= new ArrayList<Tarif>(); 
 

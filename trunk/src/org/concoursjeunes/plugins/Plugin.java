@@ -36,7 +36,7 @@
  * à l'utiliser et l'exploiter dans les mêmes conditions de sécurité. 
  * 
  * Le fait que vous puissiez accéder à cet en-tête signifie que vous avez 
- * pri connaissance de la licence CeCILL, et que vous en avez accepté les
+ * pris connaissance de la licence CeCILL, et que vous en avez accepté les
  * termes.
  *
  * ENGLISH:
@@ -95,7 +95,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Permet d'annoter une class comme etant la class principal d'un plugin
+ * Permet d'annoter une class comme étant la class principal d'un plugin
  * 
  * @author Aurélien JEOFFRAY
  *
@@ -112,11 +112,11 @@ public @interface Plugin {
 	
 	public static enum Type {
 		/**
-		 * plugin se lancant au démarrage de l'application
+		 * plugin se lançant au démarrage de l'application
 		 */
 		STARTUP,
 		/**
-		 * plugin se lancant au démarrage de l'interface graphique. <i>non utilisé à ce jour</i>
+		 * plugin se lançant au démarrage de l'interface graphique. <i>non utilisé à ce jour</i>
 		 */
 		UI_STARTUP,
 		/**
@@ -124,7 +124,7 @@ public @interface Plugin {
 		 */
 		ON_DEMAND,
 		/**
-		 * type générique représantant l'ensemble des plugins
+		 * type générique représentant l'ensemble des plugins
 		 */
 		ALL }
 }

@@ -260,14 +260,11 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	private int returnVal = CANCEL;
 	
 	private boolean unlock = false;
-	
-	private Object unselectedItem;
 
 	/**
 	 * Création de la boite de dialogue de gestion de concurrent
 	 * 
-	 * @param concoursJeunesFrame -
-	 *            la fenetre parentes dont dépend la boite de dialogue 
+	 * @param concoursJeunesFrame la fenêtre parentes dont dépend la boite de dialogue 
 	 * @param ficheConcours la fiche concours à laquelle est/doit être rattaché le concurrent
 	 */
 	public ConcurrentDialog(ConcoursJeunesFrame concoursJeunesFrame, Profile profile, FicheConcours ficheConcours) {
@@ -428,7 +425,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		c.gridwidth = 4;
 		gridbagComposer.addComponentIntoGrid(jcbBlason, c);
 
-		// paneau club
+		// panneau club
 		gridbagComposer.setParentPanel(jpClub);
 		c.gridy = 0; // Défaut,Haut
 		gridbagComposer.addComponentIntoGrid(jlClub, c);
@@ -666,8 +663,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	/**
 	 * Affiche la boite de dialogue de création d'un concurrent
 	 * 
-	 * @param depart -
-	 *            le depart affecté au concurrent
+	 * @param depart le depart affecté au concurrent
 	 */
 	public int showNewConcurrentDialog(int depart) {
 		
@@ -709,10 +705,9 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	}
 
 	/**
-	 * Affiche la boite de dialogue de gestion du concurrent donné en parametre
+	 * Affiche la boite de dialogue de gestion du concurrent donné en paramètre
 	 * 
-	 * @param concurrent -
-	 *            la concurrent à afficher
+	 * @param concurrent la concurrent à afficher
 	 * @return le code de retour de la boite de dialogue
 	 */
 	public int showConcurrentDialog(Concurrent concurrent, boolean hasPrevious, boolean hasNext) {
@@ -749,8 +744,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	/**
 	 * Affichage des info d'un concurrent en mode edition
 	 * 
-	 * @param concurrent -
-	 *            le concurrent à editer
+	 * @param concurrent le concurrent à éditer
 	 */
 	public void setConcurrent(Concurrent concurrent) {
 		this.concurrent = concurrent;
@@ -762,7 +756,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	/**
 	 * Retourne le concurrent de la boite de dialogue
 	 * 
-	 * @return le concurrent courrant
+	 * @return le concurrent courant
 	 */
 	public Concurrent getConcurrent() {
 		return concurrent;
@@ -771,7 +765,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	/**
 	 * formate l'affichage des places libre en fonction des catégorie de classement
 	 * 
-	 * @return String l'affichage ecran des places libres
+	 * @return String l'affichage écran des places libres
 	 */
 	private String showPlacesLibre() {
 		String strPlaceLibre = "<html>"; //$NON-NLS-1$
@@ -780,7 +774,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		strPlaceLibre += localisation.getResourceString("concurrent.placelibre.nbarcher") + //$NON-NLS-1$
 				": " + ficheConcours.getConcurrentList().countArcher() + "<br><br>"; //$NON-NLS-1$ //$NON-NLS-2$
 
-		// recupere la table d'occupation des cibles
+		// récupère la table d'occupation des cibles
 		Hashtable<DistancesEtBlason, TargetsOccupation> occupationCibles = ficheConcours.getPasDeTir(concurrent.getDepart()).getTargetsOccupation(ficheConcours.getParametre().getNbTireur());
 
 		List<DistancesEtBlason> tableCorresp = ficheConcours.getParametre().getReglement().getListDistancesEtBlason();
@@ -797,11 +791,11 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 
 		// boucle sur chacun des jeux de placement
 		for (CriteriaSet differentiationCriteria : criteriaSetPlacement) {
-			// etablit la correspondance entre un jeux de placement et son d/b
+			// établit la correspondance entre un jeux de placement et son d/b
 			List<DistancesEtBlason> ldistAndBlas = ficheConcours.getParametre().getReglement().getDistancesEtBlasonFor(differentiationCriteria);
 
 			for(DistancesEtBlason distAndBlas : ldistAndBlas) {
-				// genere le libellé complet du jeux de critère
+				// génère le libellé complet du jeux de critère
 				CriteriaSetLibelle libelle = new CriteriaSetLibelle(differentiationCriteria,localisation);
 				String strCategoriePlacement = libelle.toString();
 	
@@ -844,6 +838,16 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		}
 
 		return differentiationCriteria;
+	}
+	
+	private boolean verifyCriteriaSet() {
+		Reglement reglement = ficheConcours.getParametre().getReglement();
+		
+		CriteriaSet currentCS = readCriteriaSet();
+		CriteriaSet classementCS = currentCS.getFilteredCriteriaSet(reglement.getClassementFilter());
+		List<CriteriaSet> validClassementCS = reglement.getValidClassementCriteriaSet();
+		
+		return validClassementCS.contains(classementCS);
 	}
 
 	/**
@@ -925,18 +929,17 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 
 			filter = null;
 			
-			//evite de modifier l'objet concurrent avant d'avoir
-			//validé les paramêtres
+			//évite de modifier l'objet concurrent avant d'avoir
+			//validé les paramètres
 			Concurrent tempConcurrent = concurrent.clone();
 			DistancesEtBlason db1 = null;
 			if(tempConcurrent.getCriteriaSet() != null)
 				db1 = DistancesEtBlason.getDistancesEtBlasonForConcurrent(ficheConcours.getParametre().getReglement(), tempConcurrent);
 			
-			// fixe le jeux de critères definissant le concurrent
+			// fixe le jeux de critères définissant le concurrent
 			tempConcurrent.setCriteriaSet(readCriteriaSet());
 			//vérifie la validité du jeux
-			if(!ficheConcours.getParametre().getReglement().getValidClassementCriteriaSet().contains(
-					tempConcurrent.getCriteriaSet().getFilteredCriteriaSet(ficheConcours.getParametre().getReglement().getClassementFilter()))) {
+			if(!verifyCriteriaSet()) {
 				JOptionPane.showMessageDialog(this, 
 						localisation.getResourceString("concurrent.invalidcriteriaset"), //$NON-NLS-1$
 						localisation.getResourceString("concurrent.invalidcriteriaset.title"), //$NON-NLS-1$
@@ -1041,9 +1044,9 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			unlock = false;
 			setVisible(false);
 		} else if (ae.getSource() == jbSelectionArcher) {
-			//Le chargement de la liste des concurrents etant asynchrone, on doit attendre que celle ci
+			//Le chargement de la liste des concurrents étant asynchrone, on doit attendre que celle ci
 			// soit chargé avant de l'afficher. On place un timeout de 30s pour ne pas bloqué définitivement
-			// l'interface en cas d'echec de chargement ou avoir un delai d'attente trop long sur certain système
+			// l'interface en cas d'echec de chargement ou avoir un délai d'attente trop long sur certain système
             try {
             	ConcurrentListDialog cld = concurrentListDialog.get(30, TimeUnit.SECONDS);
 	            
@@ -1109,18 +1112,17 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	public void itemStateChanged(ItemEvent e) {
 		if(e.getSource() instanceof JComboBox) {
 			if(e.getStateChange() == ItemEvent.SELECTED) {
+				Reglement reglement = ficheConcours.getParametre().getReglement();
+				
 				CriteriaSet currentCS = readCriteriaSet();
-				CriteriaSet classementCS = currentCS.getFilteredCriteriaSet(ficheConcours.getParametre().getReglement().getClassementFilter());
-				List<CriteriaSet> validClassementCS = ficheConcours.getParametre().getReglement().getValidClassementCriteriaSet();
-				if(!validClassementCS.contains(classementCS)) {
-					CriteriaSet surclassement = ficheConcours.getParametre().getReglement().getSurclassement().get(classementCS);
+				CriteriaSet classementCS = currentCS.getFilteredCriteriaSet(reglement.getClassementFilter());
+				if(!verifyCriteriaSet()) {
+					CriteriaSet surclassement = reglement.getSurclassement().get(classementCS);
 					if(surclassement == null) {
-						JOptionPane.showMessageDialog(this, 
-								localisation.getResourceString("concurrent.invalidcriteriaset"), //$NON-NLS-1$
-								localisation.getResourceString("concurrent.invalidcriteriaset.title"), //$NON-NLS-1$
-								JOptionPane.WARNING_MESSAGE);
+						jlDescription.setText(localisation.getResourceString("concurrent.invalidcriteriaset")); //$NON-NLS-1$
+						jlDescription.setBackground(Color.ORANGE);
 					} else {
-						for (Criterion key : ficheConcours.getParametre().getReglement().getListCriteria()) {
+						for (Criterion key : reglement.getListCriteria()) {
 							CriterionElement element = surclassement.getCriterionElement(key);
 							if(element != null)
 								jcbCategorieTable.get(key).setSelectedItem(element);
@@ -1128,25 +1130,24 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 								jcbCategorieTable.get(key).setSelectedIndex(0);
 						}
 						jcbSurclassement.setSelected(true);
-						unselectedItem = null;
 					}
-					if(unselectedItem != null)
-						((JComboBox)e.getSource()).setSelectedItem(unselectedItem);
+				} else {
+					jlDescription.setText(localisation.getResourceString("concurrent.description")); //$NON-NLS-1$
+					jlDescription.setBackground(new Color(255, 255, 225));
 				}
 				
 				jcbBlason.removeAllItems();
 				if(currentCS != null) {
-					List<DistancesEtBlason> tmpDB = ficheConcours.getParametre().getReglement().getDistancesEtBlasonFor(currentCS.getFilteredCriteriaSet(ficheConcours.getParametre().getReglement().getPlacementFilter()));
+					List<DistancesEtBlason> tmpDB = reglement.getDistancesEtBlasonFor(
+							currentCS.getFilteredCriteriaSet(reglement.getPlacementFilter()));
 					for(DistancesEtBlason db : tmpDB) {
 						jcbBlason.addItem(db.getTargetFace());
 					}
 					jcbBlason.setEnabled(jcbBlason.getItemCount() > 1);
 					if(concurrent != null && concurrent.getCriteriaSet() != null)
-						jcbBlason.setSelectedItem(DistancesEtBlason.getDistancesEtBlasonForConcurrent(ficheConcours.getParametre().getReglement(), concurrent).getTargetFace());
+						jcbBlason.setSelectedItem(DistancesEtBlason.getDistancesEtBlasonForConcurrent(
+								reglement, concurrent).getTargetFace());
 				}
-				unselectedItem = null;
-			} else {
-				unselectedItem = e.getItem();
 			}
 		}
 	}

@@ -504,9 +504,9 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 			for(Object o : jlArbitres.getAllElements())
 				if(((Judge)o).isResponsable())
 					mustberesponsable = false;
-			if(ad.showArbitreDialog(null, mustberesponsable) == ArbitreDialog.CONFIRM) {
-				if(!ad.getArbitre().getNomArcher().trim().isEmpty())
-					jlArbitres.add(ad.getArbitre());
+			if(ad.showJudgeDialog(null, mustberesponsable) == ArbitreDialog.CONFIRM) {
+				if(!ad.getJudge().getNomArcher().trim().isEmpty())
+					jlArbitres.add(ad.getJudge());
 			}
 		} else if (ae.getSource() == jbSupprimerArbitre) {
 			if(jlArbitres.getSelectedIndex() > -1)
@@ -518,7 +518,7 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 			for(Object o : jlArbitres.getAllElements())
 				if(((Judge)o).isResponsable() && o != selectedJudge)
 					mustberesponsable = false;
-			if(ad.showArbitreDialog(selectedJudge, mustberesponsable) == ArbitreDialog.CONFIRM) {
+			if(ad.showJudgeDialog(selectedJudge, mustberesponsable) == ArbitreDialog.CONFIRM) {
 				jlArbitres.repaint();
 			}
 		} else if (ae.getSource() == jbDetail) {

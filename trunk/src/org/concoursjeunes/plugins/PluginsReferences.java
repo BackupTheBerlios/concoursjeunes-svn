@@ -98,7 +98,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name="plugins")
 public class PluginsReferences {
 	
-	private PluginDescription[] plugins; // = new PluginDescription[1];
+	private PluginDescription[] plugins;
 
 	public PluginsReferences() {
 		

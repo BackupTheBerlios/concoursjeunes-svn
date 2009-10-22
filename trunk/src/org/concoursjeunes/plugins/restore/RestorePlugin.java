@@ -157,8 +157,11 @@ public class RestorePlugin {
 				//try {
 				if(isZipFile(chooser.getSelectedFile()))
 					tempPath = extractJarContent(chooser.getSelectedFile());
-				else
-					tempPath = extractJarContent(unpack(chooser.getSelectedFile()));
+				else {
+					File unpackedJar = unpack(chooser.getSelectedFile());
+					tempPath = extractJarContent(unpackedJar);
+					unpackedJar.delete();
+				}
 				//} catch(IOException e) {
 					
 				//}
@@ -303,7 +306,7 @@ public class RestorePlugin {
 			try { jis.close(); } catch (IOException e) { }
 		}
 
-		jarFile.delete();
+		//jarFile.delete();
 		
 		return extractedPath;
 	}

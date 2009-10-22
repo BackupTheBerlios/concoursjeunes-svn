@@ -97,7 +97,7 @@ import org.concoursjeunes.Blason;
 import org.concoursjeunes.builders.BlasonBuilder;
 
 /**
- * Gère la construction des blasons à partir des données trouvé en base
+ * Gére la construction des blasons à partir des données trouvé en base
  * 
  * @author Aurélien JEOFFRAY
  *
@@ -105,20 +105,19 @@ import org.concoursjeunes.builders.BlasonBuilder;
 public class BlasonManager {
 	
 	/**
-	 * Retourne le blason associé à une ligne distance/blason d'un règlement donnée
+	 * Retourne le blason associé à une ligne distance/blason d'un réglement donnée
 	 * 
-	 * @param numdistanceblason le numéro de l'objet distanceEtBlason dont le blason fait partie
-	 * @param numreglement le numéro de règlement
-	 * @return le blason associé à la ligne d/b du règlement donnée
+	 * @param numdistanceblason le numero de l'objet distanceEtBlason dont le blason fait partie
+	 * @param numreglement le numrero de reglement
+	 * @return le blason associé à la ligne d/b du réglement donnée
 	 */
-	public static Blason findBlasonAssociateToDistancesEtBlason(int numdistanceblason, int numreglement) 
-			throws SQLException {
-		
-		String sql = "select BLASONS.* from DISTANCESBLASONS,BLASONS " //$NON-NLS-1$
-			+ "where DISTANCESBLASONS.NUMBLASON=BLASONS.NUMBLASON AND NUMDISTANCESBLASONS=? and NUMREGLEMENT=? order by NUMORDRE DESC"; //$NON-NLS-1$
-		
-		PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
-		try {	
+	public static Blason findBlasonAssociateToDistancesEtBlason(int numdistanceblason, int numreglement) {
+		try {
+			String sql = "select BLASONS.* from DISTANCESBLASONS,BLASONS " //$NON-NLS-1$
+				+ "where DISTANCESBLASONS.NUMBLASON=BLASONS.NUMBLASON AND NUMDISTANCESBLASONS=? and NUMREGLEMENT=? order by NUMORDRE DESC"; //$NON-NLS-1$
+			
+			PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
+			
 			pstmt.setInt(1, numdistanceblason);
 			pstmt.setInt(2, numreglement);
 			
@@ -127,8 +126,8 @@ public class BlasonManager {
 			if(rs.first()) {		
 				return BlasonBuilder.getBlason(rs);
 			}
-		} finally {
-			if(pstmt != null) try { pstmt.close(); } catch (SQLException e) { }
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 		
 		return null;

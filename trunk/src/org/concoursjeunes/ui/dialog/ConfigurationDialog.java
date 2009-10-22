@@ -105,7 +105,21 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.logging.Level;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.bind.JAXBException;
@@ -116,7 +130,16 @@ import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.StringUtils;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
-import org.concoursjeunes.*;
+import org.concoursjeunes.AppConfiguration;
+import org.concoursjeunes.ApplicationCore;
+import org.concoursjeunes.AutoCompleteDocument;
+import org.concoursjeunes.AutoCompleteDocumentContext;
+import org.concoursjeunes.Configuration;
+import org.concoursjeunes.Entite;
+import org.concoursjeunes.Federation;
+import org.concoursjeunes.Margin;
+import org.concoursjeunes.Profile;
+import org.concoursjeunes.Reglement;
 import org.concoursjeunes.builders.ReglementBuilder;
 import org.concoursjeunes.event.AutoCompleteDocumentEvent;
 import org.concoursjeunes.event.AutoCompleteDocumentListener;
@@ -698,7 +721,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	private ArrayList<String> getPdfPath(Configuration configuration) {
 		ArrayList<String> pdfPath = new ArrayList<String>();
 
-		if (!workAppConfiguration.getPdfReaderPath().equals("")) {  //$NON-NLS-1$
+		if (workAppConfiguration.getPdfReaderPath() != null && !workAppConfiguration.getPdfReaderPath().equals("")) {  //$NON-NLS-1$
 			pdfPath.add(workAppConfiguration.getPdfReaderPath());
 		}
 		// Recherche d'un lecteur pdf en fonction du syteme
@@ -805,17 +828,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 
 	private void loadProfile() {
 		renamedProfile = false;
-		try {
-			workConfiguration = ConfigurationManager.loadConfiguration((String) jcbProfil.getSelectedItem());
-		} catch (JAXBException e) {
-			JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), //$NON-NLS-1$
-					e.toString(), null, null, e, Level.SEVERE, null));
-			e.printStackTrace();
-		} catch (IOException e) {
-			JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), //$NON-NLS-1$
-					e.toString(), null, null, e, Level.SEVERE, null));
-			e.printStackTrace();
-		}
+		workConfiguration = ConfigurationManager.loadConfiguration((String) jcbProfil.getSelectedItem());
 		completePanel();
 
 		workConfiguration.setCurProfil((String) jcbProfil.getSelectedItem());
@@ -884,7 +897,8 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		workConfiguration.getClub().setAgrement(jtfAgrClub.getText());
 		workConfiguration.setIntituleConcours(jtfIntConc.getText());
 		workConfiguration.setLangue(Configuration.listLangue()[jcbLangue.getSelectedIndex()]);
-		workAppConfiguration.setPdfReaderPath(jcbPathPdf.getSelectedItem().toString());
+		if(jcbPathPdf.getSelectedItem() != null)
+			workAppConfiguration.setPdfReaderPath(jcbPathPdf.getSelectedItem().toString());
 
 		workConfiguration.setNbCible(Integer.parseInt(jtfNbCible.getText()));
 		workConfiguration.setNbTireur((jcbNbTireur.getSelectedIndex() == 0) ? 2 : 4);
@@ -902,6 +916,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		workAppConfiguration.setUseProxy(jrbUseSpecificConfig.isSelected());
 		workAppConfiguration.getProxy().setProxyServerAddress(jtfAdresseProxy.getText());
 		workAppConfiguration.getProxy().setProxyServerPort(Integer.parseInt("0" + jtfPortProxy.getText()));  //$NON-NLS-1$
+		workAppConfiguration.setLastProfile(workConfiguration.getCurProfil());
 		
 		return true;
 	}

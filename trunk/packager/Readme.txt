@@ -36,4 +36,4 @@ Historique:
 - Eté 2006 Sortie de la version 1.1
 - Octobre 2007 Sortie de la version 2.0
 - Octobre 2008 Sortie de la version 2.1
-- Juillet 2009 Sortie de la version 2.2 Beta
+- Octobre 2009 Sortie de la version 2.2

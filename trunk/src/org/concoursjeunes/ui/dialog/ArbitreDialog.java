@@ -138,6 +138,8 @@ import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
 /**
+ * Boite de dialogue de sélection et manipulation d'un arbitre
+ * 
  * @author Aurélien JEOFFRAY
  *
  */
@@ -151,7 +153,7 @@ public class ArbitreDialog extends JDialog implements AutoCompleteDocumentListen
 	private AjResourcesReader localisation;
 	
 	private Archer filter;
-	private Judge arbitre;
+	private Judge judge;
 	private boolean mustberesponsable = true;
 	private boolean enableautocomplement = true;
 	
@@ -252,19 +254,19 @@ public class ArbitreDialog extends JDialog implements AutoCompleteDocumentListen
 	}
 	
 	private void completePanel() {
-		if(arbitre != null) {
+		if(judge != null) {
 			
 			
 			if(enableautocomplement) {
-				((AutoCompleteDocument) jtfNom.getDocument()).setText(arbitre.getNomArcher());
-				((AutoCompleteDocument) jtfPrenom.getDocument()).setText(arbitre.getPrenomArcher());
-				((AutoCompleteDocument) jtfLicence.getDocument()).setText(arbitre.getNumLicenceArcher());
+				((AutoCompleteDocument) jtfNom.getDocument()).setText(judge.getNomArcher());
+				((AutoCompleteDocument) jtfPrenom.getDocument()).setText(judge.getPrenomArcher());
+				((AutoCompleteDocument) jtfLicence.getDocument()).setText(judge.getNumLicenceArcher());
 				
 				jbSelectArbitre.setEnabled(true);
 			} else {
-				jtfNom.setText(arbitre.getNomArcher());
-				jtfPrenom.setText(arbitre.getPrenomArcher());
-				jtfLicence.setText(arbitre.getNumLicenceArcher());
+				jtfNom.setText(judge.getNomArcher());
+				jtfPrenom.setText(judge.getPrenomArcher());
+				jtfLicence.setText(judge.getNumLicenceArcher());
 				
 				jbSelectArbitre.setEnabled(false);
 			}
@@ -273,11 +275,18 @@ public class ArbitreDialog extends JDialog implements AutoCompleteDocumentListen
 				jcbResponsable.setEnabled(false);
 				jcbResponsable.setSelected(false);
 			} else
-				jcbResponsable.setSelected(arbitre.isResponsable());
+				jcbResponsable.setSelected(judge.isResponsable());
 		}
 	}
 	
-	public int showArbitreDialog(Judge arbitre, boolean mustberesponsable) {
+	/**
+	 * Affiche la boite de dialogue de l'arbitre
+	 * 
+	 * @param arbitre l'arbitre à afficher ou null si sélectionner un arbitre
+	 * @param mustberesponsable indique si l'arbitre peut être ou non responsable
+	 * @return CONFIRM ou CANCEL en fonction de l'action utilisateur
+	 */
+	public int showJudgeDialog(Judge arbitre, boolean mustberesponsable) {
 		if(arbitre == null) {
 			arbitre = new Judge();
 			
@@ -300,7 +309,7 @@ public class ArbitreDialog extends JDialog implements AutoCompleteDocumentListen
 			jtfPrenom.setDocument(new PlainDocument());
 			jtfLicence.setDocument(new PlainDocument());
 		}
-		this.arbitre = arbitre;
+		this.judge = arbitre;
 		this.mustberesponsable = mustberesponsable;
 		
 		completePanel();
@@ -310,25 +319,34 @@ public class ArbitreDialog extends JDialog implements AutoCompleteDocumentListen
 		return returnVal;
 	}
 	
-	public void setArbitre(Judge arbitre) {
-		this.arbitre = arbitre;
+	/**
+	 * Définit l'arbitre associé à la boite de dialogue
+	 * 
+	 * @param arbitre l'arbitre associé à la boite de dialogue
+	 */
+	public void setJudge(Judge arbitre) {
+		this.judge = arbitre;
 		
 		completePanel();
 	}
 	
-	public Judge getArbitre() {
-		return arbitre;
+	/**
+	 * Retourne l'arbitre associé à la boite de dialogue
+	 * @return l'arbitre associé à la boite de dialogue
+	 */
+	public Judge getJudge() {
+		return judge;
 	}
 
 	@Override
 	public void concurrentFinded(AutoCompleteDocumentEvent e) {
 		Archer findArbitre = e.getConcurrent();
 		
-		if (!findArbitre.equals(arbitre)) {
-			setArbitre(new Judge(findArbitre));
+		if (!findArbitre.equals(judge)) {
+			setJudge(new Judge(findArbitre));
 		}
 		
-		if (arbitre.haveHomonyme()) {
+		if (judge.haveHomonyme()) {
 			jlDescription.setText(localisation.getResourceString("arbitredialog.homonyme")); //$NON-NLS-1$
 			jlDescription.setBackground(Color.ORANGE);
 		} else {
@@ -355,7 +373,7 @@ public class ArbitreDialog extends JDialog implements AutoCompleteDocumentListen
 
 		filter = null;
 
-		setArbitre(newArbitre);
+		setJudge(newArbitre);
 
 		jlDescription.setText(localisation.getResourceString("arbitredialog.noarbitre")); //$NON-NLS-1$
 		jlDescription.setBackground(Color.ORANGE);
@@ -380,7 +398,7 @@ public class ArbitreDialog extends JDialog implements AutoCompleteDocumentListen
 				cld.setVisible(true);
 				if (cld.isValider()) {
 					cld.initConcurrent(tmparbitre);
-					setArbitre(new Judge(tmparbitre));
+					setJudge(new Judge(tmparbitre));
 				}
 			} catch (InterruptedException e1) {
             	JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
@@ -394,10 +412,10 @@ public class ArbitreDialog extends JDialog implements AutoCompleteDocumentListen
             	JOptionPane.showMessageDialog(this, localisation.getResourceString("concurrent.info.listing.wait")); //$NON-NLS-1$
             }
 		} else if(e.getSource() == jbValider) {
-			arbitre.setNomArcher(jtfNom.getText());
-			arbitre.setPrenomArcher(jtfPrenom.getText());
-			arbitre.setNumLicenceArcher(jtfLicence.getText());
-			arbitre.setResponsable(jcbResponsable.isSelected());
+			judge.setNomArcher(jtfNom.getText());
+			judge.setPrenomArcher(jtfPrenom.getText());
+			judge.setNumLicenceArcher(jtfLicence.getText());
+			judge.setResponsable(jcbResponsable.isSelected());
 			
 			returnVal = CONFIRM;
 			
