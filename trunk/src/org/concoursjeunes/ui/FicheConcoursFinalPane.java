@@ -95,12 +95,14 @@ import java.awt.event.ActionListener;
 import javax.swing.JPanel;
 
 import org.ajdeveloppement.apps.localisation.Localisator;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.FicheConcours;
+import org.w3c.dom.Document;
 
+import com.mxgraph.io.mxCodec;
 import com.mxgraph.swing.mxGraphComponent;
-import com.mxgraph.util.mxConstants;
+import com.mxgraph.util.mxUtils;
 import com.mxgraph.view.mxGraph;
-import com.mxgraph.view.mxStylesheet;
 
 /**
  * @author Aurélien JEOFFRAY
@@ -125,14 +127,18 @@ public class FicheConcoursFinalPane extends JPanel implements ActionListener {
 	
 	private void init() {
 		
+		
+		
 		mxGraph graph = new mxGraph();
 		
 		graph.setCellsCloneable(false);
 		graph.setCellsEditable(false);
 		graph.setCellsDisconnectable(false);
 		
-		mxStylesheet stylesheet = new mxStylesheet();
-		System.out.println(stylesheet.getStyles());
+		// Loads the defalt stylesheet from an external file
+		mxCodec codec = new mxCodec();
+		Document doc = mxUtils.loadDocument(ApplicationCore.staticParameters.getResourceString("path.ressources") + "/gui/default-style.xml");
+		codec.decode(doc.getDocumentElement(), graph.getStylesheet());
 		
 		Object parent = graph.getDefaultParent();
 
@@ -142,7 +148,7 @@ public class FicheConcoursFinalPane extends JPanel implements ActionListener {
 			Object v1 = graph.insertVertex(parent, null, "Hello", 20, 20, 80, 30);
 			Object v2 = graph.insertVertex(parent, null, "World!", 240, 150, 80, 30);
 			
-			graph.insertEdge(parent, null, "Edge", v1, v2, mxConstants.ELBOW_HORIZONTAL);
+			graph.insertEdge(parent, null, "Edge", v1, v2);
 		}
 		finally
 		{
