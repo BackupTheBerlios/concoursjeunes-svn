@@ -408,6 +408,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		tabbedpane.addTab("onglet.pointage.greffe", new ImageIcon(ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$ //$NON-NLS-2$
 				File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.desktop")), //$NON-NLS-1$
 				new GreffePane(this));
+		tabbedpane.addTab("onglet.phasesfinal",new FicheConcoursFinalPane(this)); //$NON-NLS-1$
 		tabbedpane.addTab("onglet.classement", //$NON-NLS-1$
 				new ImageIcon(ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
 						File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.team")), //$NON-NLS-1$
@@ -415,6 +416,9 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		tabbedpane.addTab("onglet.edition", new ImageIcon(ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$ //$NON-NLS-2$
 				File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.print")), //$NON-NLS-1$
 				jpEdition);
+		
+		//if(!ficheConcours.getParametre().isDuel())
+		//	tabbedpane.setEnabledAt(2,false);
 
 		//integration
 		setLayout(new BorderLayout());
