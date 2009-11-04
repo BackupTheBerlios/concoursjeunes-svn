@@ -205,6 +205,7 @@
 		<signjar
 				jar="${projet.pack.dir}/ConcoursJeunes-webservices.jar"
 				alias="${projet.signkeyalias}" keystore="${projet.keystorepath}"
+				storetype="JCEKS"
 				storepass="${projet.keystorepassword}"
 				keypass="${projet.signkeyaliaspassword}"
 				lazy="true" />
