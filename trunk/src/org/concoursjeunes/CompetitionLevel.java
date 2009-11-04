@@ -89,14 +89,13 @@
 package org.concoursjeunes;
 
 import java.sql.SQLException;
-import java.util.Collections;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.ajdeveloppement.commons.sql.SqlField;
-import org.ajdeveloppement.commons.sql.SqlForeignFields;
+import org.ajdeveloppement.commons.sql.SqlForeignKey;
 import org.ajdeveloppement.commons.sql.SqlPersistance;
 import org.ajdeveloppement.commons.sql.SqlPersistanceException;
 import org.ajdeveloppement.commons.sql.SqlPrimaryKey;
@@ -111,7 +110,6 @@ import org.ajdeveloppement.commons.sql.SqlTable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @SqlTable(name="NIVEAU_COMPETITION")
 @SqlPrimaryKey(fields={"CODENIVEAU","NUMFEDERATION","LANG"})
-@SqlForeignFields(fields={"NUMFEDERATION"})
 public class CompetitionLevel implements SqlPersistance {
 	@XmlTransient
 	@SqlField(name="CODENIVEAU")
@@ -124,6 +122,7 @@ public class CompetitionLevel implements SqlPersistance {
 	private boolean defaut = false;
 	
 	@XmlTransient
+	@SqlForeignKey(mappedTo="NUMFEDERATION")
 	private Federation federation;
 	
 	private static SqlStoreHelper<CompetitionLevel> helper = null;
@@ -218,7 +217,7 @@ public class CompetitionLevel implements SqlPersistance {
 	 */
 	@Override
 	public void save() throws SqlPersistanceException {
-		helper.save(this, Collections.singletonMap("NUMFEDERATION", (Object)federation.getNumFederation())); //$NON-NLS-1$
+		helper.save(this);
 	}
 
 	/** 
@@ -231,7 +230,7 @@ public class CompetitionLevel implements SqlPersistance {
 	 */
 	@Override
 	public void delete() throws SqlPersistanceException {
-		helper.delete(this, Collections.singletonMap("NUMFEDERATION", (Object)federation.getNumFederation())); //$NON-NLS-1$
+		helper.delete(this);
 	}
 
 	/* (non-Javadoc)

@@ -89,7 +89,6 @@
 package org.concoursjeunes;
 
 import java.sql.SQLException;
-import java.util.Collections;
 
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -97,7 +96,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.ajdeveloppement.commons.sql.SqlField;
-import org.ajdeveloppement.commons.sql.SqlForeignFields;
+import org.ajdeveloppement.commons.sql.SqlForeignKey;
 import org.ajdeveloppement.commons.sql.SqlPersistance;
 import org.ajdeveloppement.commons.sql.SqlPersistanceException;
 import org.ajdeveloppement.commons.sql.SqlPrimaryKey;
@@ -114,7 +113,6 @@ import org.ajdeveloppement.commons.sql.SqlTable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @SqlTable(name="ANCRAGES_BLASONS")
 @SqlPrimaryKey(fields={"NUMBLASON","EMPLACEMENT"})
-@SqlForeignFields(fields={"NUMBLASON"})
 public class Ancrage implements SqlPersistance {
 	public static final int POSITION_A = 0;
 	public static final int POSITION_B = 1;
@@ -133,6 +131,7 @@ public class Ancrage implements SqlPersistance {
 	private double y = 0;
 	
 	@XmlTransient
+	@SqlForeignKey(mappedTo="NUMBLASON")
 	private Blason blason;
 	
 	private static SqlStoreHelper<Ancrage> helper = null;
@@ -258,12 +257,12 @@ public class Ancrage implements SqlPersistance {
 	
 	@Override
 	public void save() throws SqlPersistanceException {
-		helper.save(this, Collections.singletonMap("NUMBLASON", (Object)blason.getNumblason())); //$NON-NLS-1$
+		helper.save(this);
 	}
 	
 	@Override
 	public void delete() throws SqlPersistanceException {
-		helper.delete(this, Collections.singletonMap("NUMBLASON", (Object)blason.getNumblason())); //$NON-NLS-1$
+		helper.delete(this);
 	}
 
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {

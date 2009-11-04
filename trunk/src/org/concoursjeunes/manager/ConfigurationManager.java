@@ -103,7 +103,6 @@ import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.concoursjeunes.AppConfiguration;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Configuration;
-import org.concoursjeunes.Entite;
 import org.concoursjeunes.builders.ConfigurationBuilder;
 
 /**
