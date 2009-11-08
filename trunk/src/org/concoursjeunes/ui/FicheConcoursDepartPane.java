@@ -125,6 +125,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
+import javax.swing.SortOrder;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -154,7 +155,6 @@ import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.decorator.ColorHighlighter;
 import org.jdesktop.swingx.decorator.HighlightPredicate;
-import org.jdesktop.swingx.decorator.SortOrder;
 import org.jdesktop.swingx.error.ErrorInfo;
 
 /**
@@ -327,9 +327,10 @@ public class FicheConcoursDepartPane extends JPanel
 		pane.add(scrollarcher, BorderLayout.CENTER);
 
 		ajxlConcurrent.setModel(lstModelConcurrent);
-		ajxlConcurrent.setFilterEnabled(true);
 		ajxlConcurrent.setComparator(new TargetComparator());
 		ajxlConcurrent.setSortOrder(SortOrder.ASCENDING);
+		ajxlConcurrent.setSortsOnUpdates(true);
+		ajxlConcurrent.setAutoCreateRowSorter(true);
 		ajxlConcurrent.addMouseListener(this);
 		ajxlConcurrent.addMouseMotionListener(this);
 		ajxlConcurrent.addListSelectionListener(this);
@@ -422,6 +423,8 @@ public class FicheConcoursDepartPane extends JPanel
 	 */
 	private void createListeParNom() {
 		lstModelConcurrent.setConcurrents(ficheConcours.getConcurrentList().list(depart));
+		ajxlConcurrent.resetSortOrder();
+		ajxlConcurrent.toggleSortOrder();
 	}
 
 	/**
@@ -663,12 +666,18 @@ public class FicheConcoursDepartPane extends JPanel
 			if (source == jcbSortCible) {
 				ajxlConcurrent.setComparator(new TargetComparator());
 				ajxlConcurrent.setSortOrder(SortOrder.ASCENDING);
+				//ajxlConcurrent.resetSortOrder();
+				//ajxlConcurrent.toggleSortOrder();
 			} else if (source == jcbSortNom) {
 				ajxlConcurrent.setComparator(new NameComparator());
 				ajxlConcurrent.setSortOrder(SortOrder.ASCENDING);
+				//ajxlConcurrent.resetSortOrder();
+				//ajxlConcurrent.toggleSortOrder();
 			} else if (source == jcbSortClub) {
 				ajxlConcurrent.setComparator(new ClubComparator());
 				ajxlConcurrent.setSortOrder(SortOrder.ASCENDING);
+				//ajxlConcurrent.resetSortOrder();
+				//ajxlConcurrent.toggleSortOrder();
 			}
 		} else if (cmd.equals("popup.edition")) { //$NON-NLS-1$
 			if(popup.getInvoker() == ajxlConcurrent)
@@ -1094,6 +1103,13 @@ public class FicheConcoursDepartPane extends JPanel
 		 */
 		public void setSelectable(boolean selectable) {
 			this.selectable = selectable;
+		}
+		
+		@Override
+		protected void updateSortAfterComparatorChange() {
+			super.updateSortAfterComparatorChange();
+			super.resetSortOrder();
+			super.toggleSortOrder();
 		}
 	}
 }

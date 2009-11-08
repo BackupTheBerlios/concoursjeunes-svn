@@ -89,6 +89,7 @@
 package org.concoursjeunes.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -110,6 +111,8 @@ import com.mxgraph.view.mxGraph;
  */
 public class FicheConcoursFinalPane extends JPanel implements ActionListener {
 	
+	private mxGraph graph = new mxGraph();
+	
 	//paneau parent
 	private FicheConcoursPane ficheConcoursPane = null;
 	
@@ -126,38 +129,23 @@ public class FicheConcoursFinalPane extends JPanel implements ActionListener {
 	}
 	
 	private void init() {
-		
-		
-		
-		mxGraph graph = new mxGraph();
-		
 		graph.setCellsCloneable(false);
 		graph.setCellsEditable(false);
 		graph.setCellsDisconnectable(false);
+		graph.setCellsMovable(false);
+		graph.setCellsBendable(false);
 		
 		// Loads the defalt stylesheet from an external file
 		mxCodec codec = new mxCodec();
 		Document doc = mxUtils.loadDocument(ApplicationCore.staticParameters.getResourceString("path.ressources") + "/gui/default-style.xml");
 		codec.decode(doc.getDocumentElement(), graph.getStylesheet());
 		
-		Object parent = graph.getDefaultParent();
-
-		graph.getModel().beginUpdate();
-		try
-		{
-			Object v1 = graph.insertVertex(parent, null, "Hello", 20, 20, 80, 30);
-			Object v2 = graph.insertVertex(parent, null, "World!", 240, 150, 80, 30);
-			
-			graph.insertEdge(parent, null, "Edge", v1, v2);
-		}
-		finally
-		{
-			graph.getModel().endUpdate();
-		}
-
 		mxGraphComponent graphComponent = new mxGraphComponent(graph);
 		graphComponent.setConnectable(false);
 		graphComponent.setDragEnabled(false);
+		graphComponent.setBackground(Color.WHITE);
+		graphComponent.setOpaque(false);
+		graphComponent.setZoomPolicy(mxGraphComponent.ZOOM_POLICY_WIDTH);
 		
 		setLayout(new BorderLayout());
 		add(graphComponent, BorderLayout.CENTER);
@@ -169,7 +157,36 @@ public class FicheConcoursFinalPane extends JPanel implements ActionListener {
 	}
 	
 	private void completePanel() {
-		
+		Object parent = graph.getDefaultParent();
+
+		graph.getModel().beginUpdate();
+		try
+		{
+//			List<Object> l1 = new ArrayList<Object>();
+//			for(Concurrent concurrent : ficheConcours.getConcurrentList().list(-1)) {
+//				l1.add(graph.insertVertex(parent, null, concurrent.getID(), 20, 20+l1.size()*70, 250, 50));
+//			}
+//			
+//			List<Object> l2 = new ArrayList<Object>();
+//			for(int i = 0; i < l1.size() / 2; i++) {
+//				l2.add(graph.insertVertex(parent, null, "", 400, 55+i*140, 250, 50));
+//			}
+//			
+//			Object vainqueur = graph.insertVertex(parent, null, "", 400+380, -5 +((l1.size()*70-20)/2), 250, 50);
+//			
+//			for(int i = 0; i < l1.size(); i++) {
+//				int l2i = (int)Math.floor(i / 2.0);
+//				graph.insertEdge(parent, null, "", l1.get(i), l2.get(l2i));
+//			}
+//			
+//			for(int i = 0; i < l2.size(); i++) {
+//				graph.insertEdge(parent, null, "", l2.get(i),vainqueur);
+//			}
+		}
+		finally
+		{
+			graph.getModel().endUpdate();
+		}	
 	}
 	
 	/* (non-Javadoc)

@@ -27,4 +27,5 @@ cp ../../../../packager/linux/debian/rules debian/
 cp -f ../../../../pack/changelog.txt debian/changelog
 
 #construit le paquet
-dpkg-buildpackage -kE88997BA -rfakeroot
+#dpkg-buildpackage -kE88997BA -rfakeroot
+dpkg-buildpackage -rfakeroot

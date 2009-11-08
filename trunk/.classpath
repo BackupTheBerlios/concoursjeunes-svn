@@ -10,9 +10,9 @@
 	<classpathentry kind="lib" path="plugins"/>
 	<classpathentry kind="lib" path="lib/ajcommons-ext.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="lib/swingx-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/h2-1.1.117.jar"/>
 	<classpathentry kind="lib" path="lib/jgraphx.jar"/>
+	<classpathentry kind="lib" path="lib/swingx-1.6.jar"/>
 	<classpathentry kind="lib" path="lib/ajcommons-swingx-ext.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
