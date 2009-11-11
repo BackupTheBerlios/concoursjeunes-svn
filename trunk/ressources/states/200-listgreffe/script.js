@@ -45,8 +45,8 @@ function printState(ficheConcours, template, document, writer, options) {
 				}
 				listeArcherXML.parse("lignes.categorie", catStr);
 	
-				listeArcherXML.parse("lignes.PAYEE", AJToolKit.tokenize(localeReader.getResourceString("state.inscription"), ",")[concurrents.get(i).getInscription()]); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				listeArcherXML.parse("lignes.CERTIFICAT", AJToolKit.tokenize(localeReader.getResourceString("state.certificat"), ",")[concurrents.get(i).isCertificat() ? 0 : 1]); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				listeArcherXML.parse("lignes.PAYEE", StringUtils.tokenize(localeReader.getResourceString("state.inscription"), ",")[concurrents.get(i).getInscription()]); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				listeArcherXML.parse("lignes.CERTIFICAT", StringUtils.tokenize(localeReader.getResourceString("state.certificat"), ",")[concurrents.get(i).isCertificat() ? 0 : 1]); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				listeArcherXML.parse("lignes.CIBLE", new TargetPosition(concurrents.get(i).getCible(), concurrents.get(i).getPosition()).toString()); //$NON-NLS-1$
 	
 				listeArcherXML.loopBloc("lignes"); //$NON-NLS-1$

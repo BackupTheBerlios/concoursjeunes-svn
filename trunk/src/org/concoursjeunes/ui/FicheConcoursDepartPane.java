@@ -921,7 +921,8 @@ public class FicheConcoursDepartPane extends JPanel
 		jbSupprimerArcher.setEnabled(true);
 
 		if (ajxlConcurrent.getSelectedValue() instanceof Concurrent) {
-			Concurrent tmpConcurrent = (Concurrent) ajxlConcurrent.getSelectedValue();
+			
+			Concurrent tmpConcurrent = (Concurrent) lstModelConcurrent.getElementAt(ajxlConcurrent.convertIndexToModel(ajxlConcurrent.getSelectedIndex()));
 
 			selectConcurrentInTree(tmpConcurrent);
 		}
@@ -938,7 +939,8 @@ public class FicheConcoursDepartPane extends JPanel
 		// recupere le noeud destination et son parent
 		Object node = destinationPath.getLastPathComponent();
 		if (node instanceof Concurrent) {
-			ajxlConcurrent.setSelectedValue(node, true);
+			
+			ajxlConcurrent.setSelectedIndex(ajxlConcurrent.convertIndexToView(lstModelConcurrent.indexOf(node)));
 		}
 	}
 
@@ -1025,6 +1027,10 @@ public class FicheConcoursDepartPane extends JPanel
 		/*public List<Concurrent> getConcurrents() {
 			return concurrents;
 		}*/
+		
+		public int indexOf(Object concurrent) {
+			return concurrents.indexOf(concurrent);
+		}
 
 		@Override
 		public Object getElementAt(int index) {

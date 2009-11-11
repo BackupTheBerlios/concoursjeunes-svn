@@ -261,8 +261,7 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 						cellHasFocus);
 			}
 		});
-		jcbNombreTireurParCible.addItem("AB"); //$NON-NLS-1$
-		jcbNombreTireurParCible.addItem("AB/CD"); //$NON-NLS-1$
+
 		jlArbitres.setCellRenderer(new DefaultListCellRenderer() {
 
 			/* (non-Javadoc)
@@ -430,7 +429,16 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 		jcbNiveauChampionnat.setSelectedItem(parametre.getNiveauChampionnat());
 		jcbCloseCompetition.setSelected(!parametre.isOpen());
 		jtfNombreCible.setText("" + parametre.getNbCible()); //$NON-NLS-1$
-		jcbNombreTireurParCible.setSelectedIndex((parametre.getNbTireur() / 2) - 1);
+		
+		jcbNombreTireurParCible.removeAllItems();
+		jcbNombreTireurParCible.addItem(new RhytmeTir("AB", 2));  //$NON-NLS-1$
+		jcbNombreTireurParCible.addItem(new RhytmeTir("AB/CD", 4));  //$NON-NLS-1$
+		if(parametre.getNbTireur() > 4) {
+			RhytmeTir rythmePers = new RhytmeTir("Personnalisé (" + parametre.getNbTireur() + " archers par cible)", parametre.getNbTireur()); //$NON-NLS-1$ //$NON-NLS-2$
+			jcbNombreTireurParCible.addItem(rythmePers);
+		}
+		jcbNombreTireurParCible.setSelectedItem(new RhytmeTir(null, parametre.getNbTireur()));
+		
 		jtfNombreDepart.setText("" + parametre.getNbDepart()); //$NON-NLS-1$
 		jlArbitres.setListData(parametre.getJudges().toArray());
 	}
@@ -443,7 +451,7 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 				int placelibre = parametre.getNbCible();
 				for (int i = 0; i < parametre.getNbDepart(); i++) {
 					// ficheConcours.getPasDeTir(i).getOccupationCibles();
-					int placelibre_tmp = ficheConcours.getPasDeTir(i).getNbFreeTargets(jcbNombreTireurParCible.getSelectedIndex() == 0 ? 2 : 4);
+					int placelibre_tmp = ficheConcours.getPasDeTir(i).getNbFreeTargets(((RhytmeTir)jcbNombreTireurParCible.getSelectedItem()).getNbConcurrent());
 					if (placelibre_tmp < placelibre)
 						placelibre = placelibre_tmp;
 				}
@@ -490,7 +498,7 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 			}
 
 			parametre.setNbCible(Integer.parseInt(jtfNombreCible.getText()));
-			parametre.setNbTireur(jcbNombreTireurParCible.getSelectedIndex() == 0 ? 2 : 4);
+			parametre.setNbTireur(((RhytmeTir)jcbNombreTireurParCible.getSelectedItem()).getNbConcurrent());
 			parametre.setNbDepart(Integer.parseInt(jtfNombreDepart.getText()));
 			parametre.setReglement(tempReglement);
 			parametre.setReglementLock(true);
@@ -550,5 +558,79 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 			jbSupprimerArbitre.setEnabled(jlArbitres.getSelectedIndex() > -1);
 			jbEditerArbitre.setEnabled(jlArbitres.getSelectedIndex() > -1);
 		}
+	}
+	
+	private static class RhytmeTir {
+		private String libelle = ""; //$NON-NLS-1$
+		private int nbConcurrent;
+		/**
+		 * @param libelle
+		 * @param nbConcurrent
+		 */
+		public RhytmeTir(String libelle, int nbConcurrent) {
+			this.libelle = libelle;
+			this.nbConcurrent = nbConcurrent;
+		}
+		/**
+		 * @return libelle
+		 */
+		public String getLibelle() {
+			return libelle;
+		}
+		/**
+		 * @param libelle libelle à définir
+		 */
+		public void setLibelle(String libelle) {
+			this.libelle = libelle;
+		}
+		/**
+		 * @return nbConcurrent
+		 */
+		public int getNbConcurrent() {
+			return nbConcurrent;
+		}
+		/**
+		 * @param nbConcurrent nbConcurrent à définir
+		 */
+		public void setNbConcurrent(int nbConcurrent) {
+			this.nbConcurrent = nbConcurrent;
+		}
+		
+		/* (non-Javadoc)
+		 * @see java.lang.Object#toString()
+		 */
+		@Override
+		public String toString() {
+			return libelle;
+		}
+		
+		/* (non-Javadoc)
+		 * @see java.lang.Object#hashCode()
+		 */
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + nbConcurrent;
+			return result;
+		}
+		
+		/* (non-Javadoc)
+		 * @see java.lang.Object#equals(java.lang.Object)
+		 */
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			RhytmeTir other = (RhytmeTir) obj;
+			if (nbConcurrent != other.nbConcurrent)
+				return false;
+			return true;
+		}
+		
 	}
 }
