@@ -322,7 +322,7 @@ public class Archer implements Cloneable {
 			if (nomArcher == null) {
 				if (other.getNomArcher() != null)
 					return false;
-			} else if (!nomArcher.equals(other.getNomArcher()))
+			} else if (!getID().equals(other.getID()))
 				return false;
 		} else {
 			if (!numLicenceArcher.equals(other.getNumLicenceArcher()))
