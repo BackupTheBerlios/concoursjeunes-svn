@@ -56,7 +56,7 @@ install: build
 	dh_installdirs
 
 	# Add here commands to install the package into debian/concoursjeunes.
-	$(MAKE) DESTDIR=$(CURDIR)/debian/concoursjeunes install
+	$(MAKE) DESTDIR="$(CURDIR)/debian/concoursjeunes" install
 
 
 # Build architecture-independent files here.

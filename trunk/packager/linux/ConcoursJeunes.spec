@@ -32,12 +32,12 @@ Requires: usermode
 groupadd -f concoursjeunes
 
 %install
-[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf $RPM_BUILD_ROOT
+[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
 
 %__cp -a . "${RPM_BUILD_ROOT-/}"
 
-ln -s consolehelper $RPM_BUILD_ROOT%{_bindir}/concoursjeunes-applyupdate
-rm -rf $RPM_BUILD_ROOT/Makefile
+ln -s consolehelper "$RPM_BUILD_ROOT%{_bindir}/concoursjeunes-applyupdate"
+rm -rf "$RPM_BUILD_ROOT/Makefile"
 
 %clean
 [ "$RPM_BUILD_ROOT" != "/" ] && rm -rf "$RPM_BUILD_ROOT"
