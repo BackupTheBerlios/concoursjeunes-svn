@@ -404,6 +404,26 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 		for(Concurrent concurrent : concurrentList.list(-1)) {
 			if(concurrent.getCriteriaSet().getReglement() == null)
 				concurrent.getCriteriaSet().setReglement(reglement);
+			
+			// En correction corruption suite manipulation Bug 57
+			if(concurrent.getInscription() == Concurrent.UNINIT)
+				concurrent.setInscription(Concurrent.RESERVEE);
+			
+			//si il manque des critères, essaye de les regénérer
+			for(Criterion criterion : reglement.getListCriteria()) {
+				if(!concurrent.getCriteriaSet().getCriteria().containsKey(criterion)) {
+					if(criterion.getCriterionElements().size() == 0) {
+						CriterionElement defElement = new CriterionElement("A"); //$NON-NLS-1$
+						defElement.setLibelle("Tous"); //$NON-NLS-1$
+						List<CriterionElement> lce = new ArrayList<CriterionElement>();
+						lce.add(defElement);
+						criterion.setCriterionElements(lce);
+					}
+					concurrent.getCriteriaSet().addCriterionElement(
+							criterion.getCriterionElements().get(0));
+				}
+			}
+
 			for(Entry<Criterion, CriterionElement> entry : concurrent.getCriteriaSet().getCriteria().entrySet()) {
 				if(entry.getValue().getCriterion() == null)
 					entry.getValue().setCriterion(entry.getKey());
@@ -612,9 +632,9 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 								tplClassement.parse("categories.classement.CLUB", sortList.get(j).getClub().getNom()); //$NON-NLS-1$
 								tplClassement.parse("categories.classement.NUM_LICENCE", sortList.get(j).getNumLicenceArcher()); //$NON-NLS-1$
 
-								for (Criterion key : parametre.getReglement().getListCriteria())
+								/*for (Criterion key : parametre.getReglement().getListCriteria())
 									tplClassement.parse("categories.classement." //$NON-NLS-1$
-											+ key.getCode(), sortList.get(j).getCriteriaSet().getCriterionElement(key).getCode());
+											+ key.getCode(), sortList.get(j).getCriteriaSet().getCriterionElement(key).getCode());*/
 
 								for (int k = 0; k < parametre.getReglement().getNbSerie(); k++) {
 									if (sortList.get(j).getScore() != null)
