@@ -116,6 +116,7 @@ import org.ajdeveloppement.apps.localisation.Localisable;
 import org.ajdeveloppement.apps.localisation.Localisator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.AJList;
+import org.ajdeveloppement.commons.ui.DefaultDialogReturn;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
 import org.concoursjeunes.CompetitionLevel;
@@ -212,7 +213,7 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 		this.ficheConcours = ficheConcours;
 		this.localisation = profile.getLocalisation();
 
-		reglementDialog = new ReglementDialog(parentframe, null, profile);
+		reglementDialog = new ReglementDialog(parentframe, null, localisation);
 
 		init();
 		affectLibelle();
@@ -531,10 +532,10 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 			}
 		} else if (ae.getSource() == jbDetail) {
 			reglementDialog.setReglement(tempReglement);
-			reglementDialog.setVerrou(true);
-			Reglement reglement = reglementDialog.showReglementDialog();
-			if (reglement != null)
-				tempReglement = reglement;
+			reglementDialog.setEditable(true);
+			if(reglementDialog.showReglementDialog() == DefaultDialogReturn.OK)
+				tempReglement = reglementDialog.getReglement();
+			
 		} else if (ae.getSource() == jbSelectReglement) {
 			ReglementManagerDialog reglementManagerDialog = new ReglementManagerDialog(parentframe, profile);
 			Reglement reglement = reglementManagerDialog.showReglementManagerDialog(true);
@@ -574,15 +575,15 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 		/**
 		 * @return libelle
 		 */
-		public String getLibelle() {
-			return libelle;
-		}
+		//public String getLibelle() {
+		//	return libelle;
+		//}
 		/**
 		 * @param libelle libelle à définir
 		 */
-		public void setLibelle(String libelle) {
-			this.libelle = libelle;
-		}
+		//public void setLibelle(String libelle) {
+		//	this.libelle = libelle;
+		//}
 		/**
 		 * @return nbConcurrent
 		 */
@@ -592,9 +593,9 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 		/**
 		 * @param nbConcurrent nbConcurrent à définir
 		 */
-		public void setNbConcurrent(int nbConcurrent) {
-			this.nbConcurrent = nbConcurrent;
-		}
+		//public void setNbConcurrent(int nbConcurrent) {
+		//	this.nbConcurrent = nbConcurrent;
+		//}
 		
 		/* (non-Javadoc)
 		 * @see java.lang.Object#toString()

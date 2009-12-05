@@ -378,6 +378,21 @@ public class Reglement implements SqlPersistance {
 		
 		pcs.firePropertyChange("listCriteria", oldValue, listCriteria); //$NON-NLS-1$
 	}
+	
+	/**
+	 * Ajoute un critère au réglement
+	 * 
+	 * @param criterion le critère à ajouter au réglement
+	 */
+	public void addCriterion(Criterion criterion) {
+		listCriteria.add(criterion);
+		
+		criterion.setReglement(this);
+	}
+	
+	public void removeCriterion(Criterion criterion) {
+		listCriteria.remove(criterion);
+	}
 
 	/**
 	 * Retourne le tableau de surclassement à appliquer sur

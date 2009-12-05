@@ -144,6 +144,7 @@ import org.ajdeveloppement.commons.io.FileUtils;
 import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.ajdeveloppement.commons.security.JarVerifier;
 import org.ajdeveloppement.commons.ui.AJList;
+import org.ajdeveloppement.commons.ui.DefaultDialogReturn;
 import org.ajdeveloppement.macosx.PrivilegedRuntime;
 import org.ajdeveloppement.updater.AjUpdater;
 import org.ajdeveloppement.updater.AjUpdaterEvent;
@@ -541,7 +542,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 			case UPDATE_AVAILABLE:
 				AjUpdaterFrame ajUpdaterFrame = new AjUpdaterFrame(ajUpdater);
 				
-				if(ajUpdaterFrame.showAjUpdaterFrame() == AjUpdaterFrame.ReturnCode.OK) {
+				if(ajUpdaterFrame.showAjUpdaterFrame() == DefaultDialogReturn.OK) {
 					ajUpdater.downloadFiles(event.getUpdateFiles());
 				}
 	

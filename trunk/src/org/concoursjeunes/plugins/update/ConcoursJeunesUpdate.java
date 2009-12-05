@@ -116,6 +116,7 @@ import org.ajdeveloppement.commons.AJToolKit;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.io.FileUtils;
 import org.ajdeveloppement.commons.io.XMLSerializer;
+import org.ajdeveloppement.commons.ui.DefaultDialogReturn;
 import org.ajdeveloppement.macosx.PrivilegedRuntime;
 import org.ajdeveloppement.updater.AjUpdater;
 import org.ajdeveloppement.updater.AjUpdaterEvent;
@@ -259,7 +260,7 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 			} else {
 				AjUpdaterFrame ajUpdaterFrame = new AjUpdaterFrame(ajUpdater);
 				
-				if(ajUpdaterFrame.showAjUpdaterFrame() == AjUpdaterFrame.ReturnCode.OK) {
+				if(ajUpdaterFrame.showAjUpdaterFrame() == DefaultDialogReturn.OK) {
 					Map<Repository, List<FileMetaData>> filesMap = new HashMap<Repository, List<FileMetaData>>();
 					for(Repository r : ajUpdaterFrame.getValidateRepositories())
 						filesMap.put(r, updateFiles.get(r));
@@ -334,7 +335,7 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 				if (currentStatus == Status.AVAILABLE) {
 					AjUpdaterFrame ajUpdaterFrame = new AjUpdaterFrame(ajUpdater);
 					
-					if(ajUpdaterFrame.showAjUpdaterFrame() == AjUpdaterFrame.ReturnCode.OK) {
+					if(ajUpdaterFrame.showAjUpdaterFrame() == DefaultDialogReturn.OK) {
 						Map<Repository, List<FileMetaData>> filesMap = new HashMap<Repository, List<FileMetaData>>();
 						for(Repository r : ajUpdaterFrame.getValidateRepositories())
 							filesMap.put(r, updateFiles.get(r));

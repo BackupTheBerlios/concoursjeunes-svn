@@ -102,9 +102,15 @@ import javax.swing.JTextField;
 import org.ajdeveloppement.apps.localisation.Localisable;
 import org.ajdeveloppement.apps.localisation.Localisator;
 import org.ajdeveloppement.commons.AjResourcesReader;
+import org.ajdeveloppement.commons.ui.DefaultDialogReturn;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.concoursjeunes.Criterion;
 import org.concoursjeunes.CriterionElement;
+import org.jdesktop.beansbinding.BeanProperty;
+import org.jdesktop.beansbinding.Binding;
+import org.jdesktop.beansbinding.BindingGroup;
+import org.jdesktop.beansbinding.Bindings;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 
 /**
  * 
@@ -114,9 +120,10 @@ import org.concoursjeunes.CriterionElement;
 public class CriterionElementDialog extends JDialog implements ActionListener {
     
 	private AjResourcesReader localisation;
-    private ReglementDialog parent;
-    private Criterion criterion;
-    private CriterionElement criterionIndividu;
+	
+    private CriterionElement criterionElement = new CriterionElement();
+    
+    private BindingGroup criterionBinding = new BindingGroup();
     
     @Localisable("criterion.code")
     private JLabel jlCode = new JLabel();
@@ -131,14 +138,19 @@ public class CriterionElementDialog extends JDialog implements ActionListener {
     private JButton jbValider = new JButton();
     @Localisable("bouton.annuler")
     private JButton jbAnnuler = new JButton();
+    
+    private boolean editable = false;
+    
+    private DefaultDialogReturn returnAction = DefaultDialogReturn.CANCEL;
 
     /**
      * Construit la boite de dialogue d'élément de critères
      * 
      * @param parent la boite de dialogue de reglement parent
      * @param criterion le critére parent de l'element
+     * @param localisation la source de localisation de la boite de dialogue
      */
-    public CriterionElementDialog(ReglementDialog parent, Criterion criterion, AjResourcesReader localisation) {
+    public CriterionElementDialog(JDialog parent, Criterion criterion, AjResourcesReader localisation) {
         this(parent, criterion, null, localisation);
     }
     
@@ -146,25 +158,33 @@ public class CriterionElementDialog extends JDialog implements ActionListener {
      * Construit la boite de dialogue d'élément de critères
      * 
      * @param parent la boite de dialogue de reglement parent
-     * @param criterion le critére parent de l'element
-     * @param criterionIndividu l'element à manipuler
+     * @param criterionElement l'élément à éditer
+     * @param localisation la source de localisation de la boite de dialogue
      */
-    public CriterionElementDialog(ReglementDialog parent, Criterion criterion, CriterionElement criterionIndividu, AjResourcesReader localisation) {
+    public CriterionElementDialog(JDialog parent, CriterionElement criterionElement, AjResourcesReader localisation) {
+    	 this(parent, null, criterionElement, localisation);
+    }
+    
+    /**
+     * Construit la boite de dialogue d'élément de critères
+     * 
+     * @param parent la boite de dialogue de reglement parent
+     * @param criterion le critére parent de l'element
+     * @param criterionElement l'element à éditer
+     * @param localisation la source de localisation de la boite de dialogue
+     */
+    private CriterionElementDialog(JDialog parent, Criterion criterion, CriterionElement criterionElement, AjResourcesReader localisation) {
         super(parent, localisation.getResourceString("criterion.titre"), true); //$NON-NLS-1$
         
         this.localisation = localisation;
-        this.parent = parent;
-        this.criterion = criterion;
-        this.criterionIndividu = criterionIndividu;
+        if(criterion != null)
+	        this.criterionElement.setCriterion(criterion);
+
+        if(criterionElement != null)
+        	this.criterionElement = criterionElement;
         
         init();
         affectLibelle();
-        completePanel();
-        
-        pack();
-        setResizable(false);
-        setLocationRelativeTo(null);
-        setVisible(true);
     }
     
     private void init() {
@@ -204,31 +224,69 @@ public class CriterionElementDialog extends JDialog implements ActionListener {
     }
     
     private void completePanel() {
-        if(criterionIndividu != null) {
-            jtfCode.setText(criterionIndividu.getCode());
-            jtfLibelle.setText(criterionIndividu.getLibelle());
-                       
-            jcbActive.setSelected(criterionIndividu.isActive());
-            
-            jtfCode.setEditable(!parent.getReglement().isOfficialReglement()
-            		&& !parent.isVerrou());
-            jcbActive.setEnabled(!parent.getReglement().isOfficialReglement()
-            		&& !parent.isVerrou());
-        }
+    	if(criterionBinding != null)
+    		criterionBinding.unbind();
+    	
+    	criterionBinding = new BindingGroup();
+    	criterionBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, criterionElement, BeanProperty.create("code"), jtfCode, BeanProperty.create("text"))); //$NON-NLS-1$ //$NON-NLS-2$
+    	criterionBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, criterionElement, BeanProperty.create("libelle"), jtfLibelle, BeanProperty.create("text"))); //$NON-NLS-1$ //$NON-NLS-2$
+    	criterionBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, criterionElement, BeanProperty.create("active"), jcbActive, BeanProperty.create("selected"))); //$NON-NLS-1$ //$NON-NLS-2$
+    	
+    	criterionBinding.bind();
+        
+        jtfCode.setEditable(!criterionElement.getCriterion().getReglement().isOfficialReglement()
+        		&& !editable);
+        jcbActive.setEnabled(!criterionElement.getCriterion().getReglement().isOfficialReglement()
+        		&& !editable);
+
+    }
+    
+    /**
+     * Affiche la boite de dialogue d'édition d'élément de critère
+     * 
+     * @return le code de retour de la boite de dialogue
+     */
+    public DefaultDialogReturn showCriterionElementDialog() {
+    	completePanel();
+        
+        pack();
+        setResizable(false);
+        setLocationRelativeTo(null);
+        setVisible(true);
+        
+        return returnAction;
     }
 
     /**
 	 * @return  Renvoie criterionIndividu.
 	 */
-    public CriterionElement getCriterionIndividu() {
-        return criterionIndividu;
+    public CriterionElement getCriterionElement() {
+        return criterionElement;
     }
 
     /**
-	 * @param criterionIndividu  criterionIndividu à définir.
+	 * @param criterionElement  criterionIndividu à définir.
 	 */
-    public void setCriterionIndividu(CriterionElement criterionIndividu) {
-        this.criterionIndividu = criterionIndividu;
+    public void setCriterionElement(CriterionElement criterionElement) {
+        this.criterionElement = criterionElement;
+    }
+    
+    /**
+     * Indique si la boite de dialogue est vérouillé en édition
+     *  
+     * @return true si vérouillé
+     */
+    public boolean isEditable() {
+    	return editable;
+    }
+    
+    /**
+     * Définit si la boite de dialogue doit être vérouillé en édition
+     * 
+     * @param editable true si vérouillé
+     */
+    public void setEditable(boolean editable) {
+    	this.editable = editable;
     }
 
     /**
@@ -236,19 +294,18 @@ public class CriterionElementDialog extends JDialog implements ActionListener {
      */
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == jbValider) {
-            if(criterionIndividu == null) {
-                criterionIndividu = new CriterionElement();
-                
-                criterion.getCriterionElements().add(criterionIndividu);
-            }
+        	if(criterionBinding != null) {
+            	for(Binding<CriterionElement, ?, ?, ?> binding : criterionBinding.getBindings()) { 
+            		binding.save();
+            	}
+        	}
             
-            criterionIndividu.setCriterion(criterion);
-            criterionIndividu.setCode(jtfCode.getText());
-            criterionIndividu.setLibelle(jtfLibelle.getText());
-            criterionIndividu.setActive(jcbActive.isSelected());
+            returnAction = DefaultDialogReturn.OK;
             
             setVisible(false);
         } else if(e.getSource() == jbAnnuler) {
+        	returnAction = DefaultDialogReturn.CANCEL;
+        	
             setVisible(false);
         }
     }

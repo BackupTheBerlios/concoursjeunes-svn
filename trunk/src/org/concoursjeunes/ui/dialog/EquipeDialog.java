@@ -118,6 +118,9 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
+import org.ajdeveloppement.apps.localisation.Localisable;
+import org.ajdeveloppement.apps.localisation.LocalisableString;
+import org.ajdeveloppement.apps.localisation.Localisator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.AJTree;
 import org.ajdeveloppement.commons.ui.GhostGlassPane;
@@ -149,11 +152,15 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 	private DefaultTreeModel treeModel;
 	private final DefaultMutableTreeNode treeRoot = new DefaultMutableTreeNode("racine"); //$NON-NLS-1$
 
+	@Localisable("equipe.contrainte.club")
 	private final JCheckBox cbEquipeClub = new JCheckBox();
+	
+	@Localisable("equipe.concurrenttable")
+	private final LocalisableString lsConcurrentTable = new LocalisableString();
 
-	//private JPopupMenu popup;
-
+	@Localisable("bouton.valider")
 	private final JButton jbValider = new JButton();
+	@Localisable("bouton.annuler")
 	private final JButton jbAnnuler = new JButton();
 
 	private boolean validation = false;
@@ -260,14 +267,12 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 	}
 
 	private void affectLibelle() {
-		cbEquipeClub.setText(localisation.getResourceString("equipe.contrainte.club")); //$NON-NLS-1$
-		jbValider.setText(localisation.getResourceString("bouton.valider")); //$NON-NLS-1$
-		jbAnnuler.setText(localisation.getResourceString("bouton.annuler")); //$NON-NLS-1$
+		Localisator.localize(this, localisation);
 	}
 
 	private void completePanel() {
 		DefaultMutableTreeNode[] dmtnCategorie;
-		DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Table des concurrents"); //$NON-NLS-1$
+		DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(lsConcurrentTable); 
 
 		treeModelConcurrents = new DefaultTreeModel(rootNode);
 		treeConcurrents.setModel(treeModelConcurrents);

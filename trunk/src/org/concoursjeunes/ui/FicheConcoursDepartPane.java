@@ -188,6 +188,7 @@ public class FicheConcoursDepartPane extends JPanel
 	private AJXList ajxlConcurrent = new AJXList();
 	private ConcurrentListModel lstModelConcurrent = new ConcurrentListModel();
 	private AJTree treeTarget = new AJTree();
+	@Localisable(textMethod="setRootLabel",value="treenode.racine")
 	private TargetTreeModel treeModel = new TargetTreeModel();
 	private JPopupMenu popup;
 
@@ -405,8 +406,6 @@ public class FicheConcoursDepartPane extends JPanel
 	 */
 	private void affectLibelle() {
 		Localisator.localize(this, ficheConcoursPane.getLocalisation());
-
-		treeModel.setRootLabel(ficheConcoursPane.getLocalisation().getResourceString("treenode.racine")); //$NON-NLS-1$
 	}
 
 	/**

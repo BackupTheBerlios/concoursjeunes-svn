@@ -93,6 +93,7 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -106,7 +107,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -120,7 +120,6 @@ import org.ajdeveloppement.commons.ui.NumberDocument;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Blason;
 import org.concoursjeunes.DistancesEtBlason;
-import org.concoursjeunes.Profile;
 import org.concoursjeunes.localisable.CriteriaSetLibelle;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.JXHeader;
@@ -134,7 +133,6 @@ import org.jdesktop.swingx.painter.GlossPainter;
 @Localisable(textMethod="setTitle",value="distancesblasons.title")
 public class DistancesBlasonsDialog extends JDialog implements ActionListener {
 	
-	//private Profile profile;
 	private AjResourcesReader localisation;
 	
 	private List<DistancesEtBlason> distancesblasons = new ArrayList<DistancesEtBlason>();
@@ -167,11 +165,10 @@ public class DistancesBlasonsDialog extends JDialog implements ActionListener {
 	@Localisable("bouton.annuler")
 	private JButton jbAnnuler = new JButton();
 	
-	public DistancesBlasonsDialog(JFrame parentframe, Profile profile) {
-		super(parentframe, true);
+	public DistancesBlasonsDialog(Window parentframe, AjResourcesReader localisation) {
+		super(parentframe, ModalityType.TOOLKIT_MODAL);
 		
-		//this.profile = profile;
-		this.localisation = profile.getLocalisation();
+		this.localisation = localisation;
 		
 		try {
 			availableBlason = Blason.listAvailableTargetFace();

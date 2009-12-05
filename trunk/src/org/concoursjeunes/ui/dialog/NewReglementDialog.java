@@ -92,6 +92,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
@@ -99,7 +100,6 @@ import java.util.Date;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -107,6 +107,7 @@ import javax.swing.JTextField;
 import org.ajdeveloppement.apps.localisation.Localisable;
 import org.ajdeveloppement.apps.localisation.Localisator;
 import org.ajdeveloppement.commons.AjResourcesReader;
+import org.ajdeveloppement.commons.ui.DefaultDialogReturn;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.concoursjeunes.Federation;
 import org.concoursjeunes.Profile;
@@ -149,16 +150,13 @@ public class NewReglementDialog extends JDialog implements ActionListener {
 	
 	private Reglement reglement = null;
 
-	private JFrame parentframe;
-
 	/**
 	 * 
 	 */
-	public NewReglementDialog(JFrame parentframe, Profile profile) {
-		super(parentframe,true);
+	public NewReglementDialog(Window parentframe, Profile profile) {
+		super(parentframe, ModalityType.TOOLKIT_MODAL);
 		
 		this.profile = profile;
-		this.parentframe = parentframe;
 		this.localisation = profile.getLocalisation();
 		
 		init();
@@ -260,17 +258,18 @@ public class NewReglementDialog extends JDialog implements ActionListener {
 			reglement.setFederation((Federation)jcbFederation.getSelectedItem());
 			reglement.setCategory(jcbCategorie.getSelectedIndex() + 1);
 
-			ReglementDialog reglementDialog = new ReglementDialog(parentframe, reglement, profile);
-			reglement = reglementDialog.showReglementDialog();
-			
-			this.reglement = reglement;
+			ReglementDialog reglementDialog = new ReglementDialog(this, reglement, localisation);
+			if(reglementDialog.showReglementDialog() == DefaultDialogReturn.OK) {
+				reglement = reglementDialog.getReglement(); 
+				this.reglement = reglement;
+			}
 			
 			setVisible(false);
 		} else if(e.getSource() == jbAnnuler) {
 			setVisible(false);
 		} else if(e.getSource() ==jcbFederation) {
 			if(jcbFederation.getSelectedItem() instanceof String) {
-				FederationDialog newFederationDialog = new FederationDialog(parentframe, profile);
+				FederationDialog newFederationDialog = new FederationDialog(this, profile);
 				Federation federation = newFederationDialog.showFederationDialog(null);
 				if(federation != null) {
 					completePanel();

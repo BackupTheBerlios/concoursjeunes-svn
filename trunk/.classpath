@@ -14,5 +14,6 @@
 	<classpathentry kind="lib" path="lib/jgraphx.jar"/>
 	<classpathentry kind="lib" path="lib/swingx-1.6.jar"/>
 	<classpathentry kind="lib" path="lib/ajcommons-swingx-ext.jar"/>
+	<classpathentry kind="lib" path="lib/beansbinding-1.2.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

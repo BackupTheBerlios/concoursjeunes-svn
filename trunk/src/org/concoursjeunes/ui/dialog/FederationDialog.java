@@ -93,8 +93,10 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -105,18 +107,19 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import org.ajdeveloppement.apps.localisation.Localisable;
+import org.ajdeveloppement.apps.localisation.LocalisationHandler;
 import org.ajdeveloppement.apps.localisation.Localisator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.StringUtils;
 import org.ajdeveloppement.commons.sql.SqlPersistanceException;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
+import org.ajdeveloppement.swingxext.localisation.JXHeaderLocalisationHandler;
 import org.concoursjeunes.CompetitionLevel;
 import org.concoursjeunes.Configuration;
 import org.concoursjeunes.Federation;
@@ -136,7 +139,7 @@ public class FederationDialog extends JDialog implements ActionListener {
 	private Profile profile;
 	private AjResourcesReader localisation;
 	
-	@Localisable(textMethod="setTitle",value="federation.header.title")
+	@Localisable("federation.header")
 	private JXHeader jxhFederation = new JXHeader();
 	
 	@Localisable("federation.sigle")
@@ -173,8 +176,8 @@ public class FederationDialog extends JDialog implements ActionListener {
 	
 	private Federation federation = null;
 	
-	public FederationDialog(JFrame parentframe, Profile profile) {
-		super(parentframe, true);
+	public FederationDialog(Window parentframe, Profile profile) {
+		super(parentframe, ModalityType.TOOLKIT_MODAL);
 		
 		this.profile = profile;
 		this.localisation = profile.getLocalisation();
@@ -282,11 +285,8 @@ public class FederationDialog extends JDialog implements ActionListener {
 		getContentPane().add(jpAction, BorderLayout.SOUTH);
 	}
 	
-	@SuppressWarnings("nls")
 	private void affectLibelle() {
-		Localisator.localize(this, localisation);
-		
-		jxhFederation.setDescription(localisation.getResourceString("federation.header.description"));
+		Localisator.localize(this, localisation, Collections.<Class<?>, LocalisationHandler>singletonMap(JXHeader.class, new JXHeaderLocalisationHandler()));
 	}
 	
 	private void completePanel() {

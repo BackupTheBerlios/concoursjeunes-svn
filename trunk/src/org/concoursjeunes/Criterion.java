@@ -116,7 +116,7 @@ import org.ajdeveloppement.commons.sql.SqlTable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @SqlTable(name="CRITERE")
 @SqlPrimaryKey(fields={"CODECRITERE","NUMREGLEMENT"})
-public class Criterion implements SqlPersistance {
+public class Criterion implements SqlPersistance, Cloneable {
 	/**
 	 * Tri des éléments du critères croissant
 	 */
@@ -214,6 +214,9 @@ public class Criterion implements SqlPersistance {
 	 * @param reglement le règlement associé au critère
 	 */
 	public void setReglement(Reglement reglement) {
+		if(this.reglement != null && this.reglement != reglement)
+			this.reglement.removeCriterion(this);
+		
 		this.reglement = reglement;
 	}
 	
@@ -435,6 +438,16 @@ public class Criterion implements SqlPersistance {
 		for(CriterionElement element : criterionElements)
 			element.setCriterion(this);
 	}
+	
+	public void addCriterionElement(CriterionElement criterionElement) {
+		criterionElements.add(criterionElement);
+		
+		criterionElement.setCriterion(this);
+	}
+	
+	public void removeCriterionElement(CriterionElement criterionElement) {
+		criterionElements.remove(criterionElement);
+	}
 
 	/**
 	 * Sauvegarde le critère en base.
@@ -485,5 +498,18 @@ public class Criterion implements SqlPersistance {
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
 		if(parent instanceof Reglement)
 			reglement = (Reglement)parent;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+		try {
+			return super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+			return this;
+		}
 	}
 }

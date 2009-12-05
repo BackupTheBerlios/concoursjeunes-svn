@@ -103,10 +103,19 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.ajdeveloppement.apps.localisation.Localisable;
+import org.ajdeveloppement.apps.localisation.LocalisableString;
 import org.ajdeveloppement.apps.localisation.Localisator;
 import org.ajdeveloppement.commons.AjResourcesReader;
+import org.ajdeveloppement.commons.ui.DefaultDialogReturn;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.concoursjeunes.Criterion;
+import org.concoursjeunes.Reglement;
+import org.jdesktop.beansbinding.BeanProperty;
+import org.jdesktop.beansbinding.Binding;
+import org.jdesktop.beansbinding.BindingGroup;
+import org.jdesktop.beansbinding.Bindings;
+import org.jdesktop.beansbinding.Converter;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 
 /**
  * Boite de dialogue de gestion des critère de distinction des archers
@@ -116,9 +125,10 @@ import org.concoursjeunes.Criterion;
 public class CriterionDialog extends JDialog implements ActionListener, ChangeListener {
     
 	private AjResourcesReader localisation;
-    private ReglementDialog parent;
+	
+    private Criterion criterion = new Criterion();
     
-    private Criterion criterion;
+    private BindingGroup criterionBinding = new BindingGroup();
     
     private JLabel jlIndex = new JLabel();
     @Localisable("criterion.code")
@@ -140,32 +150,65 @@ public class CriterionDialog extends JDialog implements ActionListener, ChangeLi
     private JCheckBox jcbClassementEquipeCriterion = new JCheckBox();
     private JComboBox jcbWinFFTACode = new JComboBox();
     
+    @Localisable("criterion.ordretri.asc")
+    private final LocalisableString lsSortOrderAsc = new LocalisableString();
+    @Localisable("criterion.ordretri.desc")
+    private final LocalisableString lsSortOrderDesc = new LocalisableString();
+    
     @Localisable("bouton.valider")
     private JButton jbValider = new JButton();
     @Localisable("bouton.annuler")
     private JButton jbAnnuler = new JButton();
     
-    private boolean lock = false;
+    private boolean creationMode = false;
+    private boolean editable = false;
+    
+    private DefaultDialogReturn returnAction = DefaultDialogReturn.CANCEL;
     
     /**
+     * Intialise une boite de dialogue de paramétrage de critère de réglement
      * 
-     * @param parent
+     * @param parent la boite de dialogue parente
+     * @param reglement le réglement auquel doit être associé le critère
+     * @param localisation le fichier de localisation de l'interface
      */
-    public CriterionDialog(ReglementDialog parent, AjResourcesReader localisation) {
-        this(parent, null, localisation);
+    public CriterionDialog(JDialog parent, Reglement reglement, AjResourcesReader localisation) {
+        this(parent, reglement, null, localisation);
     }
     
     /**
+     * Intialise une boite de dialogue de paramétrage de critère de réglement avec un critère fournit en paramétre.<br>
+     * Le critère associé doit être associé à un réglement
      * 
-     * @param parent
-     * @param criterion
+     * @param parent la boite de dialogue parente
+     * @param criterion le critère à afficher/modifier
+     * @param localisation le fichier de localisation de l'interface
      */
-    public CriterionDialog(ReglementDialog parent, Criterion criterion, AjResourcesReader localisation) {
+    public CriterionDialog(JDialog parent, Criterion criterion, AjResourcesReader localisation) {
+    	this(parent, null, criterion, localisation);
+    }
+    
+    /**
+     * Intialise une boite de dialogue de paramétrage de critère de réglement avec un critère fournit en paramêtre.<br>
+     * Si le critère passé en paramétre est différent de null, alors le réglement est ignoré
+     * 
+     * @param parent la boite de dialogue parente
+     * @param reglement le réglement auquel doit être associé le critère
+     * @param criterion le critère à afficher/modifier
+     * @param localisation le fichier de localisation de l'interface
+     */
+    private CriterionDialog(JDialog parent, Reglement reglement, Criterion criterion, AjResourcesReader localisation) {
         super(parent, "", true); //$NON-NLS-1$
         
         this.localisation = localisation;
-        this.parent = parent;
-        this.criterion = criterion;
+        if(reglement != null)
+        	this.criterion.setReglement(reglement);
+        
+        if(criterion != null)
+        	this.criterion = criterion;
+        else
+        	creationMode = true;
+        
         
         init();
         affectLibelle();
@@ -178,7 +221,7 @@ public class CriterionDialog extends JDialog implements ActionListener, ChangeLi
      */
     private void init() {
         //Layout Manager
-        GridBagConstraints c    = new GridBagConstraints();
+        GridBagConstraints c = new GridBagConstraints();
         
         GridbagComposer gridbagComposer = new GridbagComposer();
         
@@ -186,6 +229,9 @@ public class CriterionDialog extends JDialog implements ActionListener, ChangeLi
         JPanel jpOperation = new JPanel();
         
         jpOperation.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        
+        jcbSortOrder.addItem(lsSortOrderAsc);
+        jcbSortOrder.addItem(lsSortOrderDesc);
         
         jcbWinFFTACode.addItem(""); //$NON-NLS-1$
         for(String critere : Criterion.CRITERES_TABLE_ARCHERS) {
@@ -235,10 +281,6 @@ public class CriterionDialog extends JDialog implements ActionListener, ChangeLi
      */
     private void affectLibelle() {
         Localisator.localize(this, localisation);
-        
-        jcbSortOrder.removeAllItems();
-        jcbSortOrder.addItem(localisation.getResourceString("criterion.ordretri.asc")); //$NON-NLS-1$
-        jcbSortOrder.addItem(localisation.getResourceString("criterion.ordretri.desc")); //$NON-NLS-1$
     }
     
     /**
@@ -246,39 +288,52 @@ public class CriterionDialog extends JDialog implements ActionListener, ChangeLi
      *
      */
     private void completePanel() {
-        if(criterion != null) {
-            jtfCode.setText(criterion.getCode());
-            jtfCode.setEditable(false);
-            jtfLibelle.setText(criterion.getLibelle());
-            
-            jcbSortOrder.setSelectedIndex((criterion.getSortOrder() > 0) ? 0 : 1);
-            
-            jcbClassementCriterion.setSelected(criterion.isClassement());
-            //jcbClassementCriterion.setEnabled(!criterion.isPlacement());
-            jcbPlacementCriterion.setSelected(criterion.isPlacement());
-            jcbClassementEquipeCriterion.setSelected(criterion.isClassementEquipe());
-            jcbWinFFTACode.setSelectedItem(criterion.getChampsTableArchers());
-            
-            jcbPlacementCriterion.setEnabled(jcbClassementCriterion.isSelected());
-			jcbClassementCriterion.setEnabled(!jcbPlacementCriterion.isSelected());
-            
-			if(jcbPlacementCriterion.isEnabled())
-				jcbPlacementCriterion.setEnabled(!parent.getReglement().isOfficialReglement());
-			if(jcbClassementCriterion.isEnabled())
-				jcbClassementCriterion.setEnabled(!parent.getReglement().isOfficialReglement());
-            jcbWinFFTACode.setEnabled(!parent.getReglement().isOfficialReglement());
-        }
-        
-        if(lock) {
-        	jcbPlacementCriterion.setEnabled(false);
-        	jcbClassementCriterion.setEnabled(false);
-        	jcbClassementEquipeCriterion.setEnabled(false);
-        	jcbWinFFTACode.setEnabled(false);
-        	jcbSortOrder.setEnabled(false);
-        }
+    	//On annule le précédent binding
+    	if(criterionBinding != null)
+    		criterionBinding.unbind();
+    	
+    	criterionBinding = new BindingGroup();
+
+    	criterionBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, criterion, BeanProperty.create("code"), jtfCode, BeanProperty.create("text")));  //$NON-NLS-1$//$NON-NLS-2$
+    	criterionBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, criterion, BeanProperty.create("libelle"), jtfLibelle, BeanProperty.create("text")));  //$NON-NLS-1$//$NON-NLS-2$
+    	criterionBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, criterion, BeanProperty.create("classement"), jcbClassementCriterion, BeanProperty.create("selected")));  //$NON-NLS-1$//$NON-NLS-2$
+    	criterionBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, criterion, BeanProperty.create("placement"), jcbPlacementCriterion, BeanProperty.create("selected")));  //$NON-NLS-1$//$NON-NLS-2$
+    	criterionBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, criterion, BeanProperty.create("classementEquipe"), jcbClassementEquipeCriterion, BeanProperty.create("selected")));  //$NON-NLS-1$//$NON-NLS-2$
+    	criterionBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, criterion, BeanProperty.create("reglement.officialReglement"), jcbWinFFTACode, BeanProperty.create("enabled")));  //$NON-NLS-1$//$NON-NLS-2$
+    	criterionBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, criterion, BeanProperty.create("champsTableArchers"), jcbWinFFTACode, BeanProperty.create("selectedItem"))); //$NON-NLS-1$ //$NON-NLS-2$
+    	Binding<Criterion, Integer, JComboBox, Integer> sortBinding = Bindings.<Criterion, Integer, JComboBox, Integer>createAutoBinding(UpdateStrategy.READ, criterion, BeanProperty.<Criterion, Integer>create("sortOrder"), jcbSortOrder, BeanProperty.<JComboBox, Integer>create("selectedIndex"));  //$NON-NLS-1$//$NON-NLS-2$
+    	sortBinding.setConverter(new Converter<Integer, Integer>() {
+
+			@Override
+			public Integer convertForward(Integer source) {
+				return source == Criterion.SORT_ASC ? 0 : 1;
+			}
+
+			@Override
+			public Integer convertReverse(Integer target) {
+				return target == 0 ? Criterion.SORT_ASC : Criterion.SORT_DESC;
+			}
+    		
+		});
+    	criterionBinding.addBinding(sortBinding);
+    	
+		jcbPlacementCriterion.setEnabled(criterion.isClassement() && !editable);
+    	jcbClassementCriterion.setEnabled(!editable);
+    	jcbClassementEquipeCriterion.setEnabled(!editable);
+    	jcbWinFFTACode.setEnabled(!editable);
+    	jcbSortOrder.setEnabled(!editable);
+    	
+    	criterionBinding.bind();
+    	
+        jtfCode.setEditable(creationMode);
     }
     
-    public Criterion showCriterionDialog() {
+    /**
+     * Affiche la boite de dialogue d'édition de critère
+     * 
+     * @return le code de retour de l'édition
+     */
+    public DefaultDialogReturn showCriterionDialog() {
     	completePanel();
     	
     	pack();
@@ -286,35 +341,44 @@ public class CriterionDialog extends JDialog implements ActionListener, ChangeLi
         setLocationRelativeTo(null);
         setVisible(true);
     	
-    	return criterion;
+    	return returnAction;
     }
 
     /**
-	 * @return  Renvoie criterion.
+     * Retourne le critère associé à la boite de dialogue
+     * 
+	 * @return le critère associé
 	 */
     public Criterion getCriterion() {
         return criterion;
     }
 
     /**
-	 * @param criterion  criterion à définir.
+     * Définit le critère associé à la boite de dialogue
+     * 
+	 * @param criterion le critère associé
 	 */
     public void setCriterion(Criterion criterion) {
-        this.criterion = criterion;
+    	if(criterion != null)
+    		this.criterion = criterion;
     }
     
     /**
-	 * @return lock
+     * Indique si la boite de dialogue est vérouillé en édition
+     * 
+	 * @return lock true si la boite de dialogue est vérouillé
 	 */
-	public boolean getLock() {
-		return lock;
+	public boolean isEditable() {
+		return editable;
 	}
 
 	/**
-	 * @param lock lock à définir
+	 * Définit si la boite de dialogue est vérouillé en édition
+	 * 
+	 * @param editable true si la boite de dialogue est vérouillé
 	 */
-	public void setLock(boolean lock) {
-		this.lock = lock;
+	public void setEditable(boolean editable) {
+		this.editable = editable;
 	}
 
     /**
@@ -323,24 +387,23 @@ public class CriterionDialog extends JDialog implements ActionListener, ChangeLi
      */
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == jbValider) {
-            if(criterion == null) {
-                criterion = new Criterion(jtfCode.getText());
-                //criterion.setReglementParent(parent.getReglement());
-
-                parent.getReglement().getListCriteria().add(criterion);
-            }
+        	if(criterionBinding != null) {
+            	for(Binding<Criterion, ?, ?, ?> binding : criterionBinding.getBindings()) { 
+            		binding.save();
+            	}
+        	}
+            //criterion.setSortOrder((jcbSortOrder.getSelectedIndex() == 1) ? Criterion.SORT_DESC : Criterion.SORT_ASC);
+            //criterion.setLibelle(jtfLibelle.getText());
+            //criterion.setPlacement(jcbPlacementCriterion.isSelected());
+            //criterion.setClassement(jcbClassementCriterion.isSelected());
+            //criterion.setClassementEquipe(jcbClassementEquipeCriterion.isSelected());
+            //criterion.setChampsTableArchers((String)jcbWinFFTACode.getSelectedItem());
             
-            criterion.setReglement(parent.getReglement());
-            criterion.setSortOrder((jcbSortOrder.getSelectedIndex() == 1) ? Criterion.SORT_DESC : Criterion.SORT_ASC);
-            criterion.setLibelle(jtfLibelle.getText());
-            criterion.setPlacement(jcbPlacementCriterion.isSelected());
-            criterion.setClassement(jcbClassementCriterion.isSelected());
-            criterion.setClassementEquipe(jcbClassementEquipeCriterion.isSelected());
-            criterion.setChampsTableArchers((String)jcbWinFFTACode.getSelectedItem());
+            returnAction = DefaultDialogReturn.OK;
             
             setVisible(false);
         } else if(e.getSource() == jbAnnuler) {
-        	criterion = null;
+        	returnAction = DefaultDialogReturn.CANCEL;
         	
             setVisible(false);
         }
@@ -351,10 +414,12 @@ public class CriterionDialog extends JDialog implements ActionListener, ChangeLi
 	 */
 	@Override
 	public void stateChanged(ChangeEvent e) {
-		if(e.getSource() == jcbClassementCriterion) {
-			jcbPlacementCriterion.setEnabled(jcbClassementCriterion.isSelected());
-		} else if(e.getSource() == jcbPlacementCriterion) {
-			jcbClassementCriterion.setEnabled(!jcbPlacementCriterion.isSelected());
+		if(!editable) {
+			if(e.getSource() == jcbClassementCriterion) {
+				jcbPlacementCriterion.setEnabled(jcbClassementCriterion.isSelected());
+			} else if(e.getSource() == jcbPlacementCriterion) {
+				jcbClassementCriterion.setEnabled(!jcbPlacementCriterion.isSelected());
+			}
 		}
 	}
 }

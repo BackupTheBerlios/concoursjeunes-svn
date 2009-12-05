@@ -136,11 +136,13 @@ import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 
 import org.ajdeveloppement.apps.localisation.Localisable;
+import org.ajdeveloppement.apps.localisation.LocalisableString;
 import org.ajdeveloppement.apps.localisation.Localisator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.io.FileUtils;
 import org.ajdeveloppement.commons.ui.AJList;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
+import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.Criterion;
@@ -178,6 +180,11 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	private JTabbedPane tabbedpane		= new JTabbedPane();
 	@Localisable("onglet.classements")
 	private JTabbedPane jtbClassement	= new JTabbedPane();
+	
+	@Localisable("onglet.ficheconcours.0")
+	private final JLabel jlGestionArcher = new JLabel();
+	@Localisable("onglet.gestionarcher.depart")
+	private final LocalisableString lsDepart = new LocalisableString();
 
 	private JPanel fichesDepart			= new JPanel();
 	private CardLayout cl				= new CardLayout();
@@ -482,6 +489,16 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		GridbagComposer composer = new GridbagComposer();
 		GridBagConstraints c = new GridBagConstraints();
 		
+		for(int i = 1; i <= ficheConcours.getParametre().getNbDepart(); i++) {
+			final int dp = i;
+			jcbDeparts.addItem(new Object() {
+				@Override
+				public String toString() {
+					return lsDepart.toString() + dp;
+				}
+			}); 
+		}
+		
 		jbPrint.addActionListener(this);
 		jbPrint.setEnabled(false);
 		ajlDocuments.addMouseListener(this);
@@ -547,17 +564,23 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 
 	private JPanel getGestArchersTabComponent() {
 		JPanel panel = new JPanel();
-		JLabel label = new JLabel(tabbedpane.getTitleAt(0));
+		
 		JComboBox comboBox = new JComboBox();
 		comboBox.addActionListener(this);
 
-		for(int i = 1; i <= ficheConcours.getParametre().getNbDepart(); i++)
-			comboBox.addItem(
-					parentframe.profile.getLocalisation().getResourceString("onglet.gestionarcher.depart") + i); //$NON-NLS-1$
+		for(int i = 1; i <= ficheConcours.getParametre().getNbDepart(); i++) {
+			final int dp = i;
+			comboBox.addItem(new Object() {
+				@Override
+				public String toString() {
+					return lsDepart.toString() + dp;
+				}
+			});
+		}
 		//comboBox.addItem("---"); //$NON-NLS-1$
 		panel.setLayout(new BorderLayout());
 		panel.setOpaque(false);
-		panel.add(label, BorderLayout.CENTER);
+		panel.add(jlGestionArcher, BorderLayout.CENTER);
 		panel.add(comboBox, BorderLayout.EAST);
 		return panel;
 	}
@@ -584,11 +607,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	private void affectLibelle() {
 		Localisator.localize(this, parentframe.profile.getLocalisation());
 		
-		tabbedpane.setTabComponentAt(0, getGestArchersTabComponent());
-		
-		for(int i = 1; i <= ficheConcours.getParametre().getNbDepart(); i++)
-			jcbDeparts.addItem(
-					parentframe.profile.getLocalisation().getResourceString("onglet.gestionarcher.depart") + i); //$NON-NLS-1$
+		jcbSeries.removeAllItems();
 		for(int i = 1; i <= ficheConcours.getParametre().getReglement().getNbSerie(); i++)
 			jcbSeries.addItem(parentframe.profile.getLocalisation().getResourceString("state.numserie", i)); //$NON-NLS-1$
 	}
@@ -704,20 +723,16 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 				jxbPrint.setBusy(false);
 				jxbPrint.setText(""); //$NON-NLS-1$
 			} catch (FileNotFoundException e) {
-				JXErrorPane.showDialog(parentframe, new ErrorInfo(parentframe.profile.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
-						null, null, e, Level.SEVERE, null));
+				DisplayableErrorHelper.displayException(e);
 				e.printStackTrace();
 			} catch (IOException e) {
-				JXErrorPane.showDialog(parentframe, new ErrorInfo(parentframe.profile.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
-						null, null, e, Level.SEVERE, null));
+				DisplayableErrorHelper.displayException(e);
 				e.printStackTrace();
 			} catch (ScriptException e) {
-				JXErrorPane.showDialog(parentframe, new ErrorInfo(parentframe.profile.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
-						null, null, e, Level.SEVERE, null));
+				DisplayableErrorHelper.displayException(e);
 				e.printStackTrace();
 			} catch (DocumentException e) {
-				JXErrorPane.showDialog(parentframe, new ErrorInfo(parentframe.profile.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
-						null, null, e, Level.SEVERE, null));
+				DisplayableErrorHelper.displayException(e);
 				e.printStackTrace();
 			}
 		}
@@ -736,8 +751,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 				Runtime.getRuntime().exec(NAV + " " + file.getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		} catch (IOException e) {
-			JXErrorPane.showDialog(parentframe, new ErrorInfo(parentframe.profile.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
-					null, null, e, Level.SEVERE, null));
+			DisplayableErrorHelper.displayException(e);
 			e.printStackTrace();
 		}
 	}
@@ -843,12 +857,10 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 					if(state != null)
 						prepareState(state);
 				} catch (SecurityException e) {
-					JXErrorPane.showDialog(parentframe, new ErrorInfo(parentframe.profile.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
-							null, null, e, Level.SEVERE, null));
+					DisplayableErrorHelper.displayException(e);
 					e.printStackTrace();
 				} catch (NoSuchFieldException e) {
-					JXErrorPane.showDialog(parentframe, new ErrorInfo(parentframe.profile.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
-							null, null, e, Level.SEVERE, null));
+					DisplayableErrorHelper.displayException(e);
 					e.printStackTrace();
 				}
 			}
