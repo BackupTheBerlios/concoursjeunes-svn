@@ -160,7 +160,7 @@ import org.jdesktop.beansbinding.Converter;
 import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 
 /**
- * Boite de dialogue de paramètrage d'un réglement
+ * Boite de dialogue de paramétrage d'un règlement
  * 
  * @author Aurélien JEOFFRAY
  * 

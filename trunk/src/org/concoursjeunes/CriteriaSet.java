@@ -312,11 +312,15 @@ public class CriteriaSet implements SqlPersistance {
 			throw new SqlPersistanceException(e);
 		}
 
-		helper.save(this, Collections.<String, Object>singletonMap("IDCRITERIASET", uid));  //$NON-NLS-1$
+		helper.save(this, Collections.<String, Object>singletonMap("IDCRITERIASET", uid)); //$NON-NLS-1$
 		
 		try {
-			sql =  "merge into POSSEDE (NUMCRITERIASET, CODECRITEREELEMENT, " //$NON-NLS-1$
-				+ "CODECRITERE, NUMREGLEMENT) "//$NON-NLS-1$
+			sql = "delete from POSSEDE where NUMCRITERIASET=" + numCriteriaSet; //$NON-NLS-1$
+			Statement stmt = ApplicationCore.dbConnection.createStatement();
+			stmt.executeUpdate(sql);
+			
+			sql =  "insert into POSSEDE (NUMCRITERIASET, CODECRITEREELEMENT, " //$NON-NLS-1$
+				+ "CODECRITERE, NUMREGLEMENT) " //$NON-NLS-1$
 				+ "values (?, ?, ?, ?)"; //$NON-NLS-1$
 			PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
 			try {
