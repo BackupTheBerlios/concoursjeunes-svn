@@ -348,6 +348,7 @@ public class CriteriaSet implements SqlPersistance {
 		helper.delete(this);
 	}
 	
+	@SuppressWarnings("unused")
 	protected void beforeMarshal(Marshaller marshaller) {
 		/*jaxbCriteria = new HashMap<String, String>();
 		for(Entry<Criterion, CriterionElement> entry : criteria.entrySet()) {
@@ -355,6 +356,7 @@ public class CriteriaSet implements SqlPersistance {
 		}*/
 	}
 	
+	@SuppressWarnings("unused")
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
 		/*if(parent instanceof Reglement) {
 			Reglement reglement = (Reglement)parent;

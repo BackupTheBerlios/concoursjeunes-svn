@@ -174,8 +174,8 @@ public class DisablePluginDialog extends JDialog implements ActionListener {
 		gridbagComposer.addComponentIntoGrid(jlColumnName, c);
 		gridbagComposer.addComponentIntoGrid(jlColumnState, c);
 		for (PluginMetadata pm : plugins) {
-			JLabel label = new JLabel(pm.getOptionLabel());
-			label.setToolTipText(pm.getInfo());
+			JLabel label = new JLabel(pm.getLocalizedOptionLabel());
+			label.setToolTipText(pm.getLocalizedInfo());
 			jlNomsPlugins.put(pm.getName(), label);
 			jcbStatePlugins.put(pm.getName(), new JCheckBox("", true));  //$NON-NLS-1$
 			

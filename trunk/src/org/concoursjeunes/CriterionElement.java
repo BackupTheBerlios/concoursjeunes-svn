@@ -283,10 +283,12 @@ public class CriterionElement implements SqlPersistance {
 		helper.delete(this);
 	}
 	
+	@SuppressWarnings("unused")
 	protected void beforeMarshal(Marshaller marshaller) {
 		xmlId = UUID.randomUUID().toString();
 	}
 
+	@SuppressWarnings("unused")
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
 		if(parent instanceof Criterion)
 			criterion = (Criterion)parent;

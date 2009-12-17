@@ -495,6 +495,7 @@ public class Criterion implements SqlPersistance, Cloneable {
 		helper.delete(this); 
 	}
 	
+	@SuppressWarnings("unused")
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
 		if(parent instanceof Reglement)
 			reglement = (Reglement)parent;

@@ -265,6 +265,7 @@ public class Ancrage implements SqlPersistance {
 		helper.delete(this);
 	}
 
+	@SuppressWarnings("unused")
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
 		if(parent instanceof Blason)
 			blason = (Blason)parent;

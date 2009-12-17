@@ -1004,6 +1004,7 @@ public class Reglement implements SqlPersistance {
 			throw new SqlPersistanceException("delete this Reglement is not authorized because there is official"); //$NON-NLS-1$
 	}
 	
+	@SuppressWarnings("unused")
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
 		for(Entry<CriteriaSet, CriteriaSet> entry : surclassement.entrySet()) {
 			entry.getKey().setReglement(this);
