@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE ITEXT SYSTEM "ressources/templates/itext.dtd">
+<itext creationdate="{CURRENT_TIME}" producer="iTextXML by lowagie.com" pagesize="A4" orientation="portrait">
+	<table columns="2" width="100.0%" widths="20.0;80.0" bottom="true">
+		<row>
+			<cell verticalalign="Middle" rowspan="2">
+				<paragraph leading="18.0" font="unknown" align="Default">
+					<image url="{LOGO_CLUB_URI}" plainwidth="90.0" plainheight="100.0"></image>
+				</paragraph>
+			</cell>
+			<cell verticalalign="Default" leading="18.0">
+				<phrase style="italic">{INTITULE_CLUB}</phrase>
+			</cell>
+		</row>
+		<row>
+			<cell verticalalign="Default" horizontalalign="Center" leading="36.0">
+				<paragraph leading="36.0" size="18.0" fontstyle="normal">
+					<chunk size="18.0" fontstyle="normal">{INTITULE_CONCOURS}</chunk>
+					<newline />
+					<chunk size="18.0" fontstyle="normal">{VILLE_CLUB} Le {DATE_CONCOURS}</chunk>
+				</paragraph>
+			</cell>
+		</row>
+	</table>
+	<newline />
+	<table columns="1" width="100.0%">
+		<row>
+			<cell>
+				<phrase leading="18.0" font="unknown" align="Default" indentationleft="10.0">
+					<chunk fontstyle="bold">Arbitre responsable: </chunk>{ARBITRE_RESPONSABLE}
+				</phrase>
+				<newline />
+				<phrase leading="18.0" font="unknown" align="Default">
+					<chunk fontstyle="bold">Arbitre assistant: </chunk>{ARBITRES_ASSISTANT}
+				</phrase>
+				<newline /><chunk color="#FFFFFF">_</chunk>
+			</cell>
+		</row>
+	</table>
+	<newline />
+	<table columns="2" width="100.0%" widths="50.0;50.0" top="true">
+		<row>
+			<cell>
+				<phrase style="bold">{NB_CLUB} clubs ou compagnies enregistrées</phrase>
+			</cell>
+			<cell horizontalalign="Right">
+				<phrase style="bold">{NB_TIREURS} tireurs inscrits</phrase>
+			</cell>
+		</row>
+		<row>
+			<cell colspan="2" horizontalalign="Center" leading="24.0">
+				<paragraph leading="24.0" size="20.0" fontstyle="normal">
+					<chunk size="20.0" fontstyle="normal">{TYPE_CLASSEMENT}</chunk>
+				</paragraph>
+			</cell>
+		</row>
+	</table>
+	<newline />
+	<bloc::categories>
+	<table columns="5" width="100.0%" cellpadding="1.0" widths="5;37.5;37.5;10;10">
+		<row>
+			<cell colspan="2">
+				<phrase style="bold">{CATEGORIE}</phrase>
+			</cell>
+			<cell colspan="3" horizontalalign="Right">
+				<phrase style="bold">{NB_EQUIPES} equipes</phrase>
+			</cell>
+		</row>
+		<row>
+			<cell header="true" horizontalalign="Center" verticalalign="Middle" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" style="bold">Clt</phrase>
+			</cell>
+			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" style="bold">Noms et prénoms</phrase>
+			</cell>
+			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" style="bold">Club ou compagnie</phrase>
+			</cell>
+			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" style="bold">Score</phrase>
+			</cell>
+			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" style="bold">Score Total</phrase>
+			</cell>
+		</row>
+		<bloc::classement>
+		<row>
+			<cell header="false" horizontalalign="Center" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" >{PLACE}</phrase>
+			</cell>
+			<cell header="false" horizontalalign="Default" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" >{IDENTITEES}</phrase>
+			</cell>
+			<cell header="false" horizontalalign="Default" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" >{NOM_EQUIPE}</phrase>
+			</cell>
+			<cell header="false" horizontalalign="Center" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" >{TOTAL_INDIVIDUEL}</phrase>
+			</cell>
+			<cell header="false" horizontalalign="Center" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" >{TOTAL_GENERAL}</phrase>
+			</cell>
+		</row>
+		</bloc::classement>
+	</table>
+	</bloc::categories>
+</itext>

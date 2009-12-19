@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<java version="1.6.0_16" class="java.beans.XMLDecoder"> 
+ <object class="java.util.ArrayList"> 
+  <void method="add"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurélien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Amélioration générale de l&apos;ergonomie
+  * Ajout de l&apos;autocomplement sur les arbitres (si base d&apos;archer remplit)
+  * Réglement: Ajout de la notion de blason alternatif
+  * Réglement: Assouplissement du système de départage
+  * Réglement: Nouveau système d&apos;import/export
+  * Réglement: Amélioration de la gestion des fédérations
+  * Téchnique: Refonte du système de persistance
+  * Téchnique: Amélioration des performances de génération d&apos;éditions
+  * Téchnique: Amélioration de la stabilité
+  * Téchnique: Amélioration du système de mise à jour
+  * Correction de divers problèmes de fonctionnement
+
+  Attention cette version réinitialise la base de données. En outre les réglements exportés généré en 2.1 ne peuvent être réimporté.</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1245949605871</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.19.01</string> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="add"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurélien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction de bugs
+  * Diminution de la consomation mémoire
+  * Finalisation des réglements
+  * Correction des numéros de version des extensions
+  * Optimisation de l&apos;API de localisation</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1248785349389</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.19.02</string> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="add"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurélien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction de bugs
+  * Amélioration de la documentation du code</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1249566817639</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.19.03</string> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="add"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurélien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Passage en version finale
+  * Mise à jour de la documentation
+  * correction de libellés</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1255858785850</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.20.00</string> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="add"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurélien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction Bug 56: Impossible d&apos;insérer 2 archers de même nom de famille sans numéro de licence</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1257936606342</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.20.01</string> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="add"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurélien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction Bug 57: Dans certains cas très particulier, il devient impossible d&apos;imprimer le classement et le concours devient inutilisable au redémarrage.</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1258824626236</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.20.02</string> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="add"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurélien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction corruption fichier compétition avec un règlement mal paramétré</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1258883127005</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.20.03</string> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="add"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurélien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction problème de localisation incomplete</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1261233868897</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.20.04</string> 
+    </void> 
+   </object> 
+  </void> 
+ </object> 
+</java> 
