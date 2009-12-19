@@ -154,19 +154,22 @@ public class Profile {
 	 * tente de récupérer la configuration générale du programme
 	 */
 	private void loadConfiguration() {
-		if(this.name == null) {
-			configuration = ConfigurationManager.loadCurrentConfiguration();
-			this.name = configuration.getCurProfil();
-		} else {
-			configuration = ConfigurationManager.loadConfiguration(name);
-		}
-		localisation.setLocale(new Locale(configuration.getLangue()));
+		loadConfiguration(null);
 	}
 	
 	private void loadConfiguration(File profilepath) {
-		configuration = ConfigurationManager.loadConfiguration(profilepath);
-		this.name = configuration.getCurProfil();
-		localisation.setLocale(new Locale(configuration.getLangue()));
+		if(this.name == null && profilepath == null) {
+			configuration = ConfigurationManager.loadCurrentConfiguration();
+			this.name = configuration.getCurProfil();
+		} else if(profilepath == null) {
+			configuration = ConfigurationManager.loadConfiguration(this.name);
+		} else {
+			configuration = ConfigurationManager.loadConfiguration(profilepath);
+			this.name = configuration.getCurProfil();
+		}
+		
+		Locale.setDefault(new Locale(configuration.getLangue()));
+		localisation.setLocale(Locale.getDefault());
 	}
 	
 	/**

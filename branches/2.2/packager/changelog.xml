@@ -167,5 +167,26 @@
     </void> 
    </object> 
   </void> 
+  <void method="add"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurélien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction problème de localisation incomplete</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1261233868897</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.20.04</string> 
+    </void> 
+   </object> 
+  </void> 
  </object> 
 </java> 

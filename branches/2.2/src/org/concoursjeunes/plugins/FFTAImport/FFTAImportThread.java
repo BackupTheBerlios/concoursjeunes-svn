@@ -207,7 +207,7 @@ public class FFTAImportThread extends Thread {
 					new FileReader(new File(ApplicationCore.staticParameters.getResourceString("path.config"), "ffta.properties"))); //$NON-NLS-1$ //$NON-NLS-2$
 			URL ftpFFTA;
 			if(!fftalogpath.isEmpty())
-				ftpFFTA = new File(fftalogpath, "result_data.zip").toURI().toURL();
+				ftpFFTA = new File(fftalogpath, "result_data.zip").toURI().toURL(); //$NON-NLS-1$
 			else
 				ftpFFTA = new URL(secureProperties.get("ffta.ftp.url")); //$NON-NLS-1$
 			EncryptedZipInputStream ezis = new EncryptedZipInputStream(ftpFFTA.openStream());
@@ -216,10 +216,10 @@ public class FFTAImportThread extends Thread {
 			byte[] buffer = new byte[2048];
 			ZipEntry entry;
             while((entry = ezis.getNextEntry())!=null) {
-            	String temppath = System.getProperty("java.io.tmpdir");
-            	if(!temppath.endsWith("\\") && !temppath.endsWith("/"))
+            	String temppath = System.getProperty("java.io.tmpdir"); //$NON-NLS-1$
+            	if(!temppath.endsWith("\\") && !temppath.endsWith("/")) //$NON-NLS-1$ //$NON-NLS-2$
             		temppath += File.separator;
-            	String outpath = temppath + entry.getName(); //$NON-NLS-1$ //$NON-NLS-2$
+            	String outpath = temppath + entry.getName(); 
                 FileOutputStream output = null;
                  
                 output = new FileOutputStream(outpath);

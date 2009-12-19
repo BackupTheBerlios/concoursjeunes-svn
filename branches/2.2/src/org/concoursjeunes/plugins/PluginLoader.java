@@ -121,12 +121,11 @@ public class PluginLoader {
 					
 					Class<?> cla = loadPluginClass(pluginProperties.getResourceString("plugin.class")); //$NON-NLS-1$
 					if(cla != null) {
-						AjResourcesReader pluginLocalInfo = new AjResourcesReader(pluginProperties.getResourceString("plugin.libelle.file"), cla.getClassLoader()); //$NON-NLS-1$
-	
 						PluginMetadata pluginMetadata = new PluginMetadata();
 						pluginMetadata.setName(pluginName);
-						pluginMetadata.setInfo(pluginLocalInfo.getResourceString("plugin.libelle")); //$NON-NLS-1$
-						pluginMetadata.setOptionLabel(pluginLocalInfo.getResourceString("plugin.optionlabel")); //$NON-NLS-1$
+						pluginMetadata.setPluginLocalisationPropertiesPath(pluginProperties.getResourceString("plugin.libelle.file")); //$NON-NLS-1$
+						pluginMetadata.setInfo("plugin.libelle"); //$NON-NLS-1$
+						pluginMetadata.setOptionLabel("plugin.optionlabel"); //$NON-NLS-1$
 						pluginMetadata.setPluginType(cla.getAnnotation(Plugin.class).type());
 						pluginMetadata.setClassName(pluginProperties.getResourceString("plugin.class")); //$NON-NLS-1$
 						pluginMetadata.setVersion(pluginProperties.getResourceString("plugin.version")); //$NON-NLS-1$

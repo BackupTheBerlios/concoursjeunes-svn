@@ -86,15 +86,19 @@
  */
 package org.concoursjeunes.plugins;
 
+import org.ajdeveloppement.commons.AjResourcesReader;
 import org.concoursjeunes.plugins.Plugin.Type;
 
 /**
  * @author Aurélien JEOFFRAY
  */
 public class PluginMetadata {
-	public static final int ALL = 0;
+	/*public static final int ALL = 0;
 	public static final int ONDEMAND_PLUGIN = 1;
-	public static final int STARTUP_PLUGIN = 3;
+	public static final int STARTUP_PLUGIN = 3;*/
+		
+	private String pluginLocalisationPropertiesPath;
+	private AjResourcesReader localisation;
 
 	private String name = ""; //$NON-NLS-1$
 	private String info = ""; //$NON-NLS-1$
@@ -124,8 +128,24 @@ public class PluginMetadata {
 	}
 
 	/**
+	 * @return pluginLocalisationPropertiesPath
+	 */
+	public String getPluginLocalisationPropertiesPath() {
+		return pluginLocalisationPropertiesPath;
+	}
+
+	/**
+	 * @param pluginLocalisationPropertiesPath pluginLocalisationPropertiesPath à définir
+	 */
+	public void setPluginLocalisationPropertiesPath(
+			String pluginLocalisationPropertiesPath) {
+		this.pluginLocalisationPropertiesPath = pluginLocalisationPropertiesPath;
+	}
+
+	/**
 	 * @return String
 	 */
+	@Deprecated
 	public String getInfo() {
 		return info;
 	}
@@ -136,10 +156,20 @@ public class PluginMetadata {
 	public void setInfo(String info) {
 		this.info = info;
 	}
+	
+	/**
+	 * Affiche les informations localisé (l10n) du plugin 
+	 * 
+	 * @return les informations localisé (l10n) du plugin 
+	 */
+	public String getLocalizedInfo() {
+		return getLocalisation().getResourceString(info);
+	}
 
 	/**
 	 * @return le libelle de l'option
 	 */
+	@Deprecated
 	public String getOptionLabel() {
 		return optionLabel;
 	}
@@ -149,6 +179,15 @@ public class PluginMetadata {
 	 */
 	public void setOptionLabel(String optionLabel) {
 		this.optionLabel = optionLabel;
+	}
+	
+	/**
+	 * Affiche le menu localisé
+	 * 
+	 * @return le menu localisé
+	 */
+	public String getLocalizedOptionLabel() {
+		return getLocalisation().getResourceString(optionLabel);
 	}
 
 	/**
@@ -213,5 +252,11 @@ public class PluginMetadata {
 	 */
 	public void setPluginClass(Class<?> pluginClass) {
 		this.pluginClass = pluginClass;
+	}
+	
+	private AjResourcesReader getLocalisation() {
+		if(localisation == null)
+			localisation = new AjResourcesReader(pluginLocalisationPropertiesPath, pluginClass.getClassLoader());
+		return localisation;
 	}
 }

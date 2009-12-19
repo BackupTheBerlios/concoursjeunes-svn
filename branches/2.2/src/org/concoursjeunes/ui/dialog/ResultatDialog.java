@@ -545,19 +545,17 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 				}
 				prefix = "departages.";  //$NON-NLS-1$
 				if(aComponent.getName().startsWith(prefix)) {
-					if(colIndex < parametres.getReglement().getTie().size() -1) {
+					if(colIndex < parametres.getReglement().getTie().size() -1)
 						return departages[rowIndex][colIndex+1];
-					} else {
-						if(rowIndex == concurrents.get(concurrents.size()-1).getPosition()) { // si on est à la dernière position
-							return jbSuivant;
-						} else {
-							int indexConcurrent = getIndexConcurrentAtPosition(rowIndex);
-							
-							assert indexConcurrent != -1 : "La position courante devrait toujours être occupé"; //$NON-NLS-1$
-							
-							return departages[concurrents.get(indexConcurrent+1).getPosition()][0];
-						}
-					}
+
+					if(rowIndex == concurrents.get(concurrents.size()-1).getPosition()) // si on est à la dernière position
+						return jbSuivant;
+					
+					int indexConcurrent = getIndexConcurrentAtPosition(rowIndex);
+					
+					assert indexConcurrent != -1 : "La position courante devrait toujours être occupé"; //$NON-NLS-1$
+					
+					return departages[concurrents.get(indexConcurrent+1).getPosition()][0];
 				}
 			} else if (aComponent == jbSuivant) {
 				return jbAnnuler;
@@ -570,8 +568,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 				
 				if(points[firstPosition][0].isEditable())
 					return points[firstPosition][0];
-				else
-					return pointsCum2V[firstPosition][0];
+				return pointsCum2V[firstPosition][0];
 			}
 
 			return null;
@@ -588,67 +585,61 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 					if(rowIndex == concurrents.get(0).getPosition()) { // si on est à la première position
 						if(colIndex > 0) //si on est pas sur la première série
 							return oldPoints[concurrents.get(concurrents.size()-1).getPosition()][colIndex-1];
-						else
-							return jbPrecedent;
-					} else {
-						int indexConcurrent = getIndexConcurrentAtPosition(rowIndex);
-						
-						assert indexConcurrent != -1 : "La position courante devrait toujours être occupé"; //$NON-NLS-1$
-						
-						return oldPoints[concurrents.get(indexConcurrent-1).getPosition()][colIndex];
+						return jbPrecedent;
 					}
+					
+					int indexConcurrent = getIndexConcurrentAtPosition(rowIndex);
+					
+					assert indexConcurrent != -1 : "La position courante devrait toujours être occupé"; //$NON-NLS-1$
+					
+					return oldPoints[concurrents.get(indexConcurrent-1).getPosition()][colIndex];
 				}
 				prefix = "pointscum2v."; //$NON-NLS-1$
 				if(aComponent.getName().startsWith(prefix)) {
 					if(rowIndex == concurrents.get(0).getPosition()) { // si on est à la première position
-						if(colIndex > 0) { //si on est pas sur la première série
+						if(colIndex > 0) //si on est pas sur la première série
 							return pointsCum2V[concurrents.get(concurrents.size()-1).getPosition()][colIndex-1];
-						} else {
-							return jbPrecedent;
-						}
-					} else {
-						int indexConcurrent = getIndexConcurrentAtPosition(rowIndex);
-						
-						assert indexConcurrent != -1 : "La position courante devrait toujours être occupé"; //$NON-NLS-1$
-						
-						return pointsCum2V[concurrents.get(indexConcurrent-1).getPosition()][colIndex];
+						return jbPrecedent;
 					}
+					
+					int indexConcurrent = getIndexConcurrentAtPosition(rowIndex);
+					
+					assert indexConcurrent != -1 : "La position courante devrait toujours être occupé"; //$NON-NLS-1$
+					
+					return pointsCum2V[concurrents.get(indexConcurrent-1).getPosition()][colIndex];
 				}
 				prefix = "points."; //$NON-NLS-1$
 				if(aComponent.getName().startsWith(prefix)) {
 					if(rowIndex == concurrents.get(0).getPosition()) { // si on est à la première position
-						if(colIndex > 0) { //si on est pas sur la première série
+						if(colIndex > 0) //si on est pas sur la première série
 							return points[concurrents.get(concurrents.size()-1).getPosition()][colIndex-1];
-						} else {
-							return jbPrecedent;
-						}
-					} else {
-						int indexConcurrent = getIndexConcurrentAtPosition(rowIndex);
-						
-						assert indexConcurrent != -1 : "La position courante devrait toujours être occupé"; //$NON-NLS-1$
-						
-						return points[concurrents.get(indexConcurrent-1).getPosition()][colIndex];
+						return jbPrecedent;
 					}
+				
+					int indexConcurrent = getIndexConcurrentAtPosition(rowIndex);
+					
+					assert indexConcurrent != -1 : "La position courante devrait toujours être occupé"; //$NON-NLS-1$
+					
+					return points[concurrents.get(indexConcurrent-1).getPosition()][colIndex];
 				}
 				prefix = "departages.";  //$NON-NLS-1$
 				if(aComponent.getName().startsWith(prefix)) {
-					if(colIndex > 0) {
+					if(colIndex > 0)
 						return departages[rowIndex][colIndex-1];
-					} else {
-						if(rowIndex == concurrents.get(0).getPosition()) { // si on est à la première position
-							int lastPosition = concurrents.get(concurrents.size()-1).getPosition();
-							if(points[lastPosition][0].isEditable())
-								return points[lastPosition][parametres.getReglement().getNbSerie()-1];
-							else
-								return pointsCum2V[lastPosition][parametres.getReglement().getNbSerie()-1];
-						} else {
-							int indexConcurrent = getIndexConcurrentAtPosition(rowIndex);
-							
-							assert indexConcurrent != -1 : "La position courante devrait toujours être occupé"; //$NON-NLS-1$
-							
-							return departages[concurrents.get(indexConcurrent-1).getPosition()][parametres.getReglement().getTie().size()-1];
-						}
+
+					if(rowIndex == concurrents.get(0).getPosition()) { // si on est à la première position
+						int lastPosition = concurrents.get(concurrents.size()-1).getPosition();
+						if(points[lastPosition][0].isEditable())
+							return points[lastPosition][parametres.getReglement().getNbSerie()-1];
+						
+						return pointsCum2V[lastPosition][parametres.getReglement().getNbSerie()-1];
 					}
+					
+					int indexConcurrent = getIndexConcurrentAtPosition(rowIndex);
+					
+					assert indexConcurrent != -1 : "La position courante devrait toujours être occupé"; //$NON-NLS-1$
+					
+					return departages[concurrents.get(indexConcurrent-1).getPosition()][parametres.getReglement().getTie().size()-1];
 				}
 			} else if (aComponent == jbSuivant) {
 				return departages[concurrents.get(concurrents.size()-1).getPosition()][parametres.getReglement().getTie().size()-1];

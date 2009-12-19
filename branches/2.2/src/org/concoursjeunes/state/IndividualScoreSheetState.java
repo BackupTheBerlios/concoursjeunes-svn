@@ -118,14 +118,14 @@ public class IndividualScoreSheetState {
 	private int depart;
 	//private int serie;
 	
-	public IndividualScoreSheetState(AjResourcesReader localeReader, Profile profile, int depart, int serie) {
+	public IndividualScoreSheetState(AjResourcesReader localeReader, Profile profile, int depart, @SuppressWarnings("unused") int serie) {
 		this.localeReader = localeReader;
 		this.profile = profile;
 		this.depart = depart;
 		//this.serie = serie;
 	}
 	
-	public void printState(FicheConcours ficheConcours, URL template, Document document, PdfWriter writer)
+	public void printState(FicheConcours ficheConcours, URL template, Document document, @SuppressWarnings("unused") PdfWriter writer)
 			throws IOException {
 		AJTemplate templateXML = new AJTemplate();
 		templateXML.setLocalisationReader(localeReader);

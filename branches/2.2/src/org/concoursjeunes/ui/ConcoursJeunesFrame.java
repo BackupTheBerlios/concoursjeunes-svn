@@ -273,7 +273,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 		}
 
 		for (PluginMetadata pm : plugins) {
-			JMenuItem mi = new JMenuItem(pm.getOptionLabel());
+			JMenuItem mi = new JMenuItem(pm.getLocalizedOptionLabel());
 			MenuBarTools.addItem(mi, getJMenuBar(), pm.getMenuPath());
 
 			final Class<?> pluginClass = pm.getPluginClass();

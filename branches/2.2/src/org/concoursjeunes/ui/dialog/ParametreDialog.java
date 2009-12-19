@@ -571,30 +571,30 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 			this.libelle = libelle;
 			this.nbConcurrent = nbConcurrent;
 		}
-		/**
-		 * @return libelle
-		 */
-		public String getLibelle() {
-			return libelle;
-		}
-		/**
-		 * @param libelle libelle à définir
-		 */
-		public void setLibelle(String libelle) {
-			this.libelle = libelle;
-		}
+//		/**
+//		 * @return libelle
+//		 */
+//		public String getLibelle() {
+//			return libelle;
+//		}
+//		/**
+//		 * @param libelle libelle à définir
+//		 */
+//		public void setLibelle(String libelle) {
+//			this.libelle = libelle;
+//		}
 		/**
 		 * @return nbConcurrent
 		 */
 		public int getNbConcurrent() {
 			return nbConcurrent;
 		}
-		/**
-		 * @param nbConcurrent nbConcurrent à définir
-		 */
-		public void setNbConcurrent(int nbConcurrent) {
-			this.nbConcurrent = nbConcurrent;
-		}
+//		/**
+//		 * @param nbConcurrent nbConcurrent à définir
+//		 */
+//		public void setNbConcurrent(int nbConcurrent) {
+//			this.nbConcurrent = nbConcurrent;
+//		}
 		
 		/* (non-Javadoc)
 		 * @see java.lang.Object#toString()

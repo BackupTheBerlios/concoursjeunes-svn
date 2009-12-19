@@ -267,6 +267,7 @@ public class Ancrage implements SqlPersistance {
 		helper.delete(this, Collections.singletonMap("NUMBLASON", (Object)blason.getNumblason())); //$NON-NLS-1$
 	}
 
+	@SuppressWarnings("unused")
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
 		if(parent instanceof Blason)
 			blason = (Blason)parent;
