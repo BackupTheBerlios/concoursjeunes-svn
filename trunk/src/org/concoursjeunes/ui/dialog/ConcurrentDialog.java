@@ -695,6 +695,8 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		
 		jlDescription.setText(localisation.getResourceString("concurrent.description")); //$NON-NLS-1$
 		jlDescription.setBackground(new Color(255, 255, 225));
+		
+		returnVal = CANCEL;
 
 		pack();
 		setResizable(false);
@@ -732,6 +734,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		jbPrecedent.setEnabled(hasPrevious);
 		jbSuivant.setEnabled(hasNext);
 
+		returnVal = CANCEL;
 
 		pack();
 		setResizable(false);
