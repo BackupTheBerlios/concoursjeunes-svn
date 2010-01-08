@@ -48,11 +48,12 @@
 		<mkdir dir="docs" />
 		<javadoc
 			access="package"
+			additionalparam=" -encoding utf8 -docencoding utf8 -charset utf8"
 			sourcepath="src"
 			destdir="docs"
 			classpath="${compilclasspath}" >
 			<link href="http://java.sun.com/javase/6/docs/api/" />
-			<link href="http://ajmaster.free.fr/docs/"/>
+			<link href="http://www.ajdeveloppement.org/docs/"/>
 			<!--<packageset dir="src" defaultexcludes="yes">
 				<include name="**/**" />
 				<exclude name="org/concoursjeunes/test/**" />
