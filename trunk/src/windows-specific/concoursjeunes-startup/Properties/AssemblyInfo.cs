@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // l'ensemble d'attributs suivant. Changez les valeurs de ces attributs pour modifier les informations
 // associées à un assembly.
 [assembly: AssemblyTitle("concoursjeunes-startup")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Exection Application gestion des compétitions de tir à l'arc")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("ConcoursJeunes.org")]
+[assembly: AssemblyCompany("ajdeveloppement.org")]
 [assembly: AssemblyProduct("concoursjeunes-startup")]
-[assembly: AssemblyCopyright("Copyright © ConcoursJeunes.org 2007")]
+[assembly: AssemblyCopyright("Copyright © ajdeveloppement.org 2007-2009")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -29,5 +29,5 @@ using System.Runtime.InteropServices;
 //      Numéro de build
 //      Révision
 //
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.1.0.0")]
+[assembly: AssemblyFileVersion("1.1.0.0")]

@@ -7,7 +7,8 @@ using Microsoft.Win32;
 using System.Windows.Forms;
 using System.Security.Permissions;
 
-namespace concoursjeunes_applyupdate {
+namespace AJDeveloppement.ArcCompetition
+{
 	//[assembly: RegistryPermissionAttribute(SecurityAction.RequestMinimum, ViewAndModify = "HKEY_CURRENT_USER")]
 	class Program {
 		static void Main(string[] args) {
@@ -24,7 +25,9 @@ namespace concoursjeunes_applyupdate {
                     object javaPath = javaReg.OpenSubKey((string)version).GetValue("JavaHome");
 
 					ProcessStartInfo startInfo = new ProcessStartInfo(javaPath + @"\bin\javaw.exe");
-					startInfo.Arguments = "-cp lib/ajcommons.jar org.ajdeveloppement.updater.tools.AjUpdaterApply \"" + args[0] + "\" \"" + args[1] + "\"";
+					startInfo.Arguments = Properties.Settings.Default.VMArgs 
+                            + " -cp " + Properties.Settings.Default.ClassPath
+                            + " " + Properties.Settings.Default.MainClass + " \"" + args[0] + "\" \"" + args[1] + "\"";
                     startInfo.Verb = "runas";
 					Process updateProcess = Process.Start(startInfo);
                     updateProcess.WaitForExit();

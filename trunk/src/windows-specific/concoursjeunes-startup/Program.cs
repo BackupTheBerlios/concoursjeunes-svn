@@ -6,7 +6,7 @@ using Microsoft.Win32;
 using System.Windows.Forms;
 using System.Security.AccessControl;
 
-namespace concoursjeunes_startup {
+namespace AJDeveloppement.ArcCompetition {
 	class Program {
 
 		static void Main(string[] args) {
@@ -31,7 +31,10 @@ namespace concoursjeunes_startup {
 				object javaPath = javaReg.OpenSubKey((string)version).GetValue("JavaHome");
 
 				ProcessStartInfo startInfo = new ProcessStartInfo(javaPath + @"\bin\javaw.exe");
-				startInfo.Arguments = "-Xmx" + Properties.Settings.Default.memoryMaxSize + " " + debug + " -jar " + Properties.Settings.Default.jarFile;
+				startInfo.Arguments = Properties.Settings.Default.VMArgs 
+                    + " -Xmx" + Properties.Settings.Default.memoryMaxSize + " " 
+                    + debug 
+                    + " -jar " + Properties.Settings.Default.jarFile;
 				Process updateProcess = Process.Start(startInfo);
 				updateProcess.WaitForExit();
 				//si on sort avec un statut 3 alors redemarrer l'application

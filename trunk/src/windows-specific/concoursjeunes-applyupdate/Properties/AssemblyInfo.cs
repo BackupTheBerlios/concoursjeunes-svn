@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // l'ensemble d'attributs suivant. Changez les valeurs de ces attributs pour modifier les informations
 // associées à un assembly.
 [assembly: AssemblyTitle("concoursjeunes-applyupdate")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Application des mises à jour pour ConcoursJeunes")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("ajdeveloppement.org")]
 [assembly: AssemblyProduct("concoursjeunes-applyupdate")]
@@ -29,5 +29,5 @@ using System.Runtime.InteropServices;
 //      Numéro de build
 //      Révision
 //
-[assembly: AssemblyVersion("1.1.0.0")]
-[assembly: AssemblyFileVersion("1.1.0.0")]
+[assembly: AssemblyVersion("1.2.0.0")]
+[assembly: AssemblyFileVersion("1.2.0.0")]

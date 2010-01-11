@@ -25,25 +25,25 @@ namespace AJDeveloppement.ArcCompetition.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("128m")]
-        public string memoryMaxSize {
+        [global::System.Configuration.DefaultSettingValueAttribute("lib/ajcommons.jar")]
+        public string ClassPath {
             get {
-                return ((string)(this["memoryMaxSize"]));
+                return ((string)(this["ClassPath"]));
             }
             set {
-                this["memoryMaxSize"] = value;
+                this["ClassPath"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("ConcoursJeunes.jar")]
-        public string jarFile {
+        [global::System.Configuration.DefaultSettingValueAttribute("org.ajdeveloppement.updater.tools.AjUpdaterApply")]
+        public string MainClass {
             get {
-                return ((string)(this["jarFile"]));
+                return ((string)(this["MainClass"]));
             }
             set {
-                this["jarFile"] = value;
+                this["MainClass"] = value;
             }
         }
         
