@@ -193,7 +193,6 @@ public class Categories {
 					+ File.separator + "states"; //$NON-NLS-1$
 			
 			try {
-				Locale locale = Locale.getDefault();
 				ResourceBundle rb = ResourceBundle.getBundle(
 						"categories", //$NON-NLS-1$
 						Locale.getDefault(),

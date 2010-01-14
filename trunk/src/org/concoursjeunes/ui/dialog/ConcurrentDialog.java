@@ -1140,17 +1140,17 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 				}
 				
 				jcbBlason.removeAllItems();
-				if(currentCS != null) {
-					List<DistancesEtBlason> tmpDB = reglement.getDistancesEtBlasonFor(
-							currentCS.getFilteredCriteriaSet(reglement.getPlacementFilter()));
-					for(DistancesEtBlason db : tmpDB) {
-						jcbBlason.addItem(db.getTargetFace());
-					}
-					jcbBlason.setEnabled(jcbBlason.getItemCount() > 1);
-					if(concurrent != null && concurrent.getCriteriaSet() != null)
-						jcbBlason.setSelectedItem(DistancesEtBlason.getDistancesEtBlasonForConcurrent(
-								reglement, concurrent).getTargetFace());
+
+				List<DistancesEtBlason> tmpDB = reglement.getDistancesEtBlasonFor(
+						currentCS.getFilteredCriteriaSet(reglement.getPlacementFilter()));
+				for(DistancesEtBlason db : tmpDB) {
+					jcbBlason.addItem(db.getTargetFace());
 				}
+				jcbBlason.setEnabled(jcbBlason.getItemCount() > 1);
+				if(concurrent != null && concurrent.getCriteriaSet() != null)
+					jcbBlason.setSelectedItem(DistancesEtBlason.getDistancesEtBlasonForConcurrent(
+							reglement, concurrent).getTargetFace());
+
 			}
 		}
 	}

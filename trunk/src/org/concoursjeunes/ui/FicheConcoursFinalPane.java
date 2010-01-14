@@ -137,7 +137,7 @@ public class FicheConcoursFinalPane extends JPanel implements ActionListener {
 		
 		// Loads the defalt stylesheet from an external file
 		mxCodec codec = new mxCodec();
-		Document doc = mxUtils.loadDocument(ApplicationCore.staticParameters.getResourceString("path.ressources") + "/gui/default-style.xml");
+		Document doc = mxUtils.loadDocument(ApplicationCore.staticParameters.getResourceString("path.ressources") + "/gui/default-style.xml"); //$NON-NLS-1$ //$NON-NLS-2$
 		codec.decode(doc.getDocumentElement(), graph.getStylesheet());
 		
 		mxGraphComponent graphComponent = new mxGraphComponent(graph);
