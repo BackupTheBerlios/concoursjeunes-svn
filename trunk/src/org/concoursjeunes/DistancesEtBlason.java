@@ -88,6 +88,7 @@ package org.concoursjeunes;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -100,14 +101,16 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.ajdeveloppement.commons.sql.SqlField;
-import org.ajdeveloppement.commons.sql.SqlForeignKey;
-import org.ajdeveloppement.commons.sql.SqlPersistance;
-import org.ajdeveloppement.commons.sql.SqlPersistanceException;
-import org.ajdeveloppement.commons.sql.SqlPrimaryKey;
-import org.ajdeveloppement.commons.sql.SqlStoreHelper;
-import org.ajdeveloppement.commons.sql.SqlTable;
-import org.ajdeveloppement.commons.sql.SqlUnmappedFields;
+import org.ajdeveloppement.commons.persistance.ObjectPersistance;
+import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
+import org.ajdeveloppement.commons.persistance.StoreHelper;
+import org.ajdeveloppement.commons.persistance.sql.SqlField;
+import org.ajdeveloppement.commons.persistance.sql.SqlForeignKey;
+import org.ajdeveloppement.commons.persistance.sql.SqlGeneratedIdField;
+import org.ajdeveloppement.commons.persistance.sql.SqlPrimaryKey;
+import org.ajdeveloppement.commons.persistance.sql.SqlStoreHandler;
+import org.ajdeveloppement.commons.persistance.sql.SqlTable;
+import org.ajdeveloppement.commons.persistance.sql.SqlUnmappedFields;
 import org.concoursjeunes.xml.bind.BlasonAdapter;
 
 /**
@@ -117,10 +120,10 @@ import org.concoursjeunes.xml.bind.BlasonAdapter;
  * @version 1.0
  */
 @SqlTable(name="DISTANCESBLASONS")
-@SqlPrimaryKey(fields={"NUMDISTANCESBLASONS","NUMREGLEMENT"},generatedidField="NUMDISTANCESBLASONS")
+@SqlPrimaryKey(fields={"NUMDISTANCESBLASONS","NUMREGLEMENT"},generatedidField=@SqlGeneratedIdField(name="NUMDISTANCESBLASONS",type=Types.INTEGER))
 @SqlUnmappedFields(fields="NUMREGLEMENT")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class DistancesEtBlason implements SqlPersistance {
+public class DistancesEtBlason implements ObjectPersistance {
 	@XmlElementWrapper(name="distances",required=true)
     @XmlElement(name="distance")
 	private int[] distances = new int[] { 18, 18 };
@@ -139,10 +142,10 @@ public class DistancesEtBlason implements SqlPersistance {
 	@XmlTransient
 	private int numdistancesblason = 0;
 	
-	private static SqlStoreHelper<DistancesEtBlason> helper = null;
+	private static StoreHelper<DistancesEtBlason> helper = null;
 	static {
 		try {
-			helper = new SqlStoreHelper<DistancesEtBlason>(ApplicationCore.dbConnection, DistancesEtBlason.class);
+			helper = new StoreHelper<DistancesEtBlason>(new SqlStoreHandler<DistancesEtBlason>(ApplicationCore.dbConnection, DistancesEtBlason.class));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -271,8 +274,7 @@ public class DistancesEtBlason implements SqlPersistance {
 	}
 	
 	@Deprecated
-	@SuppressWarnings("unused")
-	public void setReglement(Reglement reglement) {
+	public void setReglement(@SuppressWarnings("unused") Reglement reglement) {
 		
 	}
 
@@ -302,7 +304,7 @@ public class DistancesEtBlason implements SqlPersistance {
 	 */
 	@SuppressWarnings("nls")
 	@Override
-	public void save() throws SqlPersistanceException {
+	public void save() throws ObjectPersistanceException {
 		criteriaSet.save();
 		
 		helper.save(this, Collections.<String, Object>singletonMap("NUMREGLEMENT", criteriaSet.getReglement().getNumReglement()));
@@ -320,7 +322,7 @@ public class DistancesEtBlason implements SqlPersistance {
 				stmt.close();
 			}
 		} catch (SQLException e) {
-			throw new SqlPersistanceException(e);
+			throw new ObjectPersistanceException(e);
 		}
 	}
 	
@@ -330,7 +332,7 @@ public class DistancesEtBlason implements SqlPersistance {
 	 * @throws SQLException
 	 */
 	@Override
-	public void delete() throws SqlPersistanceException {
+	public void delete() throws ObjectPersistanceException {
 		helper.delete(this, Collections.<String, Object>singletonMap("NUMREGLEMENT", criteriaSet.getReglement().getNumReglement()));  //$NON-NLS-1$
 	}
 
@@ -357,8 +359,7 @@ public class DistancesEtBlason implements SqlPersistance {
 		return null;
 	}
 	
-	@SuppressWarnings("unused")
-	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
+	protected void afterUnmarshal(@SuppressWarnings("unused") Unmarshaller unmarshaller, Object parent) {
 		if(parent instanceof Reglement)
 			criteriaSet.setReglement((Reglement)parent);
 	}

@@ -95,14 +95,14 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.ajdeveloppement.commons.sql.SqlField;
-import org.ajdeveloppement.commons.sql.SqlForeignKey;
-import org.ajdeveloppement.commons.sql.SqlPersistance;
-import org.ajdeveloppement.commons.sql.SqlPersistanceException;
-import org.ajdeveloppement.commons.sql.SqlPrimaryKey;
-import org.ajdeveloppement.commons.sql.SqlStoreHelper;
-import org.ajdeveloppement.commons.sql.SqlTable;
-
+import org.ajdeveloppement.commons.persistance.ObjectPersistance;
+import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
+import org.ajdeveloppement.commons.persistance.StoreHelper;
+import org.ajdeveloppement.commons.persistance.sql.SqlField;
+import org.ajdeveloppement.commons.persistance.sql.SqlForeignKey;
+import org.ajdeveloppement.commons.persistance.sql.SqlPrimaryKey;
+import org.ajdeveloppement.commons.persistance.sql.SqlStoreHandler;
+import org.ajdeveloppement.commons.persistance.sql.SqlTable;
 
 /**
  * Représente la position physique relative d'un blason
@@ -113,7 +113,7 @@ import org.ajdeveloppement.commons.sql.SqlTable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @SqlTable(name="ANCRAGES_BLASONS")
 @SqlPrimaryKey(fields={"NUMBLASON","EMPLACEMENT"})
-public class Ancrage implements SqlPersistance {
+public class Ancrage implements ObjectPersistance {
 	public static final int POSITION_A = 0;
 	public static final int POSITION_B = 1;
 	public static final int POSITION_C = 2;
@@ -134,10 +134,10 @@ public class Ancrage implements SqlPersistance {
 	@SqlForeignKey(mappedTo="NUMBLASON")
 	private Blason blason;
 	
-	private static SqlStoreHelper<Ancrage> helper = null;
+	private static StoreHelper<Ancrage> helper = null;
 	static {
 		try {
-			helper = new SqlStoreHelper<Ancrage>(ApplicationCore.dbConnection, Ancrage.class);
+			helper = new StoreHelper<Ancrage>(new SqlStoreHandler<Ancrage>(ApplicationCore.dbConnection, Ancrage.class));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -256,17 +256,16 @@ public class Ancrage implements SqlPersistance {
     }
 	
 	@Override
-	public void save() throws SqlPersistanceException {
+	public void save() throws ObjectPersistanceException {
 		helper.save(this);
 	}
 	
 	@Override
-	public void delete() throws SqlPersistanceException {
+	public void delete() throws ObjectPersistanceException {
 		helper.delete(this);
 	}
 
-	@SuppressWarnings("unused")
-	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
+	protected void afterUnmarshal(@SuppressWarnings("unused") Unmarshaller unmarshaller, Object parent) {
 		if(parent instanceof Blason)
 			blason = (Blason)parent;
 	}

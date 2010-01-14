@@ -110,6 +110,7 @@ import javax.swing.event.EventListenerList;
 
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.io.FileUtils;
+import org.ajdeveloppement.commons.persistance.sql.SqlStoreHandler;
 import org.ajdeveloppement.commons.security.SecurityImporter;
 import org.ajdeveloppement.commons.sql.SqlManager;
 import org.concoursjeunes.event.ApplicationCoreEvent;
@@ -170,6 +171,8 @@ public class ApplicationCore {
 		openDatabase();
 		checkUpdateDatabase();
 		loadAppConfiguration();
+		
+		SqlStoreHandler.setDatabaseEngine("h2"); //$NON-NLS-1$
 	}
 
 	/**

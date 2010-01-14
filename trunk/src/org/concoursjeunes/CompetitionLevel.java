@@ -94,13 +94,14 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.ajdeveloppement.commons.sql.SqlField;
-import org.ajdeveloppement.commons.sql.SqlForeignKey;
-import org.ajdeveloppement.commons.sql.SqlPersistance;
-import org.ajdeveloppement.commons.sql.SqlPersistanceException;
-import org.ajdeveloppement.commons.sql.SqlPrimaryKey;
-import org.ajdeveloppement.commons.sql.SqlStoreHelper;
-import org.ajdeveloppement.commons.sql.SqlTable;
+import org.ajdeveloppement.commons.persistance.ObjectPersistance;
+import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
+import org.ajdeveloppement.commons.persistance.StoreHelper;
+import org.ajdeveloppement.commons.persistance.sql.SqlField;
+import org.ajdeveloppement.commons.persistance.sql.SqlForeignKey;
+import org.ajdeveloppement.commons.persistance.sql.SqlPrimaryKey;
+import org.ajdeveloppement.commons.persistance.sql.SqlStoreHandler;
+import org.ajdeveloppement.commons.persistance.sql.SqlTable;
 
 /**
  * Représente le niveau d'une compétition.
@@ -110,7 +111,7 @@ import org.ajdeveloppement.commons.sql.SqlTable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @SqlTable(name="NIVEAU_COMPETITION")
 @SqlPrimaryKey(fields={"CODENIVEAU","NUMFEDERATION","LANG"})
-public class CompetitionLevel implements SqlPersistance {
+public class CompetitionLevel implements ObjectPersistance {
 	@XmlTransient
 	@SqlField(name="CODENIVEAU")
 	private int numlevel = 0;
@@ -125,10 +126,10 @@ public class CompetitionLevel implements SqlPersistance {
 	@SqlForeignKey(mappedTo="NUMFEDERATION")
 	private Federation federation;
 	
-	private static SqlStoreHelper<CompetitionLevel> helper = null;
+	private static StoreHelper<CompetitionLevel> helper = null;
 	static {
 		try {
-			helper = new SqlStoreHelper<CompetitionLevel>(ApplicationCore.dbConnection, CompetitionLevel.class);
+			helper = new StoreHelper<CompetitionLevel>(new SqlStoreHandler<CompetitionLevel>(ApplicationCore.dbConnection, CompetitionLevel.class));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -216,7 +217,7 @@ public class CompetitionLevel implements SqlPersistance {
 	 * @throws SQLException
 	 */
 	@Override
-	public void save() throws SqlPersistanceException {
+	public void save() throws ObjectPersistanceException {
 		helper.save(this);
 	}
 
@@ -229,7 +230,7 @@ public class CompetitionLevel implements SqlPersistance {
 	 * @throws SQLException
 	 */
 	@Override
-	public void delete() throws SqlPersistanceException {
+	public void delete() throws ObjectPersistanceException {
 		helper.delete(this);
 	}
 

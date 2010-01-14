@@ -88,12 +88,13 @@ package org.concoursjeunes;
 
 import java.sql.SQLException;
 
-import org.ajdeveloppement.commons.sql.SqlField;
-import org.ajdeveloppement.commons.sql.SqlPersistance;
-import org.ajdeveloppement.commons.sql.SqlPersistanceException;
-import org.ajdeveloppement.commons.sql.SqlPrimaryKey;
-import org.ajdeveloppement.commons.sql.SqlStoreHelper;
-import org.ajdeveloppement.commons.sql.SqlTable;
+import org.ajdeveloppement.commons.persistance.ObjectPersistance;
+import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
+import org.ajdeveloppement.commons.persistance.StoreHelper;
+import org.ajdeveloppement.commons.persistance.sql.SqlField;
+import org.ajdeveloppement.commons.persistance.sql.SqlPrimaryKey;
+import org.ajdeveloppement.commons.persistance.sql.SqlStoreHandler;
+import org.ajdeveloppement.commons.persistance.sql.SqlTable;
 
 /**
  * Entité organisationnelle.<br>
@@ -109,7 +110,7 @@ import org.ajdeveloppement.commons.sql.SqlTable;
  */
 @SqlTable(name="ENTITE")
 @SqlPrimaryKey(fields={"AGREMENTENTITE"})
-public class Entite implements SqlPersistance {
+public class Entite implements ObjectPersistance {
 	
 	public static final int FEDERATION = 0;
     public static final int LIGUE = 1;
@@ -131,10 +132,10 @@ public class Entite implements SqlPersistance {
     @SqlField(name="TYPEENTITE")
     private int type          	= CLUB;
 
-    private static SqlStoreHelper<Entite> helper = null;
+    private static StoreHelper<Entite> helper = null;
 	static {
 		try {
-			helper = new SqlStoreHelper<Entite>(ApplicationCore.dbConnection, Entite.class);
+			helper = new StoreHelper<Entite>(new SqlStoreHandler<Entite>(ApplicationCore.dbConnection, Entite.class));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -312,12 +313,12 @@ public class Entite implements SqlPersistance {
 	 * Sauvegarde l'entite dans la base de donnée
 	 */
 	@Override
-	public void save() throws SqlPersistanceException {
+	public void save() throws ObjectPersistanceException {
 		helper.save(this);
 	}
 	
 	@Override
-	public void delete() throws SqlPersistanceException {
+	public void delete() throws ObjectPersistanceException {
 		helper.delete(this);
 	}
 

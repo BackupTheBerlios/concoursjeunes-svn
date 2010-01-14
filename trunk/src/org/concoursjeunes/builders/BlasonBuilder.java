@@ -88,12 +88,15 @@
  */
 package org.concoursjeunes.builders;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.ajdeveloppement.commons.persistance.LoadHelper;
+import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
+import org.ajdeveloppement.commons.persistance.sql.SqlLoadHandler;
 import org.concoursjeunes.Ancrage;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Blason;
 
 /**
@@ -105,6 +108,15 @@ import org.concoursjeunes.Blason;
  */
 public class BlasonBuilder {
 	
+	private static LoadHelper<Blason> loadHelper;
+	static {
+		try {
+			loadHelper = new LoadHelper<Blason>(new SqlLoadHandler<Blason>(ApplicationCore.dbConnection, Blason.class));
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	/**
 	 * Construit un blason à partir d'un jeux de résultat transmis en parametre.<br>
 	 * Le jeux de résultat doit posseder les champs de la table BLASONS.
@@ -115,18 +127,11 @@ public class BlasonBuilder {
 	 * @throws SQLException retourné si le jeux de résultat ne contient pas l'ensemble<br>
 	 * des champs de la table BLASONS 
 	 */
-	public static Blason getBlason(ResultSet rs) throws SQLException {
-		
-		int numblason = rs.getInt("NUMBLASON"); //$NON-NLS-1$
-		
+	public static Blason getBlason(int numblason) throws ObjectPersistanceException {
 		Blason blason = new Blason();
 		blason.setNumblason(numblason); 
-		blason.setName(rs.getString("NOMBLASON")); //$NON-NLS-1$
-		blason.setHorizontalRatio(rs.getDouble("HORIZONTAL_RATIO")); //$NON-NLS-1$
-		blason.setVerticalRatio(rs.getDouble("VERTICAL_RATIO")); //$NON-NLS-1$
-		blason.setNbArcher(rs.getInt("NBARCHER")); //$NON-NLS-1$
-		blason.setNumordre(rs.getInt("NUMORDRE")); //$NON-NLS-1$
-		blason.setTargetFaceImage(rs.getString("IMAGE")); //$NON-NLS-1$
+		
+		loadHelper.load(blason);
 		
 		blason.setAncrages(AncragesMapBuilder.getAncragesMap(blason));
 		
@@ -141,7 +146,7 @@ public class BlasonBuilder {
 	 * @param size la taille du blason à créer
 	 * @return le blason créer
 	 */
-	public static Blason getBlason(int size) {
+	public static Blason getBlasonBySize(int size) {
 		Blason blason = null;
 		
 		double hRatio = 1;

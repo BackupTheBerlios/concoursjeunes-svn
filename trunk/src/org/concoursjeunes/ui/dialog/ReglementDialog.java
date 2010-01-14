@@ -100,7 +100,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -139,6 +138,7 @@ import org.ajdeveloppement.apps.localisation.Localisable;
 import org.ajdeveloppement.apps.localisation.Localisator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.StringUtils;
+import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
 import org.ajdeveloppement.commons.ui.AJList;
 import org.ajdeveloppement.commons.ui.AJTree;
 import org.ajdeveloppement.commons.ui.DefaultDialogReturn;
@@ -675,7 +675,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 					List<Blason> availableTargetFace = Blason.listAvailableTargetFace();
 					if(availableTargetFace.size() > 0)
 						defaultBlason = availableTargetFace.get(0);
-				} catch (SQLException e) {
+				} catch (ObjectPersistanceException e) {
 					e.printStackTrace();
 				}
 				newDb.setTargetFace(defaultBlason);

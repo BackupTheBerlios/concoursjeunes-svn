@@ -139,7 +139,7 @@ import org.ajdeveloppement.apps.localisation.Localisable;
 import org.ajdeveloppement.apps.localisation.Localisator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.StringUtils;
-import org.ajdeveloppement.commons.sql.SqlPersistanceException;
+import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
 import org.concoursjeunes.ApplicationCore;
@@ -1027,7 +1027,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 
 			try {
 				concurrent.saveCriteriaSet();
-			} catch (SqlPersistanceException e) {
+			} catch (ObjectPersistanceException e) {
 				e.printStackTrace();
 			}
 

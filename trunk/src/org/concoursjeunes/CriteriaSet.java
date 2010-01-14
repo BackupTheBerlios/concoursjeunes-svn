@@ -90,6 +90,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -105,14 +106,16 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.ajdeveloppement.commons.JAXBMapRefAdapter;
-import org.ajdeveloppement.commons.sql.SqlField;
-import org.ajdeveloppement.commons.sql.SqlForeignKey;
-import org.ajdeveloppement.commons.sql.SqlPersistance;
-import org.ajdeveloppement.commons.sql.SqlPersistanceException;
-import org.ajdeveloppement.commons.sql.SqlPrimaryKey;
-import org.ajdeveloppement.commons.sql.SqlStoreHelper;
-import org.ajdeveloppement.commons.sql.SqlTable;
-import org.ajdeveloppement.commons.sql.SqlUnmappedFields;
+import org.ajdeveloppement.commons.persistance.ObjectPersistance;
+import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
+import org.ajdeveloppement.commons.persistance.StoreHelper;
+import org.ajdeveloppement.commons.persistance.sql.SqlField;
+import org.ajdeveloppement.commons.persistance.sql.SqlForeignKey;
+import org.ajdeveloppement.commons.persistance.sql.SqlGeneratedIdField;
+import org.ajdeveloppement.commons.persistance.sql.SqlPrimaryKey;
+import org.ajdeveloppement.commons.persistance.sql.SqlStoreHandler;
+import org.ajdeveloppement.commons.persistance.sql.SqlTable;
+import org.ajdeveloppement.commons.persistance.sql.SqlUnmappedFields;
 
 /**
  * Jeux de critères utilisé pour distinguer un archer a des fins
@@ -122,9 +125,9 @@ import org.ajdeveloppement.commons.sql.SqlUnmappedFields;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @SqlTable(name="CRITERIASET")
-@SqlPrimaryKey(fields="NUMCRITERIASET",generatedidField="NUMCRITERIASET")
+@SqlPrimaryKey(fields="NUMCRITERIASET",generatedidField=@SqlGeneratedIdField(name="NUMCRITERIASET",type=Types.INTEGER))
 @SqlUnmappedFields(fields={"IDCRITERIASET"})
-public class CriteriaSet implements SqlPersistance {
+public class CriteriaSet implements ObjectPersistance {
 
 	@XmlTransient
 	@SqlField(name="NUMCRITERIASET")
@@ -136,10 +139,10 @@ public class CriteriaSet implements SqlPersistance {
 	@XmlJavaTypeAdapter(JAXBMapRefAdapter.class)
 	private Map<Criterion, CriterionElement> criteria = new HashMap<Criterion, CriterionElement>();
 	
-	private static SqlStoreHelper<CriteriaSet> helper = null;
+	private static StoreHelper<CriteriaSet> helper = null;
 	static {
 		try {
-			helper = new SqlStoreHelper<CriteriaSet>(ApplicationCore.dbConnection, CriteriaSet.class);
+			helper = new StoreHelper<CriteriaSet>(new SqlStoreHandler<CriteriaSet>(ApplicationCore.dbConnection, CriteriaSet.class));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -286,7 +289,7 @@ public class CriteriaSet implements SqlPersistance {
 	 * 
 	 */
 	@Override
-	public void save() throws SqlPersistanceException {
+	public void save() throws ObjectPersistanceException {
 		//vérifie si le jeux n'existe pas déjà
 		String uid = getUID();
 		String sql = "select NUMCRITERIASET from CRITERIASET where IDCRITERIASET='" + uid.replace("'","''") + "'"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
@@ -309,7 +312,7 @@ public class CriteriaSet implements SqlPersistance {
 				stmt.close();
 			}
 		} catch (SQLException e) {
-			throw new SqlPersistanceException(e);
+			throw new ObjectPersistanceException(e);
 		}
 
 		helper.save(this, Collections.<String, Object>singletonMap("IDCRITERIASET", uid)); //$NON-NLS-1$
@@ -339,25 +342,23 @@ public class CriteriaSet implements SqlPersistance {
 				pstmt.close();
 			}
 		} catch (SQLException e) {
-			throw new SqlPersistanceException(e);
+			throw new ObjectPersistanceException(e);
 		}
 	}
 
 	@Override
-	public void delete() throws SqlPersistanceException {
+	public void delete() throws ObjectPersistanceException {
 		helper.delete(this);
 	}
 	
-	@SuppressWarnings("unused")
-	protected void beforeMarshal(Marshaller marshaller) {
+	protected void beforeMarshal(@SuppressWarnings("unused") Marshaller marshaller) {
 		/*jaxbCriteria = new HashMap<String, String>();
 		for(Entry<Criterion, CriterionElement> entry : criteria.entrySet()) {
 			jaxbCriteria.put(entry.getKey().getCode(), entry.getValue().getCode());
 		}*/
 	}
 	
-	@SuppressWarnings("unused")
-	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
+	protected void afterUnmarshal(@SuppressWarnings("unused") Unmarshaller unmarshaller, @SuppressWarnings("unused") Object parent) {
 		/*if(parent instanceof Reglement) {
 			Reglement reglement = (Reglement)parent;
 			for(Entry<String, String> entry : jaxbCriteria.entrySet()) {

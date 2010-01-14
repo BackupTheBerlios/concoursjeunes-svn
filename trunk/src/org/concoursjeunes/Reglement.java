@@ -112,13 +112,15 @@ import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.ajdeveloppement.commons.sql.SqlField;
-import org.ajdeveloppement.commons.sql.SqlForeignKey;
-import org.ajdeveloppement.commons.sql.SqlPersistance;
-import org.ajdeveloppement.commons.sql.SqlPersistanceException;
-import org.ajdeveloppement.commons.sql.SqlPrimaryKey;
-import org.ajdeveloppement.commons.sql.SqlStoreHelper;
-import org.ajdeveloppement.commons.sql.SqlTable;
+import org.ajdeveloppement.commons.persistance.ObjectPersistance;
+import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
+import org.ajdeveloppement.commons.persistance.StoreHelper;
+import org.ajdeveloppement.commons.persistance.sql.SqlField;
+import org.ajdeveloppement.commons.persistance.sql.SqlForeignKey;
+import org.ajdeveloppement.commons.persistance.sql.SqlGeneratedIdField;
+import org.ajdeveloppement.commons.persistance.sql.SqlPrimaryKey;
+import org.ajdeveloppement.commons.persistance.sql.SqlStoreHandler;
+import org.ajdeveloppement.commons.persistance.sql.SqlTable;
 
 /**
  * <p>
@@ -146,8 +148,8 @@ import org.ajdeveloppement.commons.sql.SqlTable;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @SqlTable(name="REGLEMENT")
-@SqlPrimaryKey(fields="NUMREGLEMENT",generatedidField="NUMREGLEMENT")
-public class Reglement implements SqlPersistance {
+@SqlPrimaryKey(fields="NUMREGLEMENT",generatedidField=@SqlGeneratedIdField(name="NUMREGLEMENT",type=Types.INTEGER))
+public class Reglement implements ObjectPersistance {
 	
 	public enum TypeReglement {
 		/**
@@ -207,10 +209,10 @@ public class Reglement implements SqlPersistance {
 	
 	private boolean inDatabase = true; 
 	
-	private static SqlStoreHelper<Reglement> helper = null;
+	private static StoreHelper<Reglement> helper = null;
 	static {
 		try {
-			helper = new SqlStoreHelper<Reglement>(ApplicationCore.dbConnection, Reglement.class);
+			helper = new StoreHelper<Reglement>(new SqlStoreHandler<Reglement>(ApplicationCore.dbConnection, Reglement.class));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -831,7 +833,7 @@ public class Reglement implements SqlPersistance {
 	 * <p>Les arguments sont ignoré.</p>
 	 */
 	@Override
-	public void save() throws SqlPersistanceException {
+	public void save() throws ObjectPersistanceException {
 		if(federation.getNumFederation() == 0)
 			federation.save();
 		//si le numéro de règlement est à 0, regarde si il n'existe pas malgré tous
@@ -854,7 +856,7 @@ public class Reglement implements SqlPersistance {
 					pstmt.close();
 				}
 			} catch (SQLException e) {
-				throw new SqlPersistanceException(e);
+				throw new ObjectPersistanceException(e);
 			}
 		}
 
@@ -873,7 +875,7 @@ public class Reglement implements SqlPersistance {
 			saveDistancesAndBlasons();
 			saveSurclassement();
 		} catch (SQLException e) {
-			throw new SqlPersistanceException(e);
+			throw new ObjectPersistanceException(e);
 		}
 	}
 	
@@ -903,7 +905,7 @@ public class Reglement implements SqlPersistance {
 	 * @throws SQLException
 	 */
 	@SuppressWarnings("nls")
-	private void saveCriteria() throws SqlPersistanceException {
+	private void saveCriteria() throws ObjectPersistanceException {
 		try {
 			Statement stmt = ApplicationCore.dbConnection.createStatement();
 			try {
@@ -925,7 +927,7 @@ public class Reglement implements SqlPersistance {
 				criterion.save();
 			}
 		} catch (SQLException e) {
-			throw new SqlPersistanceException(e);
+			throw new ObjectPersistanceException(e);
 		}
 	}
 	
@@ -934,7 +936,7 @@ public class Reglement implements SqlPersistance {
 	 * 
 	 * @throws SQLException
 	 */
-	private void saveSurclassement() throws SqlPersistanceException {
+	private void saveSurclassement() throws ObjectPersistanceException {
 		try {
 			Statement stmt = ApplicationCore.dbConnection.createStatement();
 			try {
@@ -962,7 +964,7 @@ public class Reglement implements SqlPersistance {
 				pstmt.close();
 			}
 		} catch (SQLException e) {
-			throw new SqlPersistanceException(e);
+			throw new ObjectPersistanceException(e);
 		}
 	}
 
@@ -971,7 +973,7 @@ public class Reglement implements SqlPersistance {
 	 * 
 	 * @throws SQLException
 	 */
-	private void saveDistancesAndBlasons() throws SqlPersistanceException {
+	private void saveDistancesAndBlasons() throws ObjectPersistanceException {
 		try {
 			Statement stmt = ApplicationCore.dbConnection.createStatement();
 			try {
@@ -986,7 +988,7 @@ public class Reglement implements SqlPersistance {
 				distancesEtBlason.save();
 			}
 		} catch (SQLException e) {
-			throw new SqlPersistanceException(e);
+			throw new ObjectPersistanceException(e);
 		}
 	}
 
@@ -997,15 +999,14 @@ public class Reglement implements SqlPersistance {
 	 * @throws SqlPersistanceException
 	 */
 	@Override
-	public void delete() throws SqlPersistanceException{
+	public void delete() throws ObjectPersistanceException{
 		if (!officialReglement) {
 			helper.delete(this);
 		} else
-			throw new SqlPersistanceException("delete this Reglement is not authorized because there is official"); //$NON-NLS-1$
+			throw new ObjectPersistanceException("delete this Reglement is not authorized because there is official"); //$NON-NLS-1$
 	}
 	
-	@SuppressWarnings("unused")
-	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
+	protected void afterUnmarshal(@SuppressWarnings("unused") Unmarshaller unmarshaller,@SuppressWarnings("unused") Object parent) {
 		for(Entry<CriteriaSet, CriteriaSet> entry : surclassement.entrySet()) {
 			entry.getKey().setReglement(this);
 			if(entry.getValue() != null)

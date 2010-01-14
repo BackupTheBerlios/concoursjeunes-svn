@@ -94,6 +94,7 @@ import java.sql.SQLException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
 import org.concoursjeunes.Ancrage;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Blason;
@@ -113,27 +114,31 @@ public class AncragesMapBuilder {
 	 * @return la tables des ancrages ou null si non trouvé en base
 	 * @throws SQLException
 	 */
-	public static ConcurrentMap<Integer, Ancrage> getAncragesMap(Blason blason) throws SQLException {
+	public static ConcurrentMap<Integer, Ancrage> getAncragesMap(Blason blason) throws ObjectPersistanceException {
 		ConcurrentMap<Integer, Ancrage> ancrages = new ConcurrentHashMap<Integer, Ancrage>();
 		
 		String sql = "select * from ANCRAGES_BLASONS where NUMBLASON=?"; //$NON-NLS-1$
 		
-		PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
-		
-		pstmt.setInt(1, blason.getNumblason());
-		
-		ResultSet rs2 = pstmt.executeQuery();
-		while(rs2.next()) {
-			Ancrage ancrage = new Ancrage(
+		try {
+			PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
+			
+			pstmt.setInt(1, blason.getNumblason());
+			
+			ResultSet rs2 = pstmt.executeQuery();
+			while(rs2.next()) {
+				Ancrage ancrage = new Ancrage(
+						rs2.getInt("EMPLACEMENT"), //$NON-NLS-1$
+						rs2.getDouble("ANCRAGEX"), //$NON-NLS-1$
+						rs2.getDouble("ANCRAGEY") //$NON-NLS-1$
+					);
+				ancrage.setBlason(blason);
+				ancrages.put(
 					rs2.getInt("EMPLACEMENT"), //$NON-NLS-1$
-					rs2.getDouble("ANCRAGEX"), //$NON-NLS-1$
-					rs2.getDouble("ANCRAGEY") //$NON-NLS-1$
+					ancrage
 				);
-			ancrage.setBlason(blason);
-			ancrages.put(
-				rs2.getInt("EMPLACEMENT"), //$NON-NLS-1$
-				ancrage
-			);
+			}
+		} catch (SQLException e) {
+			throw new ObjectPersistanceException(e);
 		}
 		
 		if(ancrages.size() == 0)

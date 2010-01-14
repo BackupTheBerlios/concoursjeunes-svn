@@ -93,6 +93,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.DistancesEtBlason;
 import org.concoursjeunes.Reglement;
@@ -157,6 +158,8 @@ public class DistancesEtBlasonBuilder {
 				pstmt.close();
 			}
 		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch(ObjectPersistanceException e) {
 			e.printStackTrace();
 		} finally {
 			try { if(pstmt != null && !pstmt.isClosed()) pstmt.close(); } catch (SQLException e) { }

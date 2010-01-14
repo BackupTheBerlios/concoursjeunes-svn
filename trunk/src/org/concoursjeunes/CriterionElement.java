@@ -101,13 +101,14 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.ajdeveloppement.commons.sql.SqlField;
-import org.ajdeveloppement.commons.sql.SqlForeignKey;
-import org.ajdeveloppement.commons.sql.SqlPersistance;
-import org.ajdeveloppement.commons.sql.SqlPersistanceException;
-import org.ajdeveloppement.commons.sql.SqlPrimaryKey;
-import org.ajdeveloppement.commons.sql.SqlStoreHelper;
-import org.ajdeveloppement.commons.sql.SqlTable;
+import org.ajdeveloppement.commons.persistance.ObjectPersistance;
+import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
+import org.ajdeveloppement.commons.persistance.StoreHelper;
+import org.ajdeveloppement.commons.persistance.sql.SqlField;
+import org.ajdeveloppement.commons.persistance.sql.SqlForeignKey;
+import org.ajdeveloppement.commons.persistance.sql.SqlPrimaryKey;
+import org.ajdeveloppement.commons.persistance.sql.SqlStoreHandler;
+import org.ajdeveloppement.commons.persistance.sql.SqlTable;
 import org.concoursjeunes.builders.CriterionElementBuilder;
 
 /**
@@ -118,7 +119,7 @@ import org.concoursjeunes.builders.CriterionElementBuilder;
 @XmlAccessorType(XmlAccessType.FIELD)
 @SqlTable(name="CRITEREELEMENT")
 @SqlPrimaryKey(fields={"CODECRITEREELEMENT","CODECRITERE","NUMREGLEMENT"})
-public class CriterionElement implements SqlPersistance {
+public class CriterionElement implements ObjectPersistance {
 	
 	//utilisé pour donnée un identifiant unique à la sérialisation de l'objet
 	@XmlID
@@ -139,10 +140,10 @@ public class CriterionElement implements SqlPersistance {
 	@SqlForeignKey(mappedTo={"CODECRITERE","NUMREGLEMENT"})
 	private Criterion criterion;
 	
-	private static SqlStoreHelper<CriterionElement> helper = null;
+	private static StoreHelper<CriterionElement> helper = null;
 	static {
 		try {
-			helper = new SqlStoreHelper<CriterionElement>(ApplicationCore.dbConnection, CriterionElement.class);
+			helper = new StoreHelper<CriterionElement>(new SqlStoreHandler<CriterionElement>(ApplicationCore.dbConnection, CriterionElement.class));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -269,7 +270,7 @@ public class CriterionElement implements SqlPersistance {
 	 * @see org.ajdeveloppement.commons.sql.SqlPersistance#save()
 	 */
 	@Override
-	public void save() throws SqlPersistanceException {
+	public void save() throws ObjectPersistanceException {
 		helper.save(this);
 	}
 	
@@ -279,17 +280,15 @@ public class CriterionElement implements SqlPersistance {
 	 * @see org.ajdeveloppement.commons.sql.SqlPersistance#delete()
 	 */
 	@Override
-	public void delete() throws SqlPersistanceException {
+	public void delete() throws ObjectPersistanceException {
 		helper.delete(this);
 	}
 	
-	@SuppressWarnings("unused")
-	protected void beforeMarshal(Marshaller marshaller) {
+	protected void beforeMarshal(@SuppressWarnings("unused") Marshaller marshaller) {
 		xmlId = UUID.randomUUID().toString();
 	}
 
-	@SuppressWarnings("unused")
-	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
+	protected void afterUnmarshal(@SuppressWarnings("unused") Unmarshaller unmarshaller, Object parent) {
 		if(parent instanceof Criterion)
 			criterion = (Criterion)parent;
 	}

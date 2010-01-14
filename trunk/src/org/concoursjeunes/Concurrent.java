@@ -93,7 +93,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.ajdeveloppement.commons.sql.SqlPersistanceException;
+import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
 
 /**
  * Objet de Base de stockage des Information sur un concurrent:
@@ -469,7 +469,7 @@ public class Concurrent extends Archer implements Cloneable {
 	/**
 	 * Sauvegarde le jeux de critère associé à l'archer
 	 */
-	public void saveCriteriaSet() throws SqlPersistanceException {
+	public void saveCriteriaSet() throws ObjectPersistanceException {
 		if(!getNumLicenceArcher().equals("")) { //$NON-NLS-1$
 			try {
 				
@@ -516,7 +516,7 @@ public class Concurrent extends Archer implements Cloneable {
 					pstmt.close();
 				}
 			} catch (SQLException e) {
-				throw new SqlPersistanceException(e);
+				throw new ObjectPersistanceException(e);
 			}
 		}
 	}

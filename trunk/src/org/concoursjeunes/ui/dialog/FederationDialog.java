@@ -117,7 +117,7 @@ import org.ajdeveloppement.apps.localisation.LocalisationHandler;
 import org.ajdeveloppement.apps.localisation.Localisator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.StringUtils;
-import org.ajdeveloppement.commons.sql.SqlPersistanceException;
+import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.swingxext.localisation.JXHeaderLocalisationHandler;
 import org.concoursjeunes.CompetitionLevel;
@@ -388,7 +388,7 @@ public class FederationDialog extends JDialog implements ActionListener {
 			}
 			try {
 				federation.save();
-			} catch (SqlPersistanceException e1) {
+			} catch (ObjectPersistanceException e1) {
 				federation = null;
 				JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
 						null, null, e1, Level.SEVERE, null));

@@ -97,7 +97,6 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -115,6 +114,7 @@ import javax.swing.border.TitledBorder;
 import org.ajdeveloppement.apps.localisation.Localisable;
 import org.ajdeveloppement.apps.localisation.Localisator;
 import org.ajdeveloppement.commons.AjResourcesReader;
+import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
 import org.concoursjeunes.ApplicationCore;
@@ -172,7 +172,7 @@ public class DistancesBlasonsDialog extends JDialog implements ActionListener {
 		
 		try {
 			availableBlason = Blason.listAvailableTargetFace();
-		} catch (SQLException e) {
+		} catch (ObjectPersistanceException e) {
 			JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 					null, null, e, Level.SEVERE, null));
 			e.printStackTrace();

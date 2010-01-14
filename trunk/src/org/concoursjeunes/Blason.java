@@ -91,6 +91,7 @@ package org.concoursjeunes;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -100,12 +101,14 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
-import org.ajdeveloppement.commons.sql.SqlField;
-import org.ajdeveloppement.commons.sql.SqlPersistance;
-import org.ajdeveloppement.commons.sql.SqlPersistanceException;
-import org.ajdeveloppement.commons.sql.SqlPrimaryKey;
-import org.ajdeveloppement.commons.sql.SqlStoreHelper;
-import org.ajdeveloppement.commons.sql.SqlTable;
+import org.ajdeveloppement.commons.persistance.ObjectPersistance;
+import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
+import org.ajdeveloppement.commons.persistance.StoreHelper;
+import org.ajdeveloppement.commons.persistance.sql.SqlField;
+import org.ajdeveloppement.commons.persistance.sql.SqlGeneratedIdField;
+import org.ajdeveloppement.commons.persistance.sql.SqlPrimaryKey;
+import org.ajdeveloppement.commons.persistance.sql.SqlStoreHandler;
+import org.ajdeveloppement.commons.persistance.sql.SqlTable;
 import org.concoursjeunes.builders.BlasonBuilder;
 
 /**
@@ -116,8 +119,8 @@ import org.concoursjeunes.builders.BlasonBuilder;
  *
  */
 @SqlTable(name="BLASONS")
-@SqlPrimaryKey(fields={"NUMBLASON"},generatedidField="NUMBLASON")
-public class Blason implements SqlPersistance {
+@SqlPrimaryKey(fields={"NUMBLASON"},generatedidField=@SqlGeneratedIdField(name="NUMBLASON",type=Types.INTEGER))
+public class Blason implements ObjectPersistance {
 	
 	@XmlAttribute
 	@SqlField(name="NUMBLASON")
@@ -138,10 +141,10 @@ public class Blason implements SqlPersistance {
 	//@XmlJavaTypeAdapter(JAXBMapAdapter.class)
 	private Map<Integer, Ancrage> ancrages = new ConcurrentHashMap<Integer, Ancrage>();
 	
-	private static SqlStoreHelper<Blason> helper = null;
+	private static StoreHelper<Blason> helper = null;
 	static {
 		try {
-			helper = new SqlStoreHelper<Blason>(ApplicationCore.dbConnection, Blason.class);
+			helper = new StoreHelper<Blason>(new SqlStoreHandler<Blason>(ApplicationCore.dbConnection, Blason.class));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -208,15 +211,19 @@ public class Blason implements SqlPersistance {
 	 * @return la liste des blasons existant
 	 * @throws SQLException
 	 */
-	public static List<Blason> listAvailableTargetFace() throws SQLException {
+	public static List<Blason> listAvailableTargetFace() throws ObjectPersistanceException {
 		ArrayList<Blason> blasons = new ArrayList<Blason>();
 		
-		String sql = "select * from BLASONS order by NUMORDRE desc"; //$NON-NLS-1$
-		
-		Statement stmt = ApplicationCore.dbConnection.createStatement();
-		ResultSet rs = stmt.executeQuery(sql);
-		while(rs.next()) {
-			blasons.add(BlasonBuilder.getBlason(rs));
+		try {
+			String sql = "select * from BLASONS order by NUMORDRE desc"; //$NON-NLS-1$
+			
+			Statement stmt = ApplicationCore.dbConnection.createStatement();
+			ResultSet rs = stmt.executeQuery(sql);
+			while(rs.next()) {
+				blasons.add(BlasonBuilder.getBlason(rs.getInt("NUMBLASON"))); //$NON-NLS-1$
+			}
+		} catch (SQLException e) {
+			throw new ObjectPersistanceException(e);
 		}
 		
 		return blasons;
@@ -442,7 +449,7 @@ public class Blason implements SqlPersistance {
 	 * @throws SqlPersistanceException
 	 */
 	@Override
-	public void save() throws SqlPersistanceException {
+	public void save() throws ObjectPersistanceException {
 		helper.save(this);
 		
 		for(Entry<Integer, Ancrage> entry : ancrages.entrySet()) {
@@ -456,7 +463,7 @@ public class Blason implements SqlPersistance {
 	 * @throws SqlPersistanceException
 	 */
 	@Override
-	public void delete() throws SqlPersistanceException {
+	public void delete() throws ObjectPersistanceException {
 		helper.delete(this);
 	}
 

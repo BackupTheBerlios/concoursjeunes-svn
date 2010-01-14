@@ -94,7 +94,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.sql.SQLException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -112,6 +111,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.ajdeveloppement.commons.AJTemplate;
 import org.ajdeveloppement.commons.XmlUtils;
 import org.ajdeveloppement.commons.io.XMLSerializer;
+import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
 import org.concoursjeunes.builders.AncragesMapBuilder;
 import org.concoursjeunes.builders.BlasonBuilder;
 import org.concoursjeunes.builders.EquipeListBuilder;
@@ -439,16 +439,20 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 			//si le blason n'est pas initialiser
 			if(distancesEtBlason.getTargetFace() == null || distancesEtBlason.getTargetFace().equals(new Blason())) {
 				if(distancesEtBlason.getNumdistancesblason() > 0 && reglement.getNumReglement() > 0) { //si le règlement est dans la base
-					distancesEtBlason.setTargetFace(BlasonManager.findBlasonAssociateToDistancesEtBlason(distancesEtBlason.getNumdistancesblason(), reglement.getNumReglement()));
+					try {
+						distancesEtBlason.setTargetFace(BlasonManager.findBlasonAssociateToDistancesEtBlason(distancesEtBlason.getNumdistancesblason(), reglement.getNumReglement()));
+					} catch (ObjectPersistanceException e) {
+						e.printStackTrace();
+					}
 				} else {
 					Blason targetFace = null;
 					try { //on tente de retrouver une correspondance pour le blason dans la base
 		                targetFace = BlasonManager.findBlasonByName(distancesEtBlason.getBlason() + "cm"); //$NON-NLS-1$
-	                } catch (SQLException e) {
+	                } catch (ObjectPersistanceException e) {
 		                e.printStackTrace(); //on trace l'erreur mais on ne la fait pas remonter dans l'interface
 	                }
 	                if(targetFace == null) { //si on a pas retrouvé de blason correspondant dans la base alors créer l'entrée
-	                	targetFace = BlasonBuilder.getBlason(distancesEtBlason.getBlason());
+	                	targetFace = BlasonBuilder.getBlasonBySize(distancesEtBlason.getBlason());
 	                }
 				}
 				//remet la valeur par défaut pour supprimer la section du XML de persistance à la prochaine sauvegarde
@@ -462,7 +466,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 						ConcurrentMap<Integer, Ancrage> ancrages = null;
 						try {
 							ancrages = AncragesMapBuilder.getAncragesMap(distancesEtBlason.getTargetFace());
-                        } catch (SQLException e) {
+                        } catch (ObjectPersistanceException e) {
 	                        e.printStackTrace(); //on trace l'erreur mais on ne la fait pas remonter dans l'interface
                         }
                         if(ancrages == null) {

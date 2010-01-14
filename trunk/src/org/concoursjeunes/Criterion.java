@@ -100,13 +100,14 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.ajdeveloppement.commons.sql.SqlField;
-import org.ajdeveloppement.commons.sql.SqlForeignKey;
-import org.ajdeveloppement.commons.sql.SqlPersistance;
-import org.ajdeveloppement.commons.sql.SqlPersistanceException;
-import org.ajdeveloppement.commons.sql.SqlPrimaryKey;
-import org.ajdeveloppement.commons.sql.SqlStoreHelper;
-import org.ajdeveloppement.commons.sql.SqlTable;
+import org.ajdeveloppement.commons.persistance.ObjectPersistance;
+import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
+import org.ajdeveloppement.commons.persistance.StoreHelper;
+import org.ajdeveloppement.commons.persistance.sql.SqlField;
+import org.ajdeveloppement.commons.persistance.sql.SqlForeignKey;
+import org.ajdeveloppement.commons.persistance.sql.SqlPrimaryKey;
+import org.ajdeveloppement.commons.persistance.sql.SqlStoreHandler;
+import org.ajdeveloppement.commons.persistance.sql.SqlTable;
 
 /**
  * Caractéristique d'un critère de distinction
@@ -116,7 +117,7 @@ import org.ajdeveloppement.commons.sql.SqlTable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @SqlTable(name="CRITERE")
 @SqlPrimaryKey(fields={"CODECRITERE","NUMREGLEMENT"})
-public class Criterion implements SqlPersistance, Cloneable {
+public class Criterion implements ObjectPersistance, Cloneable {
 	/**
 	 * Tri des éléments du critères croissant
 	 */
@@ -160,10 +161,10 @@ public class Criterion implements SqlPersistance, Cloneable {
     @SqlForeignKey(mappedTo="NUMREGLEMENT")
     private Reglement reglement;
     
-    private static SqlStoreHelper<Criterion> helper = null;
+    private static StoreHelper<Criterion> helper = null;
 	static {
 		try {
-			helper = new SqlStoreHelper<Criterion>(ApplicationCore.dbConnection, Criterion.class);
+			helper = new StoreHelper<Criterion>(new SqlStoreHandler<Criterion>(ApplicationCore.dbConnection, Criterion.class));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -456,7 +457,7 @@ public class Criterion implements SqlPersistance, Cloneable {
 	 */
 	@SuppressWarnings("nls")
 	@Override
-	public void save() throws SqlPersistanceException {
+	public void save() throws ObjectPersistanceException {
 		helper.save(this); //$NON-NLS-1$
 
 		try {
@@ -475,7 +476,7 @@ public class Criterion implements SqlPersistance, Cloneable {
 				stmt.close();
 			}
 		} catch (SQLException e) {
-			throw new SqlPersistanceException(e);
+			throw new ObjectPersistanceException(e);
 		}
 		
 		int numordre = 1;
@@ -491,12 +492,11 @@ public class Criterion implements SqlPersistance, Cloneable {
 	 * @see org.ajdeveloppement.commons.sql.SqlPersistance#delete()
 	 */
 	@Override
-	public void delete() throws SqlPersistanceException {
+	public void delete() throws ObjectPersistanceException {
 		helper.delete(this); 
 	}
 	
-	@SuppressWarnings("unused")
-	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
+	protected void afterUnmarshal(@SuppressWarnings("unused") Unmarshaller unmarshaller, Object parent) {
 		if(parent instanceof Reglement)
 			reglement = (Reglement)parent;
 	}

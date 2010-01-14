@@ -92,6 +92,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Blason;
 import org.concoursjeunes.builders.BlasonBuilder;
@@ -110,8 +111,9 @@ public class BlasonManager {
 	 * @param numdistanceblason le numero de l'objet distanceEtBlason dont le blason fait partie
 	 * @param numreglement le numrero de reglement
 	 * @return le blason associé à la ligne d/b du réglement donnée
+	 * @throws ObjectPersistanceException 
 	 */
-	public static Blason findBlasonAssociateToDistancesEtBlason(int numdistanceblason, int numreglement) {
+	public static Blason findBlasonAssociateToDistancesEtBlason(int numdistanceblason, int numreglement) throws ObjectPersistanceException {
 		try {
 			String sql = "select BLASONS.* from DISTANCESBLASONS,BLASONS " //$NON-NLS-1$
 				+ "where DISTANCESBLASONS.NUMBLASON=BLASONS.NUMBLASON AND NUMDISTANCESBLASONS=? and NUMREGLEMENT=? order by NUMORDRE DESC"; //$NON-NLS-1$
@@ -124,10 +126,10 @@ public class BlasonManager {
 			ResultSet rs = pstmt.executeQuery();
 			
 			if(rs.first()) {		
-				return BlasonBuilder.getBlason(rs);
+				return BlasonBuilder.getBlason(rs.getInt("NUMBLASON")); //$NON-NLS-1$
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new ObjectPersistanceException(e);
 		}
 		
 		return null;
@@ -141,17 +143,21 @@ public class BlasonManager {
 	 * @return l'objet Blason trouvé ou null si inexistant
 	 * @throws SQLException
 	 */
-	public static Blason findBlasonByName(String name) throws SQLException {
+	public static Blason findBlasonByName(String name) throws ObjectPersistanceException {
 		Blason blason = null;
 		
 		String sql = "select * from BLASONS where NOMBLASON=?"; //$NON-NLS-1$
-		PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
-		
-		pstmt.setString(1, name);
-		
-		ResultSet rs = pstmt.executeQuery();
-		if(rs.first()) {
-			blason = BlasonBuilder.getBlason(rs);
+		try {
+			PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
+			
+			pstmt.setString(1, name);
+			
+			ResultSet rs = pstmt.executeQuery();
+			if(rs.first()) {
+				blason = BlasonBuilder.getBlason(rs.getInt("NUMBLASON")); //$NON-NLS-1$
+			}
+		} catch (SQLException e) {
+			throw new ObjectPersistanceException(e);
 		}
 		
 		return blason;
