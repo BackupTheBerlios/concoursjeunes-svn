@@ -252,6 +252,7 @@ public class NewReglementDialog extends JDialog implements ActionListener {
 				reglement = ReglementBuilder.getReglement(reference.getNumReglement());
 				reglement.setName("C"+(new Date().getTime())); //$NON-NLS-1$
 				reglement.setNumReglement(0);
+				reglement.setRemovable(true);
 			}
 			
 			reglement.setDisplayName(jtfReglementName.getText());
