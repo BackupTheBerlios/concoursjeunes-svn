@@ -384,9 +384,14 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 					if(entry2.getValue().getCriterion() == null)
 						entry2.getValue().setCriterion(entry2.getKey());
 				}
-				for(Entry<Criterion, CriterionElement> entry2 : entry.getValue().getCriteria().entrySet()) {
-					if(entry2.getValue() != null && entry2.getValue().getCriterion() == null)
-						entry2.getValue().setCriterion(entry2.getKey());
+				CriteriaSet cs1 = entry.getValue();
+				if(cs1 != null) {
+					Map<Criterion, CriterionElement> c = cs1.getCriteria();
+					
+					for(Entry<Criterion, CriterionElement> entry2 : c.entrySet()) {
+						if(entry2.getValue() != null && entry2.getValue().getCriterion() == null)
+							entry2.getValue().setCriterion(entry2.getKey());
+					}
 				}
 			}
 		}
