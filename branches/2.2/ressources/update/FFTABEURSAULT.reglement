@@ -489,6 +489,6 @@
         </niveaux>
     </federation>
     <category>3</category>
-    <removable>true</removable>
+    <removable>false</removable>
     <inDatabase>true</inDatabase>
 </reglement>

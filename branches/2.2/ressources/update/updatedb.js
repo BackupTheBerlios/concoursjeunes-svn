@@ -29,6 +29,10 @@ if(dbVersion == 0) {
 	updateReglements();
 }
 
+if(dbVersion < 21) {
+	sql.executeUpdate("update REGLEMENT set REMOVABLE=FALSE where NOMREGLEMENT like 'FFTA%'");
+}
+
 if(dbVersion != org.concoursjeunes.ApplicationCore.DB_RELEASE_REQUIRED) {
 	//mise à jour du numero de version de la base
 	sql.executeScript("99-updatedbver.sql");
