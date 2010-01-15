@@ -31,6 +31,7 @@ if(dbVersion == 0) {
 
 if(dbVersion < 21) {
 	sql.executeUpdate("update REGLEMENT set REMOVABLE=FALSE where NOMREGLEMENT like 'FFTA%'");
+	sql.executeUpdate("update REGLEMENT set REMOVABLE=TRUE where NOMREGLEMENT like 'C%'");
 }
 
 if(dbVersion != org.concoursjeunes.ApplicationCore.DB_RELEASE_REQUIRED) {
