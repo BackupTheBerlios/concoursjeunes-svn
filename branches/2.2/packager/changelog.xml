@@ -188,5 +188,49 @@
     </void> 
    </object> 
   </void> 
+  <void method="add"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurélien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction d&apos;un problème empéchant l&apos;ouverture de certains concours initialisé dans une version antérieur
+  * Correction d&apos;un problème dans la gestion des réglements empéchant la suppression de certains réglements personnalisé
+  * Correction de fautes de frappe</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1263577996147</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.20.05</string> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="add"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurélien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction d&apos;un problème empéchant l&apos;édition d&apos;un nouveau règlement basé sur un règlement officiel</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1263725124232</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.20.06</string> 
+    </void> 
+   </object> 
+  </void> 
  </object> 
 </java> 
