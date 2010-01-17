@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE itext SYSTEM "ressources/templates/itext.dtd" >
+<itext creationdate="{CURRENT_TIME}"
+	producer="{producer}"
+	pagesize="A4"
+	orientation="landscape"
+	author="{author}"
+	title="Feuille de marque"
+	>
+	<bloc::scoresheet>
+	<!-- entete -->
+	<table columns="2" width="100.0\%" widths="20.0;80.0">
+		<row>
+			<!-- Logo du club -->
+			<cell verticalalign="Middle" rowspan="2">
+				<paragraph leading="18.0" align="Default">
+					<image url="{LOGO_CLUB_URI}" plainwidth="65.0" plainheight="65.0"></image>
+				</paragraph>
+			</cell>
+			<!-- Information club -->
+			<cell verticalalign="Default">
+				<paragraph size="12.0">
+					<chunk fontstyle="italic">{INTITULE_CLUB}</chunk>
+				</paragraph>
+				<paragraph>
+					<chunk size="12.0" fontstyle="normal">{INTITULE_CONCOURS}</chunk>
+					<newline />
+					<chunk size="12.0" fontstyle="normal">{VILLE_CLUB}, {DATE_CONCOURS}</chunk>
+				</paragraph>
+			</cell>
+		</row>
+	</table>
+	<newline />
+	<!-- tableau point -->
+	<table columns="{NB_POSITIONS}" width="100.0\%" widths="{PERCENT_POSITIONS}" cellpadding="2.0">
+		<row>
+			<bloc::positions>
+			<cell>
+				<table width="100.0\%" widths="{COLS_SIZE}" cellpadding="0.0">
+					<row>
+						<cell colspan="{SERIE_NB_COL}">
+							<!-- Etiquette concurrent -->
+							<paragraph>
+								<chunk size="10">{cid}</chunk>
+								<newline/>
+								<chunk size="10">{cclub}</chunk>
+								<newline/>
+								<chunk size="10">{clicence}</chunk>
+							</paragraph>
+							<paragraph>
+								<chunk size="10">{emplacement}</chunk>
+							</paragraph>
+						</cell>
+					</row>
+					<row>
+						<cell rowspan="2" horizontalalign="Center" leading="8.0" top="true" bottom="true" right="true" left="true"><phrase size="8">%template.volee%</phrase></cell>
+						<cell colspan="{NB_FLECHE_PAR_VOLEE}" leading="8.0" horizontalalign="Center" top="true" bottom="true" right="true" left="true"><phrase size="8">%template.ppf%</phrase></cell>
+						<cell rowspan="2" horizontalalign="Center" leading="8.0" top="true" bottom="true" right="true" left="true"><phrase size="8">%template.total.volee%</phrase></cell>
+						<cell rowspan="2" horizontalalign="Center" leading="8.0" top="true" bottom="true" right="true" left="true"><phrase size="8">%template.total.cumule%</phrase></cell>
+					</row>
+					<row>
+						<bloc::fleches>
+						<cell horizontalalign="Center" leading="8.0" top="true" bottom="true" right="true" left="true"><phrase size="8">{NUM_FLECHE}</phrase></cell>
+						</bloc::fleches>
+					</row>
+					<bloc::volees>
+					<row>
+						<cell horizontalalign="Center" leading="10.0" top="true" bottom="true" right="true" left="true">
+							<paragraph>
+								<chunk size="8">{NUM_VOLEE}</chunk>
+							</paragraph>
+						</cell>
+						<bloc::pointsparfleche>
+						<cell top="true" bottom="true" right="true" left="true"></cell>
+						</bloc::pointsparfleche>
+						<cell top="true" bottom="true" right="true" left="true"></cell>
+						<cell top="true" bottom="true" right="true" left="true"></cell>
+					</row>
+					</bloc::volees>
+					<row>
+						<cell colspan="{NB_COL_TOTAL}" top="true" bottom="true" right="true" left="true"><phrase size="8">%template.total% %template.distance%:</phrase></cell>
+						<cell top="true" bottom="true" right="true" left="true"></cell>
+					</row>
+				</table>
+			</cell>
+			<cell>
+			</cell>
+			</bloc::positions>
+		</row>
+		<row>
+			<bloc::complement>
+			<cell>
+				<table width="100.0\%" columns="6" widths="16.66;16.66;16.66;16.66;16.66;16.70">
+					<row>
+						<cell colspan="3" leading="8.0" horizontalalign="Center" top="true" bottom="true" right="true" left="true"><phrase size="8">10</phrase></cell>
+						<cell colspan="3" leading="8.0" horizontalalign="Center" top="true" bottom="true" right="true" left="true"><phrase size="8">9</phrase></cell>
+					</row>
+					<row>
+						<cell colspan="3" leading="8.0" horizontalalign="Center" top="true" bottom="true" right="true" left="true"><phrase size="8"> </phrase></cell>
+						<cell colspan="3" horizontalalign="Center" top="true" bottom="true" right="true" left="true"><phrase size="8"> </phrase></cell>
+					</row>
+					<row>
+						<cell colspan="6" leading="8.0" horizontalalign="Center" top="true" bottom="true" right="true" left="true"><phrase size="8">%template.barrage%</phrase></cell>
+					</row>
+					<row>
+						<cell colspan="2" leading="8.0" horizontalalign="Center" top="true" bottom="true" right="true" left="true"><phrase size="8">1</phrase></cell>
+						<cell colspan="2" leading="8.0" horizontalalign="Center" top="true" bottom="true" right="true" left="true"><phrase size="8">2</phrase></cell>
+						<cell colspan="2" leading="8.0" horizontalalign="Center" top="true" bottom="true" right="true" left="true"><phrase size="8">3</phrase></cell>
+					</row>
+					<row>
+						<cell colspan="2" leading="8.0" horizontalalign="Center" top="true" bottom="true" right="true" left="true"><phrase size="8"> </phrase></cell>
+						<cell colspan="2" leading="8.0" horizontalalign="Center" top="true" bottom="true" right="true" left="true"><phrase size="8"> </phrase></cell>
+						<cell colspan="2" leading="8.0" horizontalalign="Center" top="true" bottom="true" right="true" left="true"><phrase size="8"> </phrase></cell>
+					</row>
+					<row>
+						<cell colspan="3" leading="24.0" top="true" bottom="true" right="true" left="true">
+							<phrase size="8" leading="18.0">%template.archer%</phrase>
+						</cell>
+						<cell colspan="3" leading="24.0" top="true" bottom="true" right="true" left="true">
+							<phrase size="8" leading="18.0">%template.marqueur%</phrase>
+						</cell>
+					</row>
+				</table>
+			</cell>
+			<cell>
+			</cell>
+			</bloc::complement>
+		</row>
+	</table>
+	<newpage/>
+	</bloc::scoresheet>
+</itext>
