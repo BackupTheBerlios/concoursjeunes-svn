@@ -475,11 +475,11 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 			}
 			
 			//limite le nombre de départ possible
-			if(Integer.parseInt(jtfNombreDepart.getText()) > 9) {
-				JOptionPane.showMessageDialog(this, localisation.getResourceString("parametre.toomanystart"), localisation //$NON-NLS-1$
-						.getResourceString("parametre.toomanystart.title"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
-				return;
-			}
+//			if(Integer.parseInt(jtfNombreDepart.getText()) > 9) {
+//				JOptionPane.showMessageDialog(this, localisation.getResourceString("parametre.toomanystart"), localisation //$NON-NLS-1$
+//						.getResourceString("parametre.toomanystart.title"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
+//				return;
+//			}
 
 			/*
 			 * for(int i = 0; i < Integer.parseInt(jtfNombreDepart.getText()); i++) { ArrayList<DistancesEtBlason> lDB = ficheConcours.getConcurrentList().listDistancesEtBlason(

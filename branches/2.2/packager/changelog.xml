@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?> 
-<java version="1.6.0_16" class="java.beans.XMLDecoder"> 
+<java version="1.6.0_15" class="java.beans.XMLDecoder"> 
  <object class="java.util.ArrayList"> 
   <void method="add"> 
    <object class="org.ajdeveloppement.updater.Version"> 
@@ -229,6 +229,27 @@
     </void> 
     <void property="version"> 
      <string>2.20.06</string> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="add"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurélien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Suppression limitation du nombre de départ</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1266254347147</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.20.07</string> 
     </void> 
    </object> 
   </void> 
