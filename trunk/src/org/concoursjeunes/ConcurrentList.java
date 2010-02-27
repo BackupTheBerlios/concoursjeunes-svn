@@ -89,6 +89,7 @@ package org.concoursjeunes;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -199,6 +200,15 @@ public class ConcurrentList {
 	public void clear() {
 		archList.clear();
 	}
+	
+	/**
+	 * Extrait la liste complete des concurrents
+	 * 
+	 * @return liste des concurrents
+	 */
+	public List<Concurrent> list() {
+		return Collections.unmodifiableList(archList);
+	}
 
 	/**
 	 * Extrait la liste complete des concurrents pour un depart donnée
@@ -245,7 +255,8 @@ public class ConcurrentList {
 	 */
 	private List<Concurrent> list(Entite compagnie, CriteriaSet criteriaSet, int depart, Hashtable<Criterion, Boolean> criteriaFilter) {
 
-		assert compagnie != null;
+		if(compagnie == null)
+			return list(criteriaSet, depart, criteriaFilter);
 
 		//buffer de selection
 		ArrayList<Concurrent> sel = new ArrayList<Concurrent>();
@@ -273,9 +284,10 @@ public class ConcurrentList {
 	 */
 	public List<Concurrent> list(CriteriaSet criteriaSet, int depart, Map<Criterion, Boolean> criteriaFilter) {
 
-		assert criteriaSet != null;
+		if(criteriaSet == null)
+			return list(depart);
 
-		ArrayList<Concurrent> sel = new ArrayList<Concurrent>();
+		List<Concurrent> sel = new ArrayList<Concurrent>();
 
 		for(Concurrent concurrent : archList) {
 			if(criteriaSet.equals(concurrent.getCriteriaSet().getFilteredCriteriaSet(criteriaFilter)) && 
@@ -291,18 +303,17 @@ public class ConcurrentList {
 	 * 
 	 * @param distancesEtBlason - le D/B concerné
 	 * @param depart - le départ concerné ou -1 si tous
+	 * @param handicap true si on retourne les archers handicapé 2 fois (car il consomme 2 place
 	 * 
 	 * @return la liste des concurrents correspondant aux critères de recherche
 	 */
-	public List<Concurrent> list(Reglement reglement, DistancesEtBlason distancesEtBlason, int depart, boolean handicap) {
-
-		assert distancesEtBlason != null;
+	public List<Concurrent> list(DistancesEtBlason distancesEtBlason, int depart, boolean handicap) {
 
 		ArrayList<Concurrent> sel = new ArrayList<Concurrent>();
 
 		for(Concurrent concurrent : archList) {
 			if(depart == -1 || concurrent.getDepart() == depart) {
-				DistancesEtBlason db = DistancesEtBlason.getDistancesEtBlasonForConcurrent(reglement, concurrent);
+				DistancesEtBlason db = DistancesEtBlason.getDistancesEtBlasonForConcurrent(parametre.getReglement(), concurrent);
 
 				if(distancesEtBlason == null || db.equals(distancesEtBlason)) {
 					sel.add(concurrent);
@@ -349,29 +360,71 @@ public class ConcurrentList {
 	 * @return la liste trié
 	 */
 	public static List<Concurrent> sort(List<Concurrent> no_sort_list, SortCriteria sortCritere) {
-		List<Concurrent> sort_list = no_sort_list;
+		//List<Concurrent> sort_list = no_sort_list;
 		if(no_sort_list != null) {
 			switch(sortCritere) {
 				case SORT_BY_NAME:
-					Collections.sort(sort_list, new NameComparator());
+					return sort(no_sort_list, new NameComparator());
 		
-					break;
 				case SORT_BY_POINTS:
-					Collections.sort(sort_list, new PointsComparator());
-					Collections.reverse(sort_list);
+					List<Concurrent> sort_list = sort(no_sort_list, new PointsComparator());
+					Collections.reverse(sort_list); // pour les points on prend du plus élevé au plus faible
 		
-					break;
+					return sort_list;
 				case SORT_BY_TARGETS:
-					Collections.sort(sort_list, new TargetComparator());
-		
-					break;
+					return sort(no_sort_list, new TargetComparator());
+	
 				case SORT_BY_CLUBS:
-					Collections.sort(sort_list, new ClubComparator());
-		
-					break;
+					return sort(no_sort_list, new ClubComparator());
 			}
 		}
+		return null;
+	}
+	
+	/**
+	 * Retourne la liste des concurrents trié par le comparateur fournit en paramètre
+	 * 
+	 * @param no_sort_list la liste à trier
+	 * @param comparator le critère de tri
+	 * @return la liste trié
+	 */
+	public static List<Concurrent> sort(List<Concurrent> no_sort_list, Comparator<Concurrent> comparator) {
+		List<Concurrent> sort_list = no_sort_list;
+		if(no_sort_list != null)
+			Collections.sort(sort_list, comparator);
+		
 		return sort_list;
+	}
+	
+	/**
+	 * Classement des candidats
+	 * 
+	 * @return map contenant une liste de concurrent trié par jeux de critère de classement
+	 */
+	public Classement classement() {
+
+		Classement classement = new Classement();
+		Map<CriteriaSet, List<Concurrent>> concurrentsClasse = new HashMap<CriteriaSet, List<Concurrent>>();
+
+		CriteriaSet[] catList = CriteriaSet.listCriteriaSet(parametre.getReglement(), parametre.getReglement().getClassementFilter());
+
+		// Affectation des valeurs
+		for (CriteriaSet categorie : catList) {
+			// sort la liste des concurrents correspondant aux critères de
+			// recherche
+			List<Concurrent> unsortList = list(categorie, -1, parametre.getReglement().getClassementFilter());
+			if (unsortList.size() > 0) {
+				List<Concurrent> sortList = sort(unsortList, ConcurrentList.SortCriteria.SORT_BY_POINTS);
+			
+				concurrentsClasse.put(categorie, sortList);
+			}
+		}
+		
+		classement.setClassementPhaseQualificative(concurrentsClasse);
+		
+		
+
+		return classement;
 	}
 	
 	/**
@@ -623,8 +676,8 @@ public class ConcurrentList {
 	 * @param depart le numéro du depart pour lequel retourner le nombre d'archer ou -1 si tous les départs
 	 * @return le nombre d'archer sur une distance donné
 	 */
-	public int countArcher(Reglement reglement, DistancesEtBlason distancesEtBlason, int depart) {
-		return list(reglement, distancesEtBlason, depart, false).size();
+	public int countArcher(DistancesEtBlason distancesEtBlason, int depart) {
+		return list(distancesEtBlason, depart, false).size();
 	}
 	
 	/**
@@ -638,8 +691,8 @@ public class ConcurrentList {
 	 * @return le nombre d'archer sur une distance donné + le nombre de place bloqué par les archers
 	 * handicapé si handicap est à <i>true</i>
 	 */
-	public int countArcher(Reglement reglement, DistancesEtBlason distancesEtBlason, int depart, boolean handicap) {
-		return list(reglement, distancesEtBlason, depart, handicap).size();
+	public int countArcher(DistancesEtBlason distancesEtBlason, int depart, boolean handicap) {
+		return list(distancesEtBlason, depart, handicap).size();
 	}
 
 	/**
@@ -767,15 +820,37 @@ public class ConcurrentList {
 	}
 	
 	/**
-	 * Compare les concurrents par leurs scores
+	 * Compare les concurrents par leurs scores en phase qualificative ou sur une phase final
 	 * 
 	 * @author Aurélien JEOFFRAY
 	 *
 	 */
 	public static class PointsComparator implements Comparator<Concurrent> {
+		
+		private int phase = -1;
+		/**
+		 * compare les points en phase qualificative
+		 */
+		public PointsComparator() {
+			
+		}
+		
+		/**
+		 * compare les points sur une phase final
+		 * 
+		 * @param phase la phase sur laquelle comparer les points
+		 */
+		public PointsComparator(int phase) {
+			this.phase = phase;
+		}
+		
 		@Override
 		public int compare(Concurrent o1, Concurrent o2) {
-			return o1.compareScoreWith(o2);
+			if(phase < 0)
+				return o1.compareScoreWith(o2);
+			else if(phase < 6)
+				return o1.compareScorePhaseFinalWith(o2, phase);
+			return 0;
 		}
 	}
 }

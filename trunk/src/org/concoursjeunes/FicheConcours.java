@@ -497,29 +497,15 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	}
 
 	/**
-	 * méthode pour le classement des candidats
+	 * Classement des candidats
+	 * 
+	 * @deprecated utiliser de préférence {@link ConcurrentList}{@link #classement()}
+	 * 
+	 * @return map contenant une liste de concurrent trié par jeux de critère de classement
 	 */
+	@Deprecated
 	public Map<CriteriaSet, List<Concurrent>> classement() {
-
-		Map<CriteriaSet, List<Concurrent>> concurrentsClasse = new HashMap<CriteriaSet, List<Concurrent>>();
-
-		// Établit le classement des concurrents en fonction du nombre de points
-		// obtenue.
-		CriteriaSet[] catList = CriteriaSet.listCriteriaSet(parametre.getReglement(), parametre.getReglement().getClassementFilter());
-
-		// Affectation des valeurs
-		for (int i = 0; i < catList.length; i++) {
-			// sort la liste des concurrents correspondant aux critères de
-			// recherche
-			ArrayList<Concurrent> unsortList = new ArrayList<Concurrent>();
-			for (Concurrent concurrent : concurrentList.list(catList[i], -1, parametre.getReglement().getClassementFilter()))
-				unsortList.add(concurrent);
-			List<Concurrent> sortList = ConcurrentList.sort(unsortList, ConcurrentList.SortCriteria.SORT_BY_POINTS);
-			if (sortList.size() > 0)
-				concurrentsClasse.put(catList[i], sortList);
-		}
-
-		return concurrentsClasse;
+		return concurrentList.classement().getClassementPhaseQualificative();
 	}
 
 	/**
@@ -542,7 +528,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	public String getClassement() {
 		String strClassement = ""; //$NON-NLS-1$
 		if (concurrentList != null && concurrentList.countArcher() > 0) {
-			Map<CriteriaSet, List<Concurrent>> concurrentsClasse = classement();
+			Map<CriteriaSet, List<Concurrent>> concurrentsClasse = concurrentList.classement().getClassementPhaseQualificative();
 
 			AJTemplate tplClassement = templateClassementHTML;
 			String strArbitreResp = ""; //$NON-NLS-1$

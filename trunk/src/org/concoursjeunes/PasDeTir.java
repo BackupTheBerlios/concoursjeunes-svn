@@ -327,16 +327,12 @@ public class PasDeTir implements FicheConcoursListener {
 		for(DistancesEtBlason distancesEtBlason : lDB) {
 			//liste les archers pour le distance/blason
 			List<Concurrent> concurrents = ConcurrentList.sort(
-					ficheConcours.getConcurrentList().list(
-							ficheConcours.getParametre().getReglement(), 
-							distancesEtBlason, depart, false),
+					ficheConcours.getConcurrentList().list(distancesEtBlason, depart, false),
 					ConcurrentList.SortCriteria.SORT_BY_CLUBS);
 
 			//determine le nombre de concurrent pour la distance modéré avec les archers handicapé
 			// (un archer handicapé compte pour 2 personnes dans le placement sur pas de tir)
-			int nbConcurrent = ficheConcours.getConcurrentList().countArcher(
-					ficheConcours.getParametre().getReglement(), 
-					distancesEtBlason, depart, true);
+			int nbConcurrent = ficheConcours.getConcurrentList().countArcher(distancesEtBlason, depart, true);
 			//calcul le nombre et la position des cibles qui vont être occupé pour la distance
 			int startCible = curCible;
 			int endCible = curCible + (int)Math.ceil((double)nbConcurrent / (double)nbTireurParCible) - 1;
@@ -431,7 +427,7 @@ public class PasDeTir implements FicheConcoursListener {
 
 		int oldTarget = -1;
 		int oldPosition = -1;
-		//si le concurrent était déjà placé sur le pas de tir aupparavant le retirer
+		//si le concurrent était déjà placé sur le pas de tir auparavant le retirer
 		if(concurrent.getCible() > 0) {
 			oldTarget = concurrent.getCible()-1;
 			oldPosition = concurrent.getPosition();

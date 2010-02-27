@@ -1,7 +1,7 @@
 /*
- * Créé le 24 oct. 2009 à 11:53:38 pour ConcoursJeunes
+ * Créé le 16 févr. 2010 à 23:26:15 pour ConcoursJeunes
  *
- * Copyright 2002-2009 - Aurélien JEOFFRAY
+ * Copyright 2002-2010 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
  *
@@ -86,118 +86,78 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes.ui;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JPanel;
-
-import org.ajdeveloppement.apps.localisation.Localisator;
-import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.FicheConcours;
-import org.concoursjeunes.PhaseFinal;
-import org.w3c.dom.Document;
-
-import com.mxgraph.io.mxCodec;
-import com.mxgraph.swing.mxGraphComponent;
-import com.mxgraph.util.mxUtils;
-import com.mxgraph.view.mxGraph;
+package org.concoursjeunes;
 
 /**
  * @author Aurélien JEOFFRAY
  *
  */
-public class FicheConcoursFinalPane extends JPanel implements ActionListener {
-	
-	private mxGraph graph = new mxGraph();
-	
-	//paneau parent
-	private FicheConcoursPane ficheConcoursPane = null;
-	
-	//modele
-	private FicheConcours ficheConcours;
+public class Duel {
+	private Concurrent concurrent1;
+	private Concurrent concurrent2;
 
-	public FicheConcoursFinalPane(FicheConcoursPane ficheConcoursPane) {
-		this.ficheConcoursPane = ficheConcoursPane;
-		this.ficheConcours = ficheConcoursPane.getFicheConcours();
-		
-		init();
-		affectLibelle();
-		completePanel();
-	}
-	
-	private void init() {
-		graph.setCellsCloneable(false);
-		graph.setCellsEditable(false);
-		graph.setCellsDisconnectable(false);
-		graph.setCellsMovable(false);
-		graph.setCellsBendable(false);
-		
-		// Loads the defalt stylesheet from an external file
-		mxCodec codec = new mxCodec();
-		Document doc = mxUtils.loadDocument(ApplicationCore.staticParameters.getResourceString("path.ressources") + "/gui/default-style.xml"); //$NON-NLS-1$ //$NON-NLS-2$
-		codec.decode(doc.getDocumentElement(), graph.getStylesheet());
-		
-		mxGraphComponent graphComponent = new mxGraphComponent(graph);
-		graphComponent.setConnectable(false);
-		graphComponent.setDragEnabled(false);
-		graphComponent.setBackground(Color.WHITE);
-		graphComponent.setOpaque(false);
-		graphComponent.setZoomPolicy(mxGraphComponent.ZOOM_POLICY_WIDTH);
-		
-		setLayout(new BorderLayout());
-		add(graphComponent, BorderLayout.CENTER);
-
-	}
-	
-	private void affectLibelle() {
-		Localisator.localize(this, ficheConcoursPane.getLocalisation());
-	}
-	
-	private void completePanel() {
-		Object parent = graph.getDefaultParent();
-		
-		PhaseFinal phaseFinal = new PhaseFinal(ficheConcours);
-
-		graph.getModel().beginUpdate();
-		try
-		{
-//			List<Object> l1 = new ArrayList<Object>();
-//			for(Concurrent concurrent : ficheConcours.getConcurrentList().list(-1)) {
-//				l1.add(graph.insertVertex(parent, null, concurrent.getID(), 20, 20+l1.size()*70, 250, 50));
-//			}
-//			
-//			List<Object> l2 = new ArrayList<Object>();
-//			for(int i = 0; i < l1.size() / 2; i++) {
-//				l2.add(graph.insertVertex(parent, null, "", 400, 55+i*140, 250, 50));
-//			}
-//			
-//			Object vainqueur = graph.insertVertex(parent, null, "", 400+380, -5 +((l1.size()*70-20)/2), 250, 50);
-//			
-//			for(int i = 0; i < l1.size(); i++) {
-//				int l2i = (int)Math.floor(i / 2.0);
-//				graph.insertEdge(parent, null, "", l1.get(i), l2.get(l2i));
-//			}
-//			
-//			for(int i = 0; i < l2.size(); i++) {
-//				graph.insertEdge(parent, null, "", l2.get(i),vainqueur);
-//			}
-		}
-		finally
-		{
-			graph.getModel().endUpdate();
-		}	
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	/**
+	 * @param concurrent1
+	 * @param concurrent2
 	 */
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Raccord de méthode auto-généré
+	public Duel(Concurrent concurrent1, Concurrent concurrent2) {
+		this.concurrent1 = concurrent1;
+		this.concurrent2 = concurrent2;
+	}
 
+	/**
+	 * @return concurrent1
+	 */
+	public Concurrent getConcurrent1() {
+		return concurrent1;
+	}
+
+	/**
+	 * @param concurrent1 concurrent1 à définir
+	 */
+	public void setConcurrent1(Concurrent concurrent1) {
+		this.concurrent1 = concurrent1;
+	}
+
+	/**
+	 * @return concurrent2
+	 */
+	public Concurrent getConcurrent2() {
+		return concurrent2;
+	}
+
+	/**
+	 * @param concurrent2 concurrent2 à définir
+	 */
+	public void setConcurrent2(Concurrent concurrent2) {
+		this.concurrent2 = concurrent2;
+	}
+	
+	/**
+	 * Retourne le vainqueur du duel ou null si ex-aequo
+	 * 
+	 * @return le vainqueur du duel ou null si ex-aequo
+	 */
+	public Concurrent getWinner() {
+		int compareResult = concurrent1.compareScoreWith(concurrent2);
+		if(compareResult > 0)
+			return concurrent1;
+		else if(compareResult < 0)
+			return concurrent2;
+		return null;
+	}
+	
+	/**
+	 * Retourne le perdant du duel ou null si ex-aequo
+	 * 
+	 * @return le perdant du duel ou null si ex-aequo
+	 */
+	public Concurrent getLooser() {
+		int compareResult = concurrent1.compareScoreWith(concurrent2);
+		if(compareResult > 0)
+			return concurrent2;
+		else if(compareResult < 0)
+			return concurrent1;
+		return null;
 	}
 }

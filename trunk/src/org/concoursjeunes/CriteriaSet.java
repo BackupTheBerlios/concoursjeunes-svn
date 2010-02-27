@@ -253,6 +253,9 @@ public class CriteriaSet implements ObjectPersistance {
 	 * @return le jeux de critères filtré.
 	 */
 	public CriteriaSet getFilteredCriteriaSet(Map<Criterion, Boolean> criteriaFilter) {
+		if(criteriaFilter == null)
+			return this;
+		
 		CriteriaSet criteriaSet = new CriteriaSet();
 		criteriaSet.setReglement(reglement);
 		for(Criterion criterion : criteria.keySet()) {

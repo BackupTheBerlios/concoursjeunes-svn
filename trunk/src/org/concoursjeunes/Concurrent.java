@@ -91,6 +91,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
@@ -123,6 +124,7 @@ public class Concurrent extends Archer implements Cloneable {
 
 	private ArrayList<Integer> points	= new ArrayList<Integer>();
 	private int[] departages			= new int[2];
+	private int[] scoresPhasesFinal		= new int[6];
 
 	private int inscription             = UNINIT;
 	private boolean	presence			= false;
@@ -150,7 +152,11 @@ public class Concurrent extends Archer implements Cloneable {
 	 * @param criteriaSet le jeux de critères de distinction
 	 */
 	public void setCriteriaSet(CriteriaSet criteriaSet) {
+		Object oldValue = this.criteriaSet;
+		
 		this.criteriaSet = criteriaSet;
+		
+		pcs.firePropertyChange("criteriaSet", oldValue, criteriaSet); //$NON-NLS-1$
 	}
 	
 	/**
@@ -159,16 +165,21 @@ public class Concurrent extends Archer implements Cloneable {
 	 * @param points - la grille des scores du concurrent
 	 */
 	public void setScore(List<Integer> points) {
+		Object oldValue = this.points;
+		
 		this.points = (ArrayList<Integer>)points;
+		
+		pcs.firePropertyChange("score", oldValue, points); //$NON-NLS-1$
 	}
 
 	/**
-	 * Donne la grille des scores du concurrent
+	 * Donne la grille des scores du concurrent. La liste retourné
+	 * n'est pas modifiable.
 	 * 
 	 * @return la grille des scores
 	 */
 	public List<Integer> getScore() {
-		return points;
+		return Collections.unmodifiableList(points);
 	}
 
 	/**
@@ -207,6 +218,57 @@ public class Concurrent extends Archer implements Cloneable {
 		this.departages = departages;
 		
 		pcs.firePropertyChange("departages", oldValue, departages); //$NON-NLS-1$
+	}
+	
+	/**
+	 * Retourne le tableau des scores des phases finales réalisé par le
+	 * concurrent
+	 * 
+	 * @return le tableau des scores des phases finales
+	 */
+	public int[] getScoresPhasesFinal() {
+		return scoresPhasesFinal;
+	}
+
+	/**
+	 * Définit le tableau des scores des phases finales réalisé par le
+	 * concurrent
+	 * @param scoresPhasesFinal le tableau des scores des phases finales
+	 */
+	public void setScoresPhasesFinal(int[] scoresPhasesFinal) {
+		Object oldValue = this.scoresPhasesFinal;
+		
+		this.scoresPhasesFinal = scoresPhasesFinal;
+		
+		pcs.firePropertyChange("scoresPhasesFinal", oldValue, departages); //$NON-NLS-1$
+	}
+	
+	/**
+	 * retourne le score de la phase final fournit en paramètre
+	 * 
+	 * @param phase la phase pour laquelle retourner le score
+	 * @return le score de la phase
+	 */
+	public int getScorePhasefinal(int phase) {
+		if(phase < 0 || phase > 5)
+			return 0;
+		return scoresPhasesFinal[phase];
+	}
+	
+	/**
+	 * définit le score de la phase final fournit en paramètre
+	 * 
+	 * @param phase la phase pour laquelle définir le score
+	 * @param score le score de la phase
+	 */
+	public void setScorePhasefinal(int phase, int score) {
+		if(phase >= 0 && phase < 6) {
+			Object oldValue = this.scoresPhasesFinal;
+			
+			scoresPhasesFinal[phase] = score;
+			
+			pcs.firePropertyChange("scoresPhasesFinal", oldValue, departages); //$NON-NLS-1$
+		}
 	}
 
 	/**
@@ -450,6 +512,13 @@ public class Concurrent extends Archer implements Cloneable {
 		return compareDepartageWith(other, 0);
 	}
 	
+	/**
+	 * compare un départage d'un concurrent.
+	 * 
+	 * @param other le concurrent avec lequel comparer le départage
+	 * @param indexDepartage l'index de départ du départage à comparer
+	 * @return 1 si supérieur, -1 si l'autre concurrent est supérieur ou 0 si ex-aequo
+	 */
 	private int compareDepartageWith(Concurrent other, int indexDepartage) {
 		if(indexDepartage < departages.length) {
 			if(indexDepartage >= other.getDepartages().length) {
@@ -463,6 +532,24 @@ public class Concurrent extends Archer implements Cloneable {
 			}
 			return -1;
 		}
+		return 0;
+	}
+	
+	/**
+	 * compare les scores d'une phase
+	 * 
+	 * @param other le concurrent avec lequel comparer le score de la phase
+	 * @param phase la phase à comparer
+	 * @return 1 si supérieur, -1 si other est supérieur ou 0
+	 */
+	public int compareScorePhaseFinalWith(Concurrent other, int phase) {
+		if(phase < 0 || phase > 5)
+			return 0;
+		
+		if(getScorePhasefinal(phase) > other.getScorePhasefinal(phase))
+			return 1;
+		else if(getScorePhasefinal(phase) < other.getScorePhasefinal(phase))
+			return -1;
 		return 0;
 	}
 	

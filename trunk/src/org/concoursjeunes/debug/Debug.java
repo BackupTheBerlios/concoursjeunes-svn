@@ -116,7 +116,10 @@ public class Debug {
     public static void resetPoints(FicheConcours ficheConcours) {
         for(Concurrent concurrent : ficheConcours.getConcurrentList().list(-1)) {
             for(int i = 0; i < concurrent.getScore().size(); i++) {
-            	concurrent.getScore().set(i, 0);
+            	List<Integer> scores = new ArrayList<Integer>(concurrent.getScore());
+            	scores.set(i, 0);
+            	
+            	concurrent.setScore(scores);
             }
             int[] departages = new int[concurrent.getDepartages().length];
             concurrent.setDepartages(departages);
