@@ -171,22 +171,13 @@ public class PasDeTir implements FicheConcoursListener {
 	 * @return le nombre de tireur par cible à utiliser
 	 */
 	private int getOptimalRythme(List<DistancesEtBlason> lDB) {
-		int nbArcherModule = 0;
-		int nbTireurParCible = 0;
 		for(int i = 2; i <= ficheConcours.getParametre().getNbTireur(); i+=2) {
-			nbArcherModule = 0;
-			for(DistancesEtBlason distancesEtBlason : lDB) {
-				TargetsOccupation occupationCibles = getTargetsOccupation(ficheConcours.getParametre().getNbTireur()).get(distancesEtBlason);
-				nbArcherModule += occupationCibles.getPlaceOccupe() % i + occupationCibles.getPlaceOccupe();
-			}
-			if(nbArcherModule <= ficheConcours.getParametre().getNbCible() * i) {
-				nbTireurParCible = i;
-				
-				break;
-			}
+			Hashtable<DistancesEtBlason, TargetsOccupation> targetsOccupation = getTargetsOccupation(i);
+			if(targetsOccupation != null)
+				return i;
 		}
 		
-		return nbTireurParCible;
+		return 0;
 	}
 	
 	/**
@@ -200,7 +191,9 @@ public class PasDeTir implements FicheConcoursListener {
 		List<DistancesEtBlason> distancesEtBlasons = ficheConcours.getParametre().getReglement().getListDistancesEtBlason();
 		
 		//effectue une simulation de placement
-		placementConcurrents(nbtireurparcible, true);
+		boolean success = placementConcurrents(nbtireurparcible, true);
+		if(!success)
+			return null;
 		
 		//boucle sur chacune des cibles de la simulation pour en extraire le résultat
 		for(Target target : simulationTargets) {
@@ -228,15 +221,16 @@ public class PasDeTir implements FicheConcoursListener {
 	public int getNbFreeTargets(int nbtireurparcible) {
 		int nbCibleOccupe = 0;
 		
-		placementConcurrents(nbtireurparcible, true);
-		
-		for(Target target : simulationTargets) {
-			if(target.getNbArcher() > 0)
-				nbCibleOccupe++;
+		if(placementConcurrents(nbtireurparcible, true)) {
+			for(Target target : simulationTargets) {
+				if(target.getNbArcher() > 0)
+					nbCibleOccupe++;
+			}
+	
+			//nb cible total - nb cible occupe = nb cible libre
+			return ficheConcours.getParametre().getNbCible() - nbCibleOccupe;
 		}
-
-		//nb cible total - nb cible occupe = nb cible libre
-		return ficheConcours.getParametre().getNbCible() - nbCibleOccupe;
+		return 0;
 	}
 	
 	/**
@@ -302,8 +296,11 @@ public class PasDeTir implements FicheConcoursListener {
 	 * @param simulationMode si <i>true</i> se contente de simulé le placement sans
 	 * le réaliser concrètement en plaçant les archers dans simulationTargets en lieu
 	 * et place de targets. Le but est simplement de déterminer la place disponible restante
+	 * 
+	 * @return true si le placement est effectué avec succès, false si le placement est
+	 * impossible
 	 */
-	private void placementConcurrents(int nbtireurparcible, boolean simulationMode) {
+	private boolean placementConcurrents(int nbtireurparcible, boolean simulationMode) {
 		int curCible = 1;
 		List<DistancesEtBlason> lDB = ficheConcours.getConcurrentList().listDistancesEtBlason(ficheConcours.getParametre().getReglement(), true, depart);
 		
@@ -312,6 +309,9 @@ public class PasDeTir implements FicheConcoursListener {
 		int nbTireurParCible = nbtireurparcible;
 		if(!simulationMode)
 			nbTireurParCible = getOptimalRythme(lDB);
+		
+		if(nbTireurParCible == 0)
+			return false;
 		
 		List<Target> currentTargetsTable;
 		if(simulationMode)
@@ -354,6 +354,9 @@ public class PasDeTir implements FicheConcoursListener {
 					endCible += 1;
 			}
 			
+			if(endCible > ficheConcours.getParametre().getNbCible())
+				return false;
+			
 			if(nbConcurrent > concurrents.size()) { //si on a des archers handicapé dans le groupe
 				//extraire les archers handicapé pour les placer en premier
 				//afin d'éviter d'avoir des problèmes pour les placer
@@ -384,6 +387,8 @@ public class PasDeTir implements FicheConcoursListener {
 		}
 		
 		firePasDeTirChanged();
+		
+		return true;
 	}
 	
 	private int placementConcurrent(Concurrent concurrent, int startTarget, int curTarget, int endTarget, int nbTireurParCible, boolean simulationMode) {
