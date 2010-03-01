@@ -607,8 +607,11 @@ public class FicheConcoursDepartPane extends JPanel
 	private void selectConcurrentInTree(Concurrent concurrent) {
 		TreePath childPath = getTreePathForConcurrent(concurrent);
 		if (childPath != null) {
-			if (treeTarget.getSelectionPath() != null)
+			if (treeTarget.getSelectionPath() != null) {
+				if(concurrent == treeTarget.getSelectionPath().getLastPathComponent())
+					return;
 				treeTarget.collapsePath(treeTarget.getSelectionPath().getParentPath());
+			}
 			treeTarget.setSelectionPath(childPath);
 		}
 	}
@@ -706,8 +709,6 @@ public class FicheConcoursDepartPane extends JPanel
 					treeTarget.setSelectionPath(destinationPath);
 	
 					if (destinationPath.getLastPathComponent() instanceof Concurrent) {
-						ajxlConcurrent.setSelectedValue(destinationPath.getLastPathComponent(), true);
-	
 						popup.show(e.getComponent(), e.getX(), e.getY());
 					}
 				}
@@ -736,6 +737,7 @@ public class FicheConcoursDepartPane extends JPanel
 				ficheConcoursPane.openConcurrentDialog((Concurrent) ajxlConcurrent.getSelectedValue(), getSortedConcurrentInList());
 			} else if (e.getModifiers() == InputEvent.BUTTON3_MASK) { //
 				int elemIndex = ajxlConcurrent.locationToIndex(e.getPoint());
+				//elemIndex = ajxlConcurrent.convertIndexToModel(elemIndex);
 				if(elemIndex > -1) {
 					ajxlConcurrent.setSelectedIndex(elemIndex);
 	
@@ -933,13 +935,16 @@ public class FicheConcoursDepartPane extends JPanel
 	 * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
 	 */
 	public void valueChanged(TreeSelectionEvent e) {
-		TreePath destinationPath = e.getPath();
-
-		// recupere le noeud destination et son parent
-		Object node = destinationPath.getLastPathComponent();
-		if (node instanceof Concurrent) {
-			
-			ajxlConcurrent.setSelectedIndex(ajxlConcurrent.convertIndexToView(lstModelConcurrent.indexOf(node)));
+		if(e.getNewLeadSelectionPath() != null && e.getOldLeadSelectionPath() != e.getNewLeadSelectionPath()) {
+			TreePath destinationPath = e.getNewLeadSelectionPath();
+	
+			// recupere le noeud destination et son parent
+			Object node = destinationPath.getLastPathComponent();
+			System.out.println(ajxlConcurrent.getSelectedValue());
+			if (node instanceof Concurrent) {
+				if(node != ajxlConcurrent.getSelectedValue())
+					ajxlConcurrent.setSelectedIndex(ajxlConcurrent.convertIndexToView(lstModelConcurrent.indexOf(node)));
+			}
 		}
 	}
 

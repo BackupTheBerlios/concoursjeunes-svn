@@ -671,7 +671,6 @@ public class ConcurrentList {
 	/**
 	 * Donne le nombre de concurrent pour le distance/blason donné
 	 * 
-	 * @param reglement le règlement permettant de calculer les distances/blasons
 	 * @param distancesEtBlason le pas de tir pour lequel retourné le nombre d'archer
 	 * @param depart le numéro du depart pour lequel retourner le nombre d'archer ou -1 si tous les départs
 	 * @return le nombre d'archer sur une distance donné
@@ -684,7 +683,6 @@ public class ConcurrentList {
 	 * Donne le nombre de concurrent pour le distance/blason donné en comptant ou non les
 	 * places supplémentaire réservé aux archer handicapé
 	 * 
-	 * @param reglement le règlement permettant de calculer les distances/blasons
 	 * @param distancesEtBlason le pas de tir pour lequel retourné le nombre d'archer
 	 * @param depart le numéro du depart pour lequel retourner le nombre d'archer ou -1 si tous les départs
 	 * @param handicap si <i>true</i>, alors compter 2 places par archers handicapé

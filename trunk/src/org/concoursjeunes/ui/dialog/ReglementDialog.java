@@ -248,8 +248,8 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	 * Initialise la boite de dialogue de paramètrage d'un réglement
 	 * 
 	 * @param parentframe la fenêtre parente de la boite de dialogue
-	 * @param reglement
-	 * @param profile
+	 * @param reglement le reglement à afficher/manipuler
+	 * @param localisation la source de localisation pour les libellé de la fenêtre
 	 */
 	public ReglementDialog(Window parentframe, Reglement reglement, AjResourcesReader localisation) {
 		super(parentframe, ModalityType.TOOLKIT_MODAL);

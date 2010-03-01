@@ -94,6 +94,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
 import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
 
 /**
@@ -103,6 +106,7 @@ import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
  * @author  Aurélien Jeoffray
  * @version  3.0
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Concurrent extends Archer implements Cloneable {
 	/**
 	 * Statut de l'archer: réservé

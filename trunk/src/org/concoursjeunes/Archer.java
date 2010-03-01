@@ -90,6 +90,9 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
 import org.concoursjeunes.manager.ConcurrentManager;
 
 /**
@@ -98,6 +101,7 @@ import org.concoursjeunes.manager.ConcurrentManager;
  * @author Aurélien JEOFFRAY
  * @version 1.0
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Archer implements Cloneable {
 
 	private String nomArcher        = ""; //$NON-NLS-1$
@@ -107,7 +111,7 @@ public class Archer implements Cloneable {
 	private boolean certificat      = false;
 	private boolean handicape		= false;
 	
-	protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+	protected transient PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
 	/**
 	 * Constructeur vide nécessaire à l'initialisation correct de l'objet

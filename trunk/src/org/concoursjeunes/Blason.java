@@ -99,6 +99,8 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
 import org.ajdeveloppement.commons.persistance.ObjectPersistance;
@@ -120,6 +122,7 @@ import org.concoursjeunes.builders.BlasonBuilder;
  */
 @SqlTable(name="BLASONS")
 @SqlPrimaryKey(fields={"NUMBLASON"},generatedidField=@SqlGeneratedIdField(name="NUMBLASON",type=Types.INTEGER))
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Blason implements ObjectPersistance {
 	
 	@XmlAttribute

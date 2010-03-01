@@ -1,5 +1,7 @@
 /*
- * Copyright 2002-2009 - Aurélien JEOFFRAY
+ * Créé le 20 févr. 2010 à 20:11:07 pour ConcoursJeunes
+ *
+ * Copyright 2002-2010 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
  *
@@ -34,7 +36,7 @@
  * à l'utiliser et l'exploiter dans les mêmes conditions de sécurité. 
  * 
  * Le fait que vous puissiez accéder à cet en-tête signifie que vous avez 
- * pri connaissance de la licence CeCILL, et que vous en avez accepté les
+ * pris connaissance de la licence CeCILL, et que vous en avez accepté les
  * termes.
  *
  * ENGLISH:
@@ -69,11 +71,11 @@
  * knowledge of the CeCILL license and that you accept its terms.
  *
  *  *** GNU GPL Terms *** 
- *  
+ * 
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  any later version.
+ *  (at your option) any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -82,135 +84,134 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. 
+ *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes;
+package org.concoursjeunes.plugins.scriptext;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
+import org.concoursjeunes.plugins.Plugin;
 
 /**
- * Paramétrage commun à Configuration et Paramètre
- * 
  * @author Aurélien JEOFFRAY
+ *
  */
-public class DefaultParameters {
-	private Entite club = new Entite();
-	private String intituleConcours = "Spécial Jeunes"; //$NON-NLS-1$
+@XmlRootElement(name="scriptext")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class ScriptExtention {
+	private Plugin.Type type;
+	private String scriptFile = "script.js";
+	private String mainFunction;
+	private boolean asynchrone = false;
+	@XmlTransient
+	private String mainPath = "";
+	@XmlTransient
+	private Invocable invocableEngine;
 	
-	private int nbCible             = 10;
-	private int nbTireur            = 4;
-	private int nbDepart            = 1;
-
-	public DefaultParameters() {
-
+	public ScriptExtention() {
+		
 	}
 
 	/**
-	 * Retourne l'intitulé du concours
+	 * Indique le type d'extention. Correspond au moment ou le
+	 * script est exécuté.
 	 * 
-	 * @return Renvoie l'intitulé du concours
+	 * @return le type d'extention
 	 */
-	public String getIntituleConcours() {
-		return intituleConcours;
+	public Plugin.Type getType() {
+		return type;
+	}
+
+	public void setType(Plugin.Type type) {
+		this.type = type;
+	}
+
+	public String getScriptFile() {
+		return scriptFile;
+	}
+
+	public void setScriptFile(String scriptFile) {
+		this.scriptFile = scriptFile;
+	}
+
+	public String getMainFunction() {
+		return mainFunction;
+	}
+
+	public void setMainFunction(String mainFunction) {
+		this.mainFunction = mainFunction;
 	}
 
 	/**
-	 * Définit l'intitulé du concours ou intitulé par défaut
+	 * <p>Pour les extentions de Type STARTUP, indique
+	 * si elle doivent se lancer de manière synchrone ou asynchrone.</p>
+	 * <p>En mode synchrone, le script est exécuté dans le même Thread que l'application
+	 * et bloque la suite du processus de lancement tant qu'il n'est pas terminé.
+	 * En asynchrone, lance le script et poursuit en parallèle la phase
+	 * d'initialisation du programme</p>
 	 * 
-	 * @param intituleConcours l'intitulé du concours
+	 * @return <code>true</code> si l'on souhaite passer en asynchrone.
 	 */
-	public void setIntituleConcours(String intituleConcours) {
-		this.intituleConcours = intituleConcours;
+	public boolean isAsynchrone() {
+		return asynchrone;
+	}
+
+	public void setAsynchrone(boolean asynchrone) {
+		this.asynchrone = asynchrone;
+	}
+
+	public String getMainPath() {
+		return mainPath;
+	}
+
+	public void setMainPath(String mainPath) {
+		this.mainPath = mainPath;
+	}
+
+	/**
+	 * Compile le script de l'extention.
+	 * 
+	 * @throws MalformedURLException
+	 * @throws IOException
+	 * @throws ScriptException
+	 */
+	public void compileScript() throws MalformedURLException, IOException, ScriptException {
+		ScriptEngineManager se = new ScriptEngineManager();
+		ScriptEngine scriptEngine = se.getEngineByName("JavaScript"); //$NON-NLS-1$
+		if(scriptEngine != null) {
+			Reader reader = new BufferedReader(new InputStreamReader(
+					new URL(mainPath + "/" + scriptFile).openStream())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+			scriptEngine.eval(reader);
+			reader.close();
+			
+			invocableEngine = (Invocable)scriptEngine;
+		}
 	}
 	
 	/**
-	 * Retourne le nombre de cible sur le concours
+	 * Execute le script à la condition qu'il ai été préalablement
+	 * compilé avec {@link #compileScript()}.
 	 * 
-	 * @return le nombre de cible
+	 * @param args Les arguments de la fonction principal du script
+	 * @throws ScriptException
+	 * @throws NoSuchMethodException
 	 */
-	public int getNbCible() {
-		return nbCible;
-	}
-
-	/**
-	 * Définit le nombre de cible sur le concours
-	 * 
-	 * @param nbCible le nombre de cible
-	 */
-	public void setNbCible(int nbCible) {
-		this.nbCible = nbCible;
-	}
-
-	/**
-	 * Retourne le nombre de départ sur le concours
-	 * 
-	 * @return le nombre de départ
-	 */
-	public int getNbDepart() {
-		return nbDepart;
-	}
-
-	/**
-	 * Définit le nombre de départ sur le concours. Ce nombre de ne peut excédé 9
-	 * 
-	 * @param nbDepart le nombre de départ du concours. <!--Si le nombre fournit est supérieur à 9,
-	 * 9 sera enregistré-->
-	 */
-	public void setNbDepart(int nbDepart) {
-		//if(nbDepart > 9)
-		//	nbDepart = 9;
-		this.nbDepart = nbDepart;
-	}
-
-	/**
-	 * Retourne le nombre de tireur par cible accepté sur le concours<br>
-	 * Ce nombre est de:
-	 * <ul>
-	 * <li>2 pour un rythme AB</li>
-	 * <li>3 pour un rythme ABC (Rare)</li>
-	 * <li>4 pour un rythme AB.CD</li>
-	 * <li>6 pour un rythme ABC.DEF (Rare)</li>
-	 * </ul>
-	 * A l'heure actuel, l'interface graphique ne supporte que les modes 2 et 4,
-	 * les modes 3 et 6 sont déconseillé car pouvant entraîner des cas non déterminé
-	 * 
-	 * @return renvoie le nombre de tireur par cible
-	 */
-	public int getNbTireur() {
-		return nbTireur;
-	}
-
-	/**
-	 * Définit le nombre de tireur par cible accepté sur le concours<br>
-	 * Ce nombre est de:
-	 * <ul>
-	 * <li>2 pour un rythme AB</li>
-	 * <li>3 pour un rythme ABC (Rare)</li>
-	 * <li>4 pour un rythme AB.CD</li>
-	 * <li>6 pour un rythme ABC.DEF (Rare)</li>
-	 * </ul>
-	 * A l'heure actuel, l'interface graphique ne supporte que les modes 2 et 4,
-	 * les modes 3 et 6 sont déconseillé car pouvant entraîner des cas non déterminé
-	 * 
-	 * @param nbTireur le nombre de tireur par cible
-	 */
-	public void setNbTireur(int nbTireur) {
-		this.nbTireur = nbTireur;
-	}
-
-	/**
-	 * Retourne le club organisateur du concours
-	 * 
-	 * @return le club organisateur
-	 */
-	public Entite getClub() {
-		return club;
-	}
-
-	/**
-	 * Définit le club organisateur du concours
-	 * 
-	 * @param club le club organisateur
-	 */
-	public void setClub(Entite club) {
-		this.club = club;
+	public void runScript(Object... args) throws ScriptException, NoSuchMethodException {
+		if(invocableEngine != null && mainFunction != null)
+			invocableEngine.invokeFunction(mainFunction, args);
 	}
 }

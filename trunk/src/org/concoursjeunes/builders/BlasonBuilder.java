@@ -122,7 +122,7 @@ public class BlasonBuilder {
 	 * Le jeux de résultat doit posseder les champs de la table BLASONS.
 	 * Si le jeux de résultat n'est pas valide, retourne une exception <i>SQLException</i>
 	 * 
-	 * @param rs le jeux de résultat à partir duquel construire l'objet blason
+	 * @param numblason l'id du blason à charger
 	 * @return le blason construit à partir du jeux de résultat
 	 * @throws SQLException retourné si le jeux de résultat ne contient pas l'ensemble<br>
 	 * des champs de la table BLASONS 

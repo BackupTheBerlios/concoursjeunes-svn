@@ -99,7 +99,7 @@ import org.concoursjeunes.event.FicheConcoursListener;
 
 
 /**
- * Gestion de la phase final
+ * Gestion de la phase finale
  * 
  * @author Aurélien JEOFFRAY
  *
@@ -146,7 +146,7 @@ public class PhaseFinal implements PropertyChangeListener,FicheConcoursListener 
 	/**
 	 * Retourne la liste des catégories utilisé sur la phase final
 	 * 
-	 * @return
+	 * @return collection de jeux de critères représenté sur les phases finales
 	 */
 	public List<CriteriaSet> getCriteriaSetPhasesFinal() {
 		List<CriteriaSet> csUse = new ArrayList<CriteriaSet>(classement.keySet());
