@@ -262,7 +262,7 @@
      <string>Aurélien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
     </void> 
     <void property="changeInfos"> 
-     <string>  * Correction d&apos;un problème empéchant dans certaines configuration le placement automatique des concurrents
+     <string>  * Correction d&apos;un problème empéchant dans certaines configurations le placement automatique des concurrents
   * Correction d&apos;erreurs dans la documentation</string> 
     </void> 
     <void property="dateVersion"> 
