@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<panel class="javax.swing.JPanel" name="FicheConcoursPane">
+	<tabbedpane name="tabbedpane">
+		<tab name="onglet.gestionarcher">
+			<panel class="javax.swing.JPanel" name="fichesDepart" />
+		</tab>
+		<tab name="onglet.classementindividuel">
+			<icon src="ressources/archer16x16.png" />
+			<panel class="javax.swing.JPanel" layout="java.awt.BorderLayout">
+				<panel class="javax.swing.JPanel" name="northpaneindiv" constraints="java.awt.BorderLayout.NORTH" />
+				<panel class="javax.swing.JScrollPane" name="paneindiv" constraints="java.awt.BorderLayout.CENTER" layout="java.awt.BorderLayout">
+					<panel type="intern" name="jepClassIndiv" constraints="java.awt.BorderLayout.CENTER" />
+				</panel>
+			</panel>
+		</tab>
+		<tab name="onglet.classementequipe">
+			<icon src="ressources/Equipes16x16.png" />
+			<panel class="javax.swing.JPanel" layout="java.awt.BorderLayout">
+				<panel class="javax.swing.JPanel" name="northpaneequipe" constraints="java.awt.BorderLayout.NORTH" />
+				<panel class="javax.swing.JScrollPane" name="paneequipe" constraints="java.awt.BorderLayout.CENTER" layout="java.awt.BorderLayout">
+					<panel type="intern" name="jepClassTeam" constraints="java.awt.BorderLayout.CENTER" />
+				</panel>
+			</panel>
+		</tab>
+	</tabbedpane>
+</panel>

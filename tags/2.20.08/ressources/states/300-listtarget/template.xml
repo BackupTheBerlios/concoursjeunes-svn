@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE ITEXT SYSTEM "ressources/templates/itext.dtd">
+<itext
+		creationdate="{CURRENT_TIME}"
+		producer="iTextXML by lowagie.com"
+		title="%state.title%">
+	<paragraph leading="18.0" font="unknown" align="Center" indentationleft="10.0">
+		<chunk size="18.0">%state.title%</chunk>
+	</paragraph>
+	<newline />
+	<table columns="5" width="100.0\%" cellpadding="1.0" widths="36.0;36.0;10;9.0;9.0">
+		<row>
+			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" style="bold">%state.identity%</phrase>
+			</cell>
+			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" style="bold">%state.club%</phrase>
+			</cell>
+			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" style="bold">%state.licence%</phrase>
+			</cell>
+			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" style="bold">%state.category%</phrase>
+			</cell>
+			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" style="bold">%state.target%</phrase>
+			</cell>
+		</row>
+		<bloc::lignes>
+		<row>
+			<cell header="false" horizontalalign="Default" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" >{IDENTITEE}</phrase>
+			</cell>
+			<cell header="false" horizontalalign="Default" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" >{CLUB}</phrase>
+			</cell>
+			<cell header="false" horizontalalign="Center" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" >{NUM_LICENCE}</phrase>
+			</cell>
+			<cell header="false" horizontalalign="Center" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" >{categorie}</phrase>
+			</cell>
+			<cell header="false" horizontalalign="Center" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" >{CIBLE}</phrase>
+			</cell>
+		</row>
+		</bloc::lignes>
+	</table>
+	<paragraph align="Left">
+		<chunk size="10.0">%state.nbparticipant%: {NB_PARTICIPANTS}</chunk>
+	</paragraph>
+</itext>
