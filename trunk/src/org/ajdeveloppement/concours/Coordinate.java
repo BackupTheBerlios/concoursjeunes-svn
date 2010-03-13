@@ -1,7 +1,7 @@
 /*
- * Créé le 01 fev. 08 pour ConcoursJeunes
+ * Créé le 13 mars 2010 à 11:42:38 pour ConcoursJeunes
  *
- * Copyright 2002-2008 - Aurélien JEOFFRAY
+ * Copyright 2002-2010 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
  *
@@ -36,7 +36,7 @@
  * à l'utiliser et l'exploiter dans les mêmes conditions de sécurité. 
  * 
  * Le fait que vous puissiez accéder à cet en-tête signifie que vous avez 
- * pri connaissance de la licence CeCILL, et que vous en avez accepté les
+ * pris connaissance de la licence CeCILL, et que vous en avez accepté les
  * termes.
  *
  * ENGLISH:
@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  any later version.
+ *  (at your option) any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -86,96 +86,184 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes.manager;
+package org.ajdeveloppement.concours;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlTransient;
+
+import org.ajdeveloppement.commons.persistance.ObjectPersistance;
 import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
+import org.ajdeveloppement.commons.persistance.StoreHelper;
+import org.ajdeveloppement.commons.persistance.sql.SqlField;
+import org.ajdeveloppement.commons.persistance.sql.SqlForeignKey;
+import org.ajdeveloppement.commons.persistance.sql.SqlPrimaryKey;
+import org.ajdeveloppement.commons.persistance.sql.SqlStoreHandler;
+import org.ajdeveloppement.commons.persistance.sql.SqlTable;
 import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.Blason;
-import org.concoursjeunes.DistancesEtBlason;
-import org.concoursjeunes.builders.BlasonBuilder;
 
 /**
- * Gére la construction des blasons à partir des données trouvé en base
- * 
  * @author Aurélien JEOFFRAY
  *
  */
-public class BlasonManager {
+@XmlAccessorType(XmlAccessType.FIELD)
+@SqlTable(name="COORDINATE")
+@SqlPrimaryKey(fields="ID_COORDINATE")
+public class Coordinate implements ObjectPersistance, Cloneable {
 	
-	/**
-	 * Retourne le blason associé à une ligne distance/blason d'un réglement donnée
-	 * 
-	 * @param numdistanceblason le numero de l'objet distanceEtBlason dont le blason fait partie
-	 * @param numreglement le numrero de reglement
-	 * @return le blason associé à la ligne d/b du réglement donnée
-	 * @throws ObjectPersistanceException 
-	 */
-	public static Blason findBlasonAssociateToDistancesEtBlason(DistancesEtBlason distancesEtBlason) throws ObjectPersistanceException {
+	public enum Type {
+		HOME_PHONE("HOME_PHONE"), //$NON-NLS-1$
+		WORK_PHONE("WORK_PHONE"), //$NON-NLS-1$
+		MOBILE_PHONE("MOBILE_PHONE"), //$NON-NLS-1$
+		MAIL("MAIL"); //$NON-NLS-1$
 		
-		String sql = "select NUMBLASON from DISTANCESBLASONS " //$NON-NLS-1$
-			+ "where NUMDISTANCESBLASONS=? and NUMREGLEMENT=?"; //$NON-NLS-1$
-		int numBlason = 0;
+		private final String value;
 		
-		try {	
-			PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
-			
-			pstmt.setInt(1, distancesEtBlason.getNumdistancesblason());
-			pstmt.setInt(2, distancesEtBlason.getCriteriaSet().getReglement().getNumReglement());
-			
-			ResultSet rs = pstmt.executeQuery();
-			try {
-				if(rs.first())
-					numBlason = rs.getInt("NUMBLASON"); //$NON-NLS-1$
-			} finally {
-				if(rs != null)
-					rs.close();
-			}
-			
-			if(numBlason != 0)
-				return BlasonBuilder.getBlason(numBlason);
-		} catch (SQLException e) {
-			throw new ObjectPersistanceException(e);
+		/** Le constructeur qui associe une valeur à l'enum */
+		private Type(String value) {
+			this.value = value;
 		}
 		
-		return null;
+		/** La méthode accesseur qui renvoit la valeur de l'enum */
+		public String getValue() {
+			return this.value;
+		}
+
+	}
+	
+	@XmlAttribute(name="id",required=true)
+	@SqlField(name="ID_COORDINATE")
+	private UUID idCoordinate = null;
+	
+	@SqlField(name="CODE_COORDINATE_TYPE")
+	private Type coordinateType = Type.HOME_PHONE;
+	
+	@SqlField(name="VALUE")
+	private String value;
+	
+	@XmlTransient
+	@SqlForeignKey(mappedTo="ID_CONTACT")
+	private Contact contact;
+	
+	private static StoreHelper<Coordinate> helper = null;
+	static {
+		try {
+			helper = new StoreHelper<Coordinate>(new SqlStoreHandler<Coordinate>(
+					ApplicationCore.dbConnection, Coordinate.class));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public Coordinate() {
+		
 	}
 	
 	/**
-	 * Recherche dans la base le blason correspondant au nom donnée en parametre
-	 * 
-	 * @param name le nom du blason à trouver
-	 * 
-	 * @return l'objet Blason trouvé ou null si inexistant
-	 * @throws SQLException
+	 * @param idCoordinateType
+	 * @param value
 	 */
-	public static Blason findBlasonByName(String name) throws ObjectPersistanceException {	
-		String sql = "select NUMBLASON from BLASONS where NOMBLASON=?"; //$NON-NLS-1$
-		int numBlason = 0;
+	public Coordinate(Type coordinateType, String value) {
+		this.coordinateType = coordinateType;
+		this.value = value;
+	}
+
+
+
+	private void initId() {
+		if(idCoordinate == null)
+			idCoordinate = UUID.randomUUID();
+	}
+	
+	/**
+	 * @return idCoordinate
+	 */
+	public UUID getIdCoordinate() {
+		return idCoordinate;
+	}
+
+	/**
+	 * @param idCoordinate idCoordinate à définir
+	 */
+	public void setIdCoordinate(UUID idCoordinate) {
+		this.idCoordinate = idCoordinate;
+	}
+
+	/**
+	 * @return coordinateType
+	 */
+	public Type getCoordinateType() {
+		return coordinateType;
+	}
+
+	/**
+	 * @param coordinateType coordinateType à définir
+	 */
+	public void setCoordinateType(Type coordinateType) {
+		this.coordinateType = coordinateType;
+	}
+
+	/**
+	 * @return value
+	 */
+	public String getValue() {
+		return value;
+	}
+
+	/**
+	 * @param value value à définir
+	 */
+	public void setValue(String value) {
+		this.value = value;
+	}
+
+	/**
+	 * @return contact
+	 */
+	public Contact getContact() {
+		return contact;
+	}
+
+	/**
+	 * @param contact contact à définir
+	 */
+	public void setContact(Contact contact) {
+		this.contact = contact;
+	}
+
+	@Override
+	public void save() throws ObjectPersistanceException {
+		initId();
 		
-		try {
-			PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
-			
-			pstmt.setString(1, name);
-			
-			ResultSet rs = pstmt.executeQuery();
-			try {
-				if(rs.first())
-					numBlason = rs.getInt("NUMBLASON"); //$NON-NLS-1$
-			} finally {
-				if(rs != null)
-					rs.close();
-			}
-			
-			if(numBlason != 0)
-				return BlasonBuilder.getBlason(numBlason); 
-		} catch (SQLException e) {
-			throw new ObjectPersistanceException(e);
-		}
+		helper.save(this);
+	}
+	
+	@Override
+	public void delete() throws ObjectPersistanceException {
+		if(idCoordinate != null)
+			helper.delete(this);
+	}
+	
+	protected void beforeMarshal(@SuppressWarnings("unused") Marshaller marshaller) {
+		initId();
+	}
+	
+	protected void afterUnmarshal(@SuppressWarnings("unused") Unmarshaller unmarshaller, Object parent) {
+		if(parent instanceof Contact)
+			contact = (Contact)parent;
+	}
+	
+	@Override
+	protected Coordinate clone() throws CloneNotSupportedException {
+		Coordinate clone = (Coordinate)super.clone();
+		clone.setIdCoordinate(null);
 		
-		return null;
+		return clone;
 	}
 }

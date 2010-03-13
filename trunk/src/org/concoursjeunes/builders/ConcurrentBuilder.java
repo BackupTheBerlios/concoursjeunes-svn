@@ -118,8 +118,8 @@ public class ConcurrentBuilder {
 
 		try {
 			concurrent.setNumLicenceArcher(rs.getString("NUMLICENCEARCHER")); //$NON-NLS-1$
-			concurrent.setNomArcher(rs.getString("NOMARCHER")); //$NON-NLS-1$
-			concurrent.setPrenomArcher(rs.getString("PRENOMARCHER")); //$NON-NLS-1$
+			concurrent.setName(rs.getString("NOMARCHER")); //$NON-NLS-1$
+			concurrent.setFirstName(rs.getString("PRENOMARCHER")); //$NON-NLS-1$
 			concurrent.setCertificat(rs.getBoolean("CERTIFMEDICAL")); //$NON-NLS-1$
 			concurrent.setClub(EntiteBuilder.getEntite(rs.getString("AGREMENTENTITE"))); //$NON-NLS-1$
 

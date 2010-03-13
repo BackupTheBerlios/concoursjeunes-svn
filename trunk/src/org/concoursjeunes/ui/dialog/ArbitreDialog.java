@@ -258,14 +258,14 @@ public class ArbitreDialog extends JDialog implements AutoCompleteDocumentListen
 			
 			
 			if(enableautocomplement) {
-				((AutoCompleteDocument) jtfNom.getDocument()).setText(judge.getNomArcher());
-				((AutoCompleteDocument) jtfPrenom.getDocument()).setText(judge.getPrenomArcher());
+				((AutoCompleteDocument) jtfNom.getDocument()).setText(judge.getName());
+				((AutoCompleteDocument) jtfPrenom.getDocument()).setText(judge.getFirstName());
 				((AutoCompleteDocument) jtfLicence.getDocument()).setText(judge.getNumLicenceArcher());
 				
 				jbSelectArbitre.setEnabled(true);
 			} else {
-				jtfNom.setText(judge.getNomArcher());
-				jtfPrenom.setText(judge.getPrenomArcher());
+				jtfNom.setText(judge.getName());
+				jtfPrenom.setText(judge.getFirstName());
 				jtfLicence.setText(judge.getNumLicenceArcher());
 				
 				jbSelectArbitre.setEnabled(false);
@@ -361,13 +361,13 @@ public class ArbitreDialog extends JDialog implements AutoCompleteDocumentListen
 	public void concurrentNotFound(AutoCompleteDocumentEvent e) {
 		Judge newArbitre = new Judge();
 		if (e.getSource() == jtfNom) {
-			newArbitre.setNomArcher(jtfNom.getText());
+			newArbitre.setName(jtfNom.getText());
 		} else if (e.getSource() == jtfPrenom) {
-			newArbitre.setNomArcher(jtfNom.getText());
-			newArbitre.setPrenomArcher(jtfPrenom.getText());
+			newArbitre.setName(jtfNom.getText());
+			newArbitre.setFirstName(jtfPrenom.getText());
 		} else if (e.getSource() == jtfLicence) {
-			newArbitre.setNomArcher(jtfNom.getText());
-			newArbitre.setPrenomArcher(jtfPrenom.getText());
+			newArbitre.setName(jtfNom.getText());
+			newArbitre.setFirstName(jtfPrenom.getText());
 			newArbitre.setNumLicenceArcher(jtfLicence.getText());
 		}
 
@@ -412,8 +412,8 @@ public class ArbitreDialog extends JDialog implements AutoCompleteDocumentListen
             	JOptionPane.showMessageDialog(this, localisation.getResourceString("concurrent.info.listing.wait")); //$NON-NLS-1$
             }
 		} else if(e.getSource() == jbValider) {
-			judge.setNomArcher(jtfNom.getText());
-			judge.setPrenomArcher(jtfPrenom.getText());
+			judge.setName(jtfNom.getText());
+			judge.setFirstName(jtfPrenom.getText());
 			judge.setNumLicenceArcher(jtfLicence.getText());
 			judge.setResponsable(jcbResponsable.isSelected());
 			

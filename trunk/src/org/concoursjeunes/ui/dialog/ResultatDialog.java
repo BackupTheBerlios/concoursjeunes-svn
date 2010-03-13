@@ -415,7 +415,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 					//vérifie que le score soit valide et affiche un message d'erreur dans le cas contraire 
 					if(!parametres.getReglement().isValidScore(concPoints)) {
 						JOptionPane.showMessageDialog(new JDialog(),
-								localisation.getResourceString("erreur.impscore") + "<br>" + concurrent.getNomArcher(), //$NON-NLS-1$ //$NON-NLS-2$
+								localisation.getResourceString("erreur.impscore") + "<br>" + concurrent.getName(), //$NON-NLS-1$ //$NON-NLS-2$
 								localisation.getResourceString("erreur"),JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 						return;
 					}

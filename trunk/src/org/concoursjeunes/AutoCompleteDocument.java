@@ -304,7 +304,7 @@ public class AutoCompleteDocument extends PlainDocument {
 		
 		String searchString = getText(0, getLength());
 		Archer searchArcher = new Archer();
-		searchArcher.setNomArcher(searchString.toUpperCase() + "%"); //$NON-NLS-1$
+		searchArcher.setName(searchString.toUpperCase() + "%"); //$NON-NLS-1$
 		
 		if(getLength() > 0) {
 			List<Concurrent> concurrents = ConcurrentManager.getArchersInDatabase(searchArcher, context.getReglement(), "NOMARCHER", 1); //$NON-NLS-1$
@@ -322,7 +322,7 @@ public class AutoCompleteDocument extends PlainDocument {
 		}
 
 		//aucun concurrent trouvé ou concurrent trouvé ne correspondant pas à la recherche
-		if(context.getConcurrent() == null || (strict && !context.getConcurrent().getNomArcher().equals(searchString))) {
+		if(context.getConcurrent() == null || (strict && !context.getConcurrent().getName().equals(searchString))) {
 			if(strict && context.getConcurrent() != null)
 				context.setConcurrent(null);
 
@@ -330,8 +330,8 @@ public class AutoCompleteDocument extends PlainDocument {
 
 		} else {
 			super.remove(0, getLength());
-			super.insertString(0, context.getConcurrent().getNomArcher(), null);
-			textField.setCaretPosition(context.getConcurrent().getNomArcher().length());
+			super.insertString(0, context.getConcurrent().getName(), null);
+			textField.setCaretPosition(context.getConcurrent().getName().length());
 			textField.moveCaretPosition(caretpos);
 			
 			fireConcurrendFinded(context.getConcurrent(), searchArcher);
@@ -358,8 +358,8 @@ public class AutoCompleteDocument extends PlainDocument {
 		Archer searchArcher = new Archer();
 		Concurrent tempConcurrent = null;
 		if(getLength() > 0 && context.getConcurrent() != null) {
-			searchArcher.setNomArcher(context.getConcurrent().getNomArcher());
-			searchArcher.setPrenomArcher(searchString + "%"); //$NON-NLS-1$
+			searchArcher.setName(context.getConcurrent().getName());
+			searchArcher.setFirstName(searchString + "%"); //$NON-NLS-1$
 			
 			
 			List<Concurrent> concurrents = ConcurrentManager.getArchersInDatabase(searchArcher, context.getReglement(), "PRENOMARCHER"); //$NON-NLS-1$
@@ -374,17 +374,17 @@ public class AutoCompleteDocument extends PlainDocument {
 			context.setAutocompleteLicence(context.getConcurrent() != null);
 		}
 
-		if(tempConcurrent == null || (strict && !tempConcurrent.getPrenomArcher().equals(getText(0, getLength())))) {
+		if(tempConcurrent == null || (strict && !tempConcurrent.getFirstName().equals(getText(0, getLength())))) {
 			if(context.getConcurrent() != null)
-				context.getConcurrent().setPrenomArcher(getText(0, getLength()));
+				context.getConcurrent().setFirstName(getText(0, getLength()));
 			fireConcurrentNotFound();
 
 		} else {
 			context.setConcurrent(tempConcurrent);
 			
 			super.remove(0, getLength());
-			super.insertString(0, context.getConcurrent().getPrenomArcher(), null);
-			textField.setCaretPosition(context.getConcurrent().getPrenomArcher().length());
+			super.insertString(0, context.getConcurrent().getFirstName(), null);
+			textField.setCaretPosition(context.getConcurrent().getFirstName().length());
 			textField.moveCaretPosition(caretpos);
 			
 			fireConcurrendFinded(context.getConcurrent(), searchArcher);

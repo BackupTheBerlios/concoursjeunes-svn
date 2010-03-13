@@ -86,13 +86,12 @@
  */
 package org.concoursjeunes;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
+import org.ajdeveloppement.concours.Contact;
 import org.concoursjeunes.manager.ConcurrentManager;
 
 /**
@@ -102,7 +101,7 @@ import org.concoursjeunes.manager.ConcurrentManager;
  * @version 1.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Archer implements Cloneable {
+public class Archer extends Contact implements Cloneable {
 
 	private String nomArcher        = ""; //$NON-NLS-1$
 	private String prenomArcher     = ""; //$NON-NLS-1$
@@ -111,8 +110,6 @@ public class Archer implements Cloneable {
 	private boolean certificat      = false;
 	private boolean handicape		= false;
 	
-	protected transient PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-
 	/**
 	 * Constructeur vide nécessaire à l'initialisation correct de l'objet
 	 * dans le cas d'une déserialisation XML
@@ -120,23 +117,7 @@ public class Archer implements Cloneable {
 	 */
 	public Archer() { }
 	
-	/**
-	 * permet d'écouter les modifications des propriété de l'archer
-	 * 
-	 * @param l
-	 */
-	public void addPropertyChangeListener(PropertyChangeListener l) {
-		pcs.addPropertyChangeListener(l);
-	}
 	
-	/**
-	 * 
-	 * @param l
-	 */
-	public void removePropertyChangeListener(PropertyChangeListener l) {
-		pcs.removePropertyChangeListener(l);
-	}
-
 	/**
 	 * Retourne le numéro de licence de l'archer
 	 * 
@@ -161,46 +142,46 @@ public class Archer implements Cloneable {
 
 	/**
 	 * Retourne le nom de l'archer
+	 * @deprecated replacé par {@link Archer#getName()}
 	 * 
 	 * @return le nom de l'archer
 	 */
+	@Deprecated
 	public String getNomArcher() {
-		return nomArcher;
+		return getName();
 	}
 
 	/**
 	 * Définit le nom de l'archer
+	 * @deprecated replacé par {@link #setName(String)}
 	 * 
 	 * @param nomArcher le nom de l'archer
 	 */
+	@Deprecated
 	public void setNomArcher(String nomArcher) {
-		String oldValue = this.nomArcher;
-		
-		this.nomArcher = nomArcher;
-		
-		pcs.firePropertyChange("nomArcher", oldValue, nomArcher); //$NON-NLS-1$
+		setName(nomArcher);
 	}
 
 	/**
 	 * Retourne le prénom de l'archer
+	 * @deprecated remplacé par {@link #getFirstName()}
 	 * 
 	 * @return le prénom de l'archer
 	 */
+	@Deprecated
 	public String getPrenomArcher() {
-		return prenomArcher;
+		return getFirstName();
 	}
 
 	/**
 	 * Définit le prénom de l'archer
+	 * @deprecated remplacé par {{@link #setFirstName(String)}
 	 * 
 	 * @param prenomArcher le prénom de l'archer
 	 */
+	@Deprecated
 	public void setPrenomArcher(String prenomArcher) {
-		String oldValue = this.prenomArcher;
-		
-		this.prenomArcher = prenomArcher;
-		
-		pcs.firePropertyChange("prenomArcher", oldValue, prenomArcher); //$NON-NLS-1$
+		setFirstName(prenomArcher);
 	}
 
 	/**
@@ -286,8 +267,8 @@ public class Archer implements Cloneable {
 	 */
 	public boolean haveHomonyme() {
 		Archer aComparant = new Archer();
-		aComparant.setNomArcher(getNomArcher());
-		aComparant.setPrenomArcher(getPrenomArcher());
+		aComparant.setName(getName());
+		aComparant.setFirstName(getFirstName());
 
 		List<Concurrent> homonyme = ConcurrentManager.getArchersInDatabase(aComparant, null, ""); //$NON-NLS-1$
 
@@ -338,7 +319,6 @@ public class Archer implements Cloneable {
 	@Override
 	protected Archer clone() throws CloneNotSupportedException {
 		Archer clone = (Archer)super.clone();
-		clone.pcs = new PropertyChangeSupport(clone);
 		
 		return clone;
 	}

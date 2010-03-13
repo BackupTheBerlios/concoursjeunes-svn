@@ -143,7 +143,7 @@ public class IndividualScoreSheetState {
 				templateXML.parse("scoresheet.VILLE_CLUB", ficheConcours.getParametre().getLieuConcours()); //$NON-NLS-1$
 				templateXML.parse("scoresheet.DATE_CONCOURS", DateFormat.getDateInstance(DateFormat.LONG).format(ficheConcours.getParametre().getDateDebutConcours())); //$NON-NLS-1$
 				
-				templateXML.parse("scoresheet.cid", concurrents.get(i).getNomArcher() + " " + concurrents.get(i).getPrenomArcher()); //$NON-NLS-1$
+				templateXML.parse("scoresheet.cid", concurrents.get(i).getName() + " " + concurrents.get(i).getFirstName()); //$NON-NLS-1$
 				templateXML.parse("scoresheet.cclub", concurrents.get(i).getClub().getNom()); //$NON-NLS-1$
 				templateXML.parse("scoresheet.clicence", concurrents.get(i).getNumLicenceArcher()); //$NON-NLS-1$
 				templateXML.parse("scoresheet.emplacement", new TargetPosition(concurrents.get(i).getCible(), concurrents.get(i).getPosition()).toString()); //$NON-NLS-1$

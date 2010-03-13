@@ -132,7 +132,8 @@ public class DistancesEtBlasonBuilder {
 			if(rs.first()) {
 				distancesEtBlason = new DistancesEtBlason();
 				distancesEtBlason.setNumdistancesblason(numdistancesblason);
-				distancesEtBlason.setTargetFace(BlasonManager.findBlasonAssociateToDistancesEtBlason(numdistancesblason, reglement.getNumReglement()));
+				distancesEtBlason.setReglement(reglement);
+				distancesEtBlason.setTargetFace(BlasonManager.findBlasonAssociateToDistancesEtBlason(distancesEtBlason));
 				distancesEtBlason.setCriteriaSet(CriteriaSetBuilder.getCriteriaSet(rs.getInt("NUMCRITERIASET"), reglement)); //$NON-NLS-1$
 				distancesEtBlason.setDefaultTargetFace(rs.getBoolean("DEFAULTTARGETFACE")); //$NON-NLS-1$
 				

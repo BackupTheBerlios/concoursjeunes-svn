@@ -433,7 +433,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		if(filter == null)
 			return;
 		String numLicence = filter.getNumLicenceArcher().replaceAll("%", ""); //$NON-NLS-1$ //$NON-NLS-2$
-		String nom = filter.getNomArcher().replaceAll("%", ""); //$NON-NLS-1$ //$NON-NLS-2$
+		String nom = filter.getName().replaceAll("%", ""); //$NON-NLS-1$ //$NON-NLS-2$
 		String club = filter.getClub().getNom().replaceAll("%", ""); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		if (!numLicence.isEmpty()) {
@@ -461,8 +461,8 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 			int rowIndex = jTable.convertRowIndexToModel(jTable.getSelectedRow());
 
 			concurrent.setNumLicenceArcher(dtm.getConcurrentAtRow(rowIndex).getNumLicenceArcher());
-			concurrent.setNomArcher(dtm.getConcurrentAtRow(rowIndex).getNomArcher());
-			concurrent.setPrenomArcher(dtm.getConcurrentAtRow(rowIndex).getPrenomArcher());
+			concurrent.setName(dtm.getConcurrentAtRow(rowIndex).getName());
+			concurrent.setFirstName(dtm.getConcurrentAtRow(rowIndex).getFirstName());
 			concurrent.setClub(dtm.getConcurrentAtRow(rowIndex).getClub());
 			concurrent.setCriteriaSet(dtm.getConcurrentAtRow(rowIndex).getCriteriaSet());
 			concurrent.setCertificat(dtm.getConcurrentAtRow(rowIndex).isCertificat());
@@ -633,9 +633,9 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 				case 0:
 					return curConcurrent.getNumLicenceArcher();
 				case 1:
-					return curConcurrent.getNomArcher();
+					return curConcurrent.getName();
 				case 2:
-					return curConcurrent.getPrenomArcher();
+					return curConcurrent.getFirstName();
 				case 3:
 					return curConcurrent.getClub().getNom();
 				case 4:

@@ -514,7 +514,7 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 				if(((Judge)o).isResponsable())
 					mustberesponsable = false;
 			if(ad.showJudgeDialog(null, mustberesponsable) == ArbitreDialog.CONFIRM) {
-				if(!ad.getJudge().getNomArcher().trim().isEmpty())
+				if(!ad.getJudge().getName().trim().isEmpty())
 					jlArbitres.add(ad.getJudge());
 			}
 		} else if (ae.getSource() == jbSupprimerArbitre) {

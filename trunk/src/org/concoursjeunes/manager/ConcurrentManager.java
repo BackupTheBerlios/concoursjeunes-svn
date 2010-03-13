@@ -202,11 +202,11 @@ public class ConcurrentManager {
 				if(!aGeneric.getNumLicenceArcher().isEmpty()) {
 					filters.add("NUMLICENCEARCHER like '" + aGeneric.getNumLicenceArcher().replaceAll("'", "''").replaceAll("%", "%%") + "'");
 				}
-				if(!aGeneric.getNomArcher().isEmpty()) {
-					filters.add("NOMARCHER like '" + aGeneric.getNomArcher().replaceAll("'", "''").replaceAll("%", "%%") + "'");
+				if(!aGeneric.getName().isEmpty()) {
+					filters.add("NOMARCHER like '" + aGeneric.getName().replaceAll("'", "''").replaceAll("%", "%%") + "'");
 				}
-				if(!aGeneric.getPrenomArcher().isEmpty()) {
-					filters.add("UPPER(PRENOMARCHER) like '" + aGeneric.getPrenomArcher().toUpperCase().replaceAll("'", "''").replaceAll("%", "%%") + "'");
+				if(!aGeneric.getFirstName().isEmpty()) {
+					filters.add("UPPER(PRENOMARCHER) like '" + aGeneric.getFirstName().toUpperCase().replaceAll("'", "''").replaceAll("%", "%%") + "'");
 				}
 				if(!aGeneric.getClub().getAgrement().isEmpty()) {
 					filters.add("AGREMENTENTITE like '" + aGeneric.getClub().getAgrement().replaceAll("'", "''").replaceAll("%", "%%") + "'");

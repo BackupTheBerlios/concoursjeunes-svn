@@ -93,15 +93,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.xml.bind.JAXBException;
 
 import org.ajdeveloppement.commons.io.FileUtils;
 import org.ajdeveloppement.commons.io.XMLSerializer;
-import org.concoursjeunes.AppInfos;
-import org.concoursjeunes.AppRessources;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.plugins.Plugin;
 import org.concoursjeunes.plugins.PluginEntry;
@@ -120,11 +116,11 @@ public class ScriptExtLauncher {
 	}
 	
 	private File getAllUsersScriptsPath() {
-		return new File(ApplicationCore.userRessources.getAllusersDataPath(), "scripts");
+		return new File(ApplicationCore.userRessources.getAllusersDataPath(), "scripts"); //$NON-NLS-1$
 	}
 	
 	private File getUserScriptsPath() {
-		return new File(ApplicationCore.userRessources.getUserPath(), "scripts");
+		return new File(ApplicationCore.userRessources.getUserPath(), "scripts"); //$NON-NLS-1$
 	}
 	
 	private void runStartupExtention() {
@@ -166,7 +162,7 @@ public class ScriptExtLauncher {
 		
 		for(File scriptFolder : scriptsFolders) {
 			if(scriptFolder.isDirectory()) {
-				File scriptFile = new File(scriptFolder, "scriptext.xml");
+				File scriptFile = new File(scriptFolder, "scriptext.xml"); //$NON-NLS-1$
 				if(scriptFile.exists()) {
 					try {
 						ScriptExtention extention = XMLSerializer.loadMarshallStructure(scriptFile, ScriptExtention.class);

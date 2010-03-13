@@ -225,7 +225,7 @@ public class TargetTest extends TestCase {
 	@Test
 	public void testGetConcurrentAt() {
 		Concurrent concurrent = ConcurrentBuilder.getConcurrent(reglement);
-		concurrent.setNomArcher("Archers"); //$NON-NLS-1$
+		concurrent.setName("Archers"); //$NON-NLS-1$
 		try {
 			target1Archer.setConcurrentAt(concurrent, 3);
 		} catch (PlacementException e) {
@@ -246,7 +246,7 @@ public class TargetTest extends TestCase {
 		assertTrue(target1Archer.indexOf(concurrent) == 0);
 		
 		Concurrent concurrent2 = ConcurrentBuilder.getConcurrent(reglement);
-		concurrent2.setNomArcher("Archers 2"); //$NON-NLS-1$
+		concurrent2.setName("Archers 2"); //$NON-NLS-1$
 		try {
 			target1Archer.setConcurrentAt(concurrent2, 3);
 		} catch (PlacementException e) {
@@ -272,7 +272,7 @@ public class TargetTest extends TestCase {
 	@Test
 	public void testSetConcurrentAt() {
 		Concurrent concurrent = ConcurrentBuilder.getConcurrent(reglement);
-		concurrent.setNomArcher("Archers 2"); //$NON-NLS-1$
+		concurrent.setName("Archers 2"); //$NON-NLS-1$
 		try {
 			target1Archer.setConcurrentAt(concurrent, 3);
 		} catch (PlacementException e) {

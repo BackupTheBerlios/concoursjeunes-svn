@@ -440,7 +440,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 			if(distancesEtBlason.getTargetFace() == null || distancesEtBlason.getTargetFace().equals(new Blason())) {
 				if(distancesEtBlason.getNumdistancesblason() > 0 && reglement.getNumReglement() > 0) { //si le règlement est dans la base
 					try {
-						distancesEtBlason.setTargetFace(BlasonManager.findBlasonAssociateToDistancesEtBlason(distancesEtBlason.getNumdistancesblason(), reglement.getNumReglement()));
+						distancesEtBlason.setTargetFace(BlasonManager.findBlasonAssociateToDistancesEtBlason(distancesEtBlason));
 					} catch (ObjectPersistanceException e) {
 						e.printStackTrace();
 					}

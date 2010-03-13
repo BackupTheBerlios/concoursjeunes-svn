@@ -568,13 +568,13 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		jlPlaceLibre.setText(showPlacesLibre());
 
 		if (jtfNom.getDocument() instanceof AutoCompleteDocument) {
-			((AutoCompleteDocument) jtfNom.getDocument()).setText(concurrent.getNomArcher());
-			((AutoCompleteDocument) jtfPrenom.getDocument()).setText(concurrent.getPrenomArcher());
+			((AutoCompleteDocument) jtfNom.getDocument()).setText(concurrent.getName());
+			((AutoCompleteDocument) jtfPrenom.getDocument()).setText(concurrent.getFirstName());
 			((AutoCompleteDocument) jtfLicence.getDocument()).setText(concurrent.getNumLicenceArcher());
 
 		} else {
-			jtfNom.setText(concurrent.getNomArcher());
-			jtfPrenom.setText(concurrent.getPrenomArcher());
+			jtfNom.setText(concurrent.getName());
+			jtfPrenom.setText(concurrent.getFirstName());
 			jtfLicence.setText(concurrent.getNumLicenceArcher());
 		}
 		jcbHandicape.setSelected(concurrent.isHandicape());
@@ -884,13 +884,13 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		Concurrent newConcurrent = new Concurrent();
 		newConcurrent.setDepart(ficheConcours.getCurrentDepart());
 		if (e.getSource() == jtfNom) {
-			newConcurrent.setNomArcher(jtfNom.getText());
+			newConcurrent.setName(jtfNom.getText());
 		} else if (e.getSource() == jtfPrenom) {
-			newConcurrent.setNomArcher(jtfNom.getText());
-			newConcurrent.setPrenomArcher(jtfPrenom.getText());
+			newConcurrent.setName(jtfNom.getText());
+			newConcurrent.setFirstName(jtfPrenom.getText());
 		} else if (e.getSource() == jtfLicence) {
-			newConcurrent.setNomArcher(jtfNom.getText());
-			newConcurrent.setPrenomArcher(jtfPrenom.getText());
+			newConcurrent.setName(jtfNom.getText());
+			newConcurrent.setFirstName(jtfPrenom.getText());
 			newConcurrent.setNumLicenceArcher(jtfLicence.getText());
 		}
 
@@ -1012,8 +1012,8 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			concurrent.setNomArcher(jtfNom.getText());
-			concurrent.setPrenomArcher(jtfPrenom.getText());
+			concurrent.setName(jtfNom.getText());
+			concurrent.setFirstName(jtfPrenom.getText());
 			concurrent.setNumLicenceArcher(jtfLicence.getText());
 			concurrent.setClub(entiteConcurrent);
 			concurrent.getClub().setVille(jtfClub.getText());

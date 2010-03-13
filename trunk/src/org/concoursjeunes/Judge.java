@@ -107,8 +107,8 @@ public class Judge extends Archer {
 	 * @param archer l'archer servant à construire l'arbitre
 	 */
 	public Judge(Archer archer) {
-		setNomArcher(archer.getNomArcher());
-		setPrenomArcher(archer.getPrenomArcher());
+		setName(archer.getName());
+		setFirstName(archer.getFirstName());
 		setNumLicenceArcher(archer.getNumLicenceArcher());
 		setClub(archer.getClub());
 		setCertificat(archer.isCertificat());

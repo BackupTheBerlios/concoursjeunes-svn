@@ -1,7 +1,7 @@
 /*
- * Créé le 01 fev. 08 pour ConcoursJeunes
+ * Créé le 13 mars 2010 à 11:28:12 pour ConcoursJeunes
  *
- * Copyright 2002-2008 - Aurélien JEOFFRAY
+ * Copyright 2002-2010 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
  *
@@ -36,7 +36,7 @@
  * à l'utiliser et l'exploiter dans les mêmes conditions de sécurité. 
  * 
  * Le fait que vous puissiez accéder à cet en-tête signifie que vous avez 
- * pri connaissance de la licence CeCILL, et que vous en avez accepté les
+ * pris connaissance de la licence CeCILL, et que vous en avez accepté les
  * termes.
  *
  * ENGLISH:
@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  any later version.
+ *  (at your option) any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -86,96 +86,126 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes.manager;
+package org.ajdeveloppement.concours;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+
+import org.ajdeveloppement.commons.persistance.ObjectPersistance;
 import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
+import org.ajdeveloppement.commons.persistance.StoreHelper;
+import org.ajdeveloppement.commons.persistance.sql.SqlField;
+import org.ajdeveloppement.commons.persistance.sql.SqlPrimaryKey;
+import org.ajdeveloppement.commons.persistance.sql.SqlStoreHandler;
+import org.ajdeveloppement.commons.persistance.sql.SqlTable;
 import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.Blason;
-import org.concoursjeunes.DistancesEtBlason;
-import org.concoursjeunes.builders.BlasonBuilder;
 
 /**
- * Gére la construction des blasons à partir des données trouvé en base
- * 
  * @author Aurélien JEOFFRAY
  *
  */
-public class BlasonManager {
+@XmlAccessorType(XmlAccessType.FIELD)
+@SqlTable(name="CIVILITY")
+@SqlPrimaryKey(fields="ID_CIVILITY")
+public class Civility implements ObjectPersistance {
+	@XmlAttribute(name="id", required=true)
+	@SqlField(name="ID_CIVILITY")
+	private UUID idCivility = null;
 	
-	/**
-	 * Retourne le blason associé à une ligne distance/blason d'un réglement donnée
-	 * 
-	 * @param numdistanceblason le numero de l'objet distanceEtBlason dont le blason fait partie
-	 * @param numreglement le numrero de reglement
-	 * @return le blason associé à la ligne d/b du réglement donnée
-	 * @throws ObjectPersistanceException 
-	 */
-	public static Blason findBlasonAssociateToDistancesEtBlason(DistancesEtBlason distancesEtBlason) throws ObjectPersistanceException {
-		
-		String sql = "select NUMBLASON from DISTANCESBLASONS " //$NON-NLS-1$
-			+ "where NUMDISTANCESBLASONS=? and NUMREGLEMENT=?"; //$NON-NLS-1$
-		int numBlason = 0;
-		
-		try {	
-			PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
-			
-			pstmt.setInt(1, distancesEtBlason.getNumdistancesblason());
-			pstmt.setInt(2, distancesEtBlason.getCriteriaSet().getReglement().getNumReglement());
-			
-			ResultSet rs = pstmt.executeQuery();
-			try {
-				if(rs.first())
-					numBlason = rs.getInt("NUMBLASON"); //$NON-NLS-1$
-			} finally {
-				if(rs != null)
-					rs.close();
-			}
-			
-			if(numBlason != 0)
-				return BlasonBuilder.getBlason(numBlason);
+	@SqlField(name="ABREVIATION")
+	private String abreviation;
+	
+	@SqlField(name="LIBELLE")
+	private String libelle;
+	
+	private static StoreHelper<Civility> helper = null;
+	static {
+		try {
+			helper = new StoreHelper<Civility>(new SqlStoreHandler<Civility>(
+					ApplicationCore.dbConnection, Civility.class));
 		} catch (SQLException e) {
-			throw new ObjectPersistanceException(e);
+			e.printStackTrace();
 		}
+	}
+	
+	public Civility() {
 		
-		return null;
 	}
 	
 	/**
-	 * Recherche dans la base le blason correspondant au nom donnée en parametre
-	 * 
-	 * @param name le nom du blason à trouver
-	 * 
-	 * @return l'objet Blason trouvé ou null si inexistant
-	 * @throws SQLException
+	 * @param abreviation
+	 * @param libelle
 	 */
-	public static Blason findBlasonByName(String name) throws ObjectPersistanceException {	
-		String sql = "select NUMBLASON from BLASONS where NOMBLASON=?"; //$NON-NLS-1$
-		int numBlason = 0;
-		
-		try {
-			PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
-			
-			pstmt.setString(1, name);
-			
-			ResultSet rs = pstmt.executeQuery();
-			try {
-				if(rs.first())
-					numBlason = rs.getInt("NUMBLASON"); //$NON-NLS-1$
-			} finally {
-				if(rs != null)
-					rs.close();
-			}
-			
-			if(numBlason != 0)
-				return BlasonBuilder.getBlason(numBlason); 
-		} catch (SQLException e) {
-			throw new ObjectPersistanceException(e);
-		}
-		
-		return null;
+	public Civility(String abreviation, String libelle) {
+		this.abreviation = abreviation;
+		this.libelle = libelle;
+	}
+	
+	private void initId() {
+		if(idCivility == null)
+			idCivility = UUID.randomUUID();
+	}
+
+	/**
+	 * @return idCivility
+	 */
+	public UUID getIdCivility() {
+		return idCivility;
+	}
+
+	/**
+	 * @param idCivility idCivility à définir
+	 */
+	public void setIdCivility(UUID idCivility) {
+		this.idCivility = idCivility;
+	}
+
+	/**
+	 * @return abreviation
+	 */
+	public String getAbreviation() {
+		return abreviation;
+	}
+
+	/**
+	 * @param abreviation abreviation à définir
+	 */
+	public void setAbreviation(String abreviation) {
+		this.abreviation = abreviation;
+	}
+
+	/**
+	 * @return libelle
+	 */
+	public String getLibelle() {
+		return libelle;
+	}
+
+	/**
+	 * @param libelle libelle à définir
+	 */
+	public void setLibelle(String libelle) {
+		this.libelle = libelle;
+	}
+
+	@Override
+	public void save() throws ObjectPersistanceException {
+		initId();
+		helper.save(this);
+	}
+	
+	@Override
+	public void delete() throws ObjectPersistanceException {
+		if(idCivility != null)
+			helper.delete(this);
+	}
+	
+	protected void beforeMarshal(@SuppressWarnings("unused") Marshaller marshaller) {
+		initId();
 	}
 }

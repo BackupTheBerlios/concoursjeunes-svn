@@ -114,11 +114,11 @@ import org.concoursjeunes.plugins.Plugin;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ScriptExtention {
 	private Plugin.Type type;
-	private String scriptFile = "script.js";
+	private String scriptFile = "script.js"; //$NON-NLS-1$
 	private String mainFunction;
 	private boolean asynchrone = false;
 	@XmlTransient
-	private String mainPath = "";
+	private String mainPath = ""; //$NON-NLS-1$
 	@XmlTransient
 	private Invocable invocableEngine;
 	
@@ -194,7 +194,7 @@ public class ScriptExtention {
 		ScriptEngine scriptEngine = se.getEngineByName("JavaScript"); //$NON-NLS-1$
 		if(scriptEngine != null) {
 			Reader reader = new BufferedReader(new InputStreamReader(
-					new URL(mainPath + "/" + scriptFile).openStream())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+					new URL(mainPath + "/" + scriptFile).openStream())); //$NON-NLS-1$ 
 			scriptEngine.eval(reader);
 			reader.close();
 			

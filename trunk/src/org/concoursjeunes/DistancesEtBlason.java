@@ -90,7 +90,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import javax.xml.bind.Unmarshaller;
@@ -110,7 +109,6 @@ import org.ajdeveloppement.commons.persistance.sql.SqlGeneratedIdField;
 import org.ajdeveloppement.commons.persistance.sql.SqlPrimaryKey;
 import org.ajdeveloppement.commons.persistance.sql.SqlStoreHandler;
 import org.ajdeveloppement.commons.persistance.sql.SqlTable;
-import org.ajdeveloppement.commons.persistance.sql.SqlUnmappedFields;
 import org.concoursjeunes.xml.bind.BlasonAdapter;
 
 /**
@@ -121,7 +119,6 @@ import org.concoursjeunes.xml.bind.BlasonAdapter;
  */
 @SqlTable(name="DISTANCESBLASONS")
 @SqlPrimaryKey(fields={"NUMDISTANCESBLASONS","NUMREGLEMENT"},generatedidField=@SqlGeneratedIdField(name="NUMDISTANCESBLASONS",type=Types.INTEGER))
-@SqlUnmappedFields(fields="NUMREGLEMENT")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class DistancesEtBlason implements ObjectPersistance {
 	@XmlElementWrapper(name="distances",required=true)
@@ -141,6 +138,10 @@ public class DistancesEtBlason implements ObjectPersistance {
 	@SqlField(name="NUMDISTANCESBLASONS")
 	@XmlTransient
 	private int numdistancesblason = 0;
+	
+	@XmlTransient
+	@SqlForeignKey(mappedTo="NUMREGLEMENT")
+	private Reglement reglement = new Reglement();
 	
 	private static StoreHelper<DistancesEtBlason> helper = null;
 	static {
@@ -271,11 +272,16 @@ public class DistancesEtBlason implements ObjectPersistance {
 	 */
 	public void setCriteriaSet(CriteriaSet criteriaSet) {
 		this.criteriaSet = criteriaSet;
+		if(reglement == null)
+			reglement = criteriaSet.getReglement();
 	}
 	
-	@Deprecated
-	public void setReglement(@SuppressWarnings("unused") Reglement reglement) {
-		
+	public Reglement getReglement() {
+		return reglement;
+	}
+	
+	public void setReglement(Reglement reglement) {
+		this.reglement = reglement; 
 	}
 
 	/**
@@ -307,7 +313,7 @@ public class DistancesEtBlason implements ObjectPersistance {
 	public void save() throws ObjectPersistanceException {
 		criteriaSet.save();
 		
-		helper.save(this, Collections.<String, Object>singletonMap("NUMREGLEMENT", criteriaSet.getReglement().getNumReglement()));
+		helper.save(this);
 		
 		try {
 			Statement stmt = ApplicationCore.dbConnection.createStatement();
@@ -333,7 +339,7 @@ public class DistancesEtBlason implements ObjectPersistance {
 	 */
 	@Override
 	public void delete() throws ObjectPersistanceException {
-		helper.delete(this, Collections.<String, Object>singletonMap("NUMREGLEMENT", criteriaSet.getReglement().getNumReglement()));  //$NON-NLS-1$
+		helper.delete(this);  
 	}
 
 	/**
@@ -360,8 +366,10 @@ public class DistancesEtBlason implements ObjectPersistance {
 	}
 	
 	protected void afterUnmarshal(@SuppressWarnings("unused") Unmarshaller unmarshaller, Object parent) {
-		if(parent instanceof Reglement)
+		if(parent instanceof Reglement) {
 			criteriaSet.setReglement((Reglement)parent);
+			reglement = (Reglement)parent;
+		}
 	}
 
 	/* (non-Javadoc)
