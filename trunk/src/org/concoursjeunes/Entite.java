@@ -87,14 +87,16 @@
 package org.concoursjeunes;
 
 import java.sql.SQLException;
+import java.util.UUID;
 
-import org.ajdeveloppement.commons.persistance.ObjectPersistance;
-import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
-import org.ajdeveloppement.commons.persistance.StoreHelper;
-import org.ajdeveloppement.commons.persistance.sql.SqlField;
-import org.ajdeveloppement.commons.persistance.sql.SqlPrimaryKey;
-import org.ajdeveloppement.commons.persistance.sql.SqlStoreHandler;
-import org.ajdeveloppement.commons.persistance.sql.SqlTable;
+import org.ajdeveloppement.commons.persistence.ObjectPersistence;
+import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.StoreHelper;
+import org.ajdeveloppement.commons.persistence.sql.SqlField;
+import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
+import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
+import org.ajdeveloppement.commons.persistence.sql.SqlTable;
+import org.ajdeveloppement.concours.cache.EntiteCache;
 
 /**
  * Entité organisationnelle.<br>
@@ -109,14 +111,16 @@ import org.ajdeveloppement.commons.persistance.sql.SqlTable;
  * @author Aurélien JEOFFRAY
  */
 @SqlTable(name="ENTITE")
-@SqlPrimaryKey(fields={"AGREMENTENTITE"})
-public class Entite implements ObjectPersistance {
+@SqlPrimaryKey(fields={"ID_ENTITE"})
+public class Entite implements ObjectPersistence {
 	
 	public static final int FEDERATION = 0;
     public static final int LIGUE = 1;
     public static final int CD = 2;
     public static final int CLUB = 3;
     
+    @SqlField(name="ID_ENTITE")
+    private UUID idEntite = UUID.randomUUID();
     @SqlField(name="NOMENTITE")
     private String nom        	= ""; //$NON-NLS-1$
     @SqlField(name="AGREMENTENTITE")
@@ -157,6 +161,24 @@ public class Entite implements ObjectPersistance {
     }
 
     /**
+     * Retourne l'identifiant de l'entite
+     * 
+     * @return l'identifiant de l'entite
+     */
+    public UUID getIdEntite() {
+		return idEntite;
+	}
+
+    /**
+     * Définit l'identifiant de l'entite
+     * 
+     * @param idEntite l'identifiant de l'entite
+     */
+	public void setIdEntite(UUID idEntite) {
+		this.idEntite = idEntite;
+	}
+
+	/**
      * Retourne l'adresse de l'entite
      * 
 	 * @return l'adresse de l'entite
@@ -167,7 +189,7 @@ public class Entite implements ObjectPersistance {
     
 
     /**
-     * Retourne le numéro d'agrement identifiant de manière unique l'entite
+     * Retourne le numéro d'agrement de l'association
      * 
 	 * @return le numéro d'agrement
 	 */
@@ -313,13 +335,18 @@ public class Entite implements ObjectPersistance {
 	 * Sauvegarde l'entite dans la base de donnée
 	 */
 	@Override
-	public void save() throws ObjectPersistanceException {
+	public void save() throws ObjectPersistenceException {
 		helper.save(this);
+		//ajoute l'entrée au cache si nécessaire
+		if(!EntiteCache.getInstance().containsKey(idEntite))
+			EntiteCache.getInstance().add(this);
 	}
 	
 	@Override
-	public void delete() throws ObjectPersistanceException {
+	public void delete() throws ObjectPersistenceException {
 		helper.delete(this);
+		//retire l'objet du cache
+		EntiteCache.getInstance().remove(idEntite);
 	}
 
 	/* (non-Javadoc)

@@ -100,7 +100,7 @@ import java.util.List;
 import javax.xml.bind.JAXBException;
 
 import org.ajdeveloppement.commons.io.XMLSerializer;
-import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
+import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Federation;
 import org.concoursjeunes.Reglement;
@@ -161,7 +161,7 @@ public class ReglementManager {
 	 * @param reglement le règlement à ajouter
 	 * @throws SqlPersistanceException
 	 */
-	public void addReglement(Reglement reglement) throws ObjectPersistanceException {
+	public void addReglement(Reglement reglement) throws ObjectPersistenceException {
 		if(reglement == null)
 			return;
 		
@@ -179,7 +179,7 @@ public class ReglementManager {
 	 * 
 	 * @param reglement le règlement à supprimer
 	 */
-	public void removeReglement(Reglement reglement) throws ObjectPersistanceException {
+	public void removeReglement(Reglement reglement) throws ObjectPersistenceException {
 		reglement.delete();
 	
 		availableReglements.remove(reglement);
@@ -197,7 +197,7 @@ public class ReglementManager {
 	 * @param reglement
 	 * @throws SqlPersistanceException
 	 */
-	public void updateReglement(Reglement reglement) throws ObjectPersistanceException {
+	public void updateReglement(Reglement reglement) throws ObjectPersistenceException {
 		availableReglements.remove(reglement);
 		if(getReglementsForCategory(reglement.getCategory()).size() == 0)
 			categorie.remove(new Integer(reglement.getCategory()));
@@ -206,7 +206,7 @@ public class ReglementManager {
 		addReglement(reglement);
 	}
 	
-	public void removeFederation(Federation f) throws ObjectPersistanceException {
+	public void removeFederation(Federation f) throws ObjectPersistenceException {
 		federation.remove(f);
 		f.delete();
 	}
@@ -333,7 +333,7 @@ public class ReglementManager {
 	 * @throws IOException
 	 * @throws SQLException
 	 */
-	public Reglement importReglement(File importFile) throws IOException, ObjectPersistanceException {
+	public Reglement importReglement(File importFile) throws IOException, ObjectPersistenceException {
 		Reglement reglement = null;
 		try {
 			reglement = XMLSerializer.loadMarshallStructure(importFile, Reglement.class, false);

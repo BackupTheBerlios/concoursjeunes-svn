@@ -111,7 +111,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.ajdeveloppement.commons.AJTemplate;
 import org.ajdeveloppement.commons.XmlUtils;
 import org.ajdeveloppement.commons.io.XMLSerializer;
-import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
+import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.concoursjeunes.builders.AncragesMapBuilder;
 import org.concoursjeunes.builders.BlasonBuilder;
 import org.concoursjeunes.builders.EquipeListBuilder;
@@ -441,14 +441,14 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 				if(distancesEtBlason.getNumdistancesblason() > 0 && reglement.getNumReglement() > 0) { //si le règlement est dans la base
 					try {
 						distancesEtBlason.setTargetFace(BlasonManager.findBlasonAssociateToDistancesEtBlason(distancesEtBlason));
-					} catch (ObjectPersistanceException e) {
+					} catch (ObjectPersistenceException e) {
 						e.printStackTrace();
 					}
 				} else {
 					Blason targetFace = null;
 					try { //on tente de retrouver une correspondance pour le blason dans la base
 		                targetFace = BlasonManager.findBlasonByName(distancesEtBlason.getBlason() + "cm"); //$NON-NLS-1$
-	                } catch (ObjectPersistanceException e) {
+	                } catch (ObjectPersistenceException e) {
 		                e.printStackTrace(); //on trace l'erreur mais on ne la fait pas remonter dans l'interface
 	                }
 	                if(targetFace == null) { //si on a pas retrouvé de blason correspondant dans la base alors créer l'entrée
@@ -466,7 +466,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 						ConcurrentMap<Integer, Ancrage> ancrages = null;
 						try {
 							ancrages = AncragesMapBuilder.getAncragesMap(distancesEtBlason.getTargetFace());
-                        } catch (ObjectPersistanceException e) {
+                        } catch (ObjectPersistenceException e) {
 	                        e.printStackTrace(); //on trace l'erreur mais on ne la fait pas remonter dans l'interface
                         }
                         if(ancrages == null) {
@@ -546,11 +546,11 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 
 			for (Judge arbitre : parametre.getJudges()) {
 				if (arbitre.isResponsable())
-					strArbitreResp = arbitre.getID();
+					strArbitreResp = arbitre.getFullName();
 				else {
 					if (!strArbitresAss.equals("")) //$NON-NLS-1$
 						strArbitresAss += ", "; //$NON-NLS-1$
-					strArbitresAss += arbitre.getID();
+					strArbitresAss += arbitre.getFullName();
 				}
 			}
 			tplClassement.parse("ARBITRE_RESPONSABLE", XmlUtils.sanitizeText(strArbitreResp)); //$NON-NLS-1$
@@ -618,7 +618,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 
 								tplClassement.parse("categories.classement.PLACE", "" + (j + 1)); //$NON-NLS-1$ //$NON-NLS-2$
 								tplClassement.parse("categories.classement.POSITION", "" + sortList.get(j).getDepart()+sortList.get(j).getPosition() + sortList.get(j).getCible()); //$NON-NLS-1$ //$NON-NLS-2$
-								tplClassement.parse("categories.classement.IDENTITEE", sortList.get(j).getID()); //$NON-NLS-1$
+								tplClassement.parse("categories.classement.IDENTITEE", sortList.get(j).getFullName()); //$NON-NLS-1$
 								tplClassement.parse("categories.classement.CLUB", sortList.get(j).getClub().getNom()); //$NON-NLS-1$
 								tplClassement.parse("categories.classement.NUM_LICENCE", sortList.get(j).getNumLicenceArcher()); //$NON-NLS-1$
 
@@ -698,7 +698,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 					String idsXML = ""; //$NON-NLS-1$
 					String ptsXML = ""; //$NON-NLS-1$
 					for (Concurrent concurrent : sortEquipes[i].getMembresEquipe()) {
-						idsXML += XmlUtils.sanitizeText(concurrent.getID()) + "<br>"; //$NON-NLS-1$
+						idsXML += XmlUtils.sanitizeText(concurrent.getFullName()) + "<br>"; //$NON-NLS-1$
 						ptsXML += concurrent.getTotalScore() + "<br>"; //$NON-NLS-1$
 					}
 					tplClassementEquipe.parse("categories.classement.IDENTITEES", idsXML); //$NON-NLS-1$
@@ -746,7 +746,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 				String idsXML = ""; //$NON-NLS-1$
 				String ptsXML = ""; //$NON-NLS-1$
 				for (Concurrent concurrent : sortEquipes[i].getMembresEquipe()) {
-					idsXML += concurrent.getID() + "<br>"; //$NON-NLS-1$
+					idsXML += concurrent.getFullName() + "<br>"; //$NON-NLS-1$
 					ptsXML += concurrent.getTotalScore() + "<br>"; //$NON-NLS-1$
 				}
 				tplClassementEquipe.parse("categories.classement.IDENTITEES", idsXML); //$NON-NLS-1$

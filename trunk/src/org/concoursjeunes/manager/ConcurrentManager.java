@@ -193,23 +193,23 @@ public class ConcurrentManager {
 		try {
 			stmt = ApplicationCore.dbConnection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 
-			String sql = "select %s from archers ";
+			String sql = "select %s from ARCHERS inner join CONTACT on ARCHERS.ID_CONTACT=CONTACT.ID_CONTACT";
 
 			if(aGeneric != null) {
-				sql += "where ";
+				sql += " where ";
 				List<String> filters = new ArrayList<String>();
 
 				if(!aGeneric.getNumLicenceArcher().isEmpty()) {
-					filters.add("NUMLICENCEARCHER like '" + aGeneric.getNumLicenceArcher().replaceAll("'", "''").replaceAll("%", "%%") + "'");
+					filters.add("NUMLICENCEARCHER like '" + aGeneric.getNumLicenceArcher().replaceAll("'", "''") + "'");
 				}
-				if(!aGeneric.getName().isEmpty()) {
-					filters.add("NOMARCHER like '" + aGeneric.getName().replaceAll("'", "''").replaceAll("%", "%%") + "'");
+				if(aGeneric.getName() != null && !aGeneric.getName().isEmpty()) {
+					filters.add("UPPER(NAME) like '" + aGeneric.getName().toUpperCase().replaceAll("'", "''") + "'");
 				}
-				if(!aGeneric.getFirstName().isEmpty()) {
-					filters.add("UPPER(PRENOMARCHER) like '" + aGeneric.getFirstName().toUpperCase().replaceAll("'", "''").replaceAll("%", "%%") + "'");
+				if(aGeneric.getFirstName() != null && !aGeneric.getFirstName().isEmpty()) {
+					filters.add("UPPER(FIRSTNAME) like '" + aGeneric.getFirstName().toUpperCase().replaceAll("'", "''") + "'");
 				}
 				if(!aGeneric.getClub().getAgrement().isEmpty()) {
-					filters.add("AGREMENTENTITE like '" + aGeneric.getClub().getAgrement().replaceAll("'", "''").replaceAll("%", "%%") + "'");
+					filters.add("ID_ENTITE in (select ID_ENTITE from ENTITE where AGREMENTENTITE like '" + aGeneric.getClub().getAgrement().replaceAll("'", "''").replaceAll("%", "%%") + "')");
 				}
 
 				for(String filter : filters) {
@@ -218,13 +218,15 @@ public class ConcurrentManager {
 			}
 			sql = sql.replaceFirst(" and ", "");
 
-			ResultSet rs = stmt.executeQuery(String.format(sql, "count(*)"));
-			try {
-				rs.next();
-				if(concurrentManagerProgress != null)
-					concurrentManagerProgress.setConcurrentCount(rs.getInt(1));
-			} finally {
-				rs.close();
+			ResultSet rs = null;
+			if(concurrentManagerProgress != null) {
+				rs = stmt.executeQuery(String.format(sql, "count(*)"));
+				try {
+					if(rs.first() && concurrentManagerProgress !=null)
+						concurrentManagerProgress.setConcurrentCount(rs.getInt(1));
+				} finally {
+					rs.close();
+				}
 			}
 			
 			if(!orderfield.isEmpty())
@@ -233,10 +235,9 @@ public class ConcurrentManager {
 			if(nbmaxenreg > 0)
 				sql += " limit " + nbmaxenreg;
 			
-			rs = stmt.executeQuery(String.format(sql, "*"));
+			rs = stmt.executeQuery(String.format(sql, "ARCHERS.*,CONTACT.*"));
 			try {
 				while(rs.next()) {
-					
 					Concurrent concurrent = ConcurrentBuilder.getConcurrent(rs, reglement);
 					if(concurrent != null) {
 						concurrents.add(concurrent);

@@ -92,7 +92,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
+import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Blason;
 import org.concoursjeunes.DistancesEtBlason;
@@ -112,9 +112,9 @@ public class BlasonManager {
 	 * @param numdistanceblason le numero de l'objet distanceEtBlason dont le blason fait partie
 	 * @param numreglement le numrero de reglement
 	 * @return le blason associé à la ligne d/b du réglement donnée
-	 * @throws ObjectPersistanceException 
+	 * @throws ObjectPersistenceException 
 	 */
-	public static Blason findBlasonAssociateToDistancesEtBlason(DistancesEtBlason distancesEtBlason) throws ObjectPersistanceException {
+	public static Blason findBlasonAssociateToDistancesEtBlason(DistancesEtBlason distancesEtBlason) throws ObjectPersistenceException {
 		
 		String sql = "select NUMBLASON from DISTANCESBLASONS " //$NON-NLS-1$
 			+ "where NUMDISTANCESBLASONS=? and NUMREGLEMENT=?"; //$NON-NLS-1$
@@ -124,7 +124,7 @@ public class BlasonManager {
 			PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
 			
 			pstmt.setInt(1, distancesEtBlason.getNumdistancesblason());
-			pstmt.setInt(2, distancesEtBlason.getCriteriaSet().getReglement().getNumReglement());
+			pstmt.setInt(2, distancesEtBlason.getReglement().getNumReglement());
 			
 			ResultSet rs = pstmt.executeQuery();
 			try {
@@ -138,7 +138,7 @@ public class BlasonManager {
 			if(numBlason != 0)
 				return BlasonBuilder.getBlason(numBlason);
 		} catch (SQLException e) {
-			throw new ObjectPersistanceException(e);
+			throw new ObjectPersistenceException(e);
 		}
 		
 		return null;
@@ -152,7 +152,7 @@ public class BlasonManager {
 	 * @return l'objet Blason trouvé ou null si inexistant
 	 * @throws SQLException
 	 */
-	public static Blason findBlasonByName(String name) throws ObjectPersistanceException {	
+	public static Blason findBlasonByName(String name) throws ObjectPersistenceException {	
 		String sql = "select NUMBLASON from BLASONS where NOMBLASON=?"; //$NON-NLS-1$
 		int numBlason = 0;
 		
@@ -173,7 +173,7 @@ public class BlasonManager {
 			if(numBlason != 0)
 				return BlasonBuilder.getBlason(numBlason); 
 		} catch (SQLException e) {
-			throw new ObjectPersistanceException(e);
+			throw new ObjectPersistenceException(e);
 		}
 		
 		return null;

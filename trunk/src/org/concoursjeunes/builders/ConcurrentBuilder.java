@@ -89,9 +89,17 @@ package org.concoursjeunes.builders;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
+import org.ajdeveloppement.commons.persistence.LoadHelper;
+import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.sql.ResultSetLoadHandler;
+import org.ajdeveloppement.commons.persistence.sql.SqlLoadHandler;
 import org.concoursjeunes.ApplicationCore;
+import org.concoursjeunes.Archer;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.CriteriaSet;
 import org.concoursjeunes.Criterion;
@@ -99,37 +107,77 @@ import org.concoursjeunes.CriterionElement;
 import org.concoursjeunes.Reglement;
 
 /**
- * Fabrique d'archer en se basant sur les données en base
+ * Initialise un concurrent
  * 
  * @author Aurélien JEOFFRAY
  * @version 1.0
  */
 public class ConcurrentBuilder {
 
+	private static LoadHelper<Archer,Map<String,Object>> loadHelper;
+	private static LoadHelper<Archer,ResultSet> resultSetLoadHelper;
+	static {
+		try {
+			loadHelper = new LoadHelper<Archer,Map<String,Object>>(new SqlLoadHandler<Archer>(ApplicationCore.dbConnection, Archer.class));
+			resultSetLoadHelper = new LoadHelper<Archer, ResultSet>(new ResultSetLoadHandler<Archer>(Archer.class));
+		} catch(ObjectPersistenceException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	/**
-	 * Construit un archer à partir d'un jeux de resultat sgbd et un reglement donnée
+	 * Construit un concurrent à partir de l'enregistrement SQL fournit en paramètre. Le ResultSet doit contenir
+	 * l'ensemble des champs des tables "ARCHER" et "CONTACT". Dans le cas contraire, invoque une exception
 	 * 
-	 * @param rs - le jeux de resultat sgbd
-	 * @param reglement - le reglement appliqué
+	 * @param resultSet le jeux de résultat SQL contenant les données du concurrent
+	 * @param reglement reglement le reglement appliqué à l'archer pour le qualifier en concurrent
+	 * @return le concurrent produit
+	 */
+	public static Concurrent getConcurrent(ResultSet resultSet, Reglement reglement) {
+		return getConcurrent(null, resultSet, reglement);
+	}
+	
+	/**
+	 * Construit un concurrent à partir de l'identifiant de l'archer en base et d'un réglement
+	 * donnée
+	 * 
+	 * @param idArcher l'identifiant de l'archer
+	 * @param reglement le reglement appliqué
+	 * @return le concurrent construit
+	 */
+	public static Concurrent getConcurrent(UUID idArcher, Reglement reglement) {
+		return getConcurrent(idArcher, null, reglement);
+	}
+	
+	/**
+	 * Construit un concurrent à partir de l'identifiant de l'archer en base ou d'un jeux de résultat SQL et d'un réglement
+	 * donnée. Si l'identifiant de l'archer est fournit, resultSet est ignoré.
+	 * 
+	 * @param idArcher l'identifiant de l'archer
+	 * @param resultSet le jeux de résultat SQL contenant les données du concurrent si idArcher est null
+	 * @param reglement le reglement appliqué
 	 * @return l'archer construit
 	 */
-	public static Concurrent getConcurrent(ResultSet rs, Reglement reglement) {
+	private static Concurrent getConcurrent(UUID idArcher, ResultSet resultSet, Reglement reglement) {
 		Concurrent concurrent = new Concurrent();
 
 		try {
-			concurrent.setNumLicenceArcher(rs.getString("NUMLICENCEARCHER")); //$NON-NLS-1$
-			concurrent.setName(rs.getString("NOMARCHER")); //$NON-NLS-1$
-			concurrent.setFirstName(rs.getString("PRENOMARCHER")); //$NON-NLS-1$
-			concurrent.setCertificat(rs.getBoolean("CERTIFMEDICAL")); //$NON-NLS-1$
-			concurrent.setClub(EntiteBuilder.getEntite(rs.getString("AGREMENTENTITE"))); //$NON-NLS-1$
+			Map<Class<?>, Map<String, Object>> foreignKeyValue;
+			if(idArcher != null) {
+				foreignKeyValue = loadHelper.load(concurrent, Collections.<String, Object>singletonMap("ID_CONTACT", idArcher));
+			} else {
+				foreignKeyValue = resultSetLoadHelper.load(concurrent, resultSet);
+			}
+			
+			concurrent.setClub(EntiteBuilder.getEntite((UUID)foreignKeyValue.get(Archer.class).get("ID_ENTITE"))); //$NON-NLS-1$
 
 			if(reglement != null) {
 				CriteriaSet differentiationCriteria = null;
-				String sql = "select * from distinguer where NUMLICENCEARCHER=? and NUMREGLEMENT=?"; //$NON-NLS-1$
+				String sql = "select * from distinguer where ID_CONTACT=? and NUMREGLEMENT=?"; //$NON-NLS-1$
 				
 				PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
 				
-				pstmt.setString(1, concurrent.getNumLicenceArcher());
+				pstmt.setString(1, concurrent.getIdContact().toString());
 				pstmt.setInt(2, reglement.getNumReglement());
 				
 				try {
@@ -144,22 +192,25 @@ public class ConcurrentBuilder {
 							for(Criterion key : reglement.getListCriteria()) {
 								boolean returnfirstval = true;
 								if(!key.getChampsTableArchers().isEmpty()) {
-									try {
-										List<CriterionElement> arrayList = key.getCriterionElements();
-										int valindex = rs.getInt(key.getChampsTableArchers()); 
-										if(valindex >= arrayList.size())
-											valindex = arrayList.size() - 1;
-										if(valindex < 0)
-											valindex = 0;
-										
-										if(key.getCriterionElements().get(valindex).isActive())
-											differentiationCriteria.getCriteria().put(key, key.getCriterionElements().get(valindex));
-										else
-											return null;
-										
-										returnfirstval = false;
-									} catch (SQLException e) {
-									}
+									List<CriterionElement> arrayList = key.getCriterionElements();
+									if(key.getChampsTableArchers() == null)
+										continue;
+									Integer value = (Integer)foreignKeyValue.get(Archer.class).get(key.getChampsTableArchers().toUpperCase());
+									if(value == null)
+										continue;
+									
+									int valindex = (Integer)value; 
+									if(valindex >= arrayList.size())
+										valindex = arrayList.size() - 1;
+									if(valindex < 0)
+										valindex = 0;
+									
+									if(key.getCriterionElements().get(valindex).isActive())
+										differentiationCriteria.getCriteria().put(key, key.getCriterionElements().get(valindex));
+									else
+										return null;
+									
+									returnfirstval = false;
 								}
 								
 								if(returnfirstval) {
@@ -198,8 +249,12 @@ public class ConcurrentBuilder {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} catch (ObjectPersistenceException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-
+		
 		return concurrent;
 	}
 	

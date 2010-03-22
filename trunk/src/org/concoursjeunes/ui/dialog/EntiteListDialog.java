@@ -119,6 +119,9 @@ import javax.swing.table.TableRowSorter;
 import org.ajdeveloppement.apps.localisation.Localisable;
 import org.ajdeveloppement.apps.localisation.Localisator;
 import org.ajdeveloppement.commons.AjResourcesReader;
+import org.ajdeveloppement.commons.persistence.LoadHelper;
+import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.sql.ResultSetLoadHandler;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Entite;
 
@@ -126,6 +129,15 @@ import org.concoursjeunes.Entite;
  * @author Aurélien JEOFFRAY
  */
 public class EntiteListDialog extends JDialog implements ActionListener, MouseListener, CaretListener {
+	
+	private static LoadHelper<Entite,ResultSet> resultSetLoadHelper;
+	static {
+		try {
+			resultSetLoadHelper = new LoadHelper<Entite, ResultSet>(new ResultSetLoadHandler<Entite>(Entite.class));
+		} catch(ObjectPersistenceException e) {
+			e.printStackTrace();
+		}
+	}
 
 	public static final int VALIDER = 1;
 	public static final int ANNULER = 2;
@@ -293,7 +305,7 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 	 * @author  aurelien
 	 */
 	private class EntiteTableModel implements TableModel {
-
+		
 		private EventListenerList listenerList = new EventListenerList();
 
 		private ArrayList<String> columnName = new ArrayList<String>();
@@ -420,15 +432,11 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 			Entite entite = new Entite();
 			try {
 				if(rs.absolute(index + 1)) {
-					entite.setAgrement(rs.getString("AgrementEntite")); //$NON-NLS-1$
-					entite.setNom(rs.getString("NomEntite")); //$NON-NLS-1$
-					entite.setAdresse(rs.getString("AdresseEntite")); //$NON-NLS-1$
-					entite.setCodePostal(rs.getString("CodePostalEntite")); //$NON-NLS-1$
-					entite.setVille(rs.getString("VilleEntite")); //$NON-NLS-1$
-					entite.setNote(rs.getString("NoteEntite")); //$NON-NLS-1$
-					entite.setType(rs.getInt("TypeEntite")); //$NON-NLS-1$
+					resultSetLoadHelper.load(entite, rs);
 				}
 			} catch (SQLException e) {
+				e.printStackTrace();
+			} catch (ObjectPersistenceException e) {
 				e.printStackTrace();
 			}
 			return entite;

@@ -123,7 +123,7 @@ import org.ajdeveloppement.apps.localisation.Localisable;
 import org.ajdeveloppement.apps.localisation.LocalisableString;
 import org.ajdeveloppement.apps.localisation.Localisator;
 import org.ajdeveloppement.commons.AjResourcesReader;
-import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
+import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.ui.AJList;
 import org.ajdeveloppement.commons.ui.DefaultDialogReturn;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
@@ -382,7 +382,7 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 			Reglement modifiedReglement = reglementDialog.getReglement();
 			try {
 				modifiedReglement.save();
-			} catch(ObjectPersistanceException e1) {
+			} catch(ObjectPersistenceException e1) {
 				DisplayableErrorHelper.displayException(e1);
 				e1.printStackTrace();
 			}
@@ -494,7 +494,7 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 			if(reglement != null) {
 				try {
 					reglementManager.addReglement(reglement);
-				} catch (ObjectPersistanceException e1) {
+				} catch (ObjectPersistenceException e1) {
 					DisplayableErrorHelper.displayException(e1);
 					e1.printStackTrace();
 				}
@@ -509,7 +509,7 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 				try {
 					reglementManager.removeReglement(reglement);
 					ajlReglements.remove(reglement);
-				} catch (ObjectPersistanceException e1) {
+				} catch (ObjectPersistenceException e1) {
 					if(e1.getMessage().equals("delete this Reglement is not authorized because there is official")) { //$NON-NLS-1$
 						JOptionPane.showMessageDialog(this, localisation.getResourceString("reglementmanager.delete.unauhorized"), "", JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$ //$NON-NLS-2$
 					} else {
@@ -547,7 +547,7 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 				} catch (IOException e1) {
 					DisplayableErrorHelper.displayException(e1);
 					e1.printStackTrace();
-				} catch (ObjectPersistanceException e1) {
+				} catch (ObjectPersistenceException e1) {
 					DisplayableErrorHelper.displayException(e1);
 					e1.printStackTrace();
 				}
@@ -575,7 +575,7 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 						ajlFederations.remove(federation);
 						
 						ajlFederations.setSelectedIndex(0);
-					} catch (ObjectPersistanceException e1) {
+					} catch (ObjectPersistenceException e1) {
 						DisplayableErrorHelper.displayException(e1);
 						e1.printStackTrace();
 					}

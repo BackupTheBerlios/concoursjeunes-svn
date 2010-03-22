@@ -87,6 +87,7 @@
 package org.concoursjeunes;
 
 import java.awt.EventQueue;
+import java.awt.SplashScreen;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -95,10 +96,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.Authenticator;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.ProxySelector;
 import java.net.SocketAddress;
 import java.net.URI;
+import java.net.URL;
 import java.net.UnknownHostException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyStore;
@@ -193,10 +196,32 @@ public class Main {
 			}
 			
 		});
+		
+		SplashScreen splash = SplashScreen.getSplashScreen();
+		if(splash != null) {
+			try {
+				splash.setImageURL(new URL("file:" + ApplicationCore.staticParameters.getResourceString("path.ressources")
+					+ File.separator
+					+ ApplicationCore.staticParameters.getResourceString("file.image.splashscreen")));
+			} catch (NullPointerException e1) {
+				// TODO Bloc catch auto-généré
+				e1.printStackTrace();
+			} catch (IllegalStateException e1) {
+				// TODO Bloc catch auto-généré
+				e1.printStackTrace();
+			} catch (MalformedURLException e1) {
+				// TODO Bloc catch auto-généré
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				// TODO Bloc catch auto-généré
+				e1.printStackTrace();
+			}
+		}
 	
 		boolean retry = false;
 		do {
 			try {
+				//splash.setProgressionText("Initialisation de l'application...");
 				ApplicationCore.initializeApplication();
 			} catch (SQLException e1) {
 				JXErrorPane.showDialog(null,new ErrorInfo( "SQL Error", e1.toString(), //$NON-NLS-1$
@@ -216,9 +241,11 @@ public class Main {
 		
 		core = ApplicationCore.getInstance();
 		
+		//splash.setProgressionText("Initialisation du contexte de sécurité...");
 		initSecureContext();
 		
 		if(System.getProperty("noplugin") == null) { //$NON-NLS-1$
+			//splash.setProgressionText("Chargement des plugins...");
 			loadStartupPlugin();
 		}
 
@@ -241,6 +268,8 @@ public class Main {
 				}
 			}
 		});
+		if(splash != null)
+			splash.close();
 		System.out.println("core loaded");  //$NON-NLS-1$
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override

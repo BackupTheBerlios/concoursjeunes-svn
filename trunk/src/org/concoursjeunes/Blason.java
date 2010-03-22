@@ -103,14 +103,14 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
-import org.ajdeveloppement.commons.persistance.ObjectPersistance;
-import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
-import org.ajdeveloppement.commons.persistance.StoreHelper;
-import org.ajdeveloppement.commons.persistance.sql.SqlField;
-import org.ajdeveloppement.commons.persistance.sql.SqlGeneratedIdField;
-import org.ajdeveloppement.commons.persistance.sql.SqlPrimaryKey;
-import org.ajdeveloppement.commons.persistance.sql.SqlStoreHandler;
-import org.ajdeveloppement.commons.persistance.sql.SqlTable;
+import org.ajdeveloppement.commons.persistence.ObjectPersistence;
+import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.StoreHelper;
+import org.ajdeveloppement.commons.persistence.sql.SqlField;
+import org.ajdeveloppement.commons.persistence.sql.SqlGeneratedIdField;
+import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
+import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
+import org.ajdeveloppement.commons.persistence.sql.SqlTable;
 import org.concoursjeunes.builders.BlasonBuilder;
 
 /**
@@ -123,7 +123,7 @@ import org.concoursjeunes.builders.BlasonBuilder;
 @SqlTable(name="BLASONS")
 @SqlPrimaryKey(fields={"NUMBLASON"},generatedidField=@SqlGeneratedIdField(name="NUMBLASON",type=Types.INTEGER))
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Blason implements ObjectPersistance {
+public class Blason implements ObjectPersistence {
 	
 	@XmlAttribute
 	@SqlField(name="NUMBLASON")
@@ -214,7 +214,7 @@ public class Blason implements ObjectPersistance {
 	 * @return la liste des blasons existant
 	 * @throws SQLException
 	 */
-	public static List<Blason> listAvailableTargetFace() throws ObjectPersistanceException {
+	public static List<Blason> listAvailableTargetFace() throws ObjectPersistenceException {
 		ArrayList<Blason> blasons = new ArrayList<Blason>();
 		
 		try {
@@ -226,7 +226,7 @@ public class Blason implements ObjectPersistance {
 				blasons.add(BlasonBuilder.getBlason(rs.getInt("NUMBLASON"))); //$NON-NLS-1$
 			}
 		} catch (SQLException e) {
-			throw new ObjectPersistanceException(e);
+			throw new ObjectPersistenceException(e);
 		}
 		
 		return blasons;
@@ -452,7 +452,7 @@ public class Blason implements ObjectPersistance {
 	 * @throws SqlPersistanceException
 	 */
 	@Override
-	public void save() throws ObjectPersistanceException {
+	public void save() throws ObjectPersistenceException {
 		helper.save(this);
 		
 		for(Entry<Integer, Ancrage> entry : ancrages.entrySet()) {
@@ -466,7 +466,7 @@ public class Blason implements ObjectPersistance {
 	 * @throws SqlPersistanceException
 	 */
 	@Override
-	public void delete() throws ObjectPersistanceException {
+	public void delete() throws ObjectPersistenceException {
 		helper.delete(this);
 	}
 

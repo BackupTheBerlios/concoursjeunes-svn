@@ -86,11 +86,21 @@
  */
 package org.concoursjeunes;
 
+import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
+import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.StoreHelper;
+import org.ajdeveloppement.commons.persistence.sql.SqlField;
+import org.ajdeveloppement.commons.persistence.sql.SqlForeignKey;
+import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
+import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
+import org.ajdeveloppement.commons.persistence.sql.SqlTable;
+import org.ajdeveloppement.commons.persistence.sql.SqlUnmappedFields;
 import org.ajdeveloppement.concours.Contact;
 import org.concoursjeunes.manager.ConcurrentManager;
 
@@ -101,14 +111,34 @@ import org.concoursjeunes.manager.ConcurrentManager;
  * @version 1.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Archer extends Contact implements Cloneable {
+@SqlTable(name="ARCHERS")
+@SqlPrimaryKey(fields="ID_CONTACT")
+@SqlUnmappedFields(fields={"ID_CONTACT","SEXE","CATEGORIE","NIVEAU","ARC"})
+public class Archer extends Contact {
 
-	private String nomArcher        = ""; //$NON-NLS-1$
-	private String prenomArcher     = ""; //$NON-NLS-1$
+	//private String nomArcher        = ""; //$NON-NLS-1$
+	//private String prenomArcher     = ""; //$NON-NLS-1$
+	
+	@SqlField(name="NUMLICENCEARCHER")
 	private String numLicenceArcher = ""; //$NON-NLS-1$
+	
+	@SqlForeignKey(mappedTo="ID_ENTITE")
 	private Entite club             = new Entite();
+	
+	@SqlField(name="CERTIFMEDICAL")
 	private boolean certificat      = false;
+	
 	private boolean handicape		= false;
+	
+	private static StoreHelper<Archer> helper = null;
+	static {
+		try {
+			helper = new StoreHelper<Archer>(new SqlStoreHandler<Archer>(
+					ApplicationCore.dbConnection, Archer.class));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	/**
 	 * Constructeur vide nécessaire à l'initialisation correct de l'objet
@@ -252,15 +282,6 @@ public class Archer extends Contact implements Cloneable {
 	}
 
 	/**
-	 * Retourne l'identifiant de l'archer (Concatenation du nom et du prenom)
-	 * 
-	 * @return l'identifiant de l'archer
-	 */
-	public String getID() {
-		return nomArcher + " " + prenomArcher; //$NON-NLS-1$
-	}
-	
-	/**
 	 * Test si l'archer possède dans la base des homonymes (même nom et prenom)
 	 * 
 	 * @return true su l'archer possède des homonyme, false sinon
@@ -275,47 +296,45 @@ public class Archer extends Contact implements Cloneable {
 		return (homonyme.size() > 1);
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
+	@Override
+	public void save() throws ObjectPersistenceException {
+		super.save();
+		helper.save(this, Collections.<String, Object>singletonMap("ID_CONTACT", getIdContact()));
+	}
+	
+	@Override
+	public void delete() throws ObjectPersistenceException {
+		super.delete(); //le delete parent suffit car cascade
+	}
+
 	@Override
 	public int hashCode() {
-		final int PRIME = 31;
-		int result = 1;
-		
-		if(!numLicenceArcher.isEmpty()) {
-			result = PRIME * result + ((numLicenceArcher == null) ? 0 : numLicenceArcher.hashCode());
-		} else {
-			result = PRIME * result + ((nomArcher == null) ? 0 : nomArcher.hashCode());
-		}
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime
+				* result
+				+ ((numLicenceArcher == null) ? 0 : numLicenceArcher.hashCode());
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
+		if (!super.equals(obj))
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		final Archer other = (Archer) obj;
-		if(numLicenceArcher == null || numLicenceArcher.isEmpty()) {
-			if (nomArcher == null) {
-				if (other.getNomArcher() != null)
-					return false;
-			} else if (!getID().equals(other.getID()))
+		Archer other = (Archer) obj;
+		if (numLicenceArcher == null) {
+			if (other.numLicenceArcher != null)
 				return false;
-		} else {
-			if (!numLicenceArcher.equals(other.getNumLicenceArcher()))
-				return false;
-		}
+		} else if (!numLicenceArcher.equals(other.numLicenceArcher))
+			return false;
 		return true;
 	}
-	
+
+
 	@Override
 	protected Archer clone() throws CloneNotSupportedException {
 		Archer clone = (Archer)super.clone();

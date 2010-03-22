@@ -212,7 +212,6 @@ public class CriterionDialog extends JDialog implements ActionListener, ChangeLi
         
         init();
         affectLibelle();
-        completePanel();
     }
     
     /**
@@ -299,7 +298,7 @@ public class CriterionDialog extends JDialog implements ActionListener, ChangeLi
     	criterionBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, criterion, BeanProperty.create("classement"), jcbClassementCriterion, BeanProperty.create("selected")));  //$NON-NLS-1$//$NON-NLS-2$
     	criterionBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, criterion, BeanProperty.create("placement"), jcbPlacementCriterion, BeanProperty.create("selected")));  //$NON-NLS-1$//$NON-NLS-2$
     	criterionBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, criterion, BeanProperty.create("classementEquipe"), jcbClassementEquipeCriterion, BeanProperty.create("selected")));  //$NON-NLS-1$//$NON-NLS-2$
-    	criterionBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, criterion, BeanProperty.create("reglement.officialReglement"), jcbWinFFTACode, BeanProperty.create("enabled")));  //$NON-NLS-1$//$NON-NLS-2$
+    	//criterionBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, criterion, BeanProperty.create("reglement.officialReglement"), jcbWinFFTACode, BeanProperty.create("enabled")));  //$NON-NLS-1$//$NON-NLS-2$
     	criterionBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, criterion, BeanProperty.create("champsTableArchers"), jcbWinFFTACode, BeanProperty.create("selectedItem"))); //$NON-NLS-1$ //$NON-NLS-2$
     	Binding<Criterion, Integer, JComboBox, Integer> sortBinding = Bindings.<Criterion, Integer, JComboBox, Integer>createAutoBinding(UpdateStrategy.READ, criterion, BeanProperty.<Criterion, Integer>create("sortOrder"), jcbSortOrder, BeanProperty.<JComboBox, Integer>create("selectedIndex"));  //$NON-NLS-1$//$NON-NLS-2$
     	sortBinding.setConverter(new Converter<Integer, Integer>() {
@@ -317,11 +316,11 @@ public class CriterionDialog extends JDialog implements ActionListener, ChangeLi
 		});
     	criterionBinding.addBinding(sortBinding);
     	
-		jcbPlacementCriterion.setEnabled(criterion.isClassement() && !editable);
-    	jcbClassementCriterion.setEnabled(!editable);
-    	jcbClassementEquipeCriterion.setEnabled(!editable);
-    	jcbWinFFTACode.setEnabled(!editable);
-    	jcbSortOrder.setEnabled(!editable);
+		jcbPlacementCriterion.setEnabled(criterion.isClassement() && editable);
+    	jcbClassementCriterion.setEnabled(editable);
+    	jcbClassementEquipeCriterion.setEnabled(editable);
+    	jcbWinFFTACode.setEnabled(editable);
+    	jcbSortOrder.setEnabled(editable);
     	
     	criterionBinding.bind();
     	
@@ -414,7 +413,7 @@ public class CriterionDialog extends JDialog implements ActionListener, ChangeLi
 	 */
 	@Override
 	public void stateChanged(ChangeEvent e) {
-		if(!editable) {
+		if(editable) {
 			if(e.getSource() == jcbClassementCriterion) {
 				jcbPlacementCriterion.setEnabled(jcbClassementCriterion.isSelected());
 			} else if(e.getSource() == jcbPlacementCriterion) {

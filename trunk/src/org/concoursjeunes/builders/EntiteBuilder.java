@@ -88,8 +88,14 @@ package org.concoursjeunes.builders;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.Map;
+import java.util.UUID;
 
+import org.ajdeveloppement.commons.persistence.LoadHelper;
+import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.sql.ResultSetLoadHandler;
+import org.ajdeveloppement.commons.persistence.sql.SqlLoadHandler;
+import org.ajdeveloppement.concours.cache.EntiteCache;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Entite;
 
@@ -98,39 +104,72 @@ import org.concoursjeunes.Entite;
  *
  */
 public class EntiteBuilder {
+	
+	private static LoadHelper<Entite,Map<String,Object>> loadHelper;
+	private static LoadHelper<Entite,ResultSet> resultSetLoadHelper;
+	static {
+		try {
+			loadHelper = new LoadHelper<Entite,Map<String,Object>>(new SqlLoadHandler<Entite>(ApplicationCore.dbConnection, Entite.class));
+			resultSetLoadHelper = new LoadHelper<Entite, ResultSet>(new ResultSetLoadHandler<Entite>(Entite.class));
+		} catch(ObjectPersistenceException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	/**
 	 * Construit une entite à partir des informations en base
 	 * 
-	 * @param numAgrement le numero d'agrement de l'entite à construire
+	 * @param idEntite l'identifiant de l'entite à construire
 	 * 
 	 * @return l'entite construite
 	 */
-	public static Entite getEntite(String numAgrement) {
-		Entite entite = new Entite();
-		try {
-			Statement stmt = ApplicationCore.dbConnection.createStatement();
+	public static Entite getEntite(UUID idEntite) {
+		return getEntite(idEntite, null);
+	}
+	
+	/**
+	 * Construit une entite à partir des informations en base
+	 * 
+	 * @param rs le jeux de résultat de base de données contenant les champs de la
+	 * table ENTITE
+	 * 
+	 * @return l'entite construite
+	 */
+	public static Entite getEntite(ResultSet rs) {
+		return getEntite(null, rs);
+	}
+	
+	private static Entite getEntite(UUID idEntite, ResultSet rs) {
+		Entite entite = null;
+		if(idEntite != null)
+			entite = EntiteCache.getInstance().get(idEntite);
+		else {
 			try {
-				ResultSet rs = stmt.executeQuery("select * from Entite where AgrementEntite = '" + numAgrement + "'"); //$NON-NLS-1$ //$NON-NLS-2$
-				try {
-					if(rs.next()) {
-						entite.setAgrement(rs.getString("AgrementEntite")); //$NON-NLS-1$
-						entite.setNom(rs.getString("NomEntite")); //$NON-NLS-1$
-						entite.setAdresse(rs.getString("AdresseEntite")); //$NON-NLS-1$
-						entite.setCodePostal(rs.getString("CodePostalEntite")); //$NON-NLS-1$
-						entite.setVille(rs.getString("VilleEntite")); //$NON-NLS-1$
-						entite.setNote(rs.getString("NoteEntite")); //$NON-NLS-1$
-						entite.setType(rs.getInt("TypeEntite")); //$NON-NLS-1$
-					}
-				} finally {
-					rs.close();
-					rs = null;
-				}
-			} finally {
-				stmt.close();
-				stmt = null;
+				entite = EntiteCache.getInstance().get((UUID)rs.getObject("ENTITE.ID_ENTITE"));
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+		}
+		
+		if(entite == null) {	
+			entite = new Entite();
+			
+			if(idEntite != null) {
+				entite.setIdEntite(idEntite);
+				
+				try {
+					loadHelper.load(entite);
+				} catch (ObjectPersistenceException e) {
+					e.printStackTrace();
+				}
+			} else {
+				try {
+					resultSetLoadHelper.load(entite, rs);
+				} catch (ObjectPersistenceException e) {
+					e.printStackTrace();
+				}
+			}
+			EntiteCache.getInstance().add(entite);
 		}
 
 		return entite;

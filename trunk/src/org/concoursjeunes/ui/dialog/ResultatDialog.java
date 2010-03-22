@@ -272,7 +272,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 			
 			for(int j = 0; j < concurrents.size(); j++) {
 				if(concurrents.get(j).getPosition() == i) {
-					libelle += concurrents.get(j).getID();
+					libelle += concurrents.get(j).getFullName();
 					break;
 				}
 			}

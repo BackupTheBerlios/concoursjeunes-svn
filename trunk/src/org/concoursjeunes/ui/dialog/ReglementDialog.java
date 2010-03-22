@@ -138,7 +138,7 @@ import org.ajdeveloppement.apps.localisation.Localisable;
 import org.ajdeveloppement.apps.localisation.Localisator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.StringUtils;
-import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
+import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.ui.AJList;
 import org.ajdeveloppement.commons.ui.AJTree;
 import org.ajdeveloppement.commons.ui.DefaultDialogReturn;
@@ -241,7 +241,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	@Localisable("bouton.annuler")
 	private JButton jbAnnuler = new JButton();
 
-	private boolean editable = false;
+	private boolean editable = true;
 	private DefaultDialogReturn returnAction = DefaultDialogReturn.CANCEL;
 
 	/**
@@ -543,9 +543,9 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 
 	private void completeGeneral() {
 		if (reglement.isOfficialReglement())
-			editable = true;
+			editable = false;
 
-		if(editable) {
+		if(!editable) {
 			jtfReglementName.setEditable(false);
 			
 			jtfNbSerie.setEditable(false);
@@ -623,7 +623,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		    		localisation.getResourceString("reglement.surclassement.enable"), "", ""} );  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 		    jtCriteriaSet.setTableHeader(header);
 			
-		    if(!editable) {
+		    if(editable) {
 				TableColumn cH = jtCriteriaSet.getColumnModel().getColumn(2);
 				cH.setCellEditor(new DefaultCellEditor(jcbCriteriaSet) {
 					/* (non-Javadoc)
@@ -675,7 +675,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 					List<Blason> availableTargetFace = Blason.listAvailableTargetFace();
 					if(availableTargetFace.size() > 0)
 						defaultBlason = availableTargetFace.get(0);
-				} catch (ObjectPersistanceException e) {
+				} catch (ObjectPersistenceException e) {
 					e.printStackTrace();
 				}
 				newDb.setTargetFace(defaultBlason);
@@ -694,7 +694,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		DefaultTableModel dtm = new DefaultTableModel() {
 			@Override
 			public boolean isCellEditable(int row, int col) {
-				if (editable || col == 1 || reglement.isOfficialReglement())
+				if (!editable || col == 1 || reglement.isOfficialReglement())
 					return false;
 				return true;
 			}
@@ -1047,7 +1047,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	public void mouseClicked(MouseEvent e) {
 		if(e.getSource() == treeCriteria && e.getClickCount() == 2) {
 			editElement();
-		} else if(e.getSource() == ajlDistancesBlasons && e.getClickCount() == 2 && !editable) {
+		} else if(e.getSource() == ajlDistancesBlasons && e.getClickCount() == 2 && editable) {
 			editDistancesBlasons();
 		}
 	}

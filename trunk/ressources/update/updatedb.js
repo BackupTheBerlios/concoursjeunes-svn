@@ -18,19 +18,25 @@ if(dbVersion == 0) {
 	sql.executeScript("../sql/ImportClubFFTA.sql");
 	
 	updateReglements();
-} else if(dbVersion < 20) {
-	sql.executeScript("01-dropoldtable.sql");
-	sql.executeScript("01-create_db.sql");
+} else {
+	if(dbVersion < 20) {
+		sql.executeScript("01-dropoldtable.sql");
+		sql.executeScript("01-create_db.sql");
+		
+		sql.executeUpdate("ALTER TABLE ENTITE ADD DATEMODIF DATE DEFAULT CURRENT_DATE()");
+		
+		sql.executeScript("../sql/ImportClubFFTA.sql");
+		
+		updateReglements();
+	}
 	
-	sql.executeUpdate("ALTER TABLE ENTITE ADD DATEMODIF DATE DEFAULT CURRENT_DATE()");
-	
-	sql.executeScript("../sql/ImportClubFFTA.sql");
-	
-	updateReglements();
-}
+	if(dbVersion < 21) {
+		sql.executeUpdate("update REGLEMENT set REMOVABLE=FALSE where NOMREGLEMENT like 'FFTA%'");
+	}
 
-if(dbVersion < 21) {
-	sql.executeUpdate("update REGLEMENT set REMOVABLE=FALSE where NOMREGLEMENT like 'FFTA%'");
+	if(dbVersion < 30) {
+		sql.executeScript("02-V21toV30.sql");
+	}
 }
 
 if(dbVersion != org.concoursjeunes.ApplicationCore.DB_RELEASE_REQUIRED) {

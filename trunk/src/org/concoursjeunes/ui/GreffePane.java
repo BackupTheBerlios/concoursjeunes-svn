@@ -518,7 +518,7 @@ public class GreffePane extends JPanel implements
 				case 0:
 					return concurrent.getDepart() + 1;
 				case 1:
-					return concurrent.getID();
+					return concurrent.getFullName();
 				case 2:
 					return concurrent.getClub().getVille();
 				case 3:

@@ -91,13 +91,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
-import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
+import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 
 /**
  * Objet de Base de stockage des Information sur un concurrent:
@@ -183,7 +182,7 @@ public class Concurrent extends Archer implements Cloneable {
 	 * @return la grille des scores
 	 */
 	public List<Integer> getScore() {
-		return Collections.unmodifiableList(points);
+		return points;
 	}
 
 	/**
@@ -560,7 +559,7 @@ public class Concurrent extends Archer implements Cloneable {
 	/**
 	 * Sauvegarde le jeux de critère associé à l'archer
 	 */
-	public void saveCriteriaSet() throws ObjectPersistanceException {
+	public void saveCriteriaSet() throws ObjectPersistenceException {
 		if(!getNumLicenceArcher().equals("")) { //$NON-NLS-1$
 			try {
 				
@@ -585,21 +584,21 @@ public class Concurrent extends Archer implements Cloneable {
 			
 				criteriaSet.save();
 			
-				sql = "select * from ARCHERS where NUMLICENCEARCHER=?"; //$NON-NLS-1$
+				sql = "select * from ARCHERS where ID_CONTACT=?"; //$NON-NLS-1$
 				PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
-				pstmt.setString(1, getNumLicenceArcher());
+				pstmt.setString(1, getIdContact().toString());
 				
 				ResultSet rs = pstmt.executeQuery();
 				if(rs.first()) {
 					pstmt.close();
 					
-					sql = "merge into distinguer (NUMLICENCEARCHER, NUMREGLEMENT, " + //$NON-NLS-1$
-							"NUMCRITERIASET) KEY (NUMLICENCEARCHER, NUMREGLEMENT)" + //$NON-NLS-1$
+					sql = "merge into distinguer (ID_CONTACT, NUMREGLEMENT, " + //$NON-NLS-1$
+							"NUMCRITERIASET) KEY (ID_CONTACT, NUMREGLEMENT)" + //$NON-NLS-1$
 							"VALUES (?, ?, ?)"; //$NON-NLS-1$
 
 					pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
 					
-					pstmt.setString(1, getNumLicenceArcher());
+					pstmt.setString(1, getIdContact().toString());
 					pstmt.setInt(2, criteriaSet.getReglement().getNumReglement());
 					pstmt.setInt(3, criteriaSet.getNumCriteriaSet());
 	
@@ -607,7 +606,7 @@ public class Concurrent extends Archer implements Cloneable {
 					pstmt.close();
 				}
 			} catch (SQLException e) {
-				throw new ObjectPersistanceException(e);
+				throw new ObjectPersistenceException(e);
 			}
 		}
 	}

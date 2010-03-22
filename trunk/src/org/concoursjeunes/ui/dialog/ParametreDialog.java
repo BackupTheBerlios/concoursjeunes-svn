@@ -274,7 +274,7 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 					boolean cellHasFocus) {
 				if(value instanceof Judge) {
 					Judge j = (Judge)value;
-					value = (j.isResponsable() ? "*" : "") + j.getID(); //$NON-NLS-1$ //$NON-NLS-2$
+					value = (j.isResponsable() ? "*" : "") + j.getFullName(); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				return super.getListCellRendererComponent(list, value, index, isSelected,
 						cellHasFocus);

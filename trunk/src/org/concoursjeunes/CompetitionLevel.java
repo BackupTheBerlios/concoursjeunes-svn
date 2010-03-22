@@ -94,14 +94,14 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.ajdeveloppement.commons.persistance.ObjectPersistance;
-import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
-import org.ajdeveloppement.commons.persistance.StoreHelper;
-import org.ajdeveloppement.commons.persistance.sql.SqlField;
-import org.ajdeveloppement.commons.persistance.sql.SqlForeignKey;
-import org.ajdeveloppement.commons.persistance.sql.SqlPrimaryKey;
-import org.ajdeveloppement.commons.persistance.sql.SqlStoreHandler;
-import org.ajdeveloppement.commons.persistance.sql.SqlTable;
+import org.ajdeveloppement.commons.persistence.ObjectPersistence;
+import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.StoreHelper;
+import org.ajdeveloppement.commons.persistence.sql.SqlField;
+import org.ajdeveloppement.commons.persistence.sql.SqlForeignKey;
+import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
+import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
+import org.ajdeveloppement.commons.persistence.sql.SqlTable;
 
 /**
  * Représente le niveau d'une compétition.
@@ -111,7 +111,7 @@ import org.ajdeveloppement.commons.persistance.sql.SqlTable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @SqlTable(name="NIVEAU_COMPETITION")
 @SqlPrimaryKey(fields={"CODENIVEAU","NUMFEDERATION","LANG"})
-public class CompetitionLevel implements ObjectPersistance {
+public class CompetitionLevel implements ObjectPersistence {
 	@XmlTransient
 	@SqlField(name="CODENIVEAU")
 	private int numlevel = 0;
@@ -217,7 +217,7 @@ public class CompetitionLevel implements ObjectPersistance {
 	 * @throws SQLException
 	 */
 	@Override
-	public void save() throws ObjectPersistanceException {
+	public void save() throws ObjectPersistenceException {
 		helper.save(this);
 	}
 
@@ -230,7 +230,7 @@ public class CompetitionLevel implements ObjectPersistance {
 	 * @throws SQLException
 	 */
 	@Override
-	public void delete() throws ObjectPersistanceException {
+	public void delete() throws ObjectPersistenceException {
 		helper.delete(this);
 	}
 

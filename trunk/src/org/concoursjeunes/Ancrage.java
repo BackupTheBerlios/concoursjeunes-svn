@@ -95,14 +95,14 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.ajdeveloppement.commons.persistance.ObjectPersistance;
-import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
-import org.ajdeveloppement.commons.persistance.StoreHelper;
-import org.ajdeveloppement.commons.persistance.sql.SqlField;
-import org.ajdeveloppement.commons.persistance.sql.SqlForeignKey;
-import org.ajdeveloppement.commons.persistance.sql.SqlPrimaryKey;
-import org.ajdeveloppement.commons.persistance.sql.SqlStoreHandler;
-import org.ajdeveloppement.commons.persistance.sql.SqlTable;
+import org.ajdeveloppement.commons.persistence.ObjectPersistence;
+import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.StoreHelper;
+import org.ajdeveloppement.commons.persistence.sql.SqlField;
+import org.ajdeveloppement.commons.persistence.sql.SqlForeignKey;
+import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
+import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
+import org.ajdeveloppement.commons.persistence.sql.SqlTable;
 
 /**
  * Représente la position physique relative d'un blason
@@ -113,7 +113,7 @@ import org.ajdeveloppement.commons.persistance.sql.SqlTable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @SqlTable(name="ANCRAGES_BLASONS")
 @SqlPrimaryKey(fields={"NUMBLASON","EMPLACEMENT"})
-public class Ancrage implements ObjectPersistance {
+public class Ancrage implements ObjectPersistence {
 	public static final int POSITION_A = 0;
 	public static final int POSITION_B = 1;
 	public static final int POSITION_C = 2;
@@ -256,16 +256,16 @@ public class Ancrage implements ObjectPersistance {
     }
 	
 	@Override
-	public void save() throws ObjectPersistanceException {
+	public void save() throws ObjectPersistenceException {
 		helper.save(this);
 	}
 	
 	@Override
-	public void delete() throws ObjectPersistanceException {
+	public void delete() throws ObjectPersistenceException {
 		helper.delete(this);
 	}
 
-	protected void afterUnmarshal(@SuppressWarnings("unused") Unmarshaller unmarshaller, Object parent) {
+	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
 		if(parent instanceof Blason)
 			blason = (Blason)parent;
 	}

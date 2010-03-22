@@ -784,7 +784,7 @@ public class ConcurrentList {
 	public static class NameComparator implements Comparator<Concurrent> {
 		@Override
 		public int compare(Concurrent o1, Concurrent o2) {
-			return o1.getID().compareToIgnoreCase(o2.getID());
+			return o1.getFullName().compareToIgnoreCase(o2.getFullName());
 		}
 	}
 	

@@ -89,12 +89,13 @@
 package org.concoursjeunes.builders;
 
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.ajdeveloppement.commons.persistance.LoadHelper;
-import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
-import org.ajdeveloppement.commons.persistance.sql.SqlLoadHandler;
+import org.ajdeveloppement.commons.persistence.LoadHelper;
+import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.sql.SqlLoadHandler;
 import org.concoursjeunes.Ancrage;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Blason;
@@ -108,11 +109,11 @@ import org.concoursjeunes.Blason;
  */
 public class BlasonBuilder {
 	
-	private static LoadHelper<Blason> loadHelper;
+	private static LoadHelper<Blason,Map<String,Object>> loadHelper;
 	static {
 		try {
-			loadHelper = new LoadHelper<Blason>(new SqlLoadHandler<Blason>(ApplicationCore.dbConnection, Blason.class));
-		} catch(SQLException e) {
+			loadHelper = new LoadHelper<Blason,Map<String,Object>>(new SqlLoadHandler<Blason>(ApplicationCore.dbConnection, Blason.class));
+		} catch(ObjectPersistenceException e) {
 			e.printStackTrace();
 		}
 	}
@@ -127,7 +128,7 @@ public class BlasonBuilder {
 	 * @throws SQLException retourné si le jeux de résultat ne contient pas l'ensemble<br>
 	 * des champs de la table BLASONS 
 	 */
-	public static Blason getBlason(int numblason) throws ObjectPersistanceException {
+	public static Blason getBlason(int numblason) throws ObjectPersistenceException {
 		Blason blason = new Blason();
 		blason.setNumblason(numblason); 
 		

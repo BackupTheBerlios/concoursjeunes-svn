@@ -94,7 +94,7 @@ import java.sql.SQLException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
+import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.concoursjeunes.Ancrage;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Blason;
@@ -114,7 +114,7 @@ public class AncragesMapBuilder {
 	 * @return la tables des ancrages ou null si non trouvé en base
 	 * @throws SQLException
 	 */
-	public static ConcurrentMap<Integer, Ancrage> getAncragesMap(Blason blason) throws ObjectPersistanceException {
+	public static ConcurrentMap<Integer, Ancrage> getAncragesMap(Blason blason) throws ObjectPersistenceException {
 		ConcurrentMap<Integer, Ancrage> ancrages = new ConcurrentHashMap<Integer, Ancrage>();
 		
 		String sql = "select * from ANCRAGES_BLASONS where NUMBLASON=?"; //$NON-NLS-1$
@@ -138,7 +138,7 @@ public class AncragesMapBuilder {
 				);
 			}
 		} catch (SQLException e) {
-			throw new ObjectPersistanceException(e);
+			throw new ObjectPersistenceException(e);
 		}
 		
 		if(ancrages.size() == 0)

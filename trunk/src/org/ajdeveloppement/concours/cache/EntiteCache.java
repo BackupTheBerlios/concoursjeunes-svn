@@ -1,5 +1,5 @@
 /*
- * Créé le 13 mars 2010 à 11:42:38 pour ConcoursJeunes
+ * Créé le 21 mars 2010 à 16:58:26 pour ConcoursJeunes
  *
  * Copyright 2002-2010 - Aurélien JEOFFRAY
  *
@@ -86,170 +86,29 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.ajdeveloppement.concours;
+package org.ajdeveloppement.concours.cache;
 
-import java.sql.SQLException;
+import java.lang.ref.SoftReference;
 import java.util.UUID;
 
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlTransient;
-
-import org.ajdeveloppement.commons.persistence.ObjectPersistence;
-import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
-import org.ajdeveloppement.commons.persistence.StoreHelper;
-import org.ajdeveloppement.commons.persistence.sql.SqlField;
-import org.ajdeveloppement.commons.persistence.sql.SqlForeignKey;
-import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
-import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
-import org.ajdeveloppement.commons.persistence.sql.SqlTable;
-import org.concoursjeunes.ApplicationCore;
+import org.concoursjeunes.Entite;
 
 /**
  * @author Aurélien JEOFFRAY
  *
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@SqlTable(name="COORDINATE")
-@SqlPrimaryKey(fields="ID_COORDINATE")
-public class Coordinate implements ObjectPersistence, Cloneable {
+public class EntiteCache extends AbstractCache<UUID, Entite> {
 	
-	public enum Type {
-		HOME_PHONE("HOME_PHONE"), //$NON-NLS-1$
-		WORK_PHONE("WORK_PHONE"), //$NON-NLS-1$
-		MOBILE_PHONE("MOBILE_PHONE"), //$NON-NLS-1$
-		MAIL("MAIL"); //$NON-NLS-1$
-		
-		private final String value;
-		
-		/** Le constructeur qui associe une valeur à l'enum */
-		private Type(String value) {
-			this.value = value;
-		}
-		
-		/** La méthode accesseur qui renvoit la valeur de l'enum */
-		public String getValue() {
-			return this.value;
-		}
-
+	private static EntiteCache instance = new EntiteCache();
+	
+	private EntiteCache() {
 	}
 	
-	@XmlAttribute(name="id",required=true)
-	@SqlField(name="ID_COORDINATE")
-	private UUID idCoordinate = UUID.randomUUID();
-	
-	@SqlField(name="CODE_COORDINATE_TYPE")
-	private Type coordinateType = Type.HOME_PHONE;
-	
-	@SqlField(name="VALUE")
-	private String value;
-	
-	@XmlTransient
-	@SqlForeignKey(mappedTo="ID_CONTACT")
-	private Contact contact;
-	
-	private static StoreHelper<Coordinate> helper = null;
-	static {
-		try {
-			helper = new StoreHelper<Coordinate>(new SqlStoreHandler<Coordinate>(
-					ApplicationCore.dbConnection, Coordinate.class));
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	public static EntiteCache getInstance() {
+		return instance;
 	}
 	
-	public Coordinate() {
-		
-	}
-	
-	/**
-	 * @param idCoordinateType
-	 * @param value
-	 */
-	public Coordinate(Type coordinateType, String value) {
-		this.coordinateType = coordinateType;
-		this.value = value;
-	}
-	
-	/**
-	 * @return idCoordinate
-	 */
-	public UUID getIdCoordinate() {
-		return idCoordinate;
-	}
-
-	/**
-	 * @param idCoordinate idCoordinate à définir
-	 */
-	public void setIdCoordinate(UUID idCoordinate) {
-		this.idCoordinate = idCoordinate;
-	}
-
-	/**
-	 * @return coordinateType
-	 */
-	public Type getCoordinateType() {
-		return coordinateType;
-	}
-
-	/**
-	 * @param coordinateType coordinateType à définir
-	 */
-	public void setCoordinateType(Type coordinateType) {
-		this.coordinateType = coordinateType;
-	}
-
-	/**
-	 * @return value
-	 */
-	public String getValue() {
-		return value;
-	}
-
-	/**
-	 * @param value value à définir
-	 */
-	public void setValue(String value) {
-		this.value = value;
-	}
-
-	/**
-	 * @return contact
-	 */
-	public Contact getContact() {
-		return contact;
-	}
-
-	/**
-	 * @param contact contact à définir
-	 */
-	public void setContact(Contact contact) {
-		this.contact = contact;
-	}
-
-	@Override
-	public void save() throws ObjectPersistenceException {
-		helper.save(this);
-	}
-	
-	@Override
-	public void delete() throws ObjectPersistenceException {
-		if(idCoordinate != null)
-			helper.delete(this);
-	}
-	
-	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
-		if(parent instanceof Contact)
-			contact = (Contact)parent;
-	}
-	
-	@Override
-	protected Coordinate clone() throws CloneNotSupportedException {
-		Coordinate clone = (Coordinate)super.clone();
-		clone.setIdCoordinate(null);
-		
-		return clone;
+	public void add(Entite entite) {
+		instanceCache.put(entite.getIdEntite(), new SoftReference<Entite>(entite));
 	}
 }

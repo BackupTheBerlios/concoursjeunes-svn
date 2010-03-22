@@ -95,19 +95,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
-import org.ajdeveloppement.commons.persistance.ObjectPersistance;
-import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
-import org.ajdeveloppement.commons.persistance.StoreHelper;
-import org.ajdeveloppement.commons.persistance.sql.SqlField;
-import org.ajdeveloppement.commons.persistance.sql.SqlForeignKey;
-import org.ajdeveloppement.commons.persistance.sql.SqlPrimaryKey;
-import org.ajdeveloppement.commons.persistance.sql.SqlStoreHandler;
-import org.ajdeveloppement.commons.persistance.sql.SqlTable;
+import org.ajdeveloppement.commons.persistence.ObjectPersistence;
+import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.StoreHelper;
+import org.ajdeveloppement.commons.persistence.sql.SqlField;
+import org.ajdeveloppement.commons.persistence.sql.SqlForeignKey;
+import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
+import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
+import org.ajdeveloppement.commons.persistence.sql.SqlTable;
 import org.concoursjeunes.ApplicationCore;
 
 /**
@@ -119,11 +118,11 @@ import org.concoursjeunes.ApplicationCore;
 @XmlAccessorType(XmlAccessType.FIELD)
 @SqlTable(name="CONTACT")
 @SqlPrimaryKey(fields="ID_CONTACT")
-public class Contact implements ObjectPersistance, Cloneable {
+public class Contact implements ObjectPersistence, Cloneable {
 	
 	@SqlField(name="ID_CONTACT")
 	@XmlAttribute(name="id",required=true)
-	private UUID idContact = null;
+	private UUID idContact = UUID.randomUUID();
 	
 	@SqlField(name="NAME")
 	private String name;
@@ -176,14 +175,6 @@ public class Contact implements ObjectPersistance, Cloneable {
 		this.name = name;
 		this.firstName = firstName;
 		this.civility = civility;
-	}
-
-	/**
-	 * Set, if necessary the id of contact
-	 */
-	private void initId() {
-		if(idContact == null)
-			idContact = UUID.randomUUID();
 	}
 	
 	/**
@@ -374,13 +365,40 @@ public class Contact implements ObjectPersistance, Cloneable {
 		this.coordinates = coordinates;
 	}
 
-
+	/**
+	 * Get identity of contact (firstName + name)
+	 * @deprecated replaced by {@link #getFullName()}
+	 * 
+	 * @return the identity of contact
+	 */
+	@Deprecated
+	public String getID() {
+		return getFullName(); //$NON-NLS-1$
+	}
+	
+	/**
+	 * Get identity of contact (firstName + name)
+	 * 
+	 * @return the identity of contact
+	 */
+	public String getFullName() {
+		return name + " " + firstName; //$NON-NLS-1$
+	}
+	
+	/**
+	 * Get identity of contact with civility(civility + firstName + name)
+	 * 
+	 * @return the identity of contact
+	 */
+	public String getFullNameWithCivility() {
+		return civility.getAbreviation() + " " + name + " " + firstName; //$NON-NLS-1$
+	}
+	
 	/**
 	 * Save contact in database
 	 */
 	@Override
-	public void save() throws ObjectPersistanceException {
-		initId();
+	public void save() throws ObjectPersistenceException {
 		helper.save(this);
 	}
 
@@ -388,18 +406,9 @@ public class Contact implements ObjectPersistance, Cloneable {
 	 * remove the contact database 
 	 */
 	@Override
-	public void delete() throws ObjectPersistanceException {
+	public void delete() throws ObjectPersistenceException {
 		if(idContact != null)
 			helper.delete(this);
-	}
-	
-	/**
-	 * Set, if necessary the id of contact before marshall
-	 * 
-	 * @param marshaller
-	 */
-	protected void beforeMarshal(Marshaller marshaller) {
-		initId();
 	}
 	
 	/**
@@ -422,5 +431,44 @@ public class Contact implements ObjectPersistance, Cloneable {
 		}
 		
 		return clone;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((firstName == null) ? 0 : firstName.hashCode());
+		result = prime * result
+				+ ((idContact == null) ? 0 : idContact.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Contact other = (Contact) obj;
+		if (firstName == null) {
+			if (other.firstName != null)
+				return false;
+		} else if (!firstName.equals(other.firstName))
+			return false;
+		if (idContact == null) {
+			if (other.idContact != null)
+				return false;
+		} else if (!idContact.equals(other.idContact))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		return true;
 	}
 }

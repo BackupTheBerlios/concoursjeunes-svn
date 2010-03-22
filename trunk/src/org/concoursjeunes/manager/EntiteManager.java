@@ -130,13 +130,13 @@ public class EntiteManager {
 				sql += "where "; //$NON-NLS-1$
 				ArrayList<String> filters = new ArrayList<String>();
 				if(eGeneric.getNom().length() > 0) {
-					filters.add("NOMENTITE like '" + eGeneric.getNom().toUpperCase() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+					filters.add("UPPER(NOMENTITE) like '" + eGeneric.getNom().toUpperCase().replaceAll("'", "''") + "'"); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				if(eGeneric.getAgrement().length() > 0) {
-					filters.add("AGREMENTENTITE like '" + eGeneric.getAgrement().toUpperCase() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+					filters.add("UPPER(AGREMENTENTITE) like '" + eGeneric.getAgrement().toUpperCase().replaceAll("'", "''") + "'"); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				if(eGeneric.getVille().length() > 0) {
-					filters.add("VILLEENTITE like '" + eGeneric.getVille().toUpperCase() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+					filters.add("UPPER(VILLEENTITE) like '" + eGeneric.getVille().toUpperCase().replaceAll("'", "''") + "'"); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				
 				for(String filter : filters) {
@@ -144,15 +144,13 @@ public class EntiteManager {
 				}
 			}
 			sql = sql.replaceFirst(" and ", ""); //$NON-NLS-1$ //$NON-NLS-2$
-			if(orderfield.length() > 0)
+			if(orderfield != null && !orderfield.isEmpty())
 				sql += "order by " + orderfield; //$NON-NLS-1$
 			
 			ResultSet rs = stmt.executeQuery(sql);
 
 			while(rs.next()) {
-				String numAgrement = rs.getString("AgrementEntite"); //$NON-NLS-1$
-				
-				Entite entite = EntiteBuilder.getEntite(numAgrement);
+				Entite entite = EntiteBuilder.getEntite(rs);
 				
 				entites.add(entite);
 			}

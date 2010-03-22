@@ -100,14 +100,15 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.ajdeveloppement.commons.persistance.ObjectPersistance;
-import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
-import org.ajdeveloppement.commons.persistance.StoreHelper;
-import org.ajdeveloppement.commons.persistance.sql.SqlField;
-import org.ajdeveloppement.commons.persistance.sql.SqlForeignKey;
-import org.ajdeveloppement.commons.persistance.sql.SqlPrimaryKey;
-import org.ajdeveloppement.commons.persistance.sql.SqlStoreHandler;
-import org.ajdeveloppement.commons.persistance.sql.SqlTable;
+import org.ajdeveloppement.commons.persistence.ObjectPersistence;
+import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.StoreHelper;
+import org.ajdeveloppement.commons.persistence.sql.SqlField;
+import org.ajdeveloppement.commons.persistence.sql.SqlForeignKey;
+import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
+import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
+import org.ajdeveloppement.commons.persistence.sql.SqlTable;
+import org.ajdeveloppement.concours.cache.CriterionCache;
 
 /**
  * Caractéristique d'un critère de distinction
@@ -117,7 +118,7 @@ import org.ajdeveloppement.commons.persistance.sql.SqlTable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @SqlTable(name="CRITERE")
 @SqlPrimaryKey(fields={"CODECRITERE","NUMREGLEMENT"})
-public class Criterion implements ObjectPersistance, Cloneable {
+public class Criterion implements ObjectPersistence, Cloneable {
 	/**
 	 * Tri des éléments du critères croissant
 	 */
@@ -129,10 +130,10 @@ public class Criterion implements ObjectPersistance, Cloneable {
     public static final int SORT_DESC = -1;
     
     public static final String[] CRITERES_TABLE_ARCHERS = {
-    	"sexe", //$NON-NLS-1$
-    	"categorie", //$NON-NLS-1$
-    	"niveau", //$NON-NLS-1$
-    	"arc" //$NON-NLS-1$
+    	"SEXE", //$NON-NLS-1$
+    	"CATEGORIE", //$NON-NLS-1$
+    	"NIVEAU", //$NON-NLS-1$
+    	"ARC" //$NON-NLS-1$
     };
     
     @XmlID
@@ -397,7 +398,9 @@ public class Criterion implements ObjectPersistance, Cloneable {
     @Deprecated
     public void setCodeffta(String champTableArchers) {
     	if(champTableArchers.equals("genre"))
-    		champTableArchers = "sexe";
+    		champTableArchers = "SEXE";
+    	else if(champTableArchers.equals("arme"))
+    		champTableArchers = "ARC";
     	setChampsTableArchers(champTableArchers);
     }
     
@@ -416,6 +419,8 @@ public class Criterion implements ObjectPersistance, Cloneable {
 	 * @param champTableArchers le champ de la table Archer du critère
 	 */
     public void setChampsTableArchers(String champTableArchers) {
+    	if(champTableArchers.equals("arme"))
+    		champTableArchers = "ARC";
         this.champsTableArchers = champTableArchers;
     }
 
@@ -457,7 +462,7 @@ public class Criterion implements ObjectPersistance, Cloneable {
 	 */
 	@SuppressWarnings("nls")
 	@Override
-	public void save() throws ObjectPersistanceException {
+	public void save() throws ObjectPersistenceException {
 		helper.save(this); //$NON-NLS-1$
 
 		try {
@@ -476,7 +481,7 @@ public class Criterion implements ObjectPersistance, Cloneable {
 				stmt.close();
 			}
 		} catch (SQLException e) {
-			throw new ObjectPersistanceException(e);
+			throw new ObjectPersistenceException(e);
 		}
 		
 		int numordre = 1;
@@ -484,6 +489,9 @@ public class Criterion implements ObjectPersistance, Cloneable {
 			criterionElement.setNumordre(numordre++);
 			criterionElement.save();
 		}
+		
+		if(!CriterionCache.getInstance().containsKey(new CriterionCache.CriterionPK(code, reglement)))
+			CriterionCache.getInstance().add(this);
 	}
 	
 	/** 
@@ -492,11 +500,12 @@ public class Criterion implements ObjectPersistance, Cloneable {
 	 * @see org.ajdeveloppement.commons.sql.SqlPersistance#delete()
 	 */
 	@Override
-	public void delete() throws ObjectPersistanceException {
-		helper.delete(this); 
+	public void delete() throws ObjectPersistenceException {
+		helper.delete(this);
+		CriterionCache.getInstance().remove(new CriterionCache.CriterionPK(code, reglement));
 	}
 	
-	protected void afterUnmarshal(@SuppressWarnings("unused") Unmarshaller unmarshaller, Object parent) {
+	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
 		if(parent instanceof Reglement)
 			reglement = (Reglement)parent;
 	}

@@ -110,7 +110,7 @@ import javax.swing.event.EventListenerList;
 
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.io.FileUtils;
-import org.ajdeveloppement.commons.persistance.sql.SqlStoreHandler;
+import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
 import org.ajdeveloppement.commons.security.SecurityImporter;
 import org.ajdeveloppement.commons.sql.SqlManager;
 import org.concoursjeunes.event.ApplicationCoreEvent;
@@ -134,7 +134,7 @@ public class ApplicationCore {
 	/**
 	 * Numéro de version de la base de donnée nécessaire au fonctionnement du programme
 	 */
-	public static final int DB_RELEASE_REQUIRED = 21;
+	public static final int DB_RELEASE_REQUIRED = 30;
 
 	/**
 	 * Chargement des paramétrages statiques
@@ -167,12 +167,12 @@ public class ApplicationCore {
 	 * constructeur, création de la fenêtre principale
 	 */
 	private ApplicationCore() throws SQLException {
+		SqlStoreHandler.setDatabaseEngine("h2"); //$NON-NLS-1$
+		
 		debugLogger();
 		openDatabase();
 		checkUpdateDatabase();
 		loadAppConfiguration();
-		
-		SqlStoreHandler.setDatabaseEngine("h2"); //$NON-NLS-1$
 	}
 
 	/**

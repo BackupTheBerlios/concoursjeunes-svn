@@ -106,14 +106,14 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.ajdeveloppement.commons.persistance.ObjectPersistance;
-import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
-import org.ajdeveloppement.commons.persistance.StoreHelper;
-import org.ajdeveloppement.commons.persistance.sql.SqlField;
-import org.ajdeveloppement.commons.persistance.sql.SqlGeneratedIdField;
-import org.ajdeveloppement.commons.persistance.sql.SqlPrimaryKey;
-import org.ajdeveloppement.commons.persistance.sql.SqlStoreHandler;
-import org.ajdeveloppement.commons.persistance.sql.SqlTable;
+import org.ajdeveloppement.commons.persistence.ObjectPersistence;
+import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.StoreHelper;
+import org.ajdeveloppement.commons.persistence.sql.SqlField;
+import org.ajdeveloppement.commons.persistence.sql.SqlGeneratedIdField;
+import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
+import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
+import org.ajdeveloppement.commons.persistence.sql.SqlTable;
 
 /**
  * Représente une fédération de tir à l'arc
@@ -123,7 +123,7 @@ import org.ajdeveloppement.commons.persistance.sql.SqlTable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @SqlTable(name="FEDERATION")
 @SqlPrimaryKey(fields={"NUMFEDERATION"},generatedidField=@SqlGeneratedIdField(name="NUMFEDERATION",type=Types.INTEGER))
-public class Federation implements ObjectPersistance {
+public class Federation implements ObjectPersistence {
 	@SqlField(name="NUMFEDERATION")
 	@XmlTransient
 	private int numFederation = 0;
@@ -326,7 +326,7 @@ public class Federation implements ObjectPersistance {
 	 * Sauvegarde la fédération en base de données. Les arguments sont ignoré.
 	 */
 	@Override
-	public void save() throws ObjectPersistanceException {
+	public void save() throws ObjectPersistenceException {
 		try {
 			checkAlreadyExists();
 			helper.save(this);
@@ -351,7 +351,7 @@ public class Federation implements ObjectPersistance {
 				}
 			}
 		} catch (SQLException e) {
-			throw new ObjectPersistanceException(e);
+			throw new ObjectPersistenceException(e);
 		}
 	}
 
@@ -361,11 +361,11 @@ public class Federation implements ObjectPersistance {
 	 * Tous les règlements attaché à cette fédération seront également supprimés
 	 */
 	@Override
-	public void delete() throws ObjectPersistanceException {
+	public void delete() throws ObjectPersistenceException {
 		helper.delete(this);
 	}
 	
-	protected void afterUnmarshal(@SuppressWarnings("unused") Unmarshaller unmarshaller, @SuppressWarnings("unused") Object parent) {
+	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
 		for(CompetitionLevel competitionLevel : competitionLevels) {
 			competitionLevel.setFederation(this);
 		}

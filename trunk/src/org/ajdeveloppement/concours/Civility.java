@@ -91,18 +91,17 @@ package org.ajdeveloppement.concours;
 import java.sql.SQLException;
 import java.util.UUID;
 
-import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
-import org.ajdeveloppement.commons.persistance.ObjectPersistance;
-import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
-import org.ajdeveloppement.commons.persistance.StoreHelper;
-import org.ajdeveloppement.commons.persistance.sql.SqlField;
-import org.ajdeveloppement.commons.persistance.sql.SqlPrimaryKey;
-import org.ajdeveloppement.commons.persistance.sql.SqlStoreHandler;
-import org.ajdeveloppement.commons.persistance.sql.SqlTable;
+import org.ajdeveloppement.commons.persistence.ObjectPersistence;
+import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.StoreHelper;
+import org.ajdeveloppement.commons.persistence.sql.SqlField;
+import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
+import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
+import org.ajdeveloppement.commons.persistence.sql.SqlTable;
 import org.concoursjeunes.ApplicationCore;
 
 /**
@@ -112,10 +111,10 @@ import org.concoursjeunes.ApplicationCore;
 @XmlAccessorType(XmlAccessType.FIELD)
 @SqlTable(name="CIVILITY")
 @SqlPrimaryKey(fields="ID_CIVILITY")
-public class Civility implements ObjectPersistance {
+public class Civility implements ObjectPersistence {
 	@XmlAttribute(name="id", required=true)
 	@SqlField(name="ID_CIVILITY")
-	private UUID idCivility = null;
+	private UUID idCivility = UUID.randomUUID();
 	
 	@SqlField(name="ABREVIATION")
 	private String abreviation;
@@ -144,11 +143,6 @@ public class Civility implements ObjectPersistance {
 	public Civility(String abreviation, String libelle) {
 		this.abreviation = abreviation;
 		this.libelle = libelle;
-	}
-	
-	private void initId() {
-		if(idCivility == null)
-			idCivility = UUID.randomUUID();
 	}
 
 	/**
@@ -194,18 +188,13 @@ public class Civility implements ObjectPersistance {
 	}
 
 	@Override
-	public void save() throws ObjectPersistanceException {
-		initId();
+	public void save() throws ObjectPersistenceException {
 		helper.save(this);
 	}
 	
 	@Override
-	public void delete() throws ObjectPersistanceException {
+	public void delete() throws ObjectPersistenceException {
 		if(idCivility != null)
 			helper.delete(this);
-	}
-	
-	protected void beforeMarshal(@SuppressWarnings("unused") Marshaller marshaller) {
-		initId();
 	}
 }

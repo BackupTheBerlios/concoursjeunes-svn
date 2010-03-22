@@ -100,15 +100,15 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.ajdeveloppement.commons.persistance.ObjectPersistance;
-import org.ajdeveloppement.commons.persistance.ObjectPersistanceException;
-import org.ajdeveloppement.commons.persistance.StoreHelper;
-import org.ajdeveloppement.commons.persistance.sql.SqlField;
-import org.ajdeveloppement.commons.persistance.sql.SqlForeignKey;
-import org.ajdeveloppement.commons.persistance.sql.SqlGeneratedIdField;
-import org.ajdeveloppement.commons.persistance.sql.SqlPrimaryKey;
-import org.ajdeveloppement.commons.persistance.sql.SqlStoreHandler;
-import org.ajdeveloppement.commons.persistance.sql.SqlTable;
+import org.ajdeveloppement.commons.persistence.ObjectPersistence;
+import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.StoreHelper;
+import org.ajdeveloppement.commons.persistence.sql.SqlField;
+import org.ajdeveloppement.commons.persistence.sql.SqlForeignKey;
+import org.ajdeveloppement.commons.persistence.sql.SqlGeneratedIdField;
+import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
+import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
+import org.ajdeveloppement.commons.persistence.sql.SqlTable;
 import org.concoursjeunes.xml.bind.BlasonAdapter;
 
 /**
@@ -120,7 +120,7 @@ import org.concoursjeunes.xml.bind.BlasonAdapter;
 @SqlTable(name="DISTANCESBLASONS")
 @SqlPrimaryKey(fields={"NUMDISTANCESBLASONS","NUMREGLEMENT"},generatedidField=@SqlGeneratedIdField(name="NUMDISTANCESBLASONS",type=Types.INTEGER))
 @XmlAccessorType(XmlAccessType.FIELD)
-public class DistancesEtBlason implements ObjectPersistance {
+public class DistancesEtBlason implements ObjectPersistence {
 	@XmlElementWrapper(name="distances",required=true)
     @XmlElement(name="distance")
 	private int[] distances = new int[] { 18, 18 };
@@ -310,7 +310,7 @@ public class DistancesEtBlason implements ObjectPersistance {
 	 */
 	@SuppressWarnings("nls")
 	@Override
-	public void save() throws ObjectPersistanceException {
+	public void save() throws ObjectPersistenceException {
 		criteriaSet.save();
 		
 		helper.save(this);
@@ -328,7 +328,7 @@ public class DistancesEtBlason implements ObjectPersistance {
 				stmt.close();
 			}
 		} catch (SQLException e) {
-			throw new ObjectPersistanceException(e);
+			throw new ObjectPersistenceException(e);
 		}
 	}
 	
@@ -338,7 +338,7 @@ public class DistancesEtBlason implements ObjectPersistance {
 	 * @throws SQLException
 	 */
 	@Override
-	public void delete() throws ObjectPersistanceException {
+	public void delete() throws ObjectPersistenceException {
 		helper.delete(this);  
 	}
 
@@ -365,7 +365,7 @@ public class DistancesEtBlason implements ObjectPersistance {
 		return null;
 	}
 	
-	protected void afterUnmarshal(@SuppressWarnings("unused") Unmarshaller unmarshaller, Object parent) {
+	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
 		if(parent instanceof Reglement) {
 			criteriaSet.setReglement((Reglement)parent);
 			reglement = (Reglement)parent;
