@@ -365,6 +365,12 @@ public class DistancesEtBlason implements ObjectPersistence {
 		return null;
 	}
 	
+	/**
+	 * Used by JAXB Only
+	 * 
+	 * @param unmarshaller
+	 * @param parent
+	 */
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
 		if(parent instanceof Reglement) {
 			criteriaSet.setReglement((Reglement)parent);

@@ -373,7 +373,7 @@ public class Contact implements ObjectPersistence, Cloneable {
 	 */
 	@Deprecated
 	public String getID() {
-		return getFullName(); //$NON-NLS-1$
+		return getFullName(); 
 	}
 	
 	/**
@@ -391,7 +391,7 @@ public class Contact implements ObjectPersistence, Cloneable {
 	 * @return the identity of contact
 	 */
 	public String getFullNameWithCivility() {
-		return civility.getAbreviation() + " " + name + " " + firstName; //$NON-NLS-1$
+		return civility.getAbreviation() + " " + name + " " + firstName; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
 	/**

@@ -114,7 +114,6 @@ public class TargetTest extends TestCase {
 	@Before
 	@Override
 	public void setUp() throws Exception {
-		@SuppressWarnings("unused")
 		ApplicationCore concoursJeunes = ApplicationCore.getInstance(); // initialise le noyau
 		reglement = ReglementBuilder.getReglement("Savoie"); //charge le réglement savoie //$NON-NLS-1$
 		Concurrent concurrent = ConcurrentBuilder.getConcurrent(reglement);

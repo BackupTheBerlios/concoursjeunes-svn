@@ -145,7 +145,7 @@ public class EntiteBuilder {
 			entite = EntiteCache.getInstance().get(idEntite);
 		else {
 			try {
-				entite = EntiteCache.getInstance().get((UUID)rs.getObject("ENTITE.ID_ENTITE"));
+				entite = EntiteCache.getInstance().get((UUID)rs.getObject("ENTITE.ID_ENTITE")); //$NON-NLS-1$
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}

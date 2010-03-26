@@ -265,6 +265,12 @@ public class Ancrage implements ObjectPersistence {
 		helper.delete(this);
 	}
 
+	/**
+	 * Used by JAXB API only
+	 * 
+	 * @param unmarshaller the unmarchaller process
+	 * @param parent the parent object in XML graph
+	 */
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
 		if(parent instanceof Blason)
 			blason = (Blason)parent;

@@ -118,6 +118,7 @@ public class EntiteManager {
 	 * 
 	 * @return la liste des entité répondant aux critères de recherche
 	 */
+	@SuppressWarnings("nls")
 	public static List<Entite> getEntitesInDatabase(Entite eGeneric, String orderfield) {
 		List<Entite> entites = new ArrayList<Entite>();
 		Statement stmt = null;
@@ -125,27 +126,27 @@ public class EntiteManager {
 		try {
 			stmt = ApplicationCore.dbConnection.createStatement();
 			
-			String sql = "select * from Entite "; //$NON-NLS-1$
+			String sql = "select * from Entite ";
 			if(eGeneric != null) {
-				sql += "where "; //$NON-NLS-1$
+				sql += "where ";
 				ArrayList<String> filters = new ArrayList<String>();
 				if(eGeneric.getNom().length() > 0) {
-					filters.add("UPPER(NOMENTITE) like '" + eGeneric.getNom().toUpperCase().replaceAll("'", "''") + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+					filters.add("UPPER(NOMENTITE) like '" + eGeneric.getNom().toUpperCase().replaceAll("'", "''") + "'");
 				}
 				if(eGeneric.getAgrement().length() > 0) {
-					filters.add("UPPER(AGREMENTENTITE) like '" + eGeneric.getAgrement().toUpperCase().replaceAll("'", "''") + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+					filters.add("UPPER(AGREMENTENTITE) like '" + eGeneric.getAgrement().toUpperCase().replaceAll("'", "''") + "'");
 				}
 				if(eGeneric.getVille().length() > 0) {
-					filters.add("UPPER(VILLEENTITE) like '" + eGeneric.getVille().toUpperCase().replaceAll("'", "''") + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+					filters.add("UPPER(VILLEENTITE) like '" + eGeneric.getVille().toUpperCase().replaceAll("'", "''") + "'");
 				}
 				
 				for(String filter : filters) {
-					sql += " and " + filter; //$NON-NLS-1$
+					sql += " and " + filter;
 				}
 			}
-			sql = sql.replaceFirst(" and ", ""); //$NON-NLS-1$ //$NON-NLS-2$
+			sql = sql.replaceFirst(" and ", "");
 			if(orderfield != null && !orderfield.isEmpty())
-				sql += "order by " + orderfield; //$NON-NLS-1$
+				sql += "order by " + orderfield;
 			
 			ResultSet rs = stmt.executeQuery(sql);
 

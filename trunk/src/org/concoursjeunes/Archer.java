@@ -299,7 +299,7 @@ public class Archer extends Contact {
 	@Override
 	public void save() throws ObjectPersistenceException {
 		super.save();
-		helper.save(this, Collections.<String, Object>singletonMap("ID_CONTACT", getIdContact()));
+		helper.save(this, Collections.<String, Object>singletonMap("ID_CONTACT", getIdContact())); //$NON-NLS-1$
 	}
 	
 	@Override

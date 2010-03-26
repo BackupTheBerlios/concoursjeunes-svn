@@ -419,8 +419,8 @@ public class Criterion implements ObjectPersistence, Cloneable {
 	 * @param champTableArchers le champ de la table Archer du critère
 	 */
     public void setChampsTableArchers(String champTableArchers) {
-    	if(champTableArchers.equals("arme"))
-    		champTableArchers = "ARC";
+    	if(champTableArchers.equals("arme")) //$NON-NLS-1$
+    		champTableArchers = "ARC"; //$NON-NLS-1$
         this.champsTableArchers = champTableArchers;
     }
 

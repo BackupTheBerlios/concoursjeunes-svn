@@ -200,9 +200,9 @@ public class Main {
 		SplashScreen splash = SplashScreen.getSplashScreen();
 		if(splash != null) {
 			try {
-				splash.setImageURL(new URL("file:" + ApplicationCore.staticParameters.getResourceString("path.ressources")
+				splash.setImageURL(new URL("file:" + ApplicationCore.staticParameters.getResourceString("path.ressources")  //$NON-NLS-1$//$NON-NLS-2$
 					+ File.separator
-					+ ApplicationCore.staticParameters.getResourceString("file.image.splashscreen")));
+					+ ApplicationCore.staticParameters.getResourceString("file.image.splashscreen"))); //$NON-NLS-1$
 			} catch (NullPointerException e1) {
 				// TODO Bloc catch auto-généré
 				e1.printStackTrace();

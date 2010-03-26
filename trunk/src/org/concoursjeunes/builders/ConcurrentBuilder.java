@@ -164,7 +164,7 @@ public class ConcurrentBuilder {
 		try {
 			Map<Class<?>, Map<String, Object>> foreignKeyValue;
 			if(idArcher != null) {
-				foreignKeyValue = loadHelper.load(concurrent, Collections.<String, Object>singletonMap("ID_CONTACT", idArcher));
+				foreignKeyValue = loadHelper.load(concurrent, Collections.<String, Object>singletonMap("ID_CONTACT", idArcher)); //$NON-NLS-1$
 			} else {
 				foreignKeyValue = resultSetLoadHelper.load(concurrent, resultSet);
 			}
@@ -199,7 +199,7 @@ public class ConcurrentBuilder {
 									if(value == null)
 										continue;
 									
-									int valindex = (Integer)value; 
+									int valindex = value; 
 									if(valindex >= arrayList.size())
 										valindex = arrayList.size() - 1;
 									if(valindex < 0)
