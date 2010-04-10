@@ -108,6 +108,7 @@ public class EntiteCache extends AbstractCache<UUID, Entite> {
 		return instance;
 	}
 	
+	@Override
 	public void add(Entite entite) {
 		instanceCache.put(entite.getIdEntite(), new SoftReference<Entite>(entite));
 	}
