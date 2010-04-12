@@ -112,8 +112,8 @@ import javax.swing.JOptionPane;
 import javax.xml.bind.JAXBException;
 
 import org.ajdeveloppement.apps.AppUtilities;
-import org.ajdeveloppement.commons.AJToolKit;
 import org.ajdeveloppement.commons.AjResourcesReader;
+import org.ajdeveloppement.commons.StringFormatters;
 import org.ajdeveloppement.commons.io.FileUtils;
 import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.ajdeveloppement.commons.ui.DefaultDialogReturn;
@@ -251,7 +251,7 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 				}
 			}
 
-			String strSize = AJToolKit.formatFileSize(ajUpdater.getDownloadSize());
+			String strSize = StringFormatters.formatFileSize(ajUpdater.getDownloadSize());
 
 			updateFiles = event.getUpdateFiles();
 

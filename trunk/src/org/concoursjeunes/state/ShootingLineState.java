@@ -94,8 +94,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
-import org.ajdeveloppement.commons.AJToolKit;
 import org.ajdeveloppement.commons.AjResourcesReader;
+import org.ajdeveloppement.commons.Converters;
 import org.concoursjeunes.Ancrage;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Concurrent;
@@ -141,10 +141,10 @@ public class ShootingLineState {
 		
 		document.setPageSize(PageSize.A4.rotate());
 		document.setMargins(
-			AJToolKit.centimeterToDpi(leftMargin),
-			AJToolKit.centimeterToDpi(rightMargin),
-			AJToolKit.centimeterToDpi(topMargin),
-			AJToolKit.centimeterToDpi(bottomMargin));
+			Converters.centimeterToDpi(leftMargin),
+			Converters.centimeterToDpi(rightMargin),
+			Converters.centimeterToDpi(topMargin),
+			Converters.centimeterToDpi(bottomMargin));
 		
 		pageWidth = document.getPageSize().getWidth();
 		pageHeight = document.getPageSize().getHeight();
@@ -222,22 +222,22 @@ public class ShootingLineState {
 		double colSize = (29.7 - (leftMargin + rightMargin)) / 10;
 		
 		g2.drawLine(
-				AJToolKit.centimeterToDpi(rightMargin),
-				AJToolKit.centimeterToDpi(pasDeTirPos), 
-				AJToolKit.centimeterToDpi(29.2),
-				AJToolKit.centimeterToDpi(pasDeTirPos));
+				Converters.centimeterToDpi(rightMargin),
+				Converters.centimeterToDpi(pasDeTirPos), 
+				Converters.centimeterToDpi(29.2),
+				Converters.centimeterToDpi(pasDeTirPos));
 		g2.drawString(strPasDeTir,
 				pageWidth / 2f - sizeStrPasDeTir / 2f,
-				AJToolKit.centimeterToDpi(pasDeTirPos + 0.5));
+				Converters.centimeterToDpi(pasDeTirPos + 0.5));
 		for(int i = 0; i < 10; i++) {
 			g2.drawString((firsttarget + i) + "", //$NON-NLS-1$
-					AJToolKit.centimeterToDpi(leftMargin + colSize * i + 0.5),
-					AJToolKit.centimeterToDpi(pasDeTirPos - 0.5));
+					Converters.centimeterToDpi(leftMargin + colSize * i + 0.5),
+					Converters.centimeterToDpi(pasDeTirPos - 0.5));
 			g2.drawLine(
-					AJToolKit.centimeterToDpi(leftMargin + colSize / 2 + colSize * i), 
-					AJToolKit.centimeterToDpi(pasDeTirPos - 0.1),
-					AJToolKit.centimeterToDpi(leftMargin + colSize / 2 + colSize * i),
-					AJToolKit.centimeterToDpi(pasDeTirPos + 0.1));
+					Converters.centimeterToDpi(leftMargin + colSize / 2 + colSize * i), 
+					Converters.centimeterToDpi(pasDeTirPos - 0.1),
+					Converters.centimeterToDpi(leftMargin + colSize / 2 + colSize * i),
+					Converters.centimeterToDpi(pasDeTirPos + 0.1));
 		}
 	}
 	
@@ -254,43 +254,43 @@ public class ShootingLineState {
 		double distanceCible = topMargin + targetPos + targetSize;
 		
 		g2.drawLine(
-				AJToolKit.centimeterToDpi(startCol + colSize / 2.0),
-				AJToolKit.centimeterToDpi(distanceCible), 
-				AJToolKit.centimeterToDpi(startCol + colSize / 2.0),
-				AJToolKit.centimeterToDpi(pasDeTirPos));
+				Converters.centimeterToDpi(startCol + colSize / 2.0),
+				Converters.centimeterToDpi(distanceCible), 
+				Converters.centimeterToDpi(startCol + colSize / 2.0),
+				Converters.centimeterToDpi(pasDeTirPos));
 		g2.drawLine(
-				AJToolKit.centimeterToDpi(startCol + colSize / 2.0),
-				AJToolKit.centimeterToDpi(distanceCible), 
-				AJToolKit.centimeterToDpi(startCol + colSize / 2.0 - 0.235),
-				AJToolKit.centimeterToDpi(distanceCible + 0.25));
+				Converters.centimeterToDpi(startCol + colSize / 2.0),
+				Converters.centimeterToDpi(distanceCible), 
+				Converters.centimeterToDpi(startCol + colSize / 2.0 - 0.235),
+				Converters.centimeterToDpi(distanceCible + 0.25));
 		g2.drawLine(
-				AJToolKit.centimeterToDpi(startCol + colSize / 2.0),
-				AJToolKit.centimeterToDpi(distanceCible), 
-				AJToolKit.centimeterToDpi(startCol + colSize / 2.0 + 0.235),
-				AJToolKit.centimeterToDpi(distanceCible + 0.25));
+				Converters.centimeterToDpi(startCol + colSize / 2.0),
+				Converters.centimeterToDpi(distanceCible), 
+				Converters.centimeterToDpi(startCol + colSize / 2.0 + 0.235),
+				Converters.centimeterToDpi(distanceCible + 0.25));
 		g2.drawLine(
-				AJToolKit.centimeterToDpi(startCol + colSize / 2.0),
-				AJToolKit.centimeterToDpi(pasDeTirPos), 
-				AJToolKit.centimeterToDpi(startCol + colSize / 2.0 - 0.235),
-				AJToolKit.centimeterToDpi(pasDeTirPos - 0.25));
+				Converters.centimeterToDpi(startCol + colSize / 2.0),
+				Converters.centimeterToDpi(pasDeTirPos), 
+				Converters.centimeterToDpi(startCol + colSize / 2.0 - 0.235),
+				Converters.centimeterToDpi(pasDeTirPos - 0.25));
 		g2.drawLine(
-				AJToolKit.centimeterToDpi(startCol + colSize / 2.0),
-				AJToolKit.centimeterToDpi(pasDeTirPos), 
-				AJToolKit.centimeterToDpi(startCol + colSize / 2.0 + 0.235),
-				AJToolKit.centimeterToDpi(pasDeTirPos - 0.25));
+				Converters.centimeterToDpi(startCol + colSize / 2.0),
+				Converters.centimeterToDpi(pasDeTirPos), 
+				Converters.centimeterToDpi(startCol + colSize / 2.0 + 0.235),
+				Converters.centimeterToDpi(pasDeTirPos - 0.25));
 		g2.drawString(target.getNumCible() + "", //$NON-NLS-1$
-				AJToolKit.centimeterToDpi(startCol + 0.5),
-				AJToolKit.centimeterToDpi(distanceCible + 0.5));
+				Converters.centimeterToDpi(startCol + 0.5),
+				Converters.centimeterToDpi(distanceCible + 0.5));
 		g2.drawString(distance,
-				AJToolKit.centimeterToDpi(startCol + colSize / 2.0 + 0.065),
-				AJToolKit.centimeterToDpi(distanceCible + (pasDeTirPos - distanceCible) / 2.0));
+				Converters.centimeterToDpi(startCol + colSize / 2.0 + 0.065),
+				Converters.centimeterToDpi(distanceCible + (pasDeTirPos - distanceCible) / 2.0));
 		
 		//TEST cadre cible
 		g2.drawRect(
-				AJToolKit.centimeterToDpi(startCol + 0.135),
-				AJToolKit.centimeterToDpi(topMargin + targetPos),
-				AJToolKit.centimeterToDpi(targetSize),
-				AJToolKit.centimeterToDpi(targetSize));
+				Converters.centimeterToDpi(startCol + 0.135),
+				Converters.centimeterToDpi(topMargin + targetPos),
+				Converters.centimeterToDpi(targetSize),
+				Converters.centimeterToDpi(targetSize));
 		
 		for(Concurrent concurrent : target.getAllConcurrents()) {
 			DistancesEtBlason db = DistancesEtBlason.getDistancesEtBlasonForConcurrent(
@@ -304,9 +304,9 @@ public class ShootingLineState {
 					ApplicationCore.staticParameters.getResourceString("path.ressources")  //$NON-NLS-1$
 					+ File.separator + db.getTargetFace().getTargetFaceImage());
 			
-			image.setAbsolutePosition(AJToolKit.centimeterToDpi(startCol + 0.135 + ancrage.getX() * 2.6),
-					pageHeight - AJToolKit.centimeterToDpi(2.6 * vr) - AJToolKit.centimeterToDpi(topMargin + targetPos + ancrage.getY() * 2.6));
-			image.scaleAbsolute(AJToolKit.centimeterToDpi(2.6 * hr), AJToolKit.centimeterToDpi(2.6 * vr));
+			image.setAbsolutePosition(Converters.centimeterToDpi(startCol + 0.135 + ancrage.getX() * 2.6),
+					pageHeight - Converters.centimeterToDpi(2.6 * vr) - Converters.centimeterToDpi(topMargin + targetPos + ancrage.getY() * 2.6));
+			image.scaleAbsolute(Converters.centimeterToDpi(2.6 * hr), Converters.centimeterToDpi(2.6 * vr));
 			cb.addImage(image);
 		}
 	}
