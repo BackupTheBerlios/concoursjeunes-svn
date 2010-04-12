@@ -107,8 +107,8 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 
-import org.ajdeveloppement.apps.localisation.Localisable;
-import org.ajdeveloppement.apps.localisation.Localisator;
+import org.ajdeveloppement.apps.localisation.Localizable;
+import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.concoursjeunes.Profile;
@@ -124,16 +124,16 @@ public class ResultArcImportDialog extends JDialog implements ActionListener, Re
 
 	private Profile profile;
 	
-	@Localisable("emplacement.lffta")
+	@Localizable("emplacement.lffta")
 	private JLabel jlEmplacementLFFTA = new JLabel();
 	private JTextField jtfEmplacementLFFTA = new JTextField("C:\\ResultArc", 30); //$NON-NLS-1$
-	@Localisable("button.parcourir")
+	@Localizable("button.parcourir")
 	private JButton jbParcourir = new JButton();
-	@Localisable("button.start")
+	@Localizable("button.start")
 	private JButton jbSart = new JButton();
 	private JProgressBar jpbProgression = new JProgressBar();
 
-	@Localisable("bouton.annuler")
+	@Localizable("bouton.annuler")
 	private JButton jbAnnuler = new JButton();
 
 	private AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.ResultArcImport.ResultArcImportPlugin_libelle", ResultArcImportDialog.class.getClassLoader());  //$NON-NLS-1$
@@ -186,7 +186,7 @@ public class ResultArcImportDialog extends JDialog implements ActionListener, Re
 	}
 
 	private void affectLibelle() {
-		Localisator.localize(this, pluginLocalisation);
+		Localizator.localize(this, pluginLocalisation);
 	}
 
 	private void completePane() {

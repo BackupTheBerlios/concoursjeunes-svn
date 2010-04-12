@@ -111,8 +111,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
-import org.ajdeveloppement.apps.localisation.Localisable;
-import org.ajdeveloppement.apps.localisation.Localisator;
+import org.ajdeveloppement.apps.localisation.Localizable;
+import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
@@ -130,7 +130,7 @@ import org.jdesktop.swingx.painter.GlossPainter;
  * @author Aurélien JEOFFRAY
  *
  */
-@Localisable(textMethod="setTitle",value="distancesblasons.title")
+@Localizable(textMethod="setTitle",value="distancesblasons.title")
 public class DistancesBlasonsDialog extends JDialog implements ActionListener {
 	
 	private AjResourcesReader localisation;
@@ -139,30 +139,30 @@ public class DistancesBlasonsDialog extends JDialog implements ActionListener {
 	private List<Blason> availableBlason = new ArrayList<Blason>();
 	
 	private JXHeader jlCriteriaSet = new JXHeader();
-	@Localisable(textMethod="setTitle",value="distancesblasons.distances")
+	@Localizable(textMethod="setTitle",value="distancesblasons.distances")
 	private TitledBorder tbDistances = new TitledBorder(""); //$NON-NLS-1$
 	private JPanel jpDistances = new JPanel();
 	private List<JTextField> ljtfDistances = new ArrayList<JTextField>();
-	@Localisable(textMethod="setTitle",value="distancesblasons.blasons")
+	@Localizable(textMethod="setTitle",value="distancesblasons.blasons")
 	private TitledBorder tbBlasons = new TitledBorder(""); //$NON-NLS-1$
-	@Localisable("distancesblasons.defaultblason")
+	@Localizable("distancesblasons.defaultblason")
 	private JLabel jlBlason = new JLabel();
 	private JComboBox jcbBlason = new JComboBox();
-	@Localisable(textMethod="setTitle",value="distancesblasons.blasonsalt")
+	@Localizable(textMethod="setTitle",value="distancesblasons.blasonsalt")
 	private TitledBorder tbBlasonsAlt = new TitledBorder(""); //$NON-NLS-1$
-	@Localisable("distancesblasons.addblasonsalt")
+	@Localizable("distancesblasons.addblasonsalt")
 	private JLabel jlBlasonsAlt = new JLabel();
 	private JPanel jpBlasonsAlt = new JPanel();
 	private List<JComboBox> lcbBlasonsAlt = new ArrayList<JComboBox>();
-	@Localisable("distancesblasons.add")
+	@Localizable("distancesblasons.add")
 	private JButton jbAddBlasonAlt = new JButton();
 	
 	private GridbagComposer gbcBlasonsAlt = new GridbagComposer();
 	private GridBagConstraints cBlasonsAlt = new GridBagConstraints();
 	
-	@Localisable("bouton.valider")
+	@Localizable("bouton.valider")
 	private JButton jbValider = new JButton();
-	@Localisable("bouton.annuler")
+	@Localizable("bouton.annuler")
 	private JButton jbAnnuler = new JButton();
 	
 	public DistancesBlasonsDialog(Window parentframe, AjResourcesReader localisation) {
@@ -264,7 +264,7 @@ public class DistancesBlasonsDialog extends JDialog implements ActionListener {
 	}
 	
 	private void affectLibelle() {
-		Localisator.localize(this, localisation);
+		Localizator.localize(this, localisation);
 	}
 	
 	private void completePanel() {

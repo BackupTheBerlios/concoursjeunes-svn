@@ -111,8 +111,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.ajdeveloppement.apps.localisation.Localisable;
-import org.ajdeveloppement.apps.localisation.Localisator;
+import org.ajdeveloppement.apps.localisation.Localizable;
+import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
@@ -127,7 +127,7 @@ import org.concoursjeunes.ConcurrentList.SortCriteria;
  * @author  Aurélien Jeoffray
  * @version  3.0
  */
-@Localisable(textMethod="setTitle",value="resultats.titre")
+@Localizable(textMethod="setTitle",value="resultats.titre")
 public class ResultatDialog extends JDialog implements ActionListener, KeyListener, FocusListener {
 	//static
 	public static final int PREVIOUS_TARGET = 0;
@@ -141,7 +141,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 	private List<Concurrent> concurrents;
 
 	private JLabel jlCible = new JLabel();
-	@Localisable("resultats.distances")
+	@Localizable("resultats.distances")
 	private JLabel jlDistance = new JLabel();
 	private JLabel[] jlDepartages;
 	private JLabel[] jlDistances;
@@ -152,13 +152,13 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 	private JTextField[][] points; //cumuls des points de la série
 	private JTextField[][] departages;
 	
-	@Localisable("bouton.valider")
+	@Localizable("bouton.valider")
 	private final JButton jbValider = new JButton();
-	@Localisable("bouton.suivant")
+	@Localizable("bouton.suivant")
 	private final JButton jbSuivant = new JButton();
-	@Localisable("bouton.precedent")
+	@Localizable("bouton.precedent")
 	private final JButton jbPrecedent = new JButton();
-	@Localisable("bouton.annuler")
+	@Localizable("bouton.annuler")
 	private final JButton jbAnnuler = new JButton();
 
 	private int returnVal = CANCEL;
@@ -362,7 +362,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 	}
 	
 	private void affectLibelle() {
-		Localisator.localize(this, localisation);
+		Localizator.localize(this, localisation);
 		
 		jlCible.setText(localisation.getResourceString("resultats.cible", concurrents.get(0).getCible())); //$NON-NLS-1$
 		for(int i = 0; i < jlDistances.length; i++) {

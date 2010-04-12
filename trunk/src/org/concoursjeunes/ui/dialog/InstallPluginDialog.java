@@ -112,21 +112,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-import javax.swing.Box;
-import javax.swing.DefaultListSelectionModel;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
-import javax.swing.ListSelectionModel;
-import javax.swing.RowFilter;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.ListSelectionEvent;
@@ -137,8 +123,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.ws.WebServiceException;
 
 import org.ajdeveloppement.apps.AppUtilities;
-import org.ajdeveloppement.apps.localisation.Localisable;
-import org.ajdeveloppement.apps.localisation.Localisator;
+import org.ajdeveloppement.apps.localisation.Localizable;
+import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.io.FileUtils;
 import org.ajdeveloppement.commons.io.XMLSerializer;
@@ -171,13 +157,13 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 	private Profile profile;
 	private AjResourcesReader localisation;
 	
-	@Localisable("installplugindialog.category")
+	@Localizable("installplugindialog.category")
 	private final JLabel jllCategorie = new JLabel();
 	private final AJList<String> jlCategorie = new AJList<String>();
 	
-	@Localisable("installplugindialog.plugins")
+	@Localizable("installplugindialog.plugins")
 	private final JLabel jlPlugins = new JLabel();
-	@Localisable("installplugindialog.search")
+	@Localizable("installplugindialog.search")
 	private final JLabel jlSearch = new JLabel();
 	private final JTextField jtfSearch = new JTextField();
 	private final JTable jtPlugins = new JTable() {
@@ -192,11 +178,11 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 	private TableRowSorter<PluginDescriptionTableModel> sorter = new TableRowSorter<PluginDescriptionTableModel>(pdtm);
 	private final JTextPane jtpDescription = new JTextPane();
 	
-	@Localisable("installplugindialog.addurl")
+	@Localizable("installplugindialog.addurl")
 	private JButton jbAddURL = new JButton();
-	@Localisable("bouton.valider")
+	@Localizable("bouton.valider")
 	private final JButton jbValider = new JButton();
-	@Localisable("bouton.annuler")
+	@Localizable("bouton.annuler")
 	private final JButton jbAnnuler = new JButton();
 	
 	private AjUpdater ajUpdater;
@@ -280,7 +266,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 	}
 	
 	private void affectLibelle() {
-		Localisator.localize(this, localisation);
+		Localizator.localize(this, localisation);
 	}
 	
 	private void completePanel() {

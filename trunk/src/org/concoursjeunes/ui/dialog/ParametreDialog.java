@@ -96,24 +96,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DateFormat;
 
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import org.ajdeveloppement.apps.localisation.Localisable;
-import org.ajdeveloppement.apps.localisation.Localisator;
+import org.ajdeveloppement.apps.localisation.Localizable;
+import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.AJList;
 import org.ajdeveloppement.commons.ui.DefaultDialogReturn;
@@ -135,7 +124,7 @@ import com.lowagie.text.Font;
  * @author Aurélien Jeoffray
  * @version 2.0
  */
-@Localisable(textMethod="setTitle",value="parametre.titre")
+@Localizable(textMethod="setTitle",value="parametre.titre")
 public class ParametreDialog extends JDialog implements ActionListener, ListSelectionListener {
 
 	private AjResourcesReader localisation;
@@ -146,61 +135,61 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 	private final FicheConcours ficheConcours;
 	private JFrame parentframe;
 
-	@Localisable(value="parametre.infos",textMethod="setTitle")
+	@Localizable(value="parametre.infos",textMethod="setTitle")
 	private TitledBorder infosBorder = new TitledBorder(""); //$NON-NLS-1$
 	private JTextField jtfIntituleConcours = new JTextField(20);
 	private JTextField jtfLieuConcours = new JTextField(20);
 	private JXDatePicker jtfDateDebutConcours = new JXDatePicker();
 	private JXDatePicker jtfDateFinConcours = new JXDatePicker();
-	@Localisable(value="parametre.typecompetition",textMethod="setTitle")
+	@Localizable(value="parametre.typecompetition",textMethod="setTitle")
 	private TitledBorder typeCompetitionBorder = new TitledBorder(""); //$NON-NLS-1$
 	private JLabel jlSelectedReglement = new JLabel();
-	@Localisable("parametre.choice_reglement")
+	@Localizable("parametre.choice_reglement")
 	private JButton jbSelectReglement = new JButton();
-	@Localisable("parametre.detail_customize")
+	@Localizable("parametre.detail_customize")
 	private JButton jbDetail = new JButton();
 	private JComboBox jcbNiveauChampionnat = new JComboBox();
-	@Localisable("parametre.openclose")
+	@Localizable("parametre.openclose")
 	private JCheckBox jcbCloseCompetition = new JCheckBox();
-	@Localisable(value="parametre.options",textMethod="setTitle")
+	@Localizable(value="parametre.options",textMethod="setTitle")
 	private TitledBorder optionsBorder = new TitledBorder(""); //$NON-NLS-1$
 	private JTextField jtfNombreCible = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
 	private JComboBox jcbNombreTireurParCible = new JComboBox();
 	private JTextField jtfNombreDepart = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
-	@Localisable(value="parametre.arbitresborder",textMethod="setTitle")
+	@Localizable(value="parametre.arbitresborder",textMethod="setTitle")
 	private TitledBorder arbitresBorder = new TitledBorder(""); //$NON-NLS-1$
-	@Localisable("bouton.ajouter")
+	@Localizable("bouton.ajouter")
 	private JButton jbAjouterArbitre = new JButton();
-	@Localisable("bouton.supprimer")
+	@Localizable("bouton.supprimer")
 	private JButton jbSupprimerArbitre = new JButton();
-	@Localisable("bouton.editer")
+	@Localizable("bouton.editer")
 	private JButton jbEditerArbitre = new JButton();
 	private AJList<Judge> jlArbitres = new AJList<Judge>();
 
-	@Localisable("parametre.intituleconcours")
+	@Localizable("parametre.intituleconcours")
 	private JLabel jlIntituleConcours = new JLabel();
-	@Localisable("parametre.lieuconcours")
+	@Localizable("parametre.lieuconcours")
 	private JLabel jlLieuConcours = new JLabel();
-	@Localisable("parametre.datedebutconcours")
+	@Localizable("parametre.datedebutconcours")
 	private JLabel jlDateDebutConcours = new JLabel();
-	@Localisable("parametre.datefinconcours")
+	@Localizable("parametre.datefinconcours")
 	private JLabel jlDateFinConcours = new JLabel();
-	@Localisable("parametre.reglement")
+	@Localizable("parametre.reglement")
 	private JLabel jlReglement = new JLabel();
-	@Localisable("parametre.niveauchampionnat")
+	@Localizable("parametre.niveauchampionnat")
 	private JLabel jlNiveauChampionnat = new JLabel();
-	@Localisable("parametre.nombrecible")
+	@Localizable("parametre.nombrecible")
 	private JLabel jlNombreCible = new JLabel();
-	@Localisable("parametre.nombretireurparcible")
+	@Localizable("parametre.nombretireurparcible")
 	private JLabel jlNombreTireurParCible = new JLabel();
-	@Localisable("parametre.nombredepart")
+	@Localizable("parametre.nombredepart")
 	private JLabel jlNombreDepart = new JLabel();
-	@Localisable("parametre.arbitres")
+	@Localizable("parametre.arbitres")
 	private JLabel jlbArbitres = new JLabel();
 
-	@Localisable("bouton.valider")
+	@Localizable("bouton.valider")
 	private JButton jbValider = new JButton();
-	@Localisable("bouton.annuler")
+	@Localizable("bouton.annuler")
 	private JButton jbAnnuler = new JButton();
 	
 	private ReglementDialog reglementDialog;
@@ -412,7 +401,7 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 	}
 
 	private void affectLibelle() {
-		Localisator.localize(this, localisation);
+		Localizator.localize(this, localisation);
 	}
 
 	private void completePanel() {

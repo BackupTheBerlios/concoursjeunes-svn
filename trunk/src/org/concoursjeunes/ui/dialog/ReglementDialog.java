@@ -105,24 +105,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.Box;
-import javax.swing.DefaultCellEditor;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.JTree;
+import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -134,8 +117,8 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
-import org.ajdeveloppement.apps.localisation.Localisable;
-import org.ajdeveloppement.apps.localisation.Localisator;
+import org.ajdeveloppement.apps.localisation.Localizable;
+import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.StringUtils;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
@@ -165,7 +148,7 @@ import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
  * @author Aurélien JEOFFRAY
  * 
  */
-@Localisable(textMethod="setTitle",value="reglement.titre")
+@Localizable(textMethod="setTitle",value="reglement.titre")
 public class ReglementDialog extends JDialog implements ActionListener, MouseListener, TableModelListener {
 
 	private AjResourcesReader localisation;
@@ -175,39 +158,39 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	
 	private BindingGroup reglementBinding = new BindingGroup();
 	
-	@Localisable("reglement.tabs")
+	@Localizable("reglement.tabs")
 	JTabbedPane tabbedPane = new JTabbedPane();
 
-	@Localisable("reglement.name")
+	@Localizable("reglement.name")
 	private JLabel jlReglementName = new JLabel();
 
-	@Localisable("reglement.serie")
+	@Localizable("reglement.serie")
 	private JLabel jlNbSerie = new JLabel();
-	@Localisable("reglement.voleeparserie")
+	@Localizable("reglement.voleeparserie")
 	private JLabel jlNbVoleeParSerie = new JLabel();
-	@Localisable("reglement.flecheparvolee")
+	@Localizable("reglement.flecheparvolee")
 	private JLabel jlNbFlecheParVolee = new JLabel();
-	@Localisable("reglement.membresmax")
+	@Localizable("reglement.membresmax")
 	private JLabel jlNbMembresEquipe = new JLabel();
-	@Localisable("reglement.selectionmax")
+	@Localizable("reglement.selectionmax")
 	private JLabel jlNbMembresRetenu = new JLabel();
-	@Localisable("reglement.departages")
+	@Localizable("reglement.departages")
 	private JLabel jlDepartages = new JLabel();
-	@Localisable("reglement.departagesinfo")
+	@Localizable("reglement.departagesinfo")
 	private JLabel jlDepartagesInfo = new JLabel();
-	@Localisable("reglement.official")
+	@Localizable("reglement.official")
 	private JCheckBox jcbOfficialReglement = new JCheckBox();
 
 	private JLabel jlNbDB = new JLabel();
-	@Localisable(value="",tooltip="reglement.addcriteria")
+	@Localizable(value="",tooltip="reglement.addcriteria")
 	private JButton jbAddCriteria = new JButton();
-	@Localisable(value="",tooltip="reglement.addcriteriamember")
+	@Localizable(value="",tooltip="reglement.addcriteriamember")
 	private JButton jbAddCriteriaMember = new JButton();
-	@Localisable(value="",tooltip="reglement.upelement")
+	@Localizable(value="",tooltip="reglement.upelement")
 	private JButton jbUpElement = new JButton();
-	@Localisable(value="",tooltip="reglement.downelement")
+	@Localizable(value="",tooltip="reglement.downelement")
 	private JButton jbDownElement = new JButton();
-	@Localisable(value="",tooltip="reglement.removeelement")
+	@Localizable(value="",tooltip="reglement.removeelement")
 	private JButton jbRemoveElement = new JButton();
 	private DefaultMutableTreeNode treeRoot = new DefaultMutableTreeNode("criteres"); //$NON-NLS-1$
 	private DefaultTreeModel treeModel = new DefaultTreeModel(treeRoot);
@@ -236,9 +219,9 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	private AJList<DistancesBlasonsSet> ajlDistancesBlasons = new AJList<DistancesBlasonsSet>();
 	private JScrollPane jspDistanceBlason = new JScrollPane(ajlDistancesBlasons);
 
-	@Localisable("bouton.valider")
+	@Localizable("bouton.valider")
 	private JButton jbValider = new JButton();
-	@Localisable("bouton.annuler")
+	@Localizable("bouton.annuler")
 	private JButton jbAnnuler = new JButton();
 
 	private boolean editable = true;
@@ -526,7 +509,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	}
 
 	private void affectLibelle() {
-		Localisator.localize(this, localisation);	
+		Localizator.localize(this, localisation);	
 	}
 
 	private void completePanel() {

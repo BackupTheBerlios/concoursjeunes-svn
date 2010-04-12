@@ -255,7 +255,7 @@ public class Main {
 				try {
 					Thread.setDefaultUncaughtExceptionHandler(null);
 
-					// rend l'ensemble des fichier de la base accessible en lecture/ecriture pour permettre
+					// rend l'ensemble des fichier de la base accessible en lecture/écriture pour permettre
 					// le multi-utilisateur
 					File[] dbfiles = new File(ApplicationCore.userRessources.getAllusersDataPath(), "base").listFiles(); //$NON-NLS-1$
 					for (File dbfile : dbfiles) {

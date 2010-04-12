@@ -104,19 +104,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.script.ScriptException;
-import javax.swing.AbstractButton;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.RowFilter;
-import javax.swing.SortOrder;
+import javax.swing.*;
 import javax.swing.RowSorter.SortKey;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
@@ -124,8 +112,8 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableRowSorter;
 
-import org.ajdeveloppement.apps.localisation.Localisable;
-import org.ajdeveloppement.apps.localisation.Localisator;
+import org.ajdeveloppement.apps.localisation.Localizable;
+import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.ui.NumberDocument;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Concurrent;
@@ -159,32 +147,32 @@ public class GreffePane extends JPanel implements
 	};
 	private TableRowSorter<GreffeConcurrentTableModel> sorter;
 	
-	@Localisable("greffepane.start")
+	@Localizable("greffepane.start")
 	private JLabel jlDepart = new JLabel();
-	@Localisable("greffepane.name")
+	@Localizable("greffepane.name")
 	private JLabel jlNom = new JLabel();
-	@Localisable("greffepane.club")
+	@Localizable("greffepane.club")
 	private JLabel jlClub = new JLabel();
-	@Localisable("greffepane.licence")
+	@Localizable("greffepane.licence")
 	private JLabel jlLicence = new JLabel();
 	private JTextField jtfDepart = new JTextField(new NumberDocument(false, false), "", 2); //$NON-NLS-1$
 	private JTextField jtfNom = new JTextField(10);
 	private JTextField jtfClub = new JTextField(10);
 	private JTextField jtfLicence = new JTextField(7);
 	private JComboBox jcbPayee = new JComboBox();
-	@Localisable(value="",tooltip="greffepane.erasefilter")
+	@Localizable(value="",tooltip="greffepane.erasefilter")
 	private JButton jbResetFilter = new JButton();
 	@StateSelector(name="200-listgreffe")
-	@Localisable("greffepane.print")
+	@Localizable("greffepane.print")
 	private JXSplitButton jbImpression = new JXSplitButton();
 	@StateSelector(name="100-listalpha")
-	@Localisable("greffepane.print.alpha")
+	@Localizable("greffepane.print.alpha")
 	private JMenuItem jmiPrintAlpha = new JMenuItem();
 	@StateSelector(name="200-listgreffe")
-	@Localisable("greffepane.print.greffe")
+	@Localizable("greffepane.print.greffe")
 	private JMenuItem jmiPrintGreffe = new JMenuItem();
 	@StateSelector(name="300-listtarget")
-	@Localisable("greffepane.print.target")
+	@Localizable("greffepane.print.target")
 	private JMenuItem jmiPrintTarget = new JMenuItem();
 	
 	private FicheConcoursPane ficheConcoursPane;
@@ -258,7 +246,7 @@ public class GreffePane extends JPanel implements
 	}
 	
 	private void affectLibelle() {
-		Localisator.localize(this, ficheConcoursPane.getLocalisation());
+		Localizator.localize(this, ficheConcoursPane.getLocalisation());
 	}
 	
 	private void completePanel() {

@@ -110,8 +110,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import org.ajdeveloppement.apps.localisation.Localisable;
-import org.ajdeveloppement.apps.localisation.Localisator;
+import org.ajdeveloppement.apps.localisation.Localizable;
+import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
@@ -130,17 +130,17 @@ public class DisablePluginDialog extends JDialog implements ActionListener {
 	
 	private AjResourcesReader localisation;
 	
-	@Localisable("disableplugin.columnname")
+	@Localizable("disableplugin.columnname")
 	private JLabel jlColumnName = new JLabel();
-	@Localisable("disableplugin.columnstate")
+	@Localizable("disableplugin.columnstate")
 	private JLabel jlColumnState = new JLabel();
 	
 	private Hashtable<String, JLabel> jlNomsPlugins = new Hashtable<String, JLabel>();
 	private Hashtable<String, JCheckBox> jcbStatePlugins = new Hashtable<String, JCheckBox>();
 	
-	@Localisable("bouton.valider")
+	@Localizable("bouton.valider")
 	private JButton jbValider = new JButton();
-	@Localisable("bouton.annuler")
+	@Localizable("bouton.annuler")
 	private JButton jbAnnuler = new JButton();
 	
 	private List<PluginMetadata> plugins;
@@ -201,7 +201,7 @@ public class DisablePluginDialog extends JDialog implements ActionListener {
 	}
 	
 	private void affectLibelle() {
-		Localisator.localize(this, localisation);
+		Localizator.localize(this, localisation);
 	}
 	
 	@SuppressWarnings("unchecked")

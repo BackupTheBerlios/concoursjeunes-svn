@@ -121,8 +121,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.text.PlainDocument;
 
-import org.ajdeveloppement.apps.localisation.Localisable;
-import org.ajdeveloppement.apps.localisation.Localisator;
+import org.ajdeveloppement.apps.localisation.Localizable;
+import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.concoursjeunes.ApplicationCore;
@@ -143,7 +143,7 @@ import org.jdesktop.swingx.error.ErrorInfo;
  * @author Aurélien JEOFFRAY
  *
  */
-@Localisable(textMethod="setTitle", value="arbitredialog.title")
+@Localizable(textMethod="setTitle", value="arbitredialog.title")
 public class ArbitreDialog extends JDialog implements AutoCompleteDocumentListener, ActionListener, FocusListener {
 	public static final int CONFIRM = 0;
 	public static final int CANCEL = 1;
@@ -157,23 +157,23 @@ public class ArbitreDialog extends JDialog implements AutoCompleteDocumentListen
 	private boolean mustberesponsable = true;
 	private boolean enableautocomplement = true;
 	
-	@Localisable("arbitredialog.description")
+	@Localizable("arbitredialog.description")
 	private JLabel jlDescription = new JLabel();
-	@Localisable("arbitredialog.identite")
+	@Localizable("arbitredialog.identite")
 	private JLabel jlNom = new JLabel();
 	private JTextField jtfNom = new JTextField(8);
 	private JTextField jtfPrenom = new JTextField(8);
-	@Localisable(value="",tooltip="arbitredialog.select")
+	@Localizable(value="",tooltip="arbitredialog.select")
 	private JButton jbSelectArbitre = new JButton();
-	@Localisable("arbitredialog.numlicence")
+	@Localizable("arbitredialog.numlicence")
 	private JLabel jlLicence = new JLabel();
 	private JTextField jtfLicence = new JTextField(16);
-	@Localisable("arbitredialog.responsable")
+	@Localizable("arbitredialog.responsable")
 	private JCheckBox jcbResponsable = new JCheckBox();
 	
-	@Localisable("bouton.valider")
+	@Localizable("bouton.valider")
 	private JButton jbValider = new JButton();
-	@Localisable("bouton.annuler")
+	@Localizable("bouton.annuler")
 	private JButton jbAnnuler = new JButton();
 	
 	private int returnVal = CONFIRM;
@@ -250,7 +250,7 @@ public class ArbitreDialog extends JDialog implements AutoCompleteDocumentListen
 	}
 	
 	private void affectLibelle() {
-		Localisator.localize(this, localisation);
+		Localizator.localize(this, localisation);
 	}
 	
 	private void completePanel() {

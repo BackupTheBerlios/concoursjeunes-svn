@@ -109,32 +109,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import javax.swing.AbstractListModel;
-import javax.swing.Box;
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTree;
-import javax.swing.ListSelectionModel;
-import javax.swing.SortOrder;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
-import org.ajdeveloppement.apps.localisation.Localisable;
-import org.ajdeveloppement.apps.localisation.Localisator;
+import org.ajdeveloppement.apps.localisation.Localizable;
+import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.ui.AJTree;
 import org.ajdeveloppement.commons.ui.GhostGlassPane;
 import org.concoursjeunes.ApplicationCore;
@@ -169,37 +152,37 @@ public class FicheConcoursDepartPane extends JPanel
 			TreeSelectionListener {
 
 	//Composants de l'interface
-	@Localisable(value="bouton.ajouter",tooltip="bouton.ajouter")
+	@Localizable(value="bouton.ajouter",tooltip="bouton.ajouter")
 	private JButton jbAjouterArcher = new JButton();
-	@Localisable("bouton.supprimer")
+	@Localizable("bouton.supprimer")
 	private JButton jbSupprimerArcher = new JButton();
-	@Localisable("bouton.equipe")
+	@Localizable("bouton.equipe")
 	private JButton jbEquipe = new JButton();
-	@Localisable("bouton.placementarcher")
+	@Localizable("bouton.placementarcher")
 	private JButton jbPlacementArcher = new JButton();
 	private ButtonGroup jbgSort;
-	@Localisable("radiobutton.cible")
+	@Localizable("radiobutton.cible")
 	private JRadioButton jcbSortCible = new JRadioButton("", true); //$NON-NLS-1$
-	@Localisable("radiobutton.nom")
+	@Localizable("radiobutton.nom")
 	private JRadioButton jcbSortNom = new JRadioButton();
-	@Localisable("radiobutton.club")
+	@Localizable("radiobutton.club")
 	private JRadioButton jcbSortClub = new JRadioButton();
 
 	private AJXList ajxlConcurrent = new AJXList();
 	private ConcurrentListModel lstModelConcurrent = new ConcurrentListModel();
 	private AJTree treeTarget = new AJTree();
-	@Localisable(textMethod="setRootLabel",value="treenode.racine")
+	@Localizable(textMethod="setRootLabel",value="treenode.racine")
 	private TargetTreeModel treeModel = new TargetTreeModel();
 	private JPopupMenu popup;
 
-	//paneau parent
+	//panneau parent
 	private FicheConcoursPane ficheConcoursPane = null;
 
-	//controleur
+	//Contrôleur
 	private Object dragObject = null;
 	private boolean onDrag = false;
 
-	//modele
+	//Modèle
 	private FicheConcours ficheConcours;
 	private int depart = 0;
 	
@@ -405,7 +388,7 @@ public class FicheConcoursDepartPane extends JPanel
 	 * Affecte les libellés localisé au composant de l'interface
 	 */
 	private void affectLibelle() {
-		Localisator.localize(this, ficheConcoursPane.getLocalisation());
+		Localizator.localize(this, ficheConcoursPane.getLocalisation());
 	}
 
 	/**

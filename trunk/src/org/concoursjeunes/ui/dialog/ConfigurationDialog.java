@@ -105,41 +105,18 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.logging.Level;
 
-import javax.swing.Box;
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.bind.JAXBException;
 
-import org.ajdeveloppement.apps.localisation.Localisable;
-import org.ajdeveloppement.apps.localisation.Localisator;
+import org.ajdeveloppement.apps.localisation.Localizable;
+import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.StringUtils;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
-import org.concoursjeunes.AppConfiguration;
-import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.AutoCompleteDocument;
-import org.concoursjeunes.AutoCompleteDocumentContext;
-import org.concoursjeunes.Configuration;
-import org.concoursjeunes.Entite;
-import org.concoursjeunes.Federation;
-import org.concoursjeunes.Margin;
-import org.concoursjeunes.Profile;
-import org.concoursjeunes.Reglement;
+import org.concoursjeunes.*;
 import org.concoursjeunes.builders.ReglementBuilder;
 import org.concoursjeunes.event.AutoCompleteDocumentEvent;
 import org.concoursjeunes.event.AutoCompleteDocumentListener;
@@ -152,12 +129,12 @@ import com.lowagie.text.PageSize;
 import com.lowagie.text.Rectangle;
 
 /**
- * Ecran de configuration de ConcoursJeunes
+ * Écran de configuration de ConcoursJeunes
  * 
  * @author Aurélien Jeoffray
  * @version 2.2
  */
-@Localisable(textMethod="setTitle",value="configuration.title")
+@Localizable(textMethod="setTitle",value="configuration.title")
 public class ConfigurationDialog extends JDialog implements ActionListener, AutoCompleteDocumentListener {
 
 	private JFrame parentframe;
@@ -166,39 +143,39 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	private Configuration workConfiguration;
 	private AppConfiguration workAppConfiguration;
 	
-	@Localisable("configuration.onglet")
+	@Localizable("configuration.onglet")
 	private JTabbedPane tabbedpane = new JTabbedPane();
-	@Localisable(value="configuration.ecran.general.titre0",textMethod="setTitle")
+	@Localizable(value="configuration.ecran.general.titre0",textMethod="setTitle")
 	private TitledBorder tbProfil = new TitledBorder(""); //$NON-NLS-1$
-	@Localisable("configuration.ecran.general.profil")
+	@Localizable("configuration.ecran.general.profil")
 	private JLabel jlNomProfil = new JLabel();
 	private JComboBox jcbProfil = new JComboBox();
-	@Localisable("configuration.ecran.general.renameprofile")
+	@Localizable("configuration.ecran.general.renameprofile")
 	private JButton jbRenameProfile = new JButton();
 
 	// Ecran general personnalisation
-	@Localisable(value="configuration.ecran.general.titre1",textMethod="setTitle")
+	@Localizable(value="configuration.ecran.general.titre1",textMethod="setTitle")
 	private TitledBorder tbParamGeneral = new TitledBorder(""); //$NON-NLS-1$
-	@Localisable("configuration.ecran.general.federation")
+	@Localizable("configuration.ecran.general.federation")
 	private JLabel jlFederation = new JLabel();
-	@Localisable("configuration.ecran.general.nom")
+	@Localizable("configuration.ecran.general.nom")
 	private JLabel jlNomClub = new JLabel();
-	@Localisable("configuration.ecran.general.agrement")
+	@Localizable("configuration.ecran.general.agrement")
 	private JLabel jlAgremClub = new JLabel();
-	@Localisable("configuration.ecran.general.intituleconcours")
+	@Localizable("configuration.ecran.general.intituleconcours")
 	private JLabel jlIntituleConcours = new JLabel();
-	@Localisable("configuration.ecran.general.langue")
+	@Localizable("configuration.ecran.general.langue")
 	private JLabel jlLangue = new JLabel();
-	@Localisable("configuration.ecran.general.pdf")
+	@Localizable("configuration.ecran.general.pdf")
 	private JLabel jlPathPdf = new JLabel();
-	@Localisable("configuration.ecran.general.logo")
+	@Localizable("configuration.ecran.general.logo")
 	private JLabel jlLogoPath = new JLabel();
 	private JComboBox jcbFederation = new JComboBox();
 	private JTextField jtfNomClub = new JTextField(20);
 	private JTextField jtfAgrClub = new JTextField(new NumberDocument(false, false), "", 7); //$NON-NLS-1$
-	@Localisable(value="configuration.ecran.general.choiceclub",tooltip="configuration.ecran.general.browseclub")
+	@Localizable(value="configuration.ecran.general.choiceclub",tooltip="configuration.ecran.general.browseclub")
 	private JButton jbParcourir = new JButton();
-	@Localisable("bouton.detail")
+	@Localizable("bouton.detail")
 	private JButton jbDetail = new JButton();
 	private JTextField jtfIntConc = new JTextField(20);
 	private JComboBox jcbLangue = new JComboBox();
@@ -207,42 +184,42 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	private JButton jbLogoPath = new JButton();
 
 	// Ecran concours/pas de tir
-	@Localisable("configuration.ecran.concours.reglement")
+	@Localizable("configuration.ecran.concours.reglement")
 	private JLabel jlReglement = new JLabel();
-	@Localisable("configuration.ecran.concours.cible")
+	@Localizable("configuration.ecran.concours.cible")
 	private JLabel jlNbCible = new JLabel();
-	@Localisable("configuration.ecran.concours.tireur")
+	@Localizable("configuration.ecran.concours.tireur")
 	private JLabel jlNbTireur = new JLabel();
-	@Localisable("configuration.ecran.concours.depart")
+	@Localizable("configuration.ecran.concours.depart")
 	private JLabel jlNbDepart = new JLabel();
 	private JLabel jlSelectedReglement = new JLabel();
-	@Localisable("configuration.ecran.concours.change_reglement")
+	@Localizable("configuration.ecran.concours.change_reglement")
 	private JButton jbSelectReglement = new JButton();
 	private JTextField jtfNbCible = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
 	private JComboBox jcbNbTireur = new JComboBox();
 	private JTextField jtfNbDepart = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
 
 	// Ecran etiquette
-	@Localisable("configuration.ecran.etiquettes.formatpapier")
+	@Localizable("configuration.ecran.etiquettes.formatpapier")
 	private JLabel jlFormatPapier = new JLabel();
-	@Localisable("configuration.ecran.etiquettes.nbetiquettes")
+	@Localizable("configuration.ecran.etiquettes.nbetiquettes")
 	private JLabel jlNbEtiquettes = new JLabel();
 	private JLabel jlColonnes = new JLabel("x"); //$NON-NLS-1$
-	@Localisable("configuration.ecran.etiquettes.marges")
+	@Localizable("configuration.ecran.etiquettes.marges")
 	private JLabel jlMarges = new JLabel();
-	@Localisable("configuration.ecran.etiquettes.haut")
+	@Localizable("configuration.ecran.etiquettes.haut")
 	private JLabel jlMargesH = new JLabel();
-	@Localisable("configuration.ecran.etiquettes.bas")
+	@Localizable("configuration.ecran.etiquettes.bas")
 	private JLabel jlMargesB = new JLabel();
-	@Localisable("configuration.ecran.etiquettes.gauche")
+	@Localizable("configuration.ecran.etiquettes.gauche")
 	private JLabel jlMargesG = new JLabel();
-	@Localisable("configuration.ecran.etiquettes.droite")
+	@Localizable("configuration.ecran.etiquettes.droite")
 	private JLabel jlMargesD = new JLabel();
-	@Localisable("configuration.ecran.etiquettes.espacement")
+	@Localizable("configuration.ecran.etiquettes.espacement")
 	private JLabel jlEspacements = new JLabel();
-	@Localisable("configuration.ecran.etiquettes.horizontal")
+	@Localizable("configuration.ecran.etiquettes.horizontal")
 	private JLabel jlEspacementsH = new JLabel();
-	@Localisable("configuration.ecran.etiquettes.vertical")
+	@Localizable("configuration.ecran.etiquettes.vertical")
 	private JLabel jlEspacementsV = new JLabel();
 	private JComboBox jcbFormatPapier = new JComboBox();
 	private JComboBox jcbOrientation = new JComboBox();
@@ -256,36 +233,36 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	private JTextField jtfEspacementsV = new JTextField(new NumberDocument(true, false), "", 5); //$NON-NLS-1$
 
 	// Ecran avancé
-	@Localisable("configuration.ecran.interface.resultat")
+	@Localizable("configuration.ecran.interface.resultat")
 	private JLabel jlResultats = new JLabel();
-	@Localisable("configuration.ecran.interface.affresultat")
+	@Localizable("configuration.ecran.interface.affresultat")
 	private JLabel jlAffResultats = new JLabel();
 
 	// private TitledBorder tbPath = new TitledBorder(""); //$NON-NLS-1$
-	@Localisable("configuration.ecran.interface.resultatcumul")
+	@Localizable("configuration.ecran.interface.resultatcumul")
 	private JCheckBox jcbAvanceResultatCumul = new JCheckBox();
-	@Localisable("configuration.ecran.interface.resultataffexequo")
+	@Localizable("configuration.ecran.interface.resultataffexequo")
 	private JCheckBox jcbAvanceAffResultatExEquo = new JCheckBox();
-	@Localisable(value="configuration.ecran.avance.configurationproxy",textMethod="setTitle")
+	@Localizable(value="configuration.ecran.avance.configurationproxy",textMethod="setTitle")
 	private TitledBorder tbProxy = new TitledBorder(""); //$NON-NLS-1$
-	@Localisable("configuration.ecran.avance.adresseproxy")
+	@Localizable("configuration.ecran.avance.adresseproxy")
 	private JLabel jlAdresseProxy = new JLabel();
-	@Localisable("configuration.ecran.avance.portproxy")
+	@Localizable("configuration.ecran.avance.portproxy")
 	private JLabel jlPortProxy = new JLabel();
 	
-	@Localisable("configuration.ecran.avance.utilisationproxysystem")
+	@Localizable("configuration.ecran.avance.utilisationproxysystem")
 	private JRadioButton jrbUseSystemConfig = new JRadioButton();
-	@Localisable("configuration.ecran.avance.utilisationproxycustom")
+	@Localizable("configuration.ecran.avance.utilisationproxycustom")
 	private JRadioButton jrbUseSpecificConfig = new JRadioButton();
 	private final JTextField jtfAdresseProxy = new JTextField(20);
 	private final JTextField jtfPortProxy = new JTextField(new NumberDocument(false, false), "", 5); //$NON-NLS-1$	
 
 	// Ecran avancé option debug
-	@Localisable("configuration.ecran.interface.firstboot")
+	@Localizable("configuration.ecran.interface.firstboot")
 	private final JCheckBox jcbFirstBoot = new JCheckBox();
-	@Localisable("bouton.valider")
+	@Localizable("bouton.valider")
 	private final JButton jbValider = new JButton();
-	@Localisable("bouton.annuler")
+	@Localizable("bouton.annuler")
 	private final JButton jbAnnuler = new JButton();
 	//private String[] strLstLangue;
 	private boolean renameProfile = false;
@@ -607,7 +584,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	}
 
 	private void affectLibelle() {
-		Localisator.localize(this, localisation);
+		Localizator.localize(this, localisation);
 	}
 
 	private void completePanel() {

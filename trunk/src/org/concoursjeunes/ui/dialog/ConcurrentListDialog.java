@@ -100,28 +100,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
-import javax.swing.RowFilter;
-import javax.swing.RowSorter;
-import javax.swing.SortOrder;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
+import javax.swing.*;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 
-import org.ajdeveloppement.apps.localisation.Localisable;
-import org.ajdeveloppement.apps.localisation.Localisator;
+import org.ajdeveloppement.apps.localisation.Localizable;
+import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.concoursjeunes.Archer;
@@ -142,7 +129,7 @@ import org.jdesktop.swingx.JXHyperlink;
  * @author Aurélien Jeoffray
  * @version 2.0
  */
-@Localisable(textMethod="setTitle",value="concurrent.nouveau.titre")
+@Localizable(textMethod="setTitle",value="concurrent.nouveau.titre")
 public class ConcurrentListDialog extends JDialog implements ActionListener, MouseListener, CaretListener {
 	private AjResourcesReader localisation;
 	
@@ -151,13 +138,13 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 
 	private final Reglement reglement;
 
-	@Localisable("concurrent.nouveau.licence")
+	@Localizable("concurrent.nouveau.licence")
 	private JLabel jlFilterLicence = null;
 	private JTextField jtfFilterLicence = null;
-	@Localisable("concurrent.nouveau.nom")
+	@Localizable("concurrent.nouveau.nom")
 	private JLabel jlFilterNom = null;
 	private JTextField jtfFilterNom = null;
-	@Localisable("concurrent.nouveau.club")
+	@Localizable("concurrent.nouveau.club")
 	private JLabel jlFilterClub = null;
 	private JTextField jtfFilterClub = null;
 	private JTable jTable = null;
@@ -241,7 +228,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	}
 
 	private void affectLibelle() {
-		Localisator.localize(this, localisation);
+		Localizator.localize(this, localisation);
 	}
 
 	/**

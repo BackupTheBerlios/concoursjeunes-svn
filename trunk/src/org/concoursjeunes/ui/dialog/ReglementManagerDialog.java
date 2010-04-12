@@ -103,25 +103,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import org.ajdeveloppement.apps.localisation.Localisable;
-import org.ajdeveloppement.apps.localisation.LocalisableString;
-import org.ajdeveloppement.apps.localisation.Localisator;
+import org.ajdeveloppement.apps.localisation.Localizable;
+import org.ajdeveloppement.apps.localisation.LocalizableString;
+import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.ui.AJList;
@@ -138,57 +127,57 @@ import org.concoursjeunes.manager.ReglementManager;
  * @author Aurélien JEOFFRAY
  *
  */
-@Localisable(textMethod="setTitle",value="reglementmanager.title")
+@Localizable(textMethod="setTitle",value="reglementmanager.title")
 public class ReglementManagerDialog extends JDialog implements ListSelectionListener, MouseListener, ActionListener {
 	
 	private JFrame parentframe;
 	private Profile profile;
 	private AjResourcesReader localisation;
 	
-	@Localisable("reglementmanager.federations")
+	@Localizable("reglementmanager.federations")
 	private JLabel jlFederations	= new JLabel();
-	@Localisable("reglementmanager.categories")
+	@Localizable("reglementmanager.categories")
 	private JLabel jlCategories		= new JLabel();
-	@Localisable("reglementmanager.reglements")
+	@Localizable("reglementmanager.reglements")
 	private JLabel jlReglements		= new JLabel();
 	private AJList<Federation> ajlFederations	= new AJList<Federation>();
-	private AJList<LocalisableString> ajlCategories	= new AJList<LocalisableString>();
+	private AJList<LocalizableString> ajlCategories	= new AJList<LocalizableString>();
 	private AJList<Reglement> ajlReglements	= new AJList<Reglement>();
 	
-	@Localisable(value="",tooltip="reglementmanager.new")
+	@Localizable(value="",tooltip="reglementmanager.new")
 	private JButton jbNewFederation	= new JButton();
-	@Localisable(value="",tooltip="reglementmanager.edit")
+	@Localizable(value="",tooltip="reglementmanager.edit")
 	private JButton jbEditFederation = new JButton();
-	@Localisable(value="",tooltip="reglementmanager.delete")
+	@Localizable(value="",tooltip="reglementmanager.delete")
 	private JButton jbDeleteFederation = new JButton();
 	
-	@Localisable("reglementmanager.category.all")
-	private final LocalisableString lsAllCategory = new LocalisableString();
-	@Localisable("reglementmanager.category.young")
-	private final LocalisableString lsYoungCategory = new LocalisableString();
-	@Localisable("reglementmanager.category.indoor")
-	private final LocalisableString lsIndoorCategory = new LocalisableString();
-	@Localisable("reglementmanager.category.outdoor")
-	private final LocalisableString lsOutdoorCategory = new LocalisableString();
-	@Localisable("reglementmanager.category.other")
-	private final LocalisableString lsOtherCategory = new LocalisableString();
+	@Localizable("reglementmanager.category.all")
+	private final LocalizableString lsAllCategory = new LocalizableString();
+	@Localizable("reglementmanager.category.young")
+	private final LocalizableString lsYoungCategory = new LocalizableString();
+	@Localizable("reglementmanager.category.indoor")
+	private final LocalizableString lsIndoorCategory = new LocalizableString();
+	@Localizable("reglementmanager.category.outdoor")
+	private final LocalizableString lsOutdoorCategory = new LocalizableString();
+	@Localizable("reglementmanager.category.other")
+	private final LocalizableString lsOtherCategory = new LocalizableString();
 	
-	@Localisable(value="",tooltip="reglementmanager.new")
+	@Localizable(value="",tooltip="reglementmanager.new")
 	private JButton jbNew			= new JButton();
-	@Localisable(value="",tooltip="reglementmanager.edit")
+	@Localizable(value="",tooltip="reglementmanager.edit")
 	private JButton jbEdit			= new JButton();
-	@Localisable(value="",tooltip="reglementmanager.delete")
+	@Localizable(value="",tooltip="reglementmanager.delete")
 	private JButton jbDelete		= new JButton();
-	@Localisable("reglementmanager.export")
+	@Localizable("reglementmanager.export")
 	private JButton jbExport		= new JButton();
-	@Localisable("reglementmanager.import")
+	@Localizable("reglementmanager.import")
 	private JButton jbImport		= new JButton();
 	
-	@Localisable("bouton.valider")
+	@Localizable("bouton.valider")
 	private JButton jbValider		= new JButton();
-	@Localisable("bouton.annuler")
+	@Localizable("bouton.annuler")
 	private JButton jbAnnuler		= new JButton();
-	@Localisable("bouton.fermer")
+	@Localizable("bouton.fermer")
 	private JButton jbFermer		= new JButton();
 	
 	private ReglementManager reglementManager;
@@ -348,7 +337,7 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 	}
 	
 	private void affectLibelle() {
-		Localisator.localize(this, localisation);
+		Localizator.localize(this, localisation);
 	}
 	
 	private void completePanel() {

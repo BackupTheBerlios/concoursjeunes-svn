@@ -112,9 +112,9 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.ajdeveloppement.apps.localisation.Localisable;
-import org.ajdeveloppement.apps.localisation.LocalisationHandler;
-import org.ajdeveloppement.apps.localisation.Localisator;
+import org.ajdeveloppement.apps.localisation.Localizable;
+import org.ajdeveloppement.apps.localisation.LocalizationHandler;
+import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.StringUtils;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
@@ -133,33 +133,33 @@ import org.jdesktop.swingx.painter.GlossPainter;
  * @author Aurélien JEOFFRAY
  *
  */
-@Localisable(textMethod="setTitle",value="federation.title")
+@Localizable(textMethod="setTitle",value="federation.title")
 public class FederationDialog extends JDialog implements ActionListener {
 	
 	private Profile profile;
 	private AjResourcesReader localisation;
 	
-	@Localisable("federation.header")
+	@Localizable("federation.header")
 	private JXHeader jxhFederation = new JXHeader();
 	
-	@Localisable("federation.sigle")
+	@Localizable("federation.sigle")
 	private JLabel jlFederationSigle = new JLabel();
-	@Localisable("federation.name")
+	@Localizable("federation.name")
 	private JLabel jlFederationName = new JLabel();
-	@Localisable("federation.level")
+	@Localizable("federation.level")
 	private JLabel jlFederationNiveau = new JLabel();
 	private JLabel jlFederationLocaleNiveau = new JLabel();
-	@Localisable("federation.levelinfo")
+	@Localizable("federation.levelinfo")
 	private JLabel jlFederationNiveauInfo = new JLabel();
-	@Localisable("federation.addlocale")
+	@Localizable("federation.addlocale")
 	private JLabel jlAddLocale = new JLabel();
-	@Localisable("federation.localeinfo")
+	@Localizable("federation.localeinfo")
 	private JLabel jlAddLocaleInfo = new JLabel();
 	private JTextField jtfFederatonSigle = new JTextField(10);
 	private JTextField jtfFederatonName = new JTextField(40);
 	private JTextField jtfFederationNiveau = new JTextField(40);
 	private JComboBox jcbAvailableLocale = new JComboBox();
-	@Localisable("bouton.ajouter")
+	@Localizable("bouton.ajouter")
 	private JButton jbAddLocale = new JButton();
 	
 	private GridbagComposer gbcTraduction = new GridbagComposer();
@@ -167,9 +167,9 @@ public class FederationDialog extends JDialog implements ActionListener {
 	private JPanel jpTraduction = new JPanel();
 	private Map<String, JTextField> mTraduction = new HashMap<String, JTextField>();
 	
-	@Localisable("bouton.valider")
+	@Localizable("bouton.valider")
 	private JButton jbValider = new JButton();
-	@Localisable("bouton.annuler")
+	@Localizable("bouton.annuler")
 	private JButton jbAnnuler = new JButton();
 	
 	//private JFrame parentframe;
@@ -286,7 +286,7 @@ public class FederationDialog extends JDialog implements ActionListener {
 	}
 	
 	private void affectLibelle() {
-		Localisator.localize(this, localisation, Collections.<Class<?>, LocalisationHandler>singletonMap(JXHeader.class, new JXHeaderLocalisationHandler()));
+		Localizator.localize(this, localisation, Collections.<Class<?>, LocalizationHandler>singletonMap(JXHeader.class, new JXHeaderLocalisationHandler()));
 	}
 	
 	private void completePanel() {

@@ -95,7 +95,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JPanel;
 
-import org.ajdeveloppement.apps.localisation.Localisator;
+import org.ajdeveloppement.apps.localisation.Localizator;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.FicheConcours;
 import org.concoursjeunes.PhaseFinal;
@@ -154,7 +154,7 @@ public class FicheConcoursFinalPane extends JPanel implements ActionListener {
 	}
 	
 	private void affectLibelle() {
-		Localisator.localize(this, ficheConcoursPane.getLocalisation());
+		Localizator.localize(this, ficheConcoursPane.getLocalisation());
 	}
 	
 	private void completePanel() {

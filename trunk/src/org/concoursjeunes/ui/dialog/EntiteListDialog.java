@@ -98,16 +98,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
-import javax.swing.RowFilter;
+import javax.swing.*;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.EventListenerList;
@@ -116,8 +107,8 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
-import org.ajdeveloppement.apps.localisation.Localisable;
-import org.ajdeveloppement.apps.localisation.Localisator;
+import org.ajdeveloppement.apps.localisation.Localizable;
+import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.persistence.LoadHelper;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
@@ -148,11 +139,11 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 	private EntiteTableModel dtm;
 	private TableRowSorter<EntiteTableModel> sorter;
 
-	@Localisable("listeentite.nom")
+	@Localizable("listeentite.nom")
 	private JLabel jlNom = new JLabel();
-	@Localisable("listeentite.agrement")
+	@Localizable("listeentite.agrement")
 	private JLabel jlAgrement = new JLabel();
-	@Localisable("listeentite.ville")
+	@Localizable("listeentite.ville")
 	private JLabel jlVille = new JLabel();
 	private JTable jTable			= null;
 	private JTextField jtfNom = new JTextField(10);
@@ -160,9 +151,9 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 	private JTextField jtfVille = new JTextField(10);
 	private JScrollPane jScrollPane = new JScrollPane();
 	
-	@Localisable("bouton.valider")
+	@Localizable("bouton.valider")
 	private JButton jbValider       = new JButton();
-	@Localisable("bouton.annuler")
+	@Localizable("bouton.annuler")
 	private JButton jbAnnuler		= new JButton();
 
 	private int action				= ANNULER;
@@ -219,7 +210,7 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 	}
 	
 	private void affectLibelle() {
-		Localisator.localize(this, localisation);
+		Localizator.localize(this, localisation);
 	}
 
 	/**

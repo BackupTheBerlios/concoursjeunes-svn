@@ -106,8 +106,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 
-import org.ajdeveloppement.apps.localisation.Localisable;
-import org.ajdeveloppement.apps.localisation.Localisator;
+import org.ajdeveloppement.apps.localisation.Localizable;
+import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 
 /**
@@ -119,7 +119,7 @@ public class TextDialog extends JDialog implements ActionListener {
 	private AjResourcesReader localisation;
 	
 	private JTextPane jtpChangeLog = new JTextPane();
-	@Localisable("bouton.fermer")
+	@Localizable("bouton.fermer")
 	private JButton jbFermer = new JButton(); 
 	
 	private String textPath;
@@ -147,7 +147,7 @@ public class TextDialog extends JDialog implements ActionListener {
 	}
 	
 	private void affectLibelle() {
-		Localisator.localize(this, localisation);
+		Localizator.localize(this, localisation);
 	}
 	
 	private void completePane() {

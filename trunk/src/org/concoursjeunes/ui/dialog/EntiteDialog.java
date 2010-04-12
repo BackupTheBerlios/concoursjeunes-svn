@@ -94,20 +94,11 @@ import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.util.logging.Level;
 
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JFormattedTextField;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.text.MaskFormatter;
 
-import org.ajdeveloppement.apps.localisation.Localisable;
-import org.ajdeveloppement.apps.localisation.Localisator;
+import org.ajdeveloppement.apps.localisation.Localizable;
+import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
@@ -122,19 +113,19 @@ public class EntiteDialog extends JDialog implements ActionListener {
 	private AjResourcesReader localisation;
 	private Entite entite;
 
-	@Localisable("entite.nom")
+	@Localizable("entite.nom")
 	private JLabel jlNom = new JLabel();
-	@Localisable("entite.agrement")
+	@Localizable("entite.agrement")
 	private JLabel jlAgrement = new JLabel();
-	@Localisable("entite.adresse")
+	@Localizable("entite.adresse")
 	private JLabel jlAdresse = new JLabel();
-	@Localisable("entite.codepostal")
+	@Localizable("entite.codepostal")
 	private JLabel jlCodePostal = new JLabel();
-	@Localisable("entite.ville")
+	@Localizable("entite.ville")
 	private JLabel jlVille = new JLabel();
-	@Localisable("entite.type")
+	@Localizable("entite.type")
 	private JLabel jlType = new JLabel();
-	@Localisable("entite.note")
+	@Localizable("entite.note")
 	private JLabel jlNote = new JLabel();
 	private JTextField jtfNom;
 	private JTextField jftfAgrement;
@@ -144,9 +135,9 @@ public class EntiteDialog extends JDialog implements ActionListener {
 	private JComboBox jcbType;
 	private JTextArea jtaNote;
 
-	@Localisable("bouton.valider")
+	@Localizable("bouton.valider")
 	private JButton jbValider = new JButton();
-	@Localisable("bouton.annuler")
+	@Localizable("bouton.annuler")
 	private JButton jbAnnuler = new JButton();
 
 	public EntiteDialog(JFrame parent, AjResourcesReader localisation) {
@@ -240,7 +231,7 @@ public class EntiteDialog extends JDialog implements ActionListener {
 	}
 	
 	private void affectLibelle() {
-		Localisator.localize(this, localisation);
+		Localizator.localize(this, localisation);
 	}
 	
 	private void completePanel() {

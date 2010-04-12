@@ -112,8 +112,8 @@ import javax.swing.event.HyperlinkListener;
 import javax.swing.event.HyperlinkEvent.EventType;
 import javax.swing.text.html.HTMLEditorKit;
 
-import org.ajdeveloppement.apps.localisation.Localisable;
-import org.ajdeveloppement.apps.localisation.Localisator;
+import org.ajdeveloppement.apps.localisation.Localizable;
+import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.concoursjeunes.AppInfos;
 import org.concoursjeunes.ApplicationCore;
@@ -126,11 +126,11 @@ import org.jdesktop.swingx.error.ErrorInfo;
  * @author Aurélien JEOFFRAY
  *
  */
-@Localisable(textMethod="setTitle",value="apropos.titre")
+@Localizable(textMethod="setTitle",value="apropos.titre")
 public class AboutDialog extends JDialog implements ActionListener, HyperlinkListener {
 	private AjResourcesReader localisation;
 	
-	@Localisable("bouton.fermer")
+	@Localizable("bouton.fermer")
 	private JButton jbFermer = new JButton();
 	private JEditorPane jlAbout = new JEditorPane();
 
@@ -168,7 +168,7 @@ public class AboutDialog extends JDialog implements ActionListener, HyperlinkLis
 	 * 
 	 */
 	private void affectLibelle() {
-		Localisator.localize(this, localisation);
+		Localizator.localize(this, localisation);
 		
 		String iconURL = ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
 				File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.about"); //$NON-NLS-1$

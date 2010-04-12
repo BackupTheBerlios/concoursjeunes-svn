@@ -102,25 +102,16 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTree;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
-import org.ajdeveloppement.apps.localisation.Localisable;
-import org.ajdeveloppement.apps.localisation.LocalisableString;
-import org.ajdeveloppement.apps.localisation.Localisator;
+import org.ajdeveloppement.apps.localisation.Localizable;
+import org.ajdeveloppement.apps.localisation.LocalizableString;
+import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.AJTree;
 import org.ajdeveloppement.commons.ui.GhostGlassPane;
@@ -152,15 +143,15 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 	private DefaultTreeModel treeModel;
 	private final DefaultMutableTreeNode treeRoot = new DefaultMutableTreeNode("racine"); //$NON-NLS-1$
 
-	@Localisable("equipe.contrainte.club")
+	@Localizable("equipe.contrainte.club")
 	private final JCheckBox cbEquipeClub = new JCheckBox();
 	
-	@Localisable("equipe.concurrenttable")
-	private final LocalisableString lsConcurrentTable = new LocalisableString();
+	@Localizable("equipe.concurrenttable")
+	private final LocalizableString lsConcurrentTable = new LocalizableString();
 
-	@Localisable("bouton.valider")
+	@Localizable("bouton.valider")
 	private final JButton jbValider = new JButton();
-	@Localisable("bouton.annuler")
+	@Localizable("bouton.annuler")
 	private final JButton jbAnnuler = new JButton();
 
 	private boolean validation = false;
@@ -267,7 +258,7 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 	}
 
 	private void affectLibelle() {
-		Localisator.localize(this, localisation);
+		Localizator.localize(this, localisation);
 	}
 
 	private void completePanel() {

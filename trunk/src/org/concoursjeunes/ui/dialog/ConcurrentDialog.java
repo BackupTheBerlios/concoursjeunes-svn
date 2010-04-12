@@ -119,45 +119,18 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
-import javax.swing.Box;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.PlainDocument;
 
-import org.ajdeveloppement.apps.localisation.Localisable;
-import org.ajdeveloppement.apps.localisation.Localisator;
+import org.ajdeveloppement.apps.localisation.Localizable;
+import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.StringUtils;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
-import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.Archer;
-import org.concoursjeunes.AutoCompleteDocument;
-import org.concoursjeunes.AutoCompleteDocumentContext;
-import org.concoursjeunes.Blason;
-import org.concoursjeunes.Concurrent;
-import org.concoursjeunes.CriteriaSet;
-import org.concoursjeunes.Criterion;
-import org.concoursjeunes.CriterionElement;
-import org.concoursjeunes.DistancesEtBlason;
-import org.concoursjeunes.Entite;
-import org.concoursjeunes.FicheConcours;
-import org.concoursjeunes.Profile;
-import org.concoursjeunes.Reglement;
-import org.concoursjeunes.TargetPosition;
-import org.concoursjeunes.TargetsOccupation;
+import org.concoursjeunes.*;
 import org.concoursjeunes.event.AutoCompleteDocumentEvent;
 import org.concoursjeunes.event.AutoCompleteDocumentListener;
 import org.concoursjeunes.localisable.CriteriaSetLibelle;
@@ -171,7 +144,7 @@ import org.jdesktop.swingx.error.ErrorInfo;
  * @author Aurélien Jeoffray
  * @version 5.0
  */
-@Localisable(textMethod="setTitle",value="concurrent.titre.edition")
+@Localizable(textMethod="setTitle",value="concurrent.titre.edition")
 public class ConcurrentDialog extends JDialog implements ActionListener, FocusListener, AutoCompleteDocumentListener, ItemListener {
 
 	public static final int CONFIRM_AND_CLOSE = 1;
@@ -189,17 +162,17 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	private static Reglement lastActiveReglement;
 	private static Future<ConcurrentListDialog> concurrentListDialog;
 
-	@Localisable("concurrent.description")
+	@Localizable("concurrent.description")
 	private JLabel jlDescription = new JLabel(); // Description
-	@Localisable("concurrent.identite")
+	@Localizable("concurrent.identite")
 	private JLabel jlNom = new JLabel(); // Nom et prénom du Tireur
-	@Localisable("concurrent.numlicence")
+	@Localizable("concurrent.numlicence")
 	private JLabel jlLicence = new JLabel(); // N° de Licence
-	@Localisable("concurrent.nomclub")
+	@Localizable("concurrent.nomclub")
 	private JLabel jlClub = new JLabel(); // nom du club
-	@Localisable("concurrent.agrementclub")
+	@Localizable("concurrent.agrementclub")
 	private JLabel jlAgrement = new JLabel(); // n°agrement du club
-	@Localisable("concurrent.cible")
+	@Localizable("concurrent.cible")
 	private JLabel jlCible = new JLabel(); // cible attribué
 	private JLabel jlDepartages = new JLabel(); // Nb de 10/9
 
@@ -207,18 +180,18 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	private JPanel jpConcurrent = new JPanel();
 	private JTextField jtfNom = new JTextField(8); // Nom du tireur
 	private JTextField jtfPrenom = new JTextField(8); // Prenom du tireur
-	@Localisable(value="",tooltip="bouton.selectionarcher")
+	@Localizable(value="",tooltip="bouton.selectionarcher")
 	private JButton jbSelectionArcher = new JButton();
-	@Localisable(value="",tooltip="bouton.editer")
+	@Localizable(value="",tooltip="bouton.editer")
 	private JButton jbEditerArcher = new JButton();
 	private JTextField jtfLicence = new JTextField(16);// Numero de
-	@Localisable("concurrent.handicap")
+	@Localizable("concurrent.handicap")
 	private JCheckBox jcbHandicape = new JCheckBox();
-	@Localisable("concurrent.surclassement")
+	@Localizable("concurrent.surclassement")
 	private JCheckBox jcbSurclassement = new JCheckBox();
 	private Map<Criterion, JLabel> jlCategrieTable = new HashMap<Criterion, JLabel>();
 	private Map<Criterion, JComboBox> jcbCategorieTable = new HashMap<Criterion, JComboBox>();
-	@Localisable("concurrent.blason")
+	@Localizable("concurrent.blason")
 	private JLabel jlBlason = new JLabel();
 	private JComboBox jcbBlason = new JComboBox();
 
@@ -232,7 +205,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 
 	// Point du tireur
 	private JLabel jlValCible = new JLabel();
-	@Localisable("concurrent.points")
+	@Localizable("concurrent.points")
 	private JLabel jlPoints = new JLabel();
 	private JTextField[] tfpd;
 	private JTextField[] tfDepartages;
@@ -246,13 +219,13 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	private final JLabel jlPlaceLibre = new JLabel("<html></html>"); //$NON-NLS-1$
 
 	private final JPanel jpActionPane = new JPanel();
-	@Localisable("bouton.valider")
+	@Localizable("bouton.valider")
 	private final JButton jbValider = new JButton();
-	@Localisable("bouton.precedent")
+	@Localizable("bouton.precedent")
 	private final JButton jbPrecedent = new JButton();
-	@Localisable("bouton.suivant")
+	@Localizable("bouton.suivant")
 	private final JButton jbSuivant = new JButton();
-	@Localisable("bouton.annuler")
+	@Localizable("bouton.annuler")
 	private final JButton jbAnnuler = new JButton();
 
 	private int selectField = 0;
@@ -506,7 +479,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		((TitledBorder) jpInscription.getBorder()).setTitle(localisation.getResourceString("concurrent.inscription.titre")); //$NON-NLS-1$
 		((TitledBorder) jpPlaceLibre.getBorder()).setTitle(localisation.getResourceString("concurrent.placelibre.titre")); //$NON-NLS-1$
 		
-		Localisator.localize(this, localisation);
+		Localizator.localize(this, localisation);
 
 
 		jlDescription.setBackground(new Color(255, 255, 225));

@@ -107,23 +107,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import javax.script.ScriptException;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.Box;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JEditorPane;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.ListCellRenderer;
+import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -135,9 +119,9 @@ import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 
-import org.ajdeveloppement.apps.localisation.Localisable;
-import org.ajdeveloppement.apps.localisation.LocalisableString;
-import org.ajdeveloppement.apps.localisation.Localisator;
+import org.ajdeveloppement.apps.localisation.Localizable;
+import org.ajdeveloppement.apps.localisation.LocalizableString;
+import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.io.FileUtils;
 import org.ajdeveloppement.commons.ui.AJList;
@@ -176,15 +160,15 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	private ConcoursJeunesFrame parentframe;
 	private AjResourcesReader localisation;
 
-	@Localisable("onglet.ficheconcours")
+	@Localizable("onglet.ficheconcours")
 	private JTabbedPane tabbedpane		= new JTabbedPane();
-	@Localisable("onglet.classements")
+	@Localizable("onglet.classements")
 	private JTabbedPane jtbClassement	= new JTabbedPane();
 	
-	@Localisable("onglet.ficheconcours.0")
+	@Localizable("onglet.ficheconcours.0")
 	private final JLabel jlGestionArcher = new JLabel();
-	@Localisable("onglet.gestionarcher.depart")
-	private final LocalisableString lsDepart = new LocalisableString();
+	@Localizable("onglet.gestionarcher.depart")
+	private final LocalizableString lsDepart = new LocalizableString();
 
 	private JPanel fichesDepart			= new JPanel();
 	private CardLayout cl				= new CardLayout();
@@ -197,42 +181,42 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	
 	//panneau de classement
 	//bouton d'enregistrement
-	@Localisable("bouton.saisieresultats")
+	@Localizable("bouton.saisieresultats")
 	private JButton jbResultat				= new JButton();
-	@Localisable("interface.critereclassement")
+	@Localizable("interface.critereclassement")
 	private JLabel jlCritClassement			= new JLabel();
 	//critere individuel
 	private Hashtable<String, JCheckBox> classmentCriteriaCB = new Hashtable<String, JCheckBox>();
 
 	@StateSelector(name="100-classement")
-	@Localisable("bouton.impressionresultats")
+	@Localizable("bouton.impressionresultats")
 	private JButton printClassementIndiv	= new JButton();
 	@StateSelector(name="200-teamclassement")
-	@Localisable("bouton.impressionresultats")
+	@Localizable("bouton.impressionresultats")
 	private JButton printClassementEquipe	= new JButton();
 	@StateSelector(name="300-clubclassement")
-	@Localisable("bouton.impressionresultats")
+	@Localizable("bouton.impressionresultats")
 	private JButton printClassementClub		= new JButton();
 	
 	//panneau d'édition
-	@Localisable("state.help")
+	@Localizable("state.help")
 	private JLabel jlAide = new JLabel();
-	@Localisable("state.choosestate")
+	@Localizable("state.choosestate")
 	private JLabel jlCurrentStateName = new JLabel();
-	@Localisable("state.start")
+	@Localizable("state.start")
 	private JLabel jlDepart = new JLabel();
-	@Localisable("state.serie")
+	@Localizable("state.serie")
 	private JLabel jlSerie = new JLabel();
 	private JComboBox jcbDeparts = new JComboBox();
 	private JComboBox jcbSeries = new JComboBox();
-	@Localisable("state.save")
+	@Localizable("state.save")
 	private JCheckBox jcbSave = new JCheckBox();
-	@Localisable("state.print")
+	@Localizable("state.print")
 	private JButton jbPrint = new JButton();
 	private JXBusyLabel jxbPrint = new JXBusyLabel();
-	@Localisable(value="",tooltip="state.opendocument")
+	@Localizable(value="",tooltip="state.opendocument")
 	private JButton jbOpenDocument = new JButton();
-	@Localisable(value="",tooltip="state.deletedocument")
+	@Localizable(value="",tooltip="state.deletedocument")
 	private JButton jbDeleteDocument = new JButton();
 	private AJList<File> ajlDocuments = new AJList<File>();
 
@@ -605,7 +589,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	 *
 	 */
 	private void affectLibelle() {
-		Localisator.localize(this, parentframe.profile.getLocalisation());
+		Localizator.localize(this, parentframe.profile.getLocalisation());
 		
 		jcbSeries.removeAllItems();
 		for(int i = 1; i <= ficheConcours.getParametre().getReglement().getNbSerie(); i++)

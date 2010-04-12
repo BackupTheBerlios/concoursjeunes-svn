@@ -99,8 +99,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.ajdeveloppement.apps.localisation.Localisable;
-import org.ajdeveloppement.apps.localisation.Localisator;
+import org.ajdeveloppement.apps.localisation.Localizable;
+import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.DefaultDialogReturn;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
@@ -125,18 +125,18 @@ public class CriterionElementDialog extends JDialog implements ActionListener {
     
     private BindingGroup criterionBinding = new BindingGroup();
     
-    @Localisable("criterion.code")
+    @Localizable("criterion.code")
     private JLabel jlCode = new JLabel();
-    @Localisable("criterion.libelle")
+    @Localizable("criterion.libelle")
     private JLabel jlLibelle = new JLabel();
     private JTextField jtfCode = new JTextField(10);
     private JTextField jtfLibelle = new JTextField(20);
-    @Localisable("criterion.active")
+    @Localizable("criterion.active")
     private JCheckBox jcbActive = new JCheckBox("", true); //$NON-NLS-1$
     
-    @Localisable("bouton.valider")
+    @Localizable("bouton.valider")
     private JButton jbValider = new JButton();
-    @Localisable("bouton.annuler")
+    @Localizable("bouton.annuler")
     private JButton jbAnnuler = new JButton();
     
     private boolean editable = false;
@@ -220,7 +220,7 @@ public class CriterionElementDialog extends JDialog implements ActionListener {
     }
     
     private void affectLibelle() {
-    	Localisator.localize(this, localisation);
+    	Localizator.localize(this, localisation);
     }
     
     private void completePanel() {

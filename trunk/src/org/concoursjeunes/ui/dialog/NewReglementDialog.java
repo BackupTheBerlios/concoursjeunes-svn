@@ -104,8 +104,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.ajdeveloppement.apps.localisation.Localisable;
-import org.ajdeveloppement.apps.localisation.Localisator;
+import org.ajdeveloppement.apps.localisation.Localizable;
+import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.DefaultDialogReturn;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
@@ -122,30 +122,30 @@ import org.jdesktop.swingx.painter.GlossPainter;
  * @author Aurélien JEOFFRAY
  *
  */
-@Localisable(textMethod="setTitle",value="newreglement.title")
+@Localizable(textMethod="setTitle",value="newreglement.title")
 public class NewReglementDialog extends JDialog implements ActionListener {
 	
 	private Profile profile;
 	private AjResourcesReader localisation;
 	
-	@Localisable(textMethod="setTitle",value="newreglement.headertitle")
+	@Localizable(textMethod="setTitle",value="newreglement.headertitle")
 	private JXHeader headerCreateReglement = new JXHeader();
-	@Localisable("newreglement.name")
+	@Localizable("newreglement.name")
 	private JLabel jlReglementName = new JLabel();
-	@Localisable("newreglement.federation")
+	@Localizable("newreglement.federation")
 	private JLabel jlFederation = new JLabel();
-	@Localisable("newreglement.reference")
+	@Localizable("newreglement.reference")
 	private JLabel jlReference = new JLabel();
-	@Localisable("newreglement.category")
+	@Localizable("newreglement.category")
 	private JLabel jlCategorie = new JLabel();
 	private JTextField jtfReglementName = new JTextField(20);
 	private JComboBox jcbFederation = new JComboBox();
 	private JComboBox jcbReference = new JComboBox();
 	private JComboBox jcbCategorie = new JComboBox();
 	
-	@Localisable("bouton.valider")
+	@Localizable("bouton.valider")
 	private JButton jbValider = new JButton();
-	@Localisable("bouton.annuler")
+	@Localizable("bouton.annuler")
 	private JButton jbAnnuler = new JButton();
 	
 	private Reglement reglement = null;
@@ -211,7 +211,7 @@ public class NewReglementDialog extends JDialog implements ActionListener {
 	}
 	
 	private void affectLibelle() {
-		Localisator.localize(this, localisation);
+		Localizator.localize(this, localisation);
 	}
 	
 	private void completePanel() {

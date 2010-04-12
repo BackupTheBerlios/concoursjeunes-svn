@@ -102,9 +102,9 @@ import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.ajdeveloppement.apps.localisation.Localisable;
-import org.ajdeveloppement.apps.localisation.LocalisableString;
-import org.ajdeveloppement.apps.localisation.Localisator;
+import org.ajdeveloppement.apps.localisation.Localizable;
+import org.ajdeveloppement.apps.localisation.LocalizableString;
+import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.DefaultDialogReturn;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
@@ -121,7 +121,7 @@ import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
  * Boite de dialogue de gestion des critère de distinction des archers
  * @author Aurélien JEOFFRAY
  */
-@Localisable(textMethod="setTitle",value="criterion.titre")
+@Localizable(textMethod="setTitle",value="criterion.titre")
 public class CriterionDialog extends JDialog implements ActionListener, ChangeListener {
     
 	private AjResourcesReader localisation;
@@ -131,33 +131,33 @@ public class CriterionDialog extends JDialog implements ActionListener, ChangeLi
     private BindingGroup criterionBinding = new BindingGroup();
     
     private JLabel jlIndex = new JLabel();
-    @Localisable("criterion.code")
+    @Localizable("criterion.code")
     private JLabel jlCode = new JLabel();
-    @Localisable("criterion.libelle")
+    @Localizable("criterion.libelle")
     private JLabel jlLibelle = new JLabel();
-    @Localisable("criterion.ordretri")
+    @Localizable("criterion.ordretri")
     private JLabel jlSortOrder = new JLabel();
-    @Localisable("criterion.winfftacode.libelle")
+    @Localizable("criterion.winfftacode.libelle")
     private JLabel jlWinFFTACode = new JLabel();
     private JTextField jtfCode = new JTextField(10);
     private JTextField jtfLibelle = new JTextField(20);
     private JComboBox jcbSortOrder = new JComboBox();
-    @Localisable("criterion.placement")
+    @Localizable("criterion.placement")
     private JCheckBox jcbPlacementCriterion = new JCheckBox();
-    @Localisable("criterion.classement")
+    @Localizable("criterion.classement")
     private JCheckBox jcbClassementCriterion = new JCheckBox();
-    @Localisable("criterion.classementequipe")
+    @Localizable("criterion.classementequipe")
     private JCheckBox jcbClassementEquipeCriterion = new JCheckBox();
     private JComboBox jcbWinFFTACode = new JComboBox();
     
-    @Localisable("criterion.ordretri.asc")
-    private final LocalisableString lsSortOrderAsc = new LocalisableString();
-    @Localisable("criterion.ordretri.desc")
-    private final LocalisableString lsSortOrderDesc = new LocalisableString();
+    @Localizable("criterion.ordretri.asc")
+    private final LocalizableString lsSortOrderAsc = new LocalizableString();
+    @Localizable("criterion.ordretri.desc")
+    private final LocalizableString lsSortOrderDesc = new LocalizableString();
     
-    @Localisable("bouton.valider")
+    @Localizable("bouton.valider")
     private JButton jbValider = new JButton();
-    @Localisable("bouton.annuler")
+    @Localizable("bouton.annuler")
     private JButton jbAnnuler = new JButton();
     
     private boolean creationMode = false;
@@ -279,7 +279,7 @@ public class CriterionDialog extends JDialog implements ActionListener, ChangeLi
      *
      */
     private void affectLibelle() {
-        Localisator.localize(this, localisation);
+        Localizator.localize(this, localisation);
     }
     
     /**

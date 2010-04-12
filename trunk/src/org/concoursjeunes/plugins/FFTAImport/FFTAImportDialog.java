@@ -97,19 +97,10 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.Locale;
 
-import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.JRadioButton;
-import javax.swing.JTextField;
+import javax.swing.*;
 
-import org.ajdeveloppement.apps.localisation.Localisable;
-import org.ajdeveloppement.apps.localisation.Localisator;
+import org.ajdeveloppement.apps.localisation.Localizable;
+import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.concoursjeunes.Profile;
@@ -125,9 +116,9 @@ public class FFTAImportDialog extends JDialog implements ActionListener, FFTAImp
 
 	private Profile profile;
 	
-	@Localisable("import.download")
+	@Localizable("import.download")
 	private JRadioButton jrbFTPDownload = new JRadioButton();
-	@Localisable("import.local")
+	@Localizable("import.local")
 	private JRadioButton jrbLocal = new JRadioButton();
 	private JTextField jtfEmplacementLFFTA = new JTextField("", 30); //$NON-NLS-1$
 	private JButton jbParcourir = new JButton();
@@ -199,7 +190,7 @@ public class FFTAImportDialog extends JDialog implements ActionListener, FFTAImp
 	}
 
 	private void affectLibelle() {
-		Localisator.localize(this, pluginLocalisation);
+		Localizator.localize(this, pluginLocalisation);
 		
 		jbParcourir.setText(pluginLocalisation.getResourceString("button.parcourir")); //$NON-NLS-1$
 		jbSart.setText(pluginLocalisation.getResourceString("button.start")); //$NON-NLS-1$
