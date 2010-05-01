@@ -246,6 +246,9 @@
 					<include name="libAuthKit.jnilib"/>
 				</fileset>
 			</system>
+			<keysandcerts dir="${projet.pack.dir}/ressources/security/">
+				<include name="certs/**" />
+			</keysandcerts>
 		</revisionscreator>
 	</target>
 	

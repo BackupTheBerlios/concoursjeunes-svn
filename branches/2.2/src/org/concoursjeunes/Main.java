@@ -101,6 +101,7 @@ import java.net.SocketAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
 import java.security.InvalidAlgorithmParameterException;
+import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -123,6 +124,7 @@ import javax.xml.bind.JAXBException;
 import org.ajdeveloppement.apps.AppUtilities;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.io.XMLSerializer;
+import org.ajdeveloppement.commons.security.SSLUtils;
 import org.ajdeveloppement.commons.security.SecureSiteAuthenticationStore;
 import org.ajdeveloppement.commons.ui.SwingURLAuthenticator;
 import org.concoursjeunes.exceptions.ExceptionHandlingEventQueue;
@@ -327,6 +329,34 @@ public class Main {
 			}
 	    };
 	    HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
+	    try {
+			HttpsURLConnection.setDefaultSSLSocketFactory(SSLUtils.getSSLSocketFactory(ApplicationCore.userRessources.getAppKeyStore()));
+		} catch (KeyManagementException e) {
+			JXErrorPane.showDialog(null, new ErrorInfo(e.getLocalizedMessage(),
+					e.toString(),
+					null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
+		} catch (KeyStoreException e) {
+			JXErrorPane.showDialog(null, new ErrorInfo(e.getLocalizedMessage(),
+					e.toString(),
+					null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			JXErrorPane.showDialog(null, new ErrorInfo(e.getLocalizedMessage(),
+					e.toString(),
+					null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
+		} catch (CertificateException e) {
+			JXErrorPane.showDialog(null, new ErrorInfo(e.getLocalizedMessage(),
+					e.toString(),
+					null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
+		} catch (IOException e) {
+			JXErrorPane.showDialog(null, new ErrorInfo(e.getLocalizedMessage(),
+					e.toString(),
+					null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
+		}
 	}
 
 	private static void loadStartupPlugin() {

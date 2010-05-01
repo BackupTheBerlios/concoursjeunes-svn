@@ -98,7 +98,7 @@ function printState(ficheConcours, template, document, writer, options) {
 							tplClassement.parse("categories.classement.PLACE", "" + (j + 1));
 							tplClassement.parse("categories.classement.POSITION", "" + sortList.get(j).getPosition() + sortList.get(j).getCible());
 							tplClassement.parse("categories.classement.IDENTITEE", sortList.get(j).getID());
-							tplClassement.parse("categories.classement.CLUB", sortList.get(j).getClub().getNom());
+							tplClassement.parse("categories.classement.CLUB", sortList.get(j).getClub().toString());
 							tplClassement.parse("categories.classement.NUM_LICENCE", sortList.get(j).getNumLicenceArcher());
 
 							var keys = ficheConcours.getParametre().getReglement().getListCriteria();

@@ -34,7 +34,7 @@ function printState(ficheConcours, template, document, writer, options) {
 	
 			for (var i = 0; i < concurrents.size(); i++) {
 				listeArcherXML.parse("lignes.IDENTITEE", concurrents.get(i).getID()); //$NON-NLS-1$
-				listeArcherXML.parse("lignes.CLUB", concurrents.get(i).getClub().getNom()); //$NON-NLS-1$
+				listeArcherXML.parse("lignes.CLUB", concurrents.get(i).getClub().toString()); //$NON-NLS-1$
 				listeArcherXML.parse("lignes.NUM_LICENCE", concurrents.get(i).getNumLicenceArcher()); //$NON-NLS-1$
 	
 				var listCriteria = ficheConcours.getParametre().getReglement().getListCriteria();

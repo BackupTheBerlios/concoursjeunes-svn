@@ -83,7 +83,7 @@ function printState(ficheConcours, template, document, writer, options) {
 					else
 						templateEtiquettesXML.parse("page.ligne.leading", "" + (zoneaffichable_y * (cellule_y / 100.0) - 1)); //$NON-NLS-1$ //$NON-NLS-2$
 				templateEtiquettesXML.parse("page.ligne.colonne.cid", concurrents.get(i).getID()); //$NON-NLS-1$
-				templateEtiquettesXML.parse("page.ligne.colonne.cclub", concurrents.get(i).getClub().getNom()); //$NON-NLS-1$
+				templateEtiquettesXML.parse("page.ligne.colonne.cclub", concurrents.get(i).getClub().toString()); //$NON-NLS-1$
 				templateEtiquettesXML.parse("page.ligne.colonne.clicence", concurrents.get(i).getNumLicenceArcher()); //$NON-NLS-1$
 				templateEtiquettesXML.parse("page.ligne.colonne.emplacement", new TargetPosition(concurrents.get(i).getCible(), concurrents.get(i).getPosition()).toString()); //$NON-NLS-1$
 				if (colonne + 1 == nblarg)

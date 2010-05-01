@@ -246,6 +246,7 @@ public class EntiteDialog extends JDialog implements ActionListener {
 	private void completePanel() {
 		if(entite != null) {
 			jtfNom.setText(entite.getNom());
+			jtfNom.setEditable(entite.getAgrement() == null || entite.getAgrement().isEmpty());
 			jtfAdresse.setText(entite.getAdresse());
 			jtfVille.setText(entite.getVille());
 			jcbType.setSelectedIndex(entite.getType());

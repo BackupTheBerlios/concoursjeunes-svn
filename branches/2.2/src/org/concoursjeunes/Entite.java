@@ -284,6 +284,8 @@ public class Entite implements SqlPersistance {
     
     @Override
     public String toString() {
+    	if((nom == null || nom.isEmpty()) && ville != null && !ville.isEmpty())
+    		return ville;
         return nom;
     }
 
