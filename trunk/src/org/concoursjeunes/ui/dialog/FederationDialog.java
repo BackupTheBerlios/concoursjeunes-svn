@@ -101,7 +101,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Level;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
@@ -119,14 +118,13 @@ import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.StringUtils;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
+import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
 import org.ajdeveloppement.swingxext.localisation.JXHeaderLocalisationHandler;
 import org.concoursjeunes.CompetitionLevel;
 import org.concoursjeunes.Configuration;
 import org.concoursjeunes.Federation;
 import org.concoursjeunes.Profile;
-import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.JXHeader;
-import org.jdesktop.swingx.error.ErrorInfo;
 import org.jdesktop.swingx.painter.GlossPainter;
 
 /**
@@ -390,8 +388,7 @@ public class FederationDialog extends JDialog implements ActionListener {
 				federation.save();
 			} catch (ObjectPersistenceException e1) {
 				federation = null;
-				JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
-						null, null, e1, Level.SEVERE, null));
+				DisplayableErrorHelper.displayException(e1);
 				e1.printStackTrace();
 			}
 			setVisible(false);

@@ -99,7 +99,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 import javax.swing.Box;
 import javax.swing.ImageIcon;
@@ -117,13 +116,12 @@ import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
+import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Blason;
 import org.concoursjeunes.DistancesEtBlason;
 import org.concoursjeunes.localisable.CriteriaSetLibelle;
-import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.JXHeader;
-import org.jdesktop.swingx.error.ErrorInfo;
 import org.jdesktop.swingx.painter.GlossPainter;
 
 /**
@@ -173,8 +171,7 @@ public class DistancesBlasonsDialog extends JDialog implements ActionListener {
 		try {
 			availableBlason = Blason.listAvailableTargetFace();
 		} catch (ObjectPersistenceException e) {
-			JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
-					null, null, e, Level.SEVERE, null));
+			DisplayableErrorHelper.displayException(e);
 			e.printStackTrace();
 		}
 		

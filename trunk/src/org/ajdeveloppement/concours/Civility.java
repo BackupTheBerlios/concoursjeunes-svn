@@ -105,6 +105,8 @@ import org.ajdeveloppement.commons.persistence.sql.SqlTable;
 import org.concoursjeunes.ApplicationCore;
 
 /**
+ * A physical or moral civility information for a contact
+ * 
  * @author Aurélien JEOFFRAY
  *
  */
@@ -122,6 +124,9 @@ public class Civility implements ObjectPersistence {
 	@SqlField(name="LIBELLE")
 	private String libelle;
 	
+	@SqlField(name="MORALE")
+	private boolean morale = false;
+	
 	private static StoreHelper<Civility> helper = null;
 	static {
 		try {
@@ -132,13 +137,18 @@ public class Civility implements ObjectPersistence {
 		}
 	}
 	
+	/**
+	 * 
+	 */
 	public Civility() {
 		
 	}
 	
 	/**
-	 * @param abreviation
-	 * @param libelle
+	 * Init the civility
+	 * 
+	 * @param abreviation forme abrégé de la civilité ex: M., Mme
+	 * @param libelle le libellé de la civilité (forme qualifié) ex: Monsieur, Madame
 	 */
 	public Civility(String abreviation, String libelle) {
 		this.abreviation = abreviation;
@@ -146,52 +156,88 @@ public class Civility implements ObjectPersistence {
 	}
 
 	/**
-	 * @return idCivility
+	 * Retourne l'identifiant en base de la civilité
+	 * 
+	 * @return l'id de la civilité
 	 */
 	public UUID getIdCivility() {
 		return idCivility;
 	}
 
 	/**
-	 * @param idCivility idCivility à définir
+	 * Définit l'identifiant en base de la civilité
+	 * 
+	 * @param idCivility l'id de la civilité
 	 */
 	public void setIdCivility(UUID idCivility) {
 		this.idCivility = idCivility;
 	}
 
 	/**
-	 * @return abreviation
+	 * retourne la forme abrégé de la civilité
+	 * 
+	 * @return la forme abrégé de la civilité
 	 */
 	public String getAbreviation() {
 		return abreviation;
 	}
 
 	/**
-	 * @param abreviation abreviation à définir
+	 * définit la forme abrégé de la civilité
+	 * 
+	 * @param abreviation la forme abrégé de la civilité
 	 */
 	public void setAbreviation(String abreviation) {
 		this.abreviation = abreviation;
 	}
 
-	/**
-	 * @return libelle
+	/** 
+	 * retourne le libellé de la civilité
+	 * 
+	 * @return le libellé de la civilité
 	 */
 	public String getLibelle() {
 		return libelle;
 	}
 
 	/**
-	 * @param libelle libelle à définir
+	 * définit le libellé de la civilité
+	 * 
+	 * @param libelle le libellé de la civilité
 	 */
 	public void setLibelle(String libelle) {
 		this.libelle = libelle;
 	}
 
+	/**
+	 * Indique si la civilité représente une personne phyqique ou morale
+	 * 
+	 * @return <code>true</code> si c'est une personne morale, <code>false</code> sinon
+	 */
+	public boolean isMorale() {
+		return morale;
+	}
+
+	/**
+	 * définit ivilité représente une personne phyqique ou morale
+	 * 
+	 * @param morale <code>true</code> si c'est une personne morale, <code>false</code> sinon
+	 */
+	public void setMorale(boolean morale) {
+		this.morale = morale;
+	}
+
+	/**
+	 * Enregistre la civilité en base
+	 */
 	@Override
 	public void save() throws ObjectPersistenceException {
 		helper.save(this);
 	}
 	
+	/**
+	 * Supprime la civlité de la base
+	 */
 	@Override
 	public void delete() throws ObjectPersistenceException {
 		if(idCivility != null)

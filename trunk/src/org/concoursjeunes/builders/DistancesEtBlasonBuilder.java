@@ -92,6 +92,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.concoursjeunes.ApplicationCore;
@@ -147,7 +148,7 @@ public class DistancesEtBlasonBuilder {
 				pstmt.setInt(2, reglement.getNumReglement());
 				
 				rs = pstmt.executeQuery();
-				ArrayList<Integer> distances = new ArrayList<Integer>();
+				List<Integer> distances = new ArrayList<Integer>();
 				while(rs.next()) {
 					distances.add(rs.getInt("DISTANCE")); //$NON-NLS-1$
 				}

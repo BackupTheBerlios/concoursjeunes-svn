@@ -92,7 +92,7 @@ import java.awt.AWTEvent;
 import java.awt.EventQueue;
 import java.util.logging.Level;
 
-import org.jdesktop.swingx.JXErrorPane;
+import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
 import org.jdesktop.swingx.error.ErrorInfo;
 
 /**
@@ -105,7 +105,7 @@ public class ExceptionHandlingEventQueue extends EventQueue {
 		try {
 			super.dispatchEvent(event);
 		} catch (RuntimeException e) {
-			JXErrorPane.showDialog(null, new ErrorInfo("Event Queue Exception!", //$NON-NLS-1$
+			DisplayableErrorHelper.displayErrorInfo(new ErrorInfo("Event Queue Exception!", //$NON-NLS-1$
 					e.toString(),
 					null, null, e, Level.SEVERE, null));
 			e.printStackTrace();

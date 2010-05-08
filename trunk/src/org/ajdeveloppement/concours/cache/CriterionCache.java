@@ -88,8 +88,6 @@
  */
 package org.ajdeveloppement.concours.cache;
 
-import java.lang.ref.SoftReference;
-
 import org.concoursjeunes.Criterion;
 import org.concoursjeunes.Reglement;
 
@@ -112,7 +110,7 @@ public class CriterionCache extends AbstractCache<CriterionCache.CriterionPK,Cri
 	 */
 	@Override
 	public void add(Criterion criterion) {
-		instanceCache.put(new CriterionPK(criterion.getCode(), criterion.getReglement()) , new SoftReference<Criterion>(criterion));
+		put(new CriterionPK(criterion.getCode(), criterion.getReglement()), criterion);
 	}
 
 	public static class CriterionPK {

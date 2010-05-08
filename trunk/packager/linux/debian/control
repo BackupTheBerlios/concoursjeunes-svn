@@ -7,7 +7,7 @@ Standards-Version: 3.7.2
 
 Package: concoursjeunes
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, sun-java6-jre | openjdk-6-jre (>= 6b18)
 Description: Logiciel de Gestion des Concours Jeunes de Tir à l'Arc
  .
  Auteur Aurélien Jeoffray

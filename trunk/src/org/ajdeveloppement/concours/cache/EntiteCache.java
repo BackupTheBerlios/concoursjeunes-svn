@@ -88,7 +88,6 @@
  */
 package org.ajdeveloppement.concours.cache;
 
-import java.lang.ref.SoftReference;
 import java.util.UUID;
 
 import org.concoursjeunes.Entite;
@@ -110,6 +109,6 @@ public class EntiteCache extends AbstractCache<UUID, Entite> {
 	
 	@Override
 	public void add(Entite entite) {
-		instanceCache.put(entite.getIdEntite(), new SoftReference<Entite>(entite));
+		put(entite.getIdEntite(), entite);
 	}
 }

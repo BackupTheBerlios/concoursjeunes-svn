@@ -95,9 +95,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.ajdeveloppement.commons.persistence.ObjectPersistence;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
@@ -107,6 +111,7 @@ import org.ajdeveloppement.commons.persistence.sql.SqlForeignKey;
 import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
 import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
 import org.ajdeveloppement.commons.persistence.sql.SqlTable;
+import org.ajdeveloppement.commons.sql.SqlManager;
 import org.concoursjeunes.ApplicationCore;
 
 /**
@@ -120,9 +125,27 @@ import org.concoursjeunes.ApplicationCore;
 @SqlPrimaryKey(fields="ID_CONTACT")
 public class Contact implements ObjectPersistence, Cloneable {
 	
+	// [start] Helper persistence
+	private static StoreHelper<Contact> helper = null;
+	static {
+		try {
+			helper = new StoreHelper<Contact>(new SqlStoreHandler<Contact>(
+					ApplicationCore.dbConnection, Contact.class));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	// [end]
+	
+	//utilisé pour donnée un identifiant unique à la sérialisation de l'objet
+	@XmlID
+	@XmlAttribute(name="id")
+	@SuppressWarnings("unused")
+	private String xmlId;
+	
 	@SqlField(name="ID_CONTACT")
-	@XmlAttribute(name="id",required=true)
-	private UUID idContact = UUID.randomUUID();
+	@XmlTransient
+	private UUID idContact;
 	
 	@SqlField(name="NAME")
 	private String name;
@@ -146,17 +169,9 @@ public class Contact implements ObjectPersistence, Cloneable {
 	private String note;
 	
 	private List<Coordinate> coordinates = new ArrayList<Coordinate>();
-
-	private static StoreHelper<Contact> helper = null;
-	static {
-		try {
-			helper = new StoreHelper<Contact>(new SqlStoreHandler<Contact>(
-					ApplicationCore.dbConnection, Contact.class));
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
 	
+	private List<CategoryContact> categories = new ArrayList<CategoryContact>();
+
 	protected transient PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 	
 	/**
@@ -195,7 +210,6 @@ public class Contact implements ObjectPersistence, Cloneable {
 		pcs.removePropertyChangeListener(l);
 	}
 
-
 	/**
 	 * Get the id of contact
 	 * 
@@ -204,7 +218,6 @@ public class Contact implements ObjectPersistence, Cloneable {
 	public UUID getIdContact() {
 		return idContact;
 	}
-
 
 	/**
 	 * Set the id of contact
@@ -215,7 +228,6 @@ public class Contact implements ObjectPersistence, Cloneable {
 		this.idContact = idContact;
 	}
 
-
 	/**
 	 * Get the name of contact
 	 * 
@@ -224,7 +236,6 @@ public class Contact implements ObjectPersistence, Cloneable {
 	public String getName() {
 		return name;
 	}
-
 
 	/**
 	 * Set the name of contact
@@ -239,7 +250,6 @@ public class Contact implements ObjectPersistence, Cloneable {
 		pcs.firePropertyChange("name", oldValue, name); //$NON-NLS-1$
 	}
 
-
 	/**
 	 * Get the first Name of contact 
 	 * 
@@ -248,7 +258,6 @@ public class Contact implements ObjectPersistence, Cloneable {
 	public String getFirstName() {
 		return firstName;
 	}
-
 
 	/**
 	 * Set the fisrt name of contact
@@ -263,7 +272,6 @@ public class Contact implements ObjectPersistence, Cloneable {
 		pcs.firePropertyChange("firstName", oldValue, firstName); //$NON-NLS-1$
 	}
 
-
 	/**
 	 * Get the civility of contact
 	 * 
@@ -273,9 +281,9 @@ public class Contact implements ObjectPersistence, Cloneable {
 		return civility;
 	}
 
-
 	/**
 	 * Set the civility of contact
+	 * 
 	 * @param civility the civility of contact
 	 */
 	public void setCivility(Civility civility) {
@@ -285,84 +293,112 @@ public class Contact implements ObjectPersistence, Cloneable {
 		pcs.firePropertyChange("civility", oldValue, civility); //$NON-NLS-1$
 	}
 
-
 	/**
-	 * @return adress
+	 * Get the post address of contact
+	 * 
+	 * @return the post address of contact
 	 */
 	public String getAdress() {
 		return adress;
 	}
 
-
 	/**
-	 * @param adress adress à définir
+	 * Set the post address of contact
+	 * 
+	 * @param adress the post address of contact
 	 */
 	public void setAdress(String adress) {
 		this.adress = adress;
 	}
 
-
 	/**
-	 * @return zipCode
+	 * Get the post zip code of contact
+	 * 
+	 * @return the post zip code of contact
 	 */
 	public String getZipCode() {
 		return zipCode;
 	}
 
-
 	/**
-	 * @param zipCode zipCode à définir
+	 * Set the post zip code of contact
+	 * 
+	 * @param zipCode the post zip code of contact
 	 */
 	public void setZipCode(String zipCode) {
 		this.zipCode = zipCode;
 	}
 
-
 	/**
-	 * @return city
+	 * Get the residence city of contact
+	 * 
+	 * @return the residence city of contact
 	 */
 	public String getCity() {
 		return city;
 	}
 
-
 	/**
-	 * @param city city à définir
+	 * Set the residence city of contact
+	 * 
+	 * @param city the city of contact
 	 */
 	public void setCity(String city) {
 		this.city = city;
 	}
 
-
 	/**
-	 * @return note
+	 * Get free note about contact
+	 * 
+	 * @return free note about contact
 	 */
 	public String getNote() {
 		return note;
 	}
 
-
 	/**
-	 * @param note note à définir
+	 * Set free note about contact
+	 * 
+	 * @param note free note about contact
 	 */
 	public void setNote(String note) {
 		this.note = note;
 	}
 
-
 	/**
-	 * @return coordinates
+	 * Get coordinates of contact (phone, fax, mail)
+	 * 
+	 * @return coordinates of contact
 	 */
 	public List<Coordinate> getCoordinates() {
 		return coordinates;
 	}
 
-
 	/**
-	 * @param coordinates coordinates à définir
+	 * Set coordinates of contact (phone, fax, mail)
+	 * 
+	 * @param coordinates coordinates of contact (phone, fax, mail)
 	 */
 	public void setCoordinates(List<Coordinate> coordinates) {
 		this.coordinates = coordinates;
+	}
+
+	/**
+	 * Get categories of contact
+	 * 
+	 * @return categories the categories of contact
+	 */
+	public List<CategoryContact> getCategories() {
+		return categories;
+	}
+
+	/**
+	 * Set categories of contact
+	 * 
+	 * @param categories the categories of contact
+	 */
+	public void setCategories(List<CategoryContact> categories) {
+		this.categories = categories;
 	}
 
 	/**
@@ -399,7 +435,30 @@ public class Contact implements ObjectPersistence, Cloneable {
 	 */
 	@Override
 	public void save() throws ObjectPersistenceException {
+		if(idContact == null)
+			idContact = UUID.randomUUID();
+		
 		helper.save(this);
+		
+		SqlManager sqlManager = new SqlManager(ApplicationCore.dbConnection, null);
+		try {
+			String savedIdCategories = ""; //$NON-NLS-1$
+			for(CategoryContact categoryContact : categories) {
+				sqlManager.executeUpdate("merge into ASSOCIER_CATEGORIE_CONTACT (ID_CONTACT, NUM_CATEGORIE_CONTACT) " //$NON-NLS-1$
+						+ "VALUES ('" + idContact.toString() + "', " + categoryContact.getNumCategoryContact() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				
+				savedIdCategories += categoryContact.getNumCategoryContact() + ","; //$NON-NLS-1$
+			}
+			String categoriesFilter = ""; //$NON-NLS-1$
+			if(!savedIdCategories.isEmpty()) {
+				savedIdCategories = savedIdCategories.substring(0, savedIdCategories.length() - 1);
+				categoriesFilter = String.format("and NUM_CATEGORIE_CONTACT not in (%s)", savedIdCategories); //$NON-NLS-1$
+			}
+			sqlManager.executeUpdate(String.format("delete from ASSOCIER_CATEGORIE_CONTACT where ID_CONTACT = '%s' " //$NON-NLS-1$
+					+ categoriesFilter, idContact.toString()));
+		} catch (SQLException e) {
+			throw new ObjectPersistenceException(e);
+		}
 	}
 
 	/**
@@ -409,6 +468,16 @@ public class Contact implements ObjectPersistence, Cloneable {
 	public void delete() throws ObjectPersistenceException {
 		if(idContact != null)
 			helper.delete(this);
+	}
+	
+	protected void beforeMarshal(Marshaller marshaller) {
+		if(idContact == null)
+			idContact = UUID.randomUUID();
+		xmlId = idContact.toString();
+	}
+	
+	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
+		idContact = UUID.fromString(xmlId);
 	}
 	
 	/**

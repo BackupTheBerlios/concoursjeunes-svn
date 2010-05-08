@@ -108,7 +108,6 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -125,6 +124,7 @@ import org.ajdeveloppement.apps.localisation.Localizable;
 import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
+import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Archer;
 import org.concoursjeunes.AutoCompleteDocument;
@@ -134,8 +134,6 @@ import org.concoursjeunes.Judge;
 import org.concoursjeunes.Profile;
 import org.concoursjeunes.event.AutoCompleteDocumentEvent;
 import org.concoursjeunes.event.AutoCompleteDocumentListener;
-import org.jdesktop.swingx.JXErrorPane;
-import org.jdesktop.swingx.error.ErrorInfo;
 
 /**
  * Boite de dialogue de sélection et manipulation d'un arbitre
@@ -401,12 +399,10 @@ public class ArbitreDialog extends JDialog implements AutoCompleteDocumentListen
 					setJudge(new Judge(tmparbitre));
 				}
 			} catch (InterruptedException e1) {
-            	JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
-            			null, null, e1, Level.SEVERE, null));
+				DisplayableErrorHelper.displayException(e1);
 	            e1.printStackTrace();
             } catch (ExecutionException e1) {
-            	JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
-            			null, null, e1, Level.SEVERE, null));
+            	DisplayableErrorHelper.displayException(e1);
 	            e1.printStackTrace();
             } catch (TimeoutException e1) {
             	JOptionPane.showMessageDialog(this, localisation.getResourceString("concurrent.info.listing.wait")); //$NON-NLS-1$

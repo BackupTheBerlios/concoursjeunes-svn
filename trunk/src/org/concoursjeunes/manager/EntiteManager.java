@@ -94,6 +94,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Entite;
 import org.concoursjeunes.builders.EntiteBuilder;
@@ -119,16 +120,16 @@ public class EntiteManager {
 	 * @return la liste des entité répondant aux critères de recherche
 	 */
 	@SuppressWarnings("nls")
-	public static List<Entite> getEntitesInDatabase(Entite eGeneric, String orderfield) {
+	public static List<Entite> getEntitesInDatabase(Entite eGeneric, String orderfield) throws ObjectPersistenceException {
 		List<Entite> entites = new ArrayList<Entite>();
 		Statement stmt = null;
 		
 		try {
 			stmt = ApplicationCore.dbConnection.createStatement();
 			
-			String sql = "select * from Entite ";
+			String sql = "select * from Entite";
 			if(eGeneric != null) {
-				sql += "where ";
+				sql += " where ";
 				ArrayList<String> filters = new ArrayList<String>();
 				if(eGeneric.getNom().length() > 0) {
 					filters.add("UPPER(NOMENTITE) like '" + eGeneric.getNom().toUpperCase().replaceAll("'", "''") + "'");
@@ -156,7 +157,7 @@ public class EntiteManager {
 				entites.add(entite);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new ObjectPersistenceException(e);
 		} finally {
 			try { if(stmt != null) stmt.close(); } catch(Exception e) { }
 		}

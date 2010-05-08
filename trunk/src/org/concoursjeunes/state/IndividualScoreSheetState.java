@@ -138,7 +138,7 @@ public class IndividualScoreSheetState {
 			List<Concurrent> concurrents = ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), ConcurrentList.SortCriteria.SORT_BY_TARGETS);
 			for(int i = 0; i < concurrents.size(); i++) {
 				templateXML.parse("scoresheet.LOGO_CLUB_URI", profile.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$
-				templateXML.parse("scoresheet.INTITULE_CLUB", ficheConcours.getParametre().getClub().getNom()); //$NON-NLS-1$
+				templateXML.parse("scoresheet.INTITULE_CLUB", ficheConcours.getParametre().getClub().toString()); //$NON-NLS-1$
 				templateXML.parse("scoresheet.INTITULE_CONCOURS", ficheConcours.getParametre().getIntituleConcours()); //$NON-NLS-1$
 				templateXML.parse("scoresheet.VILLE_CLUB", ficheConcours.getParametre().getLieuConcours()); //$NON-NLS-1$
 				templateXML.parse("scoresheet.DATE_CONCOURS", DateFormat.getDateInstance(DateFormat.LONG).format(ficheConcours.getParametre().getDateDebutConcours())); //$NON-NLS-1$

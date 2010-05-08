@@ -51,7 +51,7 @@ function printState(ficheConcours, template, document, writer, options) {
 				var concurrent = targets.get(i).getConcurrentAt(j);
 				if(concurrent != null) {
 					templateXML.parse("scoresheet.positions.cid", concurrent.getNomArcher() + " " + concurrent.getPrenomArcher());
-					templateXML.parse("scoresheet.positions.cclub", concurrent.getClub().getNom());
+					templateXML.parse("scoresheet.positions.cclub", concurrent.getClub().toString());
 					templateXML.parse("scoresheet.positions.clicence", concurrent.getNumLicenceArcher());
 					templateXML.parse("scoresheet.positions.emplacement", new org.concoursjeunes.TargetPosition(concurrent.getCible(), concurrent.getPosition()).toString());
 				} else {

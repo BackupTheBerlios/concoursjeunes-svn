@@ -111,6 +111,7 @@ import org.ajdeveloppement.commons.persistence.sql.SqlGeneratedIdField;
 import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
 import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
 import org.ajdeveloppement.commons.persistence.sql.SqlTable;
+import org.ajdeveloppement.concours.cache.BlasonCache;
 import org.concoursjeunes.builders.BlasonBuilder;
 
 /**
@@ -458,6 +459,9 @@ public class Blason implements ObjectPersistence {
 		for(Entry<Integer, Ancrage> entry : ancrages.entrySet()) {
 			entry.getValue().save();
 		}
+		
+		if(!BlasonCache.getInstance().containsKey(numblason))
+			BlasonCache.getInstance().add(this);
 	}
 	
 	/**
@@ -468,6 +472,7 @@ public class Blason implements ObjectPersistence {
 	@Override
 	public void delete() throws ObjectPersistenceException {
 		helper.delete(this);
+		BlasonCache.getInstance().remove(numblason);
 	}
 
 	/* (non-Javadoc)

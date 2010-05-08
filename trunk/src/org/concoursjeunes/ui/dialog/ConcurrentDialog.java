@@ -117,9 +117,20 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.PlainDocument;
 
@@ -130,13 +141,27 @@ import org.ajdeveloppement.commons.StringUtils;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
-import org.concoursjeunes.*;
+import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
+import org.concoursjeunes.ApplicationCore;
+import org.concoursjeunes.Archer;
+import org.concoursjeunes.AutoCompleteDocument;
+import org.concoursjeunes.AutoCompleteDocumentContext;
+import org.concoursjeunes.Blason;
+import org.concoursjeunes.Concurrent;
+import org.concoursjeunes.CriteriaSet;
+import org.concoursjeunes.Criterion;
+import org.concoursjeunes.CriterionElement;
+import org.concoursjeunes.DistancesEtBlason;
+import org.concoursjeunes.Entite;
+import org.concoursjeunes.FicheConcours;
+import org.concoursjeunes.Profile;
+import org.concoursjeunes.Reglement;
+import org.concoursjeunes.TargetPosition;
+import org.concoursjeunes.TargetsOccupation;
 import org.concoursjeunes.event.AutoCompleteDocumentEvent;
 import org.concoursjeunes.event.AutoCompleteDocumentListener;
 import org.concoursjeunes.localisable.CriteriaSetLibelle;
 import org.concoursjeunes.ui.ConcoursJeunesFrame;
-import org.jdesktop.swingx.JXErrorPane;
-import org.jdesktop.swingx.error.ErrorInfo;
 
 /**
  * Boite de dialogue de gestion d'un concurrent
@@ -1033,24 +1058,22 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 					setConcurrent(concurrent);
 				}
             } catch (InterruptedException e) {
-            	JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
-            			null, null, e, Level.SEVERE, null));
+            	DisplayableErrorHelper.displayException(e);
 	            e.printStackTrace();
             } catch (ExecutionException e) {
-            	JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
-            			null, null, e, Level.SEVERE, null));
+            	DisplayableErrorHelper.displayException(e);
 	            e.printStackTrace();
             } catch (TimeoutException e) {
             	JOptionPane.showMessageDialog(this, localisation.getResourceString("concurrent.info.listing.wait")); //$NON-NLS-1$
             }
 		} else if (ae.getSource() == jbDetailClub) {
 			if (!jtfAgrement.getText().equals("")) { //$NON-NLS-1$
-				EntiteDialog ed = new EntiteDialog(this, localisation);
+				EntiteDialog ed = new EntiteDialog(this, profile);
 				ed.setEntite(concurrent.getClub());
-				ed.showEntiteDialog();
+				ed.showEntiteDialog(false);
 			}
 		} else if (ae.getSource() == jbListeClub) {
-			EntiteListDialog entiteListDialog = new EntiteListDialog(null,localisation);
+			EntiteListDialog entiteListDialog = new EntiteListDialog(null, profile, true);
 			if (entiteListDialog.getAction() == EntiteListDialog.VALIDER) {
 				entiteListDialog.setAction(EntiteListDialog.ANNULER);
 				jtfClub.setText(entiteListDialog.getSelectedEntite().getVille());

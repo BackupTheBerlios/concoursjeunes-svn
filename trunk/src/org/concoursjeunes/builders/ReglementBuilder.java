@@ -140,6 +140,7 @@ public class ReglementBuilder {
 	 * @param reglementName - le nom du reglement à retourner
 	 * @return - le reglement retourné
 	 */
+	@Deprecated
 	public static Reglement getReglement(String reglementName) {
 		return getReglement(-1, reglementName);
 	}
@@ -174,7 +175,7 @@ public class ReglementBuilder {
 			if(numreglement != -1)
 				sql = "select * from REGLEMENT where NUMREGLEMENT=" + numreglement; //$NON-NLS-1$
 			else
-				sql = "select * from REGLEMENT where NOMREGLEMENT='" + reglementName + "'"; //$NON-NLS-1$ //$NON-NLS-2$
+				sql = "select * from REGLEMENT where NOMREGLEMENT='" + reglementName.replaceAll("'", "''") + "'"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 			
 			ResultSet rs = stmt.executeQuery(sql);
 			if(rs.first()) {

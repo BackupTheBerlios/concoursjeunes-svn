@@ -92,8 +92,8 @@ import junit.framework.TestCase;
 
 import org.concoursjeunes.Target.Repartition;
 import org.concoursjeunes.builders.ConcurrentBuilder;
-import org.concoursjeunes.builders.ReglementBuilder;
 import org.concoursjeunes.exceptions.PlacementException;
+import org.concoursjeunes.manager.ReglementManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -115,7 +115,11 @@ public class TargetTest extends TestCase {
 	@Override
 	public void setUp() throws Exception {
 		ApplicationCore concoursJeunes = ApplicationCore.getInstance(); // initialise le noyau
-		reglement = ReglementBuilder.getReglement("Savoie"); //charge le réglement savoie //$NON-NLS-1$
+		
+		ReglementManager reglementManager = new ReglementManager();
+		
+		
+		reglement = reglementManager.getReglementByName("Savoie");; //charge le réglement savoie //$NON-NLS-1$
 		Concurrent concurrent = ConcurrentBuilder.getConcurrent(reglement);
 		
 		targetVide = new Target(1, reglement, 4);

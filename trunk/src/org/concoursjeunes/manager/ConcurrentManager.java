@@ -200,13 +200,13 @@ public class ConcurrentManager {
 				List<String> filters = new ArrayList<String>();
 
 				if(!aGeneric.getNumLicenceArcher().isEmpty()) {
-					filters.add("NUMLICENCEARCHER like '" + aGeneric.getNumLicenceArcher().replaceAll("'", "''") + "'");
+					filters.add("NUMLICENCEARCHER like '" + aGeneric.getNumLicenceArcher().replaceAll("'", "''").replaceAll("%", "%%") + "'");
 				}
 				if(aGeneric.getName() != null && !aGeneric.getName().isEmpty()) {
-					filters.add("UPPER(NAME) like '" + aGeneric.getName().toUpperCase().replaceAll("'", "''") + "'");
+					filters.add("UPPER(NAME) like '" + aGeneric.getName().toUpperCase().replaceAll("'", "''").replaceAll("%", "%%") + "'");
 				}
 				if(aGeneric.getFirstName() != null && !aGeneric.getFirstName().isEmpty()) {
-					filters.add("UPPER(FIRSTNAME) like '" + aGeneric.getFirstName().toUpperCase().replaceAll("'", "''") + "'");
+					filters.add("UPPER(FIRSTNAME) like '" + aGeneric.getFirstName().toUpperCase().replaceAll("'", "''").replaceAll("%", "%%") + "'");
 				}
 				if(!aGeneric.getClub().getAgrement().isEmpty()) {
 					filters.add("ID_ENTITE in (select ID_ENTITE from ENTITE where AGREMENTENTITE like '" + aGeneric.getClub().getAgrement().replaceAll("'", "''").replaceAll("%", "%%") + "')");

@@ -96,6 +96,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.ajdeveloppement.commons.persistence.LoadHelper;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.persistence.sql.SqlLoadHandler;
+import org.ajdeveloppement.concours.cache.BlasonCache;
 import org.concoursjeunes.Ancrage;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Blason;
@@ -114,7 +115,7 @@ public class BlasonBuilder {
 		try {
 			loadHelper = new LoadHelper<Blason,Map<String,Object>>(new SqlLoadHandler<Blason>(ApplicationCore.dbConnection, Blason.class));
 		} catch(ObjectPersistenceException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 	
@@ -129,12 +130,17 @@ public class BlasonBuilder {
 	 * des champs de la table BLASONS 
 	 */
 	public static Blason getBlason(int numblason) throws ObjectPersistenceException {
-		Blason blason = new Blason();
-		blason.setNumblason(numblason); 
+		Blason blason = BlasonCache.getInstance().get(numblason);
+		if(blason == null) {
+			blason = new Blason();
+			blason.setNumblason(numblason); 
 		
-		loadHelper.load(blason);
-		
-		blason.setAncrages(AncragesMapBuilder.getAncragesMap(blason));
+			loadHelper.load(blason);
+			
+			blason.setAncrages(AncragesMapBuilder.getAncragesMap(blason));
+			
+			BlasonCache.getInstance().add(blason);
+		}
 		
 		return blason;
 	}

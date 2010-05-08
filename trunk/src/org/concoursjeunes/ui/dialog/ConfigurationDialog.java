@@ -103,9 +103,22 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.logging.Level;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.bind.JAXBException;
@@ -116,20 +129,28 @@ import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.StringUtils;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
-import org.concoursjeunes.*;
-import org.concoursjeunes.builders.ReglementBuilder;
+import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
+import org.concoursjeunes.AppConfiguration;
+import org.concoursjeunes.ApplicationCore;
+import org.concoursjeunes.AutoCompleteDocument;
+import org.concoursjeunes.AutoCompleteDocumentContext;
+import org.concoursjeunes.Configuration;
+import org.concoursjeunes.Entite;
+import org.concoursjeunes.Federation;
+import org.concoursjeunes.Margin;
+import org.concoursjeunes.Profile;
+import org.concoursjeunes.Reglement;
 import org.concoursjeunes.event.AutoCompleteDocumentEvent;
 import org.concoursjeunes.event.AutoCompleteDocumentListener;
 import org.concoursjeunes.manager.ConfigurationManager;
 import org.concoursjeunes.manager.FederationManager;
-import org.jdesktop.swingx.JXErrorPane;
-import org.jdesktop.swingx.error.ErrorInfo;
+import org.concoursjeunes.manager.ReglementManager;
 
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Rectangle;
 
 /**
- * Écran de configuration de ConcoursJeunes
+ * Ecran de configuration de ConcoursJeunes
  * 
  * @author Aurélien Jeoffray
  * @version 2.2
@@ -142,6 +163,8 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	private Profile profile;
 	private Configuration workConfiguration;
 	private AppConfiguration workAppConfiguration;
+	
+	ReglementManager reglementManager = new ReglementManager();
 	
 	@Localizable("configuration.onglet")
 	private JTabbedPane tabbedpane = new JTabbedPane();
@@ -643,8 +666,9 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	}
 
 	private void completeConcoursPanel(Configuration configuration) {
-		Reglement reglement = ReglementBuilder.getReglement(configuration.getReglementName());
-		jlSelectedReglement.setText(reglement.getDisplayName());
+		Reglement reglement = reglementManager.getReglementByName(configuration.getReglementName());
+		if(reglement != null) 
+			jlSelectedReglement.setText(reglement.getDisplayName());
 		jtfNbCible.setText("" + configuration.getNbCible()); //$NON-NLS-1$
 		if(configuration.getNbTireur() == 2)
 			jcbNbTireur.setSelectedIndex(0);
@@ -756,12 +780,10 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 			configuration.save();
 			appConfiguration.save();
 		} catch (JAXBException e) {
-			JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), //$NON-NLS-1$
-					e.toString(), null, null, e, Level.SEVERE, null));
+			DisplayableErrorHelper.displayException(e);
 			e.printStackTrace();
 		} catch (IOException e) {
-			JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), //$NON-NLS-1$
-					e.toString(), null, null, e, Level.SEVERE, null));
+			DisplayableErrorHelper.displayException(e);
 			e.printStackTrace();
 		}
 		
@@ -844,20 +866,16 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 				return false;
 			}
 		} catch (SecurityException e) {
-			JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), //$NON-NLS-1$
-					e.toString(), null, null, e, Level.SEVERE, null));
+			DisplayableErrorHelper.displayException(e);
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
-			JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), //$NON-NLS-1$
-					e.toString(), null, null, e, Level.SEVERE, null));
+			DisplayableErrorHelper.displayException(e);
 			e.printStackTrace();
 		} catch (NoSuchFieldException e) {
-			JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), //$NON-NLS-1$
-					e.toString(), null, null, e, Level.SEVERE, null));
+			DisplayableErrorHelper.displayException(e);
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), //$NON-NLS-1$
-					e.toString(), null, null, e, Level.SEVERE, null));
+			DisplayableErrorHelper.displayException(e);
 			e.printStackTrace();
 		}
 		
@@ -927,13 +945,13 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 				System.err.println("Aucune sauvegarde possible. Action annulé");  //$NON-NLS-1$
 			}
 		} else if (source == jbParcourir) {
-			EntiteListDialog eld = new EntiteListDialog(null, localisation);
+			EntiteListDialog eld = new EntiteListDialog(null, profile, true);
 			if (eld.getAction() == EntiteListDialog.VALIDER)
 					jtfAgrClub.setText(eld.getSelectedEntite().getAgrement());
 		} else if (source == this.jbDetail) {
-			EntiteDialog ed = new EntiteDialog(this, localisation);
+			EntiteDialog ed = new EntiteDialog(this, profile);
 			ed.setEntite(workConfiguration.getClub());
-			ed.showEntiteDialog();
+			ed.showEntiteDialog(false);
 
 			jtfNomClub.setText(workConfiguration.getClub().getNom());
 		} else if (source == jcbProfil) {
@@ -994,7 +1012,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 			Reglement reglement = reglementManagerDialog.showReglementManagerDialog(true);
 			if(reglement != null) {
 				workConfiguration.setReglementName(reglement.getName());
-				jlSelectedReglement.setText(ReglementBuilder.getReglement(reglement.getName()).getDisplayName());
+				jlSelectedReglement.setText(reglement.getDisplayName());
 			}
 		}
 	}

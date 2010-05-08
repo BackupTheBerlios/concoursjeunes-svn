@@ -99,7 +99,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.logging.Level;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -115,12 +114,11 @@ import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
+import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.plugins.PluginLoader;
 import org.concoursjeunes.plugins.PluginMetadata;
 import org.concoursjeunes.plugins.Plugin.Type;
-import org.jdesktop.swingx.JXErrorPane;
-import org.jdesktop.swingx.error.ErrorInfo;
 
 /**
  * @author Aurélien JEOFFRAY
@@ -211,9 +209,7 @@ public class DisablePluginDialog extends JDialog implements ActionListener {
 			disablePlugin = (List<String>)XMLSerializer.loadXMLStructure(
 					new File(ApplicationCore.userRessources.getConfigPathForUser(), "disable_plugins.xml"), false);  //$NON-NLS-1$
 		} catch (IOException e) {
-			JXErrorPane.showDialog(this, 
-					new ErrorInfo(localisation.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
-							null, null, e, Level.SEVERE, null));
+			DisplayableErrorHelper.displayException(e);
 			e.printStackTrace();
 		}
 		if(disablePlugin != null) {
@@ -248,8 +244,7 @@ public class DisablePluginDialog extends JDialog implements ActionListener {
 						new File(ApplicationCore.userRessources.getConfigPathForUser(), "disable_plugins.xml"), disablePlugin, false);  //$NON-NLS-1$
 				setVisible(false);
 			} catch (IOException e1) {
-				JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
-						null, null, e1, Level.SEVERE, null));
+				DisplayableErrorHelper.displayException(e1);
 				e1.printStackTrace();
 			}
 			

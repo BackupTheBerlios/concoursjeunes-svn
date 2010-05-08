@@ -108,6 +108,9 @@ import org.ajdeveloppement.commons.persistence.sql.SqlTable;
 import org.concoursjeunes.ApplicationCore;
 
 /**
+ * Represent a contact coordinate.<br>
+ * A coordinate can be an phone number or mail address
+ * 
  * @author Aurélien JEOFFRAY
  *
  */
@@ -116,20 +119,36 @@ import org.concoursjeunes.ApplicationCore;
 @SqlPrimaryKey(fields="ID_COORDINATE")
 public class Coordinate implements ObjectPersistence, Cloneable {
 	
+	/**
+	 * Type off coordinate (different type of phone number or mail address)
+	 */
 	public enum Type {
+		/**
+		 * Personnal phone number
+		 */
 		HOME_PHONE("HOME_PHONE"), //$NON-NLS-1$
+		
+		/**
+		 * Professionnal phone number
+		 */
 		WORK_PHONE("WORK_PHONE"), //$NON-NLS-1$
+		
+		/**
+		 * mobile phone number
+		 */
 		MOBILE_PHONE("MOBILE_PHONE"), //$NON-NLS-1$
+		
+		/**
+		 * mail address
+		 */
 		MAIL("MAIL"); //$NON-NLS-1$
 		
 		private final String value;
 		
-		/** Le constructeur qui associe une valeur à l'enum */
 		private Type(String value) {
 			this.value = value;
 		}
 		
-		/** La méthode accesseur qui renvoit la valeur de l'enum */
 		public String getValue() {
 			return this.value;
 		}
@@ -165,8 +184,10 @@ public class Coordinate implements ObjectPersistence, Cloneable {
 	}
 	
 	/**
-	 * @param idCoordinateType
-	 * @param value
+	 * Init a coordinate wthe a specific type
+	 * 
+	 * @param coordinateType the type of coordinate
+	 * @param value the coordinate value
 	 */
 	public Coordinate(Type coordinateType, String value) {
 		this.coordinateType = coordinateType;
@@ -174,14 +195,19 @@ public class Coordinate implements ObjectPersistence, Cloneable {
 	}
 	
 	/**
-	 * @return idCoordinate
+	 * returne id of coordinate. Id is an unique database identifier
+	 * for coordinate
+	 * 
+	 * @return id of coordinate
 	 */
 	public UUID getIdCoordinate() {
 		return idCoordinate;
 	}
 
 	/**
-	 * @param idCoordinate idCoordinate à définir
+	 * Set the id of coordinate
+	 * 
+	 * @param idCoordinate id of coordinate
 	 */
 	public void setIdCoordinate(UUID idCoordinate) {
 		this.idCoordinate = idCoordinate;
@@ -240,15 +266,24 @@ public class Coordinate implements ObjectPersistence, Cloneable {
 			helper.delete(this);
 	}
 	
+	/**
+	 * After an unmarshalling operation reattach coordinate with parent contact if exists
+	 * 
+	 * @param unmarshaller
+	 * @param parent the parent contact object
+	 */
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
 		if(parent instanceof Contact)
 			contact = (Contact)parent;
 	}
 	
+	/**
+	 * clone coordinate object with a new id
+	 */
 	@Override
 	protected Coordinate clone() throws CloneNotSupportedException {
 		Coordinate clone = (Coordinate)super.clone();
-		clone.setIdCoordinate(null);
+		clone.setIdCoordinate(UUID.randomUUID());
 		
 		return clone;
 	}

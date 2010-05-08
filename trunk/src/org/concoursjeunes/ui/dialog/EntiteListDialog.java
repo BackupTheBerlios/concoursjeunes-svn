@@ -87,46 +87,74 @@
 package org.concoursjeunes.ui.dialog;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.RowFilter;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.EventListenerList;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 import org.ajdeveloppement.apps.localisation.Localizable;
+import org.ajdeveloppement.apps.localisation.LocalizationHandler;
 import org.ajdeveloppement.apps.localisation.Localizator;
-import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.persistence.LoadHelper;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.persistence.sql.ResultSetLoadHandler;
+import org.ajdeveloppement.commons.ui.GridbagComposer;
+import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
+import org.ajdeveloppement.swingxext.localisation.JXHeaderLocalisationHandler;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Entite;
+import org.concoursjeunes.Federation;
+import org.concoursjeunes.Profile;
+import org.concoursjeunes.manager.FederationManager;
+import org.jdesktop.swingx.JXHeader;
+import org.jdesktop.swingx.painter.GlossPainter;
 
 /**
  * @author Aurélien JEOFFRAY
  */
-public class EntiteListDialog extends JDialog implements ActionListener, MouseListener, CaretListener {
+public class EntiteListDialog extends JDialog implements ActionListener, MouseListener, CaretListener, ListSelectionListener {
 	
 	private static LoadHelper<Entite,ResultSet> resultSetLoadHelper;
 	static {
 		try {
 			resultSetLoadHelper = new LoadHelper<Entite, ResultSet>(new ResultSetLoadHandler<Entite>(Entite.class));
 		} catch(ObjectPersistenceException e) {
-			e.printStackTrace();
+			DisplayableErrorHelper.displayException(e);
 		}
 	}
 
@@ -134,11 +162,16 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 	public static final int ANNULER = 2;
 
 	private JFrame parentframe;
-	private AjResourcesReader localisation;
+	private Profile profile;
 
 	private EntiteTableModel dtm;
 	private TableRowSorter<EntiteTableModel> sorter;
 
+	@Localizable("listeentite.header")
+	private JXHeader jxhHeader = new JXHeader();
+	
+	@Localizable("listeentite.federation")
+	private JLabel jlFederation = new JLabel();
 	@Localizable("listeentite.nom")
 	private JLabel jlNom = new JLabel();
 	@Localizable("listeentite.agrement")
@@ -146,22 +179,33 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 	@Localizable("listeentite.ville")
 	private JLabel jlVille = new JLabel();
 	private JTable jTable			= null;
+	private JComboBox jcbFederation = new JComboBox();
 	private JTextField jtfNom = new JTextField(10);
 	private JTextField jtfAgrement = new JTextField(10);
 	private JTextField jtfVille = new JTextField(10);
 	private JScrollPane jScrollPane = new JScrollPane();
 	
+	@Localizable(value="",tooltip="bouton.ajouter")
+	private JButton jbAdd			= new JButton();
+	@Localizable(value="",tooltip="bouton.supprimer")
+	private JButton jbDelete		= new JButton();
+	
 	@Localizable("bouton.valider")
 	private JButton jbValider       = new JButton();
 	@Localizable("bouton.annuler")
 	private JButton jbAnnuler		= new JButton();
+	@Localizable("bouton.fermer")
+	private JButton jbFermer		= new JButton();
 
 	private int action				= ANNULER;
+	
+	private boolean returnSelection = false;
 
-	public EntiteListDialog(JFrame parentframe, AjResourcesReader localisation) {
+	public EntiteListDialog(JFrame parentframe, Profile profile, boolean returnSelection) {
 		super(parentframe, "", true); //$NON-NLS-1$
 		this.parentframe = parentframe;
-		this.localisation = localisation;
+		this.profile = profile;
+		this.returnSelection = returnSelection;
 
 		init();
 		affectLibelle();
@@ -176,9 +220,21 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 	 */
 	private void init() {
 		JPanel jpEntete = new JPanel();
+		JPanel jpFederation = new JPanel();
 		JPanel jpPied = new JPanel();
 		
+		GridBagConstraints c = new GridBagConstraints();
+		GridbagComposer gridbagComposer = new GridbagComposer();
+		
 		dtm = new EntiteTableModel();
+		
+		GlossPainter gloss = new GlossPainter();
+		jxhHeader.setBackground(new Color(200,200,255));
+		jxhHeader.setBackgroundPainter(gloss);
+		
+		for(Federation federation : FederationManager.getAvailableFederations())
+			jcbFederation.addItem(federation);
+		//jcbFederation.setSelectedItem(ApplicationCore..getFederation());
 
 		//jtfNom.addFocusListener(this);
 		jtfNom.addCaretListener(this);
@@ -186,22 +242,73 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		jtfAgrement.addCaretListener(this);
 		//jtfVille.addFocusListener(this);
 		jtfVille.addCaretListener(this);
-
+		
 		jbValider.addActionListener(this);
 		jbAnnuler.addActionListener(this);
+		jbFermer.addActionListener(this);
+		
+		jbAdd.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.add", 24, 24)); //$NON-NLS-1$
+		jbAdd.setPressedIcon(ApplicationCore.userRessources.getImageIcon("file.icon.add_active", 24, 24)); //$NON-NLS-1$
+		jbAdd.setDisabledIcon(ApplicationCore.userRessources.getImageIcon("file.icon.add_disable", 24, 24)); //$NON-NLS-1$
+		jbAdd.setBorderPainted(false);
+		jbAdd.setFocusPainted(false);
+		jbAdd.setMargin(new Insets(0, 2, 0, 2));
+		jbAdd.setContentAreaFilled(false);
+		jbAdd.addActionListener(this);
+		
+		jbDelete.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.del", 24, 24)); //$NON-NLS-1$
+		jbDelete.setPressedIcon(ApplicationCore.userRessources.getImageIcon("file.icon.del_active", 24, 24)); //$NON-NLS-1$
+		jbDelete.setDisabledIcon(ApplicationCore.userRessources.getImageIcon("file.icon.del_disable", 24, 24)); //$NON-NLS-1$
+		jbDelete.setBorderPainted(false);
+		jbDelete.setFocusPainted(false);
+		jbDelete.setMargin(new Insets(0, 2, 0, 2));
+		jbDelete.setContentAreaFilled(false);
+		jbDelete.addActionListener(this);
+		jbDelete.setEnabled(false);
 
-		jpEntete.add(jlNom);
-		jpEntete.add(jtfNom);
-		jpEntete.add(jlAgrement);
-		jpEntete.add(jtfAgrement);
-		jpEntete.add(jlVille);
-		jpEntete.add(jtfVille);
+		jpFederation.setLayout(new FlowLayout(FlowLayout.LEFT));
+		jpFederation.add(jlFederation);
+		jpFederation.add(jcbFederation);
+		
+		gridbagComposer.setParentPanel(jpEntete);
+
+		c.anchor = GridBagConstraints.WEST;
+		c.gridy = 0;
+		c.weightx = 1.0;
+		c.gridwidth = 6;
+		gridbagComposer.addComponentIntoGrid(jxhHeader, c);
+		c.gridy++;
+		gridbagComposer.addComponentIntoGrid(jpFederation, c);
+		c.gridy++;
+		c.gridwidth = 1;
+		c.insets = new Insets(0, 5, 2, 0);
+		gridbagComposer.addComponentIntoGrid(jlNom, c);
+		c.insets = new Insets(0, 0, 2, 0);
+		gridbagComposer.addComponentIntoGrid(jtfNom, c);
+		gridbagComposer.addComponentIntoGrid(jlAgrement, c);
+		gridbagComposer.addComponentIntoGrid(jtfAgrement, c);
+		gridbagComposer.addComponentIntoGrid(jlVille, c);
+		gridbagComposer.addComponentIntoGrid(jtfVille, c);
+		gridbagComposer.addComponentIntoGrid(Box.createHorizontalGlue(), c);
 
 		jScrollPane.setViewportView(getJTable());
 
-		jpPied.setLayout(new FlowLayout(FlowLayout.RIGHT));
-		jpPied.add(jbValider);
-		jpPied.add(jbAnnuler);
+		gridbagComposer.setParentPanel(jpPied);
+		c.gridy = 0;
+		c.weightx = 0.0;
+		gridbagComposer.addComponentIntoGrid(jbAdd, c);
+		gridbagComposer.addComponentIntoGrid(jbDelete, c);
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 1.0;
+		gridbagComposer.addComponentIntoGrid(Box.createHorizontalGlue(), c);
+		c.fill = GridBagConstraints.NONE;
+		c.weightx = 0.0;
+		if(returnSelection) {
+			gridbagComposer.addComponentIntoGrid(jbValider, c);
+			gridbagComposer.addComponentIntoGrid(jbAnnuler, c);
+		} else {
+			gridbagComposer.addComponentIntoGrid(jbFermer, c);
+		}
 
 		this.getContentPane().setLayout(new BorderLayout());
 		this.getContentPane().add(jpEntete, BorderLayout.NORTH);
@@ -210,7 +317,7 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 	}
 	
 	private void affectLibelle() {
-		Localizator.localize(this, localisation);
+		Localizator.localize(this, profile.getLocalisation(), Collections.<Class<?>, LocalizationHandler>singletonMap(JXHeader.class, new JXHeaderLocalisationHandler()));
 	}
 
 	/**
@@ -226,6 +333,7 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 			this.jTable.setPreferredScrollableViewportSize(new Dimension(640, 480));
 			this.jTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			this.jTable.addMouseListener(this);
+			this.jTable.getSelectionModel().addListSelectionListener(this);
 
 			TableColumn column = jTable.getColumnModel().getColumn(0);
 			column.setPreferredWidth(200);
@@ -260,9 +368,30 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		if(ae.getSource() == jbValider) {
 			action = VALIDER;
 			setVisible(false);
-		} else if(ae.getSource() == jbAnnuler) {
+		} else if(ae.getSource() == jbAnnuler || ae.getSource() == jbFermer) {
 			action = ANNULER;
 			setVisible(false);
+		} else if(ae.getSource() == jbAdd) {
+			Entite newEntite = new Entite();
+			
+			EntiteDialog ed = new EntiteDialog(parentframe, profile);
+			ed.setEntite(newEntite);
+			ed.showEntiteDialog(true);
+
+			dtm.refreshModel();
+		} else if(ae.getSource() == jbDelete) {
+			Entite entite = getSelectedEntite();
+			if(entite != null && JOptionPane.showConfirmDialog(this, 
+					profile.getLocalisation().getResourceString("listeentite.delete.confirm", entite.toString()), "", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) { //$NON-NLS-1$ //$NON-NLS-2$
+				try {
+					entite.delete();
+				} catch (ObjectPersistenceException e) {
+					DisplayableErrorHelper.displayException(e);
+					e.printStackTrace();
+				}
+				
+				dtm.refreshModel();
+			}
 		}
 	}
 
@@ -281,9 +410,9 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 
 	public void mouseClicked(MouseEvent e) {
 		if(e.getClickCount() == 2) {
-			EntiteDialog ed = new EntiteDialog(parentframe, localisation);
+			EntiteDialog ed = new EntiteDialog(parentframe, profile);
 			ed.setEntite(dtm.getEntiteAtRow(jTable.convertRowIndexToModel(jTable.getSelectedRow())));
-			ed.showEntiteDialog();
+			ed.showEntiteDialog(ed.getEntite().isRemovable());
 		}
 	}
 
@@ -292,33 +421,49 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 	public void mousePressed(MouseEvent e) { }
 	public void mouseReleased(MouseEvent e) { }
 
-	/**
-	 * @author  aurelien
-	 */
+	@Override
+	public void valueChanged(ListSelectionEvent e) {
+		if (e.getValueIsAdjusting())
+            return;
+		
+		if(e.getSource() instanceof ListSelectionModel) {
+			ListSelectionModel lsm = (ListSelectionModel)e.getSource();
+			if (!lsm.isSelectionEmpty()) {
+				int selectedRow = jTable.convertRowIndexToModel(lsm.getMinSelectionIndex());
+				Entite entite = dtm.getEntiteAtRow(selectedRow);
+				if(entite != null) {
+					jbDelete.setEnabled(entite.isRemovable());
+				}
+			}
+		}
+	}
+	
 	private class EntiteTableModel implements TableModel {
 		
 		private EventListenerList listenerList = new EventListenerList();
 
 		private ArrayList<String> columnName = new ArrayList<String>();
 
+		private PreparedStatement pstmt = null;
 		private ResultSet rs;
 		private Entite curEntite = null;
 		private int curIndex = 0;
 
 		public EntiteTableModel() {
 			try {
-				
-				Statement stmt = ApplicationCore.dbConnection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+				pstmt = ApplicationCore.dbConnection.prepareStatement(
+						"select * from Entite order by VilleEntite",ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);//$NON-NLS-1$
 
-				rs = stmt.executeQuery("select * from Entite order by VilleEntite"); //$NON-NLS-1$
+				rs = pstmt.executeQuery();
 			} catch (SQLException e) {
+				DisplayableErrorHelper.displayException(e);
 				e.printStackTrace();
 			}
 
-			columnName.add(localisation.getResourceString("listeentite.nom")); //$NON-NLS-1$
-			columnName.add(localisation.getResourceString("listeentite.agrement")); //$NON-NLS-1$
-			columnName.add(localisation.getResourceString("listeentite.adresse")); //$NON-NLS-1$
-			columnName.add(localisation.getResourceString("listeentite.ville")); //$NON-NLS-1$
+			columnName.add(profile.getLocalisation().getResourceString("listeentite.nom")); //$NON-NLS-1$
+			columnName.add(profile.getLocalisation().getResourceString("listeentite.agrement")); //$NON-NLS-1$
+			columnName.add(profile.getLocalisation().getResourceString("listeentite.adresse")); //$NON-NLS-1$
+			columnName.add(profile.getLocalisation().getResourceString("listeentite.ville")); //$NON-NLS-1$
 		}
 
 		/**
@@ -418,6 +563,19 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 
 			return curEntite;
 		}
+		
+		public void refreshModel() {
+			try {
+				if(rs != null)	
+					rs.close();
+				rs = pstmt.executeQuery();
+				
+				fireTableChanged(new TableModelEvent(this));
+			} catch (SQLException e) {
+				DisplayableErrorHelper.displayException(e);
+				e.printStackTrace();
+			}
+		}
 
 		private Entite loadEntite(int index) {
 			Entite entite = new Entite();
@@ -432,5 +590,12 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 			}
 			return entite;
 		}
+		
+		private void fireTableChanged(TableModelEvent e) {
+			for(TableModelListener l : listenerList.getListeners(TableModelListener.class)) {
+				l.tableChanged(e);
+			}
+		}
 	}
+
 }

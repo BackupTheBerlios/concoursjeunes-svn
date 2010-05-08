@@ -87,77 +87,172 @@
 package org.concoursjeunes.ui.dialog;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
-import java.util.logging.Level;
+import java.util.Collections;
 
-import javax.swing.*;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JFormattedTextField;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.border.TitledBorder;
 import javax.swing.text.MaskFormatter;
 
 import org.ajdeveloppement.apps.localisation.Localizable;
+import org.ajdeveloppement.apps.localisation.LocalizationHandler;
 import org.ajdeveloppement.apps.localisation.Localizator;
-import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
+import org.ajdeveloppement.concours.CategoryContact;
+import org.ajdeveloppement.concours.managers.CategoryContactManager;
+import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
+import org.ajdeveloppement.swingxext.localisation.JXHeaderLocalisationHandler;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Entite;
-import org.jdesktop.swingx.JXErrorPane;
-import org.jdesktop.swingx.error.ErrorInfo;
+import org.concoursjeunes.Federation;
+import org.concoursjeunes.Profile;
+import org.concoursjeunes.manager.FederationManager;
+import org.jdesktop.beansbinding.BeanProperty;
+import org.jdesktop.beansbinding.Binding;
+import org.jdesktop.beansbinding.BindingGroup;
+import org.jdesktop.beansbinding.Bindings;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
+import org.jdesktop.swingx.JXHeader;
+import org.jdesktop.swingx.JXHyperlink;
+import org.jdesktop.swingx.JXTitledSeparator;
+import org.jdesktop.swingx.painter.GlossPainter;
 
 /**
  * @author Aurélien JEOFFRAY
  */
+@Localizable(value="entite.title",textMethod="setTitle")
 public class EntiteDialog extends JDialog implements ActionListener {
-	private AjResourcesReader localisation;
+	private Profile profile;
 	private Entite entite;
+	
+	private boolean fullEditable = false;
+	
+	private BindingGroup entiteBinding = null;
+	
+	@Localizable("entite.header")
+	private JXHeader jxhEntite = new JXHeader();
 
+	@Localizable(value="entite.identite",textMethod="setTitle")
+	private TitledBorder tbIdentite = new TitledBorder(""); //$NON-NLS-1$
+	@Localizable(value="entite.adresse",textMethod="setTitle")
+	private TitledBorder tbAdresse = new TitledBorder(""); //$NON-NLS-1$
+	@Localizable(value="entite.divers",textMethod="setTitle")
+	private TitledBorder tbDivers = new TitledBorder(""); //$NON-NLS-1$
+	@Localizable(value="entite.contacts",textMethod="setTitle")
+	private TitledBorder tbContacts = new TitledBorder(""); //$NON-NLS-1$
+	
+	@Localizable("entite.federation")
+	private JLabel jlFederation = new JLabel();
+	private JComboBox jcbFederation = new JComboBox();
 	@Localizable("entite.nom")
 	private JLabel jlNom = new JLabel();
+	private JTextField jtfNom = new JTextField("", 30); //$NON-NLS-1$
 	@Localizable("entite.agrement")
 	private JLabel jlAgrement = new JLabel();
+	private JTextField jftfAgrement = new JTextField("", 6); //$NON-NLS-1$
+	
 	@Localizable("entite.adresse")
 	private JLabel jlAdresse = new JLabel();
+	private JTextArea jtfAdresse = new JTextArea(4, 30);
+	
 	@Localizable("entite.codepostal")
 	private JLabel jlCodePostal = new JLabel();
+	private JFormattedTextField jftfCodePostal;
 	@Localizable("entite.ville")
 	private JLabel jlVille = new JLabel();
+	private JTextField jtfVille = new JTextField("", 10); //$NON-NLS-1$
 	@Localizable("entite.type")
 	private JLabel jlType = new JLabel();
+	private JComboBox jcbType;
 	@Localizable("entite.note")
 	private JLabel jlNote = new JLabel();
-	private JTextField jtfNom;
-	private JTextField jftfAgrement;
-	private JTextField jtfAdresse;
-	private JFormattedTextField jftfCodePostal;
-	private JTextField jtfVille;
-	private JComboBox jcbType;
-	private JTextArea jtaNote;
+	private JTextArea jtaNote = new JTextArea(5, 30);
+
+	@Localizable("entite.searchcategory")
+	private JLabel jlSearchCategoryContact = new JLabel();
+	private JComboBox jcbSearchCategoryContact = new JComboBox();
+	@Localizable("entite.search")
+	private JLabel jlSearch = new JLabel();
+	private JTextField jtfSearch = new JTextField();
+	private JList jlResultList = new JList();
+	@Localizable(value="entite.detailscontact",textMethod="setTitle")
+	private JXTitledSeparator jxtsDetailsContacts = new JXTitledSeparator();
+	@Localizable("entite.civility")
+	private JLabel jlCivility = new JLabel();
+	private JComboBox jcbCivility = new JComboBox();
+	@Localizable("entite.newcivility")
+	private JXHyperlink jxhNewCivility = new JXHyperlink();
+	@Localizable("entite.namefirstname")
+	private JLabel jlNameFirstName = new JLabel();
+	private JTextField jtfName = new JTextField("", 15); //$NON-NLS-1$
+	private JTextField jtfFirstName = new JTextField("", 15); //$NON-NLS-1$
+	@Localizable("entite.adresse")
+	private JLabel jlAdressContact = new JLabel();
+	private JTextArea jtaAddressContact = new JTextArea(4, 30);
+	@Localizable("entite.codepostal")
+	private JLabel jlZipCodeContact = new JLabel();
+	private JTextField jtfZipCodeContact = new JTextField("", 10); //$NON-NLS-1$
+	@Localizable("entite.ville")
+	private JLabel jlCityContact = new JLabel();
+	private JTextField jtfCityContact = new JTextField("", 10); //$NON-NLS-1$
+	@Localizable("entite.coordinates")
+	private JLabel jlCoordinates = new JLabel();
+	private JList jlstCoordinates = new JList();
+	@Localizable(value="",tooltip="entite.addcoordinate")
+	private JButton jbAddCoordinate = new JButton();
+	@Localizable(value="",tooltip="entite.delcoordinate")
+	private JButton jbDelCoordinate = new JButton();
+	@Localizable(value="",tooltip="entite.editcoordinate")
+	private JButton jbEditCoordinate = new JButton();
+	@Localizable("entite.note")
+	private JLabel jlNoteContact = new JLabel();
+	private JTextArea jtaNoteContact = new JTextArea(4, 30);
+	@Localizable("entite.newcontact")
+	private JXHyperlink jxhNewContact = new JXHyperlink();
+	@Localizable("entite.savecontact")
+	private JXHyperlink jxhSaveContact = new JXHyperlink();
 
 	@Localizable("bouton.valider")
 	private JButton jbValider = new JButton();
 	@Localizable("bouton.annuler")
 	private JButton jbAnnuler = new JButton();
 
-	public EntiteDialog(JFrame parent, AjResourcesReader localisation) {
+	public EntiteDialog(JFrame parent, Profile profile) {
 		super(parent, "", true); //$NON-NLS-1$
 
-		this.localisation = localisation;
-		
+		this.profile = profile;
+
 		init();
 		affectLibelle();
 		completePanel();
 	}
 
-	public EntiteDialog(JDialog parent, AjResourcesReader localisation) {
+	public EntiteDialog(JDialog parent, Profile profile) {
 		super(parent, "", true); //$NON-NLS-1$
 		
-		this.localisation = localisation;
+		this.profile = profile;
 
 		init();
 		affectLibelle();
-		completePanel();
 	}
 
 	private void init() {
@@ -165,18 +260,36 @@ public class EntiteDialog extends JDialog implements ActionListener {
 
 		GridbagComposer gridbagComposer = new GridbagComposer();
 
+		// [start] Initialisation des pannels
 		JPanel entitePane = new JPanel();
 		JPanel buttonPane = new JPanel();
-
-		jtfNom = new JTextField("", 30); //$NON-NLS-1$
+		
+		JPanel jpIdentite = new JPanel();
+		JPanel jpAdresse = new JPanel();
+		JPanel jpDivers = new JPanel();
+		JPanel jpContact = new JPanel();
+		
+		JPanel jpNameFirstName = new JPanel();
+		JPanel jpCoordinatesAction = new JPanel();
+		JPanel jpContactAction = new JPanel();
+		// [end]
+		
+		// [start] paramétrage des composants
+		GlossPainter gloss = new GlossPainter();
+		jxhEntite.setBackground(new Color(200,200,255));
+		jxhEntite.setBackgroundPainter(gloss);
+		
+		jpIdentite.setBorder(tbIdentite);
+		jpAdresse.setBorder(tbAdresse);
+		jpDivers.setBorder(tbDivers);
+		jpContact.setBorder(tbContacts);
+		
+		for(Federation federation : FederationManager.getAvailableFederations())
+			jcbFederation.addItem(federation);
 		jtfNom.setEditable(false);
-		jftfAgrement = new JTextField("", 6); //$NON-NLS-1$
 		jftfAgrement.setEditable(false);
-		jtfAdresse = new JTextField("", 30); //$NON-NLS-1$
-		jtfVille = new JTextField("", 10); //$NON-NLS-1$
 		jtfVille.setEditable(false);
 		jcbType = new JComboBox(new String[] { "Fédération", "Ligue", "Comité Départemental", "Compagnie" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		jtaNote = new JTextArea(5, 30);
 		
 		jbValider.addActionListener(this);
 		jbAnnuler.addActionListener(this);
@@ -190,33 +303,241 @@ public class EntiteDialog extends JDialog implements ActionListener {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-
-		gridbagComposer.setParentPanel(entitePane);
+		
+		jcbSearchCategoryContact.setRenderer(new DefaultListCellRenderer() {
+			
+			@Override
+			public Component getListCellRendererComponent(JList list, Object value,
+					int index, boolean isSelected, boolean cellHasFocus) {
+				if(value instanceof CategoryContact)
+					value = ((CategoryContact)value).getLibelle(profile.getConfiguration().getLangue());
+				return super.getListCellRendererComponent(list, value, index, isSelected,
+						cellHasFocus);
+			}
+		});
+		
+		jlResultList.setVisibleRowCount(5);
+		jlstCoordinates.setVisibleRowCount(5);
+		
+		jpCoordinatesAction.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+		
+		jbAddCoordinate.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.add", 16, 16)); //$NON-NLS-1$
+		jbAddCoordinate.setPressedIcon(ApplicationCore.userRessources.getImageIcon("file.icon.add_active", 16, 16)); //$NON-NLS-1$
+		jbAddCoordinate.setDisabledIcon(ApplicationCore.userRessources.getImageIcon("file.icon.add_disable", 16, 16)); //$NON-NLS-1$
+		jbAddCoordinate.setBorderPainted(false);
+		jbAddCoordinate.setFocusPainted(false);
+		jbAddCoordinate.setMargin(new Insets(0, 0, 0, 0));
+		jbAddCoordinate.setContentAreaFilled(false);
+		jbAddCoordinate.addActionListener(this);
+		jbDelCoordinate.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.del", 16, 16)); //$NON-NLS-1$
+		jbDelCoordinate.setPressedIcon(ApplicationCore.userRessources.getImageIcon("file.icon.del_active", 16, 16)); //$NON-NLS-1$
+		jbDelCoordinate.setDisabledIcon(ApplicationCore.userRessources.getImageIcon("file.icon.del_disable", 16, 16)); //$NON-NLS-1$
+		jbDelCoordinate.setBorderPainted(false);
+		jbDelCoordinate.setFocusPainted(false);
+		jbDelCoordinate.setMargin(new Insets(0, 0, 0, 0));
+		jbDelCoordinate.setContentAreaFilled(false);
+		jbDelCoordinate.addActionListener(this);
+		
+		// [end]
+		
+		// [start] mise en page
+		
+		c.insets = new Insets(1, 1, 1, 1);
+		
+		// [start] Identite
+		gridbagComposer.setParentPanel(jpIdentite);
 		c.gridy = 0;
-		c.anchor = GridBagConstraints.WEST;
+		c.anchor = GridBagConstraints.NORTHWEST;
+		gridbagComposer.addComponentIntoGrid(jlFederation, c);
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 1.0;
+		c.gridwidth = 3;
+		gridbagComposer.addComponentIntoGrid(jcbFederation, c);
+		c.gridy++;
+		c.gridwidth = 1;
+		c.fill = GridBagConstraints.NONE;
+		c.weightx = 0.0;
 		gridbagComposer.addComponentIntoGrid(jlNom, c);
+		c.weightx = 1.0;
+		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridwidth = 3;
 		gridbagComposer.addComponentIntoGrid(jtfNom, c);
 		c.gridy++;
 		c.gridwidth = 1;
+		c.weightx = 1.0;
+		c.fill = GridBagConstraints.NONE;
 		gridbagComposer.addComponentIntoGrid(jlAgrement, c);
 		gridbagComposer.addComponentIntoGrid(jftfAgrement, c);
 		gridbagComposer.addComponentIntoGrid(jlType, c);
+		c.fill = GridBagConstraints.HORIZONTAL;
 		gridbagComposer.addComponentIntoGrid(jcbType, c);
-		c.gridy++;
+		// [end]
+
+		// [start] Adresse
+		gridbagComposer.setParentPanel(jpAdresse);
+		c.gridy = 0;
+		c.gridwidth = 1;
+		c.fill = GridBagConstraints.NONE;
+		c.weightx = 0.0;
 		gridbagComposer.addComponentIntoGrid(jlAdresse, c);
 		c.gridwidth = 3;
-		gridbagComposer.addComponentIntoGrid(jtfAdresse, c);
+		c.weightx = 1.0;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		gridbagComposer.addComponentIntoGrid(new JScrollPane(jtfAdresse), c);
 		c.gridy++;
 		c.gridwidth = 1;
+		c.fill = GridBagConstraints.NONE;
+		c.weightx = 1.0;
 		gridbagComposer.addComponentIntoGrid(jlCodePostal, c);
 		gridbagComposer.addComponentIntoGrid(jftfCodePostal, c);
 		gridbagComposer.addComponentIntoGrid(jlVille, c);
+		c.fill = GridBagConstraints.HORIZONTAL;
 		gridbagComposer.addComponentIntoGrid(jtfVille, c);
-		c.gridy++;
+		// [end]
+		
+		// [start] Divers
+		gridbagComposer.setParentPanel(jpDivers);
+		c.gridy = 0;
+		c.gridwidth = 1;
+		c.fill = GridBagConstraints.NONE;
+		c.weightx = 0.0;
 		gridbagComposer.addComponentIntoGrid(jlNote, c);
 		c.gridwidth = 3;
+		c.fill = GridBagConstraints.BOTH;
+		c.weightx = 1.0;
+		c.weighty = 1.0;
 		gridbagComposer.addComponentIntoGrid(new JScrollPane(jtaNote), c);
+		// [end]
+		
+		// [start] Contacts
+		gridbagComposer.setParentPanel(jpNameFirstName);
+		c.gridy = 0;
+		c.weightx = 1.0;
+		c.weighty = 0.0;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridwidth = 1;
+		gridbagComposer.addComponentIntoGrid(jtfName, c);
+		gridbagComposer.addComponentIntoGrid(jtfFirstName, c);
+		
+		jpCoordinatesAction.add(jbAddCoordinate);
+		jpCoordinatesAction.add(jbDelCoordinate);
+		jpCoordinatesAction.add(jbEditCoordinate);
+		
+		jpContactAction.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		jpContactAction.add(jxhNewContact);
+		jpContactAction.add(jxhSaveContact);
+		
+		gridbagComposer.setParentPanel(jpContact);
+		c.gridy = 0;
+		c.gridwidth = 1;
+		c.fill = GridBagConstraints.NONE;
+		c.weightx = 0.0;
+		gridbagComposer.addComponentIntoGrid(jlSearchCategoryContact, c);
+		c.weightx = 1.0;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridwidth = 3;
+		gridbagComposer.addComponentIntoGrid(jcbSearchCategoryContact, c);
+		c.gridy++;
+		c.fill = GridBagConstraints.NONE;
+		c.weightx = 0.0;
+		c.gridwidth = 1;
+		gridbagComposer.addComponentIntoGrid(jlSearch, c);
+		c.weightx = 1.0;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridwidth = 3;
+		gridbagComposer.addComponentIntoGrid(jtfSearch, c);
+		c.gridy++;
+		c.gridwidth = 4;
+		gridbagComposer.addComponentIntoGrid(new JScrollPane(jlResultList), c);
+		c.gridy++;
+		gridbagComposer.addComponentIntoGrid(jxtsDetailsContacts, c);
+		c.gridy++;
+		c.gridwidth = 1;
+		c.weightx = 0.0;
+		gridbagComposer.addComponentIntoGrid(jlCivility, c);
+		gridbagComposer.addComponentIntoGrid(jcbCivility, c);
+		c.weightx = 1.0;
+		c.gridwidth = 2;
+		gridbagComposer.addComponentIntoGrid(jxhNewCivility, c);
+		c.gridy++;
+		c.gridwidth = 1;
+		c.weightx = 0.0;
+		gridbagComposer.addComponentIntoGrid(jlNameFirstName, c);
+		c.weightx = 1.0;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridwidth = 3;
+		gridbagComposer.addComponentIntoGrid(jpNameFirstName, c);
+		c.gridy++;
+		c.gridwidth = 1;
+		c.weightx = 0.0;
+		c.fill = GridBagConstraints.NONE;
+		gridbagComposer.addComponentIntoGrid(jlAdressContact, c);
+		c.weightx = 1.0;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridwidth = 3;
+		gridbagComposer.addComponentIntoGrid(new JScrollPane(jtaAddressContact), c);
+		c.gridy++;
+		c.gridwidth = 1;
+		c.weightx = 0.0;
+		c.fill = GridBagConstraints.NONE;
+		gridbagComposer.addComponentIntoGrid(jlZipCodeContact, c);
+		gridbagComposer.addComponentIntoGrid(jtfZipCodeContact, c);
+		gridbagComposer.addComponentIntoGrid(jlCityContact, c);
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 1.0;
+		gridbagComposer.addComponentIntoGrid(jtfCityContact, c);
+		c.gridy++;
+		c.fill = GridBagConstraints.NONE;
+		c.weightx = 0.0;
+		gridbagComposer.addComponentIntoGrid(jlCoordinates, c);
+		c.weightx = 1.0;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridwidth = 3;
+		gridbagComposer.addComponentIntoGrid(new JScrollPane(jlstCoordinates), c);
+		c.gridy++;
+		c.gridx = 1;
+		c.weightx = 0.0;
+		c.fill = GridBagConstraints.NONE;
+		gridbagComposer.addComponentIntoGrid(jpCoordinatesAction, c);
+		c.gridy++;
+		c.gridx = GridBagConstraints.RELATIVE;
+		c.weightx = 0.0;
+		c.gridwidth = 1;
+		c.weighty = 1.0;
+		gridbagComposer.addComponentIntoGrid(jlNoteContact, c);
+		c.gridwidth = 3;
+		c.weightx = 1.0;		
+		c.fill = GridBagConstraints.BOTH;
+		gridbagComposer.addComponentIntoGrid(new JScrollPane(jtaNoteContact), c);
+		c.gridy++;
+		c.gridx = 1;
+		gridbagComposer.addComponentIntoGrid(jpContactAction, c);
+		// [end]
+		
+		// [start] General
+		c.gridx = GridBagConstraints.RELATIVE;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weighty = 0.0;
+		gridbagComposer.setParentPanel(entitePane);
+		c.gridy = 0;
+		c.anchor = GridBagConstraints.WEST;
+		c.gridwidth = 1;
+		c.weightx = 1.0;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		gridbagComposer.addComponentIntoGrid(jpIdentite, c);
+		c.gridheight = 3;
+		c.fill = GridBagConstraints.BOTH;
+		gridbagComposer.addComponentIntoGrid(jpContact, c);
+		c.gridy++;
+		c.gridx = 0;
+		c.gridheight = 1;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		gridbagComposer.addComponentIntoGrid(jpAdresse, c);
+		c.gridy++;
+		c.fill = GridBagConstraints.BOTH;
+		c.weighty = 1.0;
+		gridbagComposer.addComponentIntoGrid(jpDivers, c);
+		// [end]
 
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
@@ -224,34 +545,65 @@ public class EntiteDialog extends JDialog implements ActionListener {
 		buttonPane.add(jbAnnuler);
 
 		getContentPane().setLayout(new BorderLayout());
+		getContentPane().add(jxhEntite, BorderLayout.NORTH);
 		getContentPane().add(entitePane, BorderLayout.CENTER);
 		getContentPane().add(buttonPane, BorderLayout.SOUTH);
-		pack();
-		setLocationRelativeTo(null);
+		// [end]
 	}
 	
 	private void affectLibelle() {
-		Localizator.localize(this, localisation);
+		Localizator.localize(this, profile.getLocalisation(), Collections.<Class<?>, LocalizationHandler>singletonMap(JXHeader.class, new JXHeaderLocalisationHandler()));
 	}
 	
 	private void completePanel() {
 		if(entite != null) {
-			jtfNom.setText(entite.getNom());
-			jtfAdresse.setText(entite.getAdresse());
-			jtfVille.setText(entite.getVille());
+			// [start] binding
+			//On annule le précédent binding
+	    	if(entiteBinding != null)
+	    		entiteBinding.unbind();
+	    	
+	    	entiteBinding = new BindingGroup();
+	    	
+	    	entiteBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, entite, BeanProperty.create("nom"), jtfNom, BeanProperty.create("text"))); //$NON-NLS-1$ //$NON-NLS-2$
+	    	entiteBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, entite, BeanProperty.create("adresse"), jtfAdresse, BeanProperty.create("text"))); //$NON-NLS-1$ //$NON-NLS-2$
+	    	entiteBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, entite, BeanProperty.create("ville"), jtfVille, BeanProperty.create("text"))); //$NON-NLS-1$ //$NON-NLS-2$
+	    	entiteBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, entite, BeanProperty.create("note"), jtaNote, BeanProperty.create("text"))); //$NON-NLS-1$ //$NON-NLS-2$
+	    	entiteBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, entite, BeanProperty.create("agrement"), jftfAgrement, BeanProperty.create("text"))); //$NON-NLS-1$ //$NON-NLS-2$
+	    	entiteBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, entite, BeanProperty.create("codePostal"), jftfCodePostal, BeanProperty.create("value"))); //$NON-NLS-1$ //$NON-NLS-2$
+	    	
+	    	entiteBinding.bind();
+	    	// [end]
+			
+			jtfNom.setEditable(fullEditable || entite.getAgrement() == null || entite.getAgrement().isEmpty());
+			jtfVille.setEditable(fullEditable);
 			jcbType.setSelectedIndex(entite.getType());
-			jtaNote.setText(entite.getNote());
-			jftfAgrement.setText(entite.getAgrement());
-			jftfCodePostal.setValue(entite.getCodePostal());
+			jftfAgrement.setEditable(fullEditable);
+			
+			jcbSearchCategoryContact.removeAllItems();
+			try {
+				for(CategoryContact categoryContact : CategoryContactManager.getAllCategoryContact()) {
+					jcbSearchCategoryContact.addItem(categoryContact);
+				}
+			} catch (ObjectPersistenceException e) {
+				DisplayableErrorHelper.displayException(e);
+				e.printStackTrace();
+			}
 		}
 	}
 
-	public void showEntiteDialog() {
+	/**
+	 * Affiche la boite d'édition d'une entité
+	 * 
+	 * @param fullEditable si <code>true</code> l'entite est entièrement éditable, sinon seul les informations complémentaires sont éditable
+	 */
+	public void showEntiteDialog(boolean fullEditable) {
+		this.fullEditable = fullEditable;
 		completePanel();
 		
 		pack();
 		setLocationRelativeTo(null);
 		setVisible(true);
+		pack();
 	}
 
 	/**
@@ -271,20 +623,24 @@ public class EntiteDialog extends JDialog implements ActionListener {
 	public void actionPerformed(ActionEvent ae) {
 		if (ae.getSource() == jbAnnuler) {
 			setVisible(false);
-		} else {
-			entite.setNom(jtfNom.getText());
-			entite.setAdresse(jtfAdresse.getText());
-			entite.setVille(jtfVille.getText());
+		} else if(ae.getSource() == jbValider) {
+			if(entiteBinding != null) {
+            	for(Binding<Entite, ?, ?, ?> binding : entiteBinding.getBindings()) { 
+            		binding.save();
+            	}
+        	}
+			//entite.setNom(jtfNom.getText());
+			//entite.setAdresse(jtfAdresse.getText());
+			//entite.setVille(jtfVille.getText());
 			entite.setType(jcbType.getSelectedIndex());
-			entite.setNote(jtaNote.getText());
-			entite.setAgrement(jftfAgrement.getText());
-			entite.setCodePostal((String) jftfCodePostal.getValue());
+			//entite.setNote(jtaNote.getText());
+			//entite.setAgrement(jftfAgrement.getText());
+			//entite.setCodePostal((String) jftfCodePostal.getValue());
 			
 			try {
 				entite.save();
 			} catch (ObjectPersistenceException e) {
-				JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), e.toString(), //$NON-NLS-1$
-            			null, null, e, Level.SEVERE, null));
+				DisplayableErrorHelper.displayException(e);
 				e.printStackTrace();
 			}
 

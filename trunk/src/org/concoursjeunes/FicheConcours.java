@@ -619,7 +619,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 								tplClassement.parse("categories.classement.PLACE", "" + (j + 1)); //$NON-NLS-1$ //$NON-NLS-2$
 								tplClassement.parse("categories.classement.POSITION", "" + sortList.get(j).getDepart()+sortList.get(j).getPosition() + sortList.get(j).getCible()); //$NON-NLS-1$ //$NON-NLS-2$
 								tplClassement.parse("categories.classement.IDENTITEE", sortList.get(j).getFullName()); //$NON-NLS-1$
-								tplClassement.parse("categories.classement.CLUB", sortList.get(j).getClub().getNom()); //$NON-NLS-1$
+								tplClassement.parse("categories.classement.CLUB", sortList.get(j).getClub().toString()); //$NON-NLS-1$
 								tplClassement.parse("categories.classement.NUM_LICENCE", sortList.get(j).getNumLicenceArcher()); //$NON-NLS-1$
 
 								/*for (Criterion key : parametre.getReglement().getListCriteria())

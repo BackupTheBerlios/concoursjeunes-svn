@@ -100,7 +100,6 @@ import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.net.URISyntaxException;
-import java.util.logging.Level;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -115,10 +114,9 @@ import javax.swing.text.html.HTMLEditorKit;
 import org.ajdeveloppement.apps.localisation.Localizable;
 import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
+import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
 import org.concoursjeunes.AppInfos;
 import org.concoursjeunes.ApplicationCore;
-import org.jdesktop.swingx.JXErrorPane;
-import org.jdesktop.swingx.error.ErrorInfo;
 
 /**
  * Boite de dialogue "à propos" de l'application
@@ -214,12 +212,10 @@ public class AboutDialog extends JDialog implements ActionListener, HyperlinkLis
 				try {
 					Desktop.getDesktop().browse(e.getURL().toURI());
 				} catch (IOException e1) {
-					JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
-							null, null, e1, Level.SEVERE, null));
+					DisplayableErrorHelper.displayException(e1);
 					e1.printStackTrace();
 				} catch (URISyntaxException e1) {
-					JXErrorPane.showDialog(this, new ErrorInfo(localisation.getResourceString("erreur"), e1.toString(), //$NON-NLS-1$
-							null, null, e1, Level.SEVERE, null));
+					DisplayableErrorHelper.displayException(e1);
 					e1.printStackTrace();
 				}
 			}

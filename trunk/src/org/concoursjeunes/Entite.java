@@ -135,6 +135,9 @@ public class Entite implements ObjectPersistence {
     private String note		 	= ""; //$NON-NLS-1$
     @SqlField(name="TYPEENTITE")
     private int type          	= CLUB;
+    
+    @SqlField(name="REMOVABLE")
+    private boolean removable	= true;
 
     private static StoreHelper<Entite> helper = null;
 	static {
@@ -307,6 +310,8 @@ public class Entite implements ObjectPersistence {
     
     @Override
     public String toString() {
+    	if((nom == null || nom.isEmpty()) && ville != null && !ville.isEmpty())
+    		return ville;
         return nom;
     }
 
@@ -378,6 +383,20 @@ public class Entite implements ObjectPersistence {
 		} else if (!agrement.equals(other.agrement))
 			return false;
 		return true;
+	}
+
+	/**
+	 * @param removable removable à définir
+	 */
+	public void setRemovable(boolean removable) {
+		this.removable = removable;
+	}
+
+	/**
+	 * @return removable
+	 */
+	public boolean isRemovable() {
+		return removable;
 	}
 	
 	

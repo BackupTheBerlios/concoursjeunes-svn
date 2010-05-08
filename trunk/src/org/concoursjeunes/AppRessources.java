@@ -90,6 +90,11 @@ package org.concoursjeunes;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.lang.ref.SoftReference;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.swing.ImageIcon;
 
 /**
  * <p>Gère et retourne le chemin des différentes ressources utilisateur pour le programme.</p>
@@ -99,9 +104,11 @@ import java.io.FilenameFilter;
  * @author Aurélien Jeoffray
  */
 public class AppRessources extends org.ajdeveloppement.apps.AppRessources {
-	private static String CONFIG_PROFILE = "configuration_"; //$NON-NLS-1$
-	private static String EXT_XML = ".xml"; //$NON-NLS-1$
+	private static final String CONFIG_PROFILE = "configuration_"; //$NON-NLS-1$
+	private static final String EXT_XML = ".xml"; //$NON-NLS-1$
 
+	private Map<String, SoftReference<ImageIcon>> imageIconCache = new HashMap<String, SoftReference<ImageIcon>>();
+	
 	/**
 	 * Construit le répertoire utilisateur selon le système
 	 * 
@@ -220,5 +227,29 @@ public class AppRessources extends org.ajdeveloppement.apps.AppRessources {
 		for (int i = 0; i < strConfig.length; i++)
 			strConfig[i] = strConfig[i].substring(CONFIG_PROFILE.length(), strConfig[i].length() - EXT_XML.length());
 		return strConfig;
+	}
+	
+	/**
+	 * Retourne une ressource graphique de l'application
+	 * 
+	 * @param resourceKey la resource graphique à charger
+	 * @param width la longueur de l'image ou -1 si l'on souhaite conserver la dimension par défaut
+	 * @param height la hauteur de l'image ou -1 si l'on souhaite conserver la dimension par défaut
+	 * @return l'image chargé
+	 */
+	public ImageIcon getImageIcon(String resourceKey, int width, int height) {
+		ImageIcon imageIcon = null;
+		if(imageIconCache.containsKey(resourceKey))
+			imageIcon = imageIconCache.get(resourceKey).get();
+		if(imageIcon == null) {
+			imageIcon = new ImageIcon(ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
+					File.separator + ApplicationCore.staticParameters.getResourceString(resourceKey));
+			imageIconCache.put(resourceKey, new SoftReference<ImageIcon>(imageIcon));
+		}
+		
+		if(width > -1 && height > -1)
+			imageIcon = new ImageIcon(imageIcon.getImage().getScaledInstance(width, height,  java.awt.Image.SCALE_SMOOTH));
+		
+		return imageIcon;
 	}
 }

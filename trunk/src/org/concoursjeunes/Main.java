@@ -104,6 +104,7 @@ import java.net.URI;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.security.InvalidAlgorithmParameterException;
+import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -124,10 +125,14 @@ import javax.swing.SwingUtilities;
 import javax.xml.bind.JAXBException;
 
 import org.ajdeveloppement.apps.AppUtilities;
+import org.ajdeveloppement.apps.ApplicationContext;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.io.XMLSerializer;
+import org.ajdeveloppement.commons.security.SSLUtils;
 import org.ajdeveloppement.commons.security.SecureSiteAuthenticationStore;
 import org.ajdeveloppement.commons.ui.SwingURLAuthenticator;
+import org.ajdeveloppement.swingxext.error.WebErrorReporter;
+import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
 import org.concoursjeunes.exceptions.ExceptionHandlingEventQueue;
 import org.concoursjeunes.plugins.PluginEntry;
 import org.concoursjeunes.plugins.PluginLoader;
@@ -135,35 +140,92 @@ import org.concoursjeunes.plugins.PluginMetadata;
 import org.concoursjeunes.plugins.Plugin.Type;
 import org.concoursjeunes.ui.ConcoursJeunesFrame;
 import org.h2.tools.DeleteDbFiles;
-import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 
 /**
  * Class initial de l'application.
  * 
  * @author Aurélien JEOFFRAY
- * @version 2.0
+ * @version 2.3
  * 
  */
 public class Main {
+	private static SplashScreen splash = null;
+	private static AjResourcesReader localisation = new AjResourcesReader("libelle");  //$NON-NLS-1$
+	
+	private static ApplicationCore core;
+	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		final ApplicationCore core;
+		showSplashScreen();
+		initErrorManaging();
+		initNetworkManaging();
+		initCore();
+		initSecureContext();
+		if(System.getProperty("noplugin") == null)//$NON-NLS-1$
+			loadStartupPlugin();
+
+		initShutdownHook();
+		hideSplashScreen();
 		
-		System.setProperty("java.net.useSystemProxies","true"); //$NON-NLS-1$ //$NON-NLS-2$ 
-		System.setProperty("java.net.preferIPv6Addresses", "true"); //$NON-NLS-1$ //$NON-NLS-2$
+		System.out.println("core loaded");  //$NON-NLS-1$
 		
-		AjResourcesReader localisation = new AjResourcesReader("libelle");  //$NON-NLS-1$
+		showUserInterface();
+	}
+
+	/**
+	 * Affiche le splash screen durant le chargement
+	 */
+	private static void showSplashScreen() {
+		splash = SplashScreen.getSplashScreen();
+		if(splash != null) {
+			try {
+				splash.setImageURL(new URL("file:" + ApplicationCore.staticParameters.getResourceString("path.ressources")  //$NON-NLS-1$//$NON-NLS-2$
+					+ File.separator
+					+ ApplicationCore.staticParameters.getResourceString("file.image.splashscreen"))); //$NON-NLS-1$
+			} catch (NullPointerException e1) {
+				e1.printStackTrace();
+			} catch (IllegalStateException e1) {
+				e1.printStackTrace();
+			} catch (MalformedURLException e1) {
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * Ferme le splash screen
+	 */
+	private static void hideSplashScreen() {
+		if(splash != null)
+			splash.close();
+	}
+	
+	/**
+	 * Initialise la gestion des erreurs
+	 */
+	private static void initErrorManaging() {
+		//initialisation du rapport d'erreur
+		try {
+			DisplayableErrorHelper.setErrorReporter(new WebErrorReporter(
+					new URL(ApplicationCore.staticParameters.getResourceString("url.errorreport")), //$NON-NLS-1$
+					ApplicationContext.getContext()));
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
 		
+		//Capture des exceptions non controlé en amont
 		Thread.UncaughtExceptionHandler handlerException = new Thread.UncaughtExceptionHandler() {
 
 			@Override
 			public void uncaughtException(Thread t, final Throwable e) {
 				EventQueue.invokeLater(new Runnable() {
 			         public void run() {
-						JXErrorPane.showDialog(null, new ErrorInfo("Application uncaught Exception!", //$NON-NLS-1$
+			        	DisplayableErrorHelper.displayErrorInfo(new ErrorInfo("Application uncaught Exception!", //$NON-NLS-1$
 								e.toString(),
 								null, null, e, Level.SEVERE, null));
 						e.printStackTrace();
@@ -174,6 +236,14 @@ public class Main {
 		
 		Thread.setDefaultUncaughtExceptionHandler(handlerException);
 		Toolkit.getDefaultToolkit().getSystemEventQueue().push(new ExceptionHandlingEventQueue());
+	}
+	
+	/**
+	 * Initialise la gestion du réseau
+	 */
+	private static void initNetworkManaging() {
+		System.setProperty("java.net.useSystemProxies","true"); //$NON-NLS-1$ //$NON-NLS-2$ 
+		System.setProperty("java.net.preferIPv6Addresses", "true"); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		final ProxySelector systemProxySelector = ProxySelector.getDefault();
 		ProxySelector.setDefault(new ProxySelector() {
@@ -196,35 +266,21 @@ public class Main {
 			}
 			
 		});
-		
-		SplashScreen splash = SplashScreen.getSplashScreen();
-		if(splash != null) {
-			try {
-				splash.setImageURL(new URL("file:" + ApplicationCore.staticParameters.getResourceString("path.ressources")  //$NON-NLS-1$//$NON-NLS-2$
-					+ File.separator
-					+ ApplicationCore.staticParameters.getResourceString("file.image.splashscreen"))); //$NON-NLS-1$
-			} catch (NullPointerException e1) {
-				// TODO Bloc catch auto-généré
-				e1.printStackTrace();
-			} catch (IllegalStateException e1) {
-				// TODO Bloc catch auto-généré
-				e1.printStackTrace();
-			} catch (MalformedURLException e1) {
-				// TODO Bloc catch auto-généré
-				e1.printStackTrace();
-			} catch (IOException e1) {
-				// TODO Bloc catch auto-généré
-				e1.printStackTrace();
-			}
-		}
+	}
 	
+	/**
+	 * Initialise le coeur de l'application
+	 * 
+	 * @param localisation
+	 */
+	private static void initCore() {
 		boolean retry = false;
 		do {
 			try {
 				//splash.setProgressionText("Initialisation de l'application...");
 				ApplicationCore.initializeApplication();
 			} catch (SQLException e1) {
-				JXErrorPane.showDialog(null,new ErrorInfo( "SQL Error", e1.toString(), //$NON-NLS-1$
+				DisplayableErrorHelper.displayErrorInfo(new ErrorInfo( "SQL Error", e1.toString(), //$NON-NLS-1$
 						null, null, e1, Level.SEVERE, null));
 				
 				if(JOptionPane.showConfirmDialog(null, localisation.getResourceString("erreur.breakdb")) == JOptionPane.YES_OPTION) {  //$NON-NLS-1$
@@ -240,48 +296,11 @@ public class Main {
 		} while(retry);
 		
 		core = ApplicationCore.getInstance();
-		
-		//splash.setProgressionText("Initialisation du contexte de sécurité...");
-		initSecureContext();
-		
-		if(System.getProperty("noplugin") == null) { //$NON-NLS-1$
-			//splash.setProgressionText("Chargement des plugins...");
-			loadStartupPlugin();
-		}
-
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			@Override
-			public void run() {
-				try {
-					Thread.setDefaultUncaughtExceptionHandler(null);
-
-					// rend l'ensemble des fichier de la base accessible en lecture/écriture pour permettre
-					// le multi-utilisateur
-					File[] dbfiles = new File(ApplicationCore.userRessources.getAllusersDataPath(), "base").listFiles(); //$NON-NLS-1$
-					for (File dbfile : dbfiles) {
-						if (dbfile.isFile()) {
-							dbfile.setWritable(true, false);
-						}
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-		if(splash != null)
-			splash.close();
-		System.out.println("core loaded");  //$NON-NLS-1$
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				Profile profile = new Profile();
-				core.addProfile(profile);
-				new ConcoursJeunesFrame(profile);
-			}
-		});
-
 	}
 	
+	/**
+	 * Charge le contexte de sécurité de l'application
+	 */
 	private static void initSecureContext() {
 		String urlAuthStoreAlias = "urlauthstore"; //$NON-NLS-1$
 		char[] defaultUrlAuthStorePassword = AppUtilities.getAppUID(ApplicationCore.userRessources).toCharArray();
@@ -312,39 +331,25 @@ public class Main {
 			
 			ApplicationCore.userRessources.storeAppKeyStore();
 		} catch (UnrecoverableKeyException e) {
-			JXErrorPane.showDialog(null, new ErrorInfo(e.getLocalizedMessage(),
-					e.toString(),
-					null, null, e, Level.SEVERE, null));
+			DisplayableErrorHelper.displayException(e);
 			e.printStackTrace();
 		} catch (KeyStoreException e) {
-			JXErrorPane.showDialog(null, new ErrorInfo(e.getLocalizedMessage(),
-					e.toString(),
-					null, null, e, Level.SEVERE, null));
+			DisplayableErrorHelper.displayException(e);
 			e.printStackTrace();
 		} catch (NoSuchAlgorithmException e) {
-			JXErrorPane.showDialog(null, new ErrorInfo(e.getLocalizedMessage(),
-					e.toString(),
-					null, null, e, Level.SEVERE, null));
+			DisplayableErrorHelper.displayException(e);
 			e.printStackTrace();
 		} catch (NoSuchPaddingException e) {
-			JXErrorPane.showDialog(null, new ErrorInfo(e.getLocalizedMessage(),
-					e.toString(),
-					null, null, e, Level.SEVERE, null));
+			DisplayableErrorHelper.displayException(e);
 			e.printStackTrace();
 		} catch (InvalidAlgorithmParameterException e) {
-			JXErrorPane.showDialog(null, new ErrorInfo(e.getLocalizedMessage(),
-					e.toString(),
-					null, null, e, Level.SEVERE, null));
+			DisplayableErrorHelper.displayException(e);
 			e.printStackTrace();
 		} catch (CertificateException e) {
-			JXErrorPane.showDialog(null, new ErrorInfo(e.getLocalizedMessage(),
-					e.toString(),
-					null, null, e, Level.SEVERE, null));
+			DisplayableErrorHelper.displayException(e);
 			e.printStackTrace();
 		} catch (IOException e) {
-			JXErrorPane.showDialog(null, new ErrorInfo(e.getLocalizedMessage(),
-					e.toString(),
-					null, null, e, Level.SEVERE, null));
+			DisplayableErrorHelper.displayException(e);
 			e.printStackTrace();
 		}
 		
@@ -356,8 +361,29 @@ public class Main {
 			}
 	    };
 	    HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
+	    try {
+			HttpsURLConnection.setDefaultSSLSocketFactory(SSLUtils.getSSLSocketFactory(ApplicationCore.userRessources.getAppKeyStore()));
+		} catch (KeyManagementException e) {
+			DisplayableErrorHelper.displayException(e);
+			e.printStackTrace();
+		} catch (KeyStoreException e) {
+			DisplayableErrorHelper.displayException(e);
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			DisplayableErrorHelper.displayException(e);
+			e.printStackTrace();
+		} catch (CertificateException e) {
+			DisplayableErrorHelper.displayException(e);
+			e.printStackTrace();
+		} catch (IOException e) {
+			DisplayableErrorHelper.displayException(e);
+			e.printStackTrace();
+		}
 	}
 
+	/**
+	 * Charge les plugins à lancer au démarrage
+	 */
 	private static void loadStartupPlugin() {
 		PluginLoader pl = new PluginLoader();
 		
@@ -385,22 +411,59 @@ public class Main {
 					}
 				}
 			} catch (InstantiationException e1) {
-				JXErrorPane.showDialog(null, new ErrorInfo(e1.getLocalizedMessage(), e1.toString(),
-						null, null, e1, Level.SEVERE, null));
+				DisplayableErrorHelper.displayException(e1);
 				e1.printStackTrace();
 			} catch (IllegalAccessException e1) {
-				JXErrorPane.showDialog(null, new ErrorInfo(e1.getLocalizedMessage(), e1.toString(),
-						null, null, e1, Level.SEVERE, null));
+				DisplayableErrorHelper.displayException(e1);
 				e1.printStackTrace();
 			} catch (SecurityException e1) {
-				JXErrorPane.showDialog(null, new ErrorInfo(e1.getLocalizedMessage(), e1.toString(),
-						null, null, e1, Level.SEVERE, null));
+				DisplayableErrorHelper.displayException(e1);
 				e1.printStackTrace();
 			} catch (InvocationTargetException e1) {
-				JXErrorPane.showDialog(null, new ErrorInfo(e1.getLocalizedMessage(), e1.toString(),
-						null, null, e1, Level.SEVERE, null));
+				DisplayableErrorHelper.displayException(e1);
 				e1.printStackTrace();
 			}
 		}
+	}
+	
+	/**
+	 * Initialise le hook d'arrêt
+	 */
+	private static void initShutdownHook() {
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				try {
+					Thread.setDefaultUncaughtExceptionHandler(null);
+
+					// rend l'ensemble des fichier de la base accessible en lecture/écriture pour permettre
+					// le multi-utilisateur
+					File[] dbfiles = new File(ApplicationCore.userRessources.getAllusersDataPath(), "base").listFiles(); //$NON-NLS-1$
+					for (File dbfile : dbfiles) {
+						if (dbfile.isFile()) {
+							dbfile.setWritable(true, false);
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+	
+	/**
+	 * Affiche l'interface utilisateur
+	 * 
+	 * @param core la couche métier sous jacente
+	 */
+	private static void showUserInterface() {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				Profile profile = new Profile();
+				core.addProfile(profile);
+				new ConcoursJeunesFrame(profile);
+			}
+		});
 	}
 }

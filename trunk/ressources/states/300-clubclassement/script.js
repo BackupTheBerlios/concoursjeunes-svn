@@ -34,7 +34,7 @@ function printState(ficheConcours, template, document, writer, options) {
 			// classement sortie XML
 			tplClassementEquipe.parse("CURRENT_TIME", DateFormat.getDateInstance(DateFormat.FULL).format(new Date())); //$NON-NLS-1$
 			tplClassementEquipe.parse("LOGO_CLUB_URI", profile.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			tplClassementEquipe.parse("INTITULE_CLUB", ficheConcours.getParametre().getClub().getNom()); //$NON-NLS-1$
+			tplClassementEquipe.parse("INTITULE_CLUB", ficheConcours.getParametre().getClub().toString()); //$NON-NLS-1$
 			tplClassementEquipe.parse("INTITULE_CONCOURS", ficheConcours.getParametre().getIntituleConcours()); //$NON-NLS-1$
 			tplClassementEquipe.parse("VILLE_CLUB", ficheConcours.getParametre().getLieuConcours()); //$NON-NLS-1$
 			tplClassementEquipe.parse("DATE_CONCOURS", DateFormat.getDateInstance(DateFormat.LONG).format(ficheConcours.getParametre().getDate())); //$NON-NLS-1$

@@ -92,11 +92,23 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DateFormat;
 
-import javax.swing.*;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -108,6 +120,7 @@ import org.ajdeveloppement.commons.ui.AJList;
 import org.ajdeveloppement.commons.ui.DefaultDialogReturn;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.CompetitionLevel;
 import org.concoursjeunes.FicheConcours;
 import org.concoursjeunes.Judge;
@@ -158,9 +171,9 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 	private JTextField jtfNombreDepart = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
 	@Localizable(value="parametre.arbitresborder",textMethod="setTitle")
 	private TitledBorder arbitresBorder = new TitledBorder(""); //$NON-NLS-1$
-	@Localizable("bouton.ajouter")
+	@Localizable(value="",tooltip="bouton.ajouter")
 	private JButton jbAjouterArbitre = new JButton();
-	@Localizable("bouton.supprimer")
+	@Localizable(value="",tooltip="bouton.supprimer")
 	private JButton jbSupprimerArbitre = new JButton();
 	@Localizable("bouton.editer")
 	private JButton jbEditerArbitre = new JButton();
@@ -271,7 +284,21 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 			
 		});
 		jlArbitres.addListSelectionListener(this);
+		jbAjouterArbitre.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.add", 24, 24)); //$NON-NLS-1$
+		jbAjouterArbitre.setPressedIcon(ApplicationCore.userRessources.getImageIcon("file.icon.add_active", 24, 24)); //$NON-NLS-1$
+		jbAjouterArbitre.setDisabledIcon(ApplicationCore.userRessources.getImageIcon("file.icon.add_disable", 24, 24)); //$NON-NLS-1$
+		jbAjouterArbitre.setBorderPainted(false);
+		jbAjouterArbitre.setFocusPainted(false);
+		jbAjouterArbitre.setMargin(new Insets(0, 2, 0, 2));
+		jbAjouterArbitre.setContentAreaFilled(false);
 		jbAjouterArbitre.addActionListener(this);
+		jbSupprimerArbitre.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.del", 24, 24)); //$NON-NLS-1$
+		jbSupprimerArbitre.setPressedIcon(ApplicationCore.userRessources.getImageIcon("file.icon.del_active", 24, 24)); //$NON-NLS-1$
+		jbSupprimerArbitre.setDisabledIcon(ApplicationCore.userRessources.getImageIcon("file.icon.del_disable", 24, 24)); //$NON-NLS-1$
+		jbSupprimerArbitre.setBorderPainted(false);
+		jbSupprimerArbitre.setFocusPainted(false);
+		jbSupprimerArbitre.setMargin(new Insets(0, 2, 0, 2));
+		jbSupprimerArbitre.setContentAreaFilled(false);
 		jbSupprimerArbitre.addActionListener(this);
 		jbSupprimerArbitre.setEnabled(false);
 		jbEditerArbitre.addActionListener(this);

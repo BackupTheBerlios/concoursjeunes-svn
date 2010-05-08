@@ -123,7 +123,7 @@ public class EntiteBuilder {
 	 * 
 	 * @return l'entite construite
 	 */
-	public static Entite getEntite(UUID idEntite) {
+	public static Entite getEntite(UUID idEntite) throws ObjectPersistenceException {
 		return getEntite(idEntite, null);
 	}
 	
@@ -135,11 +135,11 @@ public class EntiteBuilder {
 	 * 
 	 * @return l'entite construite
 	 */
-	public static Entite getEntite(ResultSet rs) {
+	public static Entite getEntite(ResultSet rs) throws ObjectPersistenceException {
 		return getEntite(null, rs);
 	}
 	
-	private static Entite getEntite(UUID idEntite, ResultSet rs) {
+	private static Entite getEntite(UUID idEntite, ResultSet rs) throws ObjectPersistenceException {
 		Entite entite = null;
 		if(idEntite != null)
 			entite = EntiteCache.getInstance().get(idEntite);
@@ -147,7 +147,7 @@ public class EntiteBuilder {
 			try {
 				entite = EntiteCache.getInstance().get((UUID)rs.getObject("ENTITE.ID_ENTITE")); //$NON-NLS-1$
 			} catch (SQLException e) {
-				e.printStackTrace();
+				throw new ObjectPersistenceException(e);
 			}
 		}
 		
@@ -157,18 +157,10 @@ public class EntiteBuilder {
 			if(idEntite != null) {
 				entite.setIdEntite(idEntite);
 				
-				try {
-					loadHelper.load(entite);
-				} catch (ObjectPersistenceException e) {
-					e.printStackTrace();
-				}
-			} else {
-				try {
-					resultSetLoadHelper.load(entite, rs);
-				} catch (ObjectPersistenceException e) {
-					e.printStackTrace();
-				}
-			}
+				loadHelper.load(entite);
+			} else
+				resultSetLoadHelper.load(entite, rs);
+			
 			EntiteCache.getInstance().add(entite);
 		}
 

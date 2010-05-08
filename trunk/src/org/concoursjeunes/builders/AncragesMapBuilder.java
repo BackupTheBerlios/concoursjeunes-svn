@@ -94,7 +94,9 @@ import java.sql.SQLException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.ajdeveloppement.commons.persistence.LoadHelper;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.sql.ResultSetLoadHandler;
 import org.concoursjeunes.Ancrage;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Blason;
@@ -107,6 +109,15 @@ import org.concoursjeunes.Blason;
  *
  */
 public class AncragesMapBuilder {
+	
+	private static LoadHelper<Ancrage,ResultSet> loadHelper;
+	static {
+		try {
+			loadHelper = new LoadHelper<Ancrage,ResultSet>(new ResultSetLoadHandler<Ancrage>(Ancrage.class));
+		} catch (ObjectPersistenceException e) {
+			throw new RuntimeException(e);
+		}
+	}
 	/**
 	 * Construit la tables des ancrages à partir de la refernce du blason en base
 	 * 
@@ -119,26 +130,30 @@ public class AncragesMapBuilder {
 		
 		String sql = "select * from ANCRAGES_BLASONS where NUMBLASON=?"; //$NON-NLS-1$
 		
+		PreparedStatement pstmt = null;
 		try {
-			PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
+			pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
 			
 			pstmt.setInt(1, blason.getNumblason());
 			
-			ResultSet rs2 = pstmt.executeQuery();
-			while(rs2.next()) {
-				Ancrage ancrage = new Ancrage(
-						rs2.getInt("EMPLACEMENT"), //$NON-NLS-1$
-						rs2.getDouble("ANCRAGEX"), //$NON-NLS-1$
-						rs2.getDouble("ANCRAGEY") //$NON-NLS-1$
-					);
-				ancrage.setBlason(blason);
-				ancrages.put(
-					rs2.getInt("EMPLACEMENT"), //$NON-NLS-1$
-					ancrage
-				);
+			ResultSet rs = pstmt.executeQuery();
+			try {
+				while(rs.next()) {
+					Ancrage ancrage = new Ancrage();
+					
+					loadHelper.load(ancrage, rs);
+					
+					ancrages.put(ancrage.getEmplacement(), ancrage);
+				}
+			} finally {
+				if(rs != null)
+					rs.close();
 			}
 		} catch (SQLException e) {
 			throw new ObjectPersistenceException(e);
+		} finally {
+			if(pstmt != null)
+				try { pstmt.close(); } catch(SQLException e) { }
 		}
 		
 		if(ancrages.size() == 0)

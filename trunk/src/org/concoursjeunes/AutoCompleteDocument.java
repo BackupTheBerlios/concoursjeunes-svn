@@ -94,6 +94,7 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 
+import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.concoursjeunes.event.AutoCompleteDocumentEvent;
 import org.concoursjeunes.event.AutoCompleteDocumentListener;
 import org.concoursjeunes.manager.ConcurrentManager;
@@ -461,12 +462,16 @@ public class AutoCompleteDocument extends PlainDocument {
 		Entite searchEntite = new Entite();
 		searchEntite.setVille(searchString.toUpperCase() + "%"); //$NON-NLS-1$
 		if(getLength() > 0) {
-			List<Entite> entites = EntiteManager.getEntitesInDatabase(searchEntite, "VILLEENTITE"); //$NON-NLS-1$
-			if(entites.size() > 0)
-				context.setEntite(entites.get(0));
-			else
-				context.setEntite(null);
-			context.setAutocompleteAgrement(false);
+			try {
+				List<Entite> entites = EntiteManager.getEntitesInDatabase(searchEntite, "VILLEENTITE"); //$NON-NLS-1$
+				if(entites.size() > 0)
+					context.setEntite(entites.get(0));
+				else
+					context.setEntite(null);
+				context.setAutocompleteAgrement(false);
+			} catch (ObjectPersistenceException e) {
+				e.printStackTrace();
+			}
 		} else {
 			context.setEntite(null);
 			context.setAutocompleteAgrement(true);
@@ -509,11 +514,15 @@ public class AutoCompleteDocument extends PlainDocument {
 		Entite searchEntite = new Entite();
 		searchEntite.setAgrement(searchString.toUpperCase() + "%"); //$NON-NLS-1$
 		if(getLength() > 0) {
-			List<Entite> entites = EntiteManager.getEntitesInDatabase(searchEntite, "AGREMENTENTITE"); //$NON-NLS-1$
-			if(entites.size() > 0)
-				context.setEntite(EntiteManager.getEntitesInDatabase(searchEntite, "AGREMENTENTITE").get(0)); //$NON-NLS-1$
-			else
-				context.setEntite(null);
+			try {
+				List<Entite> entites = EntiteManager.getEntitesInDatabase(searchEntite, "AGREMENTENTITE"); //$NON-NLS-1$
+				if(entites.size() > 0)
+					context.setEntite(entites.get(0));
+				else
+					context.setEntite(null);
+			} catch (ObjectPersistenceException e) {
+				e.printStackTrace();
+			}
 		} else {
 			context.setEntite(null);
 		}
