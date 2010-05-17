@@ -702,7 +702,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
     }
 	
 	public void switchToEditPane() {
-		tabbedpane.setSelectedIndex(3);
+		tabbedpane.setSelectedIndex(4);
 	}
 	
 	public void prepareState(State state) {
