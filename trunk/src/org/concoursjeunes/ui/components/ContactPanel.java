@@ -343,10 +343,10 @@ public class ContactPanel extends JPanel implements ActionListener{
 	}
 	
 	private void completePanel() {
-		if(contactBinding == null)
-			contactBinding = new BindingGroup();
+		if(contactBinding != null)
+			contactBinding.unbind();
 		
-		contactBinding.unbind();
+		contactBinding = new BindingGroup();
 		
 		jcbCivility.removeAllItems();
 		try {
@@ -363,6 +363,9 @@ public class ContactPanel extends JPanel implements ActionListener{
 			contactBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, contact, BeanProperty.create("name"), jtfName, BeanProperty.create("text"))); //$NON-NLS-1$ //$NON-NLS-2$
 			contactBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, contact, BeanProperty.create("firstName"), jtfFirstName, BeanProperty.create("text"))); //$NON-NLS-1$ //$NON-NLS-2$
 			contactBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, contact, BeanProperty.create("adress"), jtaAddressContact, BeanProperty.create("text"))); //$NON-NLS-1$ //$NON-NLS-2$
+			contactBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, contact, BeanProperty.create("zipCode"), jtfZipCodeContact, BeanProperty.create("text"))); //$NON-NLS-1$ //$NON-NLS-2$
+			contactBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, contact, BeanProperty.create("city"), jtfCityContact, BeanProperty.create("text"))); //$NON-NLS-1$ //$NON-NLS-2$
+			contactBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, contact, BeanProperty.create("note"), jtaNoteContact, BeanProperty.create("text"))); //$NON-NLS-1$ //$NON-NLS-2$
 			
 			contactBinding.bind();
 			
