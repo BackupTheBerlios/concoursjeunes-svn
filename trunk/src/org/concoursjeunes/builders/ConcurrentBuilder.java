@@ -98,6 +98,7 @@ import org.ajdeveloppement.commons.persistence.LoadHelper;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.persistence.sql.ResultSetLoadHandler;
 import org.ajdeveloppement.commons.persistence.sql.SqlLoadHandler;
+import org.ajdeveloppement.concours.Contact;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Archer;
 import org.concoursjeunes.Concurrent;
@@ -169,7 +170,7 @@ public class ConcurrentBuilder {
 				foreignKeyValue = resultSetLoadHelper.load(concurrent, resultSet);
 			}
 			
-			concurrent.setClub(EntiteBuilder.getEntite((UUID)foreignKeyValue.get(Archer.class).get("ID_ENTITE"))); //$NON-NLS-1$
+			concurrent.setEntite(EntiteBuilder.getEntite((UUID)foreignKeyValue.get(Contact.class).get("ID_ENTITE"))); //$NON-NLS-1$
 
 			if(reglement != null) {
 				CriteriaSet differentiationCriteria = null;

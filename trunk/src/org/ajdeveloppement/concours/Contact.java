@@ -101,6 +101,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.ajdeveloppement.commons.persistence.ObjectPersistence;
@@ -113,6 +114,9 @@ import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
 import org.ajdeveloppement.commons.persistence.sql.SqlTable;
 import org.ajdeveloppement.commons.sql.SqlManager;
 import org.concoursjeunes.ApplicationCore;
+import org.concoursjeunes.Entite;
+
+import com.sun.xml.internal.bind.CycleRecoverable;
 
 /**
  * Represent a contact personn
@@ -123,7 +127,7 @@ import org.concoursjeunes.ApplicationCore;
 @XmlAccessorType(XmlAccessType.FIELD)
 @SqlTable(name="CONTACT")
 @SqlPrimaryKey(fields="ID_CONTACT")
-public class Contact implements ObjectPersistence, Cloneable {
+public class Contact implements ObjectPersistence, Cloneable,CycleRecoverable {
 	
 	// [start] Helper persistence
 	private static StoreHelper<Contact> helper = null;
@@ -140,7 +144,6 @@ public class Contact implements ObjectPersistence, Cloneable {
 	//utilisé pour donnée un identifiant unique à la sérialisation de l'objet
 	@XmlID
 	@XmlAttribute(name="id")
-	@SuppressWarnings("unused")
 	private String xmlId;
 	
 	@SqlField(name="ID_CONTACT")
@@ -167,6 +170,10 @@ public class Contact implements ObjectPersistence, Cloneable {
 	
 	@SqlField(name="NOTE")
 	private String note;
+	
+	@XmlIDREF
+	@SqlForeignKey(mappedTo="ID_ENTITE")
+	private Entite entite = new Entite();
 	
 	private List<Coordinate> coordinates = new ArrayList<Coordinate>();
 	
@@ -216,6 +223,8 @@ public class Contact implements ObjectPersistence, Cloneable {
 	 * @return idContact
 	 */
 	public UUID getIdContact() {
+		if(idContact == null)
+			idContact = UUID.randomUUID();
 		return idContact;
 	}
 
@@ -427,9 +436,27 @@ public class Contact implements ObjectPersistence, Cloneable {
 	 * @return the identity of contact
 	 */
 	public String getFullNameWithCivility() {
-		return civility.getAbreviation() + " " + name + " " + firstName; //$NON-NLS-1$ //$NON-NLS-2$
+		return ((civility.getAbreviation() != null) ? civility.getAbreviation() + " " : "")  + name + " " + firstName; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 	
+	/**
+	 * @param entite entite à définir
+	 */
+	public void setEntite(Entite entite) {
+		Entite oldValue = this.entite;
+		
+		this.entite = entite;
+		
+		pcs.firePropertyChange("entite", oldValue, entite); //$NON-NLS-1$
+	}
+
+	/**
+	 * @return entite
+	 */
+	public Entite getEntite() {
+		return entite;
+	}
+
 	/**
 	 * Save contact in database
 	 */
@@ -474,10 +501,23 @@ public class Contact implements ObjectPersistence, Cloneable {
 		if(idContact == null)
 			idContact = UUID.randomUUID();
 		xmlId = idContact.toString();
+		
+		entite.beforeMarshal(marshaller);
 	}
 	
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
 		idContact = UUID.fromString(xmlId);
+	}
+	
+	@Override
+	public Object onCycleDetected(Context arg0) {
+		// TODO Raccord de méthode auto-généré
+		return null;
+	}
+	
+	@Override
+	public String toString() {
+		return getFullNameWithCivility();
 	}
 	
 	/**

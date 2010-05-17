@@ -87,7 +87,17 @@
 package org.concoursjeunes;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.ajdeveloppement.commons.persistence.ObjectPersistence;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
@@ -96,7 +106,9 @@ import org.ajdeveloppement.commons.persistence.sql.SqlField;
 import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
 import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
 import org.ajdeveloppement.commons.persistence.sql.SqlTable;
+import org.ajdeveloppement.concours.Contact;
 import org.ajdeveloppement.concours.cache.EntiteCache;
+import org.ajdeveloppement.concours.managers.ContactManager;
 
 /**
  * Entité organisationnelle.<br>
@@ -110,6 +122,7 @@ import org.ajdeveloppement.concours.cache.EntiteCache;
  * 
  * @author Aurélien JEOFFRAY
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 @SqlTable(name="ENTITE")
 @SqlPrimaryKey(fields={"ID_ENTITE"})
 public class Entite implements ObjectPersistence {
@@ -119,25 +132,34 @@ public class Entite implements ObjectPersistence {
     public static final int CD = 2;
     public static final int CLUB = 3;
     
+    //utilisé pour donnée un identifiant unique à la sérialisation de l'objet
+	@XmlID
+	@XmlAttribute(name="id", required=true)
+	private String xmlId;
+    
+	@XmlTransient
     @SqlField(name="ID_ENTITE")
-    private UUID idEntite = UUID.randomUUID();
+    private UUID idEntite;
     @SqlField(name="NOMENTITE")
-    private String nom        	= ""; //$NON-NLS-1$
+    private String nom;
     @SqlField(name="AGREMENTENTITE")
-    private String agrement		= ""; //$NON-NLS-1$
+    private String agrement;
     @SqlField(name="ADRESSEENTITE")
-    private String adresse   	= ""; //$NON-NLS-1$
+    private String adresse;
     @SqlField(name="CODEPOSTALENTITE")
-    private String codePostal	= ""; //$NON-NLS-1$
+    private String codePostal;
     @SqlField(name="VILLEENTITE")
-    private String ville      	= ""; //$NON-NLS-1$
+    private String ville;
     @SqlField(name="NOTEENTITE")
-    private String note		 	= ""; //$NON-NLS-1$
+    private String note;
     @SqlField(name="TYPEENTITE")
     private int type          	= CLUB;
     
+    @XmlAttribute
     @SqlField(name="REMOVABLE")
     private boolean removable	= true;
+    
+    private transient List<Contact> contacts = null;
 
     private static StoreHelper<Entite> helper = null;
 	static {
@@ -187,6 +209,8 @@ public class Entite implements ObjectPersistence {
 	 * @return l'adresse de l'entite
 	 */
     public String getAdresse() {
+    	if(adresse == null)
+    		return ""; //$NON-NLS-1$
         return adresse;
     }
     
@@ -197,6 +221,8 @@ public class Entite implements ObjectPersistence {
 	 * @return le numéro d'agrement
 	 */
     public String getAgrement() {
+    	if(agrement == null)
+    		return ""; //$NON-NLS-1$
         return agrement;
     }
     
@@ -207,6 +233,8 @@ public class Entite implements ObjectPersistence {
 	 * @return le code postal
 	 */
     public String getCodePostal() {
+    	if(codePostal == null)
+    		return ""; //$NON-NLS-1$
         return codePostal;
     }
     
@@ -217,6 +245,8 @@ public class Entite implements ObjectPersistence {
 	 * @return le nom
 	 */
     public String getNom() {
+    	if(nom == null)
+    		return ""; //$NON-NLS-1$
         return nom;
     }
     
@@ -239,6 +269,8 @@ public class Entite implements ObjectPersistence {
 	 * @return la ville de l'entite
 	 */
     public String getVille() {
+    	if(ville == null)
+    		return ""; //$NON-NLS-1$
         return ville;
     }
     
@@ -249,8 +281,6 @@ public class Entite implements ObjectPersistence {
 	 * @param adresse l'adresse de l'entite
 	 */
     public void setAdresse(String adresse) {
-    	if(adresse == null)
-    		adresse = ""; //$NON-NLS-1$
         this.adresse = adresse;
     }
     
@@ -271,8 +301,6 @@ public class Entite implements ObjectPersistence {
 	 * @param codePostal le code postal
 	 */
     public void setCodePostal(String codePostal) {
-    	if(codePostal == null)
-    		codePostal = ""; //$NON-NLS-1$
         this.codePostal = codePostal;
     }
     
@@ -308,12 +336,7 @@ public class Entite implements ObjectPersistence {
         this.ville = ville;
     }
     
-    @Override
-    public String toString() {
-    	if((nom == null || nom.isEmpty()) && ville != null && !ville.isEmpty())
-    		return ville;
-        return nom;
-    }
+   
 
 	/**
 	 * Retourne une note ou commentaire préalablement
@@ -331,17 +354,55 @@ public class Entite implements ObjectPersistence {
 	 * @param note une note sur l'entite
 	 */
 	public void setNote(String note) {
-		if(note == null)
-			note = ""; //$NON-NLS-1$
 		this.note = note;
 	}
 	
+	/**
+	 * @param removable removable à définir
+	 */
+	public void setRemovable(boolean removable) {
+		this.removable = removable;
+	}
+
+	/**
+	 * @return removable
+	 */
+	public boolean isRemovable() {
+		return removable;
+	}
+	
+	/**
+	 * @param contacts contacts à définir
+	 */
+	public void setContacts(List<Contact> contacts) {
+		this.contacts = contacts;
+	}
+
+	/**
+	 * @return contacts
+	 */
+	public List<Contact> getContacts() {
+		if(contacts == null && idEntite != null) { //la liste des contacts est chargé en lazy loading
+			try {
+				contacts = ContactManager.getContactsForEntity(this);
+			} catch (ObjectPersistenceException e) {
+				contacts = new ArrayList<Contact>();
+				e.printStackTrace();
+			}
+		}
+		return contacts;
+	}
+
 	/**
 	 * Sauvegarde l'entite dans la base de donnée
 	 */
 	@Override
 	public void save() throws ObjectPersistenceException {
+		if(idEntite == null)
+			idEntite = UUID.randomUUID();
+		
 		helper.save(this);
+		
 		//ajoute l'entrée au cache si nécessaire
 		if(!EntiteCache.getInstance().containsKey(idEntite))
 			EntiteCache.getInstance().add(this);
@@ -352,6 +413,24 @@ public class Entite implements ObjectPersistence {
 		helper.delete(this);
 		//retire l'objet du cache
 		EntiteCache.getInstance().remove(idEntite);
+	}
+	
+	public void beforeMarshal(Marshaller marshaller) {
+		if(idEntite == null)
+			idEntite = UUID.randomUUID();
+		xmlId = idEntite.toString();
+	}
+	
+	public void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
+		if(xmlId != null)
+			idEntite = UUID.fromString(xmlId);
+	}
+	
+	@Override
+	public String toString() {
+		if ((nom == null || nom.isEmpty()) && ville != null && !ville.isEmpty())
+			return ville;
+		return (nom == null) ? "" : nom; //$NON-NLS-1$
 	}
 
 	/* (non-Javadoc)
@@ -384,20 +463,4 @@ public class Entite implements ObjectPersistence {
 			return false;
 		return true;
 	}
-
-	/**
-	 * @param removable removable à définir
-	 */
-	public void setRemovable(boolean removable) {
-		this.removable = removable;
-	}
-
-	/**
-	 * @return removable
-	 */
-	public boolean isRemovable() {
-		return removable;
-	}
-	
-	
 }

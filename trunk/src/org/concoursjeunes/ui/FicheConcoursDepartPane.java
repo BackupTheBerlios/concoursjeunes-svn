@@ -109,7 +109,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import javax.swing.*;
+import javax.swing.AbstractListModel;
+import javax.swing.Box;
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTree;
+import javax.swing.ListSelectionModel;
+import javax.swing.SortOrder;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
@@ -717,14 +734,14 @@ public class FicheConcoursDepartPane extends JPanel
 			}
 		} else {
 			if (e.getClickCount() == 2) {
-				ficheConcoursPane.openConcurrentDialog((Concurrent) ajxlConcurrent.getSelectedValue(), getSortedConcurrentInList());
+				ficheConcoursPane.openConcurrentDialog((Concurrent) lstModelConcurrent.getElementAt(ajxlConcurrent.convertIndexToModel(ajxlConcurrent.getSelectedIndex())), getSortedConcurrentInList());
 			} else if (e.getModifiers() == InputEvent.BUTTON3_MASK) { //
 				int elemIndex = ajxlConcurrent.locationToIndex(e.getPoint());
 				//elemIndex = ajxlConcurrent.convertIndexToModel(elemIndex);
 				if(elemIndex > -1) {
 					ajxlConcurrent.setSelectedIndex(elemIndex);
 	
-					Concurrent tmpConcurrent = (Concurrent) ajxlConcurrent.getSelectedValue();
+					Concurrent tmpConcurrent = (Concurrent) lstModelConcurrent.getElementAt(ajxlConcurrent.convertIndexToModel(ajxlConcurrent.getSelectedIndex()));
 	
 					if(tmpConcurrent != null) {
 						if (tmpConcurrent.getCible() > 0) {
@@ -761,7 +778,7 @@ public class FicheConcoursDepartPane extends JPanel
 	 */
 	public void mousePressed(MouseEvent e) {
 		if (e.getSource() == ajxlConcurrent) {
-			dragObject = ajxlConcurrent.getSelectedValue();
+			dragObject = lstModelConcurrent.getElementAt(ajxlConcurrent.convertIndexToModel(ajxlConcurrent.getSelectedIndex()));
 		} else if (e.getSource() == treeTarget) {
 			Point p = e.getPoint();
 			TreePath tp = treeTarget.getPathForLocation(p.x, p.y);
@@ -923,7 +940,6 @@ public class FicheConcoursDepartPane extends JPanel
 	
 			// recupere le noeud destination et son parent
 			Object node = destinationPath.getLastPathComponent();
-			System.out.println(ajxlConcurrent.getSelectedValue());
 			if (node instanceof Concurrent) {
 				if(node != ajxlConcurrent.getSelectedValue())
 					ajxlConcurrent.setSelectedIndex(ajxlConcurrent.convertIndexToView(lstModelConcurrent.indexOf(node)));

@@ -155,9 +155,9 @@ public class TargetLibelle {
 
 		Hashtable<Entite, Integer> nbArcherByClub = new Hashtable<Entite, Integer>();
 		for (Concurrent concurrent : target.getAllConcurrents()) {
-			if(!nbArcherByClub.containsKey(concurrent.getClub()))
-				nbArcherByClub.put(concurrent.getClub(), 0);
-			nbArcherByClub.put(concurrent.getClub(), nbArcherByClub.get(concurrent.getClub())+1);
+			if(!nbArcherByClub.containsKey(concurrent.getEntite()))
+				nbArcherByClub.put(concurrent.getEntite(), 0);
+			nbArcherByClub.put(concurrent.getEntite(), nbArcherByClub.get(concurrent.getEntite())+1);
 		}
 		
 		if (nbArcherByClub.size() == 1 && target.getNbArcher() > 1)

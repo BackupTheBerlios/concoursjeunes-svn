@@ -393,7 +393,7 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 		ArrayList<Equipe> equipes = new ArrayList<Equipe>();
 
 		for (Equipe equipe : tempEquipes.list(criteriaSet)) {
-			if (club == null || equipe.getMembresEquipe().get(0).getClub().equals(club)) {
+			if (club == null || equipe.getMembresEquipe().get(0).getEntite().equals(club)) {
 				// injecter l'equipes dans sa catégorie de classement
 				equipes.add(equipe);
 			}
@@ -469,7 +469,7 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 
 		// donner à l'équipe le nom du club du premier concourrent
 		Concurrent firstConcurrent = (Concurrent) ((DefaultMutableTreeNode) selectedPaths[0].getLastPathComponent()).getUserObject();
-		String strEquipeName = firstConcurrent.getClub().getNom();
+		String strEquipeName = firstConcurrent.getEntite().getNom();
 
 		int i = 2;
 		while (tempEquipes.contains(strEquipeName)) {

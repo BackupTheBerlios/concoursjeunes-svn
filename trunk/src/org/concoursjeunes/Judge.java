@@ -88,12 +88,16 @@
  */
 package org.concoursjeunes;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
 /**
  * Représente un arbitre sur un concours
  * 
  * @author Aurélien JEOFFRAY
  *
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Judge extends Archer {
 	private boolean responsable = false;
 	
@@ -110,7 +114,7 @@ public class Judge extends Archer {
 		setName(archer.getName());
 		setFirstName(archer.getFirstName());
 		setNumLicenceArcher(archer.getNumLicenceArcher());
-		setClub(archer.getClub());
+		setEntite(archer.getEntite());
 		setCertificat(archer.isCertificat());
 		setHandicape(archer.isHandicape());
 	}

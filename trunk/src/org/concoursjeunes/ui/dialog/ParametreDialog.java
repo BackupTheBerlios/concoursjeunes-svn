@@ -175,7 +175,7 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 	private JButton jbAjouterArbitre = new JButton();
 	@Localizable(value="",tooltip="bouton.supprimer")
 	private JButton jbSupprimerArbitre = new JButton();
-	@Localizable("bouton.editer")
+	@Localizable(value="",tooltip="bouton.editer")
 	private JButton jbEditerArbitre = new JButton();
 	private AJList<Judge> jlArbitres = new AJList<Judge>();
 
@@ -301,6 +301,13 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 		jbSupprimerArbitre.setContentAreaFilled(false);
 		jbSupprimerArbitre.addActionListener(this);
 		jbSupprimerArbitre.setEnabled(false);
+		jbEditerArbitre.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.edit", 24, 24)); //$NON-NLS-1$
+		jbEditerArbitre.setPressedIcon(ApplicationCore.userRessources.getImageIcon("file.icon.edit_active", 24, 24)); //$NON-NLS-1$
+		jbEditerArbitre.setDisabledIcon(ApplicationCore.userRessources.getImageIcon("file.icon.edit_disable", 24, 24)); //$NON-NLS-1$
+		jbEditerArbitre.setBorderPainted(false);
+		jbEditerArbitre.setFocusPainted(false);
+		jbEditerArbitre.setMargin(new Insets(0, 2, 0, 2));
+		jbEditerArbitre.setContentAreaFilled(false);
 		jbEditerArbitre.addActionListener(this);
 		jbEditerArbitre.setEnabled(false);
 		jbValider.addActionListener(this);

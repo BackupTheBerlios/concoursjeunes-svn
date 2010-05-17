@@ -96,6 +96,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+
 import org.concoursjeunes.builders.ReglementBuilder;
 
 /**
@@ -104,6 +109,7 @@ import org.concoursjeunes.builders.ReglementBuilder;
  * @author Aurélien Jeoffray
  * @version 3.1
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Parametre extends DefaultParameters {
 	
 	private String lieuConcours		= ""; //$NON-NLS-1$
@@ -112,7 +118,11 @@ public class Parametre extends DefaultParameters {
 	private Date dateFinConcours	= new Date();
 	private boolean open			= true;
 	private boolean duel			= false;
-	private List<String> arbitres	= new ArrayList<String>();
+	@XmlElementWrapper(name="arbitres",required=false)
+	@XmlElement(name="arbitre")
+	private List<String> arbitres;
+	@XmlElementWrapper(name="judges",required=false)
+	@XmlElement(name="judge")
 	private List<Judge> judges		= new ArrayList<Judge>();
 	private Reglement reglement		= new Reglement();
 
@@ -121,7 +131,7 @@ public class Parametre extends DefaultParameters {
 	
 	private boolean reglementLock = false;
 	
-	private final PropertyChangeSupport pcs = new PropertyChangeSupport( this );
+	private transient final PropertyChangeSupport pcs = new PropertyChangeSupport( this );
 
 	/**
 	 * 
@@ -308,6 +318,8 @@ public class Parametre extends DefaultParameters {
 	 */
 	@Deprecated
 	public List<String> getArbitres() {
+		if(arbitres == null)
+			return new ArrayList<String>();
 		return arbitres;
 	}
 

@@ -153,4 +153,12 @@ public class MetaDataFichesConcours {
 	public boolean contains(MetaDataFicheConcours metaDataFicheConcours) {
 		return fiches.contains(metaDataFicheConcours);
 	}
+	
+	public boolean containsFileName(String fileName) {
+		for(MetaDataFicheConcours fiche : fiches) {
+			if(fiche.getFilenameConcours().equals(fileName))
+				return true;
+		}
+		return false;
+	}
 }

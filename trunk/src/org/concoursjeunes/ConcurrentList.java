@@ -94,7 +94,11 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Collection des concurrents présent sur le concours
@@ -103,6 +107,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @version  3.3
  */
 @XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ConcurrentList {
 	
 	public enum SortCriteria {
@@ -124,7 +129,9 @@ public class ConcurrentList {
 		SORT_BY_CLUBS
 	}
 
+	@XmlElement(name="concurrent")
 	private ArrayList<Concurrent> archList  = new ArrayList<Concurrent>();
+	@XmlTransient
 	private Parametre parametre;
 
 	//Constructeur Obligatoire pour la sérialisation XML
@@ -263,7 +270,7 @@ public class ConcurrentList {
 
 		//recherche
 		for(Concurrent concurrent : archList) {
-			if(concurrent.getClub().equals(compagnie)
+			if(concurrent.getEntite().equals(compagnie)
 					&& (criteriaSet == null || 
 							criteriaSet.equals(concurrent.getCriteriaSet().getFilteredCriteriaSet(criteriaFilter)))
 							&& (depart == -1 || concurrent.getDepart() == depart))
@@ -541,13 +548,13 @@ public class ConcurrentList {
 			if(depart == -1 || concurrent.getDepart() == depart) {
 				boolean add = true;
 				for(Entite dbtemp : alCie) {
-					if(dbtemp.equals(concurrent.getClub())) {
+					if(dbtemp.equals(concurrent.getEntite())) {
 						add = false;
 						break;
 					}
 				}
 				if(add) {
-					alCie.add(concurrent.getClub());
+					alCie.add(concurrent.getEntite());
 				}
 			}
 		}
@@ -813,7 +820,7 @@ public class ConcurrentList {
 	public static class ClubComparator implements Comparator<Concurrent> {
 		@Override
 		public int compare(Concurrent o1, Concurrent o2) {
-			return o1.getClub().getNom().compareToIgnoreCase(o2.getClub().getNom());
+			return o1.getEntite().getNom().compareToIgnoreCase(o2.getEntite().getNom());
 		}
 	}
 	

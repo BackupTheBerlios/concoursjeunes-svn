@@ -90,12 +90,16 @@ package org.concoursjeunes;
 
 import java.text.DecimalFormat;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
 /**
  * Représente une position sur le pas de tir
  * 
  * @author Aurélien JEOFFRAY
  *
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class TargetPosition implements Cloneable {
 	private int target = 0;
 	private int position = 0;

@@ -389,13 +389,13 @@ public class ArbitreDialog extends JDialog implements AutoCompleteDocumentListen
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == jbSelectArbitre) {
 			try {
-				Concurrent tmparbitre = new Concurrent();
+				Concurrent tmparbitre;
 	        	ConcurrentListDialog cld = concurrentListDialog.get(30, TimeUnit.SECONDS);
 	            
 	            cld.setFilter(filter);
 				cld.setVisible(true);
 				if (cld.isValider()) {
-					cld.initConcurrent(tmparbitre);
+					tmparbitre = cld.getSelectedConcurrent();
 					setJudge(new Judge(tmparbitre));
 				}
 			} catch (InterruptedException e1) {

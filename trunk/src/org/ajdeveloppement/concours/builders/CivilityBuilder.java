@@ -144,7 +144,12 @@ public class CivilityBuilder {
 				
 				loadHelper.load(civility);
 			} else {
-				resultSetLoadHelper.load(civility, rs);
+				try {
+					if(rs.getObject("CIVILITY.ID_CIVILITY") != null) //$NON-NLS-1$
+						resultSetLoadHelper.load(civility, rs);
+				} catch (SQLException e) {
+					throw new ObjectPersistenceException(e);
+				}
 			}
 			
 			CivilityCache.getInstance().add(civility);

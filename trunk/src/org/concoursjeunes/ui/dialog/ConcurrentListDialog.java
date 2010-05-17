@@ -100,7 +100,20 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.RowFilter;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.table.AbstractTableModel;
@@ -177,7 +190,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 				filter = new Archer();
 				Entite entite = new Entite();
 				entite.setAgrement(profile.getConfiguration().getClub().getAgrement().substring(0, 2) + "%"); //$NON-NLS-1$
-				filter.setClub(entite);
+				filter.setEntite(entite);
 				filtreligue = true;
 			}
 		}
@@ -421,7 +434,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 			return;
 		String numLicence = filter.getNumLicenceArcher().replaceAll("%", ""); //$NON-NLS-1$ //$NON-NLS-2$
 		String nom = filter.getName().replaceAll("%", ""); //$NON-NLS-1$ //$NON-NLS-2$
-		String club = filter.getClub().getNom().replaceAll("%", ""); //$NON-NLS-1$ //$NON-NLS-2$
+		String club = filter.getEntite().getNom().replaceAll("%", ""); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		if (!numLicence.isEmpty()) {
 			jtfFilterLicence.setText(numLicence);
@@ -442,19 +455,15 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	 * @param concurrent -
 	 *            l'objet concurrent à initialiser
 	 */
-	public void initConcurrent(Concurrent concurrent) {
+	public Concurrent getSelectedConcurrent() {
 
 		if (dtm != null) {
 			int rowIndex = jTable.convertRowIndexToModel(jTable.getSelectedRow());
 
-			concurrent.setNumLicenceArcher(dtm.getConcurrentAtRow(rowIndex).getNumLicenceArcher());
-			concurrent.setName(dtm.getConcurrentAtRow(rowIndex).getName());
-			concurrent.setFirstName(dtm.getConcurrentAtRow(rowIndex).getFirstName());
-			concurrent.setClub(dtm.getConcurrentAtRow(rowIndex).getClub());
-			concurrent.setCriteriaSet(dtm.getConcurrentAtRow(rowIndex).getCriteriaSet());
-			concurrent.setCertificat(dtm.getConcurrentAtRow(rowIndex).isCertificat());
-			concurrent.setSurclassement(dtm.getConcurrentAtRow(rowIndex).isSurclassement());
+			return dtm.getConcurrentAtRow(rowIndex);
 		}
+		
+		return null;
 	}
 
 	/**
@@ -624,7 +633,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 				case 2:
 					return curConcurrent.getFirstName();
 				case 3:
-					return curConcurrent.getClub().getNom();
+					return curConcurrent.getEntite().getNom();
 				case 4:
 					String criteres = ""; //$NON-NLS-1$
 					if(reglement != null) {

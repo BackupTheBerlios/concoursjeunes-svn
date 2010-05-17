@@ -95,6 +95,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.Map.Entry;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
 import org.ajdeveloppement.commons.persistence.ObjectPersistence;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.persistence.StoreHelper;
@@ -112,6 +115,7 @@ import org.concoursjeunes.ApplicationCore;
  * 
  * @author Aurélien JEOFFRAY
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 @SqlTable(name="CATEGORIE_CONTACT")
 @SqlPrimaryKey(fields="NUM_CATEGORIE_CONTACT",generatedidField=@SqlGeneratedIdField(name="NUM_CATEGORIE_CONTACT",type=Types.INTEGER))
 public class CategoryContact implements ObjectPersistence{
@@ -173,7 +177,7 @@ public class CategoryContact implements ObjectPersistence{
 		
 		helper.save(this);
 		
-		if(numCategoryContact == 0)
+		if(!CategoryContactCache.getInstance().containsKey(numCategoryContact))
 			CategoryContactCache.getInstance().add(this);
 	}
 	

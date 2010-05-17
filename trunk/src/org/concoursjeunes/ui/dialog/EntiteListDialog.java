@@ -99,7 +99,6 @@ import java.awt.event.MouseListener;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -130,9 +129,7 @@ import javax.swing.table.TableRowSorter;
 import org.ajdeveloppement.apps.localisation.Localizable;
 import org.ajdeveloppement.apps.localisation.LocalizationHandler;
 import org.ajdeveloppement.apps.localisation.Localizator;
-import org.ajdeveloppement.commons.persistence.LoadHelper;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
-import org.ajdeveloppement.commons.persistence.sql.ResultSetLoadHandler;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
 import org.ajdeveloppement.swingxext.localisation.JXHeaderLocalisationHandler;
@@ -140,6 +137,7 @@ import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Entite;
 import org.concoursjeunes.Federation;
 import org.concoursjeunes.Profile;
+import org.concoursjeunes.builders.EntiteBuilder;
 import org.concoursjeunes.manager.FederationManager;
 import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.painter.GlossPainter;
@@ -148,15 +146,6 @@ import org.jdesktop.swingx.painter.GlossPainter;
  * @author Aurélien JEOFFRAY
  */
 public class EntiteListDialog extends JDialog implements ActionListener, MouseListener, CaretListener, ListSelectionListener {
-	
-	private static LoadHelper<Entite,ResultSet> resultSetLoadHelper;
-	static {
-		try {
-			resultSetLoadHelper = new LoadHelper<Entite, ResultSet>(new ResultSetLoadHandler<Entite>(Entite.class));
-		} catch(ObjectPersistenceException e) {
-			DisplayableErrorHelper.displayException(e);
-		}
-	}
 
 	public static final int VALIDER = 1;
 	public static final int ANNULER = 2;
@@ -189,6 +178,8 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 	private JButton jbAdd			= new JButton();
 	@Localizable(value="",tooltip="bouton.supprimer")
 	private JButton jbDelete		= new JButton();
+	@Localizable(value="",tooltip="bouton.editer")
+	private JButton jbEdit			= new JButton();
 	
 	@Localizable("bouton.valider")
 	private JButton jbValider       = new JButton();
@@ -265,6 +256,16 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		jbDelete.setContentAreaFilled(false);
 		jbDelete.addActionListener(this);
 		jbDelete.setEnabled(false);
+		
+		jbEdit.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.edit", 24, 24)); //$NON-NLS-1$
+		jbEdit.setPressedIcon(ApplicationCore.userRessources.getImageIcon("file.icon.edit_active", 24, 24)); //$NON-NLS-1$
+		jbEdit.setDisabledIcon(ApplicationCore.userRessources.getImageIcon("file.icon.edit_disable", 24, 24)); //$NON-NLS-1$
+		jbEdit.setBorderPainted(false);
+		jbEdit.setFocusPainted(false);
+		jbEdit.setMargin(new Insets(0, 2, 0, 2));
+		jbEdit.setContentAreaFilled(false);
+		jbEdit.addActionListener(this);
+		jbEdit.setEnabled(false);
 
 		jpFederation.setLayout(new FlowLayout(FlowLayout.LEFT));
 		jpFederation.add(jlFederation);
@@ -275,6 +276,7 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		c.anchor = GridBagConstraints.WEST;
 		c.gridy = 0;
 		c.weightx = 1.0;
+		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridwidth = 6;
 		gridbagComposer.addComponentIntoGrid(jxhHeader, c);
 		c.gridy++;
@@ -298,6 +300,7 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		c.weightx = 0.0;
 		gridbagComposer.addComponentIntoGrid(jbAdd, c);
 		gridbagComposer.addComponentIntoGrid(jbDelete, c);
+		gridbagComposer.addComponentIntoGrid(jbEdit, c);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 1.0;
 		gridbagComposer.addComponentIntoGrid(Box.createHorizontalGlue(), c);
@@ -348,6 +351,12 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 
 		return dtm.getEntiteAtRow(row);
 	}
+	
+	private void showEntiteDialog() {
+		EntiteDialog ed = new EntiteDialog(parentframe, profile);
+		ed.setEntite(dtm.getEntiteAtRow(jTable.convertRowIndexToModel(jTable.getSelectedRow())));
+		ed.showEntiteDialog(ed.getEntite().isRemovable());
+	}
 
 	/**
 	 * @return l'action réalisé sur la boite de dialogue
@@ -392,6 +401,8 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 				
 				dtm.refreshModel();
 			}
+		} else if(ae.getSource() == jbEdit) {
+			showEntiteDialog();
 		}
 	}
 
@@ -410,9 +421,7 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 
 	public void mouseClicked(MouseEvent e) {
 		if(e.getClickCount() == 2) {
-			EntiteDialog ed = new EntiteDialog(parentframe, profile);
-			ed.setEntite(dtm.getEntiteAtRow(jTable.convertRowIndexToModel(jTable.getSelectedRow())));
-			ed.showEntiteDialog(ed.getEntite().isRemovable());
+			showEntiteDialog();
 		}
 	}
 
@@ -434,6 +443,10 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 				if(entite != null) {
 					jbDelete.setEnabled(entite.isRemovable());
 				}
+				jbEdit.setEnabled(true);
+			} else {
+				jbDelete.setEnabled(false);
+				jbEdit.setEnabled(false);
 			}
 		}
 	}
@@ -445,14 +458,19 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		private ArrayList<String> columnName = new ArrayList<String>();
 
 		private PreparedStatement pstmt = null;
+		private PreparedStatement pstmtCountRow = null;
 		private ResultSet rs;
 		private Entite curEntite = null;
+		private int nbRows = 0;
 		private int curIndex = 0;
 
 		public EntiteTableModel() {
 			try {
 				pstmt = ApplicationCore.dbConnection.prepareStatement(
 						"select * from Entite order by VilleEntite",ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);//$NON-NLS-1$
+				pstmt.setFetchSize(200);
+				
+				pstmtCountRow = ApplicationCore.dbConnection.prepareStatement("select count(*) as NbRows from Entite"); //$NON-NLS-1$
 
 				rs = pstmt.executeQuery();
 			} catch (SQLException e) {
@@ -498,20 +516,19 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		 * @see javax.swing.table.TableModel#getRowCount()
 		 */
 		public int getRowCount() {
-			try {
-				Statement stmt = ApplicationCore.dbConnection.createStatement();
-
-				ResultSet rs = stmt.executeQuery("SELECT COUNT(*) as NbRows from Entite"); //$NON-NLS-1$
-
-				if(rs.next()) {
-					int nb = rs.getInt("NbRows"); //$NON-NLS-1$
-					return nb;
+			if(nbRows == 0) {
+				try {
+					ResultSet rs = pstmtCountRow.executeQuery();
+	
+					if(rs.next()) {
+						nbRows = rs.getInt("NbRows"); //$NON-NLS-1$
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
 				}
-			} catch (SQLException e) {
-				e.printStackTrace();
 			}
 
-			return 0;
+			return nbRows;
 		}
 
 		/**
@@ -570,6 +587,9 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 					rs.close();
 				rs = pstmt.executeQuery();
 				
+				nbRows = 0;
+				getRowCount();
+				
 				fireTableChanged(new TableModelEvent(this));
 			} catch (SQLException e) {
 				DisplayableErrorHelper.displayException(e);
@@ -578,10 +598,10 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		}
 
 		private Entite loadEntite(int index) {
-			Entite entite = new Entite();
+			Entite entite = null;
 			try {
 				if(rs.absolute(index + 1)) {
-					resultSetLoadHelper.load(entite, rs);
+					entite = EntiteBuilder.getEntite(rs);
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();

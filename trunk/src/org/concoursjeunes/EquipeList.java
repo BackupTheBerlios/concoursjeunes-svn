@@ -89,6 +89,10 @@ package org.concoursjeunes;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+
 import org.ajdeveloppement.commons.ArraysUtils;
 
 /**
@@ -97,8 +101,10 @@ import org.ajdeveloppement.commons.ArraysUtils;
  * @author  Aurélien Jeoffray
  * @version 1.1
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class EquipeList implements Cloneable {
    
+	@XmlElement(name="equipe")
     private List<Equipe> equipeList  = new ArrayList<Equipe>();
     private int nbMembresRetenu = 3;
     

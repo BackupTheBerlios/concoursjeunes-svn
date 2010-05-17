@@ -321,7 +321,7 @@ public class Profile {
 
 		configuration.getMetaDataFichesConcours().remove(metaDataFicheConcours);
 
-		if (new File(userRessources.getConcoursPathForProfile(this) + File.separator + metaDataFicheConcours.getFilenameConcours()).delete()) {
+		if (new File(userRessources.getConcoursPathForProfile(this), metaDataFicheConcours.getFilenameConcours()).delete()) {
 			configuration.save();
 
 			fireFicheConcoursDeleted(null);
@@ -374,9 +374,10 @@ public class Profile {
 	 * 
 	 * @throws ConfigurationException
 	 * @throws IOException
+	 * @throws JAXBException 
 	 */
 	public void restoreFicheConcours(MetaDataFicheConcours metaDataFicheConcours)
-			throws NullConfigurationException, IOException {
+			throws NullConfigurationException, IOException, JAXBException {
 		if (configuration == null)
 			throw new NullConfigurationException("la configuration est null"); //$NON-NLS-1$
 

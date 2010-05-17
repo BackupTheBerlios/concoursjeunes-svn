@@ -88,7 +88,9 @@
  */
 package org.ajdeveloppement.concours.builders;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.UUID;
 
@@ -115,6 +117,8 @@ public class ContactBuilder {
 		}
 	}
 	
+	private static PreparedStatement pstmtCategoriesContact;
+	
 	public static Contact getContact(UUID idContact) throws ObjectPersistenceException {
 		return getContact(idContact, null);
 	}
@@ -136,7 +140,20 @@ public class ContactBuilder {
 			
 			contact.setCivility(CivilityBuilder.getCivility(rs));
 		}
-
+		
+		try {
+			if(pstmtCategoriesContact == null)
+				pstmtCategoriesContact = ApplicationCore.dbConnection.prepareStatement("select NUM_CATEGORIE_CONTACT from ASSOCIER_CATEGORIE_CONTACT where ID_CONTACT = ?"); //$NON-NLS-1$
+			
+			pstmtCategoriesContact.setObject(1, contact.getIdContact());
+			
+			ResultSet rsCategoriesContact = pstmtCategoriesContact.executeQuery();
+			while(rsCategoriesContact.next()) {
+				contact.getCategories().add(CategoryContactBuilder.getCategoryContact(rsCategoriesContact.getInt("NUM_CATEGORIE_CONTACT"))); //$NON-NLS-1$
+			}
+		} catch(SQLException e) {
+			throw new ObjectPersistenceException(e);
+		}
 		return contact;
 	}
 }

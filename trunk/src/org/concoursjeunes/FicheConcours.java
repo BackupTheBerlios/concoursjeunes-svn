@@ -102,18 +102,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentMap;
 
 import javax.swing.event.EventListenerList;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.ajdeveloppement.commons.AJTemplate;
 import org.ajdeveloppement.commons.XmlUtils;
 import org.ajdeveloppement.commons.io.XMLSerializer;
-import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
-import org.concoursjeunes.builders.AncragesMapBuilder;
-import org.concoursjeunes.builders.BlasonBuilder;
 import org.concoursjeunes.builders.EquipeListBuilder;
 import org.concoursjeunes.event.FicheConcoursEvent;
 import org.concoursjeunes.event.FicheConcoursListener;
@@ -121,7 +124,6 @@ import org.concoursjeunes.event.PasDeTirListener;
 import org.concoursjeunes.exceptions.FicheConcoursException;
 import org.concoursjeunes.exceptions.FicheConcoursException.Nature;
 import org.concoursjeunes.localisable.CriteriaSetLibelle;
-import org.concoursjeunes.manager.BlasonManager;
 
 /**
  * Représente la fiche concours, regroupe l'ensemble des informations commune à un concours donné
@@ -129,22 +131,33 @@ import org.concoursjeunes.manager.BlasonManager;
  * @author Aurélien Jeoffray
  */
 @XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 
+	@XmlElementWrapper(name="entitesConcours")
+	@XmlElement(name="entite")
+	private List<Entite> entitesConcours = null;
+	
+	@XmlTransient
 	private Profile profile;
 	private Parametre parametre;
 
+	@XmlElement(name="concurrents")
 	private ConcurrentList concurrentList;
+	@XmlElement(name="equipes")
 	private EquipeList equipes;
-	private Map<Integer, PasDeTir> pasDeTir = new HashMap<Integer, PasDeTir>();
+	
+	private transient Map<Integer, PasDeTir> pasDeTir = new HashMap<Integer, PasDeTir>();
 
-	private EventListenerList ficheConcoursListeners = new EventListenerList();
+	private transient EventListenerList ficheConcoursListeners = new EventListenerList();
 
-	private int currentDepart = 0;
+	private transient int currentDepart = 0;
 
-	private AJTemplate templateClassementHTML;
-	private AJTemplate templateClassementEquipeHTML;
+	private transient AJTemplate templateClassementHTML;
+	private transient AJTemplate templateClassementEquipeHTML;
 
+	public FicheConcours() { }
+	
 	/**
 	 * Initialise une nouvelle fiche concours
 	 */
@@ -160,21 +173,13 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	 */
 	public FicheConcours(Profile profile, Parametre parametre)
 			throws UnsupportedEncodingException, FileNotFoundException, IOException {
-		this.profile = profile;
-		if(parametre != null) {
-			this.parametre = parametre;
-		} else {
-			this.parametre = new Parametre(profile.getConfiguration());
+		
+		if(profile != null) {
+			if(parametre != null)
+				this.parametre = parametre;
+			
+			setProfile(profile);
 		}
-		concurrentList = new ConcurrentList(this.parametre);
-		equipes = new EquipeList(this.parametre.getReglement().getNbMembresRetenu());
-		
-		templateClassementHTML = new AJTemplate(this.profile.getLocalisation());
-		templateClassementEquipeHTML = new AJTemplate(this.profile.getLocalisation());
-		loadTemplates();
-		
-		this.parametre.addPropertyChangeListener(this);
-		makePasDeTir();
 	}
 
 	/**
@@ -193,6 +198,43 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	 */
 	public void removeFicheConcoursListener(FicheConcoursListener ficheConcoursListener) {
 		ficheConcoursListeners.remove(FicheConcoursListener.class, ficheConcoursListener);
+	}
+
+	/**
+	 * @return profile
+	 */
+	public Profile getProfile() {
+		return profile;
+	}
+
+	/**
+	 * @param profile profile à définir
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
+	 * @throws UnsupportedEncodingException 
+	 */
+	public void setProfile(Profile profile) throws UnsupportedEncodingException, FileNotFoundException, IOException {
+		this.profile = profile;
+		
+		if(profile != null) {
+			if(parametre == null)
+				parametre = new Parametre(profile.getConfiguration());
+			
+			if(concurrentList == null)
+				concurrentList = new ConcurrentList(parametre);
+			
+			if(equipes == null)
+				equipes = new EquipeList(parametre.getReglement().getNbMembresRetenu());
+			
+			parametre.removePropertyChangeListener(this);
+			parametre.addPropertyChangeListener(this);
+			
+			templateClassementHTML = new AJTemplate(this.profile.getLocalisation());
+			templateClassementEquipeHTML = new AJTemplate(this.profile.getLocalisation());
+			loadTemplates();
+			
+			makePasDeTir();
+		}
 	}
 
 	/**
@@ -243,12 +285,15 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	 */
 	public void addConcurrent(Concurrent concurrent, int depart) throws FicheConcoursException {
 		concurrent.setDepart(depart);
+		
+		if(concurrentList == null)
+			concurrentList = new ConcurrentList(parametre);
 
 		if (concurrentList.contains(concurrent, depart))
-			throw new FicheConcoursException(Nature.ALREADY_EXISTS, "Le concurrent est déjà présent"); //$NON-NLS-1$
+			throw new FicheConcoursException(Nature.ALREADY_EXISTS, "Le concurrent est déjà présent");
 
-		if (!pasDeTir.get(depart).havePlaceForConcurrent(concurrent))
-			throw new FicheConcoursException(Nature.NO_SLOT_AVAILABLE, "Il n'y a pas de place pour le concurrent"); //$NON-NLS-1$
+		if (pasDeTir.size() != 0 && !pasDeTir.get(depart).havePlaceForConcurrent(concurrent))
+			throw new FicheConcoursException(Nature.NO_SLOT_AVAILABLE, "Il n'y a pas de place pour le concurrent");
 
 		concurrentList.add(concurrent);
 
@@ -256,7 +301,9 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 		try {
 			save();
 		} catch (IOException e) {
-			throw new FicheConcoursException(Nature.SAVE_IO_ERROR, "Une erreur est survenue au moment de la sauvegarde", e); //$NON-NLS-1$
+			throw new FicheConcoursException(Nature.SAVE_IO_ERROR, "Une erreur est survenue au moment de la sauvegarde", e);
+		} catch (JAXBException e) {
+			throw new FicheConcoursException(Nature.SAVE_IO_ERROR, "Une erreur est survenue au moment de la sauvegarde", e);
 		}
 	}
 
@@ -268,16 +315,23 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	 * @throws FicheConcoursException
 	 */
 	public void removeConcurrent(Concurrent removedConcurrent) throws FicheConcoursException {
-		// suppression dans l'equipe si presence dans equipes
-		equipes.removeConcurrent(removedConcurrent);
-		// suppression dans la liste
-		if (concurrentList.remove(removedConcurrent) != null)
-			fireConcurrentRemoved(removedConcurrent);
-
-		try {
-			save();
-		} catch (IOException e) {
-			throw new FicheConcoursException(Nature.SAVE_IO_ERROR, "Une erreur est survenue au moment de la sauvegarde", e); //$NON-NLS-1$
+		if(equipes != null) {
+			// suppression dans l'equipe si presence dans equipes
+			equipes.removeConcurrent(removedConcurrent);
+		}
+		
+		if(concurrentList != null) {
+			// suppression dans la liste
+			if (concurrentList.remove(removedConcurrent) != null)
+				fireConcurrentRemoved(removedConcurrent);
+	
+			try {
+				save();
+			} catch (IOException e) {
+				throw new FicheConcoursException(Nature.SAVE_IO_ERROR, "Une erreur est survenue au moment de la sauvegarde", e);
+			} catch (JAXBException e) {
+				throw new FicheConcoursException(Nature.SAVE_IO_ERROR, "Une erreur est survenue au moment de la sauvegarde", e);
+			}
 		}
 	}
 
@@ -305,40 +359,9 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	 * @return pasDeTir le pas de tir du départ en paramètre
 	 */
 	public PasDeTir getPasDeTir(int depart) {
-		return pasDeTir.get(depart);
-	}
-
-	/**
-	 * Donne la fiche complete du concours pour sauvegarde
-	 * le tableau retourné contient les propriétés:
-	 * { parametre, concurrentList, equipes }
-	 * 
-	 * @return Object[]
-	 */
-	public Object[] getFiche() {
-		Object[] fiche = { parametre, concurrentList, equipes };
-		return fiche;
-	}
-
-	/**
-	 * Restaure une fiche concours
-	 * 
-	 * @param fiche la fiche à restaurer
-	 */
-	public void setFiche(Object[] fiche, MetaDataFicheConcours metaDataFicheConcours) {
-		
-		parametre = (Parametre) fiche[0];
-		concurrentList = (ConcurrentList) fiche[1];
-		concurrentList.setParametre(parametre);
-		
-		equipes = (EquipeList) fiche[2];
-		
-		checkFiche();
-
-		parametre.addPropertyChangeListener(metaDataFicheConcours);
-		parametre.addPropertyChangeListener(this);
-
-		makePasDeTir();
+		if(pasDeTir != null)
+			return pasDeTir.get(depart);
+		return null;
 	}
 
 	/**
@@ -347,165 +370,80 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	 * @return l'objet de méta-données du concours
 	 */
 	public MetaDataFicheConcours getMetaDataFicheConcours() {
-		MetaDataFicheConcours metaDataFicheConcours = new MetaDataFicheConcours(parametre.getDateDebutConcours(), parametre.getIntituleConcours(), parametre.getSaveName());
-		parametre.addPropertyChangeListener(metaDataFicheConcours);
-
-		return metaDataFicheConcours;
+		if(parametre != null) {
+			MetaDataFicheConcours metaDataFicheConcours = new MetaDataFicheConcours(parametre.getDateDebutConcours(), parametre.getIntituleConcours(), parametre.getSaveName());
+			parametre.addPropertyChangeListener(metaDataFicheConcours);
+	
+			return metaDataFicheConcours;
+		}
+		return null;
 	}
 
 	/**
 	 * sauvegarde de la fiche concours
 	 * 
 	 */
-	public void save() throws IOException {
-		File f = new File(
-				ApplicationCore.userRessources.getConcoursPathForProfile(this.profile),
-				parametre.getSaveName());
-		XMLSerializer.saveXMLStructure(f, getFiche(), true);
+	public void save() throws IOException,JAXBException {
+		if(profile != null) {
+			File f = new File(
+					ApplicationCore.userRessources.getConcoursPathForProfile(this.profile),
+					parametre.getSaveName());
+			
+			XMLSerializer.saveMarshallStructure(new File(f.getPath()), this, true);
+		}
 	}
 	
-	/**
-	 * <p>Contrôle la cohérence d'une fiche et effectue une mise
-	 * à niveau si besoin.</p>
-	 * <p>Permet de mettre à niveau les fiches sérialisé dans des versions
-	 * inférieur du programme</p>
-	 */
-	@SuppressWarnings("deprecation")
-	private void checkFiche() {
-		Reglement reglement = parametre.getReglement();
-		
-		if(reglement.getVersion() == 1) {
-			reglement.setTie(new ArrayList<String>(Arrays.asList(new String[] { "10","9" }))); //$NON-NLS-1$ //$NON-NLS-2$
-			reglement.setDisplayName(reglement.getName());
-			reglement.setVersion(2);
-			
-			for(Entry<CriteriaSet, CriteriaSet> entry : reglement.getSurclassement().entrySet()) {
-				for(Entry<Criterion, CriterionElement> entry2 : entry.getKey().getCriteria().entrySet()) {
-					if(entry2.getValue().getCriterion() == null)
-						entry2.getValue().setCriterion(entry2.getKey());
-				}
-				for(Entry<Criterion, CriterionElement> entry2 : entry.getValue().getCriteria().entrySet()) {
-					if(entry2.getValue() != null && entry2.getValue().getCriterion() == null)
-						entry2.getValue().setCriterion(entry2.getKey());
-				}
-			}
-		}
-		
-		//contrôle l'affectation du règlement et des critères
-		for(Criterion criterion : reglement.getListCriteria()) {
-			if(criterion.getReglement() == null)
-				criterion.setReglement(reglement);
-			for(CriterionElement element : criterion.getCriterionElements()) {
-				if(element.getCriterion() == null)
-					element.setCriterion(criterion);
-			}
-		}
-		
-		for(Concurrent concurrent : concurrentList.list(-1)) {
-			if(concurrent.getCriteriaSet().getReglement() == null)
-				concurrent.getCriteriaSet().setReglement(reglement);
-			
-			// En correction corruption suite manipulation Bug 57
-			if(concurrent.getInscription() == Concurrent.UNINIT)
-				concurrent.setInscription(Concurrent.RESERVEE);
-			
-			//si il manque des critères, essaye de les regénérer
-			for(Criterion criterion : reglement.getListCriteria()) {
-				if(!concurrent.getCriteriaSet().getCriteria().containsKey(criterion)) {
-					if(criterion.getCriterionElements().size() == 0) {
-						CriterionElement defElement = new CriterionElement("A"); //$NON-NLS-1$
-						defElement.setLibelle("Tous"); //$NON-NLS-1$
-						List<CriterionElement> lce = new ArrayList<CriterionElement>();
-						lce.add(defElement);
-						criterion.setCriterionElements(lce);
-					}
-					concurrent.getCriteriaSet().addCriterionElement(
-							criterion.getCriterionElements().get(0));
-				}
-			}
-
-			for(Entry<Criterion, CriterionElement> entry : concurrent.getCriteriaSet().getCriteria().entrySet()) {
-				if(entry.getValue().getCriterion() == null)
-					entry.getValue().setCriterion(entry.getKey());
-			}
-		}
-		
-		DistancesEtBlason defaultDistancesEtBlason = new DistancesEtBlason();
-		for(DistancesEtBlason distancesEtBlason : reglement.getListDistancesEtBlason()) {
-			
-			if(distancesEtBlason.getCriteriaSet().getReglement() == null)
-				distancesEtBlason.getCriteriaSet().setReglement(reglement);
-			
-			//si le blason n'est pas initialiser
-			if(distancesEtBlason.getTargetFace() == null || distancesEtBlason.getTargetFace().equals(new Blason())) {
-				if(distancesEtBlason.getNumdistancesblason() > 0 && reglement.getNumReglement() > 0) { //si le règlement est dans la base
-					try {
-						distancesEtBlason.setTargetFace(BlasonManager.findBlasonAssociateToDistancesEtBlason(distancesEtBlason));
-					} catch (ObjectPersistenceException e) {
-						e.printStackTrace();
-					}
-				} else {
-					Blason targetFace = null;
-					try { //on tente de retrouver une correspondance pour le blason dans la base
-		                targetFace = BlasonManager.findBlasonByName(distancesEtBlason.getBlason() + "cm"); //$NON-NLS-1$
-	                } catch (ObjectPersistenceException e) {
-		                e.printStackTrace(); //on trace l'erreur mais on ne la fait pas remonter dans l'interface
-	                }
-	                if(targetFace == null) { //si on a pas retrouvé de blason correspondant dans la base alors créer l'entrée
-	                	targetFace = BlasonBuilder.getBlasonBySize(distancesEtBlason.getBlason());
-	                }
-				}
-				//remet la valeur par défaut pour supprimer la section du XML de persistance à la prochaine sauvegarde
-				distancesEtBlason.setBlason(defaultDistancesEtBlason.getBlason());
-			
-			} else {
-				//si il est initialisé mais ne possède pas d'ancrage
-				if(distancesEtBlason.getTargetFace().getAncrages().size() == 0) {
-					//si le blason est present dans la base
-					if(distancesEtBlason.getTargetFace().getNumblason() > 0) {
-						ConcurrentMap<Integer, Ancrage> ancrages = null;
-						try {
-							ancrages = AncragesMapBuilder.getAncragesMap(distancesEtBlason.getTargetFace());
-                        } catch (ObjectPersistenceException e) {
-	                        e.printStackTrace(); //on trace l'erreur mais on ne la fait pas remonter dans l'interface
-                        }
-                        if(ancrages == null) {
-                        	ancrages = AncragesMapBuilder.getAncragesMap(distancesEtBlason.getTargetFace().getNbArcher());
-                        }
-                        
-                        distancesEtBlason.getTargetFace().setAncrages(ancrages);
-					} else {
-						ConcurrentMap<Integer, Ancrage> ancrages = AncragesMapBuilder.getAncragesMap(distancesEtBlason.getTargetFace().getNbArcher());
-						distancesEtBlason.getTargetFace().setAncrages(ancrages);
-					}
-				}
+	protected void beforeMarshal(Marshaller marshaller) {
+		if(parametre != null && concurrentList != null) {
+			entitesConcours = new ArrayList<Entite>(Arrays.asList(concurrentList.listCompagnie()));
+			for(Judge judge : parametre.getJudges()) {
+				if(!entitesConcours.contains(judge.getEntite()))
+					entitesConcours.add(judge.getEntite());
 			}
 		}
 	}
+	
+	protected void afterMarshal(Marshaller marshaller) {
+		entitesConcours = null;
+	}
+	
+	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
+		parametre.addPropertyChangeListener(this);
+		concurrentList.setParametre(parametre);
+		entitesConcours = null;
+
+		makePasDeTir();
+	}
+	
+	
 
 	/**
 	 * Construit le pas de tir
 	 */
 	private void makePasDeTir() {
-		for (int i = 0; i < parametre.getNbDepart(); i++) {
-			PasDeTir pdt = new PasDeTir(this, i);
-			pdt.addPasDeTirListener(this);
-			pasDeTir.put(i, pdt);
+		if(parametre != null && pasDeTir != null && concurrentList != null) {
+			for (int i = 0; i < parametre.getNbDepart(); i++) {
+				PasDeTir pdt = new PasDeTir(this, i);
+				pdt.addPasDeTirListener(this);
+				pasDeTir.put(i, pdt);
+			}
+	
+			firePasDeTirChanged();
 		}
-
-		firePasDeTirChanged();
 	}
 
 	/**
 	 * Classement des candidats
 	 * 
-	 * @deprecated utiliser de préférence {@link ConcurrentList}{@link #classement()}
+	 * @deprecated utiliser de préférence {@link ConcurrentList#classement()}
 	 * 
 	 * @return map contenant une liste de concurrent trié par jeux de critère de classement
 	 */
 	@Deprecated
 	public Map<CriteriaSet, List<Concurrent>> classement() {
-		return concurrentList.classement().getClassementPhaseQualificative();
+		if(concurrentList != null)
+			return concurrentList.classement().getClassementPhaseQualificative();
+		return null;
 	}
 
 	/**
@@ -513,11 +451,12 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	 * 
 	 */
 	private void loadTemplates() throws UnsupportedEncodingException, FileNotFoundException, IOException {
-		templateClassementHTML.loadTemplate(staticParameters.getResourceString("path.ressources") //$NON-NLS-1$
-				+ File.separator + staticParameters.getResourceString("template.classement.html")); //$NON-NLS-1$
-
-		templateClassementEquipeHTML.loadTemplate(staticParameters.getResourceString("path.ressources") //$NON-NLS-1$
-				+ File.separator + staticParameters.getResourceString("template.classement_equipe.html")); //$NON-NLS-1$
+		if(templateClassementHTML != null)
+			templateClassementHTML.loadTemplate(staticParameters.getResourceString("path.ressources") //$NON-NLS-1$
+					+ File.separator + staticParameters.getResourceString("template.classement.html")); //$NON-NLS-1$
+		if(templateClassementEquipeHTML != null)
+			templateClassementEquipeHTML.loadTemplate(staticParameters.getResourceString("path.ressources") //$NON-NLS-1$
+					+ File.separator + staticParameters.getResourceString("template.classement_equipe.html")); //$NON-NLS-1$
 	}
 
 	/**
@@ -619,7 +558,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 								tplClassement.parse("categories.classement.PLACE", "" + (j + 1)); //$NON-NLS-1$ //$NON-NLS-2$
 								tplClassement.parse("categories.classement.POSITION", "" + sortList.get(j).getDepart()+sortList.get(j).getPosition() + sortList.get(j).getCible()); //$NON-NLS-1$ //$NON-NLS-2$
 								tplClassement.parse("categories.classement.IDENTITEE", sortList.get(j).getFullName()); //$NON-NLS-1$
-								tplClassement.parse("categories.classement.CLUB", sortList.get(j).getClub().toString()); //$NON-NLS-1$
+								tplClassement.parse("categories.classement.CLUB", sortList.get(j).getEntite().toString()); //$NON-NLS-1$
 								tplClassement.parse("categories.classement.NUM_LICENCE", sortList.get(j).getNumLicenceArcher()); //$NON-NLS-1$
 
 								/*for (Criterion key : parametre.getReglement().getListCriteria())
@@ -724,7 +663,9 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	public String getClassementClub() {
 		String strClassementEquipe = ""; //$NON-NLS-1$
 
-		EquipeList clubList = EquipeListBuilder.getClubEquipeList(concurrentList, parametre.getReglement().getNbMembresRetenu());
+		EquipeList clubList = null;
+		if(concurrentList != null && parametre != null)
+			clubList = EquipeListBuilder.getClubEquipeList(concurrentList, parametre.getReglement().getNbMembresRetenu());
 
 		if (clubList != null && clubList.countEquipes() > 0) {
 			AJTemplate tplClassementEquipe = templateClassementEquipeHTML;

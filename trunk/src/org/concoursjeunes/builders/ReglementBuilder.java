@@ -133,7 +133,7 @@ public class ReglementBuilder {
 	 * (équivalent à createReglement()).
 	 * </p>
 	 * <p>
-	 * Pour fonctionner correctement, "ConcoursJeunes.dbConnection" doit auparavent être
+	 * Pour fonctionner correctement, "ConcoursJeunes.dbConnection" doit auparavant être
 	 * correctement instancié.
 	 * </p>
 	 * 

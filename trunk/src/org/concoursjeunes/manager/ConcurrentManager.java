@@ -208,8 +208,8 @@ public class ConcurrentManager {
 				if(aGeneric.getFirstName() != null && !aGeneric.getFirstName().isEmpty()) {
 					filters.add("UPPER(FIRSTNAME) like '" + aGeneric.getFirstName().toUpperCase().replaceAll("'", "''").replaceAll("%", "%%") + "'");
 				}
-				if(!aGeneric.getClub().getAgrement().isEmpty()) {
-					filters.add("ID_ENTITE in (select ID_ENTITE from ENTITE where AGREMENTENTITE like '" + aGeneric.getClub().getAgrement().replaceAll("'", "''").replaceAll("%", "%%") + "')");
+				if(!aGeneric.getEntite().getAgrement().isEmpty()) {
+					filters.add("ID_ENTITE in (select ID_ENTITE from ENTITE where AGREMENTENTITE like '" + aGeneric.getEntite().getAgrement().replaceAll("'", "''").replaceAll("%", "%%") + "')");
 				}
 
 				for(String filter : filters) {

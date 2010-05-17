@@ -91,9 +91,13 @@ package org.ajdeveloppement.concours;
 import java.sql.SQLException;
 import java.util.UUID;
 
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.ajdeveloppement.commons.persistence.ObjectPersistence;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
@@ -102,6 +106,7 @@ import org.ajdeveloppement.commons.persistence.sql.SqlField;
 import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
 import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
 import org.ajdeveloppement.commons.persistence.sql.SqlTable;
+import org.ajdeveloppement.concours.cache.CivilityCache;
 import org.concoursjeunes.ApplicationCore;
 
 /**
@@ -114,9 +119,14 @@ import org.concoursjeunes.ApplicationCore;
 @SqlTable(name="CIVILITY")
 @SqlPrimaryKey(fields="ID_CIVILITY")
 public class Civility implements ObjectPersistence {
+	//utilisé pour donnée un identifiant unique à la sérialisation de l'objet
+	@XmlID
 	@XmlAttribute(name="id", required=true)
+	private String xmlId;
+	
+	@XmlTransient
 	@SqlField(name="ID_CIVILITY")
-	private UUID idCivility = UUID.randomUUID();
+	private UUID idCivility;
 	
 	@SqlField(name="ABREVIATION")
 	private String abreviation;
@@ -232,7 +242,13 @@ public class Civility implements ObjectPersistence {
 	 */
 	@Override
 	public void save() throws ObjectPersistenceException {
+		if(idCivility == null)
+			idCivility = UUID.randomUUID();
+		
 		helper.save(this);
+		
+		if(!CivilityCache.getInstance().containsKey(idCivility))
+			CivilityCache.getInstance().add(this);
 	}
 	
 	/**
@@ -240,7 +256,20 @@ public class Civility implements ObjectPersistence {
 	 */
 	@Override
 	public void delete() throws ObjectPersistenceException {
-		if(idCivility != null)
+		if(idCivility != null) {
 			helper.delete(this);
+			
+			CivilityCache.getInstance().remove(idCivility);
+		}
+	}
+	
+	protected void beforeMarshal(Marshaller marshaller) {
+		if(idCivility == null)
+			idCivility = UUID.randomUUID();
+		xmlId = idCivility.toString();
+	}
+	
+	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
+		idCivility = UUID.fromString(xmlId);
 	}
 }

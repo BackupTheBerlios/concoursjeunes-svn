@@ -96,7 +96,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.persistence.StoreHelper;
 import org.ajdeveloppement.commons.persistence.sql.SqlField;
-import org.ajdeveloppement.commons.persistence.sql.SqlForeignKey;
 import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
 import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
 import org.ajdeveloppement.commons.persistence.sql.SqlTable;
@@ -116,18 +115,11 @@ import org.concoursjeunes.manager.ConcurrentManager;
 @SqlUnmappedFields(fields={"ID_CONTACT","SEXE","CATEGORIE","NIVEAU","ARC"})
 public class Archer extends Contact {
 
-	//private String nomArcher        = ""; //$NON-NLS-1$
-	//private String prenomArcher     = ""; //$NON-NLS-1$
-	
 	@SqlField(name="NUMLICENCEARCHER")
-	private String numLicenceArcher = ""; //$NON-NLS-1$
-	
-	@SqlForeignKey(mappedTo="ID_ENTITE")
-	private Entite club             = new Entite();
-	
+	private String numLicenceArcher;
+
 	@SqlField(name="CERTIFMEDICAL")
 	private boolean certificat      = false;
-	
 	private boolean handicape		= false;
 	
 	private static StoreHelper<Archer> helper = null;
@@ -154,6 +146,8 @@ public class Archer extends Contact {
 	 * @return le numéro de licence (pour la ffta, 6 chiffres + 1 lettre)
 	 */
 	public String getNumLicenceArcher() {
+		if(numLicenceArcher == null)
+			return ""; //$NON-NLS-1$
 		return numLicenceArcher;
 	}
 
@@ -217,21 +211,26 @@ public class Archer extends Contact {
 	/**
 	 * Retourne le club (Compagnie) auquel appartient l'archer
 	 * 
+	 * @deprecated utiliser {@link #getEntite()} à la place
 	 * @return club le club de l'archer
 	 */
+	@Deprecated
 	public Entite getClub() {
-		return club;
+		return getEntite();
 	}
 
 	/**
 	 * Définit le club (Entite legal) de l'archer
 	 * 
+	 * @deprecated utiliser {@link #setEntite(Entite)} à la place
+	 * 
 	 * @param club l'objet Entite représentant le club de l'archer
 	 */
+	@Deprecated
 	public void setClub(Entite club) {
-		Entite oldValue = this.club;
+		Entite oldValue = getEntite();
 		
-		this.club = club;
+		setEntite(club);
 		
 		pcs.firePropertyChange("club", oldValue, club); //$NON-NLS-1$
 	}

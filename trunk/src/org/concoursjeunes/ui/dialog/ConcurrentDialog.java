@@ -364,6 +364,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		jpPlaceLibre.setPreferredSize(new Dimension(300, 100));
 		jpPlaceLibre.setBorder(new TitledBorder("")); //$NON-NLS-1$
 		JScrollPane spPlaceLibre = new JScrollPane(jlPlaceLibre);
+		spPlaceLibre.getVerticalScrollBar().setUnitIncrement(20);
 		jpPlaceLibre.add(spPlaceLibre, BorderLayout.CENTER);
 
 		jpActionPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -749,7 +750,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	 */
 	public void setConcurrent(Concurrent concurrent) {
 		this.concurrent = concurrent;
-		this.entiteConcurrent = concurrent.getClub();
+		this.entiteConcurrent = concurrent.getEntite();
 
 		completeConcurrentDialog();
 	}
@@ -902,7 +903,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 
 	public void entiteFinded(AutoCompleteDocumentEvent e) {
 		Entite findEntite = e.getEntite();
-		if (!findEntite.equals(concurrent.getClub())) {
+		if (!findEntite.equals(concurrent.getEntite())) {
 			//concurrent.setClub(findEntite);
 			//setConcurrent(concurrent);
 			entiteConcurrent = findEntite;
@@ -1013,9 +1014,9 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			concurrent.setName(jtfNom.getText());
 			concurrent.setFirstName(jtfPrenom.getText());
 			concurrent.setNumLicenceArcher(jtfLicence.getText());
-			concurrent.setClub(entiteConcurrent);
-			concurrent.getClub().setVille(jtfClub.getText());
-			concurrent.getClub().setAgrement(jtfAgrement.getText());
+			concurrent.setEntite(entiteConcurrent);
+			concurrent.getEntite().setVille(jtfClub.getText());
+			concurrent.getEntite().setAgrement(jtfAgrement.getText());
 			concurrent.setInscription(jcbInscription.getSelectedIndex());
 			
 			if(jcbBlason.getSelectedIndex() > 0)
@@ -1054,7 +1055,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	            cld.setFilter(filter);
 				cld.setVisible(true);
 				if (cld.isValider()) {
-					cld.initConcurrent(concurrent);
+					concurrent = cld.getSelectedConcurrent();
 					setConcurrent(concurrent);
 				}
             } catch (InterruptedException e) {
@@ -1069,7 +1070,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		} else if (ae.getSource() == jbDetailClub) {
 			if (!jtfAgrement.getText().equals("")) { //$NON-NLS-1$
 				EntiteDialog ed = new EntiteDialog(this, profile);
-				ed.setEntite(concurrent.getClub());
+				ed.setEntite(concurrent.getEntite());
 				ed.showEntiteDialog(false);
 			}
 		} else if (ae.getSource() == jbListeClub) {

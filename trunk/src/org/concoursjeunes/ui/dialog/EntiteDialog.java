@@ -110,29 +110,32 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.text.MaskFormatter;
 
 import org.ajdeveloppement.apps.localisation.Localizable;
 import org.ajdeveloppement.apps.localisation.LocalizationHandler;
 import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.ui.AJList;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.concours.CategoryContact;
+import org.ajdeveloppement.concours.Contact;
 import org.ajdeveloppement.concours.managers.CategoryContactManager;
 import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
 import org.ajdeveloppement.swingxext.localisation.JXHeaderLocalisationHandler;
-import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Entite;
 import org.concoursjeunes.Federation;
 import org.concoursjeunes.Profile;
 import org.concoursjeunes.manager.FederationManager;
+import org.concoursjeunes.ui.components.ContactPanel;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Binding;
 import org.jdesktop.beansbinding.BindingGroup;
 import org.jdesktop.beansbinding.Bindings;
 import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 import org.jdesktop.swingx.JXHeader;
-import org.jdesktop.swingx.JXHyperlink;
 import org.jdesktop.swingx.JXTitledSeparator;
 import org.jdesktop.swingx.painter.GlossPainter;
 
@@ -140,7 +143,7 @@ import org.jdesktop.swingx.painter.GlossPainter;
  * @author Aurélien JEOFFRAY
  */
 @Localizable(value="entite.title",textMethod="setTitle")
-public class EntiteDialog extends JDialog implements ActionListener {
+public class EntiteDialog extends JDialog implements ActionListener, ListSelectionListener {
 	private Profile profile;
 	private Entite entite;
 	
@@ -193,43 +196,10 @@ public class EntiteDialog extends JDialog implements ActionListener {
 	@Localizable("entite.search")
 	private JLabel jlSearch = new JLabel();
 	private JTextField jtfSearch = new JTextField();
-	private JList jlResultList = new JList();
+	private AJList<Contact> jlResultList = new AJList<Contact>();
 	@Localizable(value="entite.detailscontact",textMethod="setTitle")
 	private JXTitledSeparator jxtsDetailsContacts = new JXTitledSeparator();
-	@Localizable("entite.civility")
-	private JLabel jlCivility = new JLabel();
-	private JComboBox jcbCivility = new JComboBox();
-	@Localizable("entite.newcivility")
-	private JXHyperlink jxhNewCivility = new JXHyperlink();
-	@Localizable("entite.namefirstname")
-	private JLabel jlNameFirstName = new JLabel();
-	private JTextField jtfName = new JTextField("", 15); //$NON-NLS-1$
-	private JTextField jtfFirstName = new JTextField("", 15); //$NON-NLS-1$
-	@Localizable("entite.adresse")
-	private JLabel jlAdressContact = new JLabel();
-	private JTextArea jtaAddressContact = new JTextArea(4, 30);
-	@Localizable("entite.codepostal")
-	private JLabel jlZipCodeContact = new JLabel();
-	private JTextField jtfZipCodeContact = new JTextField("", 10); //$NON-NLS-1$
-	@Localizable("entite.ville")
-	private JLabel jlCityContact = new JLabel();
-	private JTextField jtfCityContact = new JTextField("", 10); //$NON-NLS-1$
-	@Localizable("entite.coordinates")
-	private JLabel jlCoordinates = new JLabel();
-	private JList jlstCoordinates = new JList();
-	@Localizable(value="",tooltip="entite.addcoordinate")
-	private JButton jbAddCoordinate = new JButton();
-	@Localizable(value="",tooltip="entite.delcoordinate")
-	private JButton jbDelCoordinate = new JButton();
-	@Localizable(value="",tooltip="entite.editcoordinate")
-	private JButton jbEditCoordinate = new JButton();
-	@Localizable("entite.note")
-	private JLabel jlNoteContact = new JLabel();
-	private JTextArea jtaNoteContact = new JTextArea(4, 30);
-	@Localizable("entite.newcontact")
-	private JXHyperlink jxhNewContact = new JXHyperlink();
-	@Localizable("entite.savecontact")
-	private JXHyperlink jxhSaveContact = new JXHyperlink();
+	ContactPanel contactPanel = null;
 
 	@Localizable("bouton.valider")
 	private JButton jbValider = new JButton();
@@ -269,9 +239,7 @@ public class EntiteDialog extends JDialog implements ActionListener {
 		JPanel jpDivers = new JPanel();
 		JPanel jpContact = new JPanel();
 		
-		JPanel jpNameFirstName = new JPanel();
-		JPanel jpCoordinatesAction = new JPanel();
-		JPanel jpContactAction = new JPanel();
+		contactPanel = new ContactPanel(profile);
 		// [end]
 		
 		// [start] paramétrage des composants
@@ -317,26 +285,8 @@ public class EntiteDialog extends JDialog implements ActionListener {
 		});
 		
 		jlResultList.setVisibleRowCount(5);
-		jlstCoordinates.setVisibleRowCount(5);
+		jlResultList.addListSelectionListener(this);
 		
-		jpCoordinatesAction.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
-		
-		jbAddCoordinate.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.add", 16, 16)); //$NON-NLS-1$
-		jbAddCoordinate.setPressedIcon(ApplicationCore.userRessources.getImageIcon("file.icon.add_active", 16, 16)); //$NON-NLS-1$
-		jbAddCoordinate.setDisabledIcon(ApplicationCore.userRessources.getImageIcon("file.icon.add_disable", 16, 16)); //$NON-NLS-1$
-		jbAddCoordinate.setBorderPainted(false);
-		jbAddCoordinate.setFocusPainted(false);
-		jbAddCoordinate.setMargin(new Insets(0, 0, 0, 0));
-		jbAddCoordinate.setContentAreaFilled(false);
-		jbAddCoordinate.addActionListener(this);
-		jbDelCoordinate.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.del", 16, 16)); //$NON-NLS-1$
-		jbDelCoordinate.setPressedIcon(ApplicationCore.userRessources.getImageIcon("file.icon.del_active", 16, 16)); //$NON-NLS-1$
-		jbDelCoordinate.setDisabledIcon(ApplicationCore.userRessources.getImageIcon("file.icon.del_disable", 16, 16)); //$NON-NLS-1$
-		jbDelCoordinate.setBorderPainted(false);
-		jbDelCoordinate.setFocusPainted(false);
-		jbDelCoordinate.setMargin(new Insets(0, 0, 0, 0));
-		jbDelCoordinate.setContentAreaFilled(false);
-		jbDelCoordinate.addActionListener(this);
 		
 		// [end]
 		
@@ -410,23 +360,6 @@ public class EntiteDialog extends JDialog implements ActionListener {
 		// [end]
 		
 		// [start] Contacts
-		gridbagComposer.setParentPanel(jpNameFirstName);
-		c.gridy = 0;
-		c.weightx = 1.0;
-		c.weighty = 0.0;
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridwidth = 1;
-		gridbagComposer.addComponentIntoGrid(jtfName, c);
-		gridbagComposer.addComponentIntoGrid(jtfFirstName, c);
-		
-		jpCoordinatesAction.add(jbAddCoordinate);
-		jpCoordinatesAction.add(jbDelCoordinate);
-		jpCoordinatesAction.add(jbEditCoordinate);
-		
-		jpContactAction.setLayout(new FlowLayout(FlowLayout.RIGHT));
-		jpContactAction.add(jxhNewContact);
-		jpContactAction.add(jxhSaveContact);
-		
 		gridbagComposer.setParentPanel(jpContact);
 		c.gridy = 0;
 		c.gridwidth = 1;
@@ -452,66 +385,8 @@ public class EntiteDialog extends JDialog implements ActionListener {
 		c.gridy++;
 		gridbagComposer.addComponentIntoGrid(jxtsDetailsContacts, c);
 		c.gridy++;
-		c.gridwidth = 1;
-		c.weightx = 0.0;
-		gridbagComposer.addComponentIntoGrid(jlCivility, c);
-		gridbagComposer.addComponentIntoGrid(jcbCivility, c);
-		c.weightx = 1.0;
-		c.gridwidth = 2;
-		gridbagComposer.addComponentIntoGrid(jxhNewCivility, c);
-		c.gridy++;
-		c.gridwidth = 1;
-		c.weightx = 0.0;
-		gridbagComposer.addComponentIntoGrid(jlNameFirstName, c);
-		c.weightx = 1.0;
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridwidth = 3;
-		gridbagComposer.addComponentIntoGrid(jpNameFirstName, c);
-		c.gridy++;
-		c.gridwidth = 1;
-		c.weightx = 0.0;
-		c.fill = GridBagConstraints.NONE;
-		gridbagComposer.addComponentIntoGrid(jlAdressContact, c);
-		c.weightx = 1.0;
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridwidth = 3;
-		gridbagComposer.addComponentIntoGrid(new JScrollPane(jtaAddressContact), c);
-		c.gridy++;
-		c.gridwidth = 1;
-		c.weightx = 0.0;
-		c.fill = GridBagConstraints.NONE;
-		gridbagComposer.addComponentIntoGrid(jlZipCodeContact, c);
-		gridbagComposer.addComponentIntoGrid(jtfZipCodeContact, c);
-		gridbagComposer.addComponentIntoGrid(jlCityContact, c);
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weightx = 1.0;
-		gridbagComposer.addComponentIntoGrid(jtfCityContact, c);
-		c.gridy++;
-		c.fill = GridBagConstraints.NONE;
-		c.weightx = 0.0;
-		gridbagComposer.addComponentIntoGrid(jlCoordinates, c);
-		c.weightx = 1.0;
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridwidth = 3;
-		gridbagComposer.addComponentIntoGrid(new JScrollPane(jlstCoordinates), c);
-		c.gridy++;
-		c.gridx = 1;
-		c.weightx = 0.0;
-		c.fill = GridBagConstraints.NONE;
-		gridbagComposer.addComponentIntoGrid(jpCoordinatesAction, c);
-		c.gridy++;
-		c.gridx = GridBagConstraints.RELATIVE;
-		c.weightx = 0.0;
-		c.gridwidth = 1;
-		c.weighty = 1.0;
-		gridbagComposer.addComponentIntoGrid(jlNoteContact, c);
-		c.gridwidth = 3;
-		c.weightx = 1.0;		
-		c.fill = GridBagConstraints.BOTH;
-		gridbagComposer.addComponentIntoGrid(new JScrollPane(jtaNoteContact), c);
-		c.gridy++;
-		c.gridx = 1;
-		gridbagComposer.addComponentIntoGrid(jpContactAction, c);
+		c.gridwidth = 4;
+		gridbagComposer.addComponentIntoGrid(contactPanel, c);
 		// [end]
 		
 		// [start] General
@@ -549,6 +424,8 @@ public class EntiteDialog extends JDialog implements ActionListener {
 		getContentPane().add(entitePane, BorderLayout.CENTER);
 		getContentPane().add(buttonPane, BorderLayout.SOUTH);
 		// [end]
+		
+		this.setGlassPane(contactPanel.getAddCategoryPanel());
 	}
 	
 	private void affectLibelle() {
@@ -580,6 +457,7 @@ public class EntiteDialog extends JDialog implements ActionListener {
 			jftfAgrement.setEditable(fullEditable);
 			
 			jcbSearchCategoryContact.removeAllItems();
+			jcbSearchCategoryContact.addItem("<html>&nbsp;</html>"); //$NON-NLS-1$
 			try {
 				for(CategoryContact categoryContact : CategoryContactManager.getAllCategoryContact()) {
 					jcbSearchCategoryContact.addItem(categoryContact);
@@ -588,9 +466,14 @@ public class EntiteDialog extends JDialog implements ActionListener {
 				DisplayableErrorHelper.displayException(e);
 				e.printStackTrace();
 			}
+			
+			jlResultList.clear();
+			for(Contact contact : entite.getContacts()) {
+				jlResultList.add(contact);
+			}
 		}
 	}
-
+	
 	/**
 	 * Affiche la boite d'édition d'une entité
 	 * 
@@ -600,10 +483,12 @@ public class EntiteDialog extends JDialog implements ActionListener {
 		this.fullEditable = fullEditable;
 		completePanel();
 		
-		pack();
+		setSize(900, 660);
 		setLocationRelativeTo(null);
 		setVisible(true);
-		pack();
+		setResizable(false);
+		
+		System.out.println(getSize());
 	}
 
 	/**
@@ -645,6 +530,14 @@ public class EntiteDialog extends JDialog implements ActionListener {
 			}
 
 			setVisible(false);
+		}
+	}
+
+	@Override
+	public void valueChanged(ListSelectionEvent e) {
+		if(contactPanel != null) {
+			contactPanel.setContact((Contact)jlResultList.getSelectedValue());
+			this.getGlassPane().setVisible(true);
 		}
 	}
 }

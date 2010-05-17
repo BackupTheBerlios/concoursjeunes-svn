@@ -644,42 +644,52 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 					final String concref = e.getURL().getRef();
 					
 					final MetaDataFicheConcours metaDataFicheConcours = profile.getConfiguration().getMetaDataFichesConcours().get(Integer.parseInt(concref));
-					if(!profile.isOpenFicheConcours(metaDataFicheConcours)) {
-						Thread launchFiche = new Thread() {
-							@Override
-							public void run() {
-								
-								try {
-									profile.restoreFicheConcours(metaDataFicheConcours);
-								} catch (NumberFormatException e) {
-									DisplayableErrorHelper.displayException(e);
-									e.printStackTrace();
-								} catch (NullConfigurationException e) {
-									DisplayableErrorHelper.displayException(e);
-									e.printStackTrace();
-								} catch (IOException e) {
-									DisplayableErrorHelper.displayException(e);
-									e.printStackTrace();
-								} catch (NullPointerException e) {
-									DisplayableErrorHelper.displayException(e);
-									e.printStackTrace();
-								}
-								ConcoursJeunesFrame.this.setCursor(Cursor.getDefaultCursor());
-								//ConcoursJeunesFrame.this.jepHome.setCursor(Cursor.getDefaultCursor());
-								ConcoursJeunesFrame.this.jepHome.setEnabled(true);
-							}
-						};
-						this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-						//this.jepHome.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-						this.jepHome.setEnabled(false);
-						Thread.yield();
-						launchFiche.start();
-					} else {
-						ConcoursJeunesFrame.this.setCursor(Cursor.getDefaultCursor());
+					if(metaDataFicheConcours.getFilenameConcours().endsWith(".cta")) { //$NON-NLS-1$
 						JOptionPane.showMessageDialog(this, 
-								profile.getLocalisation().getResourceString("home.warning.alreadyopen"), //$NON-NLS-1$
-								profile.getLocalisation().getResourceString("home.warning.alreadyopen.title"), //$NON-NLS-1$
+								profile.getLocalisation().getResourceString("home.warning.oldformat"), //$NON-NLS-1$
+								profile.getLocalisation().getResourceString("home.warning.oldformat.title"), //$NON-NLS-1$
 								JOptionPane.WARNING_MESSAGE);
+					} else {
+						if(!profile.isOpenFicheConcours(metaDataFicheConcours)) {
+							Thread launchFiche = new Thread() {
+								@Override
+								public void run() {
+									
+									try {
+										profile.restoreFicheConcours(metaDataFicheConcours);
+									} catch (NumberFormatException e) {
+										DisplayableErrorHelper.displayException(e);
+										e.printStackTrace();
+									} catch (NullConfigurationException e) {
+										DisplayableErrorHelper.displayException(e);
+										e.printStackTrace();
+									} catch (IOException e) {
+										DisplayableErrorHelper.displayException(e);
+										e.printStackTrace();
+									} catch (NullPointerException e) {
+										DisplayableErrorHelper.displayException(e);
+										e.printStackTrace();
+									} catch (JAXBException e) {
+										DisplayableErrorHelper.displayException(e);
+										e.printStackTrace();
+									}
+									ConcoursJeunesFrame.this.setCursor(Cursor.getDefaultCursor());
+									//ConcoursJeunesFrame.this.jepHome.setCursor(Cursor.getDefaultCursor());
+									ConcoursJeunesFrame.this.jepHome.setEnabled(true);
+								}
+							};
+							this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+							//this.jepHome.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+							this.jepHome.setEnabled(false);
+							Thread.yield();
+							launchFiche.start();
+						} else {
+							ConcoursJeunesFrame.this.setCursor(Cursor.getDefaultCursor());
+							JOptionPane.showMessageDialog(this, 
+									profile.getLocalisation().getResourceString("home.warning.alreadyopen"), //$NON-NLS-1$
+									profile.getLocalisation().getResourceString("home.warning.alreadyopen.title"), //$NON-NLS-1$
+									JOptionPane.WARNING_MESSAGE);
+						}
 					}
 				} else if (e.getURL().getHost().equals("delete_concours")) { //$NON-NLS-1$
 					if (JOptionPane.showConfirmDialog(this, profile.getLocalisation().getResourceString("confirmation.suppression.concours"), //$NON-NLS-1$

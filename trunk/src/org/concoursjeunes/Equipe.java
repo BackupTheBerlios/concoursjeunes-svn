@@ -89,15 +89,24 @@ package org.concoursjeunes;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlIDREF;
+
 /**
  * Class représentant une équipe d'archer pour le concours
  * 
  * @author  Aurélien Jeoffray
  * @version  2.0
  */
-
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Equipe implements Cloneable, Comparable<Equipe> {
 
+	@XmlElementWrapper(name="membres")
+	@XmlElement(name="concurrent")
+	@XmlIDREF
 	private ArrayList<Concurrent> membresEquipe = new ArrayList<Concurrent>();
 	private String nomEquipe = ""; //$NON-NLS-1$
 	

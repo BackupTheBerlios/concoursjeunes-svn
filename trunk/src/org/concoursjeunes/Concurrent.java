@@ -95,6 +95,8 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 
@@ -125,8 +127,14 @@ public class Concurrent extends Archer implements Cloneable {
 	private int depart                  = 0;
 	private TargetPosition targetPosition = new TargetPosition();
 
+	@XmlElementWrapper(name="points")
+	@XmlElement(name="serie")
 	private ArrayList<Integer> points	= new ArrayList<Integer>();
+	@XmlElementWrapper(name="departages")
+	@XmlElement(name="departage")
 	private int[] departages			= new int[2];
+	@XmlElementWrapper(name="scoresPhasesFinal")
+	@XmlElement(name="scorePhaseFinal")
 	private int[] scoresPhasesFinal		= new int[6];
 
 	private int inscription             = UNINIT;
@@ -482,12 +490,12 @@ public class Concurrent extends Archer implements Cloneable {
 			return "<html><font color=red>" + //$NON-NLS-1$
 					getName() + " " + //$NON-NLS-1$
 					getFirstName() + " (" + //$NON-NLS-1$
-					getClub() +
+					((getEntite() != null) ? getEntite().toString() : "") + //$NON-NLS-1$
 					")</font></html>"; //$NON-NLS-1$
 		return targetPosition.toString() + ": " + //$NON-NLS-1$
 				getName() + " " + //$NON-NLS-1$
 				getFirstName() + " (" + //$NON-NLS-1$
-				getClub() + ")"; //$NON-NLS-1$
+				((getEntite() != null) ? getEntite().toString() : "") + ")"; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
 	/**

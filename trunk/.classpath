@@ -14,6 +14,6 @@
 	<classpathentry kind="lib" path="lib/h2-1.2.131.jar"/>
 	<classpathentry kind="lib" path="lib/ajcommons-ext.jar"/>
 	<classpathentry kind="lib" path="lib/ajcommons-swingx-ext.jar"/>
-	<classpathentry kind="lib" path="lib/ajcommons.jar"/>
+	<classpathentry kind="lib" path="lib/ajcommons.jar" sourcepath="/ajcommons/src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

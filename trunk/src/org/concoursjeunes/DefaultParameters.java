@@ -86,11 +86,15 @@
  */
 package org.concoursjeunes;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
 /**
  * Paramétrage commun à Configuration et Paramètre
  * 
  * @author Aurélien JEOFFRAY
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class DefaultParameters {
 	private Entite club = new Entite();
 	private String intituleConcours = "Spécial Jeunes"; //$NON-NLS-1$

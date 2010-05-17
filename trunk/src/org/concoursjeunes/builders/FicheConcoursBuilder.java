@@ -91,6 +91,8 @@ package org.concoursjeunes.builders;
 import java.io.File;
 import java.io.IOException;
 
+import javax.xml.bind.JAXBException;
+
 import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.FicheConcours;
@@ -110,18 +112,17 @@ public class FicheConcoursBuilder {
 	 * @param profile le profile contenant le concours à charger
 	 * @return la fiche concours chargé
 	 * @throws IOException
+	 * @throws JAXBException 
 	 */
 	public static FicheConcours getFicheConcours(MetaDataFicheConcours metaDataFicheConcours, Profile profile) 
-			throws IOException {
+			throws IOException, JAXBException {
 		File fFiche = new File(ApplicationCore.userRessources.getConcoursPathForProfile(profile),
 				metaDataFicheConcours.getFilenameConcours());
-		Object[] savedStructure = XMLSerializer.loadXMLStructure(fFiche, true);
-
-		if (savedStructure != null) {
-			// lecture du fichier
-			FicheConcours ficheConcours = new FicheConcours(profile);
-			ficheConcours.setFiche(savedStructure, metaDataFicheConcours);
-
+		if(fFiche.getName().endsWith(".ctax")) { //$NON-NLS-1$
+			FicheConcours ficheConcours = XMLSerializer.loadMarshallStructure(fFiche, FicheConcours.class, true);
+			ficheConcours.setProfile(profile);
+			ficheConcours.getParametre().addPropertyChangeListener(metaDataFicheConcours);
+			
 			System.out.println("Fin chargement du concours " + metaDataFicheConcours.getIntituleConcours()); //$NON-NLS-1$
 			
 			return ficheConcours;
