@@ -124,6 +124,7 @@ import org.ajdeveloppement.swingxext.localisation.JXHeaderLocalisationHandler;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Profile;
 import org.jdesktop.beansbinding.BeanProperty;
+import org.jdesktop.beansbinding.Binding;
 import org.jdesktop.beansbinding.BindingGroup;
 import org.jdesktop.beansbinding.Bindings;
 import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
@@ -244,6 +245,8 @@ public class ContactPanel extends JPanel implements ActionListener{
 		jbEditCoordinate.setMargin(new Insets(0, 0, 0, 0));
 		jbEditCoordinate.setContentAreaFilled(false);
 		jbEditCoordinate.addActionListener(this);
+		
+		jxhSaveContact.addActionListener(this);
 		
 		gridbagComposer.setParentPanel(jpNameFirstName);
 		c.gridy = 0;
@@ -402,7 +405,19 @@ public class ContactPanel extends JPanel implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Raccord de méthode auto-généré
-		
+		if(e.getSource() == jxhSaveContact) {
+			if(contactBinding != null) {
+            	for(Binding<Contact, ?, ?, ?> binding : contactBinding.getBindings()) { 
+            		binding.save();
+            	}
+        	}
+			
+			try {
+				contact.save();
+			} catch (ObjectPersistenceException e1) {
+				DisplayableErrorHelper.displayException(e1);
+				e1.printStackTrace();
+			}
+		}
 	}
 }

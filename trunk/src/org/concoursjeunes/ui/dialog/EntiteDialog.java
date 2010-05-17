@@ -487,8 +487,6 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 		setLocationRelativeTo(null);
 		setVisible(true);
 		setResizable(false);
-		
-		System.out.println(getSize());
 	}
 
 	/**
@@ -537,7 +535,7 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 	public void valueChanged(ListSelectionEvent e) {
 		if(contactPanel != null) {
 			contactPanel.setContact((Contact)jlResultList.getSelectedValue());
-			this.getGlassPane().setVisible(true);
+			//this.getGlassPane().setVisible(true);
 		}
 	}
 }
