@@ -116,8 +116,6 @@ import org.ajdeveloppement.commons.sql.SqlManager;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Entite;
 
-import com.sun.xml.internal.bind.CycleRecoverable;
-
 /**
  * Represent a contact personn
  * 
@@ -127,7 +125,7 @@ import com.sun.xml.internal.bind.CycleRecoverable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @SqlTable(name="CONTACT")
 @SqlPrimaryKey(fields="ID_CONTACT")
-public class Contact implements ObjectPersistence, Cloneable,CycleRecoverable {
+public class Contact implements ObjectPersistence, Cloneable {
 	
 	// [start] Helper persistence
 	private static StoreHelper<Contact> helper = null;
@@ -507,12 +505,6 @@ public class Contact implements ObjectPersistence, Cloneable,CycleRecoverable {
 	
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
 		idContact = UUID.fromString(xmlId);
-	}
-	
-	@Override
-	public Object onCycleDetected(Context arg0) {
-		// TODO Raccord de méthode auto-généré
-		return null;
 	}
 	
 	@Override
