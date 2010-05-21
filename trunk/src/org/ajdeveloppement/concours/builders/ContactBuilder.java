@@ -99,6 +99,7 @@ import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.persistence.sql.ResultSetLoadHandler;
 import org.ajdeveloppement.commons.persistence.sql.SqlLoadHandler;
 import org.ajdeveloppement.concours.Contact;
+import org.ajdeveloppement.concours.managers.CoordinateManager;
 import org.concoursjeunes.ApplicationCore;
 
 /**
@@ -151,6 +152,8 @@ public class ContactBuilder {
 			while(rsCategoriesContact.next()) {
 				contact.getCategories().add(CategoryContactBuilder.getCategoryContact(rsCategoriesContact.getInt("NUM_CATEGORIE_CONTACT"))); //$NON-NLS-1$
 			}
+			
+			contact.setCoordinates(CoordinateManager.getContactCoordinates(contact));
 		} catch(SQLException e) {
 			throw new ObjectPersistenceException(e);
 		}

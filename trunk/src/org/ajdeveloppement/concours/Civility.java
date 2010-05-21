@@ -148,7 +148,7 @@ public class Civility implements ObjectPersistence {
 	}
 	
 	/**
-	 * 
+	 * Init ne civility
 	 */
 	public Civility() {
 		
@@ -166,79 +166,80 @@ public class Civility implements ObjectPersistence {
 	}
 
 	/**
-	 * Retourne l'identifiant en base de la civilité
+	 * Get database id of civility. Can be <code>null</code>
+	 * if civility is not in database and never serialised
 	 * 
-	 * @return l'id de la civilité
+	 * @return id of civility
 	 */
 	public UUID getIdCivility() {
 		return idCivility;
 	}
 
 	/**
-	 * Définit l'identifiant en base de la civilité
+	 * Set database id of civility
 	 * 
-	 * @param idCivility l'id de la civilité
+	 * @param idCivility id of civility
 	 */
 	public void setIdCivility(UUID idCivility) {
 		this.idCivility = idCivility;
 	}
 
 	/**
-	 * retourne la forme abrégé de la civilité
+	 * Get short form of Civility (ex: M., Mr.,Mrs.)
 	 * 
-	 * @return la forme abrégé de la civilité
+	 * @return short form of Civility
 	 */
 	public String getAbreviation() {
 		return abreviation;
 	}
 
 	/**
-	 * définit la forme abrégé de la civilité
+	 * Set short form of Civility (ex: M., Mr.,Mrs.)
 	 * 
-	 * @param abreviation la forme abrégé de la civilité
+	 * @param abreviation short form of Civility
 	 */
 	public void setAbreviation(String abreviation) {
 		this.abreviation = abreviation;
 	}
 
 	/** 
-	 * retourne le libellé de la civilité
+	 * Get long form of civility (ex: Mister, Misses)
 	 * 
-	 * @return le libellé de la civilité
+	 * @return long form of civility
 	 */
 	public String getLibelle() {
 		return libelle;
 	}
 
 	/**
-	 * définit le libellé de la civilité
+	 * Set ong form of civility (ex: Mister, Misses)
 	 * 
-	 * @param libelle le libellé de la civilité
+	 * @param libelle long form of civility
 	 */
 	public void setLibelle(String libelle) {
 		this.libelle = libelle;
 	}
 
 	/**
-	 * Indique si la civilité représente une personne phyqique ou morale
+	 * Get if a civility is corporate or physical
 	 * 
-	 * @return <code>true</code> si c'est une personne morale, <code>false</code> sinon
+	 * @return <code>true</code> if it's a corporate civility, <code>false</code> else
 	 */
 	public boolean isMorale() {
 		return morale;
 	}
 
 	/**
-	 * définit ivilité représente une personne phyqique ou morale
+	 * Set if a civility is corporate or physical
 	 * 
-	 * @param morale <code>true</code> si c'est une personne morale, <code>false</code> sinon
+	 * @param morale <code>true</code> if it's a corporate civility, <code>false</code> else
 	 */
 	public void setMorale(boolean morale) {
 		this.morale = morale;
 	}
 
 	/**
-	 * Enregistre la civilité en base
+	 * Save civility in database
 	 */
 	@Override
 	public void save() throws ObjectPersistenceException {
@@ -252,7 +253,7 @@ public class Civility implements ObjectPersistence {
 	}
 	
 	/**
-	 * Supprime la civlité de la base
+	 * Delete civility in database
 	 */
 	@Override
 	public void delete() throws ObjectPersistenceException {
@@ -263,12 +264,23 @@ public class Civility implements ObjectPersistence {
 		}
 	}
 	
+	/**
+	 * Use only by JAXB. Do not use.
+	 * 
+	 * @param marshaller
+	 */
 	protected void beforeMarshal(Marshaller marshaller) {
 		if(idCivility == null)
 			idCivility = UUID.randomUUID();
 		xmlId = idCivility.toString();
 	}
 	
+	/**
+	 * Use only by JAXB. Do not use.
+	 * 
+	 * @param unmarshaller
+	 * @param parent
+	 */
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
 		idCivility = UUID.fromString(xmlId);
 	}

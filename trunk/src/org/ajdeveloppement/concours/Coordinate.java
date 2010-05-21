@@ -124,12 +124,12 @@ public class Coordinate implements ObjectPersistence, Cloneable {
 	 */
 	public enum Type {
 		/**
-		 * Personnal phone number
+		 * Personal phone number
 		 */
 		HOME_PHONE("HOME_PHONE"), //$NON-NLS-1$
 		
 		/**
-		 * Professionnal phone number
+		 * Professional phone number
 		 */
 		WORK_PHONE("WORK_PHONE"), //$NON-NLS-1$
 		
@@ -214,52 +214,70 @@ public class Coordinate implements ObjectPersistence, Cloneable {
 	}
 
 	/**
-	 * @return coordinateType
+	 * Get type of the coordinate see {@link Type} for more information
+	 * 
+	 * @return type of coordinate
 	 */
 	public Type getCoordinateType() {
 		return coordinateType;
 	}
 
 	/**
-	 * @param coordinateType coordinateType à définir
+	 * Set type of the coordinate
+	 * 
+	 * @param coordinateType type of coordinate
 	 */
 	public void setCoordinateType(Type coordinateType) {
 		this.coordinateType = coordinateType;
 	}
 
 	/**
-	 * @return value
+	 * Get the coordinate value
+	 * 
+	 * @return the coordinate value
 	 */
 	public String getValue() {
 		return value;
 	}
 
 	/**
-	 * @param value value à définir
+	 * Set the coordinate value
+	 * 
+	 * @param value the coordinate value
 	 */
 	public void setValue(String value) {
 		this.value = value;
 	}
 
 	/**
-	 * @return contact
+	 * Get the contact associate with this coordinate
+	 * 
+	 * @return contact the contact associate
 	 */
 	public Contact getContact() {
 		return contact;
 	}
 
 	/**
-	 * @param contact contact à définir
+	 * Set the contact associate with this coordinate
+	 * 
+	 * @param contact the contact associate
 	 */
 	public void setContact(Contact contact) {
 		this.contact = contact;
 	}
 
+	/**
+	 * Save Coordinate in database
+	 */
 	@Override
 	public void save() throws ObjectPersistenceException {
 		helper.save(this);
 	}
 	
+	/**
+	 * Delete coordinate from database
+	 */
 	@Override
 	public void delete() throws ObjectPersistenceException {
 		if(idCoordinate != null)

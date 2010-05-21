@@ -101,6 +101,8 @@ import org.ajdeveloppement.concours.cache.CategoryContactCache;
 import org.concoursjeunes.ApplicationCore;
 
 /**
+ * Utilities class to build CategoryContact with database data
+ * 
  * @author Aurélien JEOFFRAY
  *
  */
@@ -116,10 +118,24 @@ public class CategoryContactBuilder {
 		}
 	}
 	
+	/**
+	 * Build a CategoryContact with id of category in database
+	 * 
+	 * @param numCategory id of category in database
+	 * @return Category build with database data
+	 * @throws ObjectPersistenceException
+	 */
 	public static CategoryContact getCategoryContact(int numCategory) throws ObjectPersistenceException {
 		return getCategoryContact(numCategory, null);
 	}
 	
+	/**
+	 * Build a CategoryContact with a resutset
+	 * 
+	 * @param rs resultset that contains CategoryContact data
+	 * @return CategoryContact build with resultset
+	 * @throws ObjectPersistenceException
+	 */
 	public static CategoryContact getCategoryContact(ResultSet rs) throws ObjectPersistenceException {
 		return getCategoryContact(0, rs);
 	}

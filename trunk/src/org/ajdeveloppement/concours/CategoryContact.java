@@ -111,7 +111,7 @@ import org.ajdeveloppement.concours.helpers.LibelleHelper;
 import org.concoursjeunes.ApplicationCore;
 
 /**
- * Category of contact. Use to filter contact by group group
+ * Category of contact. Use to filter contact by category
  * 
  * @author Aurélien JEOFFRAY
  */
@@ -136,23 +136,37 @@ public class CategoryContact implements ObjectPersistence{
 	
 	private transient Map<String, String> localizedLibelle = new HashMap<String, String>();
 	
+	/**
+	 * Create a new catehory of contact
+	 */
 	public CategoryContact() {
 	}
 	
 	/**
-	 * @return numCategoryContact
+	 * Get database id of category contact or 0 if contact is not in
+	 * database
+	 * 
+	 * @return database id of category contact
 	 */
 	public int getNumCategoryContact() {
 		return numCategoryContact;
 	}
 
 	/**
-	 * @param numCategoryContact numCategoryContact à définir
+	 * Set database id of category contact
+	 * 
+	 * @param numCategoryContact the database id of category contact
 	 */
 	public void setNumCategoryContact(int numCategoryContact) {
 		this.numCategoryContact = numCategoryContact;
 	}
 	
+	/**
+	 * Get the localized label of category contact
+	 * 
+	 * @param lang the locale of label to return
+	 * @return the localized label
+	 */
 	public String getLibelle(String lang) {
 		
 		if(localizedLibelle.containsKey(lang))
@@ -164,10 +178,19 @@ public class CategoryContact implements ObjectPersistence{
 		return libelle;
 	}
 	
+	/**
+	 * Set the localized label for a specific lang
+	 * 
+	 * @param libelle the localized label
+	 * @param lang the language of label
+	 */
 	public void setLibelle(String libelle, String lang) {
 		localizedLibelle.put(lang, libelle);
 	}
 
+	/**
+	 * Save Category in database
+	 */
 	@Override
 	public void save() throws ObjectPersistenceException {
 		for(Entry<String,String> entry : localizedLibelle.entrySet()) {
@@ -181,6 +204,9 @@ public class CategoryContact implements ObjectPersistence{
 			CategoryContactCache.getInstance().add(this);
 	}
 	
+	/**
+	 * Delete Category in database
+	 */
 	@Override
 	public void delete() throws ObjectPersistenceException {
 		helper.delete(this);

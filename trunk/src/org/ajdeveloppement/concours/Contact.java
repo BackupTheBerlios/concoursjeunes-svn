@@ -117,7 +117,7 @@ import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Entite;
 
 /**
- * Represent a contact personn
+ * Represent a contact person. This class can be serialised with JAXB.
  * 
  * @author Aurélien JEOFFRAY
  *
@@ -297,6 +297,7 @@ public class Contact implements ObjectPersistence, Cloneable {
 		Civility oldValue = this.civility;
 		
 		this.civility = civility;
+		
 		pcs.firePropertyChange("civility", oldValue, civility); //$NON-NLS-1$
 	}
 
@@ -438,7 +439,9 @@ public class Contact implements ObjectPersistence, Cloneable {
 	}
 	
 	/**
-	 * @param entite entite à définir
+	 * Set entity associate with contact
+	 * 
+	 * @param entite entity associate with contact
 	 */
 	public void setEntite(Entite entite) {
 		Entite oldValue = this.entite;
@@ -449,7 +452,8 @@ public class Contact implements ObjectPersistence, Cloneable {
 	}
 
 	/**
-	 * @return entite
+	 * Get entity associate with contact
+	 * @return entity associate with contact
 	 */
 	public Entite getEntite() {
 		return entite;
@@ -495,6 +499,11 @@ public class Contact implements ObjectPersistence, Cloneable {
 			helper.delete(this);
 	}
 	
+	/**
+	 * For JAXB Usage only. Do not use.
+	 * 
+	 * @param marshaller
+	 */
 	protected void beforeMarshal(Marshaller marshaller) {
 		if(idContact == null)
 			idContact = UUID.randomUUID();
@@ -503,6 +512,12 @@ public class Contact implements ObjectPersistence, Cloneable {
 		entite.beforeMarshal(marshaller);
 	}
 	
+	/**
+	 * For JAXB Usage only. Do not use.
+	 * 
+	 * @param unmarshaller
+	 * @param parent
+	 */
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
 		idContact = UUID.fromString(xmlId);
 	}
