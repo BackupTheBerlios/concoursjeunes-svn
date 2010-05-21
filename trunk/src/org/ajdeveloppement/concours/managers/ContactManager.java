@@ -125,7 +125,10 @@ public class ContactManager {
 			ResultSet rs = manager.executeQuery(sql); 
 			try {
 				while(rs.next()) {
-					contacts.add(ContactBuilder.getContact(rs));
+					Contact contact = ContactBuilder.getContact(rs);
+					contact.setEntite(entity);
+					
+					contacts.add(contact);
 				}
 			} finally {
 				rs.close();
