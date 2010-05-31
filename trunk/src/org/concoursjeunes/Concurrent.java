@@ -91,6 +91,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -129,7 +130,7 @@ public class Concurrent extends Archer implements Cloneable {
 
 	@XmlElementWrapper(name="points")
 	@XmlElement(name="serie")
-	private ArrayList<Integer> points	= new ArrayList<Integer>();
+	private List<Integer> points;
 	@XmlElementWrapper(name="departages")
 	@XmlElement(name="departage")
 	private int[] departages			= new int[2];
@@ -178,7 +179,7 @@ public class Concurrent extends Archer implements Cloneable {
 	public void setScore(List<Integer> points) {
 		Object oldValue = this.points;
 		
-		this.points = (ArrayList<Integer>)points;
+		this.points = points;
 		
 		pcs.firePropertyChange("score", oldValue, points); //$NON-NLS-1$
 	}
@@ -190,6 +191,8 @@ public class Concurrent extends Archer implements Cloneable {
 	 * @return la grille des scores
 	 */
 	public List<Integer> getScore() {
+		if(points == null)
+			points	= new ArrayList<Integer>();
 		return points;
 	}
 
@@ -622,12 +625,14 @@ public class Concurrent extends Archer implements Cloneable {
 	/**
 	 * Clone l'objet concurrent
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public Concurrent clone() {
 		try {
 			Concurrent clone = (Concurrent)super.clone();
-			clone.points = (ArrayList<Integer>)points.clone();
+			if(points != null) {
+				clone.points = new ArrayList<Integer>();
+				Collections.copy(clone.points, points);
+			}
 			return clone;
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();

@@ -140,6 +140,7 @@ public class AncragesMapBuilder {
 			try {
 				while(rs.next()) {
 					Ancrage ancrage = new Ancrage();
+					ancrage.setBlason(blason);
 					
 					loadHelper.load(ancrage, rs);
 					

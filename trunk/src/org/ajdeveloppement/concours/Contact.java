@@ -173,9 +173,9 @@ public class Contact implements ObjectPersistence, Cloneable {
 	@SqlForeignKey(mappedTo="ID_ENTITE")
 	private Entite entite = new Entite();
 	
-	private List<Coordinate> coordinates = new ArrayList<Coordinate>();
+	private List<Coordinate> coordinates;
 	
-	private List<CategoryContact> categories = new ArrayList<CategoryContact>();
+	private List<CategoryContact> categories;
 
 	protected transient PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 	
@@ -379,6 +379,8 @@ public class Contact implements ObjectPersistence, Cloneable {
 	 * @return coordinates of contact
 	 */
 	public List<Coordinate> getCoordinates() {
+		if(coordinates == null)
+			coordinates = new ArrayList<Coordinate>();
 		return coordinates;
 	}
 
@@ -397,6 +399,8 @@ public class Contact implements ObjectPersistence, Cloneable {
 	 * @return categories the categories of contact
 	 */
 	public List<CategoryContact> getCategories() {
+		if(categories == null)
+			categories = new ArrayList<CategoryContact>();
 		return categories;
 	}
 

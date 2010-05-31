@@ -137,7 +137,7 @@ public class CriteriaSet implements ObjectPersistence {
 	@SqlForeignKey(mappedTo="NUMREGLEMENT")
 	private Reglement reglement;
 	@XmlJavaTypeAdapter(JAXBMapRefAdapter.class)
-	private Map<Criterion, CriterionElement> criteria = new HashMap<Criterion, CriterionElement>();
+	private Map<Criterion, CriterionElement> criteria = new HashMap<Criterion, CriterionElement>(5);
 	
 	private static StoreHelper<CriteriaSet> helper = null;
 	static {

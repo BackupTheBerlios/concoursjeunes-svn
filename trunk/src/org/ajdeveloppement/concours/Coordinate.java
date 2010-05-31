@@ -91,6 +91,7 @@ package org.ajdeveloppement.concours;
 import java.sql.SQLException;
 import java.util.UUID;
 
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -157,7 +158,7 @@ public class Coordinate implements ObjectPersistence, Cloneable {
 	
 	@XmlAttribute(name="id",required=true)
 	@SqlField(name="ID_COORDINATE")
-	private UUID idCoordinate = UUID.randomUUID();
+	private UUID idCoordinate = null;
 	
 	@SqlField(name="CODE_COORDINATE_TYPE")
 	private Type coordinateType = Type.HOME_PHONE;
@@ -272,6 +273,9 @@ public class Coordinate implements ObjectPersistence, Cloneable {
 	 */
 	@Override
 	public void save() throws ObjectPersistenceException {
+		if(idCoordinate == null)
+			idCoordinate = UUID.randomUUID();
+		
 		helper.save(this);
 	}
 	
@@ -282,6 +286,11 @@ public class Coordinate implements ObjectPersistence, Cloneable {
 	public void delete() throws ObjectPersistenceException {
 		if(idCoordinate != null)
 			helper.delete(this);
+	}
+	
+	protected void beforeMarshal(Marshaller marshaller) {
+		if(idCoordinate == null)
+			idCoordinate = UUID.randomUUID();
 	}
 	
 	/**
@@ -301,7 +310,7 @@ public class Coordinate implements ObjectPersistence, Cloneable {
 	@Override
 	protected Coordinate clone() throws CloneNotSupportedException {
 		Coordinate clone = (Coordinate)super.clone();
-		clone.setIdCoordinate(UUID.randomUUID());
+		clone.setIdCoordinate(null);
 		
 		return clone;
 	}

@@ -93,10 +93,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -112,6 +112,7 @@ import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
 import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
 import org.ajdeveloppement.commons.persistence.sql.SqlTable;
 import org.ajdeveloppement.concours.cache.BlasonCache;
+import org.concoursjeunes.builders.AncragesMapBuilder;
 import org.concoursjeunes.builders.BlasonBuilder;
 
 /**
@@ -143,7 +144,7 @@ public class Blason implements ObjectPersistence {
 	@SqlField(name="IMAGE")
 	private String targetFaceImage = ""; //$NON-NLS-1$
 	//@XmlJavaTypeAdapter(JAXBMapAdapter.class)
-	private Map<Integer, Ancrage> ancrages = new ConcurrentHashMap<Integer, Ancrage>();
+	private Map<Integer, Ancrage> ancrages;
 	
 	private static StoreHelper<Blason> helper = null;
 	static {
@@ -224,7 +225,7 @@ public class Blason implements ObjectPersistence {
 			Statement stmt = ApplicationCore.dbConnection.createStatement();
 			ResultSet rs = stmt.executeQuery(sql);
 			while(rs.next()) {
-				blasons.add(BlasonBuilder.getBlason(rs.getInt("NUMBLASON"))); //$NON-NLS-1$
+				blasons.add(BlasonBuilder.getBlason(rs));
 			}
 		} catch (SQLException e) {
 			throw new ObjectPersistenceException(e);
@@ -369,7 +370,15 @@ public class Blason implements ObjectPersistence {
 	 * 
 	 * @return la table des points d'ancrages possible du blason
 	 */
-	public synchronized Map<Integer, Ancrage> getAncrages() {
+	public Map<Integer, Ancrage> getAncrages() {
+		if(ancrages == null) {
+			try {
+				ancrages = AncragesMapBuilder.getAncragesMap(this);
+			} catch (ObjectPersistenceException e) {
+				e.printStackTrace();
+				ancrages = new HashMap<Integer, Ancrage>();
+			}
+		}
     	return ancrages;
     }
 
@@ -408,7 +417,10 @@ public class Blason implements ObjectPersistence {
 			default:
 				ancrageKey = Ancrage.POSITION_ABCD;
 		}
-		return ancrages.get(ancrageKey);
+		if(getAncrages() != null)
+			return getAncrages().get(ancrageKey);
+		
+		return null;
 	}
 	
 	/**

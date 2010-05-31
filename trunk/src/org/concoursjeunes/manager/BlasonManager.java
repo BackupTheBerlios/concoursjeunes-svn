@@ -106,6 +106,10 @@ import org.concoursjeunes.builders.BlasonBuilder;
  */
 public class BlasonManager {
 	
+	private static PreparedStatement pstmtBlasonWithDistancesEtBlason = null;
+	
+	private static PreparedStatement pstmtBlasonByName = null;
+	
 	/**
 	 * Retourne le blason associé à une ligne distance/blason d'un réglement donnée
 	 * 
@@ -115,28 +119,24 @@ public class BlasonManager {
 	 * @throws ObjectPersistenceException 
 	 */
 	public static Blason findBlasonAssociateToDistancesEtBlason(DistancesEtBlason distancesEtBlason) throws ObjectPersistenceException {
-		
-		String sql = "select NUMBLASON from DISTANCESBLASONS " //$NON-NLS-1$
-			+ "where NUMDISTANCESBLASONS=? and NUMREGLEMENT=?"; //$NON-NLS-1$
-		int numBlason = 0;
-		
-		try {	
-			PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
-			
-			pstmt.setInt(1, distancesEtBlason.getNumdistancesblason());
-			pstmt.setInt(2, distancesEtBlason.getReglement().getNumReglement());
-			
-			ResultSet rs = pstmt.executeQuery();
-			try {
-				if(rs.first())
-					numBlason = rs.getInt("NUMBLASON"); //$NON-NLS-1$
-			} finally {
-				if(rs != null)
-					rs.close();
+		try {
+			if(pstmtBlasonWithDistancesEtBlason == null) {
+				String sql = "select B.* from DISTANCESBLASONS D inner join BLASONS B on D.NUMBLASON=B.NUMBLASON" //$NON-NLS-1$
+					+ "where NUMDISTANCESBLASONS=? and NUMREGLEMENT=?"; //$NON-NLS-1$
+				
+				pstmtBlasonWithDistancesEtBlason = ApplicationCore.dbConnection.prepareStatement(sql);
 			}
 			
-			if(numBlason != 0)
-				return BlasonBuilder.getBlason(numBlason);
+			pstmtBlasonWithDistancesEtBlason.setInt(1, distancesEtBlason.getNumdistancesblason());
+			pstmtBlasonWithDistancesEtBlason.setInt(2, distancesEtBlason.getReglement().getNumReglement());
+			
+			ResultSet rs = pstmtBlasonWithDistancesEtBlason.executeQuery();
+			try {
+				if(rs.first())
+					return BlasonBuilder.getBlason(rs);
+			} finally {
+				rs.close();
+			}
 		} catch (SQLException e) {
 			throw new ObjectPersistenceException(e);
 		}
@@ -153,25 +153,23 @@ public class BlasonManager {
 	 * @throws SQLException
 	 */
 	public static Blason findBlasonByName(String name) throws ObjectPersistenceException {	
-		String sql = "select NUMBLASON from BLASONS where NOMBLASON=?"; //$NON-NLS-1$
-		int numBlason = 0;
 		
 		try {
-			PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
-			
-			pstmt.setString(1, name);
-			
-			ResultSet rs = pstmt.executeQuery();
-			try {
-				if(rs.first())
-					numBlason = rs.getInt("NUMBLASON"); //$NON-NLS-1$
-			} finally {
-				if(rs != null)
-					rs.close();
+			if(pstmtBlasonByName == null) {
+				String sql = "select * from BLASONS where NOMBLASON=?"; //$NON-NLS-1$
+				
+				pstmtBlasonByName = ApplicationCore.dbConnection.prepareStatement(sql);
 			}
 			
-			if(numBlason != 0)
-				return BlasonBuilder.getBlason(numBlason); 
+			pstmtBlasonByName.setString(1, name);
+			
+			ResultSet rs = pstmtBlasonByName.executeQuery();
+			try {
+				if(rs.first())
+					return BlasonBuilder.getBlason(rs);
+			} finally {
+				rs.close();
+			}
 		} catch (SQLException e) {
 			throw new ObjectPersistenceException(e);
 		}

@@ -134,7 +134,7 @@ public class CategoryContact implements ObjectPersistence{
 	@SqlField(name="ID_LIBELLE")
 	private UUID idLibelle;
 	
-	private transient Map<String, String> localizedLibelle = new HashMap<String, String>();
+	private transient Map<String, String> localizedLibelle;
 	
 	/**
 	 * Create a new catehory of contact
@@ -169,8 +169,12 @@ public class CategoryContact implements ObjectPersistence{
 	 */
 	public String getLibelle(String lang) {
 		
-		if(localizedLibelle.containsKey(lang))
-			return localizedLibelle.get(lang);
+		if(localizedLibelle == null)
+			localizedLibelle = new HashMap<String, String>();
+		else {
+			if(localizedLibelle.containsKey(lang))
+				return localizedLibelle.get(lang);
+		}
 		
 		String libelle = LibelleHelper.getLibelle(idLibelle, lang);
 		localizedLibelle.put(lang, libelle);
@@ -185,6 +189,9 @@ public class CategoryContact implements ObjectPersistence{
 	 * @param lang the language of label
 	 */
 	public void setLibelle(String libelle, String lang) {
+		if(localizedLibelle == null)
+			localizedLibelle = new HashMap<String, String>();
+		
 		localizedLibelle.put(lang, libelle);
 	}
 
@@ -193,11 +200,12 @@ public class CategoryContact implements ObjectPersistence{
 	 */
 	@Override
 	public void save() throws ObjectPersistenceException {
-		for(Entry<String,String> entry : localizedLibelle.entrySet()) {
-			if(!LibelleHelper.getLibelle(idLibelle, entry.getKey()).equals(entry.getValue()))
-				new Libelle(idLibelle, entry.getValue(), entry.getKey()).save();
+		if(localizedLibelle != null) {
+			for(Entry<String,String> entry : localizedLibelle.entrySet()) {
+				if(!LibelleHelper.getLibelle(idLibelle, entry.getKey()).equals(entry.getValue()))
+					new Libelle(idLibelle, entry.getValue(), entry.getKey()).save();
+			}
 		}
-		
 		helper.save(this);
 		
 		if(!CategoryContactCache.getInstance().containsKey(numCategoryContact))

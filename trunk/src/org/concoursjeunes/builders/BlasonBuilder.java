@@ -88,6 +88,7 @@
  */
 package org.concoursjeunes.builders;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -95,6 +96,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.ajdeveloppement.commons.persistence.LoadHelper;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.sql.ResultSetLoadHandler;
 import org.ajdeveloppement.commons.persistence.sql.SqlLoadHandler;
 import org.ajdeveloppement.concours.cache.BlasonCache;
 import org.concoursjeunes.Ancrage;
@@ -111,38 +113,71 @@ import org.concoursjeunes.Blason;
 public class BlasonBuilder {
 	
 	private static LoadHelper<Blason,Map<String,Object>> loadHelper;
+	private static LoadHelper<Blason,ResultSet> resultSetLoadHelper;
 	static {
 		try {
 			loadHelper = new LoadHelper<Blason,Map<String,Object>>(new SqlLoadHandler<Blason>(ApplicationCore.dbConnection, Blason.class));
+			resultSetLoadHelper = new LoadHelper<Blason,ResultSet>(new ResultSetLoadHandler<Blason>(Blason.class));
 		} catch(ObjectPersistenceException e) {
 			throw new RuntimeException(e);
 		}
 	}
 	
 	/**
-	 * Construit un blason à partir d'un jeux de résultat transmis en parametre.<br>
-	 * Le jeux de résultat doit posseder les champs de la table BLASONS.
-	 * Si le jeux de résultat n'est pas valide, retourne une exception <i>SQLException</i>
+	 * Construit un blason à partir de son identifiant en base.
 	 * 
 	 * @param numblason l'id du blason à charger
 	 * @return le blason construit à partir du jeux de résultat
-	 * @throws SQLException retourné si le jeux de résultat ne contient pas l'ensemble<br>
-	 * des champs de la table BLASONS 
+	 * @throws ObjectPersistenceException
 	 */
 	public static Blason getBlason(int numblason) throws ObjectPersistenceException {
-		Blason blason = BlasonCache.getInstance().get(numblason);
-		if(blason == null) {
-			blason = new Blason();
-			blason.setNumblason(numblason); 
+		return getBlason(numblason, null);
+	}
+	
+	/**
+	 * Construit un blason à partir d'un jeux de résultat transmis en parametre.<br>
+	 * Le jeux de résultat doit posseder les champs de la table BLASONS.
+	 * 
+	 * @param numblason l'id du blason à charger
+	 * @return le blason construit à partir du jeux de résultat
+	 * @throws ObjectPersistenceException retourné si le jeux de résultat ne contient pas l'ensemble<br>
+	 * des champs de la table BLASONS 
+	 */
+	public static Blason getBlason(ResultSet rs) throws ObjectPersistenceException {
+		if(rs == null)
+			return null;
 		
-			loadHelper.load(blason);
+		return getBlason(-1, rs);
+	}
+	
+	private static Blason getBlason(int numblason, ResultSet rs) throws ObjectPersistenceException {
+		try {
+			if(rs != null)
+				numblason = rs.getInt("NUMBLASON"); //$NON-NLS-1$
 			
-			blason.setAncrages(AncragesMapBuilder.getAncragesMap(blason));
+			BlasonCache cache = BlasonCache.getInstance();
 			
-			BlasonCache.getInstance().add(blason);
+			Blason blason = cache.get(numblason);
+			if(blason == null) {
+				blason = new Blason();
+				
+				if(rs != null)
+					resultSetLoadHelper.load(blason, rs);
+				else {
+					blason.setNumblason(numblason); 
+					
+					loadHelper.load(blason);
+				}
+				
+				//blason.setAncrages(AncragesMapBuilder.getAncragesMap(blason));
+				
+				cache.add(blason);
+			}
+			
+			return blason;
+		} catch (SQLException e) {
+			throw new ObjectPersistenceException(e);
 		}
-		
-		return blason;
 	}
 	
 	/**
