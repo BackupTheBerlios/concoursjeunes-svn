@@ -1021,7 +1021,15 @@ public class FicheConcoursDepartPane extends JPanel
 			if(this.concurrents.size() > 0)
 				fireIntervalRemoved(this, 0, this.concurrents.size()-1);
 			
+			for (Concurrent concurrent : concurrents) {
+				concurrent.removePropertyChangeListener(this);
+			}
+			
 			this.concurrents = concurrents;
+			
+			for (Concurrent concurrent : concurrents) {
+				concurrent.addPropertyChangeListener(this);
+			}
 			
 			if(concurrents.size() > 0)
 				fireIntervalAdded(this, 0, concurrents.size()-1);

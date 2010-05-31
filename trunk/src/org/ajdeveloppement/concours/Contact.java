@@ -155,7 +155,7 @@ public class Contact implements ObjectPersistence, Cloneable {
 	private String firstName;
 	
 	@SqlForeignKey(mappedTo="ID_CIVILITY")
-	private Civility civility = new Civility();
+	private Civility civility;
 	
 	@SqlField(name="ADDRESS")
 	private String adress;
