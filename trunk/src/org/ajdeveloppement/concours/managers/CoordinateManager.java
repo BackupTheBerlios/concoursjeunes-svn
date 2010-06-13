@@ -112,7 +112,7 @@ public class CoordinateManager {
 		
 		try {
 			if(pstmtContactCoordinates == null)
-				pstmtContactCoordinates = ApplicationCore.dbConnection.prepareStatement("select * from COORDINATE where ID_CONTACT = ?");
+				pstmtContactCoordinates = ApplicationCore.dbConnection.prepareStatement("select * from COORDINATE where ID_CONTACT = ?"); //$NON-NLS-1$
 			
 			pstmtContactCoordinates.setObject(1, contact.getIdContact());
 			

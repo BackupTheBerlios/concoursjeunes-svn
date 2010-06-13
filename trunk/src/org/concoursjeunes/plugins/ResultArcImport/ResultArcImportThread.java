@@ -93,16 +93,14 @@ import java.io.PrintStream;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Hashtable;
-import java.util.logging.Level;
 
 import javax.swing.JDialog;
 import javax.swing.event.EventListenerList;
 
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.sql.SqlParser;
+import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
 import org.concoursjeunes.ApplicationCore;
-import org.jdesktop.swingx.JXErrorPane;
-import org.jdesktop.swingx.error.ErrorInfo;
 
 /**
  * Plugin d'import d'une base Result'Arc (Format Windev HF) vers ConcoursJeunes
@@ -227,26 +225,21 @@ public class ResultArcImportThread extends Thread {
 			stmt.close();
 
 		} catch (InterruptedException e1) {
-			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), e1.getLocalizedMessage(), //$NON-NLS-1$
-					null, null, e1, Level.SEVERE, null));
+			DisplayableErrorHelper.displayException(e1);
 			e1.printStackTrace();
 
 		} catch (IOException io) {
-			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), io.getLocalizedMessage(), //$NON-NLS-1$
-					null, null, io, Level.SEVERE, null));
+			DisplayableErrorHelper.displayException(io);
 			io.printStackTrace();
 
 		} catch (NullPointerException npe) {
-			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), npe.getLocalizedMessage(), //$NON-NLS-1$
-					null, null, npe, Level.SEVERE, null));
+			DisplayableErrorHelper.displayException(npe);
 			npe.printStackTrace();
 		} catch (OutOfMemoryError oome) {
-			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), oome.getLocalizedMessage(), //$NON-NLS-1$
-					null, null, oome, Level.SEVERE, null));
+			DisplayableErrorHelper.displayException(oome);
 			oome.printStackTrace();
 		} catch (SQLException e) {
-			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
-					null, null, e, Level.SEVERE, null));
+			DisplayableErrorHelper.displayException(e);
 			e.printStackTrace();
 		}
 	}

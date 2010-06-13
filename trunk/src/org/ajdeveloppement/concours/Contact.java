@@ -106,7 +106,9 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import org.ajdeveloppement.commons.persistence.ObjectPersistence;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.Session;
 import org.ajdeveloppement.commons.persistence.StoreHelper;
+import org.ajdeveloppement.commons.persistence.sql.SessionHelper;
 import org.ajdeveloppement.commons.persistence.sql.SqlField;
 import org.ajdeveloppement.commons.persistence.sql.SqlForeignKey;
 import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
@@ -463,34 +465,49 @@ public class Contact implements ObjectPersistence, Cloneable {
 		return entite;
 	}
 
+	@Override
+	public void save() throws ObjectPersistenceException {
+		SessionHelper.startSaveSession(ApplicationCore.dbConnection, this);
+	}
+	
+	@Override
+	public void delete() throws ObjectPersistenceException {
+		SessionHelper.startDeleteSession(ApplicationCore.dbConnection, this);
+	}
+	
 	/**
 	 * Save contact in database
 	 */
 	@Override
-	public void save() throws ObjectPersistenceException {
-		if(idContact == null)
-			idContact = UUID.randomUUID();
-		
-		helper.save(this);
-		
-		SqlManager sqlManager = new SqlManager(ApplicationCore.dbConnection, null);
-		try {
-			String savedIdCategories = ""; //$NON-NLS-1$
-			for(CategoryContact categoryContact : categories) {
-				sqlManager.executeUpdate("merge into ASSOCIER_CATEGORIE_CONTACT (ID_CONTACT, NUM_CATEGORIE_CONTACT) " //$NON-NLS-1$
-						+ "VALUES ('" + idContact.toString() + "', " + categoryContact.getNumCategoryContact() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				
-				savedIdCategories += categoryContact.getNumCategoryContact() + ","; //$NON-NLS-1$
+	public void save(Session session) throws ObjectPersistenceException {
+		if(session == null || !session.contains(this)) {
+			if(idContact == null)
+				idContact = UUID.randomUUID();
+			
+			helper.save(this);
+			
+			SqlManager sqlManager = new SqlManager(ApplicationCore.dbConnection, null);
+			try {
+				String savedIdCategories = ""; //$NON-NLS-1$
+				for(CategoryContact categoryContact : categories) {
+					sqlManager.executeUpdate("merge into ASSOCIER_CATEGORIE_CONTACT (ID_CONTACT, NUM_CATEGORIE_CONTACT) " //$NON-NLS-1$
+							+ "VALUES ('" + idContact.toString() + "', " + categoryContact.getNumCategoryContact() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+					
+					savedIdCategories += categoryContact.getNumCategoryContact() + ","; //$NON-NLS-1$
+				}
+				String categoriesFilter = ""; //$NON-NLS-1$
+				if(!savedIdCategories.isEmpty()) {
+					savedIdCategories = savedIdCategories.substring(0, savedIdCategories.length() - 1);
+					categoriesFilter = String.format("and NUM_CATEGORIE_CONTACT not in (%s)", savedIdCategories); //$NON-NLS-1$
+				}
+				sqlManager.executeUpdate(String.format("delete from ASSOCIER_CATEGORIE_CONTACT where ID_CONTACT = '%s' " //$NON-NLS-1$
+						+ categoriesFilter, idContact.toString()));
+			} catch (SQLException e) {
+				throw new ObjectPersistenceException(e);
 			}
-			String categoriesFilter = ""; //$NON-NLS-1$
-			if(!savedIdCategories.isEmpty()) {
-				savedIdCategories = savedIdCategories.substring(0, savedIdCategories.length() - 1);
-				categoriesFilter = String.format("and NUM_CATEGORIE_CONTACT not in (%s)", savedIdCategories); //$NON-NLS-1$
-			}
-			sqlManager.executeUpdate(String.format("delete from ASSOCIER_CATEGORIE_CONTACT where ID_CONTACT = '%s' " //$NON-NLS-1$
-					+ categoriesFilter, idContact.toString()));
-		} catch (SQLException e) {
-			throw new ObjectPersistenceException(e);
+			
+			if(session != null)
+				session.addThreatyObject(this);
 		}
 	}
 
@@ -498,9 +515,13 @@ public class Contact implements ObjectPersistence, Cloneable {
 	 * remove the contact database 
 	 */
 	@Override
-	public void delete() throws ObjectPersistenceException {
-		if(idContact != null)
+	public void delete(Session session) throws ObjectPersistenceException {
+		if(idContact != null && (session == null || !session.contains(this))) {
 			helper.delete(this);
+			
+			if(session != null)
+				session.addThreatyObject(this);
+		}
 	}
 	
 	/**

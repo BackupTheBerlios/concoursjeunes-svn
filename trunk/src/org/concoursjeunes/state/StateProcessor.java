@@ -174,7 +174,7 @@ public class StateProcessor {
 			tmpFile.deleteOnExit();
 		} else {
 			String concoursName = ficheConcours.getParametre().getSaveName();
-			concoursName = concoursName.substring(0, concoursName.length() - 4);
+			concoursName = concoursName.substring(0, concoursName.length() - 5);
 			filePath = ApplicationCore.userRessources.getConcoursPathForProfile(profile).getPath() + File.separator
 					+ concoursName + File.separator + state.getLocalizedDisplayName()
 					+ " - " + DateFormat.getDateInstance().format(new Date()) + " " + new SimpleDateFormat("HH.mm.ss").format(new Date()) + ".pdf";   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$

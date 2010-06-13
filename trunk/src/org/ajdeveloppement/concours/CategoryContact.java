@@ -100,7 +100,9 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 import org.ajdeveloppement.commons.persistence.ObjectPersistence;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.Session;
 import org.ajdeveloppement.commons.persistence.StoreHelper;
+import org.ajdeveloppement.commons.persistence.sql.SessionHelper;
 import org.ajdeveloppement.commons.persistence.sql.SqlField;
 import org.ajdeveloppement.commons.persistence.sql.SqlGeneratedIdField;
 import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
@@ -195,30 +197,51 @@ public class CategoryContact implements ObjectPersistence{
 		localizedLibelle.put(lang, libelle);
 	}
 
+	@Override
+	public void save() throws ObjectPersistenceException {
+		SessionHelper.startSaveSession(ApplicationCore.dbConnection, this);
+	}
+	
+	@Override
+	public void delete() throws ObjectPersistenceException {
+		SessionHelper.startDeleteSession(ApplicationCore.dbConnection, this);
+	}
+	
 	/**
 	 * Save Category in database
 	 */
 	@Override
-	public void save() throws ObjectPersistenceException {
-		if(localizedLibelle != null) {
-			for(Entry<String,String> entry : localizedLibelle.entrySet()) {
-				if(!LibelleHelper.getLibelle(idLibelle, entry.getKey()).equals(entry.getValue()))
-					new Libelle(idLibelle, entry.getValue(), entry.getKey()).save();
+	public void save(Session session) throws ObjectPersistenceException {
+		if(session == null || !session.contains(this)) {
+			if(localizedLibelle != null) {
+				for(Entry<String,String> entry : localizedLibelle.entrySet()) {
+					if(!LibelleHelper.getLibelle(idLibelle, entry.getKey()).equals(entry.getValue()))
+						new Libelle(idLibelle, entry.getValue(), entry.getKey()).save(session);
+				}
 			}
-		}
-		helper.save(this);
+			
+			helper.save(this);
+			
+			if(session != null)
+				session.addThreatyObject(this);
 		
-		if(!CategoryContactCache.getInstance().containsKey(numCategoryContact))
-			CategoryContactCache.getInstance().add(this);
+			if(!CategoryContactCache.getInstance().containsKey(numCategoryContact))
+				CategoryContactCache.getInstance().add(this);
+		}
 	}
 	
 	/**
 	 * Delete Category in database
 	 */
 	@Override
-	public void delete() throws ObjectPersistenceException {
-		helper.delete(this);
-		
-		CategoryContactCache.getInstance().remove(numCategoryContact);
+	public void delete(Session session) throws ObjectPersistenceException {
+		if(session == null || !session.contains(this)) {
+			helper.delete(this);
+			
+			if(session != null)
+				session.addThreatyObject(this);
+			
+			CategoryContactCache.getInstance().remove(numCategoryContact);
+		}
 	}
 }

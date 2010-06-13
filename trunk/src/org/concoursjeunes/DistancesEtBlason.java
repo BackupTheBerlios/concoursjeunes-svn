@@ -102,7 +102,9 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.ajdeveloppement.commons.persistence.ObjectPersistence;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.Session;
 import org.ajdeveloppement.commons.persistence.StoreHelper;
+import org.ajdeveloppement.commons.persistence.sql.SessionHelper;
 import org.ajdeveloppement.commons.persistence.sql.SqlField;
 import org.ajdeveloppement.commons.persistence.sql.SqlForeignKey;
 import org.ajdeveloppement.commons.persistence.sql.SqlGeneratedIdField;
@@ -302,6 +304,16 @@ public class DistancesEtBlason implements ObjectPersistence {
 		this.numdistancesblason = numdistancesblason;
 	}
 	
+	@Override
+	public void save() throws ObjectPersistenceException {
+		SessionHelper.startSaveSession(ApplicationCore.dbConnection, this);
+	}
+	
+	@Override
+	public void delete() throws ObjectPersistenceException {
+		SessionHelper.startDeleteSession(ApplicationCore.dbConnection, this);
+	}
+	
 	/**
 	 * Sauvegarde le couple distances/blasons en base.
 	 * 
@@ -310,25 +322,30 @@ public class DistancesEtBlason implements ObjectPersistence {
 	 */
 	@SuppressWarnings("nls")
 	@Override
-	public void save() throws ObjectPersistenceException {
-		criteriaSet.save();
-		
-		helper.save(this);
-		
-		try {
-			Statement stmt = ApplicationCore.dbConnection.createStatement();
+	public void save(Session session) throws ObjectPersistenceException {
+		if(session == null || !session.contains(this)) {
+			criteriaSet.save(session);
+			
+			helper.save(this);
+			
+			if(session != null)
+				session.addThreatyObject(this);
+			
 			try {
-				stmt.executeUpdate("delete from DISTANCES where NUMDISTANCESBLASONS=" + numdistancesblason + " and NUMREGLEMENT=" + criteriaSet.getReglement().getNumReglement()); 
-				int i = 1;
-				for(int distance : distances) {
-					stmt.executeUpdate("insert into DISTANCES (NUMDISTANCES, NUMDISTANCESBLASONS, NUMREGLEMENT, DISTANCE) " + //$NON-NLS-1$
-							"VALUES (" + (i++) +", " + numdistancesblason + ", " + criteriaSet.getReglement().getNumReglement() +", " + distance + ")"); 
+				Statement stmt = ApplicationCore.dbConnection.createStatement();
+				try {
+					stmt.executeUpdate("delete from DISTANCES where NUMDISTANCESBLASONS=" + numdistancesblason + " and NUMREGLEMENT=" + criteriaSet.getReglement().getNumReglement()); 
+					int i = 1;
+					for(int distance : distances) {
+						stmt.executeUpdate("insert into DISTANCES (NUMDISTANCES, NUMDISTANCESBLASONS, NUMREGLEMENT, DISTANCE) " + //$NON-NLS-1$
+								"VALUES (" + (i++) +", " + numdistancesblason + ", " + criteriaSet.getReglement().getNumReglement() +", " + distance + ")"); 
+					}
+				} finally {
+					stmt.close();
 				}
-			} finally {
-				stmt.close();
+			} catch (SQLException e) {
+				throw new ObjectPersistenceException(e);
 			}
-		} catch (SQLException e) {
-			throw new ObjectPersistenceException(e);
 		}
 	}
 	
@@ -338,8 +355,13 @@ public class DistancesEtBlason implements ObjectPersistence {
 	 * @throws SQLException
 	 */
 	@Override
-	public void delete() throws ObjectPersistenceException {
-		helper.delete(this);  
+	public void delete(Session session) throws ObjectPersistenceException {
+		if(session == null || !session.contains(this)) {
+			helper.delete(this);
+			
+			if(session != null)
+				session.addThreatyObject(this);
+		}
 	}
 
 	/**

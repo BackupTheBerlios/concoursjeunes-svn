@@ -108,7 +108,9 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import org.ajdeveloppement.commons.persistence.ObjectPersistence;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.Session;
 import org.ajdeveloppement.commons.persistence.StoreHelper;
+import org.ajdeveloppement.commons.persistence.sql.SessionHelper;
 import org.ajdeveloppement.commons.persistence.sql.SqlField;
 import org.ajdeveloppement.commons.persistence.sql.SqlGeneratedIdField;
 import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
@@ -145,6 +147,8 @@ public class Federation implements ObjectPersistence {
 			e.printStackTrace();
 		}
 	}
+	
+	private static PreparedStatement pstmtAlreadyExists = null;
 	
 	public Federation() {
 	}
@@ -312,46 +316,68 @@ public class Federation implements ObjectPersistence {
 	}
 	
 	private void checkAlreadyExists() throws SQLException {
-		String sql = "select NUMFEDERATION from FEDERATION where SIGLEFEDERATION=? and NOMFEDERATION=?"; //$NON-NLS-1$
+		if(pstmtAlreadyExists == null) {
+			String sql = "select NUMFEDERATION from FEDERATION where SIGLEFEDERATION=? and NOMFEDERATION=?"; //$NON-NLS-1$
 		
-		PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
-		pstmt.setString(1, sigleFederation);
-		pstmt.setString(2, nomFederation);
-		ResultSet rs = pstmt.executeQuery();
-		if(rs.next())
-			numFederation = rs.getInt(1);
+			pstmtAlreadyExists = ApplicationCore.dbConnection.prepareStatement(sql);
+		}
+		pstmtAlreadyExists.setString(1, sigleFederation);
+		pstmtAlreadyExists.setString(2, nomFederation);
+		ResultSet rs = pstmtAlreadyExists.executeQuery();
+		try {
+			if(rs.next())
+				numFederation = rs.getInt(1);
+		} finally {
+			rs.close();
+		}
+	}
+	
+	@Override
+	public void save() throws ObjectPersistenceException {
+		SessionHelper.startSaveSession(ApplicationCore.dbConnection, this);
+	}
+	
+	@Override
+	public void delete() throws ObjectPersistenceException {
+		SessionHelper.startDeleteSession(ApplicationCore.dbConnection, this);
 	}
 	
 	/**
 	 * Sauvegarde la fédération en base de données. Les arguments sont ignoré.
 	 */
 	@Override
-	public void save() throws ObjectPersistenceException {
-		try {
-			checkAlreadyExists();
-			helper.save(this);
-	
-			String sql = "delete from NIVEAU_COMPETITION where NUMFEDERATION=" + numFederation; //$NON-NLS-1$
-			Statement stmt = ApplicationCore.dbConnection.createStatement();
-			stmt.executeUpdate(sql);
-			
-			Map<String, List<CompetitionLevel>> langFilteredCL = new HashMap<String, List<CompetitionLevel>>();
-			
-			for(CompetitionLevel cl : competitionLevels) {
-				if(!langFilteredCL.containsKey(cl.getLang()))
-					langFilteredCL.put(cl.getLang(), new ArrayList<CompetitionLevel>());
-				langFilteredCL.get(cl.getLang()).add(cl);
-			}
-			
-			for(Entry<String, List<CompetitionLevel>> entry : langFilteredCL.entrySet()) {
-				int i = 1;
-				for(CompetitionLevel cl : entry.getValue()) {
-					cl.setNumLevel(i++);
-					cl.save();
+	public void save(Session session) throws ObjectPersistenceException {
+		if(session == null || !session.contains(this)) {
+			try {
+				checkAlreadyExists();
+				
+				helper.save(this);
+				
+				if(session != null)
+					session.addThreatyObject(this);
+		
+				String sql = "delete from NIVEAU_COMPETITION where NUMFEDERATION=" + numFederation; //$NON-NLS-1$
+				Statement stmt = ApplicationCore.dbConnection.createStatement();
+				stmt.executeUpdate(sql);
+				
+				Map<String, List<CompetitionLevel>> langFilteredCL = new HashMap<String, List<CompetitionLevel>>();
+				
+				for(CompetitionLevel cl : competitionLevels) {
+					if(!langFilteredCL.containsKey(cl.getLang()))
+						langFilteredCL.put(cl.getLang(), new ArrayList<CompetitionLevel>());
+					langFilteredCL.get(cl.getLang()).add(cl);
 				}
+				
+				for(Entry<String, List<CompetitionLevel>> entry : langFilteredCL.entrySet()) {
+					int i = 1;
+					for(CompetitionLevel cl : entry.getValue()) {
+						cl.setNumLevel(i++);
+						cl.save(session);
+					}
+				}
+			} catch (SQLException e) {
+				throw new ObjectPersistenceException(e);
 			}
-		} catch (SQLException e) {
-			throw new ObjectPersistenceException(e);
 		}
 	}
 
@@ -361,8 +387,13 @@ public class Federation implements ObjectPersistence {
 	 * Tous les règlements attaché à cette fédération seront également supprimés
 	 */
 	@Override
-	public void delete() throws ObjectPersistenceException {
-		helper.delete(this);
+	public void delete(Session session) throws ObjectPersistenceException {
+		if(session == null || !session.contains(this)) {
+			helper.delete(this);
+			
+			if(session != null)
+				session.addThreatyObject(this);
+		}
 	}
 	
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {

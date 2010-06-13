@@ -101,6 +101,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.script.ScriptEngine;
@@ -288,11 +290,20 @@ public class ApplicationCore {
 				scriptEngine.put("sql", sqlManager);   //$NON-NLS-1$
 				
 				List<File> scripts = FileUtils.listAllFiles(updatePath, ".*\\.js");   //$NON-NLS-1$
+				Collections.sort(scripts, new Comparator<File>() {
+					@Override
+					public int compare(File f1, File f2) {
+						return f2.getName().compareTo(f1.getName());
+					}
+				});
 				for(File script : scripts) {
 					try {		
 						FileReader scriptReader = new FileReader(script);
-						scriptEngine.eval(scriptReader);
-						scriptReader.close();
+						try {
+							scriptEngine.eval(scriptReader);
+						} finally {
+							scriptReader.close();
+						}
 					} catch(IOException e) {
 						e.printStackTrace();
 					} catch (ScriptException e) {

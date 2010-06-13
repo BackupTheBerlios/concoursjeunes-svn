@@ -91,7 +91,10 @@ import java.awt.SplashScreen;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.Authenticator;
@@ -134,12 +137,13 @@ import org.ajdeveloppement.commons.ui.SwingURLAuthenticator;
 import org.ajdeveloppement.swingxext.error.WebErrorReporter;
 import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
 import org.concoursjeunes.exceptions.ExceptionHandlingEventQueue;
+import org.concoursjeunes.plugins.Plugin.Type;
 import org.concoursjeunes.plugins.PluginEntry;
 import org.concoursjeunes.plugins.PluginLoader;
 import org.concoursjeunes.plugins.PluginMetadata;
-import org.concoursjeunes.plugins.Plugin.Type;
 import org.concoursjeunes.ui.ConcoursJeunesFrame;
 import org.h2.tools.DeleteDbFiles;
+import org.h2.tools.RunScript;
 import org.jdesktop.swingx.error.ErrorInfo;
 
 /**
@@ -162,6 +166,7 @@ public class Main {
 		showSplashScreen();
 		initErrorManaging();
 		initNetworkManaging();
+		checkDatabase();
 		initCore();
 		initSecureContext();
 		if(System.getProperty("noplugin") == null)//$NON-NLS-1$
@@ -211,6 +216,10 @@ public class Main {
 	private static void initErrorManaging() {
 		//initialisation du rapport d'erreur
 		try {
+			ApplicationContext contexte = ApplicationContext.getContext();
+			contexte.setApplicationName(AppInfos.NOM);
+			contexte.setApplicationVersion(AppInfos.VERSION);
+			
 			DisplayableErrorHelper.setErrorReporter(new WebErrorReporter(
 					new URL(ApplicationCore.staticParameters.getResourceString("url.errorreport")), //$NON-NLS-1$
 					ApplicationContext.getContext()));
@@ -267,6 +276,109 @@ public class Main {
 			
 		});
 	}
+	
+	/**
+	 * Vérifie le format de la base de données et le convertie si nécéssaire
+	 */
+	@SuppressWarnings("nls")
+	private static void checkDatabase() {
+		String[] databaseFile = ApplicationCore.userRessources.getBasePath().list(new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.endsWith(".h2.db"); //$NON-NLS-1$
+			}
+		});
+		if(databaseFile == null || databaseFile.length == 0) {
+			Runtime runtime = Runtime.getRuntime();
+			
+			File backupFile = null;
+			try {
+				File[] oldDbFiles = ApplicationCore.userRessources.getBasePath().listFiles(new FilenameFilter() {
+					@Override
+					public boolean accept(File dir, String name) {
+						return name.endsWith(".db"); //$NON-NLS-1$
+					}
+				});
+				if(oldDbFiles != null && oldDbFiles.length > 0) {
+					File backupPath = new File(ApplicationCore.userRessources.getBasePath(), "backup"); //$NON-NLS-1$
+					backupPath.mkdirs();
+					backupFile = new File(backupPath, "backup.gz"); //$NON-NLS-1$
+					
+					String url = ApplicationCore.staticParameters.getResourceString("database.url", ApplicationCore.userRessources.getBasePath()); //$NON-NLS-1$
+					String user = ApplicationCore.staticParameters.getResourceString("database.user"); //$NON-NLS-1$
+					String password = ApplicationCore.staticParameters.getResourceString("database.password"); //$NON-NLS-1$
+					
+					String[] command = new String[] {ApplicationCore.userRessources.getJavaExecutablePath(),
+							 "-Xmx128m", //$NON-NLS-1$
+							 "-cp", new File("lib","h2-1.2.127.jar").getAbsolutePath(), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+							 "org.h2.tools.Script", //$NON-NLS-1$
+							 "-script", backupFile.getPath(), //$NON-NLS-1$
+							 "-url", "" + url, //$NON-NLS-1$ //$NON-NLS-2$
+							 "-user", "" + user, //$NON-NLS-1$ //$NON-NLS-2$
+							 "-password", password, //$NON-NLS-1$
+							 "-options", "COMPRESSION GZIP"}; //$NON-NLS-1$ //$NON-NLS-2$
+					// Sauvegarde la base dans l'ancien format
+					Process p = runtime.exec(command);
+					copyInThread(p.getErrorStream(), System.err);
+					copyInThread(p.getInputStream(), System.out);
+					int outCode = p.waitFor();
+					if(outCode == 0) {
+						for(File f : oldDbFiles) {
+							f.delete();
+						}
+						
+						//Restore dans le nouveau format
+						try {
+							RunScript.main(new String[] {
+									"-url", url,
+									"-user", user,
+									"-password", password,
+									"-script", backupFile.getPath(),
+									"-continueOnError",
+									"-options", "COMPRESSION GZIP"
+							});
+						} catch (SQLException e) {
+							DisplayableErrorHelper.displayErrorInfo(new ErrorInfo( "SQL Error", e.toString(), //$NON-NLS-1$
+									null, null, e, Level.SEVERE, null));
+							e.printStackTrace();
+						}
+					}
+				}
+			} catch (IOException e) {
+				new RuntimeException("Unable to convert database", e); //$NON-NLS-1$
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				new RuntimeException("Unable to convert database", e); //$NON-NLS-1$
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * Copie dans les flux en paramètres de manière asynchrone
+	 * 
+	 * @param in
+	 * @param out
+	 */
+	private static void copyInThread(final InputStream in, final OutputStream out) {
+        new Thread() {
+            public void run() {
+                try {
+                    while (true) {
+                        int x = in.read();
+                        if (x < 0) {
+                            return;
+                        }
+                        if (out != null) {
+                            out.write(x);
+                        }
+                    }
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        } .start();
+    }
 	
 	/**
 	 * Initialise le coeur de l'application

@@ -103,6 +103,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -218,6 +220,13 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 				e.printStackTrace();
 			}
 		}
+		
+		Collections.sort(repositories, new Comparator<Repository>() {
+			@Override
+			public int compare(Repository o1, Repository o2) {
+				return o1.getReposName().compareToIgnoreCase(o2.getReposName());
+			}
+		});
 		
 		return repositories;
 	}

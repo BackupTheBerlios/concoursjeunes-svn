@@ -101,7 +101,9 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import org.ajdeveloppement.commons.persistence.ObjectPersistence;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.Session;
 import org.ajdeveloppement.commons.persistence.StoreHelper;
+import org.ajdeveloppement.commons.persistence.sql.SessionHelper;
 import org.ajdeveloppement.commons.persistence.sql.SqlField;
 import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
 import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
@@ -393,26 +395,46 @@ public class Entite implements ObjectPersistence {
 		return contacts;
 	}
 
-	/**
-	 * Sauvegarde l'entite dans la base de donnée
-	 */
 	@Override
 	public void save() throws ObjectPersistenceException {
-		if(idEntite == null)
-			idEntite = UUID.randomUUID();
-		
-		helper.save(this);
-		
-		//ajoute l'entrée au cache si nécessaire
-		if(!EntiteCache.getInstance().containsKey(idEntite))
-			EntiteCache.getInstance().add(this);
+		SessionHelper.startSaveSession(ApplicationCore.dbConnection, this);
 	}
 	
 	@Override
 	public void delete() throws ObjectPersistenceException {
-		helper.delete(this);
-		//retire l'objet du cache
-		EntiteCache.getInstance().remove(idEntite);
+		SessionHelper.startDeleteSession(ApplicationCore.dbConnection, this);
+	}
+	
+	/**
+	 * Sauvegarde l'entite dans la base de donnée
+	 */
+	@Override
+	public void save(Session session) throws ObjectPersistenceException {
+		if(session == null || !session.contains(this)) {
+			if(idEntite == null)
+				idEntite = UUID.randomUUID();
+			
+			helper.save(this);
+			
+			if(session != null)
+				session.addThreatyObject(this);
+			
+			//ajoute l'entrée au cache si nécessaire
+			if(!EntiteCache.getInstance().containsKey(idEntite))
+				EntiteCache.getInstance().add(this);
+		}
+	}
+	
+	@Override
+	public void delete(Session session) throws ObjectPersistenceException {
+		if(session == null || !session.contains(this)) {
+			helper.delete(this);
+			
+			if(session != null)
+				session.addThreatyObject(this);
+			//retire l'objet du cache
+			EntiteCache.getInstance().remove(idEntite);
+		}
 	}
 	
 	public void beforeMarshal(Marshaller marshaller) {

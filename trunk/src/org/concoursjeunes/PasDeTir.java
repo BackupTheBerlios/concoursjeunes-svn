@@ -242,8 +242,11 @@ public class PasDeTir implements FicheConcoursListener {
 	public boolean havePlaceForConcurrent(Concurrent concurrent) {
 		TargetsOccupation place = null;
 		if(!ficheConcours.getConcurrentList().contains(concurrent, concurrent.getDepart())) { // vérifie qu'il ne soit pas déjà sur le pas de tir
-			place = getTargetsOccupation(ficheConcours.getParametre().getNbTireur()).get(
-					DistancesEtBlason.getDistancesEtBlasonForConcurrent(ficheConcours.getParametre().getReglement(), concurrent));
+			DistancesEtBlason distancesEtBlason = DistancesEtBlason.getDistancesEtBlasonForConcurrent(ficheConcours.getParametre().getReglement(), concurrent);
+			if(distancesEtBlason == null)
+				return false;
+			
+			place = getTargetsOccupation(ficheConcours.getParametre().getNbTireur()).get(distancesEtBlason);
 
 			return place.getPlaceLibre() > (concurrent.isHandicape()?1:0) || getNbFreeTargets(ficheConcours.getParametre().getNbTireur()) > 0;
 		}

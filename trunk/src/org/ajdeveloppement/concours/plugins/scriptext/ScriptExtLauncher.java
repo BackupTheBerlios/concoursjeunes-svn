@@ -1,5 +1,5 @@
 /*
- * Créé le 20 févr. 2010 à 20:11:07 pour ConcoursJeunes
+ * Créé le 20 févr. 2010 à 18:11:01 pour ConcoursJeunes
  *
  * Copyright 2002-2010 - Aurélien JEOFFRAY
  *
@@ -86,132 +86,102 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes.plugins.scriptext;
+package org.ajdeveloppement.concours.plugins.scriptext;
 
-import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.script.Invocable;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.JAXBException;
 
+import org.ajdeveloppement.commons.io.FileUtils;
+import org.ajdeveloppement.commons.io.XMLSerializer;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.plugins.Plugin;
+import org.concoursjeunes.plugins.PluginEntry;
 
 /**
  * @author Aurélien JEOFFRAY
  *
  */
-@XmlRootElement(name="scriptext")
-@XmlAccessorType(XmlAccessType.FIELD)
-public class ScriptExtention {
-	private Plugin.Type type;
-	private String scriptFile = "script.js"; //$NON-NLS-1$
-	private String mainFunction;
-	private boolean asynchrone = false;
-	@XmlTransient
-	private String mainPath = ""; //$NON-NLS-1$
-	@XmlTransient
-	private Invocable invocableEngine;
+@Plugin(type = Plugin.Type.STARTUP)
+public class ScriptExtLauncher {
 	
-	public ScriptExtention() {
-		
-	}
+	private List<ScriptExtention> scripts = new ArrayList<ScriptExtention>();
 
-	/**
-	 * Indique le type d'extention. Correspond au moment ou le
-	 * script est exécuté.
-	 * 
-	 * @return le type d'extention
-	 */
-	public Plugin.Type getType() {
-		return type;
+	public ScriptExtLauncher() {
+		//ApplicationCore.userRessources.;
 	}
-
-	public void setType(Plugin.Type type) {
-		this.type = type;
+	
+	private File getAllUsersScriptsPath() {
+		return new File(ApplicationCore.userRessources.getAllusersDataPath(), "scripts"); //$NON-NLS-1$
 	}
-
-	public String getScriptFile() {
-		return scriptFile;
+	
+	private File getUserScriptsPath() {
+		return new File(ApplicationCore.userRessources.getUserPath(), "scripts"); //$NON-NLS-1$
 	}
-
-	public void setScriptFile(String scriptFile) {
-		this.scriptFile = scriptFile;
-	}
-
-	public String getMainFunction() {
-		return mainFunction;
-	}
-
-	public void setMainFunction(String mainFunction) {
-		this.mainFunction = mainFunction;
-	}
-
-	/**
-	 * <p>Pour les extentions de Type STARTUP, indique
-	 * si elle doivent se lancer de manière synchrone ou asynchrone.</p>
-	 * <p>En mode synchrone, le script est exécuté dans le même Thread que l'application
-	 * et bloque la suite du processus de lancement tant qu'il n'est pas terminé.
-	 * En asynchrone, lance le script et poursuit en parallèle la phase
-	 * d'initialisation du programme</p>
-	 * 
-	 * @return <code>true</code> si l'on souhaite passer en asynchrone.
-	 */
-	public boolean isAsynchrone() {
-		return asynchrone;
-	}
-
-	public void setAsynchrone(boolean asynchrone) {
-		this.asynchrone = asynchrone;
-	}
-
-	public String getMainPath() {
-		return mainPath;
-	}
-
-	public void setMainPath(String mainPath) {
-		this.mainPath = mainPath;
-	}
-
-	/**
-	 * Compile le script de l'extention.
-	 * 
-	 * @throws MalformedURLException
-	 * @throws IOException
-	 * @throws ScriptException
-	 */
-	public void compileScript() throws MalformedURLException, IOException, ScriptException {
-		ScriptEngineManager se = new ScriptEngineManager();
-		ScriptEngine scriptEngine = se.getEngineByName("JavaScript"); //$NON-NLS-1$
-		if(scriptEngine != null) {
-			Reader reader = new BufferedReader(new InputStreamReader(
-					new URL(mainPath + "/" + scriptFile).openStream())); //$NON-NLS-1$ 
-			scriptEngine.eval(reader);
-			reader.close();
-			
-			invocableEngine = (Invocable)scriptEngine;
+	
+	private void runStartupExtention() {
+		for(final ScriptExtention extention : scripts) {
+			if(extention.getType() == Plugin.Type.STARTUP) {
+				try {
+					if(extention.isAsynchrone()) {
+						Thread t = new Thread(new Runnable() {
+							
+							@Override
+							public void run() {
+								try {
+									extention.runScript();
+								} catch (ScriptException e) {
+									e.printStackTrace();
+								} catch (NoSuchMethodException e) {
+									e.printStackTrace();
+								}
+							}
+						});
+						t.start();
+					} else
+						extention.runScript();
+					
+				} catch (ScriptException e) {
+					e.printStackTrace();
+				} catch (NoSuchMethodException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 	
-	/**
-	 * Execute le script à la condition qu'il ai été préalablement
-	 * compilé avec {@link #compileScript()}.
-	 * 
-	 * @param args Les arguments de la fonction principal du script
-	 * @throws ScriptException
-	 * @throws NoSuchMethodException
-	 */
-	public void runScript(Object... args) throws ScriptException, NoSuchMethodException {
-		if(invocableEngine != null && mainFunction != null)
-			invocableEngine.invokeFunction(mainFunction, args);
+	@PluginEntry
+	public void loadScripts() {
+		File scriptsPath = getUserScriptsPath();
+		
+		List<File> scriptsFolders = FileUtils.listAllFiles(scriptsPath, ".*",true); //$NON-NLS-1$
+		
+		for(File scriptFolder : scriptsFolders) {
+			if(scriptFolder.isDirectory()) {
+				File scriptFile = new File(scriptFolder, "scriptext.xml"); //$NON-NLS-1$
+				if(scriptFile.exists()) {
+					try {
+						ScriptExtention extention = XMLSerializer.loadMarshallStructure(scriptFile, ScriptExtention.class);
+						extention.setMainPath(scriptFolder.getPath());
+						extention.compileScript();
+						scripts.add(extention);
+					} catch (JAXBException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					} catch (ScriptException e) {
+						e.printStackTrace();
+					}
+				}
+			} else if(scriptFolder.getName().endsWith(".zip")) { //$NON-NLS-1$
+				
+			}
+		}
+		
+		runStartupExtention();
 	}
 }

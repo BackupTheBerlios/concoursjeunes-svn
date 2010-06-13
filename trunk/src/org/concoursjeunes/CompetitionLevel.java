@@ -96,7 +96,9 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import org.ajdeveloppement.commons.persistence.ObjectPersistence;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.Session;
 import org.ajdeveloppement.commons.persistence.StoreHelper;
+import org.ajdeveloppement.commons.persistence.sql.SessionHelper;
 import org.ajdeveloppement.commons.persistence.sql.SqlField;
 import org.ajdeveloppement.commons.persistence.sql.SqlForeignKey;
 import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
@@ -208,6 +210,16 @@ public class CompetitionLevel implements ObjectPersistence {
 	public boolean isDefaut() {
 		return defaut;
 	}
+	
+	@Override
+	public void save() throws ObjectPersistenceException {
+		SessionHelper.startSaveSession(ApplicationCore.dbConnection, this);
+	}
+	
+	@Override
+	public void delete() throws ObjectPersistenceException {
+		SessionHelper.startDeleteSession(ApplicationCore.dbConnection, this);
+	}
 
 	/** 
 	 * Sauvegarde en base un niveau de compétition
@@ -217,8 +229,13 @@ public class CompetitionLevel implements ObjectPersistence {
 	 * @throws SQLException
 	 */
 	@Override
-	public void save() throws ObjectPersistenceException {
-		helper.save(this);
+	public void save(Session session) throws ObjectPersistenceException {
+		if(session == null || !session.contains(this)) {
+			helper.save(this);
+			
+			if(session != null)
+				session.addThreatyObject(this);
+		}
 	}
 
 	/** 
@@ -230,8 +247,13 @@ public class CompetitionLevel implements ObjectPersistence {
 	 * @throws SQLException
 	 */
 	@Override
-	public void delete() throws ObjectPersistenceException {
-		helper.delete(this);
+	public void delete(Session session) throws ObjectPersistenceException {
+		if(session == null || !session.contains(this)) {
+			helper.delete(this);
+			
+			if(session != null)
+				session.addThreatyObject(this);
+		}
 	}
 
 	/* (non-Javadoc)

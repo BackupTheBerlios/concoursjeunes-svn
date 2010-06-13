@@ -224,7 +224,7 @@ public class PhoenixPlugin implements ProfileListener, ApplicationCoreListener {
 						concoursFile.delete(); //Fichier verolé on supprime
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
+					throw new RuntimeException(e);
 				}
 			}
 		}

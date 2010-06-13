@@ -145,7 +145,10 @@ public class EntiteBuilder {
 			entite = EntiteCache.getInstance().get(idEntite);
 		else {
 			try {
-				entite = EntiteCache.getInstance().get((UUID)rs.getObject("ENTITE.ID_ENTITE")); //$NON-NLS-1$
+				idEntite = (UUID)rs.getObject("ENTITE.ID_ENTITE"); //$NON-NLS-1$
+				if(idEntite == null)
+					throw new ObjectPersistenceException("Le resultset doit retourner un ID_ENTITE"); //$NON-NLS-1$
+				entite = EntiteCache.getInstance().get(idEntite);
 			} catch (SQLException e) {
 				throw new ObjectPersistenceException(e);
 			}
@@ -154,7 +157,7 @@ public class EntiteBuilder {
 		if(entite == null) {	
 			entite = new Entite();
 			
-			if(idEntite != null) {
+			if(rs == null) {
 				entite.setIdEntite(idEntite);
 				
 				loadHelper.load(entite);

@@ -587,7 +587,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	
 	private void completeListDocuments() {
 		String concoursFileName = ficheConcours.getParametre().getSaveName();
-		String concoursDirectory = concoursFileName.substring(0, concoursFileName.length() - 4);
+		String concoursDirectory = concoursFileName.substring(0, concoursFileName.length() - 5);
 		
 		File docsPathFile = new File(
 				ApplicationCore.userRessources.getConcoursPathForProfile(parentframe.profile), 

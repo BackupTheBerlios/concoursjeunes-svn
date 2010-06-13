@@ -1,9 +1,9 @@
 //mapping:
-// int dbVersion - version de la base de donnée
-// SqlManager sql - moteur de base de données
+// int dbVersion - version de la base de donnÃ©e
+// SqlManager sql - moteur de base de donnÃ©es
 
 function updateReglements() {
-	//liste l'ensemble des fichiers de réglements
+	//liste l'ensemble des fichiers de rÃ©glements
 	var updatePath = new java.io.File(org.concoursjeunes.ApplicationCore.staticParameters.getResourceString("path.ressources"), "update");
 	var reglements = org.ajdeveloppement.commons.io.FileUtils.listAllFiles(updatePath, ".*\\.reglement");
 	var rManager = new org.concoursjeunes.manager.ReglementManager();
@@ -35,11 +35,11 @@ if(dbVersion == 0) {
 	}
 
 	if(dbVersion < 30) {
-		sql.executeScript("02-V21toV30.sql");
+		sql.executeScript("02-V21toV30.sql", true);
 	}
 }
 
 if(dbVersion != org.concoursjeunes.ApplicationCore.DB_RELEASE_REQUIRED) {
-	//mise à jour du numero de version de la base
+	//mise Ã  jour du numero de version de la base
 	sql.executeScript("99-updatedbver.sql");
 }

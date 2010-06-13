@@ -121,7 +121,7 @@ public class BlasonManager {
 	public static Blason findBlasonAssociateToDistancesEtBlason(DistancesEtBlason distancesEtBlason) throws ObjectPersistenceException {
 		try {
 			if(pstmtBlasonWithDistancesEtBlason == null) {
-				String sql = "select B.* from DISTANCESBLASONS D inner join BLASONS B on D.NUMBLASON=B.NUMBLASON" //$NON-NLS-1$
+				String sql = "select B.* from DISTANCESBLASONS D inner join BLASONS B on D.NUMBLASON=B.NUMBLASON " //$NON-NLS-1$
 					+ "where NUMDISTANCESBLASONS=? and NUMREGLEMENT=?"; //$NON-NLS-1$
 				
 				pstmtBlasonWithDistancesEtBlason = ApplicationCore.dbConnection.prepareStatement(sql);

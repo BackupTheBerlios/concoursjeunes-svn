@@ -151,7 +151,7 @@ public class ReglementManager {
 			}
 			rs.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 	

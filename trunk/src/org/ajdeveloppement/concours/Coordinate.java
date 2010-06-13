@@ -100,7 +100,9 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import org.ajdeveloppement.commons.persistence.ObjectPersistence;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.Session;
 import org.ajdeveloppement.commons.persistence.StoreHelper;
+import org.ajdeveloppement.commons.persistence.sql.SessionHelper;
 import org.ajdeveloppement.commons.persistence.sql.SqlField;
 import org.ajdeveloppement.commons.persistence.sql.SqlForeignKey;
 import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
@@ -267,25 +269,44 @@ public class Coordinate implements ObjectPersistence, Cloneable {
 	public void setContact(Contact contact) {
 		this.contact = contact;
 	}
+	
+	@Override
+	public void save() throws ObjectPersistenceException {
+		SessionHelper.startSaveSession(ApplicationCore.dbConnection, this);
+	}
+	
+	@Override
+	public void delete() throws ObjectPersistenceException {
+		SessionHelper.startDeleteSession(ApplicationCore.dbConnection, this);
+	}
 
 	/**
 	 * Save Coordinate in database
 	 */
 	@Override
-	public void save() throws ObjectPersistenceException {
-		if(idCoordinate == null)
-			idCoordinate = UUID.randomUUID();
-		
-		helper.save(this);
+	public void save(Session session) throws ObjectPersistenceException {
+		if(session == null || !session.contains(this)) {
+			if(idCoordinate == null)
+				idCoordinate = UUID.randomUUID();
+			
+			helper.save(this);
+			
+			if(session != null)
+				session.addThreatyObject(this);
+		}
 	}
 	
 	/**
 	 * Delete coordinate from database
 	 */
 	@Override
-	public void delete() throws ObjectPersistenceException {
-		if(idCoordinate != null)
+	public void delete(Session session) throws ObjectPersistenceException {
+		if(idCoordinate != null && (session == null || !session.contains(this))) {
 			helper.delete(this);
+			
+			if(session != null)
+				session.addThreatyObject(this);
+		}
 	}
 	
 	protected void beforeMarshal(Marshaller marshaller) {

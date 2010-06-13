@@ -93,7 +93,9 @@ import java.util.UUID;
 
 import org.ajdeveloppement.commons.persistence.ObjectPersistence;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.Session;
 import org.ajdeveloppement.commons.persistence.StoreHelper;
+import org.ajdeveloppement.commons.persistence.sql.SessionHelper;
 import org.ajdeveloppement.commons.persistence.sql.SqlField;
 import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
 import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
@@ -204,14 +206,24 @@ public class Libelle implements ObjectPersistence {
 		this.libelle = libelle;
 	}
 	
+	@Override
+	public void save() throws ObjectPersistenceException {
+		SessionHelper.startSaveSession(ApplicationCore.dbConnection, this);
+	}
+	
+	@Override
+	public void delete() throws ObjectPersistenceException {
+		SessionHelper.startDeleteSession(ApplicationCore.dbConnection, this);
+	}
+	
 	/**
 	 * Enregistre le libellé en base. Si besoin ajoute l'instance au cache d'objet
 	 * 
 	 * @see ObjectPersistence#save()
 	 */
 	@Override
-	public void save() throws ObjectPersistenceException {
-		if(idLibelle == null || updated) {
+	public void save(Session session) throws ObjectPersistenceException {
+		if((idLibelle == null || updated) && (session == null || !session.contains(this))) {
 			if(idLibelle == null) {
 				idLibelle = UUID.randomUUID();
 				
@@ -219,6 +231,9 @@ public class Libelle implements ObjectPersistence {
 			}
 			
 			helper.save(this);
+			
+			if(session != null)
+				session.addThreatyObject(this);
 			
 			updated = false;
 		}
@@ -230,9 +245,14 @@ public class Libelle implements ObjectPersistence {
 	 * @see ObjectPersistence#delete()
 	 */
 	@Override
-	public void delete() throws ObjectPersistenceException {
-		helper.delete(this);
-		
-		LibelleCache.getInstance().remove(new LibelleCache.LibellePK(idLibelle, lang));
+	public void delete(Session session) throws ObjectPersistenceException {
+		if(session == null || !session.contains(this)) {
+			helper.delete(this);
+			
+			if(session != null)
+				session.addThreatyObject(this);
+			
+			LibelleCache.getInstance().remove(new LibelleCache.LibellePK(idLibelle, lang));
+		}
 	}
 }

@@ -102,7 +102,9 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import org.ajdeveloppement.commons.persistence.ObjectPersistence;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.Session;
 import org.ajdeveloppement.commons.persistence.StoreHelper;
+import org.ajdeveloppement.commons.persistence.sql.SessionHelper;
 import org.ajdeveloppement.commons.persistence.sql.SqlField;
 import org.ajdeveloppement.commons.persistence.sql.SqlForeignKey;
 import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
@@ -454,6 +456,16 @@ public class Criterion implements ObjectPersistence, Cloneable {
 	public void removeCriterionElement(CriterionElement criterionElement) {
 		criterionElements.remove(criterionElement);
 	}
+	
+	@Override
+	public void save() throws ObjectPersistenceException {
+		SessionHelper.startSaveSession(ApplicationCore.dbConnection, this);
+	}
+	
+	@Override
+	public void delete() throws ObjectPersistenceException {
+		SessionHelper.startDeleteSession(ApplicationCore.dbConnection, this);
+	}
 
 	/**
 	 * Sauvegarde le critère en base.
@@ -462,36 +474,41 @@ public class Criterion implements ObjectPersistence, Cloneable {
 	 */
 	@SuppressWarnings("nls")
 	@Override
-	public void save() throws ObjectPersistenceException {
-		helper.save(this); //$NON-NLS-1$
-
-		try {
-			Statement stmt = ApplicationCore.dbConnection.createStatement();
-			try {
-				String codesElement = "";
-				for (CriterionElement element : criterionElements) {
-					if(!codesElement.isEmpty())
-						codesElement += ",";
-					codesElement += "'" + element.getCode().replace("'", "''") + "'";
-				}
+	public void save(Session session) throws ObjectPersistenceException {
+		if(session == null || !session.contains(this)) {
+			helper.save(this); //$NON-NLS-1$
+			
+			if(session != null)
+				session.addThreatyObject(this);
 	
-				stmt.executeUpdate("delete from CRITEREELEMENT where NUMREGLEMENT=" + reglement.getNumReglement() 
-						+ " and CODECRITERE='" + code.replace("'", "''") +"' and CODECRITEREELEMENT not in (" + codesElement + ")");
-			} finally {
-				stmt.close();
+			try {
+				Statement stmt = ApplicationCore.dbConnection.createStatement();
+				try {
+					String codesElement = "";
+					for (CriterionElement element : criterionElements) {
+						if(!codesElement.isEmpty())
+							codesElement += ",";
+						codesElement += "'" + element.getCode().replace("'", "''") + "'";
+					}
+		
+					stmt.executeUpdate("delete from CRITEREELEMENT where NUMREGLEMENT=" + reglement.getNumReglement() 
+							+ " and CODECRITERE='" + code.replace("'", "''") +"' and CODECRITEREELEMENT not in (" + codesElement + ")");
+				} finally {
+					stmt.close();
+				}
+			} catch (SQLException e) {
+				throw new ObjectPersistenceException(e);
 			}
-		} catch (SQLException e) {
-			throw new ObjectPersistenceException(e);
+			
+			int numordre = 1;
+			for(CriterionElement criterionElement : criterionElements) {
+				criterionElement.setNumordre(numordre++);
+				criterionElement.save(session);
+			}
+			
+			if(!CriterionCache.getInstance().containsKey(new CriterionCache.CriterionPK(code, reglement)))
+				CriterionCache.getInstance().add(this);
 		}
-		
-		int numordre = 1;
-		for(CriterionElement criterionElement : criterionElements) {
-			criterionElement.setNumordre(numordre++);
-			criterionElement.save();
-		}
-		
-		if(!CriterionCache.getInstance().containsKey(new CriterionCache.CriterionPK(code, reglement)))
-			CriterionCache.getInstance().add(this);
 	}
 	
 	/** 
@@ -500,9 +517,14 @@ public class Criterion implements ObjectPersistence, Cloneable {
 	 * @see org.ajdeveloppement.commons.sql.SqlPersistance#delete()
 	 */
 	@Override
-	public void delete() throws ObjectPersistenceException {
-		helper.delete(this);
-		CriterionCache.getInstance().remove(new CriterionCache.CriterionPK(code, reglement));
+	public void delete(Session session) throws ObjectPersistenceException {
+		if(session == null || !session.contains(this)) {
+			helper.delete(this);
+			CriterionCache.getInstance().remove(new CriterionCache.CriterionPK(code, reglement));
+			
+			if(session != null)
+				session.addThreatyObject(this);
+		}
 	}
 	
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {

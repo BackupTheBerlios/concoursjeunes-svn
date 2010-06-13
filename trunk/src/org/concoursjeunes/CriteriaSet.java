@@ -108,7 +108,9 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.ajdeveloppement.commons.JAXBMapRefAdapter;
 import org.ajdeveloppement.commons.persistence.ObjectPersistence;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.Session;
 import org.ajdeveloppement.commons.persistence.StoreHelper;
+import org.ajdeveloppement.commons.persistence.sql.SessionHelper;
 import org.ajdeveloppement.commons.persistence.sql.SqlField;
 import org.ajdeveloppement.commons.persistence.sql.SqlForeignKey;
 import org.ajdeveloppement.commons.persistence.sql.SqlGeneratedIdField;
@@ -240,7 +242,8 @@ public class CriteriaSet implements ObjectPersistence {
 		this.criteria = criteria;
 		
 		for(Entry<Criterion, CriterionElement> entry : criteria.entrySet()) {
-			entry.getKey().setReglement(reglement);
+			if(reglement != null)
+				entry.getKey().setReglement(reglement);
 			entry.getValue().setCriterion(entry.getKey());
 		}
 	}
@@ -259,7 +262,7 @@ public class CriteriaSet implements ObjectPersistence {
 		CriteriaSet criteriaSet = new CriteriaSet();
 		criteriaSet.setReglement(reglement);
 		for(Criterion criterion : criteria.keySet()) {
-			if(criteriaFilter.get(criterion))
+			if(criteriaFilter.containsKey(criterion) && criteriaFilter.get(criterion))
 				criteriaSet.addCriterionElement(criteria.get(criterion));
 		}
 		return criteriaSet;
@@ -285,6 +288,16 @@ public class CriteriaSet implements ObjectPersistence {
 		return "R=" + numReglement + ",S=" + uid;
 	}
 	
+	@Override
+	public void save() throws ObjectPersistenceException {
+		SessionHelper.startSaveSession(ApplicationCore.dbConnection, this);
+	}
+	
+	@Override
+	public void delete() throws ObjectPersistenceException {
+		SessionHelper.startDeleteSession(ApplicationCore.dbConnection, this);
+	}
+	
 	/**
 	 * Sauvegarde en base le jeux de critère. Les arguments sont ignoré
 	 * 
@@ -292,66 +305,76 @@ public class CriteriaSet implements ObjectPersistence {
 	 * 
 	 */
 	@Override
-	public void save() throws ObjectPersistenceException {
-		//vérifie si le jeux n'existe pas déjà
-		String uid = getUID();
-		String sql = "select NUMCRITERIASET from CRITERIASET where IDCRITERIASET='" + uid.replace("'","''") + "'"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		
-		try {
-			Statement stmt = ApplicationCore.dbConnection.createStatement();
+	public void save(Session session) throws ObjectPersistenceException {
+		if(session == null || !session.contains(this)) {
+			//vérifie si le jeux n'existe pas déjà
+			String uid = getUID();
+			String sql = "select NUMCRITERIASET from CRITERIASET where IDCRITERIASET='" + uid.replace("'","''") + "'"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+			
 			try {
-				ResultSet rs = stmt.executeQuery(sql);
+				Statement stmt = ApplicationCore.dbConnection.createStatement();
 				try {
-					//si le jeux existe ne pas aller plus loin
-					if(rs.first()) {
-						if(numCriteriaSet == 0)
-							numCriteriaSet = rs.getInt(1);
-						return;
+					ResultSet rs = stmt.executeQuery(sql);
+					try {
+						//si le jeux existe ne pas aller plus loin
+						if(rs.first()) {
+							if(numCriteriaSet == 0)
+								numCriteriaSet = rs.getInt(1);
+							return;
+						}
+					} finally {
+						rs.close();
 					}
 				} finally {
-					rs.close();
+					stmt.close();
 				}
-			} finally {
-				stmt.close();
+			} catch (SQLException e) {
+				throw new ObjectPersistenceException(e);
 			}
-		} catch (SQLException e) {
-			throw new ObjectPersistenceException(e);
-		}
-
-		helper.save(this, Collections.<String, Object>singletonMap("IDCRITERIASET", uid)); //$NON-NLS-1$
-		
-		try {
-			sql = "delete from POSSEDE where NUMCRITERIASET=" + numCriteriaSet; //$NON-NLS-1$
-			Statement stmt = ApplicationCore.dbConnection.createStatement();
-			stmt.executeUpdate(sql);
-			
-			sql =  "insert into POSSEDE (NUMCRITERIASET, CODECRITEREELEMENT, " //$NON-NLS-1$
-				+ "CODECRITERE, NUMREGLEMENT) " //$NON-NLS-1$
-				+ "values (?, ?, ?, ?)"; //$NON-NLS-1$
-			PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
-			try {
-				for(Entry<Criterion, CriterionElement> entry : criteria.entrySet()) {
-					Criterion criterion = entry.getKey();
-					CriterionElement criterionElement = entry.getValue();
-					
-					pstmt.setInt(1, numCriteriaSet); 
-					pstmt.setString(2, criterionElement.getCode());
-					pstmt.setString(3, criterion.getCode());
-					pstmt.setInt(4, reglement.getNumReglement());
 	
-					pstmt.executeUpdate();
+			helper.save(this, Collections.<String, Object>singletonMap("IDCRITERIASET", uid)); //$NON-NLS-1$
+			
+			if(session != null)
+				session.addThreatyObject(this);
+			
+			try {
+				sql = "delete from POSSEDE where NUMCRITERIASET=" + numCriteriaSet; //$NON-NLS-1$
+				Statement stmt = ApplicationCore.dbConnection.createStatement();
+				stmt.executeUpdate(sql);
+				
+				sql =  "insert into POSSEDE (NUMCRITERIASET, CODECRITEREELEMENT, " //$NON-NLS-1$
+					+ "CODECRITERE, NUMREGLEMENT) " //$NON-NLS-1$
+					+ "values (?, ?, ?, ?)"; //$NON-NLS-1$
+				PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
+				try {
+					for(Entry<Criterion, CriterionElement> entry : criteria.entrySet()) {
+						Criterion criterion = entry.getKey();
+						CriterionElement criterionElement = entry.getValue();
+						
+						pstmt.setInt(1, numCriteriaSet); 
+						pstmt.setString(2, criterionElement.getCode());
+						pstmt.setString(3, criterion.getCode());
+						pstmt.setInt(4, reglement.getNumReglement());
+		
+						pstmt.executeUpdate();
+					}
+				} finally {
+					pstmt.close();
 				}
-			} finally {
-				pstmt.close();
+			} catch (SQLException e) {
+				throw new ObjectPersistenceException(e);
 			}
-		} catch (SQLException e) {
-			throw new ObjectPersistenceException(e);
 		}
 	}
 
 	@Override
-	public void delete() throws ObjectPersistenceException {
-		helper.delete(this);
+	public void delete(Session session) throws ObjectPersistenceException {
+		if(session == null || !session.contains(this)) {
+			helper.delete(this);
+			
+			if(session != null)
+				session.addThreatyObject(this);
+		}
 	}
 	
 	protected void beforeMarshal(Marshaller marshaller) {

@@ -114,7 +114,9 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import org.ajdeveloppement.commons.persistence.ObjectPersistence;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.Session;
 import org.ajdeveloppement.commons.persistence.StoreHelper;
+import org.ajdeveloppement.commons.persistence.sql.SessionHelper;
 import org.ajdeveloppement.commons.persistence.sql.SqlField;
 import org.ajdeveloppement.commons.persistence.sql.SqlForeignKey;
 import org.ajdeveloppement.commons.persistence.sql.SqlGeneratedIdField;
@@ -825,6 +827,16 @@ public class Reglement implements ObjectPersistence {
 	public void setInDatabase(boolean inDatabase) {
 		this.inDatabase = inDatabase;
 	}
+	
+	@Override
+	public void save() throws ObjectPersistenceException {
+		SessionHelper.startSaveSession(ApplicationCore.dbConnection, this);
+	}
+	
+	@Override
+	public void delete() throws ObjectPersistenceException {
+		SessionHelper.startDeleteSession(ApplicationCore.dbConnection, this);
+	}
 
 	/**
 	 * <p>Rend l'objet persistant. Sauvegarde l'ensemble des données de l'objet
@@ -833,49 +845,55 @@ public class Reglement implements ObjectPersistence {
 	 * <p>Les arguments sont ignoré.</p>
 	 */
 	@Override
-	public void save() throws ObjectPersistenceException {
-		if(federation.getNumFederation() == 0)
-			federation.save();
-		//si le numéro de règlement est à 0, regarde si il n'existe pas malgré tous
-		//une entré en base de données
-		if(numReglement == 0) {
-			try {
-				String sql = "select NUMREGLEMENT from REGLEMENT where NOMREGLEMENT=?"; //$NON-NLS-1$
-				PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
+	public void save(Session session) throws ObjectPersistenceException {
+		if(session == null || !session.contains(this)) {
+			if(federation.getNumFederation() == 0)
+				federation.save(session);
+			
+			//si le numéro de règlement est à 0, regarde si il n'existe pas malgré tous
+			//une entré en base de données
+			if(numReglement == 0) {
 				try {
-					pstmt.setString(1, name);
-					ResultSet rs = pstmt.executeQuery();
+					String sql = "select NUMREGLEMENT from REGLEMENT where NOMREGLEMENT=?"; //$NON-NLS-1$
+					PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
 					try {
-						if(rs.first()) {
-							setNumReglement(rs.getInt(1));
+						pstmt.setString(1, name);
+						ResultSet rs = pstmt.executeQuery();
+						try {
+							if(rs.first()) {
+								setNumReglement(rs.getInt(1));
+							}
+						} finally {
+							rs.close();
 						}
 					} finally {
-						rs.close();
+						pstmt.close();
 					}
-				} finally {
-					pstmt.close();
+				} catch (SQLException e) {
+					throw new ObjectPersistenceException(e);
 				}
+			}
+	
+			boolean creation = false;
+			if(numReglement == 0)
+				creation = true;
+			helper.save(this);
+			
+			if(session != null)
+				session.addThreatyObject(this);
+			
+			if(creation)
+				setNumReglement(numReglement); //force le recalcule des hashCode des surclassements
+	
+			try {
+				saveTie();
+				// sauvegarde les tableaux de critères et correspondance
+				saveCriteria(session);
+				saveDistancesAndBlasons(session);
+				saveSurclassement(session);
 			} catch (SQLException e) {
 				throw new ObjectPersistenceException(e);
 			}
-		}
-
-		boolean creation = false;
-		if(numReglement == 0)
-			creation = true;
-		helper.save(this); 
-		
-		if(creation)
-			setNumReglement(numReglement); //force le recalcule des hashCode des surclassements
-
-		try {
-			saveTie();
-			// sauvegarde les tableaux de critères et correspondance
-			saveCriteria();
-			saveDistancesAndBlasons();
-			saveSurclassement();
-		} catch (SQLException e) {
-			throw new ObjectPersistenceException(e);
 		}
 	}
 	
@@ -905,7 +923,7 @@ public class Reglement implements ObjectPersistence {
 	 * @throws SQLException
 	 */
 	@SuppressWarnings("nls")
-	private void saveCriteria() throws ObjectPersistenceException {
+	private void saveCriteria(Session session) throws ObjectPersistenceException {
 		try {
 			Statement stmt = ApplicationCore.dbConnection.createStatement();
 			try {
@@ -924,7 +942,7 @@ public class Reglement implements ObjectPersistence {
 			int numordre = 1;
 			for (Criterion criterion : listCriteria) {
 				criterion.setNumordre(numordre++);
-				criterion.save();
+				criterion.save(session);
 			}
 		} catch (SQLException e) {
 			throw new ObjectPersistenceException(e);
@@ -936,7 +954,7 @@ public class Reglement implements ObjectPersistence {
 	 * 
 	 * @throws SQLException
 	 */
-	private void saveSurclassement() throws ObjectPersistenceException {
+	private void saveSurclassement(Session session) throws ObjectPersistenceException {
 		try {
 			Statement stmt = ApplicationCore.dbConnection.createStatement();
 			try {
@@ -950,11 +968,11 @@ public class Reglement implements ObjectPersistence {
 			PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
 			try {
 				for(Map.Entry<CriteriaSet, CriteriaSet> row : surclassement.entrySet()) {
-					row.getKey().save();
+					row.getKey().save(session);
 					pstmt.setInt(1, row.getKey().getNumCriteriaSet());
 					pstmt.setInt(2, numReglement);
 					if(row.getValue() != null) {
-						row.getValue().save();
+						row.getValue().save(session);
 						pstmt.setInt(3, row.getValue().getNumCriteriaSet());
 					} else
 						pstmt.setNull(3, Types.INTEGER);
@@ -973,7 +991,7 @@ public class Reglement implements ObjectPersistence {
 	 * 
 	 * @throws SQLException
 	 */
-	private void saveDistancesAndBlasons() throws ObjectPersistenceException {
+	private void saveDistancesAndBlasons(Session session) throws ObjectPersistenceException {
 		try {
 			Statement stmt = ApplicationCore.dbConnection.createStatement();
 			try {
@@ -985,7 +1003,7 @@ public class Reglement implements ObjectPersistence {
 			int i = 1;
 			for (DistancesEtBlason distancesEtBlason : listDistancesEtBlason) {
 				distancesEtBlason.setNumdistancesblason(i++);
-				distancesEtBlason.save();
+				distancesEtBlason.save(session);
 			}
 		} catch (SQLException e) {
 			throw new ObjectPersistenceException(e);
@@ -999,9 +1017,14 @@ public class Reglement implements ObjectPersistence {
 	 * @throws SqlPersistanceException
 	 */
 	@Override
-	public void delete() throws ObjectPersistenceException{
+	public void delete(Session session) throws ObjectPersistenceException{
 		if (!officialReglement) {
-			helper.delete(this);
+			if(session == null || !session.contains(this)) {
+				helper.delete(this);
+				
+				if(session != null)
+					session.addThreatyObject(this);
+			}
 		} else
 			throw new ObjectPersistenceException("delete this Reglement is not authorized because there is official"); //$NON-NLS-1$
 	}

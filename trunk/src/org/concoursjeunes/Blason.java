@@ -105,7 +105,9 @@ import javax.xml.bind.annotation.XmlAttribute;
 
 import org.ajdeveloppement.commons.persistence.ObjectPersistence;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.Session;
 import org.ajdeveloppement.commons.persistence.StoreHelper;
+import org.ajdeveloppement.commons.persistence.sql.SessionHelper;
 import org.ajdeveloppement.commons.persistence.sql.SqlField;
 import org.ajdeveloppement.commons.persistence.sql.SqlGeneratedIdField;
 import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
@@ -458,6 +460,16 @@ public class Blason implements ObjectPersistence {
 		return !axeX && !axeY;
 	}
 	
+	@Override
+	public void save() throws ObjectPersistenceException {
+		SessionHelper.startSaveSession(ApplicationCore.dbConnection, this);
+	}
+	
+	@Override
+	public void delete() throws ObjectPersistenceException {
+		SessionHelper.startDeleteSession(ApplicationCore.dbConnection, this);
+	}
+	
 	/**
 	 * Sauvegarde l'objet dans la base en créant une nouvelle ligne si le numero de blason est à 0
 	 * ou en mettant à jour la ligne existante dans la base et identifié par le numero de blason
@@ -465,15 +477,20 @@ public class Blason implements ObjectPersistence {
 	 * @throws SqlPersistanceException
 	 */
 	@Override
-	public void save() throws ObjectPersistenceException {
-		helper.save(this);
-		
-		for(Entry<Integer, Ancrage> entry : ancrages.entrySet()) {
-			entry.getValue().save();
+	public void save(Session session) throws ObjectPersistenceException {
+		if(session == null || !session.contains(this)) {
+			helper.save(this);
+			
+			for(Entry<Integer, Ancrage> entry : ancrages.entrySet()) {
+				entry.getValue().save(session);
+			}
+			
+			if(!BlasonCache.getInstance().containsKey(numblason))
+				BlasonCache.getInstance().add(this);
+			
+			if(session != null)
+				session.addThreatyObject(this);
 		}
-		
-		if(!BlasonCache.getInstance().containsKey(numblason))
-			BlasonCache.getInstance().add(this);
 	}
 	
 	/**
@@ -482,9 +499,14 @@ public class Blason implements ObjectPersistence {
 	 * @throws SqlPersistanceException
 	 */
 	@Override
-	public void delete() throws ObjectPersistenceException {
-		helper.delete(this);
-		BlasonCache.getInstance().remove(numblason);
+	public void delete(Session session) throws ObjectPersistenceException {
+		if(session == null || !session.contains(this)) {
+			helper.delete(this);
+			BlasonCache.getInstance().remove(numblason);
+			
+			if(session != null)
+				session.addThreatyObject(this);
+		}
 	}
 
 	/* (non-Javadoc)

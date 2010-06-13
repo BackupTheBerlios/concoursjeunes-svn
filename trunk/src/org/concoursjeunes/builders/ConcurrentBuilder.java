@@ -169,8 +169,9 @@ public class ConcurrentBuilder {
 			} else {
 				foreignKeyValue = resultSetLoadHelper.load(concurrent, resultSet);
 			}
-			
-			concurrent.setEntite(EntiteBuilder.getEntite((UUID)foreignKeyValue.get(Contact.class).get("ID_ENTITE"))); //$NON-NLS-1$
+			UUID idEntite = (UUID)foreignKeyValue.get(Contact.class).get("ID_ENTITE"); //$NON-NLS-1$
+			if(idEntite != null)
+				concurrent.setEntite(EntiteBuilder.getEntite(idEntite));
 
 			if(reglement != null) {
 				CriteriaSet differentiationCriteria = null;

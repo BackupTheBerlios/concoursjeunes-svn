@@ -101,7 +101,9 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import org.ajdeveloppement.commons.persistence.ObjectPersistence;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.Session;
 import org.ajdeveloppement.commons.persistence.StoreHelper;
+import org.ajdeveloppement.commons.persistence.sql.SessionHelper;
 import org.ajdeveloppement.commons.persistence.sql.SqlField;
 import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
 import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
@@ -238,27 +240,49 @@ public class Civility implements ObjectPersistence {
 		this.morale = morale;
 	}
 
-	/**
-	 * Save civility in database
-	 */
 	@Override
 	public void save() throws ObjectPersistenceException {
-		if(idCivility == null)
-			idCivility = UUID.randomUUID();
-		
-		helper.save(this);
-		
-		if(!CivilityCache.getInstance().containsKey(idCivility))
-			CivilityCache.getInstance().add(this);
+		SessionHelper.startSaveSession(ApplicationCore.dbConnection, this);
+	}
+	
+	@Override
+	public void delete() throws ObjectPersistenceException {
+		SessionHelper.startDeleteSession(ApplicationCore.dbConnection, this);
+	}
+	
+	/**
+	 * Save civility in database
+	 * 
+	 * @param session save session
+	 */
+	@Override
+	public void save(Session session) throws ObjectPersistenceException {
+		if(session == null || !session.contains(this)) {
+			if(idCivility == null)
+				idCivility = UUID.randomUUID();
+			
+			helper.save(this);
+			
+			if(session != null)
+				session.addThreatyObject(this);
+			
+			if(!CivilityCache.getInstance().containsKey(idCivility))
+				CivilityCache.getInstance().add(this);
+		}
 	}
 	
 	/**
 	 * Delete civility in database
+	 * 
+	 * @param session delete session
 	 */
 	@Override
-	public void delete() throws ObjectPersistenceException {
-		if(idCivility != null) {
+	public void delete(Session session) throws ObjectPersistenceException {
+		if(idCivility != null && (session == null || !session.contains(this))) {
 			helper.delete(this);
+			
+			if(session != null)
+				session.addThreatyObject(this);
 			
 			CivilityCache.getInstance().remove(idCivility);
 		}
