@@ -437,12 +437,21 @@ public class Entite implements ObjectPersistence {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param marshaller
+	 */
 	public void beforeMarshal(Marshaller marshaller) {
 		if(idEntite == null)
 			idEntite = UUID.randomUUID();
 		xmlId = idEntite.toString();
 	}
 	
+	/**
+	 * 
+	 * @param unmarshaller
+	 * @param parent
+	 */
 	public void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
 		if(xmlId != null)
 			idEntite = UUID.fromString(xmlId);

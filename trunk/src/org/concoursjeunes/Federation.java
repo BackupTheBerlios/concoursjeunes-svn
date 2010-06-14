@@ -396,6 +396,11 @@ public class Federation implements ObjectPersistence {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param unmarshaller
+	 * @param parent
+	 */
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
 		for(CompetitionLevel competitionLevel : competitionLevels) {
 			competitionLevel.setFederation(this);

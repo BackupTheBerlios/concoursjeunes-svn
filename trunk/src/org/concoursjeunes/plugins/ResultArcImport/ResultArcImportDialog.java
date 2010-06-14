@@ -122,7 +122,7 @@ import org.concoursjeunes.plugins.PluginEntry;
 @Plugin(type = Plugin.Type.ON_DEMAND)
 public class ResultArcImportDialog extends JDialog implements ActionListener, ResultArcImportThreadListener {
 
-	private Profile profile;
+	//private Profile profile;
 	
 	@Localizable("emplacement.lffta")
 	private JLabel jlEmplacementLFFTA = new JLabel();
@@ -141,7 +141,7 @@ public class ResultArcImportDialog extends JDialog implements ActionListener, Re
 	public ResultArcImportDialog(JFrame parentframe, Profile profile) {
 		super(parentframe);
 		
-		this.profile = profile;
+		//this.profile = profile;
 		pluginLocalisation.setLocale(new Locale(profile.getConfiguration().getLangue()));
 
 		init();
@@ -215,7 +215,7 @@ public class ResultArcImportDialog extends JDialog implements ActionListener, Re
 				jtfEmplacementLFFTA.setText(jfc.getSelectedFile().getPath());
 			}
 		} else if (e.getSource() == jbSart) {
-			ResultArcImportThread fftaIT = new ResultArcImportThread(profile.getLocalisation());
+			ResultArcImportThread fftaIT = new ResultArcImportThread();
 			fftaIT.setParentFrame(this);
 			fftaIT.setFftalogpath(jtfEmplacementLFFTA.getText());
 			fftaIT.addResultArcImportThreadListener(this);

@@ -91,9 +91,9 @@ package org.concoursjeunes.manager;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -114,6 +114,8 @@ import org.concoursjeunes.builders.ReglementBuilder;
  *
  */
 public class ReglementManager {
+	
+	private static PreparedStatement pstmAllReglementOrdered = null;
 	
 	private List<Reglement> availableReglements = new ArrayList<Reglement>();
 	private List<Federation> federation = new ArrayList<Federation>();
@@ -136,12 +138,14 @@ public class ReglementManager {
 		categorie.clear();
 		
 		try {
-			Statement stmt = ApplicationCore.dbConnection.createStatement();
+			if(pstmAllReglementOrdered == null)
+				pstmAllReglementOrdered = ApplicationCore.dbConnection.prepareStatement(
+						"select * from REGLEMENT where NOMREGLEMENT <> 'default' order by LIBELLE");
 
-			ResultSet rs = stmt.executeQuery("select NUMREGLEMENT from REGLEMENT where NOMREGLEMENT <> 'default' order by LIBELLE"); //$NON-NLS-1$
+			ResultSet rs = pstmAllReglementOrdered.executeQuery(); //$NON-NLS-1$
 
 			while (rs.next()) {
-				Reglement reglement = ReglementBuilder.getReglement(rs.getInt("NUMREGLEMENT")); //$NON-NLS-1$
+				Reglement reglement = ReglementBuilder.getReglement(rs); //$NON-NLS-1$
 				
 				if(!federation.contains(reglement.getFederation()))
 					federation.add(reglement.getFederation());
@@ -151,6 +155,8 @@ public class ReglementManager {
 			}
 			rs.close();
 		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		} catch (ObjectPersistenceException e) {
 			throw new RuntimeException(e);
 		}
 	}

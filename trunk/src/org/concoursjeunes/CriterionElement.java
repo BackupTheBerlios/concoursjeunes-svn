@@ -305,10 +305,19 @@ public class CriterionElement implements ObjectPersistence {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param marshaller
+	 */
 	protected void beforeMarshal(Marshaller marshaller) {
 		xmlId = UUID.randomUUID().toString();
 	}
 
+	/**
+	 * 
+	 * @param unmarshaller
+	 * @param parent
+	 */
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
 		if(parent instanceof Criterion)
 			criterion = (Criterion)parent;

@@ -107,8 +107,10 @@ import javax.swing.JTextField;
 import org.ajdeveloppement.apps.localisation.Localizable;
 import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
+import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.ui.DefaultDialogReturn;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
+import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
 import org.concoursjeunes.Federation;
 import org.concoursjeunes.Profile;
 import org.concoursjeunes.Reglement;
@@ -249,10 +251,14 @@ public class NewReglementDialog extends JDialog implements ActionListener {
 			Reglement reglement = ReglementBuilder.createReglement();
 			if(jcbReference.getSelectedItem() instanceof Reglement) {
 				Reglement reference = (Reglement)jcbReference.getSelectedItem();
-				reglement = ReglementBuilder.getReglement(reference.getNumReglement());
-				reglement.setName("C"+(new Date().getTime())); //$NON-NLS-1$
-				reglement.setNumReglement(0);
-				reglement.setRemovable(true);
+				try {
+					reglement = ReglementBuilder.getReglement(reference.getNumReglement());
+					reglement.setName("C"+(new Date().getTime())); //$NON-NLS-1$
+					reglement.setNumReglement(0);
+					reglement.setRemovable(true);
+				} catch (ObjectPersistenceException e1) {
+					DisplayableErrorHelper.displayException(e1);
+				}
 			}
 			
 			reglement.setDisplayName(jtfReglementName.getText());

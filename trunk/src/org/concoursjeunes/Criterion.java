@@ -527,6 +527,11 @@ public class Criterion implements ObjectPersistence, Cloneable {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param unmarshaller
+	 * @param parent
+	 */
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
 		if(parent instanceof Reglement)
 			reglement = (Reglement)parent;

@@ -101,7 +101,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
-import org.concoursjeunes.builders.ReglementBuilder;
+import org.concoursjeunes.manager.ReglementManager;
 
 /**
  * Paramètre d'un concours
@@ -149,13 +149,16 @@ public class Parametre extends DefaultParameters {
 	 * valeurs de l'objet
 	 */
 	public Parametre(Configuration configuration) {
+		ReglementManager reglementManager = new ReglementManager();
+		
 		setClub(configuration.getClub());
 		setIntituleConcours(configuration.getIntituleConcours());
 		setLieuConcours(configuration.getClub().getVille());
 		setNbCible(configuration.getNbCible());
 		setNbTireur(configuration.getNbTireur());
 		setNbDepart(configuration.getNbDepart());
-		setReglement(ReglementBuilder.getReglement(configuration.getReglementName()));
+		
+		setReglement(reglementManager.getReglementByName(configuration.getReglementName()));
 	}
 	
 	public void addPropertyChangeListener(PropertyChangeListener propertyChangeListener) {

@@ -309,6 +309,10 @@ public class Coordinate implements ObjectPersistence, Cloneable {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param marshaller
+	 */
 	protected void beforeMarshal(Marshaller marshaller) {
 		if(idCoordinate == null)
 			idCoordinate = UUID.randomUUID();

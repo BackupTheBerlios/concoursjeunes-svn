@@ -393,6 +393,10 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param marshaller
+	 */
 	protected void beforeMarshal(Marshaller marshaller) {
 		if(parametre != null && concurrentList != null) {
 			entitesConcours = new ArrayList<Entite>(Arrays.asList(concurrentList.listCompagnie()));
@@ -403,10 +407,19 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param marshaller
+	 */
 	protected void afterMarshal(Marshaller marshaller) {
 		entitesConcours = null;
 	}
 	
+	/**
+	 * 
+	 * @param unmarshaller
+	 * @param parent
+	 */
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
 		parametre.addPropertyChangeListener(this);
 		concurrentList.setParametre(parametre);
@@ -678,22 +691,22 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 
 			tplClassementEquipe.parse("categories.CATEGORIE", this.profile.getLocalisation().getResourceString("equipe.composition")); //$NON-NLS-1$ //$NON-NLS-2$
 
-			Equipe[] sortEquipes = EquipeList.sort(clubList.list());
+			List<Equipe> sortEquipes = EquipeList.sort(clubList.getEquipeList());
 
-			for (int i = 0; i < sortEquipes.length; i++) {
+			for (int i = 0; i < sortEquipes.size(); i++) {
 
 				tplClassementEquipe.parse("categories.classement.PLACE", "" + (i + 1)); //$NON-NLS-1$ //$NON-NLS-2$
 
 				String idsXML = ""; //$NON-NLS-1$
 				String ptsXML = ""; //$NON-NLS-1$
-				for (Concurrent concurrent : sortEquipes[i].getMembresEquipe()) {
+				for (Concurrent concurrent : sortEquipes.get(i).getMembresEquipe()) {
 					idsXML += concurrent.getFullName() + "<br>"; //$NON-NLS-1$
 					ptsXML += concurrent.getTotalScore() + "<br>"; //$NON-NLS-1$
 				}
 				tplClassementEquipe.parse("categories.classement.IDENTITEES", idsXML); //$NON-NLS-1$
-				tplClassementEquipe.parse("categories.classement.NOM_EQUIPE", sortEquipes[i].getNomEquipe()); //$NON-NLS-1$
+				tplClassementEquipe.parse("categories.classement.NOM_EQUIPE", sortEquipes.get(i).getNomEquipe()); //$NON-NLS-1$
 				tplClassementEquipe.parse("categories.classement.TOTAL_INDIVIDUEL", ptsXML); //$NON-NLS-1$
-				tplClassementEquipe.parse("categories.classement.TOTAL_GENERAL", "" + sortEquipes[i].getTotalScore()); //$NON-NLS-1$ //$NON-NLS-2$
+				tplClassementEquipe.parse("categories.classement.TOTAL_GENERAL", "" + sortEquipes.get(i).getTotalScore()); //$NON-NLS-1$ //$NON-NLS-2$
 
 				tplClassementEquipe.loopBloc("categories.classement"); //$NON-NLS-1$
 			}

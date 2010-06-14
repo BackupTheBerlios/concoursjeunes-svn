@@ -87,6 +87,8 @@
 package org.concoursjeunes;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -292,6 +294,7 @@ public class EquipeList implements Cloneable {
      * @param no_sort_list - La liste des équipes à trier
      * @return la liste des équipe fournit en paramètre mais trié
      */
+    @Deprecated
     public static Equipe[] sort(Equipe[] no_sort_list) {
         if(no_sort_list != null && no_sort_list.length > 0) {
         	//Arrays.sort(no_sort_list);
@@ -305,6 +308,23 @@ public class EquipeList implements Cloneable {
         }
         
         return no_sort_list;
+    }
+    
+    
+    public static List<Equipe> sort(List<Equipe> no_sort_list) {
+    	if(no_sort_list != null && no_sort_list.size() > 0) {
+    		Collections.sort(no_sort_list, new Comparator<Equipe>() {
+				@Override
+				public int compare(Equipe o1, Equipe o2) {
+					if(o1.getTotalScore() > o2.getTotalScore())
+						return 1;
+					else if(o1.getTotalScore() == o2.getTotalScore())
+						return 0;
+					return -1;
+				}
+			});
+    	}
+    	return no_sort_list;
     }
     
     /**

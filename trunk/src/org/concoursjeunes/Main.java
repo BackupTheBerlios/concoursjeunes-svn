@@ -137,10 +137,10 @@ import org.ajdeveloppement.commons.ui.SwingURLAuthenticator;
 import org.ajdeveloppement.swingxext.error.WebErrorReporter;
 import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
 import org.concoursjeunes.exceptions.ExceptionHandlingEventQueue;
-import org.concoursjeunes.plugins.Plugin.Type;
 import org.concoursjeunes.plugins.PluginEntry;
 import org.concoursjeunes.plugins.PluginLoader;
 import org.concoursjeunes.plugins.PluginMetadata;
+import org.concoursjeunes.plugins.Plugin.Type;
 import org.concoursjeunes.ui.ConcoursJeunesFrame;
 import org.h2.tools.DeleteDbFiles;
 import org.h2.tools.RunScript;
@@ -362,6 +362,7 @@ public class Main {
 	 */
 	private static void copyInThread(final InputStream in, final OutputStream out) {
         new Thread() {
+        	@Override
             public void run() {
                 try {
                     while (true) {

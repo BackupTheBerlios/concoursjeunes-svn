@@ -1029,6 +1029,11 @@ public class Reglement implements ObjectPersistence {
 			throw new ObjectPersistenceException("delete this Reglement is not authorized because there is official"); //$NON-NLS-1$
 	}
 	
+	/**
+	 * 
+	 * @param unmarshaller
+	 * @param parent
+	 */
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
 		for(Entry<CriteriaSet, CriteriaSet> entry : surclassement.entrySet()) {
 			entry.getKey().setReglement(this);

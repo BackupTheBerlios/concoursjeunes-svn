@@ -118,6 +118,12 @@ public class IndividualScoreSheetState {
 	private int depart;
 	//private int serie;
 	
+	/**
+	 * @param localeReader ressource de localisation
+	 * @param profile profil associé à la session
+	 * @param depart le départ à imprimer
+	 * @param serie la serie à imprimer (non utiliser)
+	 */
 	public IndividualScoreSheetState(AjResourcesReader localeReader, Profile profile, int depart, int serie) {
 		this.localeReader = localeReader;
 		this.profile = profile;
@@ -125,6 +131,14 @@ public class IndividualScoreSheetState {
 		//this.serie = serie;
 	}
 	
+	/**
+	 * 
+	 * @param ficheConcours
+	 * @param template
+	 * @param document
+	 * @param writer
+	 * @throws IOException
+	 */
 	public void printState(FicheConcours ficheConcours, URL template, Document document, PdfWriter writer)
 			throws IOException {
 		AJTemplate templateXML = new AJTemplate();

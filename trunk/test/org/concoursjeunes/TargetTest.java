@@ -114,12 +114,12 @@ public class TargetTest extends TestCase {
 	@Before
 	@Override
 	public void setUp() throws Exception {
-		ApplicationCore concoursJeunes = ApplicationCore.getInstance(); // initialise le noyau
+		ApplicationCore.initializeApplication(); // initialise le noyau
 		
 		ReglementManager reglementManager = new ReglementManager();
 		
 		
-		reglement = reglementManager.getReglementByName("Savoie");; //charge le réglement savoie //$NON-NLS-1$
+		reglement = reglementManager.getReglementByName("Savoie"); //charge le réglement savoie //$NON-NLS-1$
 		Concurrent concurrent = ConcurrentBuilder.getConcurrent(reglement);
 		
 		targetVide = new Target(1, reglement, 4);

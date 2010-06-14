@@ -98,16 +98,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.ajdeveloppement.commons.persistence.LoadHelper;
+import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.sql.ResultSetLoadHandler;
+import org.ajdeveloppement.commons.persistence.sql.SqlLoadHandler;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.CriteriaSet;
 import org.concoursjeunes.Criterion;
 import org.concoursjeunes.DistancesEtBlason;
 import org.concoursjeunes.Reglement;
+import org.concoursjeunes.manager.ReglementManager;
 
 /**
  * <p>
- * Les réglements son stoqué dans la base de donnée. La présente fabrique
- * permet soit de créer un nouveau réglement, soit d'extraire un réglement
+ * Les régalements son stocké dans la base de donnée. La présente fabrique
+ * permet soit de créer un nouveau règlement, soit d'extraire un règlement
  * de la base en se basant sur son nom.
  * </p>
  * 
@@ -117,10 +122,21 @@ import org.concoursjeunes.Reglement;
  */
 public class ReglementBuilder {
 	
+	private static LoadHelper<Reglement,Map<String,Object>> loadHelper;
+	private static LoadHelper<Reglement,ResultSet> resultSetLoadHelper;
+	static {
+		try {
+			loadHelper = new LoadHelper<Reglement,Map<String,Object>>(new SqlLoadHandler<Reglement>(ApplicationCore.dbConnection, Reglement.class));
+			resultSetLoadHelper = new LoadHelper<Reglement,ResultSet>(new ResultSetLoadHandler<Reglement>(Reglement.class));
+		} catch(ObjectPersistenceException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 	/**
-	 * Crée un nouveau reglement de concours
+	 * Crée un nouveau règlement de concours
 	 * 
-	 * @return le reglement créer
+	 * @return le règlement créer
 	 */
 	public static Reglement createReglement() {
 		return getDefaultReglement(); 
@@ -128,8 +144,8 @@ public class ReglementBuilder {
 	
 	/**
 	 * <p>
-	 * Retourne le reglement qualifié par son nom en recherchant l'entrée
-	 * dans la base de donnée. Si aucun réglement, celui ci est initialisé par défaut
+	 * Retourne le règlement qualifié par son nom en recherchant l'entrée
+	 * dans la base de donnée. Si aucun règlement, celui ci est initialisé par défaut
 	 * (équivalent à createReglement()).
 	 * </p>
 	 * <p>
@@ -137,118 +153,140 @@ public class ReglementBuilder {
 	 * correctement instancié.
 	 * </p>
 	 * 
-	 * @param reglementName - le nom du reglement à retourner
-	 * @return - le reglement retourné
+	 * @param reglementName - le nom du règlement à retourner
+	 * @return - le règlement retourné
 	 */
 	@Deprecated
 	public static Reglement getReglement(String reglementName) {
-		return getReglement(-1, reglementName);
+		ReglementManager reglementManager = new ReglementManager();
+		
+		return reglementManager.getReglementByName(reglementName);
 	}
 	
 	/**
 	 * <p>
-	 * Retourne le reglement identifié par son numero dans la base.
-	 * Si aucun réglement ne correspond au numero, celui ci est initialisé par défaut
+	 * Retourne le règlement identifié par son numéro dans la base.
+	 * Si aucun régalement ne correspond au numéro, celui ci est initialisé par défaut
 	 * (équivalent à createReglement()).
 	 * </p>
 	 * <p>
-	 * Pour fonctionner correctement, "ConcoursJeunes.dbConnection" doit auparavent être
+	 * Pour fonctionner correctement, "ConcoursJeunes.dbConnection" doit auparavant être
 	 * correctement instancié.
 	 * </p>
 	 * 
-	 * @param numreglement le numero du reglement à construire
+	 * @param numreglement le numéro du règlement à construire
 	 * 
-	 * @return le réglement contruit à partir du numero
+	 * @return le régalement construit à partir du numéro
 	 */
-	public static Reglement getReglement(int numreglement) {
+	public static Reglement getReglement(int numreglement) throws ObjectPersistenceException {
 		return getReglement(numreglement, null);
 	}
 	
-	private static Reglement getReglement(int numreglement, String reglementName) {
+	/**
+	 * Injecte les données du resultset d'une table reglement dans
+	 * un objet.
+	 * 
+	 * @param rs le jeux de résultat à injecter dans une instance réglement
+	 * @return
+	 * @throws ObjectPersistenceException
+	 */
+	public static Reglement getReglement(ResultSet rs)
+			throws ObjectPersistenceException {
+		return getReglement(-1, rs);
+	}
+	
+	private static Reglement getReglement(int numreglement, ResultSet rs)
+			throws ObjectPersistenceException {
 
 		Reglement reglement = new Reglement();
+		reglement.setVersion(2);
 		
 		try {
-			Statement stmt = ApplicationCore.dbConnection.createStatement();
-			
-			String sql;
-			if(numreglement != -1)
-				sql = "select * from REGLEMENT where NUMREGLEMENT=" + numreglement; //$NON-NLS-1$
-			else
-				sql = "select * from REGLEMENT where NOMREGLEMENT='" + reglementName.replaceAll("'", "''") + "'"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-			
-			ResultSet rs = stmt.executeQuery(sql);
-			if(rs.first()) {
-				numreglement = rs.getInt("NUMREGLEMENT"); //$NON-NLS-1$
+			Map<Class<?>, Map<String,Object>> foreignKeys = null;
+			if(rs != null) {
+				foreignKeys = resultSetLoadHelper.load(reglement, rs);
 				
-				reglement.setVersion(2);
+				numreglement = reglement.getNumReglement();
+			} else {
 				reglement.setNumReglement(numreglement);
-				reglement.setName(rs.getString("NOMREGLEMENT")); //$NON-NLS-1$
-				reglement.setDisplayName(rs.getString("LIBELLE")); //$NON-NLS-1$
-				reglement.setNbSerie(rs.getInt("NBSERIE")); //$NON-NLS-1$
-				reglement.setNbVoleeParSerie(rs.getInt("NBVOLEEPARSERIE")); //$NON-NLS-1$
-				reglement.setNbFlecheParVolee(rs.getInt("NBFLECHEPARVOLEE")); //$NON-NLS-1$
-				reglement.setNbMembresEquipe(rs.getInt("NBMEMBRESEQUIPE")); //$NON-NLS-1$
-				reglement.setNbMembresRetenu(rs.getInt("NBMEMBRESRETENU")); //$NON-NLS-1$
-				reglement.setOfficialReglement(rs.getBoolean("ISOFFICIAL")); //$NON-NLS-1$
-				reglement.setFederation(FederationBuilder.getFederation(rs.getInt("NUMFEDERATION"))); //$NON-NLS-1$
-				reglement.setCategory(rs.getInt("NUMCATEGORIE_REGLEMENT")); //$NON-NLS-1$
-				reglement.setRemovable(rs.getBoolean("REMOVABLE")); //$NON-NLS-1$
 				
-				rs.close();
-				
-				List<String> ties = new ArrayList<String>();
-				rs = stmt.executeQuery("select * from DEPARTAGE where NUMREGLEMENT=" + numreglement + " order by NUMDEPARTAGE");  //$NON-NLS-1$//$NON-NLS-2$
-				while(rs.next()) {
-					ties.add(rs.getString("FIELDNAME")); //$NON-NLS-1$
-				}
-				rs.close();
-				reglement.setTie(ties);
-				
-				List<Criterion> criteria = new ArrayList<Criterion>();
-				rs = stmt.executeQuery("select CODECRITERE from CRITERE where NUMREGLEMENT=" + numreglement + " order by NUMORDRE"); //$NON-NLS-1$ //$NON-NLS-2$
-				while(rs.next()) {
-					criteria.add(CriterionBuilder.getCriterion(rs.getString("CODECRITERE"), reglement)); //$NON-NLS-1$
-				}
-				rs.close();
-				reglement.setListCriteria(criteria);
-				
-				List<DistancesEtBlason> listDistancesEtBlason = new ArrayList<DistancesEtBlason>();
-				rs = stmt.executeQuery("select * from DISTANCESBLASONS where NUMREGLEMENT=" + numreglement); //$NON-NLS-1$
-				while(rs.next()) {
-					int numdb = rs.getInt("NUMDISTANCESBLASONS"); //$NON-NLS-1$
-					
-					DistancesEtBlason db = DistancesEtBlasonBuilder.getDistancesEtBlason(numdb, reglement);
-					CriteriaSet[] criteriaSets = CriteriaSet.listCriteriaSet(reglement, reglement.getPlacementFilter());
-					for(CriteriaSet criteriaSet : criteriaSets) {
-						if(criteriaSet.equals(db.getCriteriaSet().getFilteredCriteriaSet(reglement.getPlacementFilter()))) {
-							listDistancesEtBlason.add(db);
-							break;
-						}
-					}
-				}
-				rs.close();
-				reglement.setListDistancesEtBlason(listDistancesEtBlason);
-				
-				Map<CriteriaSet, CriteriaSet> surclassement = new HashMap<CriteriaSet, CriteriaSet>();
-				rs = stmt.executeQuery("select * from SURCLASSEMENT where NUMREGLEMENT=" + numreglement); //$NON-NLS-1$
-				while (rs.next()) {
-					int numCriteriaSet = rs.getInt("NUMCRITERIASET"); //$NON-NLS-1$
-					int numCriteriaSetSurClasse = rs.getInt("NUMCRITERIASET_SURCLASSE"); //$NON-NLS-1$
-					
-					CriteriaSet criteriaSet = CriteriaSetBuilder.getCriteriaSet(numCriteriaSet, reglement);
-					CriteriaSet criteriaSetSurClasse = null;
-					if(!rs.wasNull()) {
-						criteriaSetSurClasse = CriteriaSetBuilder.getCriteriaSet(numCriteriaSetSurClasse, reglement);
-					}
-					
-					surclassement.put(criteriaSet, criteriaSetSurClasse);
-				}
-				rs.close();
-				reglement.setSurclassement(surclassement);
+				foreignKeys = loadHelper.load(reglement);
 			}
 			
-			stmt.close();
+			reglement.setFederation(
+					FederationBuilder.getFederation(
+							(Integer)foreignKeys.get(Reglement.class).get("NUMFEDERATION")));
+			
+			Statement stmt = ApplicationCore.dbConnection.createStatement();
+			try {
+				// Récupération des départages
+				List<String> ties = new ArrayList<String>();
+				rs = stmt.executeQuery("select * from DEPARTAGE where NUMREGLEMENT=" + numreglement + " order by NUMDEPARTAGE");  //$NON-NLS-1$//$NON-NLS-2$
+				try {
+					while(rs.next()) {
+						ties.add(rs.getString("FIELDNAME")); //$NON-NLS-1$
+					}
+				} finally {
+					rs.close();
+				}
+				reglement.setTie(ties);
+				
+				// Récupération des critères
+				List<Criterion> criteria = new ArrayList<Criterion>();
+				rs = stmt.executeQuery("select CODECRITERE from CRITERE where NUMREGLEMENT=" + numreglement + " order by NUMORDRE"); //$NON-NLS-1$ //$NON-NLS-2$
+				try {
+					while(rs.next()) {
+						criteria.add(CriterionBuilder.getCriterion(rs.getString("CODECRITERE"), reglement)); //$NON-NLS-1$
+					}
+				} finally {
+					rs.close();
+				}
+				reglement.setListCriteria(criteria);
+				
+				// Récupération des distances blason
+				List<DistancesEtBlason> listDistancesEtBlason = new ArrayList<DistancesEtBlason>();
+				rs = stmt.executeQuery("select * from DISTANCESBLASONS where NUMREGLEMENT=" + numreglement); //$NON-NLS-1$
+				try {
+					while(rs.next()) {
+						int numdb = rs.getInt("NUMDISTANCESBLASONS"); //$NON-NLS-1$
+						
+						DistancesEtBlason db = DistancesEtBlasonBuilder.getDistancesEtBlason(numdb, reglement);
+						CriteriaSet[] criteriaSets = CriteriaSet.listCriteriaSet(reglement, reglement.getPlacementFilter());
+						for(CriteriaSet criteriaSet : criteriaSets) {
+							if(criteriaSet.equals(db.getCriteriaSet().getFilteredCriteriaSet(reglement.getPlacementFilter()))) {
+								listDistancesEtBlason.add(db);
+								break;
+							}
+						}
+					}
+				} finally {
+					rs.close();
+				}
+				reglement.setListDistancesEtBlason(listDistancesEtBlason);
+				
+				// Récupération des surclassements
+				Map<CriteriaSet, CriteriaSet> surclassement = new HashMap<CriteriaSet, CriteriaSet>();
+				rs = stmt.executeQuery("select * from SURCLASSEMENT where NUMREGLEMENT=" + numreglement); //$NON-NLS-1$
+				try {
+					while (rs.next()) {
+						int numCriteriaSet = rs.getInt("NUMCRITERIASET"); //$NON-NLS-1$
+						int numCriteriaSetSurClasse = rs.getInt("NUMCRITERIASET_SURCLASSE"); //$NON-NLS-1$
+						
+						CriteriaSet criteriaSet = CriteriaSetBuilder.getCriteriaSet(numCriteriaSet, reglement);
+						CriteriaSet criteriaSetSurClasse = null;
+						if(!rs.wasNull()) {
+							criteriaSetSurClasse = CriteriaSetBuilder.getCriteriaSet(numCriteriaSetSurClasse, reglement);
+						}
+						
+						surclassement.put(criteriaSet, criteriaSetSurClasse);
+					}
+				} finally {
+					rs.close();
+				}
+				reglement.setSurclassement(surclassement);
+			} finally {
+				stmt.close();
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

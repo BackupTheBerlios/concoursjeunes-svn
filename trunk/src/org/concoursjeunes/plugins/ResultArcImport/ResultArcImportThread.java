@@ -111,7 +111,6 @@ import org.concoursjeunes.ApplicationCore;
 public class ResultArcImportThread extends Thread {
 
 	private JDialog parentframe;
-	private AjResourcesReader localisation;
 
 	private final AjResourcesReader pluginRessources = new AjResourcesReader("properties.ResultArcImportPlugin"); //$NON-NLS-1$
 	private final AjResourcesReader pluginLocalisation = new AjResourcesReader("org.concoursjeunes.plugins.ResultArcImport.ResultArcImportPlugin_libelle", ResultArcImportThread.class.getClassLoader()); //$NON-NLS-1$
@@ -119,13 +118,9 @@ public class ResultArcImportThread extends Thread {
 
 	private String fftalogpath = ""; //$NON-NLS-1$
 
-	/**
-	 * 
-	 * 
-	 */
-	public ResultArcImportThread(AjResourcesReader localisation) {
+
+	public ResultArcImportThread() {
 		this.setName("ResultArcImportThread"); //$NON-NLS-1$
-		this.localisation = localisation;
 	}
 
 	public void addResultArcImportThreadListener(ResultArcImportThreadListener listener) {
