@@ -1,7 +1,7 @@
 /*
- * Créé le 10 mai 08 à 13:24:05 pour ConcoursJeunes
+ * Créé le 20 juin 2010 à 16:26:09 pour ConcoursJeunes
  *
- * Copyright 2002-2008 - Aurélien JEOFFRAY
+ * Copyright 2002-2010 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
  *
@@ -36,7 +36,7 @@
  * à l'utiliser et l'exploiter dans les mêmes conditions de sécurité. 
  * 
  * Le fait que vous puissiez accéder à cet en-tête signifie que vous avez 
- * pri connaissance de la licence CeCILL, et que vous en avez accepté les
+ * pris connaissance de la licence CeCILL, et que vous en avez accepté les
  * termes.
  *
  * ENGLISH:
@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  any later version.
+ *  (at your option) any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -86,139 +86,131 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes.ui.dialog;
+package org.concoursjeunes.ui.components;
 
-import java.awt.BorderLayout;
-import java.awt.Desktop;
+import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Desktop.Action;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryMXBean;
-import java.net.URISyntaxException;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
+import javax.swing.Box;
 import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JEditorPane;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
-import javax.swing.event.HyperlinkEvent.EventType;
-import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.JComboBox;
 
 import org.ajdeveloppement.apps.localisation.Localizable;
-import org.ajdeveloppement.apps.localisation.Localizator;
-import org.ajdeveloppement.commons.AjResourcesReader;
-import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
-import org.concoursjeunes.AppInfos;
-import org.concoursjeunes.ApplicationCore;
+import org.ajdeveloppement.commons.ui.DefaultTagsModel;
+import org.ajdeveloppement.commons.ui.TagComponent;
+import org.ajdeveloppement.concours.CategoryContact;
 
 /**
- * Boite de dialogue "à propos" de l'application
- * 
  * @author Aurélien JEOFFRAY
  *
  */
-@Localizable(textMethod="setTitle",value="apropos.titre")
-public class AboutDialog extends JDialog implements ActionListener, HyperlinkListener {
-	private AjResourcesReader localisation;
+public class CategoryContactTagEditorComponent extends TagComponent<CategoryContact> implements
+		MouseListener, ActionListener {
 	
-	@Localizable("bouton.fermer")
-	private JButton jbFermer = new JButton();
-	private JEditorPane jlAbout = new JEditorPane();
-
-	MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
-	/**
-	 * 
-	 */
-	public AboutDialog(JFrame parentframe, AjResourcesReader localisation) {
-		super(parentframe, true);
-		this.localisation = localisation;
+	@Localizable("defaulttageditorcomponent.add")
+	private JButton jbAddTag = new JButton("+"); //$NON-NLS-1$
+	@Localizable("defaulttageditorcomponent.valid")
+	private JButton jbValider = new JButton("v"); //$NON-NLS-1$
+	@Localizable("defaulttageditorcomponent.cancel")
+	private JButton jbAnnuler = new JButton("c"); //$NON-NLS-1$
+	private JComboBox jcbNewTag = new JComboBox();
+	
+	public CategoryContactTagEditorComponent() {
 		init();
-		affectLibelle();
 	}
 	
 	private void init() {
-		JPanel jpAction = new JPanel();
+		setOpaque(false);
 		
-		jbFermer.addActionListener(this);
+		jbAddTag.setBorderPainted(false);
+		jbAddTag.setFocusPainted(false);
+		jbAddTag.setMargin(new Insets(0, 0, 0, 0));
+		jbAddTag.setContentAreaFilled(false);
+		jbAddTag.addActionListener(this);
 		
-		jlAbout.setEditable(false);
-		jlAbout.setOpaque(false);
-		jlAbout.setEditorKit(new HTMLEditorKit());
-		jlAbout.setFont(getFont());
-		jlAbout.addHyperlinkListener(this);
+		jbValider.setBorderPainted(false);
+		jbValider.setFocusPainted(false);
+		jbValider.setMargin(new Insets(0, 0, 0, 0));
+		jbValider.setContentAreaFilled(false);
+		jbValider.addActionListener(this);
 		
-		jpAction.setLayout(new FlowLayout(FlowLayout.RIGHT));
-		jpAction.add(jbFermer);
+		jbAnnuler.setBorderPainted(false);
+		jbAnnuler.setFocusPainted(false);
+		jbAnnuler.setMargin(new Insets(0, 0, 0, 0));
+		jbAnnuler.setContentAreaFilled(false);
+		jbAnnuler.addActionListener(this);
 		
-		setLayout(new BorderLayout());
-		add(jlAbout, BorderLayout.CENTER);
-		add(jpAction, BorderLayout.SOUTH);
+		jcbNewTag.setOpaque(false);
+		jcbNewTag.setVisible(false);
+		jbValider.setVisible(false);
+		jbAnnuler.setVisible(false);
+		
+		add(Box.createRigidArea(new Dimension(5, 10)));
+		add(jcbNewTag);
+		add(jbValider);
+		add(jbAnnuler);
+		add(jbAddTag);
 	}
 	
-	/**
-	 * 
-	 */
-	private void affectLibelle() {
-		Localizator.localize(this, localisation);
+	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
 		
-		String iconURL = ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.about"); //$NON-NLS-1$
+		Graphics2D graphics2d = (Graphics2D)g;
 		
-		jlAbout.setText("<html><table style=\"font-family: " + getFont().getName() + "; font-size:" + getFont().getSize() //$NON-NLS-1$ //$NON-NLS-2$
-				+ "pt; font-weight:normal;\">" + //$NON-NLS-1$
-				"<tr><td><img src=\"file:"	+ iconURL + "\"></td><td><b>"  //$NON-NLS-1$ //$NON-NLS-2$
-				+ AppInfos.NOM + "<br>" + //$NON-NLS-1$ 
-				localisation.getResourceString("apropos.description") + "<br><br>" + //$NON-NLS-1$ //$NON-NLS-2$
-				localisation.getResourceString("apropos.version") + "<br>" +  //$NON-NLS-1$ //$NON-NLS-2$
-				AppInfos.VERSION + "<br>" + //$NON-NLS-1$
-				localisation.getResourceString("apropos.codename") + " " + AppInfos.CODENAME + "<br>" + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				AppInfos.COPYR + " " + AppInfos.AUTEURS + "<br>" + //$NON-NLS-1$ //$NON-NLS-2$
-				"version base: " + ApplicationCore.dbVersion + "<br><br>" //$NON-NLS-1$ //$NON-NLS-2$
-				+ "mémoire utilisé: " + ((memoryBean.getHeapMemoryUsage().getUsed() + memoryBean.getNonHeapMemoryUsage().getUsed()) / 1024 / 1024) + "Mo<br>" //$NON-NLS-1$ //$NON-NLS-2$
-				+ "mémoire réservé: " + ((memoryBean.getHeapMemoryUsage().getCommitted() + memoryBean.getNonHeapMemoryUsage().getCommitted()) / 1024 / 1024) + "Mo<br><br>" //$NON-NLS-1$ //$NON-NLS-2$
-				+ localisation.getResourceString("apropos.liens") + "</b></td></tr></table></html>"); //$NON-NLS-1$ //$NON-NLS-2$
+		graphics2d.setColor(new Color(254,224,100));
+		graphics2d.fillRoundRect(0, 0, getWidth(), getHeight(), getHeight(), getHeight());
 	}
-	
-	public void showAboutDialog() {
- 		setSize(new Dimension(427, 376));
-		//pack();
-		//setResizable(false);
-		setLocationRelativeTo(null);
-		//System.out.println(getSize());
-		setVisible(true);
-	}
-	
+
 	/* (non-Javadoc)
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() == jbFermer) {
-			setVisible(false);
+		if(e.getSource() == jbAddTag) {
+			jcbNewTag.setVisible(true);
+			jbValider.setVisible(true);
+			jbAnnuler.setVisible(true);
+			jbAddTag.setVisible(false);
+			revalidate();
+		} else if(e.getSource() == jbAnnuler || e.getSource() == jbValider) {
+			if(e.getSource() == jbValider) {
+				if(parentTagsPanel != null)
+					((DefaultTagsModel<CategoryContact>)parentTagsPanel.getModel()).add((CategoryContact)jcbNewTag.getSelectedItem());
+			}
+			
+			jcbNewTag.setVisible(false);
+			jbValider.setVisible(false);
+			jbAnnuler.setVisible(false);
+			jbAddTag.setVisible(true);
+			revalidate();
 		}
 	}
 
 	@Override
-	public void hyperlinkUpdate(HyperlinkEvent e) {
-		if(e.getEventType() == EventType.ACTIVATED) {
-			if(Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Action.BROWSE)) {
-				try {
-					Desktop.getDesktop().browse(e.getURL().toURI());
-				} catch (IOException e1) {
-					DisplayableErrorHelper.displayException(e1);
-					e1.printStackTrace();
-				} catch (URISyntaxException e1) {
-					DisplayableErrorHelper.displayException(e1);
-					e1.printStackTrace();
-				}
-			}
-		}
+	public void mouseClicked(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
 	}
 }

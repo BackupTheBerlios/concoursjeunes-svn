@@ -97,7 +97,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentMap;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -153,7 +152,7 @@ public class Blason implements ObjectPersistence {
 		try {
 			helper = new StoreHelper<Blason>(new SqlStoreHandler<Blason>(ApplicationCore.dbConnection, Blason.class));
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 	
@@ -389,7 +388,7 @@ public class Blason implements ObjectPersistence {
 	 * 
 	 * @param ancrages la table des points d'ancrages possible du blason
 	 */
-	public void setAncrages(ConcurrentMap<Integer, Ancrage> ancrages) {
+	public void setAncrages(Map<Integer, Ancrage> ancrages) {
     	this.ancrages = ancrages;
     	
     	for(Entry<Integer, Ancrage> entry : ancrages.entrySet()) {

@@ -92,11 +92,16 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.JPanel;
 
 import org.ajdeveloppement.apps.localisation.Localizator;
-import org.concoursjeunes.ApplicationCore;
+import org.concoursjeunes.CriteriaSet;
+import org.concoursjeunes.Duel;
 import org.concoursjeunes.FicheConcours;
 import org.concoursjeunes.PhaseFinal;
 import org.w3c.dom.Document;
@@ -138,11 +143,14 @@ public class FicheConcoursFinalPane extends JPanel implements ActionListener {
 		
 		// Loads the defalt stylesheet from an external file
 		mxCodec codec = new mxCodec();
-		Document doc = mxUtils.loadDocument(ApplicationCore.staticParameters.getResourceString("path.ressources") + "/gui/default-style.xml"); //$NON-NLS-1$ //$NON-NLS-2$
+		Document doc = mxUtils.loadDocument(getClass().getResource("default-style.xml").toString()); //$NON-NLS-1$
 		codec.decode(doc.getDocumentElement(), graph.getStylesheet());
 		
 		mxGraphComponent graphComponent = new mxGraphComponent(graph);
 		graphComponent.setConnectable(false);
+		graphComponent.setWheelScrollingEnabled(true);
+		graphComponent.setSwimlaneSelectionEnabled(false);
+		graphComponent.setPageBreaksVisible(true);
 		graphComponent.setDragEnabled(false);
 		graphComponent.setBackground(Color.WHITE);
 		graphComponent.setOpaque(false);
@@ -165,26 +173,64 @@ public class FicheConcoursFinalPane extends JPanel implements ActionListener {
 		graph.getModel().beginUpdate();
 		try
 		{
-//			List<Object> l1 = new ArrayList<Object>();
-//			for(Concurrent concurrent : ficheConcours.getConcurrentList().list(-1)) {
-//				l1.add(graph.insertVertex(parent, null, concurrent.getID(), 20, 20+l1.size()*70, 250, 50));
-//			}
-//			
-//			List<Object> l2 = new ArrayList<Object>();
-//			for(int i = 0; i < l1.size() / 2; i++) {
-//				l2.add(graph.insertVertex(parent, null, "", 400, 55+i*140, 250, 50));
-//			}
-//			
-//			Object vainqueur = graph.insertVertex(parent, null, "", 400+380, -5 +((l1.size()*70-20)/2), 250, 50);
-//			
-//			for(int i = 0; i < l1.size(); i++) {
-//				int l2i = (int)Math.floor(i / 2.0);
-//				graph.insertEdge(parent, null, "", l1.get(i), l2.get(l2i));
-//			}
-//			
-//			for(int i = 0; i < l2.size(); i++) {
-//				graph.insertEdge(parent, null, "", l2.get(i),vainqueur);
-//			}
+			int startHeightCriteriaSet = 20;
+			for(CriteriaSet criteriaSet : ficheConcours.getConcurrentList().listCriteriaSet()) {
+				int nombrePhaseCategorie = phaseFinal.getNombrePhase(criteriaSet);
+				
+				int startHeight = startHeightCriteriaSet;
+				int elementHeight = 50;
+				int spacingHeight = 20;
+				int decalage = 0;
+				int padding = elementHeight + spacingHeight;
+				
+				int duelHeight = elementHeight * 2 + spacingHeight;
+				
+				Map<Integer, List<Object>> objectsPhase = new HashMap<Integer,  List<Object>>();
+				
+				for(int i = 0; i < nombrePhaseCategorie; i++) {
+					if(i > 0) {
+						decalage += (duelHeight / 2) - (elementHeight / 2);
+						startHeight = startHeightCriteriaSet + decalage;
+						padding = elementHeight + spacingHeight + decalage * 2;
+						duelHeight = padding + elementHeight;
+					}
+					
+					
+					List<Duel> duels = phaseFinal.getDuelsPhase(criteriaSet, nombrePhaseCategorie-i);
+					for(Duel duel : duels) {
+						if(duel != null && duel.getConcurrent1() != null && duel.getConcurrent2() != null) {
+							if(!objectsPhase.containsKey(i))
+								objectsPhase.put(i, new ArrayList<Object>());
+							
+							objectsPhase.get(i).add(graph.insertVertex(parent, null, duel.getConcurrent1().getFullName(), 20 + 380 * i, startHeight + objectsPhase.get(i).size()*padding, 250, 50));
+							objectsPhase.get(i).add(graph.insertVertex(parent, null, duel.getConcurrent2().getFullName(), 20 + 380 * i, startHeight + objectsPhase.get(i).size()*padding, 250, 50));
+						}
+					}
+					
+					if(i > 0) {
+						for(int j = 0; j < objectsPhase.get(i-1).size(); j++) {
+							int l2i = (int)Math.floor(j / 2.0);
+							graph.insertEdge(parent, null, "", objectsPhase.get(i-1).get(j), objectsPhase.get(i).get(l2i));
+						}
+					}
+				}
+				
+				decalage += (duelHeight / 2) - (elementHeight / 2);
+				startHeight = startHeightCriteriaSet + decalage;
+				padding = elementHeight + spacingHeight + decalage * 2;
+				duelHeight = padding + elementHeight;
+				
+				Object vainqueur = graph.insertVertex(parent, null, "", 20 + 380 * nombrePhaseCategorie, startHeight, 250, 50);
+				
+				if(objectsPhase.size() > 0) {
+					for(int j = 0; j < objectsPhase.get(nombrePhaseCategorie-1).size(); j++) {
+						int l2i = (int)Math.floor(j / 2.0);
+						graph.insertEdge(parent, null, "", objectsPhase.get(nombrePhaseCategorie-1).get(j), vainqueur);
+					}
+				}
+				
+				startHeightCriteriaSet += decalage * 2 + elementHeight + spacingHeight * 2;
+			}
 		}
 		finally
 		{

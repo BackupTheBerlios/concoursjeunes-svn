@@ -90,9 +90,8 @@ package org.concoursjeunes.builders;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import org.ajdeveloppement.commons.persistence.LoadHelper;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
@@ -169,6 +168,8 @@ public class BlasonBuilder {
 					loadHelper.load(blason);
 				}
 				
+				// les ancrages sont récupéré en Lazy loading directement dans l'instance
+				// de blason. donc on ne le charge pas ici
 				//blason.setAncrages(AncragesMapBuilder.getAncragesMap(blason));
 				
 				cache.add(blason);
@@ -194,7 +195,7 @@ public class BlasonBuilder {
 		double hRatio = 1;
 		double vRatio = 1;
 		int nbArcher = 4;
-		ConcurrentMap<Integer, Ancrage> ancrages = new ConcurrentHashMap<Integer, Ancrage>();
+		Map<Integer, Ancrage> ancrages = new HashMap<Integer, Ancrage>();
 		ancrages.put(Ancrage.POSITION_ABCD, new Ancrage(Ancrage.POSITION_ABCD, 0, 0));
 		if(size <= 60) {
 			hRatio = 0.5;

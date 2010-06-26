@@ -88,7 +88,7 @@
  */
 package org.concoursjeunes.ui.components;
 
-import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -98,17 +98,22 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.text.html.HTMLEditorKit;
 
 import org.ajdeveloppement.apps.localisation.Localizable;
 import org.ajdeveloppement.apps.localisation.LocalizationHandler;
@@ -118,6 +123,7 @@ import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.concours.CategoryContact;
 import org.ajdeveloppement.concours.Civility;
 import org.ajdeveloppement.concours.Contact;
+import org.ajdeveloppement.concours.managers.CategoryContactManager;
 import org.ajdeveloppement.concours.managers.CivilityManager;
 import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
 import org.ajdeveloppement.swingxext.localisation.JXHeaderLocalisationHandler;
@@ -130,7 +136,7 @@ import org.jdesktop.beansbinding.Bindings;
 import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.JXHyperlink;
-import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.JXTitledSeparator;
 
 import com.lowagie.text.Font;
 
@@ -155,9 +161,10 @@ public class ContactPanel extends JPanel implements ActionListener{
 	private JLabel jlNameFirstName = new JLabel();
 	private JTextField jtfName = new JTextField("", 15); //$NON-NLS-1$
 	private JTextField jtfFirstName = new JTextField("", 15); //$NON-NLS-1$
-	private JLabel jlCategories = new JLabel();
+	private JPanel jpCategories = new JPanel();
+	private JEditorPane jlCategories = new JEditorPane();
 	@Localizable("entite.addcategories")
-	private JXHyperlink jxhAddCategories = new JXHyperlink();
+	private JXHyperlink jxhCategories = new JXHyperlink();
 	@Localizable("entite.adresse")
 	private JLabel jlAdressContact = new JLabel();
 	private JTextArea jtaAddressContact = new JTextArea(4, 30);
@@ -184,6 +191,12 @@ public class ContactPanel extends JPanel implements ActionListener{
 	@Localizable("entite.savecontact")
 	private JXHyperlink jxhSaveContact = new JXHyperlink();
 	
+	private JPopupMenu dropDownMenu = new JPopupMenu();
+	@Localizable(value="entite.removecategory",textMethod="setTitle")
+	private JXTitledSeparator dropDownRemoveSeparator = new JXTitledSeparator();
+	@Localizable(value="entite.addcategory",textMethod="setTitle")
+	private JXTitledSeparator dropDownAddSeparator = new JXTitledSeparator();
+	
 	public ContactPanel(Profile profile) {
 		this.profile = profile;
 		
@@ -198,11 +211,11 @@ public class ContactPanel extends JPanel implements ActionListener{
 		GridbagComposer gridbagComposer = new GridbagComposer();
 		
 		JPanel jpNameFirstName = new JPanel();
-		JPanel jpCategory = new JPanel();
+		
 		JPanel jpCoordinatesAction = new JPanel();
 		JPanel jpContactAction = new JPanel();
 		
-		jpCategory.setSize(new Dimension(100, 25));
+		jpCategories.setSize(new Dimension(100, 25));
 		
 		jcbCivility.setRenderer(new DefaultListCellRenderer() {
 			
@@ -217,6 +230,13 @@ public class ContactPanel extends JPanel implements ActionListener{
 		});
 		jxhNewCivility.setFont(jxhNewCivility.getFont().deriveFont(Font.NORMAL|Font.ITALIC));
 		
+		jlCategories.setEditorKit(new HTMLEditorKit());
+		jlCategories.setOpaque(false);
+		jlCategories.setPreferredSize(new Dimension(100, 35));
+		jxhCategories.setFont(jxhCategories.getFont().deriveFont(Font.NORMAL|Font.ITALIC));
+		jxhCategories.addActionListener(this);
+		dropDownRemoveSeparator.setForeground(new Color(150,150,150));
+		dropDownAddSeparator.setForeground(new Color(150,150,150));		
 		jlstCoordinates.setVisibleRowCount(5);
 		
 		jpCoordinatesAction.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
@@ -257,9 +277,9 @@ public class ContactPanel extends JPanel implements ActionListener{
 		gridbagComposer.addComponentIntoGrid(jtfName, c);
 		gridbagComposer.addComponentIntoGrid(jtfFirstName, c);
 		
-		jpCategory.setLayout(new FlowLayout(FlowLayout.LEFT));
-		jpCategory.add(jlCategories);
-		jpCategory.add(jxhAddCategories);
+//		jpCategories.setLayout(new FlowLayout(FlowLayout.LEFT));
+//		jpCategories.add(jlCategories);
+//		jpCategories.add(jxhCategories);
 		
 		jpCoordinatesAction.add(jbAddCoordinate);
 		jpCoordinatesAction.add(jbDelCoordinate);
@@ -292,7 +312,9 @@ public class ContactPanel extends JPanel implements ActionListener{
 		gridbagComposer.addComponentIntoGrid(jpNameFirstName, c);
 		c.gridy++;
 		c.gridx = 1;
-		gridbagComposer.addComponentIntoGrid(jpCategory, c);
+		gridbagComposer.addComponentIntoGrid(jxhCategories, c);
+		c.gridy++;
+		gridbagComposer.addComponentIntoGrid(jlCategories, c);
 		c.gridy++;
 		c.gridwidth = 1;
 		c.weightx = 0.0;
@@ -363,6 +385,7 @@ public class ContactPanel extends JPanel implements ActionListener{
 		}
 		
 		if(contact != null) {
+			contactBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, contact, BeanProperty.create("civility"), jcbCivility, BeanProperty.create("selectedItem")));  //$NON-NLS-1$//$NON-NLS-2$
 			contactBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, contact, BeanProperty.create("name"), jtfName, BeanProperty.create("text"))); //$NON-NLS-1$ //$NON-NLS-2$
 			contactBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, contact, BeanProperty.create("firstName"), jtfFirstName, BeanProperty.create("text"))); //$NON-NLS-1$ //$NON-NLS-2$
 			contactBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, contact, BeanProperty.create("adress"), jtaAddressContact, BeanProperty.create("text"))); //$NON-NLS-1$ //$NON-NLS-2$
@@ -373,29 +396,91 @@ public class ContactPanel extends JPanel implements ActionListener{
 			contactBinding.bind();
 			
 			categoriesContact = contact.getCategories();
-			
+		}
+		
+		populateCategoriesPanel();
+	}
+	
+	private void populateCategoriesPanel() {
+		List<CategoryContact> allCategories = null;
+		
+		try {
+			allCategories = CategoryContactManager.getAllCategoryContact();
+		} catch (ObjectPersistenceException e) {
+			DisplayableErrorHelper.displayException(e);
+		}
+		
+		if(allCategories == null)
+			allCategories = new ArrayList<CategoryContact>();
+		
+		dropDownMenu.removeAll();
+		
+		//jlCategories.setSize(getWidth(), jlCategories.getSize().height);
+		
+		if(contact != null) {
 			String categories = ""; //$NON-NLS-1$
-			for(CategoryContact category : categoriesContact) {
+			dropDownMenu.add(dropDownRemoveSeparator);
+			
+			Collections.sort(categoriesContact, new Comparator<CategoryContact>() {
+
+				@Override
+				public int compare(CategoryContact o1, CategoryContact o2) {
+					return o1.getLibelle(profile.getConfiguration().getLangue()).compareToIgnoreCase(o2.getLibelle(profile.getConfiguration().getLangue()));
+				}
+			});		
+			
+			for(final CategoryContact category : categoriesContact) {
 				if(!categories.isEmpty())
 					categories += ", "; //$NON-NLS-1$
 				categories += category.getLibelle(profile.getConfiguration().getLangue());
+				
+				JMenuItem menuItem = new JMenuItem(category.getLibelle(profile.getConfiguration().getLangue()));
+				menuItem.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						categoriesContact.remove(category);
+						
+						populateCategoriesPanel();
+					}
+				});
+				
+				dropDownMenu.add(menuItem);
+				
+				allCategories.remove(category);
 			}
-			jlCategories.setText(categories);
+			jlCategories.setText("<html><span style=\"font-family: " + getFont().getName() + "; font-size:" + getFont().getSize() //$NON-NLS-1$ //$NON-NLS-2$
+				+ "pt; font-weight:bold;\">" + categories + "</span><html>"); //$NON-NLS-1$ //$NON-NLS-2$
+		}
+		
+		dropDownMenu.add(dropDownAddSeparator);
+		for (final CategoryContact categoryContact : allCategories) {
+			JMenuItem menuItem = new JMenuItem(categoryContact.getLibelle(profile.getConfiguration().getLangue()));
+			menuItem.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					categoriesContact.add(categoryContact);
+					
+					populateCategoriesPanel();
+				}
+			});
+			
+			dropDownMenu.add(menuItem);
 		}
 	}
 	
-	public JXPanel getAddCategoryPanel() {
-		JXPanel panel = new JXPanel();
-		
-		JXPanel jpCategories = new JXPanel();
-		
-		jpCategories.add(new JComboBox());
-		
-		panel.setLayout(new BorderLayout());
-		panel.add(jpCategories, BorderLayout.CENTER);
-		
-		return panel;
-	}
+//	public JXPanel getAddCategoryPanel() {
+//		JXPanel panel = new JXPanel();
+//		
+//		JXPanel jpCategories = new JXPanel();
+//		
+//		jpCategories.add(new JComboBox());
+//		
+//		panel.setLayout(new BorderLayout());
+//		panel.add(jpCategories, BorderLayout.CENTER);
+//		
+//		return panel;
+//	}
 	
 	public void setContact(Contact contact) {
 		this.contact = contact;
@@ -411,6 +496,7 @@ public class ContactPanel extends JPanel implements ActionListener{
             		binding.save();
             	}
         	}
+			contact.setCategories(categoriesContact);
 			
 			try {
 				contact.save();
@@ -418,6 +504,8 @@ public class ContactPanel extends JPanel implements ActionListener{
 				DisplayableErrorHelper.displayException(e1);
 				e1.printStackTrace();
 			}
+		} else if(e.getSource() == jxhCategories) {
+			dropDownMenu.show(jxhCategories, 0, jxhCategories.getHeight());
 		}
 	}
 }

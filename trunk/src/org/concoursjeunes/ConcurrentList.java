@@ -563,6 +563,23 @@ public class ConcurrentList {
 
 		return alCie.toArray(new Entite[number_of_element]);
 	}
+	
+	public List<CriteriaSet> listCriteriaSet() {
+		List<CriteriaSet> criteriaSets = new ArrayList<CriteriaSet>();
+		CriteriaSet[] catList = CriteriaSet.listCriteriaSet(parametre.getReglement(), parametre.getReglement().getClassementFilter());
+
+		// Affectation des valeurs
+		for (CriteriaSet categorie : catList) {
+			// sort la liste des concurrents correspondant aux critères de
+			// recherche
+			List<Concurrent> unsortList = list(categorie, -1, parametre.getReglement().getClassementFilter());
+			if (unsortList.size() > 0) {
+				criteriaSets.add(categorie);
+			}
+		}
+		
+		return criteriaSets;
+	}
 
 	/**
 	 * Donne la liste des distances/blasons utilisé pour un départ donnée en fonction du règlement donnée

@@ -240,6 +240,7 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 		JPanel jpContact = new JPanel();
 		
 		contactPanel = new ContactPanel(profile);
+		contactPanel.setSize(438, 400);
 		// [end]
 		
 		// [start] paramétrage des composants
@@ -283,6 +284,8 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 						cellHasFocus);
 			}
 		});
+		jcbSearchCategoryContact.addActionListener(this);
+		jtfSearch.addActionListener(this);
 		
 		jlResultList.setVisibleRowCount(5);
 		jlResultList.addListSelectionListener(this);
@@ -425,7 +428,7 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 		getContentPane().add(buttonPane, BorderLayout.SOUTH);
 		// [end]
 		
-		this.setGlassPane(contactPanel.getAddCategoryPanel());
+		//this.setGlassPane(contactPanel.getAddCategoryPanel());
 	}
 	
 	private void affectLibelle() {
@@ -467,10 +470,16 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 				e.printStackTrace();
 			}
 			
-			jlResultList.clear();
-			for(Contact contact : entite.getContacts()) {
+			refreshListContact();
+		}
+	}
+	
+	private void refreshListContact() {
+		jlResultList.clear();
+		for(Contact contact : entite.getContacts()) {
+			if((jcbSearchCategoryContact.getSelectedIndex() == 0 || contact.getCategories().contains(jcbSearchCategoryContact.getSelectedItem()))
+					&& (jtfSearch.getText().isEmpty() || contact.getFullNameWithCivility().toUpperCase().contains(jtfSearch.getText().toUpperCase())))
 				jlResultList.add(contact);
-			}
 		}
 	}
 	
@@ -483,10 +492,10 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 		this.fullEditable = fullEditable;
 		completePanel();
 		
-		setSize(900, 660);
+		setSize(900, 700);
+		setResizable(false);
 		setLocationRelativeTo(null);
 		setVisible(true);
-		setResizable(false);
 	}
 
 	/**
@@ -528,6 +537,8 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 			}
 
 			setVisible(false);
+		} else if(ae.getSource() == jcbSearchCategoryContact || ae.getSource() == jtfSearch) {
+			refreshListContact();
 		}
 	}
 
