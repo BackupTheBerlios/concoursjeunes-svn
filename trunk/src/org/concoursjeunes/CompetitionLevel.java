@@ -94,6 +94,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.ajdeveloppement.commons.UncheckedException;
 import org.ajdeveloppement.commons.persistence.ObjectPersistence;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.persistence.Session;
@@ -133,7 +134,7 @@ public class CompetitionLevel implements ObjectPersistence {
 		try {
 			helper = new StoreHelper<CompetitionLevel>(new SqlStoreHandler<CompetitionLevel>(ApplicationCore.dbConnection, CompetitionLevel.class));
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new UncheckedException(e);
 		}
 	}
 	

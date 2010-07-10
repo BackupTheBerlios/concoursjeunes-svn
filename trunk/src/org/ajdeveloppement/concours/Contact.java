@@ -104,6 +104,7 @@ import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.ajdeveloppement.commons.UncheckedException;
 import org.ajdeveloppement.commons.persistence.ObjectPersistence;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.persistence.Session;
@@ -136,7 +137,7 @@ public class Contact implements ObjectPersistence, Cloneable {
 			helper = new StoreHelper<Contact>(new SqlStoreHandler<Contact>(
 					ApplicationCore.dbConnection, Contact.class));
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new UncheckedException(e);
 		}
 	}
 	// [end]
@@ -441,7 +442,7 @@ public class Contact implements ObjectPersistence, Cloneable {
 	 * @return the identity of contact
 	 */
 	public String getFullNameWithCivility() {
-		return ((civility.getAbreviation() != null) ? civility.getAbreviation() + " " : "")  + name + " " + firstName; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		return ((civility != null && civility.getAbreviation() != null) ? civility.getAbreviation() + " " : "")  + name + " " + firstName; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 	
 	/**

@@ -95,6 +95,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.ajdeveloppement.commons.UncheckedException;
 import org.ajdeveloppement.commons.persistence.ObjectPersistence;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.persistence.Session;
@@ -116,6 +117,15 @@ import org.ajdeveloppement.commons.persistence.sql.SqlTable;
 @SqlTable(name="ANCRAGES_BLASONS")
 @SqlPrimaryKey(fields={"NUMBLASON","EMPLACEMENT"})
 public class Ancrage implements ObjectPersistence {
+	private static StoreHelper<Ancrage> helper = null;
+	static {
+		try {
+			helper = new StoreHelper<Ancrage>(new SqlStoreHandler<Ancrage>(ApplicationCore.dbConnection, Ancrage.class));
+		} catch (SQLException e) {
+			throw new UncheckedException(e);
+		}
+	}
+	
 	public static final int POSITION_A = 0;
 	public static final int POSITION_B = 1;
 	public static final int POSITION_C = 2;
@@ -135,15 +145,6 @@ public class Ancrage implements ObjectPersistence {
 	@XmlTransient
 	@SqlForeignKey(mappedTo="NUMBLASON")
 	private Blason blason;
-	
-	private static StoreHelper<Ancrage> helper = null;
-	static {
-		try {
-			helper = new StoreHelper<Ancrage>(new SqlStoreHandler<Ancrage>(ApplicationCore.dbConnection, Ancrage.class));
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
 	
 	public Ancrage() {
 		

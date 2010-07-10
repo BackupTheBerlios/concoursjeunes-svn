@@ -90,6 +90,7 @@ package org.ajdeveloppement.concours.helpers;
 
 import java.util.UUID;
 
+import org.ajdeveloppement.commons.UncheckedException;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.concours.Libelle;
 import org.ajdeveloppement.concours.builders.LibelleBuilder;
@@ -140,7 +141,7 @@ public class LibelleHelper {
 				return libelle.getLibelle();
 			
 		} catch (ObjectPersistenceException e) {
-			e.printStackTrace();
+			throw new UncheckedException(e);
 		}
 		
 		return ""; //$NON-NLS-1$

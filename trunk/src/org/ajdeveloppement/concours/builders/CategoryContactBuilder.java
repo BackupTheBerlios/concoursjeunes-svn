@@ -92,6 +92,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 
+import org.ajdeveloppement.commons.UncheckedException;
 import org.ajdeveloppement.commons.persistence.LoadHelper;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.persistence.sql.ResultSetLoadHandler;
@@ -114,7 +115,7 @@ public class CategoryContactBuilder {
 			loadHelper = new LoadHelper<CategoryContact,Map<String,Object>>(new SqlLoadHandler<CategoryContact>(ApplicationCore.dbConnection, CategoryContact.class));
 			resultSetLoadHelper = new LoadHelper<CategoryContact, ResultSet>(new ResultSetLoadHandler<CategoryContact>(CategoryContact.class));
 		} catch(ObjectPersistenceException e) {
-			throw new RuntimeException(e);
+			throw new UncheckedException(e);
 		}
 	}
 	

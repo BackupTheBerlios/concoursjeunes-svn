@@ -127,6 +127,7 @@ import org.concoursjeunes.Judge;
 import org.concoursjeunes.Parametre;
 import org.concoursjeunes.Profile;
 import org.concoursjeunes.Reglement;
+import org.concoursjeunes.builders.ReglementBuilder;
 import org.jdesktop.swingx.JXDatePicker;
 
 import com.lowagie.text.Font;
@@ -440,15 +441,17 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 
 	private void completePanel() {
 		tempReglement = parametre.getReglement();
+		if(tempReglement == null)
+			tempReglement = ReglementBuilder.createReglement();
 		
 		jtfIntituleConcours.setText(parametre.getIntituleConcours());
 		jtfLieuConcours.setText(parametre.getLieuConcours());
 		jtfDateDebutConcours.setDate(parametre.getDateDebutConcours());
 		jtfDateFinConcours.setDate(parametre.getDateFinConcours());
-		jlSelectedReglement.setText(parametre.getReglement().getDisplayName());
+		jlSelectedReglement.setText(tempReglement.getDisplayName());
 		jbSelectReglement.setEnabled(!parametre.isReglementLock());
 		jcbNiveauChampionnat.removeAllItems();
-		for(CompetitionLevel cl : parametre.getReglement().getFederation().getCompetitionLevels(profile.getConfiguration().getLangue()))
+		for(CompetitionLevel cl : tempReglement.getFederation().getCompetitionLevels(profile.getConfiguration().getLangue()))
 			jcbNiveauChampionnat.addItem(cl);
 		jcbNiveauChampionnat.setSelectedItem(parametre.getNiveauChampionnat());
 		jcbCloseCompetition.setSelected(!parametre.isOpen());
@@ -595,30 +598,13 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 			this.libelle = libelle;
 			this.nbConcurrent = nbConcurrent;
 		}
-		/**
-		 * @return libelle
-		 */
-		//public String getLibelle() {
-		//	return libelle;
-		//}
-		/**
-		 * @param libelle libelle à définir
-		 */
-		//public void setLibelle(String libelle) {
-		//	this.libelle = libelle;
-		//}
+
 		/**
 		 * @return nbConcurrent
 		 */
 		public int getNbConcurrent() {
 			return nbConcurrent;
 		}
-		/**
-		 * @param nbConcurrent nbConcurrent à définir
-		 */
-		//public void setNbConcurrent(int nbConcurrent) {
-		//	this.nbConcurrent = nbConcurrent;
-		//}
 		
 		/* (non-Javadoc)
 		 * @see java.lang.Object#toString()

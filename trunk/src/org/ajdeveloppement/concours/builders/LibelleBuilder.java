@@ -92,6 +92,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.ajdeveloppement.commons.UncheckedException;
 import org.ajdeveloppement.commons.persistence.LoadHelper;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.persistence.sql.SqlLoadHandler;
@@ -109,7 +110,7 @@ public class LibelleBuilder {
 		try {
 			loadHelper = new LoadHelper<Libelle,Map<String,Object>>(new SqlLoadHandler<Libelle>(ApplicationCore.dbConnection, Libelle.class));
 		} catch(ObjectPersistenceException e) {
-			throw new RuntimeException(e);
+			throw new UncheckedException(e);
 		}
 	}
 	

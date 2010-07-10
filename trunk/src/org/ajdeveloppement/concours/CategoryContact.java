@@ -92,12 +92,13 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
+import org.ajdeveloppement.commons.UncheckedException;
 import org.ajdeveloppement.commons.persistence.ObjectPersistence;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.persistence.Session;
@@ -127,7 +128,7 @@ public class CategoryContact implements ObjectPersistence{
 			helper = new StoreHelper<CategoryContact>(new SqlStoreHandler<CategoryContact>(
 					ApplicationCore.dbConnection, CategoryContact.class));
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new UncheckedException(e);
 		}
 	}
 	

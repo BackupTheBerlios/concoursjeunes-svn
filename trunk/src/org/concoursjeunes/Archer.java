@@ -93,6 +93,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
+import org.ajdeveloppement.commons.UncheckedException;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.persistence.StoreHelper;
 import org.ajdeveloppement.commons.persistence.sql.SqlField;
@@ -114,6 +115,15 @@ import org.concoursjeunes.manager.ConcurrentManager;
 @SqlPrimaryKey(fields="ID_CONTACT")
 @SqlUnmappedFields(fields={"ID_CONTACT","SEXE","CATEGORIE","NIVEAU","ARC"})
 public class Archer extends Contact {
+	private static StoreHelper<Archer> helper = null;
+	static {
+		try {
+			helper = new StoreHelper<Archer>(new SqlStoreHandler<Archer>(
+					ApplicationCore.dbConnection, Archer.class));
+		} catch (SQLException e) {
+			throw new UncheckedException(e);
+		}
+	}
 
 	@SqlField(name="NUMLICENCEARCHER")
 	private String numLicenceArcher;
@@ -121,17 +131,7 @@ public class Archer extends Contact {
 	@SqlField(name="CERTIFMEDICAL")
 	private boolean certificat      = false;
 	private boolean handicape		= false;
-	
-	private static StoreHelper<Archer> helper = null;
-	static {
-		try {
-			helper = new StoreHelper<Archer>(new SqlStoreHandler<Archer>(
-					ApplicationCore.dbConnection, Archer.class));
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	
+
 	/**
 	 * Constructeur vide nécessaire à l'initialisation correct de l'objet
 	 * dans le cas d'une déserialisation XML

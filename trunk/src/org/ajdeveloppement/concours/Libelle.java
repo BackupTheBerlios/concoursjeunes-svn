@@ -91,6 +91,7 @@ package org.ajdeveloppement.concours;
 import java.sql.SQLException;
 import java.util.UUID;
 
+import org.ajdeveloppement.commons.UncheckedException;
 import org.ajdeveloppement.commons.persistence.ObjectPersistence;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.persistence.Session;
@@ -117,7 +118,7 @@ public class Libelle implements ObjectPersistence {
 			helper = new StoreHelper<Libelle>(new SqlStoreHandler<Libelle>(
 					ApplicationCore.dbConnection, Libelle.class));
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new UncheckedException(e);
 		}
 	}
 	

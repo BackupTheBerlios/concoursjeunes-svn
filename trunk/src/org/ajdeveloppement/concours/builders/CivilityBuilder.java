@@ -93,6 +93,7 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.UUID;
 
+import org.ajdeveloppement.commons.UncheckedException;
 import org.ajdeveloppement.commons.persistence.LoadHelper;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.persistence.sql.ResultSetLoadHandler;
@@ -113,7 +114,7 @@ public class CivilityBuilder {
 			loadHelper = new LoadHelper<Civility,Map<String,Object>>(new SqlLoadHandler<Civility>(ApplicationCore.dbConnection, Civility.class));
 			resultSetLoadHelper = new LoadHelper<Civility, ResultSet>(new ResultSetLoadHandler<Civility>(Civility.class));
 		} catch(ObjectPersistenceException e) {
-			throw new RuntimeException(e);
+			throw new UncheckedException(e);
 		}
 	}
 	

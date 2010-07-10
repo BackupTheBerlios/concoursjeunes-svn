@@ -98,6 +98,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.ajdeveloppement.commons.UncheckedException;
 import org.ajdeveloppement.commons.persistence.ObjectPersistence;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.persistence.Session;
@@ -158,6 +159,16 @@ public class Coordinate implements ObjectPersistence, Cloneable {
 
 	}
 	
+	private static StoreHelper<Coordinate> helper = null;
+	static {
+		try {
+			helper = new StoreHelper<Coordinate>(new SqlStoreHandler<Coordinate>(
+					ApplicationCore.dbConnection, Coordinate.class));
+		} catch (SQLException e) {
+			throw new UncheckedException(e);
+		}
+	}
+	
 	@XmlAttribute(name="id",required=true)
 	@SqlField(name="ID_COORDINATE")
 	private UUID idCoordinate = null;
@@ -172,15 +183,7 @@ public class Coordinate implements ObjectPersistence, Cloneable {
 	@SqlForeignKey(mappedTo="ID_CONTACT")
 	private Contact contact;
 	
-	private static StoreHelper<Coordinate> helper = null;
-	static {
-		try {
-			helper = new StoreHelper<Coordinate>(new SqlStoreHandler<Coordinate>(
-					ApplicationCore.dbConnection, Coordinate.class));
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
+	
 	
 	public Coordinate() {
 		

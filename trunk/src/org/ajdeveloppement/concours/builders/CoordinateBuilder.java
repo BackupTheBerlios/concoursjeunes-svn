@@ -92,6 +92,7 @@ import java.sql.ResultSet;
 import java.util.Map;
 import java.util.UUID;
 
+import org.ajdeveloppement.commons.UncheckedException;
 import org.ajdeveloppement.commons.persistence.LoadHelper;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.persistence.sql.ResultSetLoadHandler;
@@ -111,7 +112,7 @@ public class CoordinateBuilder {
 			loadHelper = new LoadHelper<Coordinate,Map<String,Object>>(new SqlLoadHandler<Coordinate>(ApplicationCore.dbConnection, Coordinate.class));
 			resultSetLoadHelper = new LoadHelper<Coordinate, ResultSet>(new ResultSetLoadHandler<Coordinate>(Coordinate.class));
 		} catch(ObjectPersistenceException e) {
-			throw new RuntimeException(e);
+			throw new UncheckedException(e);
 		}
 	}
 	

@@ -99,6 +99,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.ajdeveloppement.commons.UncheckedException;
 import org.ajdeveloppement.commons.persistence.ObjectPersistence;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.persistence.Session;
@@ -121,6 +122,16 @@ import org.concoursjeunes.ApplicationCore;
 @SqlTable(name="CIVILITY")
 @SqlPrimaryKey(fields="ID_CIVILITY")
 public class Civility implements ObjectPersistence {
+	private static StoreHelper<Civility> helper = null;
+	static {
+		try {
+			helper = new StoreHelper<Civility>(new SqlStoreHandler<Civility>(
+					ApplicationCore.dbConnection, Civility.class));
+		} catch (SQLException e) {
+			throw new UncheckedException(e);
+		}
+	}
+	
 	//utilisé pour donnée un identifiant unique à la sérialisation de l'objet
 	@XmlID
 	@XmlAttribute(name="id", required=true)
@@ -138,16 +149,6 @@ public class Civility implements ObjectPersistence {
 	
 	@SqlField(name="MORALE")
 	private boolean morale = false;
-	
-	private static StoreHelper<Civility> helper = null;
-	static {
-		try {
-			helper = new StoreHelper<Civility>(new SqlStoreHandler<Civility>(
-					ApplicationCore.dbConnection, Civility.class));
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
 	
 	/**
 	 * Init ne civility

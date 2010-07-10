@@ -129,11 +129,11 @@ import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
 import org.ajdeveloppement.swingxext.localisation.JXHeaderLocalisationHandler;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Profile;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Binding;
 import org.jdesktop.beansbinding.BindingGroup;
 import org.jdesktop.beansbinding.Bindings;
-import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.JXHyperlink;
 import org.jdesktop.swingx.JXTitledSeparator;
@@ -222,7 +222,9 @@ public class ContactPanel extends JPanel implements ActionListener{
 			@Override
 			public Component getListCellRendererComponent(JList list, Object value,
 					int index, boolean isSelected, boolean cellHasFocus) {
-				if(value instanceof Civility)
+				if(value == null)
+					value = "<html>&nbsp;</html>"; //$NON-NLS-1$
+				else if(value instanceof Civility)
 					value = ((Civility)value).getLibelle();
 				return super.getListCellRendererComponent(list, value, index, isSelected,
 						cellHasFocus);
@@ -375,7 +377,7 @@ public class ContactPanel extends JPanel implements ActionListener{
 		
 		jcbCivility.removeAllItems();
 		try {
-			jcbCivility.addItem("<html>&nbsp;</html>"); //$NON-NLS-1$
+			jcbCivility.addItem(null);
 			for(Civility civility : CivilityManager.getAllCivilities()) {
 				jcbCivility.addItem(civility);
 			}
@@ -492,7 +494,7 @@ public class ContactPanel extends JPanel implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == jxhSaveContact) {
 			if(contactBinding != null) {
-            	for(Binding<Contact, ?, ?, ?> binding : contactBinding.getBindings()) { 
+            	for(Binding<Contact, ?, ?, ?> binding : contactBinding.getBindings()) {
             		binding.save();
             	}
         	}

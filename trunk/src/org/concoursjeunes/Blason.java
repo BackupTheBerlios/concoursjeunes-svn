@@ -102,6 +102,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
+import org.ajdeveloppement.commons.UncheckedException;
 import org.ajdeveloppement.commons.persistence.ObjectPersistence;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.persistence.Session;
@@ -152,7 +153,7 @@ public class Blason implements ObjectPersistence {
 		try {
 			helper = new StoreHelper<Blason>(new SqlStoreHandler<Blason>(ApplicationCore.dbConnection, Blason.class));
 		} catch (SQLException e) {
-			throw new RuntimeException(e);
+			throw new UncheckedException(e);
 		}
 	}
 	
