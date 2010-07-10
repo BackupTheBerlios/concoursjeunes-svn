@@ -140,12 +140,12 @@ public class ReglementManager {
 		try {
 			if(pstmAllReglementOrdered == null)
 				pstmAllReglementOrdered = ApplicationCore.dbConnection.prepareStatement(
-						"select * from REGLEMENT where NOMREGLEMENT <> 'default' order by LIBELLE");
+						"select * from REGLEMENT where NOMREGLEMENT <> 'default' order by LIBELLE"); //$NON-NLS-1$
 
-			ResultSet rs = pstmAllReglementOrdered.executeQuery(); //$NON-NLS-1$
+			ResultSet rs = pstmAllReglementOrdered.executeQuery();
 
 			while (rs.next()) {
-				Reglement reglement = ReglementBuilder.getReglement(rs); //$NON-NLS-1$
+				Reglement reglement = ReglementBuilder.getReglement(rs);
 				
 				if(!federation.contains(reglement.getFederation()))
 					federation.add(reglement.getFederation());

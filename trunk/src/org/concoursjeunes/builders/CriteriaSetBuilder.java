@@ -92,7 +92,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Map;
 
+import org.ajdeveloppement.concours.cache.CriteriaSetCache;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.CriteriaSet;
 import org.concoursjeunes.Criterion;
@@ -117,32 +119,40 @@ public class CriteriaSetBuilder {
 	 */
 	public static CriteriaSet getCriteriaSet(int numCriteriaSet, Reglement reglement) {
 		try {
-			HashMap<Criterion, CriterionElement> criteria = new HashMap<Criterion, CriterionElement>();
-			String sql = "select * from POSSEDE where NUMCRITERIASET=? and NUMREGLEMENT=?"; //$NON-NLS-1$
+			CriteriaSetCache cache = CriteriaSetCache.getInstance();
 			
-			PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
-			try {
-				pstmt.setInt(1, numCriteriaSet);
-				pstmt.setInt(2, reglement.getNumReglement());
+			CriteriaSet criteriaSet = cache.get(numCriteriaSet);
+			if(criteriaSet == null) {
+			
+				Map<Criterion, CriterionElement> criteria = new HashMap<Criterion, CriterionElement>();
+				String sql = "select * from POSSEDE where NUMCRITERIASET=? and NUMREGLEMENT=?"; //$NON-NLS-1$
 				
-				ResultSet rs = pstmt.executeQuery();
-				
-				
-				while(rs.next()) {
-					Criterion criterion = reglement.getListCriteria().get(reglement.getListCriteria().indexOf(new Criterion(rs.getString("CODECRITERE")))); //$NON-NLS-1$
-					criteria.put(
-							criterion,
-							criterion.getCriterionElements().get(criterion.getCriterionElements().indexOf(new CriterionElement(rs.getString("CODECRITEREELEMENT"))))); //$NON-NLS-1$
+				PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
+				try {
+					pstmt.setInt(1, numCriteriaSet);
+					pstmt.setInt(2, reglement.getNumReglement());
+					
+					ResultSet rs = pstmt.executeQuery();
+					
+					
+					while(rs.next()) {
+						Criterion criterion = reglement.getListCriteria().get(reglement.getListCriteria().indexOf(new Criterion(rs.getString("CODECRITERE")))); //$NON-NLS-1$
+						criteria.put(
+								criterion,
+								criterion.getCriterionElements().get(criterion.getCriterionElements().indexOf(new CriterionElement(rs.getString("CODECRITEREELEMENT"))))); //$NON-NLS-1$
+					}
+				} finally {
+					pstmt.close();
+					pstmt = null;
 				}
-			} finally {
-				pstmt.close();
-				pstmt = null;
+				
+				criteriaSet = new CriteriaSet();
+				criteriaSet.setReglement(reglement);
+				criteriaSet.setNumCriteriaSet(numCriteriaSet); 
+				criteriaSet.setCriteria(criteria);
+				
+				cache.add(criteriaSet);
 			}
-			
-			CriteriaSet criteriaSet = new CriteriaSet();
-			criteriaSet.setReglement(reglement);
-			criteriaSet.setNumCriteriaSet(numCriteriaSet); 
-			criteriaSet.setCriteria(criteria);
 			
 			return criteriaSet;
 		} catch (SQLException e) {

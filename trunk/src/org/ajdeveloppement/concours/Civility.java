@@ -308,5 +308,7 @@ public class Civility implements ObjectPersistence {
 	 */
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
 		idCivility = UUID.fromString(xmlId);
+		
+		xmlId = null;
 	}
 }

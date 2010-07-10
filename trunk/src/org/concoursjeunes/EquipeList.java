@@ -264,26 +264,20 @@ public class EquipeList implements Cloneable {
      */
 	@Deprecated
     public Equipe[] list() {
-        Equipe[] equipes = new Equipe[equipeList.size()];
-        equipeList.toArray(equipes);
-        
-        return equipes;
+        return equipeList.toArray(new Equipe[equipeList.size()]);
     }
     
     /**
      * Retourne la liste des équipes correspondant au critère donné
      * 
+     * @deprecated remplacé par {@link #getEquipeList(CriteriaSet)}
+     * 
      * @param scna le filtre de tri des équipes
      * @return la liste des équipes
      */
+	@Deprecated
     public Equipe[] list(CriteriaSet scna) {
-        ArrayList<Equipe> sel = new ArrayList<Equipe>();
-        
-        for(Equipe equipe : equipeList) {
-        	//TODO verifier la porté
-            if(equipe.getDifferentiationCriteria().equals(scna))
-                sel.add(equipe);
-        }
+		List<Equipe> sel = getEquipeList(scna);
 
         return sel.toArray(new Equipe[sel.size()]);
     }
@@ -368,6 +362,24 @@ public class EquipeList implements Cloneable {
 	 */
     public void setEquipeList(List<Equipe> equipeList) {
         this.equipeList = equipeList;
+    }
+    
+    /**
+     * Retourne la liste des équipes correspondant au critère donné
+     * 
+     * @param scna le filtre de tri des équipes
+     * @return la liste des équipes
+     */
+    public List<Equipe> getEquipeList(CriteriaSet scna) {
+        ArrayList<Equipe> sel = new ArrayList<Equipe>();
+        
+        for(Equipe equipe : equipeList) {
+        	//TODO verifier la porté
+            if(equipe.getDifferentiationCriteria().equals(scna))
+                sel.add(equipe);
+        }
+
+        return sel;
     }
     
     /**

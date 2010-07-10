@@ -215,7 +215,7 @@ public class ReglementBuilder {
 			
 			reglement.setFederation(
 					FederationBuilder.getFederation(
-							(Integer)foreignKeys.get(Reglement.class).get("NUMFEDERATION")));
+							(Integer)foreignKeys.get(Reglement.class).get("NUMFEDERATION"))); //$NON-NLS-1$
 			
 			Statement stmt = ApplicationCore.dbConnection.createStatement();
 			try {

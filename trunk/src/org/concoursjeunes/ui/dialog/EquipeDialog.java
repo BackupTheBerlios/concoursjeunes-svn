@@ -390,9 +390,9 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 		// supprimer tous le noeud de l'arbre
 		treeRoot.removeAllChildren();
 
-		ArrayList<Equipe> equipes = new ArrayList<Equipe>();
+		List<Equipe> equipes = new ArrayList<Equipe>();
 
-		for (Equipe equipe : tempEquipes.list(criteriaSet)) {
+		for (Equipe equipe : tempEquipes.getEquipeList(criteriaSet)) {
 			if (club == null || equipe.getMembresEquipe().get(0).getEntite().equals(club)) {
 				// injecter l'equipes dans sa catégorie de classement
 				equipes.add(equipe);

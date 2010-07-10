@@ -3,17 +3,17 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/iText-2.1.2u.jar"/>
 	<classpathentry kind="lib" path="config"/>
 	<classpathentry kind="lib" path="lang"/>
 	<classpathentry kind="lib" path="plugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="lib/jgraphx.jar"/>
-	<classpathentry kind="lib" path="lib/swingx-1.6.jar"/>
 	<classpathentry kind="lib" path="lib/beansbinding-1.2.1.jar"/>
 	<classpathentry kind="lib" path="lib/ajcommons-ext.jar"/>
 	<classpathentry kind="lib" path="lib/ajcommons-swingx-ext.jar" sourcepath="/ajcommons-swingx-ext/src"/>
 	<classpathentry kind="lib" path="lib/ajcommons.jar" sourcepath="/ajcommons/src"/>
 	<classpathentry kind="lib" path="lib/h2-1.2.137.jar"/>
+	<classpathentry kind="lib" path="lib/swingx-1.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/iText-2.1.7.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

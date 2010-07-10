@@ -545,7 +545,12 @@ public class Contact implements ObjectPersistence, Cloneable {
 	 * @param parent
 	 */
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
-		idContact = UUID.fromString(xmlId);
+		if(xmlId != null)
+			idContact = UUID.fromString(xmlId);
+		
+		xmlId = null;
+		
+		entite.afterUnmarshal(unmarshaller, this);
 	}
 	
 	@Override

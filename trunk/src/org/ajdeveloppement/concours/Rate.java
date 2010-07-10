@@ -84,21 +84,72 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. 
  */
-package org.concoursjeunes;
+package org.ajdeveloppement.concours;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-public class Tarif {
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlTransient;
+
+import org.ajdeveloppement.commons.persistence.ObjectPersistence;
+import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.Session;
+import org.ajdeveloppement.commons.persistence.StoreHelper;
+import org.ajdeveloppement.commons.persistence.sql.SessionHelper;
+import org.ajdeveloppement.commons.persistence.sql.SqlField;
+import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
+import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
+import org.ajdeveloppement.commons.persistence.sql.SqlTable;
+import org.ajdeveloppement.commons.sql.SqlManager;
+import org.concoursjeunes.ApplicationCore;
+import org.concoursjeunes.CriteriaSet;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+@SqlTable(name="TARIF")
+@SqlPrimaryKey(fields="ID_TARIF")
+public class Rate implements ObjectPersistence {
+	// [start] Helper persistence
+	private static StoreHelper<Rate> helper = null;
+	static {
+		try {
+			helper = new StoreHelper<Rate>(new SqlStoreHandler<Rate>(
+					ApplicationCore.dbConnection, Rate.class));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	// [end]
+	
+	//utilisé pour donnée un identifiant unique à la sérialisation de l'objet
+	@XmlID
+	@XmlAttribute(name="id", required=true)
+	private String xmlId;
+	
+	@XmlTransient
+	@SqlField(name="ID_TARIF")
+	private UUID idTarif = null;
+	
+	@SqlField(name="INTITULE")
 	private String intituleTarif = ""; //$NON-NLS-1$
+	
+	@SqlField(name="TARIF")
 	private double tarif = 0.0;
+	
 	private List<CriteriaSet> categoriesTarif = new ArrayList<CriteriaSet>();
 	
-	public Tarif() {
+	public Rate() {
 		
 	}
 	
-	public Tarif(String intituleTarif, double tarif) {
+	public Rate(String intituleTarif, double tarif) {
 		super();
 		this.intituleTarif = intituleTarif;
 		this.tarif = tarif;
@@ -144,5 +195,84 @@ public class Tarif {
 	 */
 	public void setCategoriesTarif(List<CriteriaSet> categoriesTarif) {
 		this.categoriesTarif = categoriesTarif;
+	}
+	
+	@Override
+	public void save() throws ObjectPersistenceException {
+		SessionHelper.startSaveSession(ApplicationCore.dbConnection, this);
+	}
+	
+	@Override
+	public void delete() throws ObjectPersistenceException {
+		SessionHelper.startDeleteSession(ApplicationCore.dbConnection, this);
+	}
+	
+	/**
+	 * Save contact in database
+	 */
+	@Override
+	public void save(Session session) throws ObjectPersistenceException {
+		if(session == null || !session.contains(this)) {
+			if(idTarif == null)
+				idTarif = UUID.randomUUID();
+			
+			helper.save(this);
+			
+			SqlManager sqlManager = new SqlManager(ApplicationCore.dbConnection, null);
+			
+			try {
+				sqlManager.executeUpdate("delete from CATEGORIE_TARIF where ID_TARIF='" + idTarif.toString() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+				
+				for(CriteriaSet criteriaSet : categoriesTarif) {
+					criteriaSet.save(session);
+					
+					sqlManager.executeUpdate("insert into CATEGORIE_TARIF (ID_TARIF, NUMCRITERIASET) " //$NON-NLS-1$
+							+ "VALUES ('" + idTarif.toString() + "', " + criteriaSet.getNumCriteriaSet() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				}
+			} catch(SQLException e) {
+				throw new ObjectPersistenceException(e);
+			}
+			
+			if(session != null)
+				session.addThreatyObject(this);
+		}
+	}
+	
+	/**
+	 * remove the contact database 
+	 */
+	@Override
+	public void delete(Session session) throws ObjectPersistenceException {
+		if(idTarif != null && (session == null || !session.contains(this))) {
+			helper.delete(this);
+			
+			if(session != null)
+				session.addThreatyObject(this);
+		}
+	}
+	
+	/**
+	 * Use only by JAXB. Do not use.
+	 * 
+	 * @param marshaller
+	 */
+	protected void beforeMarshal(Marshaller marshaller) {
+		if(idTarif == null)
+			idTarif = UUID.randomUUID();
+		
+		xmlId = idTarif.toString();
+	}
+	
+	/**
+	 * Use only by JAXB. Do not use.
+	 * 
+	 * @param unmarshaller
+	 * @param parent
+	 */
+	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
+		if(xmlId != null)
+			idTarif = UUID.fromString(xmlId);
+		
+		xmlId = null;
 	}
 }

@@ -175,6 +175,7 @@
 		<manifest file="${projet.pack.dir}/MANIFEST.MF" mode="update">
 		    <attribute name="Main-Class" value="org.concoursjeunes.Main"/>
 			<attribute name="Class-Path" value="${classpath}"/>
+			<attribute name="SplashScreen-Image" value="ressources/Logo.png" />
         </manifest>
 		<jar jarfile="${projet.pack.dir}/ConcoursJeunes.jar"
 			manifest="${projet.pack.dir}/MANIFEST.MF">

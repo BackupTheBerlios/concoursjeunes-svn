@@ -104,6 +104,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.ajdeveloppement.commons.net.Proxy;
+import org.ajdeveloppement.concours.Rate;
 
 /**
  * paramètre de configuration du profile utilisateur
@@ -132,7 +133,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	private Federation federation	= new Federation();
 	private String reglementName	= "FFTASJF"; //$NON-NLS-1$
 	@XmlElementWrapper(name="tarifs",required=true)
-	private List<Tarif> tarifs		= new ArrayList<Tarif>(); 
+	private List<Rate> tarifs		= new ArrayList<Rate>(); 
 
 	@XmlElement(required=false)
 	private String pdfReaderPath;
@@ -237,7 +238,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	 * 
 	 * @return tarifs les tarifs du profil
 	 */
-	public List<Tarif> getTarifs() {
+	public List<Rate> getTarifs() {
 		return tarifs;
 	}
 
@@ -246,7 +247,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	 * 
 	 * @param tarifs la liste des tarifs du profil.
 	 */
-	public void setTarifs(List<Tarif> tarifs) {
+	public void setTarifs(List<Rate> tarifs) {
 		this.tarifs = tarifs;
 	}
 

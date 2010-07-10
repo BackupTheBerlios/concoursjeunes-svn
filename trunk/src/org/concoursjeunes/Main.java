@@ -86,7 +86,10 @@
  */
 package org.concoursjeunes;
 
+import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.GradientPaint;
+import java.awt.Graphics2D;
 import java.awt.SplashScreen;
 import java.awt.Toolkit;
 import java.io.File;
@@ -214,6 +217,7 @@ public class Main {
 	 * Initialise la gestion des erreurs
 	 */
 	private static void initErrorManaging() {
+		updateStartProgressStatus(0, "Initialisation gestion des erreurs");
 		//initialisation du rapport d'erreur
 		try {
 			ApplicationContext contexte = ApplicationContext.getContext();
@@ -251,6 +255,8 @@ public class Main {
 	 * Initialise la gestion du réseau
 	 */
 	private static void initNetworkManaging() {
+		updateStartProgressStatus(10, "Initialisation gestion du réseau");
+		
 		System.setProperty("java.net.useSystemProxies","true"); //$NON-NLS-1$ //$NON-NLS-2$ 
 		System.setProperty("java.net.preferIPv6Addresses", "true"); //$NON-NLS-1$ //$NON-NLS-2$
 		
@@ -282,6 +288,7 @@ public class Main {
 	 */
 	@SuppressWarnings("nls")
 	private static void checkDatabase() {
+		updateStartProgressStatus(20, "Recherche des fichiers de base de données...");
 		String[] databaseFile = ApplicationCore.userRessources.getBasePath().list(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
@@ -300,6 +307,7 @@ public class Main {
 					}
 				});
 				if(oldDbFiles != null && oldDbFiles.length > 0) {
+					updateStartProgressStatus(21, "Conversion de la base de données...");
 					File backupPath = new File(ApplicationCore.userRessources.getBasePath(), "backup"); //$NON-NLS-1$
 					backupPath.mkdirs();
 					backupFile = new File(backupPath, "backup.gz"); //$NON-NLS-1$
@@ -387,6 +395,7 @@ public class Main {
 	 * @param localisation
 	 */
 	private static void initCore() {
+		updateStartProgressStatus(40, "Initialisation du moteur...");
 		boolean retry = false;
 		do {
 			try {
@@ -415,6 +424,7 @@ public class Main {
 	 * Charge le contexte de sécurité de l'application
 	 */
 	private static void initSecureContext() {
+		updateStartProgressStatus(50, "Initialisation du contexte de sécurité...");
 		String urlAuthStoreAlias = "urlauthstore"; //$NON-NLS-1$
 		char[] defaultUrlAuthStorePassword = AppUtilities.getAppUID(ApplicationCore.userRessources).toCharArray();
 		
@@ -498,7 +508,9 @@ public class Main {
 	 * Charge les plugins à lancer au démarrage
 	 */
 	private static void loadStartupPlugin() {
+		updateStartProgressStatus(60, "Chargement des extensions...");
 		PluginLoader pl = new PluginLoader();
+
 		
 		List<String> disablePlugin = null;
 		try {
@@ -507,11 +519,18 @@ public class Main {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		List<PluginMetadata> pluginsMetaData = pl.getPlugins(Type.STARTUP);
+		
+		double nbPlugins = pluginsMetaData.size();
+		int iCurrentPlugin = 1;
 
-		for (PluginMetadata pm : pl.getPlugins(Type.STARTUP)) {
+		for (PluginMetadata pm : pluginsMetaData) {
 			if(disablePlugin != null && disablePlugin.contains(pm.getName()))
 				continue;
 			try {
+				updateStartProgressStatus(60 + (int)((40.0 / nbPlugins) * iCurrentPlugin), "Chargement de l'extension: " + pm.getName());
+				
 				Class<?> cla = pm.getPluginClass();
 				
 				assert cla != null : "le loader devrait toujours retourner une class";  //$NON-NLS-1$
@@ -578,5 +597,27 @@ public class Main {
 				new ConcoursJeunesFrame(profile);
 			}
 		});
+	}
+	
+	private static void updateStartProgressStatus(int percent, String message) {
+		if(splash != null) {
+			Graphics2D g2d = splash.createGraphics();
+
+			
+			g2d.setColor(Color.WHITE);
+			g2d.fillRect(10, 470, 480, 20);
+			g2d.setColor(Color.BLACK);
+			g2d.drawRect(10, 470, 480, 20);
+			
+			GradientPaint gp = new GradientPaint(0, 0, new Color(100,100,255, 200), 100, 0, new Color(200,200,255, 200), true);
+			g2d.setPaint(gp);
+			g2d.fillRect(11, 471, (int)((480.0 / 100.0) * percent), 19); 
+			
+			g2d.setColor(Color.BLACK);
+			g2d.drawString(message, 15, 485);
+			
+			splash.update();
+
+		}
 	}
 }

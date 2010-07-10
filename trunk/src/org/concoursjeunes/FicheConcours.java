@@ -641,22 +641,22 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 				tplClassementEquipe.parse("categories.CATEGORIE", new CriteriaSetLibelle(criteriaSet, this.profile.getLocalisation()).toString()); //$NON-NLS-1$
 				tplClassementEquipe.parse("categories.NB_EQUIPES", "" + equipes.countEquipes()); //$NON-NLS-1$ //$NON-NLS-2$
 	
-				Equipe[] sortEquipes = EquipeList.sort(equipes.list(criteriaSet));
+				List<Equipe> sortEquipes = EquipeList.sort(equipes.getEquipeList(criteriaSet));
 	
-				for (int i = 0; i < sortEquipes.length; i++) {
+				for (int i = 0; i < sortEquipes.size(); i++) {
 	
 					tplClassementEquipe.parse("categories.classement.PLACE", "" + (i + 1)); //$NON-NLS-1$ //$NON-NLS-2$
 	
 					String idsXML = ""; //$NON-NLS-1$
 					String ptsXML = ""; //$NON-NLS-1$
-					for (Concurrent concurrent : sortEquipes[i].getMembresEquipe()) {
+					for (Concurrent concurrent : sortEquipes.get(i).getMembresEquipe()) {
 						idsXML += XmlUtils.sanitizeText(concurrent.getFullName()) + "<br>"; //$NON-NLS-1$
 						ptsXML += concurrent.getTotalScore() + "<br>"; //$NON-NLS-1$
 					}
 					tplClassementEquipe.parse("categories.classement.IDENTITEES", idsXML); //$NON-NLS-1$
-					tplClassementEquipe.parse("categories.classement.NOM_EQUIPE", XmlUtils.sanitizeText(sortEquipes[i].getNomEquipe())); //$NON-NLS-1$
+					tplClassementEquipe.parse("categories.classement.NOM_EQUIPE", XmlUtils.sanitizeText(sortEquipes.get(i).getNomEquipe())); //$NON-NLS-1$
 					tplClassementEquipe.parse("categories.classement.TOTAL_INDIVIDUEL", ptsXML); //$NON-NLS-1$
-					tplClassementEquipe.parse("categories.classement.TOTAL_GENERAL", "" + sortEquipes[i].getTotalScore()); //$NON-NLS-1$ //$NON-NLS-2$
+					tplClassementEquipe.parse("categories.classement.TOTAL_GENERAL", "" + sortEquipes.get(i).getTotalScore()); //$NON-NLS-1$ //$NON-NLS-2$
 	
 					tplClassementEquipe.loopBloc("categories.classement"); //$NON-NLS-1$
 				}

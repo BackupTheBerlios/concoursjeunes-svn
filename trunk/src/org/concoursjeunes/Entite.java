@@ -455,6 +455,8 @@ public class Entite implements ObjectPersistence {
 	public void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
 		if(xmlId != null)
 			idEntite = UUID.fromString(xmlId);
+		
+		xmlId = null;
 	}
 	
 	@Override
