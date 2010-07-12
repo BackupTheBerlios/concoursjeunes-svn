@@ -495,13 +495,12 @@ public class Main {
 		if(splash != null) {
 			Graphics2D g2d = splash.createGraphics();
 
-			
 			g2d.setColor(Color.WHITE);
 			g2d.fillRect(10, 470, 480, 20);
 			g2d.setColor(Color.BLACK);
 			g2d.drawRect(10, 470, 480, 20);
 			
-			GradientPaint gp = new GradientPaint(0, 0, new Color(100,100,255, 200), 100, 0, new Color(200,200,255, 200), true);
+			GradientPaint gp = new GradientPaint(0, 0, new Color(200,200,255, 200), (int)((480.0 / 100.0) * percent) - 11, 0, new Color(100,100,255, 200), true);
 			g2d.setPaint(gp);
 			g2d.fillRect(11, 471, (int)((480.0 / 100.0) * percent), 19); 
 			
