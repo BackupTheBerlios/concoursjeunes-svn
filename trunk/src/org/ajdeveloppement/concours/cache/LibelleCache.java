@@ -133,7 +133,7 @@ public class LibelleCache extends AbstractCache<LibelleCache.LibellePK,Libelle> 
 		}
 
 		/**
-		 * @param numLibelle numLibelle à définir
+		 * @param idLibelle l'identifiant du libellé
 		 */
 		public void setIdLibelle(UUID idLibelle) {
 			this.idLibelle = idLibelle;

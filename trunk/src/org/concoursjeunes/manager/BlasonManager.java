@@ -113,8 +113,7 @@ public class BlasonManager {
 	/**
 	 * Retourne le blason associé à une ligne distance/blason d'un réglement donnée
 	 * 
-	 * @param numdistanceblason le numero de l'objet distanceEtBlason dont le blason fait partie
-	 * @param numreglement le numrero de reglement
+	 * @param distancesEtBlason l'objet DistancesEtBlason associé
 	 * @return le blason associé à la ligne d/b du réglement donnée
 	 * @throws ObjectPersistenceException 
 	 */

@@ -187,7 +187,7 @@ public class ReglementBuilder {
 	 * un objet.
 	 * 
 	 * @param rs le jeux de résultat à injecter dans une instance réglement
-	 * @return
+	 * @return le réglement construit à partir du jeux de résultat
 	 * @throws ObjectPersistenceException
 	 */
 	public static Reglement getReglement(ResultSet rs)

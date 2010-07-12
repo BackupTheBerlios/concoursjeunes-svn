@@ -126,7 +126,7 @@ public class LibelleHelper {
 	/**
 	 * Retourne un libéllé localisé identifié en base
 	 * 
-	 * @param numLibelle l'identifiant du libellé dans la base
+	 * @param idLibelle l'identifiant du libellé dans la base
 	 * @param lang la langue du libéllé demandé
 	 * @return le libellé localisé
 	 */

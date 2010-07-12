@@ -137,7 +137,7 @@ public class BlasonBuilder {
 	 * Construit un blason à partir d'un jeux de résultat transmis en parametre.<br>
 	 * Le jeux de résultat doit posseder les champs de la table BLASONS.
 	 * 
-	 * @param numblason l'id du blason à charger
+	 * @param rs le jeux de résultat contenant les données du blason à fabriquer
 	 * @return le blason construit à partir du jeux de résultat
 	 * @throws ObjectPersistenceException retourné si le jeux de résultat ne contient pas l'ensemble<br>
 	 * des champs de la table BLASONS 

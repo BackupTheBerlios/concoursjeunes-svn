@@ -451,10 +451,9 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		}
 	}
 	/**
-	 * initialise un nouveau concurrent
+	 * Retourne le concurrent séléctionné
 	 * 
-	 * @param concurrent -
-	 *            l'objet concurrent à initialiser
+	 * @return le concurrent séléctionné 
 	 */
 	public Concurrent getSelectedConcurrent() {
 
