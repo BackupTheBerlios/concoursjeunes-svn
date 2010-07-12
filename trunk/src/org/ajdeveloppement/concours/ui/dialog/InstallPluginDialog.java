@@ -362,6 +362,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 		
 		if(disable) {
 			SwingUtilities.invokeLater(new Runnable() {
+				@Override
 				public void run() {
 					GlassPanePanel panel = new GlassPanePanel();
 					
@@ -382,6 +383,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 		setGlassPane(panel);
 		panel.setVisible(true);
 		SwingUtilities.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				completePanel();
 				panel.setVisible(false);

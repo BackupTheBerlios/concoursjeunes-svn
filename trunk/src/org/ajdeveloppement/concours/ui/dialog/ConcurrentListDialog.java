@@ -409,7 +409,8 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 	
 	private void loadingProgress(ArchersTableLoader loader) {
 		loader.addPropertyChangeListener(new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent event) {
+            @Override
+			public void propertyChange(PropertyChangeEvent event) {
                 if (event.getPropertyName().equals("progress")) { //$NON-NLS-1$
                     int progress = ((Integer) event.getNewValue()).intValue();
 
@@ -475,6 +476,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		return this.isValider;
 	}
 
+	@Override
 	public void actionPerformed(ActionEvent ae) {
 		if (ae.getActionCommand().equals("bouton.valider")) { //$NON-NLS-1$
 			this.isValider = jTable.getSelectedRow() > -1;
@@ -487,6 +489,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 			jxhDisableFilter.setText(""); //$NON-NLS-1$
 			jxhDisableFilter.removeActionListener(this);
 			SwingUtilities.invokeLater(new Runnable() {
+				@Override
 				public void run() {
 					dtm.clear();
 					ArchersTableLoader loader = new ArchersTableLoader(null);
@@ -499,9 +502,11 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		}
 	}
 
+	@Override
 	public void caretUpdate(CaretEvent e) {
 		if (e.getSource() == jtfFilterLicence && jtfFilterLicence.hasFocus()) {
 			SwingUtilities.invokeLater(new Runnable() {
+				@Override
 				public void run() {
 					sorter.setRowFilter(RowFilter.regexFilter("^" + jtfFilterLicence.getText().toUpperCase(), 0)); //$NON-NLS-1$
 					jtfFilterNom.setText(""); //$NON-NLS-1$
@@ -510,6 +515,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 			});
 		} else if (e.getSource() == jtfFilterNom && jtfFilterNom.hasFocus()) {
 			SwingUtilities.invokeLater(new Runnable() {
+				@Override
 				public void run() {
 					synchronized (dtm) {
 						sorter.setRowFilter(RowFilter.regexFilter("^" + jtfFilterNom.getText().toUpperCase(), 1)); //$NON-NLS-1$
@@ -525,6 +531,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		}
 	}
 
+	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (e.getClickCount() == 2) {
 			this.isValider = true;
@@ -532,15 +539,19 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		}
 	}
 
+	@Override
 	public void mouseEntered(MouseEvent e) {
 	}
 
+	@Override
 	public void mouseExited(MouseEvent e) {
 	}
 
+	@Override
 	public void mousePressed(MouseEvent e) {
 	}
 
+	@Override
 	public void mouseReleased(MouseEvent e) {
 	}
 
@@ -588,6 +599,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		/**
 		 * @see javax.swing.table.TableModel#getColumnCount()
 		 */
+		@Override
 		public int getColumnCount() {
 			return 5;
 		}
@@ -615,6 +627,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		/**
 		 * @see javax.swing.table.TableModel#getRowCount()
 		 */
+		@Override
 		public int getRowCount() {
 			return rows.size();
 		}
@@ -622,6 +635,7 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 		/**
 		 * @see javax.swing.table.TableModel#getValueAt(int, int)
 		 */
+		@Override
 		public Object getValueAt(int rowIndex, int columnIndex) {
 			curConcurrent = getConcurrentAtRow(rowIndex);
 

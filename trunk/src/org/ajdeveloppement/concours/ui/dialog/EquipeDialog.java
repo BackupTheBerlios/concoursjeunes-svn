@@ -545,6 +545,7 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 	/**
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
+	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() instanceof JCheckBox) {
 			if (e.getActionCommand().equals("filter")) { //$NON-NLS-1$
@@ -588,6 +589,7 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 	 * 
 	 * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
 	 */
+	@Override
 	public void mouseClicked(MouseEvent e) {
 	}
 
@@ -596,6 +598,7 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 	 * 
 	 * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
 	 */
+	@Override
 	public void mouseEntered(MouseEvent e) {
 
 	}
@@ -605,6 +608,7 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 	 * 
 	 * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
 	 */
+	@Override
 	public void mouseExited(MouseEvent e) {
 
 	}
@@ -612,6 +616,7 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 	/**
 	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
 	 */
+	@Override
 	public void mousePressed(MouseEvent e) {
 		if (e.getSource() == treeConcurrents && treeConcurrents.getLastSelectedPathComponent() != null) {
 			if (((DefaultMutableTreeNode) treeConcurrents.getLastSelectedPathComponent()).getUserObject() instanceof Concurrent)
@@ -625,6 +630,7 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 	/**
 	 * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
 	 */
+	@Override
 	public void mouseReleased(MouseEvent e) {
 		if (e.getSource() == treeConcurrents && onDrag) {
 			Point p = (Point) e.getPoint().clone();
@@ -698,6 +704,7 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 	/**
 	 * @see java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent)
 	 */
+	@Override
 	public void mouseDragged(MouseEvent e) {
 		if (e.getSource() == treeConcurrents && dragObject != null) {
 			GhostGlassPane glassPane = (GhostGlassPane) this.getGlassPane();
@@ -757,6 +764,7 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 	 * 
 	 * @see java.awt.event.MouseMotionListener#mouseMoved(java.awt.event.MouseEvent)
 	 */
+	@Override
 	public void mouseMoved(MouseEvent e) {
 
 	}
@@ -764,6 +772,7 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 	/**
 	 * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
 	 */
+	@Override
 	public void valueChanged(TreeSelectionEvent e) {
 		// TreePath treePath = e.getPath();
 		if (e.getOldLeadSelectionPath() != e.getNewLeadSelectionPath()) {

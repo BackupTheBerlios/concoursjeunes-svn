@@ -690,7 +690,8 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		final State actionState = state;
 		
         Action action = new AbstractAction(state.getLocalizedDisplayName()) {
-            public void actionPerformed(ActionEvent e) {
+            @Override
+			public void actionPerformed(ActionEvent e) {
             	prepareState(actionState);
             }
         };
@@ -801,6 +802,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	///////////////////////////////////////
 	// Auditeur d'événement
 	//////////////////////////////////////
+	@Override
 	public void actionPerformed(ActionEvent ae) {
 		Object source = ae.getSource();
 
@@ -869,6 +871,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	/**
 	 * Gestion des changements d'onglet
 	 */
+	@Override
 	public void stateChanged(ChangeEvent e) {
 		if(e.getSource() == tabbedpane) {
 			int i = tabbedpane.getSelectedIndex();
@@ -917,6 +920,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		}
 	}
 
+	@Override
 	public void hyperlinkUpdate(HyperlinkEvent e) { 
 		if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) { 
 			if (e instanceof HTMLFrameHyperlinkEvent) { 

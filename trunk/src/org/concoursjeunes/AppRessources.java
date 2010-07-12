@@ -217,6 +217,7 @@ public class AppRessources extends org.ajdeveloppement.apps.AppRessources {
 	 */
 	public String[] listAvailableConfigurations() {
 		String[] strConfig = getConfigPathForUser().list(new FilenameFilter() {
+			@Override
 			public boolean accept(File dir, String name) {
 				if (name.startsWith(CONFIG_PROFILE) && name.endsWith(EXT_XML))
 					return true;

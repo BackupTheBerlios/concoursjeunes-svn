@@ -919,6 +919,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	/**
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
+	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
 		if (source == this.jbValider) {
@@ -1022,6 +1023,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	 * 
 	 * @see org.concoursjeunes.AutoCompleteDocumentListener#concurrentFinded(org.concoursjeunes.AutoCompleteDocumentEvent)
 	 */
+	@Override
 	public void concurrentFinded(AutoCompleteDocumentEvent e) {
 
 	}
@@ -1031,6 +1033,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	 * 
 	 * @see org.concoursjeunes.AutoCompleteDocumentListener#concurrentNotFound(org.concoursjeunes.AutoCompleteDocumentEvent)
 	 */
+	@Override
 	public void concurrentNotFound(AutoCompleteDocumentEvent e) {
 	}
 
@@ -1039,6 +1042,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	 * 
 	 * @see org.concoursjeunes.AutoCompleteDocumentListener#entiteFinded(org.concoursjeunes.AutoCompleteDocumentEvent)
 	 */
+	@Override
 	public void entiteFinded(AutoCompleteDocumentEvent e) {
 		Entite findEntite = e.getEntite();
 		if (!findEntite.equals(workConfiguration.getClub())) {
@@ -1052,6 +1056,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	 * 
 	 * @see org.concoursjeunes.AutoCompleteDocumentListener#entiteNotFound(org.concoursjeunes.AutoCompleteDocumentEvent)
 	 */
+	@Override
 	public void entiteNotFound(AutoCompleteDocumentEvent e) {
 		Entite newEntite = new Entite();
 		if (e.getSource() == jtfAgrClub) {

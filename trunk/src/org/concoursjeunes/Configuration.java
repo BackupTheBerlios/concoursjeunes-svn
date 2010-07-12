@@ -468,6 +468,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	public static String[] listLangue() {
 		if (strLstLangue == null) {
 			String[] strLng = new File("lang").list(new FilenameFilter() {  //$NON-NLS-1$
+						@Override
 						public boolean accept(File dir, String name) {
 							if (name.startsWith("libelle_") && name.endsWith(".properties"))  //$NON-NLS-1$ //$NON-NLS-2$
 								return true;

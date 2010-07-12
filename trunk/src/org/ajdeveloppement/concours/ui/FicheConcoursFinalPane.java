@@ -210,7 +210,7 @@ public class FicheConcoursFinalPane extends JPanel implements ActionListener {
 					if(i > 0) {
 						for(int j = 0; j < objectsPhase.get(i-1).size(); j++) {
 							int l2i = (int)Math.floor(j / 2.0);
-							graph.insertEdge(parent, null, "", objectsPhase.get(i-1).get(j), objectsPhase.get(i).get(l2i));
+							graph.insertEdge(parent, null, "", objectsPhase.get(i-1).get(j), objectsPhase.get(i).get(l2i)); //$NON-NLS-1$
 						}
 					}
 				}
@@ -220,12 +220,12 @@ public class FicheConcoursFinalPane extends JPanel implements ActionListener {
 				padding = elementHeight + spacingHeight + decalage * 2;
 				duelHeight = padding + elementHeight;
 				
-				Object vainqueur = graph.insertVertex(parent, null, "", 20 + 380 * nombrePhaseCategorie, startHeight, 250, 50);
+				Object vainqueur = graph.insertVertex(parent, null, "", 20 + 380 * nombrePhaseCategorie, startHeight, 250, 50); //$NON-NLS-1$
 				
 				if(objectsPhase.size() > 0) {
 					for(int j = 0; j < objectsPhase.get(nombrePhaseCategorie-1).size(); j++) {
 						int l2i = (int)Math.floor(j / 2.0);
-						graph.insertEdge(parent, null, "", objectsPhase.get(nombrePhaseCategorie-1).get(j), vainqueur);
+						graph.insertEdge(parent, null, "", objectsPhase.get(nombrePhaseCategorie-1).get(j), vainqueur); //$NON-NLS-1$
 					}
 				}
 				

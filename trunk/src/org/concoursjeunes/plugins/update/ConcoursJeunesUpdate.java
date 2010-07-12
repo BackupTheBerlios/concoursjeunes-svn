@@ -338,6 +338,7 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 		}
 	}
 
+	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (e.getSource() == trayIcon) {
 			if(e.getClickCount() == 1) {
@@ -355,15 +356,19 @@ public class ConcoursJeunesUpdate extends Thread implements AjUpdaterListener, M
 		}
 	}
 
+	@Override
 	public void mouseEntered(MouseEvent e) {
 	}
 
+	@Override
 	public void mouseExited(MouseEvent e) {
 	}
 
+	@Override
 	public void mousePressed(MouseEvent e) {
 	}
 
+	@Override
 	public void mouseReleased(MouseEvent e) {
 	}
 }

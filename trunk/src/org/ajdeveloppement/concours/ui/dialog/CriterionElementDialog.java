@@ -292,7 +292,8 @@ public class CriterionElementDialog extends JDialog implements ActionListener {
     /**
      * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
-    public void actionPerformed(ActionEvent e) {
+    @Override
+	public void actionPerformed(ActionEvent e) {
         if(e.getSource() == jbValider) {
         	if(criterionBinding != null) {
             	for(Binding<CriterionElement, ?, ?, ?> binding : criterionBinding.getBindings()) { 

@@ -185,6 +185,7 @@ public class TargetTreeModel implements TreeModel, TargetListener {
 	 * 
 	 * @see javax.swing.tree.TreeModel#addTreeModelListener(javax.swing.event.TreeModelListener)
 	 */
+	@Override
 	public void addTreeModelListener(TreeModelListener l) {
 		listeners.add(TreeModelListener.class, l);
 	}
@@ -194,6 +195,7 @@ public class TargetTreeModel implements TreeModel, TargetListener {
 	 * 
 	 * @see javax.swing.tree.TreeModel#getChild(java.lang.Object, int)
 	 */
+	@Override
 	public Object getChild(Object parent, int index) {
 		if (parent == rootLabel)
 			return targetChilds.get(index);
@@ -212,6 +214,7 @@ public class TargetTreeModel implements TreeModel, TargetListener {
 	 * 
 	 * @see javax.swing.tree.TreeModel#getChildCount(java.lang.Object)
 	 */
+	@Override
 	public int getChildCount(Object parent) {
 		if (parent == rootLabel)
 			return targetChilds.size();
@@ -227,6 +230,7 @@ public class TargetTreeModel implements TreeModel, TargetListener {
 	 * 
 	 * @see javax.swing.tree.TreeModel#getIndexOfChild(java.lang.Object, java.lang.Object)
 	 */
+	@Override
 	public int getIndexOfChild(Object parent, Object child) {
 		if (parent == rootLabel)
 			return targetChilds.indexOf(child);
@@ -246,6 +250,7 @@ public class TargetTreeModel implements TreeModel, TargetListener {
 	 * 
 	 * @see javax.swing.tree.TreeModel#getRoot()
 	 */
+	@Override
 	public Object getRoot() {
 		return rootLabel;
 	}
@@ -279,6 +284,7 @@ public class TargetTreeModel implements TreeModel, TargetListener {
 	 * 
 	 * @see javax.swing.tree.TreeModel#isLeaf(java.lang.Object)
 	 */
+	@Override
 	public boolean isLeaf(Object node) {
 		if (node instanceof TargetPosition || node instanceof Concurrent)
 			return true;
@@ -290,6 +296,7 @@ public class TargetTreeModel implements TreeModel, TargetListener {
 	 * 
 	 * @see javax.swing.tree.TreeModel#removeTreeModelListener(javax.swing.event.TreeModelListener)
 	 */
+	@Override
 	public void removeTreeModelListener(TreeModelListener l) {
 		listeners.remove(TreeModelListener.class, l);
 	}
@@ -299,6 +306,7 @@ public class TargetTreeModel implements TreeModel, TargetListener {
 	 * 
 	 * @see javax.swing.tree.TreeModel#valueForPathChanged(javax.swing.tree.TreePath, java.lang.Object)
 	 */
+	@Override
 	public void valueForPathChanged(TreePath path, Object newValue) {
 	}
 
@@ -307,6 +315,7 @@ public class TargetTreeModel implements TreeModel, TargetListener {
 	 * 
 	 * @see org.concoursjeunes.CibleListener#concurrentJoined(org.concoursjeunes.CibleEvent)
 	 */
+	@Override
 	public void concurrentJoined(TargetEvent e) {
 		fireTreeNodesChanged(getTreePathForNode(e.getCible()));
 	}
@@ -316,6 +325,7 @@ public class TargetTreeModel implements TreeModel, TargetListener {
 	 * 
 	 * @see org.concoursjeunes.CibleListener#concurrentQuit(org.concoursjeunes.CibleEvent)
 	 */
+	@Override
 	public void concurrentQuit(TargetEvent e) {
 		fireTreeNodesChanged(getTreePathForNode(e.getCible()));
 		// fireTreeNodesChanged(getTreePathForNode(Cible.getCibleLibelle(

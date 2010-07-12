@@ -385,6 +385,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 	}
 
 	//auditeur d'événement
+	@Override
 	public void actionPerformed(ActionEvent ae) {
 		Object source = ae.getSource();
 
@@ -454,9 +455,11 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 		}
 	}
 	
+	@Override
 	public void keyPressed(KeyEvent e) {
 	}
 	
+	@Override
 	public void keyReleased(KeyEvent e) {
 		if(profile.getConfiguration().isInterfaceResultatCumul()) {
 			char key = e.getKeyChar();
@@ -470,8 +473,10 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 		}
 	}
 	
+	@Override
 	public void keyTyped(KeyEvent e) {}
 
+	@Override
 	public void focusGained(FocusEvent e) {
 		if (e.getSource() instanceof JTextField) {
 			((JTextField)e.getSource()).setSelectionStart(0);
@@ -479,6 +484,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 		}
 	}
 	
+	@Override
 	public void focusLost(FocusEvent e) {
 
 	}

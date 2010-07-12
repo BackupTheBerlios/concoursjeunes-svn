@@ -470,6 +470,7 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 		jlArbitres.setListData(parametre.getJudges().toArray());
 	}
 
+	@Override
 	public void actionPerformed(ActionEvent ae) {
 		if (ae.getSource() == jbValider) {
 

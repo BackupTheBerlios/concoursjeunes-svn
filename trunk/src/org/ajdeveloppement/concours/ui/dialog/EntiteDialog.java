@@ -512,6 +512,7 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 		this.entite = entite;
 	}
 
+	@Override
 	public void actionPerformed(ActionEvent ae) {
 		if (ae.getSource() == jbAnnuler) {
 			setVisible(false);

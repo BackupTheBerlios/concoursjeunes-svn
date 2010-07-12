@@ -373,6 +373,7 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		this.action = action;
 	}
 
+	@Override
 	public void actionPerformed(ActionEvent ae) {
 		if(ae.getSource() == jbValider) {
 			action = VALIDER;
@@ -406,6 +407,7 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		}
 	}
 
+	@Override
 	public void caretUpdate(CaretEvent e) {
 		if(e.getSource() == this.jtfNom) {
 			sorter.setRowFilter(RowFilter.regexFilter(".*" + jtfNom.getText().toUpperCase() + ".*", 0)); //$NON-NLS-1$ //$NON-NLS-2$
@@ -419,15 +421,20 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		}
 	}
 
+	@Override
 	public void mouseClicked(MouseEvent e) {
 		if(e.getClickCount() == 2) {
 			showEntiteDialog();
 		}
 	}
 
+	@Override
 	public void mouseEntered(MouseEvent e) { }
+	@Override
 	public void mouseExited(MouseEvent e) {	}
+	@Override
 	public void mousePressed(MouseEvent e) { }
+	@Override
 	public void mouseReleased(MouseEvent e) { }
 
 	@Override
@@ -487,6 +494,7 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		/**
 		 * @see javax.swing.table.TableModel#addTableModelListener(javax.swing.event.TableModelListener)
 		 */
+		@Override
 		public void addTableModelListener(TableModelListener l) {
 			listenerList.add(TableModelListener.class, l);
 		}
@@ -494,6 +502,7 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		/**
 		 * @see javax.swing.table.TableModel#getColumnClass(int)
 		 */
+		@Override
 		public Class<?> getColumnClass(int columnIndex) {
 			return String.class;
 		}
@@ -501,6 +510,7 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		/**
 		 * @see javax.swing.table.TableModel#getColumnCount()
 		 */
+		@Override
 		public int getColumnCount() {
 			return columnName.size();
 		}
@@ -508,6 +518,7 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		/**
 		 * @see javax.swing.table.TableModel#getColumnName(int)
 		 */
+		@Override
 		public String getColumnName(int columnIndex) {
 			return columnName.get(columnIndex);
 		}
@@ -515,6 +526,7 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		/**
 		 * @see javax.swing.table.TableModel#getRowCount()
 		 */
+		@Override
 		public int getRowCount() {
 			if(nbRows == 0) {
 				try {
@@ -534,6 +546,7 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		/**
 		 * @see javax.swing.table.TableModel#getValueAt(int, int)
 		 */
+		@Override
 		public Object getValueAt(int rowIndex, int columnIndex) {
 			getEntiteAtRow(rowIndex);
 
@@ -554,6 +567,7 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		/**
 		 * @see javax.swing.table.TableModel#isCellEditable(int, int)
 		 */
+		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
 			return false;
 		}
@@ -561,6 +575,7 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		/**
 		 * @see javax.swing.table.TableModel#removeTableModelListener(javax.swing.event.TableModelListener)
 		 */
+		@Override
 		public void removeTableModelListener(TableModelListener l) {
 			listenerList.remove(TableModelListener.class, l);
 		}
@@ -568,6 +583,7 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		/**
 		 * @see javax.swing.table.TableModel#setValueAt(java.lang.Object, int, int)
 		 */
+		@Override
 		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 		}
 

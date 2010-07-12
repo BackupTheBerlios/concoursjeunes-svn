@@ -122,15 +122,20 @@ public class FicheConcoursTest extends TestCase {
 		
 		profile.addProfileListener(new ProfileListener() {
 
+			@Override
 			public void ficheConcoursClosed(ProfileEvent concoursJeunesEvent) {}
 			/* (non-Javadoc)
 			 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursCreated(org.concoursjeunes.ConcoursJeunesEvent)
 			 */
+			@Override
 			public void ficheConcoursCreated(ProfileEvent concoursJeunesEvent) {
 				ficheConcours = concoursJeunesEvent.getFicheConcours();
 			}
+			@Override
 			public void ficheConcoursDeleted(ProfileEvent concoursJeunesEvent) {}
+			@Override
 			public void ficheConcoursRestored(ProfileEvent concoursJeunesEvent) {}
+			@Override
 			public void configurationChanged(ProfileEvent concoursJeunesEvent) {}
 			
 		});

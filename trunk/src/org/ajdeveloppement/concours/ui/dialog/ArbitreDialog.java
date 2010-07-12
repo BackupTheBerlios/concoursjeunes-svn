@@ -184,6 +184,7 @@ public class ArbitreDialog extends JDialog implements AutoCompleteDocumentListen
 		ExecutorService executorService = Executors.newSingleThreadExecutor(new LowFactory());
 		final Profile threadProfile = profile;
 		concurrentListDialog = executorService.submit(new Callable<ConcurrentListDialog>() {
+			@Override
 			public ConcurrentListDialog call() {
 				return new ConcurrentListDialog(ArbitreDialog.this, threadProfile,
 						null, null);
@@ -426,6 +427,7 @@ public class ArbitreDialog extends JDialog implements AutoCompleteDocumentListen
 	/**
 	 * @see java.awt.event.FocusListener#focusGained(java.awt.event.FocusEvent)
 	 */
+	@Override
 	public void focusGained(FocusEvent fe) {
 		if (fe.getSource() instanceof JTextField) {
 			((JTextField) fe.getSource()).setSelectionStart(0);
@@ -436,6 +438,7 @@ public class ArbitreDialog extends JDialog implements AutoCompleteDocumentListen
 	/**
 	 * @see java.awt.event.FocusListener#focusLost(java.awt.event.FocusEvent)
 	 */
+	@Override
 	public void focusLost(FocusEvent fe) {
 	}
 	
@@ -467,6 +470,7 @@ public class ArbitreDialog extends JDialog implements AutoCompleteDocumentListen
 					.getThreadGroup();
 		}
 
+		@Override
 		public Thread newThread(Runnable r) {
 			Thread t = new Thread(group, r, getThreadName(), 0);
 

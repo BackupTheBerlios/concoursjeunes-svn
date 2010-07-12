@@ -94,10 +94,7 @@ import java.awt.SplashScreen;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.Authenticator;
@@ -149,7 +146,6 @@ import org.concoursjeunes.plugins.PluginEntry;
 import org.concoursjeunes.plugins.PluginLoader;
 import org.concoursjeunes.plugins.PluginMetadata;
 import org.h2.tools.DeleteDbFiles;
-import org.h2.tools.RunScript;
 import org.jdesktop.swingx.error.ErrorInfo;
 
 /**
@@ -172,7 +168,6 @@ public class Main {
 		showSplashScreen();
 		initErrorManaging();
 		initNetworkManaging();
-		//checkDatabase();
 		initCore();
 		initSecureContext();
 		if(System.getProperty("noplugin") == null)//$NON-NLS-1$
@@ -220,7 +215,7 @@ public class Main {
 	 * Initialise la gestion des erreurs
 	 */
 	private static void initErrorManaging() {
-		updateStartProgressStatus(0, "Initialisation gestion des erreurs");
+		updateStartProgressStatus(0, localisation.getResourceString("main.initerrormanager")); //$NON-NLS-1$
 		//initialisation du rapport d'erreur
 		try {
 			ApplicationContext contexte = ApplicationContext.getContext();
@@ -234,18 +229,19 @@ public class Main {
 			e.printStackTrace();
 		}
 		
-		//Capture des exceptions non controlé en amont
+		// Capture des exceptions non controlé en amont
 		Thread.UncaughtExceptionHandler handlerException = new Thread.UncaughtExceptionHandler() {
 
 			@Override
 			public void uncaughtException(Thread t, final Throwable e) {
 				EventQueue.invokeLater(new Runnable() {
-			         public void run() {
-			        	DisplayableErrorHelper.displayErrorInfo(new ErrorInfo("Application uncaught Exception!", //$NON-NLS-1$
-								e.toString(),
-								null, null, e, Level.SEVERE, null));
+					@Override
+					public void run() {
+						DisplayableErrorHelper.displayErrorInfo(new ErrorInfo(
+								"Application uncaught Exception!", //$NON-NLS-1$
+								e.toString(), null, null, e, Level.SEVERE, null));
 						e.printStackTrace();
-			         }
+					}
 				});
 			}
 		};
@@ -258,7 +254,7 @@ public class Main {
 	 * Initialise la gestion du réseau
 	 */
 	private static void initNetworkManaging() {
-		updateStartProgressStatus(10, "Initialisation gestion du réseau");
+		updateStartProgressStatus(10, localisation.getResourceString("main.initnetworkmanager")); //$NON-NLS-1$
 		
 		System.setProperty("java.net.useSystemProxies","true"); //$NON-NLS-1$ //$NON-NLS-2$ 
 		System.setProperty("java.net.preferIPv6Addresses", "true"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -287,122 +283,15 @@ public class Main {
 	}
 	
 	/**
-	 * Vérifie le format de la base de données et le convertie si nécéssaire
-	 */
-	@SuppressWarnings("nls")
-	private static void checkDatabase() {
-		updateStartProgressStatus(20, "Recherche des fichiers de base de données...");
-		String[] databaseFile = ApplicationCore.userRessources.getBasePath().list(new FilenameFilter() {
-			@Override
-			public boolean accept(File dir, String name) {
-				return name.endsWith(".h2.db"); //$NON-NLS-1$
-			}
-		});
-		if(databaseFile == null || databaseFile.length == 0) {
-			Runtime runtime = Runtime.getRuntime();
-			
-			File backupFile = null;
-			try {
-				File[] oldDbFiles = ApplicationCore.userRessources.getBasePath().listFiles(new FilenameFilter() {
-					@Override
-					public boolean accept(File dir, String name) {
-						return name.endsWith(".db"); //$NON-NLS-1$
-					}
-				});
-				if(oldDbFiles != null && oldDbFiles.length > 0) {
-					updateStartProgressStatus(21, "Conversion de la base de données...");
-					File backupPath = new File(ApplicationCore.userRessources.getBasePath(), "backup"); //$NON-NLS-1$
-					backupPath.mkdirs();
-					backupFile = new File(backupPath, "backup.gz"); //$NON-NLS-1$
-					
-					String url = ApplicationCore.staticParameters.getResourceString("database.url", ApplicationCore.userRessources.getBasePath()); //$NON-NLS-1$
-					String user = ApplicationCore.staticParameters.getResourceString("database.user"); //$NON-NLS-1$
-					String password = ApplicationCore.staticParameters.getResourceString("database.password"); //$NON-NLS-1$
-					
-					String[] command = new String[] {ApplicationCore.userRessources.getJavaExecutablePath(),
-							 "-Xmx128m", //$NON-NLS-1$
-							 "-cp", new File("lib","h2-1.2.127.jar").getAbsolutePath(), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-							 "org.h2.tools.Script", //$NON-NLS-1$
-							 "-script", backupFile.getPath(), //$NON-NLS-1$
-							 "-url", "" + url, //$NON-NLS-1$ //$NON-NLS-2$
-							 "-user", "" + user, //$NON-NLS-1$ //$NON-NLS-2$
-							 "-password", password, //$NON-NLS-1$
-							 "-options", "COMPRESSION GZIP"}; //$NON-NLS-1$ //$NON-NLS-2$
-					// Sauvegarde la base dans l'ancien format
-					Process p = runtime.exec(command);
-					copyInThread(p.getErrorStream(), System.err);
-					copyInThread(p.getInputStream(), System.out);
-					int outCode = p.waitFor();
-					if(outCode == 0) {
-						for(File f : oldDbFiles) {
-							f.delete();
-						}
-						
-						//Restore dans le nouveau format
-						try {
-							RunScript.main(new String[] {
-									"-url", url,
-									"-user", user,
-									"-password", password,
-									"-script", backupFile.getPath(),
-									"-continueOnError",
-									"-options", "COMPRESSION GZIP"
-							});
-						} catch (SQLException e) {
-							DisplayableErrorHelper.displayErrorInfo(new ErrorInfo( "SQL Error", e.toString(), //$NON-NLS-1$
-									null, null, e, Level.SEVERE, null));
-							e.printStackTrace();
-						}
-					}
-				}
-			} catch (IOException e) {
-				new RuntimeException("Unable to convert database", e); //$NON-NLS-1$
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				new RuntimeException("Unable to convert database", e); //$NON-NLS-1$
-				e.printStackTrace();
-			}
-		}
-	}
-	
-	/**
-	 * Copie dans les flux en paramètres de manière asynchrone
-	 * 
-	 * @param in
-	 * @param out
-	 */
-	private static void copyInThread(final InputStream in, final OutputStream out) {
-        new Thread() {
-        	@Override
-            public void run() {
-                try {
-                    while (true) {
-                        int x = in.read();
-                        if (x < 0) {
-                            return;
-                        }
-                        if (out != null) {
-                            out.write(x);
-                        }
-                    }
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        } .start();
-    }
-	
-	/**
 	 * Initialise le coeur de l'application
 	 * 
 	 * @param localisation
 	 */
 	private static void initCore() {
-		updateStartProgressStatus(40, "Initialisation du moteur...");
+		updateStartProgressStatus(40, localisation.getResourceString("main.initcore")); //$NON-NLS-1$
 		boolean retry = false;
 		do {
 			try {
-				//splash.setProgressionText("Initialisation de l'application...");
 				ApplicationCore.initializeApplication();
 			} catch (SQLException e1) {
 				DisplayableErrorHelper.displayErrorInfo(new ErrorInfo( "SQL Error", e1.toString(), //$NON-NLS-1$
@@ -427,7 +316,7 @@ public class Main {
 	 * Charge le contexte de sécurité de l'application
 	 */
 	private static void initSecureContext() {
-		updateStartProgressStatus(50, "Initialisation du contexte de sécurité...");
+		updateStartProgressStatus(50, localisation.getResourceString("main.initsecurecontext")); //$NON-NLS-1$
 		String urlAuthStoreAlias = "urlauthstore"; //$NON-NLS-1$
 		char[] defaultUrlAuthStorePassword = AppUtilities.getAppUID(ApplicationCore.userRessources).toCharArray();
 		
@@ -511,7 +400,7 @@ public class Main {
 	 * Charge les plugins à lancer au démarrage
 	 */
 	private static void loadStartupPlugin() {
-		updateStartProgressStatus(60, "Chargement des extensions...");
+		updateStartProgressStatus(60, localisation.getResourceString("main.loadplugins")); //$NON-NLS-1$
 		PluginLoader pl = new PluginLoader();
 
 		
@@ -532,7 +421,7 @@ public class Main {
 			if(disablePlugin != null && disablePlugin.contains(pm.getName()))
 				continue;
 			try {
-				updateStartProgressStatus(60 + (int)((40.0 / nbPlugins) * iCurrentPlugin), "Chargement de l'extension: " + pm.getName());
+				updateStartProgressStatus(60 + (int)((40.0 / nbPlugins) * iCurrentPlugin), localisation.getResourceString("main.loadplugin", pm.getName())); //$NON-NLS-1$
 				
 				Class<?> cla = pm.getPluginClass();
 				

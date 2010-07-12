@@ -216,6 +216,7 @@ public class FFTAImportDialog extends JDialog implements ActionListener, FFTAImp
 	 * 
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
+	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == jrbFTPDownload) {
 			jtfEmplacementLFFTA.setEnabled(false);
@@ -247,6 +248,7 @@ public class FFTAImportDialog extends JDialog implements ActionListener, FFTAImp
 	 * 
 	 * @see org.concoursjeunes.plugins.ResultArcImport.ResultArcImportThreadListener#importFinished()
 	 */
+	@Override
 	public void importFinished() {
 		JOptionPane.showMessageDialog(this, pluginLocalisation.getResourceString("message.import.fin"), //$NON-NLS-1$
 				pluginLocalisation.getResourceString("message.import"), JOptionPane.INFORMATION_MESSAGE); //$NON-NLS-1$
@@ -258,6 +260,7 @@ public class FFTAImportDialog extends JDialog implements ActionListener, FFTAImp
 	 * 
 	 * @see org.concoursjeunes.plugins.ResultArcImport.ResultArcImportThreadListener#progressionInfo(java.lang.String)
 	 */
+	@Override
 	public void progressionInfo(String info) {
 		jpbProgression.setString(info);
 		// jlProgression.repaint();

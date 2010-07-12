@@ -651,6 +651,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	        
 			ExecutorService executorService = Executors.newSingleThreadExecutor(new LowFactory());
 			concurrentListDialog = executorService.submit(new Callable<ConcurrentListDialog>() {
+				@Override
 				public ConcurrentListDialog call() {
 					return new ConcurrentListDialog(ConcurrentDialog.this, profile,
 							lastActiveReglement, null);
@@ -855,6 +856,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	/**
 	 * @see org.concoursjeunes.event.AutoCompleteDocumentListener#concurrentFinded(org.concoursjeunes.event.AutoCompleteDocumentEvent)
 	 */
+	@Override
 	public void concurrentFinded(AutoCompleteDocumentEvent e) {
 		Concurrent findConcurrent = e.getConcurrent();
 		if (!findConcurrent.equals(concurrent)) {
@@ -879,6 +881,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	/**
 	 * @see org.concoursjeunes.event.AutoCompleteDocumentListener#concurrentNotFound(org.concoursjeunes.event.AutoCompleteDocumentEvent)
 	 */
+	@Override
 	public void concurrentNotFound(AutoCompleteDocumentEvent e) {
 		Concurrent newConcurrent = new Concurrent();
 		newConcurrent.setDepart(ficheConcours.getCurrentDepart());
@@ -901,6 +904,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		jlDescription.setBackground(Color.ORANGE);
 	}
 
+	@Override
 	public void entiteFinded(AutoCompleteDocumentEvent e) {
 		Entite findEntite = e.getEntite();
 		if (!findEntite.equals(concurrent.getEntite())) {
@@ -911,6 +915,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		}
 	}
 
+	@Override
 	public void entiteNotFound(AutoCompleteDocumentEvent e) {
 		Entite newEntite = new Entite();
 		if (e.getSource() == jtfClub) {
@@ -926,6 +931,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		completeConcurrentDialog();
 	}
 
+	@Override
 	public void actionPerformed(ActionEvent ae) {
 		if (ae.getSource() == jbSuivant || ae.getSource() == jbPrecedent || ae.getSource() == jbValider) {
 
@@ -1155,6 +1161,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	/**
 	 * @see java.awt.event.FocusListener#focusGained(java.awt.event.FocusEvent)
 	 */
+	@Override
 	public void focusGained(FocusEvent fe) {
 		selectField = -1;
 		for (int i = 0; i < tfpd.length; i++) {
@@ -1172,6 +1179,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	/**
 	 * @see java.awt.event.FocusListener#focusLost(java.awt.event.FocusEvent)
 	 */
+	@Override
 	public void focusLost(FocusEvent fe) {
 	}
 	
@@ -1207,6 +1215,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 					.getThreadGroup();
 		}
 
+		@Override
 		public Thread newThread(Runnable r) {
 			Thread t = new Thread(group, r, getThreadName(), 0);
 

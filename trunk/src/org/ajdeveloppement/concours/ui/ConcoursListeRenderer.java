@@ -142,6 +142,7 @@ public class ConcoursListeRenderer extends JLabel implements ListCellRenderer {
 	 * 
 	 * @return Component
 	 */
+	@Override
 	public Component getListCellRendererComponent(
 			JList list,
 			Object value,            // value to display

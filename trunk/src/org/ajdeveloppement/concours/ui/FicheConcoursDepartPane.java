@@ -621,6 +621,7 @@ public class FicheConcoursDepartPane extends JPanel
 	 * 
 	 * @see org.concoursjeunes.event.FicheConcoursListener#listConcurrentChanged(org.concoursjeunes.event.FicheConcoursEvent)
 	 */
+	@Override
 	public void listConcurrentChanged(FicheConcoursEvent e) {
 		switch (e.getEvent()) {
 			case FicheConcoursEvent.ADD_CONCURRENT:
@@ -639,6 +640,7 @@ public class FicheConcoursDepartPane extends JPanel
 	 * 
 	 * @see org.concoursjeunes.FicheConcoursListener#pasDeTirChanged(org.concoursjeunes.FicheConcoursEvent)
 	 */
+	@Override
 	public void pasDeTirChanged(FicheConcoursEvent e) {
 		createListeParCible();
 		createListeParNom();
@@ -647,6 +649,7 @@ public class FicheConcoursDepartPane extends JPanel
 	/**
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
+	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
 		String cmd = e.getActionCommand();
@@ -698,6 +701,7 @@ public class FicheConcoursDepartPane extends JPanel
 	/**
 	 * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
 	 */
+	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (e.getSource() == treeTarget) {
 			if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
@@ -762,6 +766,7 @@ public class FicheConcoursDepartPane extends JPanel
 	 * 
 	 * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
 	 */
+	@Override
 	public void mouseEntered(MouseEvent e) {
 	}
 
@@ -770,12 +775,14 @@ public class FicheConcoursDepartPane extends JPanel
 	 * 
 	 * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
 	 */
+	@Override
 	public void mouseExited(MouseEvent e) {
 	}
 
 	/**
 	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
 	 */
+	@Override
 	public void mousePressed(MouseEvent e) {
 		if (e.getSource() == ajxlConcurrent) {
 			dragObject = lstModelConcurrent.getElementAt(ajxlConcurrent.convertIndexToModel(ajxlConcurrent.getSelectedIndex()));
@@ -791,6 +798,7 @@ public class FicheConcoursDepartPane extends JPanel
 	/**
 	 * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
 	 */
+	@Override
 	public void mouseReleased(MouseEvent e) {
 		if (e.getSource() == ajxlConcurrent && onDrag) {
 			Point p = (Point) e.getPoint().clone();
@@ -843,6 +851,7 @@ public class FicheConcoursDepartPane extends JPanel
 	/**
 	 * @see java.awt.event.MouseMotionListener#mouseDragged(java.awt.event.MouseEvent)
 	 */
+	@Override
 	public void mouseDragged(MouseEvent e) {
 		if (e.getSource() == ajxlConcurrent) {
 			if(ajxlConcurrent.getSelectedIndex() == -1)
@@ -912,12 +921,14 @@ public class FicheConcoursDepartPane extends JPanel
 	 * 
 	 * @see java.awt.event.MouseMotionListener#mouseMoved(java.awt.event.MouseEvent)
 	 */
+	@Override
 	public void mouseMoved(MouseEvent e) {
 	}
 
 	/**
 	 * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
 	 */
+	@Override
 	public void valueChanged(ListSelectionEvent e) {
 		jbSupprimerArcher.setEnabled(true);
 
@@ -934,6 +945,7 @@ public class FicheConcoursDepartPane extends JPanel
 	 * 
 	 * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
 	 */
+	@Override
 	public void valueChanged(TreeSelectionEvent e) {
 		if(e.getNewLeadSelectionPath() != null && e.getOldLeadSelectionPath() != e.getNewLeadSelectionPath()) {
 			TreePath destinationPath = e.getNewLeadSelectionPath();
@@ -950,6 +962,7 @@ public class FicheConcoursDepartPane extends JPanel
 	/**
 	 * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
 	 */
+	@Override
 	public void keyPressed(KeyEvent e) {
 		if (e.getSource() instanceof JList) {
 			if (e.getKeyCode() == KeyEvent.VK_DELETE) {
@@ -980,6 +993,7 @@ public class FicheConcoursDepartPane extends JPanel
 	 * 
 	 * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
 	 */
+	@Override
 	public void keyReleased(KeyEvent e) {
 	}
 
@@ -988,6 +1002,7 @@ public class FicheConcoursDepartPane extends JPanel
 	 * 
 	 * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)
 	 */
+	@Override
 	public void keyTyped(KeyEvent e) {
 	}
 	

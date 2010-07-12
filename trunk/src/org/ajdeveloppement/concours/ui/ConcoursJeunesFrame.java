@@ -152,10 +152,10 @@ import org.concoursjeunes.Profile;
 import org.concoursjeunes.event.ProfileEvent;
 import org.concoursjeunes.event.ProfileListener;
 import org.concoursjeunes.exceptions.NullConfigurationException;
+import org.concoursjeunes.plugins.Plugin.Type;
 import org.concoursjeunes.plugins.PluginEntry;
 import org.concoursjeunes.plugins.PluginLoader;
 import org.concoursjeunes.plugins.PluginMetadata;
-import org.concoursjeunes.plugins.Plugin.Type;
 import org.h2.tools.Server;
 import org.jdesktop.swingx.error.ErrorInfo;
 
@@ -282,6 +282,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 				 * 
 				 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 				 */
+				@Override
 				public void actionPerformed(ActionEvent e) {
 					try {
 						Constructor<?> c = pluginClass.getConstructor(JFrame.class, Profile.class);
@@ -453,6 +454,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	/**
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
+	@Override
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
 		FicheConcoursPane jif = null;
@@ -541,6 +543,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	 * 
 	 * @see javax.swing.event.ChangeListener#stateChanged(javax.swing.event.ChangeEvent)
 	 */
+	@Override
 	public void stateChanged(ChangeEvent e) {
 		if (e.getSource() == tabbedpane) {
 			int i = tabbedpane.getSelectedIndex();
@@ -557,6 +560,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	 * 
 	 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursCreated(org.concoursjeunes.ConcoursJeunesEvent)
 	 */
+	@Override
 	public void ficheConcoursCreated(ProfileEvent concoursJeunesEvent) {
 		addFicheConcours(concoursJeunesEvent.getFicheConcours());
 		concoursJeunesEvent.getFicheConcours().getParametre().addPropertyChangeListener(this);
@@ -568,6 +572,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	 * 
 	 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursDeleted(org.concoursjeunes.ConcoursJeunesEvent)
 	 */
+	@Override
 	public void ficheConcoursDeleted(ProfileEvent concoursJeunesEvent) {
 		displayHome();
 	}
@@ -577,6 +582,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	 * 
 	 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursClosed(org.concoursjeunes.ConcoursJeunesEvent)
 	 */
+	@Override
 	public void ficheConcoursClosed(ProfileEvent concoursJeunesEvent) {
 		//
 		for (int i = 1; i < tabbedpane.getTabCount(); i++) {
@@ -595,6 +601,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	 * 
 	 * @see org.concoursjeunes.ConcoursJeunesListener#ficheConcoursRestored(org.concoursjeunes.ConcoursJeunesEvent)
 	 */
+	@Override
 	public void ficheConcoursRestored(ProfileEvent concoursJeunesEvent) {
 		addFicheConcours(concoursJeunesEvent.getFicheConcours());
 		concoursJeunesEvent.getFicheConcours().getParametre().addPropertyChangeListener(this);
@@ -622,10 +629,12 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 		}
 	}
 
+	@Override
 	public void tabAdded(Component tabComponent) {
 
 	}
 
+	@Override
 	public void tabClosed(Component tabComponent) {
 		removeFicheConcours(tabComponent);
 	}
@@ -635,6 +644,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	 * 
 	 * @see javax.swing.event.HyperlinkListener#hyperlinkUpdate(javax.swing.event.HyperlinkEvent)
 	 */
+	@Override
 	public void hyperlinkUpdate(HyperlinkEvent e) {
 		if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
 			if (e instanceof HTMLFrameHyperlinkEvent) {

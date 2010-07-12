@@ -384,7 +384,8 @@ public class CriterionDialog extends JDialog implements ActionListener, ChangeLi
      * 
      * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
-    public void actionPerformed(ActionEvent e) {
+    @Override
+	public void actionPerformed(ActionEvent e) {
         if(e.getSource() == jbValider) {
         	if(criterionBinding != null) {
             	for(Binding<Criterion, ?, ?, ?> binding : criterionBinding.getBindings()) { 
