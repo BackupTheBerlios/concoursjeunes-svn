@@ -968,12 +968,22 @@ public class Reglement implements ObjectPersistence {
 			PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
 			try {
 				for(Map.Entry<CriteriaSet, CriteriaSet> row : surclassement.entrySet()) {
-					row.getKey().save(session);
-					pstmt.setInt(1, row.getKey().getNumCriteriaSet());
+					CriteriaSet criteriaSet = row.getKey();
+					CriteriaSet criteriaSetSurclassement = row.getValue();
+					criteriaSet.save(session);
+					
+					if(criteriaSet.getNumCriteriaSet() == 0)
+						criteriaSet = session.getSavedInstanceOf(criteriaSet);
+					
+					pstmt.setInt(1, criteriaSet.getNumCriteriaSet());
 					pstmt.setInt(2, numReglement);
-					if(row.getValue() != null) {
-						row.getValue().save(session);
-						pstmt.setInt(3, row.getValue().getNumCriteriaSet());
+					if(criteriaSetSurclassement != null) {
+						criteriaSetSurclassement.save(session);
+						
+						if(criteriaSetSurclassement.getNumCriteriaSet() == 0)
+							criteriaSetSurclassement = session.getSavedInstanceOf(criteriaSetSurclassement);
+						
+						pstmt.setInt(3, criteriaSetSurclassement.getNumCriteriaSet());
 					} else
 						pstmt.setNull(3, Types.INTEGER);
 					pstmt.executeUpdate();

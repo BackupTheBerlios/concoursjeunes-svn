@@ -326,6 +326,9 @@ public class DistancesEtBlason implements ObjectPersistence {
 		if(session == null || !session.contains(this)) {
 			criteriaSet.save(session);
 			
+			if(criteriaSet.getNumCriteriaSet() == 0)
+				criteriaSet = session.getSavedInstanceOf(criteriaSet);
+			
 			helper.save(this);
 			
 			if(session != null)

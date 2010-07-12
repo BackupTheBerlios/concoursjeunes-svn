@@ -316,15 +316,25 @@ public class Main {
 					String user = ApplicationCore.staticParameters.getResourceString("database.user"); //$NON-NLS-1$
 					String password = ApplicationCore.staticParameters.getResourceString("database.password"); //$NON-NLS-1$
 					
-					String[] command = new String[] {ApplicationCore.userRessources.getJavaExecutablePath(),
-							 "-Xmx128m", //$NON-NLS-1$
-							 "-cp", new File("lib","h2-1.2.127.jar").getAbsolutePath(), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-							 "org.h2.tools.Script", //$NON-NLS-1$
-							 "-script", backupFile.getPath(), //$NON-NLS-1$
-							 "-url", "" + url, //$NON-NLS-1$ //$NON-NLS-2$
-							 "-user", "" + user, //$NON-NLS-1$ //$NON-NLS-2$
-							 "-password", password, //$NON-NLS-1$
-							 "-options", "COMPRESSION GZIP"}; //$NON-NLS-1$ //$NON-NLS-2$
+					String[] command;
+					if(password != null && !password.isEmpty())
+						command = new String[15];
+					else
+						command = new String[13];
+					
+					int i = 0;
+					command[i++] = ApplicationCore.userRessources.getJavaExecutablePath();
+					command[i++] = "-Xmx128m"; //$NON-NLS-1$ 
+					command[i++] = "-cp"; command[i++] = new File("lib","h2-1.2.127.jar").getAbsolutePath();  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ 		
+					command[i++] = "org.h2.tools.Script"; //$NON-NLS-1$
+					command[i++] = "-script"; command[i++] = backupFile.getPath();//$NON-NLS-1$
+					command[i++] = "-url"; command[i++] = url; //$NON-NLS-1$ 
+					command[i++] = "-user"; command[i++] = user; //$NON-NLS-1$
+					if(password != null && !password.isEmpty()) {
+						command[i++] = "-password"; command[i++] = password; //$NON-NLS-1$
+					}
+					command[i++] = "-options"; command[i++] = "COMPRESSION GZIP"; //$NON-NLS-1$ //$NON-NLS-2$
+					
 					// Sauvegarde la base dans l'ancien format
 					Process p = runtime.exec(command);
 					copyInThread(p.getErrorStream(), System.err);
