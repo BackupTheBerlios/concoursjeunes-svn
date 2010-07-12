@@ -226,7 +226,7 @@ public class ConcurrentList {
 	 */
 	public List<Concurrent> list(int depart) {
 		//buffer de selection
-		ArrayList<Concurrent> sel = new ArrayList<Concurrent>();
+		List<Concurrent> sel = new ArrayList<Concurrent>();
 
 		//recherche
 		for(Concurrent concurrent : archList) {

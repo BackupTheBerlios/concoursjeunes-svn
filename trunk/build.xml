@@ -173,7 +173,7 @@
 	<target name="jar" depends="compile">
 
 		<manifest file="${projet.pack.dir}/MANIFEST.MF" mode="update">
-		    <attribute name="Main-Class" value="org.concoursjeunes.Main"/>
+		    <attribute name="Main-Class" value="org.ajdeveloppement.concours.Main"/>
 			<attribute name="Class-Path" value="${classpath}"/>
 			<attribute name="SplashScreen-Image" value="ressources/Logo.png" />
         </manifest>
@@ -181,8 +181,8 @@
 			manifest="${projet.pack.dir}/MANIFEST.MF">
 
 			<fileset dir="${projet.pack.dir}/bin">
-				<include name="org/concoursjeunes/Main*" />
-				<include name="org/concoursjeunes/ui/**" />
+				<include name="org/ajdeveloppement/concours/Main*" />
+				<include name="org/ajdeveloppement/concours/ui/**" />
 			</fileset>
 		</jar>
 		<jar jarfile="${projet.pack.dir}/lib/ConcoursJeunes-core.jar"
@@ -191,9 +191,10 @@
 			<fileset dir="${projet.pack.dir}/bin">
 				<include name="**/**" />
 				<exclude name="org/concoursjeunes/plugins/**" />
+				<exclude name="org/ajdeveloppement/concours/plugins/**" />
 				<exclude name="org/concoursjeunes/webservices/**" />
-				<exclude name="org/concoursjeunes/Main*" />
-				<exclude name="org/concoursjeunes/ui/**" />
+				<exclude name="org/ajdeveloppement/concours/Main*" />
+				<exclude name="org/ajdeveloppement/concours/ui/**" />
 			</fileset>
 			<fileset dir="${projet.pack.dir}/bin">
 				<include name="org/concoursjeunes/plugins/*.*" />
