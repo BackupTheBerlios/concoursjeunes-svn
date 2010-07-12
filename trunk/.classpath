@@ -15,5 +15,6 @@
 	<classpathentry kind="lib" path="lib/swingx-1.6.1.jar"/>
 	<classpathentry kind="lib" path="lib/iText-2.1.7.jar"/>
 	<classpathentry kind="lib" path="lib/h2-1.2.139.jar"/>
+	<classpathentry kind="lib" path="lib/h2mig_pagestore_addon.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

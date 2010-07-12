@@ -169,7 +169,7 @@ public class Main {
 		showSplashScreen();
 		initErrorManaging();
 		initNetworkManaging();
-		checkDatabase();
+		//checkDatabase();
 		initCore();
 		initSecureContext();
 		if(System.getProperty("noplugin") == null)//$NON-NLS-1$
