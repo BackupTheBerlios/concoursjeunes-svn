@@ -195,8 +195,7 @@ public class ConcurrentBuilder {
 								boolean returnfirstval = true;
 								if(!key.getChampsTableArchers().isEmpty()) {
 									List<CriterionElement> arrayList = key.getCriterionElements();
-									if(key.getChampsTableArchers() == null)
-										continue;
+
 									Integer value = (Integer)foreignKeyValue.get(Archer.class).get(key.getChampsTableArchers().toUpperCase());
 									if(value == null)
 										continue;

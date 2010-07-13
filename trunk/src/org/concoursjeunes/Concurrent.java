@@ -91,7 +91,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -100,6 +99,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.Session;
 
 /**
  * Objet de Base de stockage des Information sur un concurrent:
@@ -567,10 +567,19 @@ public class Concurrent extends Archer implements Cloneable {
 		return 0;
 	}
 	
+	@Override
+	public void save(Session session) throws ObjectPersistenceException {
+		if(session == null || !session.contains(this)) {
+			super.save(session);
+			
+			saveCriteriaSet();
+		}
+	}
+	
 	/**
 	 * Sauvegarde le jeux de critère associé à l'archer
 	 */
-	public void saveCriteriaSet() throws ObjectPersistenceException {
+	private void saveCriteriaSet() throws ObjectPersistenceException {
 		if(!getNumLicenceArcher().equals("")) { //$NON-NLS-1$
 			try {
 				
@@ -630,8 +639,7 @@ public class Concurrent extends Archer implements Cloneable {
 		try {
 			Concurrent clone = (Concurrent)super.clone();
 			if(points != null) {
-				clone.points = new ArrayList<Integer>();
-				Collections.copy(clone.points, points);
+				clone.points = new ArrayList<Integer>(points);
 			}
 			return clone;
 		} catch (CloneNotSupportedException e) {

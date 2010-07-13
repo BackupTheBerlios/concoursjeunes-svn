@@ -109,24 +109,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import javax.swing.AbstractListModel;
-import javax.swing.Box;
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTree;
-import javax.swing.ListSelectionModel;
-import javax.swing.SortOrder;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
@@ -151,6 +134,7 @@ import org.concoursjeunes.event.FicheConcoursEvent;
 import org.concoursjeunes.event.FicheConcoursListener;
 import org.concoursjeunes.exceptions.FicheConcoursException;
 import org.concoursjeunes.exceptions.PlacementException;
+import org.concoursjeunes.exceptions.FicheConcoursException.Nature;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.decorator.ColorHighlighter;
@@ -447,9 +431,13 @@ public class FicheConcoursDepartPane extends JPanel
 				try {
 					ficheConcours.addConcurrent(ficheConcoursPane.concDialog.getConcurrent(), depart);
 				} catch (FicheConcoursException e) {
-					JXErrorPane.showDialog(ficheConcoursPane.getParentframe(), new ErrorInfo(ficheConcoursPane.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
-							null, null, e, Level.SEVERE, null));
-					e.printStackTrace();
+					if(e.getNature() == Nature.ALREADY_EXISTS) {
+						JOptionPane.showMessageDialog(ficheConcoursPane.getParentframe(), e.getLocalizedMessage(), "", JOptionPane.ERROR_MESSAGE);
+					} else {
+						JXErrorPane.showDialog(ficheConcoursPane.getParentframe(), new ErrorInfo(ficheConcoursPane.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
+								null, null, e, Level.SEVERE, null));
+						e.printStackTrace();
+					}
 				}
 			}
 		} while (codeRetour == ConcurrentDialog.CONFIRM_AND_NEXT);

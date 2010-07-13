@@ -724,7 +724,7 @@ public class Reglement implements ObjectPersistence {
 	}
 
 	/**
-	 * Détermine si un tableau de score donnée est ou non valide su le règlement
+	 * Détermine si un tableau de score donnée est ou non valide sur le règlement
 	 * 
 	 * @param scores le tableau de score à validé
 	 * @return true si le score est valide, false dans le cas contraire
@@ -918,7 +918,7 @@ public class Reglement implements ObjectPersistence {
 	}
 
 	/**
-	 * Sauvegarde en base les critères de distinction des archers actif pour le réglement
+	 * Sauvegarde en base les critères de distinction des archers actif pour le règlement
 	 * 
 	 * @throws SQLException
 	 */
@@ -1045,10 +1045,30 @@ public class Reglement implements ObjectPersistence {
 	 * @param parent
 	 */
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
+		List<CriteriaSet> jeuxSurclassement = new ArrayList<CriteriaSet>();
+		
+		//remise en état du tableau des surclassement
 		for(Entry<CriteriaSet, CriteriaSet> entry : surclassement.entrySet()) {
 			entry.getKey().setReglement(this);
-			if(entry.getValue() != null)
-				entry.getValue().setReglement(this);
+			if(entry.getValue() != null) {
+				if(!jeuxSurclassement.contains(entry.getValue())) {
+					jeuxSurclassement.add(entry.getValue());
+					entry.getValue().setReglement(this);
+				} else {
+					//Réduction du nombre d'instance
+					//si il existe déjà une instance d'un jeux donnée on l'utilise
+					//au lieu d'une nouvelle instance pour la même chose
+					entry.setValue(jeuxSurclassement.get(jeuxSurclassement.indexOf(entry.getValue())));
+				}
+			}
+		}
+		
+		//réduction du nombre d'instance de jeux de critères dans les distances et blason
+		for(DistancesEtBlason db : listDistancesEtBlason) {
+			if(!jeuxSurclassement.contains(db.getCriteriaSet()))
+				jeuxSurclassement.add(db.getCriteriaSet());
+			else //substitution d'instance
+				db.setCriteriaSet(jeuxSurclassement.get(jeuxSurclassement.indexOf(db.getCriteriaSet())));
 		}
 	}
 

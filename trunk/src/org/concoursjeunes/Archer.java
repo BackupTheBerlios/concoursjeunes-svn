@@ -95,6 +95,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 import org.ajdeveloppement.commons.UncheckedException;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.Session;
 import org.ajdeveloppement.commons.persistence.StoreHelper;
 import org.ajdeveloppement.commons.persistence.sql.SqlField;
 import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
@@ -296,16 +297,13 @@ public class Archer extends Contact {
 	}
 
 	@Override
-	public void save() throws ObjectPersistenceException {
-		super.save();
-		helper.save(this, Collections.<String, Object>singletonMap("ID_CONTACT", getIdContact())); //$NON-NLS-1$
+	public void save(Session session) throws ObjectPersistenceException {
+		if(session == null || !session.contains(this)) {
+			super.save(session);
+			helper.save(this, Collections.<String, Object>singletonMap("ID_CONTACT", getIdContact())); //$NON-NLS-1$
+		}
 	}
 	
-	@Override
-	public void delete() throws ObjectPersistenceException {
-		super.delete(); //le delete parent suffit car cascade
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;

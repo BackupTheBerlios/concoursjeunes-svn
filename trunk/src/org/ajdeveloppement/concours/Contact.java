@@ -487,24 +487,27 @@ public class Contact implements ObjectPersistence, Cloneable {
 			
 			helper.save(this);
 			
-			SqlManager sqlManager = new SqlManager(ApplicationCore.dbConnection, null);
-			try {
-				String savedIdCategories = ""; //$NON-NLS-1$
-				for(CategoryContact categoryContact : categories) {
-					sqlManager.executeUpdate("merge into ASSOCIER_CATEGORIE_CONTACT (ID_CONTACT, NUM_CATEGORIE_CONTACT) " //$NON-NLS-1$
-							+ "VALUES ('" + idContact.toString() + "', " + categoryContact.getNumCategoryContact() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			if(categories != null) {
+				SqlManager sqlManager = new SqlManager(ApplicationCore.dbConnection, null);
+				try {
+					String savedIdCategories = ""; //$NON-NLS-1$
 					
-					savedIdCategories += categoryContact.getNumCategoryContact() + ","; //$NON-NLS-1$
+					for(CategoryContact categoryContact : categories) {
+						sqlManager.executeUpdate("merge into ASSOCIER_CATEGORIE_CONTACT (ID_CONTACT, NUM_CATEGORIE_CONTACT) " //$NON-NLS-1$
+								+ "VALUES ('" + idContact.toString() + "', " + categoryContact.getNumCategoryContact() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+						
+						savedIdCategories += categoryContact.getNumCategoryContact() + ","; //$NON-NLS-1$
+					}
+					String categoriesFilter = ""; //$NON-NLS-1$
+					if(!savedIdCategories.isEmpty()) {
+						savedIdCategories = savedIdCategories.substring(0, savedIdCategories.length() - 1);
+						categoriesFilter = String.format("and NUM_CATEGORIE_CONTACT not in (%s)", savedIdCategories); //$NON-NLS-1$
+					}
+					sqlManager.executeUpdate(String.format("delete from ASSOCIER_CATEGORIE_CONTACT where ID_CONTACT = '%s' " //$NON-NLS-1$
+							+ categoriesFilter, idContact.toString()));
+				} catch (SQLException e) {
+					throw new ObjectPersistenceException(e);
 				}
-				String categoriesFilter = ""; //$NON-NLS-1$
-				if(!savedIdCategories.isEmpty()) {
-					savedIdCategories = savedIdCategories.substring(0, savedIdCategories.length() - 1);
-					categoriesFilter = String.format("and NUM_CATEGORIE_CONTACT not in (%s)", savedIdCategories); //$NON-NLS-1$
-				}
-				sqlManager.executeUpdate(String.format("delete from ASSOCIER_CATEGORIE_CONTACT where ID_CONTACT = '%s' " //$NON-NLS-1$
-						+ categoriesFilter, idContact.toString()));
-			} catch (SQLException e) {
-				throw new ObjectPersistenceException(e);
 			}
 			
 			if(session != null)
