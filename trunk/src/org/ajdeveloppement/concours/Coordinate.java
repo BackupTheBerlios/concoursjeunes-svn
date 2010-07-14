@@ -186,7 +186,6 @@ public class Coordinate implements ObjectPersistence, Cloneable {
 	
 	
 	public Coordinate() {
-		
 	}
 	
 	/**

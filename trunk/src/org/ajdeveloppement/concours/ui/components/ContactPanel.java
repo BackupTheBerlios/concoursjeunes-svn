@@ -88,19 +88,31 @@
  */
 package org.ajdeveloppement.concours.ui.components;
 
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Desktop;
+import java.awt.Desktop.Action;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.EventListener;
 import java.util.List;
 
+import javax.swing.Box;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -113,16 +125,20 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.event.EventListenerList;
 import javax.swing.text.html.HTMLEditorKit;
 
 import org.ajdeveloppement.apps.localisation.Localizable;
 import org.ajdeveloppement.apps.localisation.LocalizationHandler;
 import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.ui.GenericListModel;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.concours.CategoryContact;
 import org.ajdeveloppement.concours.Civility;
 import org.ajdeveloppement.concours.Contact;
+import org.ajdeveloppement.concours.Coordinate;
+import org.ajdeveloppement.concours.Coordinate.Type;
 import org.ajdeveloppement.concours.managers.CategoryContactManager;
 import org.ajdeveloppement.concours.managers.CivilityManager;
 import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
@@ -141,16 +157,28 @@ import org.jdesktop.swingx.JXTitledSeparator;
 import com.lowagie.text.Font;
 
 /**
+ * Panneau d'information sur un contact
+ * 
  * @author Aurélien JEOFFRAY
  *
  */
-public class ContactPanel extends JPanel implements ActionListener{
+public class ContactPanel extends JPanel implements ActionListener, MouseListener {
 	private Profile profile;
-	private Contact contact;
+	private Contact contact = new Contact();
+	private boolean create = true;
 	
 	private BindingGroup contactBinding = null;
 	
 	private List<CategoryContact> categoriesContact = new ArrayList<CategoryContact>();
+	
+	private GenericListModel<Coordinate> coordinatesModel = new GenericListModel<Coordinate>();
+	
+	private CardLayout cardLayout = new CardLayout();
+	private Coordinate editedCoordinate = null;
+	
+	private JPopupMenu popup = null;
+	@Localizable("entite.sendmail")
+	private JMenuItem miMail = new JMenuItem();
 	
 	@Localizable("entite.civility")
 	private JLabel jlCivility = new JLabel();
@@ -190,12 +218,29 @@ public class ContactPanel extends JPanel implements ActionListener{
 	private JXHyperlink jxhNewContact = new JXHyperlink();
 	@Localizable("entite.savecontact")
 	private JXHyperlink jxhSaveContact = new JXHyperlink();
+	private JLabel jlSateSaveContact = new JLabel();
 	
 	private JPopupMenu dropDownMenu = new JPopupMenu();
 	@Localizable(value="entite.removecategory",textMethod="setTitle")
 	private JXTitledSeparator dropDownRemoveSeparator = new JXTitledSeparator();
 	@Localizable(value="entite.addcategory",textMethod="setTitle")
 	private JXTitledSeparator dropDownAddSeparator = new JXTitledSeparator();
+	
+	//Panneau d'édition de coordonnée
+	@Localizable("entite.coordinateheader")
+	private JXHeader jxhCoordinate = new JXHeader();
+	@Localizable("entite.typecoordinate")
+	private JLabel jlTypeCoordinate = new JLabel();
+	private JComboBox jcbTypeCoordinate = new JComboBox();
+	@Localizable("entite.valuecoordinate")
+	private JLabel jlValueCoordinate = new JLabel();
+	private JTextField jtfValueCoordinate = new JTextField();
+	@Localizable("entite.savecoordinate")
+	private JXHyperlink jxhSaveCoordinate = new JXHyperlink();
+	@Localizable("entite.cancelcoordinate")
+	private JXHyperlink jxhCancelCoordinate = new JXHyperlink();
+	
+	private EventListenerList listeners = new EventListenerList();
 	
 	public ContactPanel(Profile profile) {
 		this.profile = profile;
@@ -209,6 +254,8 @@ public class ContactPanel extends JPanel implements ActionListener{
 		GridBagConstraints c = new GridBagConstraints();
 
 		GridbagComposer gridbagComposer = new GridbagComposer();
+		
+		JPanel jpContact = new JPanel();
 		
 		JPanel jpNameFirstName = new JPanel();
 		
@@ -231,6 +278,7 @@ public class ContactPanel extends JPanel implements ActionListener{
 			}
 		});
 		jxhNewCivility.setFont(jxhNewCivility.getFont().deriveFont(Font.NORMAL|Font.ITALIC));
+		jxhNewCivility.setEnabled(false);
 		
 		jlCategories.setEditorKit(new HTMLEditorKit());
 		jlCategories.setOpaque(false);
@@ -240,6 +288,24 @@ public class ContactPanel extends JPanel implements ActionListener{
 		dropDownRemoveSeparator.setForeground(new Color(150,150,150));
 		dropDownAddSeparator.setForeground(new Color(150,150,150));		
 		jlstCoordinates.setVisibleRowCount(5);
+		jlstCoordinates.setModel(coordinatesModel);
+		jlstCoordinates.setCellRenderer(new DefaultListCellRenderer() {
+			@Override
+			public Component getListCellRendererComponent(JList list, Object value,
+					int index, boolean isSelected, boolean cellHasFocus) {
+				
+				if(value instanceof Coordinate) {
+					Coordinate coordinate = (Coordinate)value;
+					value = "<html><span style=\"color: #888888;\">" +  //$NON-NLS-1$
+						profile.getLocalisation().getResourceString("entite.coordinate.type."  //$NON-NLS-1$
+							+ coordinate.getCoordinateType().getValue().toLowerCase()) + " - </span>" +  coordinate.getValue() + "</html>"; //$NON-NLS-1$ //$NON-NLS-2$
+				}
+				
+				return super.getListCellRendererComponent(list, value, index, isSelected,
+						cellHasFocus);
+			}
+		});
+		jlstCoordinates.addMouseListener(this);
 		
 		jpCoordinatesAction.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		
@@ -268,6 +334,7 @@ public class ContactPanel extends JPanel implements ActionListener{
 		jbEditCoordinate.setContentAreaFilled(false);
 		jbEditCoordinate.addActionListener(this);
 		
+		jxhNewContact.addActionListener(this);
 		jxhSaveContact.addActionListener(this);
 		
 		gridbagComposer.setParentPanel(jpNameFirstName);
@@ -291,8 +358,9 @@ public class ContactPanel extends JPanel implements ActionListener{
 		jpContactAction.add(jxhNewContact);
 		jpContactAction.add(new JLabel("-")); //$NON-NLS-1$
 		jpContactAction.add(jxhSaveContact);
+		jpContactAction.add(jlSateSaveContact);
 		
-		gridbagComposer.setParentPanel(this);
+		gridbagComposer.setParentPanel(jpContact);
 		c.gridy = 0;
 		c.gridwidth = 1;
 		c.weightx = 0.0;
@@ -363,6 +431,78 @@ public class ContactPanel extends JPanel implements ActionListener{
 		c.gridy++;
 		c.gridx = 1;
 		gridbagComposer.addComponentIntoGrid(jpContactAction, c);
+		
+		setLayout(cardLayout);
+		add("contact",jpContact); //$NON-NLS-1$
+		add("coordinate", initCoordinatePanel()); //$NON-NLS-1$
+		
+		popup();
+	}
+	
+	private JPanel initCoordinatePanel() {
+		GridBagConstraints c = new GridBagConstraints();
+
+		GridbagComposer gridbagComposer = new GridbagComposer();
+		
+		jcbTypeCoordinate.setRenderer(new DefaultListCellRenderer() {
+			@Override
+			public Component getListCellRendererComponent(JList list,
+					Object value, int index, boolean isSelected,
+					boolean cellHasFocus) {
+				
+				if(value instanceof Coordinate.Type)
+					value = profile.getLocalisation().getResourceString("entite.coordinate.type." + ((Coordinate.Type)value).getValue().toLowerCase()); //$NON-NLS-1$
+				
+				return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+			}
+		});
+		
+		for(Coordinate.Type type : Coordinate.Type.values()) {
+			jcbTypeCoordinate.addItem(type);
+		}
+		
+		jxhSaveCoordinate.addActionListener(this);
+		jxhCancelCoordinate.addActionListener(this);
+		
+		JPanel jpAction = new JPanel();
+		jpAction.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		jpAction.add(jxhSaveCoordinate);
+		jpAction.add(new JLabel(" - ")); //$NON-NLS-1$
+		jpAction.add(jxhCancelCoordinate);
+		
+		JPanel jpCoordinate = new JPanel();
+		
+		gridbagComposer.setParentPanel(jpCoordinate);
+		
+		c.gridy = 0;
+		c.anchor = GridBagConstraints.WEST;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 1.0;
+		c.gridwidth = 2;
+		gridbagComposer.addComponentIntoGrid(jxhCoordinate, c);
+		c.gridy++;
+		c.gridwidth = 1;
+		gridbagComposer.addComponentIntoGrid(jlTypeCoordinate, c);
+		gridbagComposer.addComponentIntoGrid(jcbTypeCoordinate, c);
+		c.gridy++;
+		gridbagComposer.addComponentIntoGrid(jlValueCoordinate, c);
+		gridbagComposer.addComponentIntoGrid(jtfValueCoordinate, c);
+		c.gridy++;
+		c.gridwidth = 2;
+		c.weightx = 0.0;
+		gridbagComposer.addComponentIntoGrid(jpAction, c);
+		c.gridy++;
+		c.weighty = 1.0;
+		gridbagComposer.addComponentIntoGrid(Box.createGlue(), c);
+		
+		return jpCoordinate;
+	}
+	
+	private void popup() {
+		popup = new JPopupMenu("Action"); //$NON-NLS-1$
+		
+		miMail.addActionListener(this);
+		popup.add(miMail);
 	}
 	
 	private void affectLibelle() {
@@ -386,6 +526,8 @@ public class ContactPanel extends JPanel implements ActionListener{
 			e.printStackTrace();
 		}
 		
+		
+		
 		if(contact != null) {
 			contactBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, contact, BeanProperty.create("civility"), jcbCivility, BeanProperty.create("selectedItem")));  //$NON-NLS-1$//$NON-NLS-2$
 			contactBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, contact, BeanProperty.create("name"), jtfName, BeanProperty.create("text"))); //$NON-NLS-1$ //$NON-NLS-2$
@@ -398,9 +540,18 @@ public class ContactPanel extends JPanel implements ActionListener{
 			contactBinding.bind();
 			
 			categoriesContact = contact.getCategories();
+			
+			if(contact.getCoordinates() != null)
+				coordinatesModel.setElements(new ArrayList<Coordinate>(contact.getCoordinates()));
+			
+			jlSateSaveContact.setEnabled(true);
+		} else {
+			jlSateSaveContact.setEnabled(false);
 		}
 		
 		populateCategoriesPanel();
+		
+		jlSateSaveContact.setIcon(null);
 	}
 	
 	private void populateCategoriesPanel() {
@@ -471,43 +622,163 @@ public class ContactPanel extends JPanel implements ActionListener{
 		}
 	}
 	
-//	public JXPanel getAddCategoryPanel() {
-//		JXPanel panel = new JXPanel();
-//		
-//		JXPanel jpCategories = new JXPanel();
-//		
-//		jpCategories.add(new JComboBox());
-//		
-//		panel.setLayout(new BorderLayout());
-//		panel.add(jpCategories, BorderLayout.CENTER);
-//		
-//		return panel;
-//	}
+	public void addContactPanelListener(ContactPanelListener listener) {
+		listeners.add(ContactPanelListener.class, listener);
+	}
 	
+	public void removeContactPanelListener(ContactPanelListener listener) {
+		listeners.remove(ContactPanelListener.class, listener);
+	}
+	
+	/**
+	 * Définit le contact à afficher / modifier
+	 * 
+	 * @param contact le contact à afficher / modifier
+	 */
 	public void setContact(Contact contact) {
 		this.contact = contact;
+		create = false;
 		
 		completePanel();
+	}
+	
+	public void setEnabledCreateContact(boolean enabledCreateContact) {
+		jxhNewContact.setEnabled(enabledCreateContact);
+	}
+	
+
+	/**
+	 * @return enabledCreateContact
+	 */
+	public boolean isEnabledCreateContact() {
+		return jxhNewContact.isEnabled();
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() == jxhSaveContact) {
-			if(contactBinding != null) {
-            	for(Binding<Contact, ?, ?, ?> binding : contactBinding.getBindings()) {
-            		binding.save();
-            	}
-        	}
-			contact.setCategories(categoriesContact);
+		if(e.getSource() == jxhNewContact) {
+			setContact(new Contact());
 			
-			try {
-				contact.save();
-			} catch (ObjectPersistenceException e1) {
-				DisplayableErrorHelper.displayException(e1);
-				e1.printStackTrace();
+			create = true;
+		} else if(e.getSource() == jxhSaveContact) {
+			if(contact != null) {
+				if(contactBinding != null) {
+	            	for(Binding<Contact, ?, ?, ?> binding : contactBinding.getBindings()) {
+	            		binding.save();
+	            	}
+	        	}
+				contact.setCategories(categoriesContact);
+				contact.setCoordinates(new ArrayList<Coordinate>(coordinatesModel.getElements()));
+				
+				try {
+					contact.save();
+					
+					jlSateSaveContact.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.success", 16, 16)); //$NON-NLS-1$
+					
+					if(!create)
+						fireContactEdited(contact);
+					else
+						fireContactAdded(contact);
+				} catch (ObjectPersistenceException e1) {
+					DisplayableErrorHelper.displayException(e1);
+					e1.printStackTrace();
+					
+					jlSateSaveContact.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.failed", 16, 16)); //$NON-NLS-1$
+				}
 			}
 		} else if(e.getSource() == jxhCategories) {
 			dropDownMenu.show(jxhCategories, 0, jxhCategories.getHeight());
+		} else if(e.getSource() == jbAddCoordinate || e.getSource() == jbEditCoordinate) {
+			if(e.getSource() == jbAddCoordinate)
+				editedCoordinate = new Coordinate();
+			else
+				editedCoordinate = (Coordinate)jlstCoordinates.getSelectedValue();
+			
+			jcbTypeCoordinate.setSelectedItem(editedCoordinate.getCoordinateType());
+			jtfValueCoordinate.setText(editedCoordinate.getValue());
+			
+			cardLayout.show(this, "coordinate"); //$NON-NLS-1$
+		} else if(e.getSource() == jbDelCoordinate) {
+			coordinatesModel.remove((Coordinate)jlstCoordinates.getSelectedValue());
+		} else if(e.getSource() == jxhSaveCoordinate || e.getSource() == jxhCancelCoordinate) {
+			if(e.getSource() == jxhSaveCoordinate) {
+				editedCoordinate.setCoordinateType((Coordinate.Type)jcbTypeCoordinate.getSelectedItem());
+				editedCoordinate.setValue(jtfValueCoordinate.getText());
+				if(!coordinatesModel.getElements().contains(editedCoordinate))
+					coordinatesModel.add(editedCoordinate);
+			}
+			cardLayout.show(this, "contact"); //$NON-NLS-1$
+		} else if(e.getSource() == miMail) {
+			if(Desktop.isDesktopSupported()) {
+				if(Desktop.getDesktop().isSupported(Action.MAIL)) {
+					URI uri;
+					try {
+						uri = new URI(
+								String.format("mailto:%s?body=%s", //$NON-NLS-1$
+										((Coordinate)jlstCoordinates.getSelectedValue()).getValue(),
+										("Bonjour " + contact.getFullNameWithCivility() + ",").replace(" ", "%20"))  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+								);
+						Desktop.getDesktop().mail(uri);
+					} catch (UnsupportedEncodingException e1) {
+						DisplayableErrorHelper.displayException(e1);
+						e1.printStackTrace();
+					} catch (URISyntaxException e1) {
+						DisplayableErrorHelper.displayException(e1);
+						e1.printStackTrace();
+					} catch (IOException e1) {
+						DisplayableErrorHelper.displayException(e1);
+						e1.printStackTrace();
+					}
+					
+				}
+			}
 		}
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
+			int elemIndex = jlstCoordinates.locationToIndex(e.getPoint());
+
+			if(elemIndex > -1)
+				jlstCoordinates.setSelectedIndex(elemIndex);
+				
+			if(jlstCoordinates.getSelectedValue() != null && ((Coordinate)jlstCoordinates.getSelectedValue()).getCoordinateType() == Type.MAIL)
+				popup.show(jlstCoordinates, e.getX(), e.getY());
+		}
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+	}
+	
+	private void fireContactEdited(Contact contact) {
+		for(ContactPanelListener l : listeners.getListeners(ContactPanelListener.class)) {
+			l.contactEdited(contact);
+		}
+	}
+	
+	private void fireContactAdded(Contact contact) {
+		for(ContactPanelListener l : listeners.getListeners(ContactPanelListener.class)) {
+			l.contactAdded(contact);
+		}
+	}
+	
+	public static interface ContactPanelListener extends EventListener {
+		public void contactEdited(Contact contact);
+		
+		public void contactAdded(Contact contact);
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * Créé le 8 mai 2010 à 16:42:22 pour ConcoursJeunes
+ * Créé le 14 juil. 2010 à 15:56:50 pour ConcoursJeunes / ArcCompétition
  *
  * Copyright 2002-2010 - Aurélien JEOFFRAY
  *
@@ -86,53 +86,92 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.ajdeveloppement.concours.managers;
+package org.ajdeveloppement.concours.ui.dialog;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
-import org.ajdeveloppement.concours.Civility;
-import org.ajdeveloppement.concours.builders.CivilityBuilder;
-import org.concoursjeunes.ApplicationCore;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+
+import org.ajdeveloppement.apps.localisation.Localizable;
+import org.ajdeveloppement.apps.localisation.Localizator;
+import org.ajdeveloppement.concours.Contact;
+import org.ajdeveloppement.concours.ui.components.ContactPanel;
+import org.concoursjeunes.Profile;
 
 /**
  * @author Aurélien JEOFFRAY
- *
+ * 
  */
-public class CivilityManager {
-	private static PreparedStatement pstmtAllCivilities = null;
+public class ContactDialog extends JDialog implements ActionListener {
+	private Profile profile;
+	private Contact contact;
+
+	private ContactPanel contactPanel;
 	
-	private static List<Civility> cacheCivilities = null;
-	
-	/**
-	 * Retourne l'ensemble des civilités en base.
-	 * 
-	 * @return la liste des civilités en base
-	 * @throws ObjectPersistenceException 
-	 */
-	public static List<Civility> getAllCivilities() throws ObjectPersistenceException {
-		if(cacheCivilities == null) {
-			cacheCivilities = new ArrayList<Civility>();
-			try {
-				if(pstmtAllCivilities == null)
-					pstmtAllCivilities = ApplicationCore.dbConnection.prepareStatement("select * from CIVILITY"); //$NON-NLS-1$
-				
-				ResultSet rs = pstmtAllCivilities.executeQuery();
-				try {
-					while(rs.next())
-						cacheCivilities.add(CivilityBuilder.getCivility(rs));
-				} finally {
-					rs.close();
-				}
-			} catch (SQLException e) {
-				throw new ObjectPersistenceException(e);
-			}
-		}
+	@Localizable("bouton.fermer")
+	private JButton jbClose = new JButton();
+
+	public ContactDialog(JDialog parent, Profile profile) {
+		super(parent);
 		
-		return cacheCivilities;
+		this.profile = profile;
+
+		init();
+		affectLibelle();
+	}
+
+	private void init() {
+		contactPanel = new ContactPanel(profile);
+		contactPanel.setSize(438, 400);
+		
+		jbClose.addActionListener(this);
+		
+		JPanel jpAction = new JPanel();
+		jpAction.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		jpAction.add(jbClose);
+
+		setLayout(new BorderLayout());
+
+		add(BorderLayout.CENTER, contactPanel);
+		add(BorderLayout.SOUTH, jpAction);
+	}
+
+	private void affectLibelle() {
+		Localizator.localize(this, profile.getLocalisation());
+	}
+
+	private void completePanel() {
+		if (contactPanel != null) {
+			contactPanel.setContact(contact);
+		}
+	}
+	
+	public void setEnabledCreateContact(boolean enabledCreateContact) {
+		if (contactPanel != null) {
+			contactPanel.setEnabledCreateContact(enabledCreateContact);
+		}
+	}
+
+	public void showContactDialog(Contact contact) {
+		this.contact = contact;
+
+		completePanel();
+
+		setSize(438, 450);
+		setResizable(false);
+		setLocationRelativeTo(null);
+		setVisible(true);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() == jbClose) {
+			setVisible(false);
+		}
 	}
 }

@@ -86,9 +86,11 @@
  */
 package org.concoursjeunes;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -102,6 +104,7 @@ import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
 import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
 import org.ajdeveloppement.commons.persistence.sql.SqlTable;
 import org.ajdeveloppement.commons.persistence.sql.SqlUnmappedFields;
+import org.ajdeveloppement.commons.sql.SqlManager;
 import org.ajdeveloppement.concours.Contact;
 import org.concoursjeunes.manager.ConcurrentManager;
 
@@ -299,6 +302,23 @@ public class Archer extends Contact {
 	@Override
 	public void save(Session session) throws ObjectPersistenceException {
 		if(session == null || !session.contains(this)) {
+			SqlManager sqlManager = new SqlManager(ApplicationCore.dbConnection, null);
+			//Avant d'enregistrer, on recherche dans la base si il n'y a pas déjà un enregistrement pour ce contact avec
+			//un autre id
+			try {
+				ResultSet rs = sqlManager.executeQuery(
+						String.format("select CONTACT.ID_CONTACT from CONTACT inner join ARCHERS on CONTACT.ID_CONTACT=ARCHERS.ID_CONTACT where NAME='%s' and FIRSTNAME='%s' and NUMLICENCEARCHER='%s'", //$NON-NLS-1$
+								this.getName().replace("'", "''"), this.getFirstName().replace("'", "''"), this.getNumLicenceArcher().replace("'", "''"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+				if(rs.first()) {
+					UUID savedidContact = (UUID)rs.getObject("ID_CONTACT"); //$NON-NLS-1$
+					if(!savedidContact.equals(getIdContact()))
+						return;
+				}
+			} catch (SQLException e) {
+				throw new ObjectPersistenceException(e);
+			}
+			
+			
 			super.save(session);
 			helper.save(this, Collections.<String, Object>singletonMap("ID_CONTACT", getIdContact())); //$NON-NLS-1$
 		}

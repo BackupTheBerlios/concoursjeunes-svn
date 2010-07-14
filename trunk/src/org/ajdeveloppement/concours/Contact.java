@@ -116,8 +116,10 @@ import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
 import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
 import org.ajdeveloppement.commons.persistence.sql.SqlTable;
 import org.ajdeveloppement.commons.sql.SqlManager;
+import org.ajdeveloppement.concours.managers.CivilityManager;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Entite;
+import org.concoursjeunes.manager.EntiteManager;
 
 /**
  * Represent a contact person. This class can be serialised with JAXB.
@@ -394,6 +396,9 @@ public class Contact implements ObjectPersistence, Cloneable {
 	 */
 	public void setCoordinates(List<Coordinate> coordinates) {
 		this.coordinates = coordinates;
+		
+		for(Coordinate coordinate : coordinates)
+			coordinate.setContact(this);
 	}
 
 	/**
@@ -485,11 +490,30 @@ public class Contact implements ObjectPersistence, Cloneable {
 			if(idContact == null)
 				idContact = UUID.randomUUID();
 			
-			helper.save(this);
+			if(entite != null) {
+				if(!entite.getNom().isEmpty()) {
+					entite.save(session);
+					
+					if(!session.contains(entite)) {
+						//si l'instance n'a pas été sauvegardé c'est qu'il existe une instance concurrente en base
+						//on va don l'utiliser
+						List<Entite> entitesInDatabase = EntiteManager.getEntitesInDatabase(entite, ""); //$NON-NLS-1$
+						if(entitesInDatabase != null && entitesInDatabase.size() > 0)
+							entite = entitesInDatabase.get(0);
+						else //ne devrais pas ce produire compte tenu des tests précédents mais dans le doute pour éviter les plantages on stop la sauvegarde
+							return;
+					}
+				} else
+					entite = null;
+			}
 			
-			if(categories != null) {
-				SqlManager sqlManager = new SqlManager(ApplicationCore.dbConnection, null);
-				try {
+			SqlManager sqlManager = new SqlManager(ApplicationCore.dbConnection, null);
+			try {
+				
+				helper.save(this);
+			
+				if(categories != null) {
+				
 					String savedIdCategories = ""; //$NON-NLS-1$
 					
 					for(CategoryContact categoryContact : categories) {
@@ -505,9 +529,32 @@ public class Contact implements ObjectPersistence, Cloneable {
 					}
 					sqlManager.executeUpdate(String.format("delete from ASSOCIER_CATEGORIE_CONTACT where ID_CONTACT = '%s' " //$NON-NLS-1$
 							+ categoriesFilter, idContact.toString()));
-				} catch (SQLException e) {
-					throw new ObjectPersistenceException(e);
+				
+				} else {
+					sqlManager.executeUpdate(String.format("delete from ASSOCIER_CATEGORIE_CONTACT where ID_CONTACT = '%s'", idContact.toString())); //$NON-NLS-1$
 				}
+			
+				if(coordinates != null && coordinates.size() > 0) {
+					String savedIdCoordinates = ""; //$NON-NLS-1$
+					
+					for(Coordinate coordinate : coordinates) {
+						coordinate.save(session);
+						
+						savedIdCoordinates += String.format("'%s',", coordinate.getIdCoordinate().toString()); //$NON-NLS-1$
+					}
+					
+					if(!savedIdCoordinates.isEmpty()) {
+						savedIdCoordinates = savedIdCoordinates.substring(0, savedIdCoordinates.length() - 1);
+						
+						sqlManager.executeUpdate(String.format("delete from COORDINATE where ID_CONTACT = '%s' and ID_COORDINATE not in (%s)", //$NON-NLS-1$
+								idContact.toString(),
+								savedIdCoordinates));
+					}
+				} else {
+					sqlManager.executeUpdate(String.format("delete from COORDINATE where ID_CONTACT = '%s'", idContact.toString())); //$NON-NLS-1$
+				}
+			} catch (SQLException e) {
+				throw new ObjectPersistenceException(e);
 			}
 			
 			if(session != null)
@@ -552,6 +599,27 @@ public class Contact implements ObjectPersistence, Cloneable {
 			idContact = UUID.fromString(xmlId);
 		
 		xmlId = null;
+		
+		//met à null les instances vide de civilité
+		if(civility != null) {
+			if(civility.getAbreviation() == null || civility.getAbreviation().isEmpty())
+				civility = null;
+			else {
+				try {
+					List<Civility> civilities = CivilityManager.getAllCivilities();
+					
+					for(Civility c : civilities) {
+						if(c.getIdCivility().equals(civility.getIdCivility()) || (c.getAbreviation().equals(civility.getAbreviation()) && c.getLibelle().equals(civility.getLibelle()))) {
+							civility = c;
+							break;
+						}
+					}
+				} catch (ObjectPersistenceException e) {
+					civility = null;
+					e.printStackTrace();
+				}
+			}
+		}
 		
 		entite.afterUnmarshal(unmarshaller, this);
 	}

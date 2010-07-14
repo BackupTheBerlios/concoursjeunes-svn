@@ -86,6 +86,7 @@
  */
 package org.concoursjeunes;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -108,6 +109,7 @@ import org.ajdeveloppement.commons.persistence.sql.SqlField;
 import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
 import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
 import org.ajdeveloppement.commons.persistence.sql.SqlTable;
+import org.ajdeveloppement.commons.sql.SqlManager;
 import org.ajdeveloppement.concours.Contact;
 import org.ajdeveloppement.concours.cache.EntiteCache;
 import org.ajdeveloppement.concours.managers.ContactManager;
@@ -414,6 +416,26 @@ public class Entite implements ObjectPersistence {
 			if(idEntite == null)
 				idEntite = UUID.randomUUID();
 			
+			if(nom == null || nom.isEmpty())
+				return;
+			
+			SqlManager sqlManager = new SqlManager(ApplicationCore.dbConnection, null);
+			//Avant d'enregistrer, on recherche dans la base si il n'y a pas déjà un enregistrement pour cette entite avec
+			//un autre id
+			try {
+				ResultSet rs = sqlManager.executeQuery(
+						String.format("select ID_ENTITE from ENTITE where AGREMENTENTITE='%s' and NOMENTITE='%s'", //$NON-NLS-1$
+								(agrement != null) ? agrement.replace("'", "''") : "", nom.replace("'", "''"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+				if(rs.first()) {
+					UUID savedIdEntite = (UUID)rs.getObject("ID_ENTITE"); //$NON-NLS-1$
+					if(!savedIdEntite.equals(idEntite))
+						return;
+				}
+			} catch (SQLException e) {
+				throw new ObjectPersistenceException(e);
+			}
+
+			
 			helper.save(this);
 			
 			if(session != null)
@@ -471,9 +493,14 @@ public class Entite implements ObjectPersistence {
 	 */
 	@Override
 	public int hashCode() {
-		final int PRIME = 31;
+		final int prime = 31;
 		int result = 1;
-		result = PRIME * result + ((agrement == null) ? 0 : agrement.hashCode());
+		result = prime * result
+				+ ((agrement == null) ? 0 : agrement.hashCode());
+		result = prime * result
+				+ ((idEntite == null) ? 0 : idEntite.hashCode());
+		result = prime * result + ((note == null) ? 0 : note.hashCode());
+		result = prime * result + ((ville == null) ? 0 : ville.hashCode());
 		return result;
 	}
 
@@ -488,11 +515,26 @@ public class Entite implements ObjectPersistence {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		final Entite other = (Entite) obj;
+		Entite other = (Entite) obj;
 		if (agrement == null) {
 			if (other.agrement != null)
 				return false;
 		} else if (!agrement.equals(other.agrement))
+			return false;
+		if (idEntite == null) {
+			if (other.idEntite != null)
+				return false;
+		} else if (!idEntite.equals(other.idEntite))
+			return false;
+		if (note == null) {
+			if (other.note != null)
+				return false;
+		} else if (!note.equals(other.note))
+			return false;
+		if (ville == null) {
+			if (other.ville != null)
+				return false;
+		} else if (!ville.equals(other.ville))
 			return false;
 		return true;
 	}

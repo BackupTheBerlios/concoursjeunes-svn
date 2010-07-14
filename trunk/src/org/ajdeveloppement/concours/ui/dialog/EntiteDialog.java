@@ -124,17 +124,18 @@ import org.ajdeveloppement.concours.CategoryContact;
 import org.ajdeveloppement.concours.Contact;
 import org.ajdeveloppement.concours.managers.CategoryContactManager;
 import org.ajdeveloppement.concours.ui.components.ContactPanel;
+import org.ajdeveloppement.concours.ui.components.ContactPanel.ContactPanelListener;
 import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
 import org.ajdeveloppement.swingxext.localisation.JXHeaderLocalisationHandler;
 import org.concoursjeunes.Entite;
 import org.concoursjeunes.Federation;
 import org.concoursjeunes.Profile;
 import org.concoursjeunes.manager.FederationManager;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Binding;
 import org.jdesktop.beansbinding.BindingGroup;
 import org.jdesktop.beansbinding.Bindings;
-import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.JXTitledSeparator;
 import org.jdesktop.swingx.painter.GlossPainter;
@@ -143,7 +144,7 @@ import org.jdesktop.swingx.painter.GlossPainter;
  * @author Aurélien JEOFFRAY
  */
 @Localizable(value="entite.title",textMethod="setTitle")
-public class EntiteDialog extends JDialog implements ActionListener, ListSelectionListener {
+public class EntiteDialog extends JDialog implements ActionListener, ListSelectionListener, ContactPanelListener {
 	private Profile profile;
 	private Entite entite;
 	
@@ -241,6 +242,7 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 		
 		contactPanel = new ContactPanel(profile);
 		contactPanel.setSize(438, 400);
+		contactPanel.addContactPanelListener(this);
 		// [end]
 		
 		// [start] paramétrage des composants
@@ -548,6 +550,25 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 		if(contactPanel != null) {
 			contactPanel.setContact((Contact)jlResultList.getSelectedValue());
 			//this.getGlassPane().setVisible(true);
+		}
+	}
+
+	@Override
+	public void contactEdited(Contact contact) {
+		refreshListContact();
+	}
+
+	@Override
+	public void contactAdded(Contact contact) {
+		contact.setEntite(entite);
+		entite.getContacts().add(contact);		
+		try {
+			contact.save();
+			
+			refreshListContact();
+		} catch (ObjectPersistenceException e) {
+			DisplayableErrorHelper.displayException(e);
+			e.printStackTrace();
 		}
 	}
 }

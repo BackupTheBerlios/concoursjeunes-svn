@@ -121,7 +121,7 @@ public class CoordinateBuilder {
 	}
 	
 	public static Coordinate getCoordinate(ResultSet rs) throws ObjectPersistenceException {
-		return getCoordinate(rs);
+		return getCoordinate(null, rs);
 	}
 	
 	private static Coordinate getCoordinate(UUID idCoordinate, ResultSet rs) throws ObjectPersistenceException {

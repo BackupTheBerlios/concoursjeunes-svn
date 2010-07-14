@@ -118,7 +118,19 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.PlainDocument;
 
@@ -131,10 +143,26 @@ import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
 import org.ajdeveloppement.concours.ui.ConcoursJeunesFrame;
 import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
-import org.concoursjeunes.*;
+import org.concoursjeunes.ApplicationCore;
+import org.concoursjeunes.Archer;
+import org.concoursjeunes.AutoCompleteDocument;
+import org.concoursjeunes.AutoCompleteDocumentContext;
+import org.concoursjeunes.Blason;
+import org.concoursjeunes.Concurrent;
+import org.concoursjeunes.CriteriaSet;
+import org.concoursjeunes.Criterion;
+import org.concoursjeunes.CriterionElement;
+import org.concoursjeunes.DistancesEtBlason;
+import org.concoursjeunes.Entite;
+import org.concoursjeunes.FicheConcours;
+import org.concoursjeunes.Profile;
+import org.concoursjeunes.Reglement;
+import org.concoursjeunes.TargetPosition;
+import org.concoursjeunes.TargetsOccupation;
 import org.concoursjeunes.event.AutoCompleteDocumentEvent;
 import org.concoursjeunes.event.AutoCompleteDocumentListener;
 import org.concoursjeunes.localisable.CriteriaSetLibelle;
+import org.jdesktop.swingx.JXHyperlink;
 
 /**
  * Boite de dialogue de gestion d'un concurrent
@@ -166,6 +194,8 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	private JLabel jlNom = new JLabel(); // Nom et prénom du Tireur
 	@Localizable("concurrent.numlicence")
 	private JLabel jlLicence = new JLabel(); // N° de Licence
+	@Localizable("concurrent.seecontactdialog")
+	private JXHyperlink jxhSeeContactDialog = new JXHyperlink();
 	@Localizable("concurrent.nomclub")
 	private JLabel jlClub = new JLabel(); // nom du club
 	@Localizable("concurrent.agrementclub")
@@ -318,6 +348,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 				File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.select"))); //$NON-NLS-1$
 		jtfNom.addFocusListener(this);
 		jtfPrenom.addFocusListener(this);
+		jxhSeeContactDialog.addActionListener(this);
 		
 		jcbBlason.setEnabled(false);
 
@@ -379,7 +410,12 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		c.gridwidth = 4;
 		gridbagComposer.addComponentIntoGrid(jtfLicence, c);
 		c.gridy++;
+		c.gridwidth = 9;
+		c.anchor = GridBagConstraints.EAST;
+		gridbagComposer.addComponentIntoGrid(jxhSeeContactDialog, c);
+		c.gridy++;
 		c.gridwidth = 5;
+		c.anchor = GridBagConstraints.WEST;
 		gridbagComposer.addComponentIntoGrid(jcbHandicape, c);
 		c.gridy++;
 		gridbagComposer.addComponentIntoGrid(jcbSurclassement, c);
@@ -1081,6 +1117,12 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 					File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.open") //$NON-NLS-1$
 			));
 
+		} else if(ae.getSource() == jxhSeeContactDialog) {
+			if(concurrent != null) {
+				ContactDialog contactDialog = new ContactDialog(this, profile);
+				contactDialog.setEnabledCreateContact(false);
+				contactDialog.showContactDialog(concurrent);
+			}
 		}
 	}
 	
