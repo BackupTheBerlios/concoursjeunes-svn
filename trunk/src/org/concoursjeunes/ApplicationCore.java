@@ -104,6 +104,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -157,6 +158,13 @@ public class ApplicationCore {
 	 * version de la base de donnée
 	 */
 	public static int dbVersion = 0;
+	
+	/**
+	 * Identifiant unique de la base de données. Permet d'identifier
+	 * si les fiches concours sont sérialisé avec des données en provenance
+	 * de la base courante ou d'une autre base.
+	 */
+	public static UUID dbUUID = null;
 	
 	private static ApplicationCore instance;
 
@@ -272,8 +280,9 @@ public class ApplicationCore {
 			stmt = dbConnection.createStatement();
 			SqlManager sqlManager = new SqlManager(dbConnection, updatePath);
 
+			dbConnection.getMetaData().getTables(null, "PUBLIC", "PARAM", new String[] {"TABLE"}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			// test si la base existe déjà et retourne sa révision si c'est le cas
-			ResultSet rs = stmt.executeQuery("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='PARAM'"); //$NON-NLS-1$
+			ResultSet rs = dbConnection.getMetaData().getTables(null, "PUBLIC", "PARAM", new String[] {"TABLE"}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			if (rs.first()) {
 				dbVersion = getDBVersion();
 			}
@@ -315,6 +324,7 @@ public class ApplicationCore {
 		} finally {
 			try { if(stmt != null) stmt.close(); } catch (SQLException e) { }
 			dbVersion = getDBVersion();
+			dbUUID = getDBUUID();
 		}
 	}
 	
@@ -341,9 +351,14 @@ public class ApplicationCore {
 		try {
 			stmt = dbConnection.createStatement();
 
-			ResultSet rs = stmt.executeQuery("SELECT * FROM PARAM"); //$NON-NLS-1$
-			rs.first();
-			return rs.getInt("DBVERSION");   //$NON-NLS-1$
+			ResultSet rs = stmt.executeQuery("SELECT DBVERSION FROM PARAM"); //$NON-NLS-1$
+			try {
+				if(rs.first())
+					return rs.getInt("DBVERSION");   //$NON-NLS-1$
+			} finally {
+				if(rs != null)
+					rs.close();
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -355,6 +370,32 @@ public class ApplicationCore {
 		}
 
 		return 0;
+	}
+	
+	private UUID getDBUUID() {
+		Statement stmt = null;
+		try {
+			stmt = dbConnection.createStatement();
+
+			ResultSet rs = stmt.executeQuery("SELECT DBUUID FROM PARAM"); //$NON-NLS-1$
+			try {
+				if(rs.first())
+					return (UUID)rs.getObject("DBUUID");   //$NON-NLS-1$
+			} finally {
+				if(rs != null)
+					rs.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (stmt != null)
+					stmt.close();
+			} catch (Exception e) {
+			}
+		}
+		
+		return null;
 	}
 
 	/**

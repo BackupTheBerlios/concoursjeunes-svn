@@ -107,6 +107,7 @@ import org.concoursjeunes.Profile;
  * @author Aurélien JEOFFRAY
  * 
  */
+@Localizable(value="contact.title",textMethod="setTitle")
 public class ContactDialog extends JDialog implements ActionListener {
 	private Profile profile;
 	private Contact contact;
@@ -127,7 +128,8 @@ public class ContactDialog extends JDialog implements ActionListener {
 
 	private void init() {
 		contactPanel = new ContactPanel(profile);
-		contactPanel.setSize(438, 400);
+		contactPanel.setSize(438, 450);
+		contactPanel.setSaveOnlyInMemoryBean(true);
 		
 		jbClose.addActionListener(this);
 		
@@ -162,8 +164,8 @@ public class ContactDialog extends JDialog implements ActionListener {
 
 		completePanel();
 
-		setSize(438, 450);
-		setResizable(false);
+		setSize(450, 450);
+		//setResizable(false);
 		setLocationRelativeTo(null);
 		setVisible(true);
 	}

@@ -297,6 +297,7 @@ public class Profile {
 			throw new NullConfigurationException("la configuration est null"); //$NON-NLS-1$
 
 		FicheConcours ficheConcours = new FicheConcours(this, parametre);
+		ficheConcours.setDbUUID(ApplicationCore.dbUUID);
 		fichesConcours.add(ficheConcours);
 		configuration.getMetaDataFichesConcours().add(ficheConcours.getMetaDataFicheConcours());
 

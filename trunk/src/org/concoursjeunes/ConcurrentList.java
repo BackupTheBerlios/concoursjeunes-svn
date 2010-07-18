@@ -797,6 +797,10 @@ public class ConcurrentList {
 	 */
 	public void setParametre(Parametre parametre) {
 		this.parametre = parametre;
+		if(archList != null) {
+			for(Concurrent concurrent : archList)
+				concurrent.getCriteriaSet().setReglement(parametre.getReglement());
+		}
 	}
 	
 	/**

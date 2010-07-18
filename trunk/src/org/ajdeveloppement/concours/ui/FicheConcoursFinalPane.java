@@ -104,10 +104,12 @@ import org.concoursjeunes.CriteriaSet;
 import org.concoursjeunes.Duel;
 import org.concoursjeunes.FicheConcours;
 import org.concoursjeunes.PhaseFinal;
+import org.concoursjeunes.localisable.CriteriaSetLibelle;
 import org.w3c.dom.Document;
 
 import com.mxgraph.io.mxCodec;
 import com.mxgraph.swing.mxGraphComponent;
+import com.mxgraph.util.mxRectangle;
 import com.mxgraph.util.mxUtils;
 import com.mxgraph.view.mxGraph;
 
@@ -155,6 +157,7 @@ public class FicheConcoursFinalPane extends JPanel implements ActionListener {
 		graphComponent.setBackground(Color.WHITE);
 		graphComponent.setOpaque(false);
 		graphComponent.setZoomPolicy(mxGraphComponent.ZOOM_POLICY_WIDTH);
+		graphComponent.setFoldingEnabled(false);
 		
 		setLayout(new BorderLayout());
 		add(graphComponent, BorderLayout.CENTER);
@@ -177,20 +180,24 @@ public class FicheConcoursFinalPane extends JPanel implements ActionListener {
 			for(CriteriaSet criteriaSet : ficheConcours.getConcurrentList().listCriteriaSet()) {
 				int nombrePhaseCategorie = phaseFinal.getNombrePhase(criteriaSet);
 				
-				int startHeight = startHeightCriteriaSet;
-				int elementHeight = 50;
+				int startHeight = 5;
+				int elementHeight = 120;
 				int spacingHeight = 20;
 				int decalage = 0;
 				int padding = elementHeight + spacingHeight;
 				
 				int duelHeight = elementHeight * 2 + spacingHeight;
 				
+				Object categoryGraphElement = graph.insertVertex(parent, null, 
+						new CriteriaSetLibelle(criteriaSet, ficheConcoursPane.getLocalisation()), 
+						0, startHeightCriteriaSet - 20, 1, 1, "swimlane;horizontal=0"); //$NON-NLS-1$
+				
 				Map<Integer, List<Object>> objectsPhase = new HashMap<Integer,  List<Object>>();
 				
 				for(int i = 0; i < nombrePhaseCategorie; i++) {
 					if(i > 0) {
 						decalage += (duelHeight / 2) - (elementHeight / 2);
-						startHeight = startHeightCriteriaSet + decalage;
+						startHeight = 5 + decalage;
 						padding = elementHeight + spacingHeight + decalage * 2;
 						duelHeight = padding + elementHeight;
 					}
@@ -202,8 +209,14 @@ public class FicheConcoursFinalPane extends JPanel implements ActionListener {
 							if(!objectsPhase.containsKey(i))
 								objectsPhase.put(i, new ArrayList<Object>());
 							
-							objectsPhase.get(i).add(graph.insertVertex(parent, null, duel.getConcurrent1().getFullName(), 20 + 380 * i, startHeight + objectsPhase.get(i).size()*padding, 250, 50));
-							objectsPhase.get(i).add(graph.insertVertex(parent, null, duel.getConcurrent2().getFullName(), 20 + 380 * i, startHeight + objectsPhase.get(i).size()*padding, 250, 50));
+							Object duelGraphElement = graph.insertVertex(categoryGraphElement, null, "Contre", 30 + 380 * i, startHeight + objectsPhase.get(i).size()*padding, 260, 130); //$NON-NLS-1$ //$NON-NLS-2$
+							
+							objectsPhase.get(i).add(duelGraphElement);
+							
+							graph.insertVertex(duelGraphElement, null, duel.getConcurrent1().getFullName(), 5, 5, 250, 50,
+									duel.getWinner() == duel.getConcurrent1() ? "fillColor=green" : "fillColor=gray"); //$NON-NLS-1$ //$NON-NLS-2$
+							graph.insertVertex(duelGraphElement, null, duel.getConcurrent2().getFullName(), 5, 75, 250, 50, 
+									duel.getWinner() == duel.getConcurrent2() ? "fillColor=green" : "fillColor=gray"); //$NON-NLS-1$ //$NON-NLS-2$
 						}
 					}
 					
@@ -215,19 +228,15 @@ public class FicheConcoursFinalPane extends JPanel implements ActionListener {
 					}
 				}
 				
-				decalage += (duelHeight / 2) - (elementHeight / 2);
-				startHeight = startHeightCriteriaSet + decalage;
-				padding = elementHeight + spacingHeight + decalage * 2;
-				duelHeight = padding + elementHeight;
-				
-				Object vainqueur = graph.insertVertex(parent, null, "", 20 + 380 * nombrePhaseCategorie, startHeight, 250, 50); //$NON-NLS-1$
+				Object vainqueur = graph.insertVertex(categoryGraphElement, null, "", 20 + 380 * nombrePhaseCategorie, startHeight, 250, 50); //$NON-NLS-1$
 				
 				if(objectsPhase.size() > 0) {
 					for(int j = 0; j < objectsPhase.get(nombrePhaseCategorie-1).size(); j++) {
-						int l2i = (int)Math.floor(j / 2.0);
 						graph.insertEdge(parent, null, "", objectsPhase.get(nombrePhaseCategorie-1).get(j), vainqueur); //$NON-NLS-1$
 					}
 				}
+				
+				graph.resizeCell(categoryGraphElement, new mxRectangle(0.0, startHeightCriteriaSet - 20, 290 + 380 * nombrePhaseCategorie, decalage * 2 + elementHeight + spacingHeight));
 				
 				startHeightCriteriaSet += decalage * 2 + elementHeight + spacingHeight * 2;
 			}
@@ -235,7 +244,8 @@ public class FicheConcoursFinalPane extends JPanel implements ActionListener {
 		finally
 		{
 			graph.getModel().endUpdate();
-		}	
+		}
+		graph.setCellsResizable(false);
 	}
 	
 	/* (non-Javadoc)

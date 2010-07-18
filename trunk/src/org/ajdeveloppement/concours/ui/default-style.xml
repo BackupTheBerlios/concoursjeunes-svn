@@ -1,5 +1,5 @@
 <mxStylesheet>
-	<include name="/org/concoursjeunes/ui/basic-style.xml"/>
+	<include name="/org/ajdeveloppement/concours/ui/basic-style.xml"/>
 	<add as="defaultVertex" extend="defaultVertex">
 		<add as="strokeColor" value="#000000"/>
 		<add as="fillColor" value="#E8EEF7"/>

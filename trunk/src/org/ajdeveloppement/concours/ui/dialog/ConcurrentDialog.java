@@ -613,8 +613,11 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			jcbBlason.addItem(db.getTargetFace());
 		}
 		jcbBlason.setEnabled(!isinit && jcbBlason.getItemCount() > 1);
-		if(concurrent.getCriteriaSet() != null)
-			jcbBlason.setSelectedItem(DistancesEtBlason.getDistancesEtBlasonForConcurrent(ficheConcours.getParametre().getReglement(), concurrent).getTargetFace());
+		if(concurrent.getCriteriaSet() != null) {
+			DistancesEtBlason distancesEtBlason = DistancesEtBlason.getDistancesEtBlasonForConcurrent(ficheConcours.getParametre().getReglement(), concurrent);
+			if(distancesEtBlason != null)
+				jcbBlason.setSelectedItem(distancesEtBlason.getTargetFace());
+		}
 
 		jlValCible.setText(new TargetPosition(concurrent.getCible(), concurrent.getPosition()).toString());
 
@@ -1165,9 +1168,12 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 					jcbBlason.addItem(db.getTargetFace());
 				}
 				jcbBlason.setEnabled(jcbBlason.getItemCount() > 1);
-				if(concurrent != null && concurrent.getCriteriaSet() != null)
-					jcbBlason.setSelectedItem(DistancesEtBlason.getDistancesEtBlasonForConcurrent(
-							reglement, concurrent).getTargetFace());
+				if(concurrent != null && concurrent.getCriteriaSet() != null) {
+					DistancesEtBlason distancesEtBlason = DistancesEtBlason.getDistancesEtBlasonForConcurrent(
+							reglement, concurrent);
+					if(distancesEtBlason != null)
+						jcbBlason.setSelectedItem(distancesEtBlason.getTargetFace());
+				}
 
 			}
 		}

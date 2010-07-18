@@ -86,7 +86,6 @@
  */
 package org.concoursjeunes;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -109,7 +108,6 @@ import org.ajdeveloppement.commons.persistence.sql.SqlField;
 import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
 import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
 import org.ajdeveloppement.commons.persistence.sql.SqlTable;
-import org.ajdeveloppement.commons.sql.SqlManager;
 import org.ajdeveloppement.concours.Contact;
 import org.ajdeveloppement.concours.cache.EntiteCache;
 import org.ajdeveloppement.concours.managers.ContactManager;
@@ -127,224 +125,218 @@ import org.ajdeveloppement.concours.managers.ContactManager;
  * @author Aurélien JEOFFRAY
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@SqlTable(name="ENTITE")
-@SqlPrimaryKey(fields={"ID_ENTITE"})
+@SqlTable(name = "ENTITE")
+@SqlPrimaryKey(fields = { "ID_ENTITE" })
 public class Entite implements ObjectPersistence {
-	
-	public static final int FEDERATION = 0;
-    public static final int LIGUE = 1;
-    public static final int CD = 2;
-    public static final int CLUB = 3;
-    
-    //utilisé pour donnée un identifiant unique à la sérialisation de l'objet
-	@XmlID
-	@XmlAttribute(name="id", required=true)
-	private String xmlId;
-    
-	@XmlTransient
-    @SqlField(name="ID_ENTITE")
-    private UUID idEntite;
-    @SqlField(name="NOMENTITE")
-    private String nom;
-    @SqlField(name="AGREMENTENTITE")
-    private String agrement;
-    @SqlField(name="ADRESSEENTITE")
-    private String adresse;
-    @SqlField(name="CODEPOSTALENTITE")
-    private String codePostal;
-    @SqlField(name="VILLEENTITE")
-    private String ville;
-    @SqlField(name="NOTEENTITE")
-    private String note;
-    @SqlField(name="TYPEENTITE")
-    private int type          	= CLUB;
-    
-    @XmlAttribute
-    @SqlField(name="REMOVABLE")
-    private boolean removable	= true;
-    
-    private transient List<Contact> contacts = null;
 
-    private static StoreHelper<Entite> helper = null;
+	public static final int FEDERATION = 0;
+	public static final int LIGUE = 1;
+	public static final int CD = 2;
+	public static final int CLUB = 3;
+
+	// utilisé pour donnée un identifiant unique à la sérialisation de l'objet
+	@XmlID
+	@XmlAttribute(name = "id", required = true)
+	private String xmlId;
+
+	@XmlTransient
+	@SqlField(name = "ID_ENTITE")
+	private UUID idEntite;
+	@SqlField(name = "NOMENTITE")
+	private String nom;
+	@SqlField(name = "AGREMENTENTITE")
+	private String agrement;
+	@SqlField(name = "ADRESSEENTITE")
+	private String adresse;
+	@SqlField(name = "CODEPOSTALENTITE")
+	private String codePostal;
+	@SqlField(name = "VILLEENTITE")
+	private String ville;
+	@SqlField(name = "NOTEENTITE")
+	private String note;
+	@SqlField(name = "TYPEENTITE")
+	private int type = CLUB;
+
+	@XmlAttribute
+	@SqlField(name = "REMOVABLE")
+	private boolean removable = true;
+
+	// private transient List<Contact> contacts = null;
+
+	private static StoreHelper<Entite> helper = null;
 	static {
 		try {
-			helper = new StoreHelper<Entite>(new SqlStoreHandler<Entite>(ApplicationCore.dbConnection, Entite.class));
+			helper = new StoreHelper<Entite>(new SqlStoreHandler<Entite>(
+					ApplicationCore.dbConnection, Entite.class));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
-    
-    public Entite() {
-        
-    }
-    
-    /**
-     * Construit une nouvelle entité nommé ayant le type fournit en parametre
-     * 
-     * @param nom le nom de l'entite
-     * @param type le type de l'entite
-     */
-    public Entite(String nom, int type) {
-        this.nom = nom;
-        this.type = type;
-    }
 
-    /**
-     * Retourne l'identifiant de l'entite
-     * 
-     * @return l'identifiant de l'entite
-     */
-    public UUID getIdEntite() {
+	public Entite() {
+
+	}
+
+	/**
+	 * Construit une nouvelle entité nommé ayant le type fournit en parametre
+	 * 
+	 * @param nom
+	 *            le nom de l'entite
+	 * @param type
+	 *            le type de l'entite
+	 */
+	public Entite(String nom, int type) {
+		this.nom = nom;
+		this.type = type;
+	}
+
+	/**
+	 * Retourne l'identifiant de l'entite
+	 * 
+	 * @return l'identifiant de l'entite
+	 */
+	public UUID getIdEntite() {
 		return idEntite;
 	}
 
-    /**
-     * Définit l'identifiant de l'entite
-     * 
-     * @param idEntite l'identifiant de l'entite
-     */
+	/**
+	 * Définit l'identifiant de l'entite
+	 * 
+	 * @param idEntite
+	 *            l'identifiant de l'entite
+	 */
 	public void setIdEntite(UUID idEntite) {
 		this.idEntite = idEntite;
 	}
 
 	/**
-     * Retourne l'adresse de l'entite
-     * 
+	 * Retourne l'adresse de l'entite
+	 * 
 	 * @return l'adresse de l'entite
 	 */
-    public String getAdresse() {
-    	if(adresse == null)
-    		return ""; //$NON-NLS-1$
-        return adresse;
-    }
-    
-
-    /**
-     * Retourne le numéro d'agrement de l'association
-     * 
-	 * @return le numéro d'agrement
-	 */
-    public String getAgrement() {
-    	if(agrement == null)
-    		return ""; //$NON-NLS-1$
-        return agrement;
-    }
-    
-
-    /**
-     * Retourne le code postal de l'adresse de l'entite
-     * 
-	 * @return le code postal
-	 */
-    public String getCodePostal() {
-    	if(codePostal == null)
-    		return ""; //$NON-NLS-1$
-        return codePostal;
-    }
-    
-
-    /**
-     * Retourne le nom de l'entite
-     * 
-	 * @return le nom
-	 */
-    public String getNom() {
-    	if(nom == null)
-    		return ""; //$NON-NLS-1$
-        return nom;
-    }
-    
-
-    /**
-     * Retourne le type d'entite.<br>
-     * Les types possible sont:
-     * FEDERATION, LIGUE, CD, CLUB
-     * 
-	 * @return le type de l'entite
-	 */
-    public int getType() {
-        return type;
-    }
-    
-
-    /**
-     * Retourne la ville de l'entite
-     * 
-	 * @return la ville de l'entite
-	 */
-    public String getVille() {
-    	if(ville == null)
-    		return ""; //$NON-NLS-1$
-        return ville;
-    }
-    
-
-    /**
-     * Définit l'adresse de l'entite
-     * 
-	 * @param adresse l'adresse de l'entite
-	 */
-    public void setAdresse(String adresse) {
-        this.adresse = adresse;
-    }
-    
-
-    /**
-     * Définit le numéro d'agrement identifiant de manière unique l'entite
-     * 
-	 * @param agrement le numéro d'agrement
-	 */
-    public void setAgrement(String agrement) {
-        this.agrement = agrement;
-    }
-    
-
-    /**
-     * Définit le code postal de l'adresse de l'entite
-     * 
-	 * @param codePostal le code postal
-	 */
-    public void setCodePostal(String codePostal) {
-        this.codePostal = codePostal;
-    }
-    
-
-    /**
-     * Définit le nom de l'entite
-     * 
-	 * @param nom le nom
-	 */
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
-    
-
-    /**
-     * Définit le type d'entite.<br>
-     * Les types possible sont:
-     * FEDERATION, LIGUE, CD, CLUB
-     * 
-	 * @param type le type d'entite
-	 */
-    public void setType(int type) {
-        this.type = type;
-    }
-    
-
-    /**
-     * Définit la ville de l'entite
-     * 
-	 * @param ville la ville de l'entite
-	 */
-    public void setVille(String ville) {
-        this.ville = ville;
-    }
-    
-   
+	public String getAdresse() {
+		if (adresse == null)
+			return ""; //$NON-NLS-1$
+		return adresse;
+	}
 
 	/**
-	 * Retourne une note ou commentaire préalablement
-	 * définit sur l'entite
+	 * Retourne le numéro d'agrement de l'association
+	 * 
+	 * @return le numéro d'agrement
+	 */
+	public String getAgrement() {
+		if (agrement == null)
+			return ""; //$NON-NLS-1$
+		return agrement;
+	}
+
+	/**
+	 * Retourne le code postal de l'adresse de l'entite
+	 * 
+	 * @return le code postal
+	 */
+	public String getCodePostal() {
+		if (codePostal == null)
+			return ""; //$NON-NLS-1$
+		return codePostal;
+	}
+
+	/**
+	 * Retourne le nom de l'entite
+	 * 
+	 * @return le nom
+	 */
+	public String getNom() {
+		if (nom == null)
+			return ""; //$NON-NLS-1$
+		return nom;
+	}
+
+	/**
+	 * Retourne le type d'entite.<br>
+	 * Les types possible sont: FEDERATION, LIGUE, CD, CLUB
+	 * 
+	 * @return le type de l'entite
+	 */
+	public int getType() {
+		return type;
+	}
+
+	/**
+	 * Retourne la ville de l'entite
+	 * 
+	 * @return la ville de l'entite
+	 */
+	public String getVille() {
+		if (ville == null)
+			return ""; //$NON-NLS-1$
+		return ville;
+	}
+
+	/**
+	 * Définit l'adresse de l'entite
+	 * 
+	 * @param adresse
+	 *            l'adresse de l'entite
+	 */
+	public void setAdresse(String adresse) {
+		this.adresse = adresse;
+	}
+
+	/**
+	 * Définit le numéro d'agrement identifiant de manière unique l'entite
+	 * 
+	 * @param agrement
+	 *            le numéro d'agrement
+	 */
+	public void setAgrement(String agrement) {
+		this.agrement = agrement;
+	}
+
+	/**
+	 * Définit le code postal de l'adresse de l'entite
+	 * 
+	 * @param codePostal
+	 *            le code postal
+	 */
+	public void setCodePostal(String codePostal) {
+		this.codePostal = codePostal;
+	}
+
+	/**
+	 * Définit le nom de l'entite
+	 * 
+	 * @param nom
+	 *            le nom
+	 */
+	public void setNom(String nom) {
+		this.nom = nom;
+	}
+
+	/**
+	 * Définit le type d'entite.<br>
+	 * Les types possible sont: FEDERATION, LIGUE, CD, CLUB
+	 * 
+	 * @param type
+	 *            le type d'entite
+	 */
+	public void setType(int type) {
+		this.type = type;
+	}
+
+	/**
+	 * Définit la ville de l'entite
+	 * 
+	 * @param ville
+	 *            la ville de l'entite
+	 */
+	public void setVille(String ville) {
+		this.ville = ville;
+	}
+
+	/**
+	 * Retourne une note ou commentaire préalablement définit sur l'entite
 	 * 
 	 * @return une note sur l'entite
 	 */
@@ -355,14 +347,16 @@ public class Entite implements ObjectPersistence {
 	/**
 	 * Ajoute une note ou commentaire sur l'entite
 	 * 
-	 * @param note une note sur l'entite
+	 * @param note
+	 *            une note sur l'entite
 	 */
 	public void setNote(String note) {
 		this.note = note;
 	}
-	
+
 	/**
-	 * @param removable removable à définir
+	 * @param removable
+	 *            removable à définir
 	 */
 	public void setRemovable(boolean removable) {
 		this.removable = removable;
@@ -374,113 +368,116 @@ public class Entite implements ObjectPersistence {
 	public boolean isRemovable() {
 		return removable;
 	}
-	
-	/**
-	 * @param contacts contacts à définir
-	 */
-	public void setContacts(List<Contact> contacts) {
-		this.contacts = contacts;
-	}
+
+	// /**
+	// * @param contacts contacts à définir
+	// */
+	// public void setContacts(List<Contact> contacts) {
+	// this.contacts = contacts;
+	// }
 
 	/**
 	 * @return contacts
 	 */
 	public List<Contact> getContacts() {
-		if(contacts == null && idEntite != null) { //la liste des contacts est chargé en lazy loading
-			try {
-				contacts = ContactManager.getContactsForEntity(this);
-			} catch (ObjectPersistenceException e) {
-				contacts = new ArrayList<Contact>();
-				e.printStackTrace();
-			}
+		//if (contacts == null && idEntite != null) { // la liste des contacts est
+													// chargé en lazy loading
+		try {
+			return ContactManager.getContactsForEntity(this);
+		} catch (ObjectPersistenceException e) {
+			e.printStackTrace();
 		}
-		return contacts;
+		
+		return new ArrayList<Contact>();
+		//}
+		//return contacts;
 	}
 
 	@Override
 	public void save() throws ObjectPersistenceException {
 		SessionHelper.startSaveSession(ApplicationCore.dbConnection, this);
 	}
-	
+
 	@Override
 	public void delete() throws ObjectPersistenceException {
 		SessionHelper.startDeleteSession(ApplicationCore.dbConnection, this);
 	}
-	
+
 	/**
 	 * Sauvegarde l'entite dans la base de donnée
 	 */
 	@Override
 	public void save(Session session) throws ObjectPersistenceException {
-		if(session == null || !session.contains(this)) {
-			if(idEntite == null)
+		if (session == null || !session.contains(this)) {
+			if (idEntite == null)
 				idEntite = UUID.randomUUID();
-			
-			if(nom == null || nom.isEmpty())
-				return;
-			
-			SqlManager sqlManager = new SqlManager(ApplicationCore.dbConnection, null);
-			//Avant d'enregistrer, on recherche dans la base si il n'y a pas déjà un enregistrement pour cette entite avec
-			//un autre id
-			try {
-				ResultSet rs = sqlManager.executeQuery(
-						String.format("select ID_ENTITE from ENTITE where AGREMENTENTITE='%s' and NOMENTITE='%s'", //$NON-NLS-1$
-								(agrement != null) ? agrement.replace("'", "''") : "", nom.replace("'", "''"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-				if(rs.first()) {
-					UUID savedIdEntite = (UUID)rs.getObject("ID_ENTITE"); //$NON-NLS-1$
-					if(!savedIdEntite.equals(idEntite))
-						return;
-				}
-			} catch (SQLException e) {
-				throw new ObjectPersistenceException(e);
-			}
 
-			
+			if (nom == null || nom.isEmpty())
+				return;
+
+			// SqlManager sqlManager = new
+			// SqlManager(ApplicationCore.dbConnection, null);
+			// //Avant d'enregistrer, on recherche dans la base si il n'y a pas
+			// déjà un enregistrement pour cette entite avec
+			// //un autre id
+			// try {
+			// ResultSet rs = sqlManager.executeQuery(
+			//						String.format("select ID_ENTITE from ENTITE where AGREMENTENTITE='%s' and NOMENTITE='%s'", //$NON-NLS-1$
+			//								(agrement != null) ? agrement.replace("'", "''") : "", nom.replace("'", "''"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+			// if(rs.first()) {
+			//					UUID savedIdEntite = (UUID)rs.getObject("ID_ENTITE"); //$NON-NLS-1$
+			// if(!savedIdEntite.equals(idEntite))
+			// return;
+			// }
+			// } catch (SQLException e) {
+			// throw new ObjectPersistenceException(e);
+			// }
+
 			helper.save(this);
-			
-			if(session != null)
+
+			if (session != null)
 				session.addThreatyObject(this);
-			
-			//ajoute l'entrée au cache si nécessaire
-			if(!EntiteCache.getInstance().containsKey(idEntite))
+
+			// ajoute l'entrée au cache si nécessaire
+			if (!EntiteCache.getInstance().containsKey(idEntite))
 				EntiteCache.getInstance().add(this);
 		}
 	}
-	
+
 	@Override
 	public void delete(Session session) throws ObjectPersistenceException {
-		if(session == null || !session.contains(this)) {
+		if (session == null || !session.contains(this)) {
 			helper.delete(this);
-			
-			if(session != null)
+
+			if (session != null)
 				session.addThreatyObject(this);
-			//retire l'objet du cache
+			// retire l'objet du cache
 			EntiteCache.getInstance().remove(idEntite);
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param marshaller
 	 */
 	public void beforeMarshal(Marshaller marshaller) {
-		if(idEntite == null)
+		if (idEntite == null)
 			idEntite = UUID.randomUUID();
 		xmlId = idEntite.toString();
 	}
-	
+
 	/**
 	 * 
 	 * @param unmarshaller
 	 * @param parent
 	 */
 	public void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
-		if(xmlId != null)
+		if (xmlId != null)
 			idEntite = UUID.fromString(xmlId);
-		
+
 		xmlId = null;
 	}
-	
+
 	@Override
 	public String toString() {
 		if ((nom == null || nom.isEmpty()) && ville != null && !ville.isEmpty())
@@ -488,7 +485,9 @@ public class Entite implements ObjectPersistence {
 		return (nom == null) ? "" : nom; //$NON-NLS-1$
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -497,14 +496,15 @@ public class Entite implements ObjectPersistence {
 		int result = 1;
 		result = prime * result
 				+ ((agrement == null) ? 0 : agrement.hashCode());
-		result = prime * result
-				+ ((idEntite == null) ? 0 : idEntite.hashCode());
-		result = prime * result + ((note == null) ? 0 : note.hashCode());
+		result = prime * result + ((nom == null) ? 0 : nom.hashCode());
+		result = prime * result + type;
 		result = prime * result + ((ville == null) ? 0 : ville.hashCode());
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -521,15 +521,12 @@ public class Entite implements ObjectPersistence {
 				return false;
 		} else if (!agrement.equals(other.agrement))
 			return false;
-		if (idEntite == null) {
-			if (other.idEntite != null)
+		if (nom == null) {
+			if (other.nom != null)
 				return false;
-		} else if (!idEntite.equals(other.idEntite))
+		} else if (!nom.equals(other.nom))
 			return false;
-		if (note == null) {
-			if (other.note != null)
-				return false;
-		} else if (!note.equals(other.note))
+		if (type != other.type)
 			return false;
 		if (ville == null) {
 			if (other.ville != null)

@@ -147,7 +147,7 @@ public class EntiteManager {
 			}
 			sql = sql.replaceFirst(" and ", "");
 			if(orderfield != null && !orderfield.isEmpty())
-				sql += "order by " + orderfield;
+				sql += " order by " + orderfield;
 			
 			ResultSet rs = stmt.executeQuery(sql);
 

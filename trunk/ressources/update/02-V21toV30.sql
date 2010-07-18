@@ -108,6 +108,7 @@ CREATE TABLE IF NOT EXISTS ASSOCIER_CATEGORIE_CONTACT (
 -- on modifie la structure des tables
 -- ajout de la localisation au niveau de la base
 ALTER TABLE PARAM ADD DEFAULT_LANG VARCHAR(5) NOT NULL DEFAULT 'fr';
+ALTER TABLE PARAM ADD DBUUID UUID NOT NULL DEFAULT RANDOM_UUID();
 -- Suppression des index sur des champs sur le  point d'être supprimé
 DROP INDEX IF EXISTS I_NOM_ARCHER;
 DROP INDEX IF EXISTS I_PRENOM_ARCHER;

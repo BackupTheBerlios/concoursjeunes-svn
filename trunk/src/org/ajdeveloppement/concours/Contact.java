@@ -496,21 +496,25 @@ public class Contact implements ObjectPersistence, Cloneable {
 					
 					if(!session.contains(entite)) {
 						//si l'instance n'a pas été sauvegardé c'est qu'il existe une instance concurrente en base
-						//on va don l'utiliser
+						//on va donc la récupérer et l'utiliser
 						List<Entite> entitesInDatabase = EntiteManager.getEntitesInDatabase(entite, ""); //$NON-NLS-1$
 						if(entitesInDatabase != null && entitesInDatabase.size() > 0)
 							entite = entitesInDatabase.get(0);
 						else //ne devrais pas ce produire compte tenu des tests précédents mais dans le doute pour éviter les plantages on stop la sauvegarde
 							return;
 					}
-				} else
-					entite = null;
+				}
 			}
 			
 			SqlManager sqlManager = new SqlManager(ApplicationCore.dbConnection, null);
 			try {
+				Entite savedEntite = entite;
+				if(entite != null && entite.getNom().isEmpty())
+					entite = null;
 				
 				helper.save(this);
+				
+				entite = savedEntite;
 			
 				if(categories != null) {
 				

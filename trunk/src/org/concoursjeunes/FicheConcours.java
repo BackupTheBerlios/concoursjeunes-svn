@@ -102,6 +102,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.swing.event.EventListenerList;
 import javax.xml.bind.JAXBException;
@@ -109,14 +110,18 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.ajdeveloppement.commons.AJTemplate;
+import org.ajdeveloppement.commons.UncheckedException;
 import org.ajdeveloppement.commons.XmlUtils;
 import org.ajdeveloppement.commons.io.XMLSerializer;
+import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.concours.Contact;
 import org.concoursjeunes.builders.EquipeListBuilder;
 import org.concoursjeunes.event.FicheConcoursEvent;
 import org.concoursjeunes.event.FicheConcoursListener;
@@ -124,6 +129,7 @@ import org.concoursjeunes.event.PasDeTirListener;
 import org.concoursjeunes.exceptions.FicheConcoursException;
 import org.concoursjeunes.exceptions.FicheConcoursException.Nature;
 import org.concoursjeunes.localisable.CriteriaSetLibelle;
+import org.concoursjeunes.manager.EntiteManager;
 
 /**
  * Représente la fiche concours, regroupe l'ensemble des informations commune à un concours donné
@@ -134,6 +140,9 @@ import org.concoursjeunes.localisable.CriteriaSetLibelle;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 
+	@XmlAttribute(name="dbuuid")
+	private UUID dbUUID = null; 
+	
 	@XmlElementWrapper(name="entitesConcours")
 	@XmlElement(name="entite")
 	private List<Entite> entitesConcours = null;
@@ -198,6 +207,20 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	 */
 	public void removeFicheConcoursListener(FicheConcoursListener ficheConcoursListener) {
 		ficheConcoursListeners.remove(FicheConcoursListener.class, ficheConcoursListener);
+	}
+
+	/**
+	 * @param dbUUID dbUUID à définir
+	 */
+	public void setDbUUID(UUID dbUUID) {
+		this.dbUUID = dbUUID;
+	}
+
+	/**
+	 * @return dbUUID
+	 */
+	public UUID getDbUUID() {
+		return dbUUID;
 	}
 
 	/**
@@ -424,11 +447,50 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 		parametre.addPropertyChangeListener(this);
 		concurrentList.setParametre(parametre);
 		entitesConcours = null;
+		
+		//si la fiche concours est basé synchronisé avec une autre base de données,
+		//on la resynchronise avec la base courante
+		if(!ApplicationCore.dbUUID.equals(dbUUID)) {
+			List<Entite> cacheEntite = new ArrayList<Entite>();
+			
+			for(Concurrent concurrent : concurrentList.list())
+				resyncContactEntite(concurrent, cacheEntite);
+			
+			for(Judge judge : parametre.getJudges())
+				resyncContactEntite(judge, cacheEntite);
+			
+			dbUUID = ApplicationCore.dbUUID;
+		}
 
 		makePasDeTir();
 	}
 	
-	
+	/**
+	 * Resynchronise l'entite du contact avec la base
+	 * 
+	 * @param contact le contact à synchroniser
+	 * @param cacheEntite cache des entités synchronisé pour épargner des réquêtes en base
+	 */
+	private void resyncContactEntite(Contact contact, List<Entite> cacheEntite) {
+		Entite entite = contact.getEntite();
+		
+		if(cacheEntite.equals(entite))
+			contact.setEntite(cacheEntite.get(cacheEntite.indexOf(entite)));//substitution d'instance
+		else {
+			try {
+				List<Entite> entitesInDatabase = EntiteManager.getEntitesInDatabase(entite, "");//$NON-NLS-1$
+				if(entitesInDatabase != null && entitesInDatabase.size() > 0) {
+					entite = entitesInDatabase.get(0);
+					contact.setEntite(entite);
+					
+					cacheEntite.add(entite);
+				}
+			} catch (ObjectPersistenceException e) {
+				throw new UncheckedException(e);
+			} 
+			
+		}
+	}
 
 	/**
 	 * Construit le pas de tir

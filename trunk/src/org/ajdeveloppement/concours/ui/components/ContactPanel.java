@@ -167,6 +167,8 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 	private Contact contact = new Contact();
 	private boolean create = true;
 	
+	private boolean saveOnlyInMemoryBean = false;
+	
 	private BindingGroup contactBinding = null;
 	
 	private List<CategoryContact> categoriesContact = new ArrayList<CategoryContact>();
@@ -654,6 +656,20 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 		return jxhNewContact.isEnabled();
 	}
 
+	/**
+	 * @param saveOnlyInMemoryBean saveOnlyInMemoryBean à définir
+	 */
+	public void setSaveOnlyInMemoryBean(boolean saveOnlyInMemoryBean) {
+		this.saveOnlyInMemoryBean = saveOnlyInMemoryBean;
+	}
+
+	/**
+	 * @return saveOnlyInMemoryBean
+	 */
+	public boolean isSaveOnlyInMemoryBean() {
+		return saveOnlyInMemoryBean;
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == jxhNewContact) {
@@ -671,7 +687,8 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 				contact.setCoordinates(new ArrayList<Coordinate>(coordinatesModel.getElements()));
 				
 				try {
-					contact.save();
+					if(!saveOnlyInMemoryBean)
+						contact.save();
 					
 					jlSateSaveContact.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.success", 16, 16)); //$NON-NLS-1$
 					

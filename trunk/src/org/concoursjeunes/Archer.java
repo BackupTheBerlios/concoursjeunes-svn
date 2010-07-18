@@ -105,7 +105,10 @@ import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
 import org.ajdeveloppement.commons.persistence.sql.SqlTable;
 import org.ajdeveloppement.commons.persistence.sql.SqlUnmappedFields;
 import org.ajdeveloppement.commons.sql.SqlManager;
+import org.ajdeveloppement.concours.CategoryContact;
+import org.ajdeveloppement.concours.CategoryContact.IdDefaultCategory;
 import org.ajdeveloppement.concours.Contact;
+import org.ajdeveloppement.concours.builders.CategoryContactBuilder;
 import org.concoursjeunes.manager.ConcurrentManager;
 
 /**
@@ -119,6 +122,7 @@ import org.concoursjeunes.manager.ConcurrentManager;
 @SqlPrimaryKey(fields="ID_CONTACT")
 @SqlUnmappedFields(fields={"ID_CONTACT","SEXE","CATEGORIE","NIVEAU","ARC"})
 public class Archer extends Contact {
+	private static CategoryContact archerCategoryContact = null;
 	private static StoreHelper<Archer> helper = null;
 	static {
 		try {
@@ -318,6 +322,10 @@ public class Archer extends Contact {
 				throw new ObjectPersistenceException(e);
 			}
 			
+			if(archerCategoryContact == null)
+				archerCategoryContact = CategoryContactBuilder.getCategoryContact(IdDefaultCategory.BOWMAN.value());
+			if(getCategories().indexOf(archerCategoryContact) == -1)
+				getCategories().add(archerCategoryContact);
 			
 			super.save(session);
 			helper.save(this, Collections.<String, Object>singletonMap("ID_CONTACT", getIdContact())); //$NON-NLS-1$

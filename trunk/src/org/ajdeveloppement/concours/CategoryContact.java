@@ -122,6 +122,20 @@ import org.concoursjeunes.ApplicationCore;
 @SqlTable(name="CATEGORIE_CONTACT")
 @SqlPrimaryKey(fields="NUM_CATEGORIE_CONTACT",generatedidField=@SqlGeneratedIdField(name="NUM_CATEGORIE_CONTACT",type=Types.INTEGER))
 public class CategoryContact implements ObjectPersistence{
+	public enum IdDefaultCategory {
+		BOWMAN(1);
+		
+		private int value;
+		
+		private IdDefaultCategory(int value) {
+			this.value = value;
+		}
+		
+		public int value() {
+			return value;
+		}
+	}
+	
 	private static StoreHelper<CategoryContact> helper = null;
 	static {
 		try {
@@ -244,5 +258,33 @@ public class CategoryContact implements ObjectPersistence{
 			
 			CategoryContactCache.getInstance().remove(numCategoryContact);
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + numCategoryContact;
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CategoryContact other = (CategoryContact) obj;
+		if (numCategoryContact != other.numCategoryContact)
+			return false;
+		return true;
 	}
 }

@@ -96,6 +96,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.util.Collections;
+import java.util.List;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
@@ -147,6 +148,8 @@ import org.jdesktop.swingx.painter.GlossPainter;
 public class EntiteDialog extends JDialog implements ActionListener, ListSelectionListener, ContactPanelListener {
 	private Profile profile;
 	private Entite entite;
+	
+	private List<Contact> contacts;
 	
 	private boolean fullEditable = false;
 	
@@ -478,7 +481,7 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 	
 	private void refreshListContact() {
 		jlResultList.clear();
-		for(Contact contact : entite.getContacts()) {
+		for(Contact contact : contacts) {
 			if((jcbSearchCategoryContact.getSelectedIndex() == 0 || contact.getCategories().contains(jcbSearchCategoryContact.getSelectedItem()))
 					&& (jtfSearch.getText().isEmpty() || contact.getFullNameWithCivility().toUpperCase().contains(jtfSearch.getText().toUpperCase())))
 				jlResultList.add(contact);
@@ -512,6 +515,7 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 	 */
 	public void setEntite(Entite entite) {
 		this.entite = entite;
+		this.contacts = entite.getContacts();
 	}
 
 	@Override
@@ -561,7 +565,7 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 	@Override
 	public void contactAdded(Contact contact) {
 		contact.setEntite(entite);
-		entite.getContacts().add(contact);		
+		contacts.add(contact);		
 		try {
 			contact.save();
 			
