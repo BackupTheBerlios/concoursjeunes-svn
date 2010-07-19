@@ -128,7 +128,7 @@ public class EntiteManager {
 			stmt = ApplicationCore.dbConnection.createStatement();
 			
 			String sql = "select * from Entite";
-			if(eGeneric != null) {
+			if(eGeneric != null && (!eGeneric.getNom().isEmpty() || !eGeneric.getAgrement().isEmpty() || !eGeneric.getVille().isEmpty()) ) {
 				sql += " where ";
 				ArrayList<String> filters = new ArrayList<String>();
 				if(eGeneric.getNom().length() > 0) {
