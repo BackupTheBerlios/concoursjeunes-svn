@@ -9,7 +9,7 @@ SetCompressor lzma
 !ifndef VERSION
 	!define VERSION 2.0
 !endif
-!define COMPANY ConcoursJeunes.org
+!define COMPANY AjDeveloppement.org
 !define URL http://www.concoursjeunes.org
 !ifndef OUT_FILE
 	!define OUT_FILE setup.exe
@@ -78,7 +78,7 @@ VIAddVersionKey /LANG=${LANG_FRENCH} FileVersion ""
 VIAddVersionKey FileDescription "ConcoursJeunes Install"
 VIAddVersionKey /LANG=${LANG_FRENCH} FileDescription "Installation de ConcoursJeunes"
 VIAddVersionKey LegalCopyright "(c) 2007 Concoursjeunes.org"
-VIAddVersionKey /LANG=${LANG_FRENCH} LegalCopyright "(c) 2007 Concoursjeunes.org"
+VIAddVersionKey /LANG=${LANG_FRENCH} LegalCopyright "(c) 2007-2010 Concoursjeunes.org"
 InstallDirRegKey HKLM "${REGKEY}" Path
 ShowUninstDetails show
 
@@ -106,6 +106,7 @@ Section "Base" SEC0000
     File /r plugins\BackupRestorePlugin\*
     File *.txt
     File windows\concoursjeunes-applyupdate.exe
+    File windows\concoursjeunes-applyupdate.exe.config
     File windows\concoursjeunes-startup.exe
     File windows\concoursjeunes-startup.exe.config
     WriteRegStr HKLM "${REGKEY}\Components" Base 1
