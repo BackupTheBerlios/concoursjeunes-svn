@@ -98,18 +98,7 @@ import java.text.ParseException;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JFormattedTextField;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -132,11 +121,11 @@ import org.concoursjeunes.Entite;
 import org.concoursjeunes.Federation;
 import org.concoursjeunes.Profile;
 import org.concoursjeunes.manager.FederationManager;
-import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Binding;
 import org.jdesktop.beansbinding.BindingGroup;
 import org.jdesktop.beansbinding.Bindings;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.JXTitledSeparator;
 import org.jdesktop.swingx.painter.GlossPainter;
@@ -179,7 +168,8 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 	
 	@Localizable("entite.adresse")
 	private JLabel jlAdresse = new JLabel();
-	private JTextArea jtfAdresse = new JTextArea(4, 30);
+	private JTextArea jtaAdresse = new JTextArea(4, 30);
+	private JScrollPane jspAdresse = new JScrollPane(jtaAdresse);
 	
 	@Localizable("entite.codepostal")
 	private JLabel jlCodePostal = new JLabel();
@@ -265,6 +255,8 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 		jtfVille.setEditable(false);
 		jcbType = new JComboBox(new String[] { "Fédération", "Ligue", "Comité Départemental", "Compagnie" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		
+		//jtaAdresse.setPreferredSize(new Dimension(336, 64));
+		
 		jbValider.addActionListener(this);
 		jbAnnuler.addActionListener(this);
 
@@ -340,14 +332,18 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 		gridbagComposer.addComponentIntoGrid(jlAdresse, c);
 		c.gridwidth = 3;
 		c.weightx = 1.0;
-		c.fill = GridBagConstraints.HORIZONTAL;
-		gridbagComposer.addComponentIntoGrid(new JScrollPane(jtfAdresse), c);
+		c.weighty = 1.0;
+		c.fill = GridBagConstraints.BOTH;
+		gridbagComposer.addComponentIntoGrid(jspAdresse, c);
 		c.gridy++;
 		c.gridwidth = 1;
 		c.fill = GridBagConstraints.NONE;
+		c.weighty = 0.0;
 		c.weightx = 1.0;
 		gridbagComposer.addComponentIntoGrid(jlCodePostal, c);
+		c.fill = GridBagConstraints.HORIZONTAL;
 		gridbagComposer.addComponentIntoGrid(jftfCodePostal, c);
+		c.fill = GridBagConstraints.NONE;
 		gridbagComposer.addComponentIntoGrid(jlVille, c);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		gridbagComposer.addComponentIntoGrid(jtfVille, c);
@@ -450,7 +446,7 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 	    	entiteBinding = new BindingGroup();
 	    	
 	    	entiteBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, entite, BeanProperty.create("nom"), jtfNom, BeanProperty.create("text"))); //$NON-NLS-1$ //$NON-NLS-2$
-	    	entiteBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, entite, BeanProperty.create("adresse"), jtfAdresse, BeanProperty.create("text"))); //$NON-NLS-1$ //$NON-NLS-2$
+	    	entiteBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, entite, BeanProperty.create("adresse"), jtaAdresse, BeanProperty.create("text"))); //$NON-NLS-1$ //$NON-NLS-2$
 	    	entiteBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, entite, BeanProperty.create("ville"), jtfVille, BeanProperty.create("text"))); //$NON-NLS-1$ //$NON-NLS-2$
 	    	entiteBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, entite, BeanProperty.create("note"), jtaNote, BeanProperty.create("text"))); //$NON-NLS-1$ //$NON-NLS-2$
 	    	entiteBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, entite, BeanProperty.create("agrement"), jftfAgrement, BeanProperty.create("text"))); //$NON-NLS-1$ //$NON-NLS-2$
@@ -497,9 +493,10 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 		this.fullEditable = fullEditable;
 		completePanel();
 		
-		setSize(900, 700);
+		setSize(905, 705);
 		setResizable(false);
 		setLocationRelativeTo(null);
+		
 		setVisible(true);
 	}
 
@@ -521,6 +518,7 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 	@Override
 	public void actionPerformed(ActionEvent ae) {
 		if (ae.getSource() == jbAnnuler) {
+			System.out.println(jtaAdresse.getSize());
 			setVisible(false);
 		} else if(ae.getSource() == jbValider) {
 			if(entiteBinding != null) {
@@ -529,7 +527,7 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
             	}
         	}
 			//entite.setNom(jtfNom.getText());
-			//entite.setAdresse(jtfAdresse.getText());
+			//entite.setAdresse(jtaAdresse.getText());
 			//entite.setVille(jtfVille.getText());
 			entite.setType(jcbType.getSelectedIndex());
 			//entite.setNote(jtaNote.getText());

@@ -92,11 +92,11 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Desktop;
-import java.awt.Desktop.Action;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.Desktop.Action;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -112,19 +112,7 @@ import java.util.Comparator;
 import java.util.EventListener;
 import java.util.List;
 
-import javax.swing.Box;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JEditorPane;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.event.EventListenerList;
 import javax.swing.text.html.HTMLEditorKit;
 
@@ -145,11 +133,11 @@ import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
 import org.ajdeveloppement.swingxext.localisation.JXHeaderLocalisationHandler;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Profile;
-import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Binding;
 import org.jdesktop.beansbinding.BindingGroup;
 import org.jdesktop.beansbinding.Bindings;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.JXHyperlink;
 import org.jdesktop.swingx.JXTitledSeparator;
@@ -394,7 +382,7 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 		c.gridx = GridBagConstraints.RELATIVE;
 		gridbagComposer.addComponentIntoGrid(jlAdressContact, c);
 		c.weightx = 1.0;
-		c.fill = GridBagConstraints.HORIZONTAL;
+		c.fill = GridBagConstraints.BOTH;
 		c.gridwidth = 3;
 		gridbagComposer.addComponentIntoGrid(new JScrollPane(jtaAddressContact), c);
 		c.gridy++;
@@ -402,9 +390,9 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 		c.weightx = 0.0;
 		c.fill = GridBagConstraints.NONE;
 		gridbagComposer.addComponentIntoGrid(jlZipCodeContact, c);
+		c.fill = GridBagConstraints.HORIZONTAL;
 		gridbagComposer.addComponentIntoGrid(jtfZipCodeContact, c);
 		gridbagComposer.addComponentIntoGrid(jlCityContact, c);
-		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 1.0;
 		gridbagComposer.addComponentIntoGrid(jtfCityContact, c);
 		c.gridy++;
@@ -412,7 +400,7 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 		c.weightx = 0.0;
 		gridbagComposer.addComponentIntoGrid(jlCoordinates, c);
 		c.weightx = 1.0;
-		c.fill = GridBagConstraints.HORIZONTAL;
+		c.fill = GridBagConstraints.BOTH;
 		c.gridwidth = 3;
 		gridbagComposer.addComponentIntoGrid(new JScrollPane(jlstCoordinates), c);
 		c.gridy++;
@@ -478,12 +466,13 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 		
 		c.gridy = 0;
 		c.anchor = GridBagConstraints.WEST;
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weightx = 1.0;
+		c.fill = GridBagConstraints.NONE;
 		c.gridwidth = 2;
 		gridbagComposer.addComponentIntoGrid(jxhCoordinate, c);
 		c.gridy++;
 		c.gridwidth = 1;
+		c.weightx = 1;
+		c.fill = GridBagConstraints.HORIZONTAL;
 		gridbagComposer.addComponentIntoGrid(jlTypeCoordinate, c);
 		gridbagComposer.addComponentIntoGrid(jcbTypeCoordinate, c);
 		c.gridy++;
@@ -711,12 +700,16 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 			else
 				editedCoordinate = (Coordinate)jlstCoordinates.getSelectedValue();
 			
-			jcbTypeCoordinate.setSelectedItem(editedCoordinate.getCoordinateType());
-			jtfValueCoordinate.setText(editedCoordinate.getValue());
-			
-			cardLayout.show(this, "coordinate"); //$NON-NLS-1$
+			if(editedCoordinate != null) {
+				jcbTypeCoordinate.setSelectedItem(editedCoordinate.getCoordinateType());
+				jtfValueCoordinate.setText(editedCoordinate.getValue());
+				
+				cardLayout.show(this, "coordinate"); //$NON-NLS-1$
+			}
 		} else if(e.getSource() == jbDelCoordinate) {
-			coordinatesModel.remove((Coordinate)jlstCoordinates.getSelectedValue());
+			Coordinate deletedCoordinate = (Coordinate)jlstCoordinates.getSelectedValue();
+			if(deletedCoordinate != null)
+				coordinatesModel.remove(deletedCoordinate);
 		} else if(e.getSource() == jxhSaveCoordinate || e.getSource() == jxhCancelCoordinate) {
 			if(e.getSource() == jxhSaveCoordinate) {
 				editedCoordinate.setCoordinateType((Coordinate.Type)jcbTypeCoordinate.getSelectedItem());

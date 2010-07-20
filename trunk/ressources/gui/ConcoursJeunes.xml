@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE screen SYSTEM "AjGUI.dtd">
 <screen>
-	<frame width="1024" height="768" minwidth="1024" minheight="700" extendedstate="MAXIMIZED_BOTH">
+	<frame width="1024" height="768" minwidth="1024" minheight="710" extendedstate="MAXIMIZED_BOTH">
 		<title>%s - %s</title>
 		<icon src="ressources/iconCJ.jpg" />
 		<menubar>

@@ -128,7 +128,7 @@ public class ContactDialog extends JDialog implements ActionListener {
 
 	private void init() {
 		contactPanel = new ContactPanel(profile);
-		contactPanel.setSize(438, 450);
+		//contactPanel.setSize(438, 455);
 		contactPanel.setSaveOnlyInMemoryBean(true);
 		
 		jbClose.addActionListener(this);
@@ -164,7 +164,7 @@ public class ContactDialog extends JDialog implements ActionListener {
 
 		completePanel();
 
-		setSize(450, 450);
+		setSize(450, 455);
 		//setResizable(false);
 		setLocationRelativeTo(null);
 		setVisible(true);
