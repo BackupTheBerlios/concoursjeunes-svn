@@ -17,11 +17,11 @@ tar zxvf concoursjeunes_$VERSION.orig.tar.gz
 rm concoursjeunes_$VERSION.orig.tar.gz
 #copie le debian
 mkdir debian
-cp ../../../../packager/linux/debian/compat debian/
+#cp ../../../../packager/linux/debian/compat debian/
+echo 7 > debina/compat
 cp ../../../../packager/linux/debian/control debian/
 cp ../../../../packager/linux/debian/copyright debian/
 cp ../../../../packager/linux/debian/dirs debian/
-cp ../../../../packager/linux/debian/files debian/
 cp ../../../../packager/linux/debian/postinst debian/
 cp ../../../../packager/linux/debian/rules debian/
 cp -f ../../../../pack/changelog.txt debian/changelog

@@ -391,6 +391,7 @@
 	<target name="makedeb" if="dpkgAvailable">
 		<exec executable="packager/makedeb.sh" os="Linux">
 			<env key="VERSION" value="${version.numero}"/>
+			<env key="RELEASE" value="${version.release}"/>
 		</exec>
 	</target>
 

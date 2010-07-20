@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?> 
-<java version="1.6.0_16" class="java.beans.XMLDecoder"> 
+<java version="1.6.0_17" class="java.beans.XMLDecoder"> 
  <object class="java.util.ArrayList"> 
   <void method="add"> 
    <object class="org.ajdeveloppement.updater.Version"> 
@@ -113,6 +113,27 @@
      <string>Aurélien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
     </void> 
     <void property="changeInfos"> 
+     <string>  * Correction Bug 56: Impossible d&apos;insérer 2 archers de même nom de famille sans numéro de licence</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1257936606342</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.20.01</string> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="add"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurélien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
      <string>  * Correction Bug 57: Dans certains cas très particulier, il devient impossible d&apos;imprimer le classement et le concours devient inutilisable au redémarrage.</string> 
     </void> 
     <void property="dateVersion"> 
@@ -143,6 +164,181 @@
     </void> 
     <void property="version"> 
      <string>2.20.03</string> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="add"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurélien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction problème de localisation incomplete</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1261233868897</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.20.04</string> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="add"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurélien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction d&apos;un problème empéchant l&apos;ouverture de certains concours initialisé dans une version antérieur
+  * Correction d&apos;un problème dans la gestion des réglements empéchant la suppression de certains réglements personnalisé
+  * Correction de fautes de frappe</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1263577996147</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.20.05</string> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="add"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurélien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction d&apos;un problème empéchant l&apos;édition d&apos;un nouveau règlement basé sur un règlement officiel</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1263725124232</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.20.06</string> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="add"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurélien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Suppression limitation du nombre de départ</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1266254347147</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.20.07</string> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="add"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurélien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction d&apos;un problème empéchant dans certaines configurations le placement automatique des concurrents
+  * Correction d&apos;erreurs dans la documentation</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1267464796021</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.20.08</string> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="add"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurélien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction d&apos;un souci d&apos;affichage du club si celui-ci n&apos;est pas présent en base</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1270927555761</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.20.09</string> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="add"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurélien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Ajout validation certificat SSL StartCom</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1272706071034</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.20.10</string> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="add"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurélien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Amélioration de la gestion des entites
+  * Ajout gestion des contacts
+  * Expérimental: Gestion des phases finales
+  * Amélioration enregistrement des données en base
+  * Nouveau format de stockage des fichiers de compétition</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1279650313902</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.29.04</string> 
     </void> 
    </object> 
   </void> 
