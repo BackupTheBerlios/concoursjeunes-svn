@@ -11,7 +11,7 @@
     <key>CFBundleIconFile</key>
     <string>iconCJ.icns</string>
     <key>CFBundleIdentifier</key>
-    <string>org.concoursjeunes.Main</string>
+    <string>org.ajdeveloppement.concours.Main</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>
@@ -31,7 +31,7 @@
         <key>JVMVersion</key>
         <string>1.6+</string>
         <key>MainClass</key>
-        <string>org.concoursjeunes.Main</string>
+        <string>org.ajdeveloppement.concours.Main</string>
         <key>SplashFile</key>
         <string>$JAVAROOT/ressources/Logo.png</string>
         <key>VMOptions</key>
@@ -39,10 +39,10 @@
     	<key>ClassPath</key>
     	<array>
     		<string>$JAVAROOT/ConcoursJeunes.jar</string>
-    		<string>$JAVAROOT/ConcoursJeunes-core.jar</string>
     		<string>$JAVAROOT/config</string>
     		<string>$JAVAROOT/lang</string>
     		<string>$JAVAROOT/plugins</string>
+    		<string>$JAVAROOT/lib/ConcoursJeunes-core.jar</string>
     		<string>$JAVAROOT/lib/ajcommons.jar</string>
     		<string>$JAVAROOT/lib/ajcommons-ext.jar</string>
     		<string>$JAVAROOT/lib/ajcommons-swingx-ext.jar</string>
