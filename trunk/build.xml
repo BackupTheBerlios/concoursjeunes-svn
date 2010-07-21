@@ -166,6 +166,7 @@
 		<copy todir="${projet.pack.dir}/bin">
 			<fileset dir="${projet.pack.dir}/src" >
 				<include name="**/*.properties" />
+				<include name="**/*.xml" />
 			</fileset>
 		</copy>
 	</target>

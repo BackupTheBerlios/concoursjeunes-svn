@@ -32,32 +32,34 @@
         <string>1.6+</string>
         <key>MainClass</key>
         <string>org.concoursjeunes.Main</string>
+        <key>SplashFile</key>
+        <string>$JAVAROOT/ressources/Logo.png</string>
         <key>VMOptions</key>
 	    <string>-Xmx256m</string>
-	<key>ClassPath</key>
-	<array>
-		<string>$JAVAROOT/ConcoursJeunes.jar</string>
-		<string>$JAVAROOT/ConcoursJeunes-core.jar</string>
-		<string>$JAVAROOT/config</string>
-		<string>$JAVAROOT/lang</string>
-		<string>$JAVAROOT/plugins</string>
-		<string>$JAVAROOT/lib/ajcommons.jar</string>
-		<string>$JAVAROOT/lib/ajcommons-ext.jar</string>
-		<string>$JAVAROOT/lib/ajcommons-swingx-ext.jar</string>
-		<string>$JAVAROOT/lib/beansbinding-1.2.1.jar</string>
-		<string>$JAVAROOT/lib/iText-2.1.7.jar</string>
-		<string>$JAVAROOT/lib/swingx-1.6.1.jar</string>
-		<string>$JAVAROOT/lib/jgraphx.jar</string>
-		<string>$JAVAROOT/lib/h2-1.2.139.jar</string>
-		<string>$JAVAROOT/lib/h2mig_pagestore_addon.jar</string>
-		<string>$JAVAROOT/lib/js.jar</string>
-		<string>$JAVAROOT/lib/js-engine.jar</string>
-	</array>
-	<key>Properties</key>
-	<dict>
-		<key>apple.laf.useScreenMenuBar</key>
-		<string>true</string>
-	</dict>
+    	<key>ClassPath</key>
+    	<array>
+    		<string>$JAVAROOT/ConcoursJeunes.jar</string>
+    		<string>$JAVAROOT/ConcoursJeunes-core.jar</string>
+    		<string>$JAVAROOT/config</string>
+    		<string>$JAVAROOT/lang</string>
+    		<string>$JAVAROOT/plugins</string>
+    		<string>$JAVAROOT/lib/ajcommons.jar</string>
+    		<string>$JAVAROOT/lib/ajcommons-ext.jar</string>
+    		<string>$JAVAROOT/lib/ajcommons-swingx-ext.jar</string>
+    		<string>$JAVAROOT/lib/beansbinding-1.2.1.jar</string>
+    		<string>$JAVAROOT/lib/iText-2.1.7.jar</string>
+    		<string>$JAVAROOT/lib/swingx-1.6.1.jar</string>
+    		<string>$JAVAROOT/lib/jgraphx.jar</string>
+    		<string>$JAVAROOT/lib/h2-1.2.139.jar</string>
+    		<string>$JAVAROOT/lib/h2mig_pagestore_addon.jar</string>
+    		<string>$JAVAROOT/lib/js.jar</string>
+    		<string>$JAVAROOT/lib/js-engine.jar</string>
+    	</array>
+    	<key>Properties</key>
+    	<dict>
+    		<key>apple.laf.useScreenMenuBar</key>
+    		<string>true</string>
+    	</dict>
     </dict>
     <key>LSHasLocalizedDisplayName</key>
     <true/>
