@@ -10,7 +10,7 @@ function printState(ficheConcours, template, document, writer, options) {
 	
 	var strClassement = "";
 	if (ficheConcours.getConcurrentList() != null && ficheConcours.getConcurrentList().countArcher() > 0) {
-		var concurrentsClasse = ficheConcours.classement();
+		var concurrentsClasse = ficheConcours.getConcurrentList().classement().getClassementPhaseQualificative();
 
 		var tplClassement = new org.ajdeveloppement.commons.AJTemplate();
 		var strArbitreResp = "";
@@ -24,17 +24,17 @@ function printState(ficheConcours, template, document, writer, options) {
 		tplClassement.parse("INTITULE_CLUB", ficheConcours.getParametre().getClub().getNom());
 		tplClassement.parse("INTITULE_CONCOURS", ficheConcours.getParametre().getIntituleConcours());
 		tplClassement.parse("VILLE_CLUB", ficheConcours.getParametre().getLieuConcours());
-		tplClassement.parse("DATE_CONCOURS", java.text.DateFormat.getDateInstance(java.text.DateFormat.LONG).format(ficheConcours.getParametre().getDate()));
+		tplClassement.parse("DATE_CONCOURS", java.text.DateFormat.getDateInstance(java.text.DateFormat.LONG).format(ficheConcours.getParametre().getDateDebutConcours()));
 		tplClassement.parse("author", ficheConcours.getParametre().getClub().getNom());
 
 		var arbitres = ficheConcours.getParametre().getJudges();
 		for (var i = 0; i < arbitres.size(); i++) {
 			if (arbitres.get(i).isResponsable())
-				strArbitreResp = arbitres.get(i).getID();
+				strArbitreResp = arbitres.get(i).getFullName();
 			else {
 				if (!strArbitresAss.equals(""))
 					strArbitresAss += ", ";
-				strArbitresAss += arbitres.get(i).getID();
+				strArbitresAss += arbitres.get(i).getFullName();
 			}
 		}
 		tplClassement.parse("ARBITRE_RESPONSABLE", org.ajdeveloppement.commons.XmlUtils.sanitizeText(strArbitreResp));
@@ -97,7 +97,7 @@ function printState(ficheConcours, template, document, writer, options) {
 
 							tplClassement.parse("categories.classement.PLACE", "" + (j + 1));
 							tplClassement.parse("categories.classement.POSITION", "" + sortList.get(j).getPosition() + sortList.get(j).getCible());
-							tplClassement.parse("categories.classement.IDENTITEE", sortList.get(j).getID());
+							tplClassement.parse("categories.classement.IDENTITEE", sortList.get(j).getFullName());
 							tplClassement.parse("categories.classement.CLUB", sortList.get(j).getClub().toString());
 							tplClassement.parse("categories.classement.NUM_LICENCE", sortList.get(j).getNumLicenceArcher());
 

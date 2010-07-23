@@ -23,7 +23,7 @@ function printState(ficheConcours, template, document, writer, options) {
 		var concurrents = org.concoursjeunes.ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), org.concoursjeunes.ConcurrentList.SortCriteria.SORT_BY_NAME);
 
 		for (var i = 0; i < concurrents.size(); i++) {
-			listeArcherXML.parse("lignes.IDENTITEE", concurrents.get(i).getID()); //$NON-NLS-1$
+			listeArcherXML.parse("lignes.IDENTITEE", concurrents.get(i).getFullName()); //$NON-NLS-1$
 			listeArcherXML.parse("lignes.CLUB", concurrents.get(i).getClub().toString()); //$NON-NLS-1$
 			listeArcherXML.parse("lignes.NUM_LICENCE", concurrents.get(i).getNumLicenceArcher()); //$NON-NLS-1$
 
