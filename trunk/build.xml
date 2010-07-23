@@ -397,12 +397,15 @@
 	</target>
 
 	<target name="makemacbundle">
+		<defaultexcludes remove="**/.DS_Store"/>
+		
 		<copy todir="${projet.pack.dir}/macosx/" >
 			<fileset dir="packager/macosx" >
 				<include name="**/**"/>
-				<include name=".DS_Store"/>
 			</fileset>
 		</copy>
+		
+		<defaultexcludes default="true"/>
 		
 		<copy todir="${projet.pack.dir}/macosx/${version.name}.app/Contents/Resources/Java" >
 			<fileset dir="pack" >
