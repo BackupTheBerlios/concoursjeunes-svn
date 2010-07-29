@@ -259,7 +259,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		this.localisation = localisation;
 
 		init();
-		affectLibelle();
+		affectLabels();
 	}
 
 	/**
@@ -525,7 +525,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		return jpConcours;
 	}
 
-	private void affectLibelle() {
+	private void affectLabels() {
 		Localizator.localize(this, localisation);	
 	}
 

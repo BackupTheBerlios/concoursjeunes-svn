@@ -129,7 +129,7 @@ public class TextDialog extends JDialog implements ActionListener {
 		this.localisation = localisation;
 		
 		init();
-		affectLibelle();
+		affectLabels();
 	}
 	
 	private void init() {
@@ -146,7 +146,7 @@ public class TextDialog extends JDialog implements ActionListener {
 		add(jpAction, BorderLayout.SOUTH);
 	}
 	
-	private void affectLibelle() {
+	private void affectLabels() {
 		Localizator.localize(this, localisation);
 	}
 	

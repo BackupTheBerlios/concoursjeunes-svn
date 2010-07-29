@@ -152,7 +152,7 @@ public class DisablePluginDialog extends JDialog implements ActionListener {
 		plugins = pl.getPlugins(Type.STARTUP);
 		
 		init();
-		affectLibelle();
+		affectLabels();
 	}
 	
 	private void init() {
@@ -198,7 +198,7 @@ public class DisablePluginDialog extends JDialog implements ActionListener {
 		getContentPane().add(jpAction, BorderLayout.SOUTH);
 	}
 	
-	private void affectLibelle() {
+	private void affectLabels() {
 		Localizator.localize(this, localisation);
 	}
 	

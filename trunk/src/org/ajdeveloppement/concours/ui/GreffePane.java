@@ -204,7 +204,7 @@ public class GreffePane extends JPanel implements
 		}
 		
 		init();
-		affectLibelle();
+		affectLabels();
 		completePanel();
 	}
 	
@@ -257,7 +257,7 @@ public class GreffePane extends JPanel implements
 		add(jspListeConcurrents, BorderLayout.CENTER);
 	}
 	
-	private void affectLibelle() {
+	private void affectLabels() {
 		Localizator.localize(this, ficheConcoursPane.getLocalisation());
 	}
 	

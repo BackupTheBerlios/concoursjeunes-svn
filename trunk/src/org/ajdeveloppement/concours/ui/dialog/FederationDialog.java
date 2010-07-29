@@ -181,7 +181,7 @@ public class FederationDialog extends JDialog implements ActionListener {
 		this.localisation = profile.getLocalisation();
 		
 		init();
-		affectLibelle();
+		affectLabels();
 	}
 	
 	private void init() {
@@ -283,7 +283,7 @@ public class FederationDialog extends JDialog implements ActionListener {
 		getContentPane().add(jpAction, BorderLayout.SOUTH);
 	}
 	
-	private void affectLibelle() {
+	private void affectLabels() {
 		Localizator.localize(this, localisation, Collections.<Class<?>, LocalizationHandler>singletonMap(JXHeader.class, new JXHeaderLocalisationHandler()));
 	}
 	

@@ -186,7 +186,7 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 
 		// initialisation de l'interface
 		init();
-		affectLibelle();
+		affectLabels();
 		completePanel();
 		completePanelEquipes();
 
@@ -266,7 +266,7 @@ public class EquipeDialog extends JDialog implements ActionListener, TreeSelecti
 		setGlassPane(new GhostGlassPane(0.5f));
 	}
 
-	private void affectLibelle() {
+	private void affectLabels() {
 		Localizator.localize(this, localisation);
 	}
 

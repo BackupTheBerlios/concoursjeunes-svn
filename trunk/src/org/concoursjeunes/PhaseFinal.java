@@ -91,9 +91,14 @@ package org.concoursjeunes;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
+import org.ajdeveloppement.commons.UncheckedException;
+import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.concours.RepartitionFinals;
+import org.ajdeveloppement.concours.managers.RepartitionFinalsManager;
 import org.concoursjeunes.event.FicheConcoursEvent;
 import org.concoursjeunes.event.FicheConcoursListener;
 
@@ -107,7 +112,8 @@ import org.concoursjeunes.event.FicheConcoursListener;
 public class PhaseFinal implements PropertyChangeListener,FicheConcoursListener {
 	
 	private FicheConcours ficheConcours;
-	private Map<CriteriaSet, List<Concurrent>> classement;
+	private Classement classement;
+	private List<RepartitionFinals> repartitionsFinals = new ArrayList<RepartitionFinals>();
 	
 	/**
 	 * Initialise une phase final pour la fiche concours fournit en paramètre
@@ -116,6 +122,12 @@ public class PhaseFinal implements PropertyChangeListener,FicheConcoursListener 
 	 */
 	public PhaseFinal(FicheConcours ficheConcours) {
 		this.ficheConcours = ficheConcours;
+		
+		try {
+			repartitionsFinals = RepartitionFinalsManager.getRepartitionFinals(RepartitionFinals.TYPE_INDIV_FRANCAIS);
+		} catch (ObjectPersistenceException e) {
+			throw new UncheckedException(e);
+		}
 		
 		refreshClassement();
 		for(Concurrent concurrent : ficheConcours.getConcurrentList().list(-1)) {
@@ -149,7 +161,7 @@ public class PhaseFinal implements PropertyChangeListener,FicheConcoursListener 
 	 * @return collection de jeux de critères représenté sur les phases finales
 	 */
 	public List<CriteriaSet> getCriteriaSetPhasesFinal() {
-		List<CriteriaSet> csUse = new ArrayList<CriteriaSet>(classement.keySet());
+		List<CriteriaSet> csUse = new ArrayList<CriteriaSet>(classement.getClassementPhaseQualificative().keySet());
 		
 		CriteriaSet.sortCriteriaSet(csUse, ficheConcours.getParametre().getReglement().getListCriteria());
 		
@@ -168,19 +180,23 @@ public class PhaseFinal implements PropertyChangeListener,FicheConcoursListener 
 		
 		int nbPhase = 0;
 		
-		int nbConcurrentCategorie = classement.get(categorie).size();
-		if(nbConcurrentCategorie >= 64) {
-			nbPhase = 6;
-		} else if(nbConcurrentCategorie >= 32) {
-			nbPhase = 5;
-		} else if(nbConcurrentCategorie >= 16) {
-			nbPhase = 4;
-		} else if(nbConcurrentCategorie >= 8) {
-			nbPhase = 3;
-		} else if(nbConcurrentCategorie >= 4) {
-			nbPhase = 2;
-		} else if(nbConcurrentCategorie >= 2) {
-			nbPhase = 1;
+		List<Concurrent> concurrents = classement.getClassementPhaseQualificative().get(categorie);
+		
+		if(concurrents != null) {
+			int nbConcurrentCategorie = concurrents.size();
+			if(nbConcurrentCategorie >= 64) {
+				nbPhase = 6;
+			} else if(nbConcurrentCategorie >= 32) {
+				nbPhase = 5;
+			} else if(nbConcurrentCategorie >= 16) {
+				nbPhase = 4;
+			} else if(nbConcurrentCategorie >= 8) {
+				nbPhase = 3;
+			} else if(nbConcurrentCategorie >= 4) {
+				nbPhase = 2;
+			} else if(nbConcurrentCategorie >= 2) {
+				nbPhase = 1;
+			}
 		}
 		
 		return nbPhase;
@@ -203,12 +219,7 @@ public class PhaseFinal implements PropertyChangeListener,FicheConcoursListener 
 		if(phase > getNombrePhase(categorie))
 			return null;
 		
-		List<Concurrent> concurrents = classement.get(categorie);
-		concurrents = concurrents.subList(0, getNombreArcherPhase(phase));
-		int iConcurrent1 = numDuel;
-		int iConcurrent2 = getNombreArcherPhase(phase) - numDuel - 1;
-		
-		return new Duel(concurrents.get(iConcurrent1++), concurrents.get(iConcurrent2--));
+		return getDuelsPhase(categorie, phase).get(numDuel);
 	}
 	
 	/**
@@ -220,22 +231,92 @@ public class PhaseFinal implements PropertyChangeListener,FicheConcoursListener 
 	 *         La liste des duels est ordonnées
 	 */
 	public List<Duel> getDuelsPhase(CriteriaSet categorie, int phase) {
+		int nombreTotalPhase = getNombrePhase(categorie);
 		//on vérifie que la phase est possible pour cette catégorie
-		if(phase > getNombrePhase(categorie))
+		if(phase > nombreTotalPhase)
 			return null;
 		
 		List<Duel> duels = new ArrayList<Duel>();
-		for(int i = 0; i < getNombreArcherPhase(phase); i++)
-			duels.add(getDuel(categorie, phase, i));
+		
+		List<RepartitionFinals> repartitionFinals = RepartitionFinals.getRepartitionFinalsPhase(repartitionsFinals, nombreTotalPhase);
+		//Liste des concurrents en pĥase max 
+		List<Concurrent> concurrents = classement.getClassementPhaseQualificative().get(categorie);
+		//production des duels de phase max
+		for(int i = 0; i < getNombreDuelPhase(nombreTotalPhase); i++) {
+			duels.add(new Duel(
+					concurrents.get(repartitionFinals.get(i*2).getNumeroOrdre()-1),
+					concurrents.get(repartitionFinals.get((i*2)+1).getNumeroOrdre()-1),
+					nombreTotalPhase, i+1
+					));
+		}
+		
+		if(phase < nombreTotalPhase) {
+			Concurrent concurrent1 = null;
+			Concurrent concurrent2 = null;
+			
+			for(int i = nombreTotalPhase - 1; i >= phase; i--) {
+				List<Duel> duelsPhasePrecedente = duels;
+				duels = new ArrayList<Duel>();
+				
+				int numDuel = 1;
+				for(Duel duel : duelsPhasePrecedente) {
+					if(concurrent1 == null)
+						concurrent1 = duel.getWinner();
+					else {
+						concurrent2 = duel.getWinner();
+						
+						duels.add(new Duel(concurrent1, concurrent2, i, numDuel++));
+						
+						concurrent1 = null;
+						concurrent2 = null;
+					}
+				}
+			}
+		}
 		
 		return duels;
 	}
 
 	/**
+	 * Retourne le classement de phase finale de la catégorie fournit en paramètre
+	 * 
+	 * @param categorie la catégorie pour laquelle fournir le classement
+	 * @return le classement de phase finale de la catégorie
+	 */
+	public List<Concurrent> getClassement(CriteriaSet categorie) {
+		List<Concurrent> concurrents = new ArrayList<Concurrent>();
+		
+		for(int i = 0; i < getNombrePhase(categorie); i++) {
+			List<Duel> duels = getDuelsPhase(categorie, i);
+			if(i == 0 && duels.size() > 0) {//Finale
+				concurrents.add(duels.get(0).getWinner());
+				concurrents.add(duels.get(0).getLooser());
+			} else {
+				List<Concurrent> perdants = new ArrayList<Concurrent>();
+				for(Duel duel : duels) {
+					if(duel.getLooser() != null)
+						perdants.add(duel.getLooser());
+				}
+				if(perdants.size() > 0) {
+					final int phase = i;
+					Collections.sort(perdants, new Comparator<Concurrent>() {
+						@Override
+						public int compare(Concurrent o1, Concurrent o2) {
+							return o1.compareScorePhaseFinalWith(o2, phase);
+						}
+					});
+					concurrents.addAll(perdants);
+				}
+			}
+		}
+		return concurrents;
+	}
+	
+	/**
 	 * Rafraîchit le classement pour travailler sur des données à jour
 	 */
 	private void refreshClassement() {
-		classement = ficheConcours.getConcurrentList().classement().getClassementPhaseQualificative();
+		classement = ficheConcours.getConcurrentList().classement();
 	}
 
 	@Override

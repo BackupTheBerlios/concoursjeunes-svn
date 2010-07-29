@@ -110,12 +110,12 @@ import org.ajdeveloppement.commons.ui.DefaultDialogReturn;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.concoursjeunes.Criterion;
 import org.concoursjeunes.Reglement;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Binding;
 import org.jdesktop.beansbinding.BindingGroup;
 import org.jdesktop.beansbinding.Bindings;
 import org.jdesktop.beansbinding.Converter;
-import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 
 /**
  * Boite de dialogue de gestion des critère de distinction des archers
@@ -125,45 +125,45 @@ import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 public class CriterionDialog extends JDialog implements ActionListener, ChangeListener {
     
 	private AjResourcesReader localisation;
-	
-    private Criterion criterion = new Criterion();
-    
-    private BindingGroup criterionBinding = new BindingGroup();
-    
-    private JLabel jlIndex = new JLabel();
-    @Localizable("criterion.code")
-    private JLabel jlCode = new JLabel();
-    @Localizable("criterion.libelle")
-    private JLabel jlLibelle = new JLabel();
-    @Localizable("criterion.ordretri")
-    private JLabel jlSortOrder = new JLabel();
-    @Localizable("criterion.winfftacode.libelle")
-    private JLabel jlWinFFTACode = new JLabel();
-    private JTextField jtfCode = new JTextField(10);
-    private JTextField jtfLibelle = new JTextField(20);
-    private JComboBox jcbSortOrder = new JComboBox();
-    @Localizable("criterion.placement")
-    private JCheckBox jcbPlacementCriterion = new JCheckBox();
-    @Localizable("criterion.classement")
-    private JCheckBox jcbClassementCriterion = new JCheckBox();
-    @Localizable("criterion.classementequipe")
-    private JCheckBox jcbClassementEquipeCriterion = new JCheckBox();
-    private JComboBox jcbWinFFTACode = new JComboBox();
-    
-    @Localizable("criterion.ordretri.asc")
-    private final LocalizableString lsSortOrderAsc = new LocalizableString();
-    @Localizable("criterion.ordretri.desc")
-    private final LocalizableString lsSortOrderDesc = new LocalizableString();
-    
-    @Localizable("bouton.valider")
-    private JButton jbValider = new JButton();
-    @Localizable("bouton.annuler")
-    private JButton jbAnnuler = new JButton();
-    
-    private boolean creationMode = false;
-    private boolean editable = false;
-    
-    private DefaultDialogReturn returnAction = DefaultDialogReturn.CANCEL;
+
+	private Criterion criterion = new Criterion();
+
+	private BindingGroup criterionBinding = new BindingGroup();
+
+	private JLabel jlIndex = new JLabel();
+	@Localizable("criterion.code")
+	private JLabel jlCode = new JLabel();
+	@Localizable("criterion.libelle")
+	private JLabel jlLibelle = new JLabel();
+	@Localizable("criterion.ordretri")
+	private JLabel jlSortOrder = new JLabel();
+	@Localizable("criterion.winfftacode.libelle")
+	private JLabel jlWinFFTACode = new JLabel();
+	private JTextField jtfCode = new JTextField(10);
+	private JTextField jtfLibelle = new JTextField(20);
+	private JComboBox jcbSortOrder = new JComboBox();
+	@Localizable("criterion.placement")
+	private JCheckBox jcbPlacementCriterion = new JCheckBox();
+	@Localizable("criterion.classement")
+	private JCheckBox jcbClassementCriterion = new JCheckBox();
+	@Localizable("criterion.classementequipe")
+	private JCheckBox jcbClassementEquipeCriterion = new JCheckBox();
+	private JComboBox jcbWinFFTACode = new JComboBox();
+
+	@Localizable("criterion.ordretri.asc")
+	private final LocalizableString lsSortOrderAsc = new LocalizableString();
+	@Localizable("criterion.ordretri.desc")
+	private final LocalizableString lsSortOrderDesc = new LocalizableString();
+
+	@Localizable("bouton.valider")
+	private JButton jbValider = new JButton();
+	@Localizable("bouton.annuler")
+	private JButton jbAnnuler = new JButton();
+
+	private boolean creationMode = false;
+	private boolean editable = false;
+
+	private DefaultDialogReturn returnAction = DefaultDialogReturn.CANCEL;
     
     /**
      * Intialise une boite de dialogue de paramétrage de critère de réglement
@@ -211,7 +211,7 @@ public class CriterionDialog extends JDialog implements ActionListener, ChangeLi
         
         
         init();
-        affectLibelle();
+        affectLabels();
     }
     
     /**
@@ -278,7 +278,7 @@ public class CriterionDialog extends JDialog implements ActionListener, ChangeLi
      * 
      *
      */
-    private void affectLibelle() {
+    private void affectLabels() {
         Localizator.localize(this, localisation);
     }
     

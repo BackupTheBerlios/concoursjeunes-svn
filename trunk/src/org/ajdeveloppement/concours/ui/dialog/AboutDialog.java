@@ -140,7 +140,7 @@ public class AboutDialog extends JDialog implements ActionListener, HyperlinkLis
 		super(parentframe, true);
 		this.localisation = localisation;
 		init();
-		affectLibelle();
+		affectLabels();
 	}
 	
 	private void init() {
@@ -165,7 +165,7 @@ public class AboutDialog extends JDialog implements ActionListener, HyperlinkLis
 	/**
 	 * 
 	 */
-	private void affectLibelle() {
+	private void affectLabels() {
 		Localizator.localize(this, localisation);
 		
 		String iconURL = ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$

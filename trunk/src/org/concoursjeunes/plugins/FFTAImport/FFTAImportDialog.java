@@ -138,7 +138,7 @@ public class FFTAImportDialog extends JDialog implements ActionListener, FFTAImp
 		pluginLocalisation.setLocale(new Locale(profile.getConfiguration().getLangue()));
 
 		init();
-		affectLibelle();
+		affectLabels();
 	}
 
 	private void init() {
@@ -189,7 +189,7 @@ public class FFTAImportDialog extends JDialog implements ActionListener, FFTAImp
 		getContentPane().add(jpAction, BorderLayout.SOUTH);
 	}
 
-	private void affectLibelle() {
+	private void affectLabels() {
 		Localizator.localize(this, pluginLocalisation);
 		
 		jbParcourir.setText(pluginLocalisation.getResourceString("button.parcourir")); //$NON-NLS-1$

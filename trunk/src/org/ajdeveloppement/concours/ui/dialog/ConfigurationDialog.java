@@ -316,7 +316,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		tabbedpane.addTab("configuration.onglet.etiquettes", null, initEcranEtiquette()); //$NON-NLS-1$
 		tabbedpane.addTab("configuration.onglet.interface", null, initEcranAdvanced()); //$NON-NLS-1$
 
-		affectLibelle();
+		affectLabels();
 
 		getContentPane().add(tabbedpane, BorderLayout.CENTER);
 		getRootPane().setDefaultButton(this.jbValider);
@@ -606,7 +606,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		return jpEcranInterface2;
 	}
 
-	private void affectLibelle() {
+	private void affectLabels() {
 		Localizator.localize(this, localisation);
 	}
 

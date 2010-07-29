@@ -176,7 +176,7 @@ public class DistancesBlasonsDialog extends JDialog implements ActionListener {
 		}
 		
 		init();
-		affectLibelle();
+		affectLabels();
 	}
 	
 	private void init() {
@@ -260,7 +260,7 @@ public class DistancesBlasonsDialog extends JDialog implements ActionListener {
 		getContentPane().add(jpActions, BorderLayout.SOUTH);
 	}
 	
-	private void affectLibelle() {
+	private void affectLabels() {
 		Localizator.localize(this, localisation);
 	}
 	

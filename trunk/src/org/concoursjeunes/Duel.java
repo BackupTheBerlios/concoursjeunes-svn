@@ -93,6 +93,8 @@ package org.concoursjeunes;
  *
  */
 public class Duel {
+	private int numDuel = 0;
+	private int phase = -1;
 	private Concurrent concurrent1;
 	private Concurrent concurrent2;
 
@@ -100,9 +102,39 @@ public class Duel {
 	 * @param concurrent1
 	 * @param concurrent2
 	 */
-	public Duel(Concurrent concurrent1, Concurrent concurrent2) {
+	public Duel(Concurrent concurrent1, Concurrent concurrent2, int phase, int numDuel) {
 		this.concurrent1 = concurrent1;
 		this.concurrent2 = concurrent2;
+		this.numDuel = numDuel;
+		this.phase = phase;
+	}
+
+	/**
+	 * @param numDuel numDuel à définir
+	 */
+	public void setNumDuel(int numDuel) {
+		this.numDuel = numDuel;
+	}
+
+	/**
+	 * @return numDuel
+	 */
+	public int getNumDuel() {
+		return numDuel;
+	}
+
+	/**
+	 * @param phase phase à définir
+	 */
+	public void setPhase(int phase) {
+		this.phase = phase;
+	}
+
+	/**
+	 * @return phase
+	 */
+	public int getPhase() {
+		return phase;
 	}
 
 	/**
@@ -139,7 +171,7 @@ public class Duel {
 	 * @return le vainqueur du duel ou null si ex-aequo
 	 */
 	public Concurrent getWinner() {
-		int compareResult = concurrent1.compareScoreWith(concurrent2);
+		int compareResult = concurrent1.compareScorePhaseFinalWith(concurrent2, phase);
 		if(compareResult > 0)
 			return concurrent1;
 		else if(compareResult < 0)
@@ -153,7 +185,7 @@ public class Duel {
 	 * @return le perdant du duel ou null si ex-aequo
 	 */
 	public Concurrent getLooser() {
-		int compareResult = concurrent1.compareScoreWith(concurrent2);
+		int compareResult = concurrent1.compareScorePhaseFinalWith(concurrent2, phase);
 		if(compareResult > 0)
 			return concurrent2;
 		else if(compareResult < 0)

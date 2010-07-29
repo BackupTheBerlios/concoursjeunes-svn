@@ -206,7 +206,7 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 		this.profile = profile;
 
 		init();
-		affectLibelle();
+		affectLabels();
 		completePanel();
 	}
 
@@ -216,7 +216,7 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 		this.profile = profile;
 
 		init();
-		affectLibelle();
+		affectLabels();
 	}
 
 	private void init() {
@@ -432,7 +432,7 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 		//this.setGlassPane(contactPanel.getAddCategoryPanel());
 	}
 	
-	private void affectLibelle() {
+	private void affectLabels() {
 		Localizator.localize(this, profile.getLocalisation(), Collections.<Class<?>, LocalizationHandler>singletonMap(JXHeader.class, new JXHeaderLocalisationHandler()));
 	}
 	

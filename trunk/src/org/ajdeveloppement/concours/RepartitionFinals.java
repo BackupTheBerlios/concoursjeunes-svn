@@ -1,5 +1,5 @@
 /*
- * Créé le 17 févr. 2010 à 22:09:59 pour ConcoursJeunes
+ * Créé le 29 juil. 2010 à 15:46:04 pour ConcoursJeunes / ArcCompétition
  *
  * Copyright 2002-2010 - Aurélien JEOFFRAY
  *
@@ -86,39 +86,137 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes;
+package org.ajdeveloppement.concours;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
+import org.ajdeveloppement.commons.UncheckedException;
+import org.ajdeveloppement.commons.persistence.ObjectPersistence;
+import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.Session;
+import org.ajdeveloppement.commons.persistence.StoreHelper;
+import org.ajdeveloppement.commons.persistence.sql.SessionHelper;
+import org.ajdeveloppement.commons.persistence.sql.SqlField;
+import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
+import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
+import org.ajdeveloppement.commons.persistence.sql.SqlTable;
+import org.concoursjeunes.ApplicationCore;
 
 /**
- * Représente un classement sur un concours
- * 
  * @author Aurélien JEOFFRAY
  *
  */
-public class Classement {
-	private Map<CriteriaSet, List<Concurrent>> classementPhaseQualificative;
+@SqlTable(name="REPARTITION_PHASE_FINALE")
+@SqlPrimaryKey(fields={"NUM_REPARTITION_PHASE_FINALE", "NUM_TYPE_REPARTITION"})
+public class RepartitionFinals implements ObjectPersistence {
+	private static StoreHelper<RepartitionFinals> helper = null;
+	static {
+		try {
+			helper = new StoreHelper<RepartitionFinals>(new SqlStoreHandler<RepartitionFinals>(
+					ApplicationCore.dbConnection, RepartitionFinals.class));
+		} catch (SQLException e) {
+			throw new UncheckedException(e);
+		}
+	}
 	
-	public Classement() {
+	public static final short TYPE_INDIV_INTERNATIONNAL = 1;
+	public static final short TYPE_INDIV_FRANCAIS = 2;
+	
+	@SqlField(name="NUM_REPARTITION_PHASE_FINALE")
+	private transient short numRepartition = -1;
+	
+	@SqlField(name="NUM_TYPE_REPARTITION")
+	private short typeRepartition = TYPE_INDIV_INTERNATIONNAL;
+	
+	@SqlField(name="NUM_ORDRE")
+	private short numeroOrdre = -1;
+	
+	public RepartitionFinals() {
+	}
+	
+	/**
+	 * @return numRepartition
+	 */
+	public short getNumRepartition() {
+		return numRepartition;
 	}
 
 	/**
-	 * @return classementPhaseQualificative
+	 * @param numRepartition numRepartition à définir
 	 */
-	public Map<CriteriaSet, List<Concurrent>> getClassementPhaseQualificative() {
-		return classementPhaseQualificative;
-	}
-	
-	public List<Concurrent> getClassementPhaseQualificative(CriteriaSet criteriaSet) {
-		return classementPhaseQualificative.get(criteriaSet);
+	public void setNumRepartition(short numRepartition) {
+		this.numRepartition = numRepartition;
 	}
 
 	/**
-	 * @param classementPhaseQualificative classementPhaseQualificative à définir
+	 * @param typeRepartition typeRepartition à définir
 	 */
-	public void setClassementPhaseQualificative(
-			Map<CriteriaSet, List<Concurrent>> classementPhaseQualificative) {
-		this.classementPhaseQualificative = classementPhaseQualificative;
+	public void setTypeRepartition(short typeRepartition) {
+		this.typeRepartition = typeRepartition;
+	}
+
+	/**
+	 * @return typeRepartition
+	 */
+	public short getTypeRepartition() {
+		return typeRepartition;
+	}
+
+	/**
+	 * @return numeroOrdre
+	 */
+	public short getNumeroOrdre() {
+		return numeroOrdre;
+	}
+
+	/**
+	 * @param numeroOrdre numeroOrdre à définir
+	 */
+	public void setNumeroOrdre(short numeroOrdre) {
+		this.numeroOrdre = numeroOrdre;
+	}
+	
+	public static List<RepartitionFinals> getRepartitionFinalsPhase(List<RepartitionFinals> repartitionsFinals, int phase) {
+		int nbParticipant = (int)Math.pow(2, phase);
+		List<RepartitionFinals> repartitionsFinalsPhase = new ArrayList<RepartitionFinals>();
+		for(RepartitionFinals repartitionFinals : repartitionsFinals) {
+			if(repartitionFinals.getNumeroOrdre() <= nbParticipant)
+				repartitionsFinalsPhase.add(repartitionFinals);
+			
+			if(repartitionsFinalsPhase.size() == nbParticipant) //inutile de continuer à boucler si on a déjà tout le monde
+				break;
+		}
+		
+		return repartitionsFinalsPhase;
+	}
+
+	@Override
+	public void save() throws ObjectPersistenceException {
+		SessionHelper.startSaveSession(ApplicationCore.dbConnection, this);
+	}
+	
+	@Override
+	public void delete() throws ObjectPersistenceException {
+		SessionHelper.startDeleteSession(ApplicationCore.dbConnection, this);
+	}
+
+	@Override
+	public void save(Session session) throws ObjectPersistenceException {
+		if(session == null || !session.contains(this)) {
+			if(numRepartition > -1)
+				helper.save(this);
+		}
+	}
+
+	@Override
+	public void delete(Session session) throws ObjectPersistenceException {
+		if(session == null || !session.contains(this)) {
+			if(numRepartition > -1)
+				helper.delete(this);
+		}
 	}
 }
+
+	

@@ -237,10 +237,10 @@ public class ConcurrentListDialog extends JDialog implements ActionListener, Mou
 
 		getRootPane().setDefaultButton(jbValider);
 
-		affectLibelle();
+		affectLabels();
 	}
 
-	private void affectLibelle() {
+	private void affectLabels() {
 		Localizator.localize(this, localisation);
 	}
 

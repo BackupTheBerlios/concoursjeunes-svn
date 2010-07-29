@@ -182,7 +182,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 
 		init();
 		completePanel();
-		affectLibelle();
+		affectLabels();
 
 		//gestion du focus
 		setFocusTraversalPolicy(new ResultatDialogFocusTraversalPolicy());
@@ -361,7 +361,7 @@ public class ResultatDialog extends JDialog implements ActionListener, KeyListen
 		}
 	}
 	
-	private void affectLibelle() {
+	private void affectLabels() {
 		Localizator.localize(this, localisation);
 		
 		jlCible.setText(localisation.getResourceString("resultats.cible", concurrents.get(0).getCible())); //$NON-NLS-1$

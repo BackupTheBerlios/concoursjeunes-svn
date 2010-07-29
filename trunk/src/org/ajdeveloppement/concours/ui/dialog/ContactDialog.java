@@ -123,7 +123,7 @@ public class ContactDialog extends JDialog implements ActionListener {
 		this.profile = profile;
 
 		init();
-		affectLibelle();
+		affectLabels();
 	}
 
 	private void init() {
@@ -143,7 +143,7 @@ public class ContactDialog extends JDialog implements ActionListener {
 		add(BorderLayout.SOUTH, jpAction);
 	}
 
-	private void affectLibelle() {
+	private void affectLabels() {
 		Localizator.localize(this, profile.getLocalisation());
 	}
 

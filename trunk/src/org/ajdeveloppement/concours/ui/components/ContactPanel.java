@@ -236,7 +236,7 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 		this.profile = profile;
 		
 		init();
-		affectLibelle();
+		affectLabels();
 		completePanel();
 	}
 	
@@ -496,7 +496,7 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 		popup.add(miMail);
 	}
 	
-	private void affectLibelle() {
+	private void affectLabels() {
 		Localizator.localize(this, profile.getLocalisation(), Collections.<Class<?>, LocalizationHandler>singletonMap(JXHeader.class, new JXHeaderLocalisationHandler()));
 	}
 	

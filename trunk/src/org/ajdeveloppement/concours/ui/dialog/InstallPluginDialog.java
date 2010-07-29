@@ -194,7 +194,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 		this.localisation = profile.getLocalisation();
 		
 		init();
-		affectLibelle();
+		affectLabels();
 	}
 	
 	private void init() {
@@ -265,7 +265,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 		getContentPane().add(jpAction, BorderLayout.SOUTH);
 	}
 	
-	private void affectLibelle() {
+	private void affectLabels() {
 		Localizator.localize(this, localisation);
 	}
 	

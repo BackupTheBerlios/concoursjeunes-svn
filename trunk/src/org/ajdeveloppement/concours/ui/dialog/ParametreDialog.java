@@ -165,6 +165,8 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 	private JComboBox jcbNiveauChampionnat = new JComboBox();
 	@Localizable("parametre.openclose")
 	private JCheckBox jcbCloseCompetition = new JCheckBox();
+	@Localizable("parametre.phasefinal")
+	private JCheckBox jcbEnablePhaseFinal = new JCheckBox();
 	@Localizable(value="parametre.options",textMethod="setTitle")
 	private TitledBorder optionsBorder = new TitledBorder(""); //$NON-NLS-1$
 	private JTextField jtfNombreCible = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
@@ -219,7 +221,7 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 		reglementDialog = new ReglementDialog(parentframe, null, localisation);
 
 		init();
-		affectLibelle();
+		affectLabels();
 
 		getRootPane().setDefaultButton(jbValider);
 		setModal(true);
@@ -367,6 +369,8 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 		c.gridy++;
 		c.gridwidth = 2;
 		gridbagComposer.addComponentIntoGrid(jcbCloseCompetition, c);
+		c.gridy++;
+		gridbagComposer.addComponentIntoGrid(jcbEnablePhaseFinal, c);
 		
 		gridbagComposer.setParentPanel(jpOptions);
 		c.gridy = 1;
@@ -435,7 +439,7 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 		setVisible(true);
 	}
 
-	private void affectLibelle() {
+	private void affectLabels() {
 		Localizator.localize(this, localisation);
 	}
 
@@ -455,6 +459,7 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 			jcbNiveauChampionnat.addItem(cl);
 		jcbNiveauChampionnat.setSelectedItem(parametre.getNiveauChampionnat());
 		jcbCloseCompetition.setSelected(!parametre.isOpen());
+		jcbEnablePhaseFinal.setSelected(parametre.isDuel());
 		jtfNombreCible.setText("" + parametre.getNbCible()); //$NON-NLS-1$
 		
 		jcbNombreTireurParCible.removeAllItems();
@@ -530,6 +535,8 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 			parametre.setNbDepart(Integer.parseInt(jtfNombreDepart.getText()));
 			parametre.setReglement(tempReglement);
 			parametre.setReglementLock(true);
+			parametre.setOpen(!jcbCloseCompetition.isSelected());
+			parametre.setDuel(jcbEnablePhaseFinal.isSelected());
 
 			setVisible(false);
 		} else if (ae.getSource() == jbAnnuler) {

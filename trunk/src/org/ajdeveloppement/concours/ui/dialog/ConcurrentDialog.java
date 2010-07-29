@@ -155,6 +155,7 @@ import org.concoursjeunes.CriterionElement;
 import org.concoursjeunes.DistancesEtBlason;
 import org.concoursjeunes.Entite;
 import org.concoursjeunes.FicheConcours;
+import org.concoursjeunes.PhaseFinal;
 import org.concoursjeunes.Profile;
 import org.concoursjeunes.Reglement;
 import org.concoursjeunes.TargetPosition;
@@ -163,24 +164,43 @@ import org.concoursjeunes.event.AutoCompleteDocumentEvent;
 import org.concoursjeunes.event.AutoCompleteDocumentListener;
 import org.concoursjeunes.localisable.CriteriaSetLibelle;
 import org.jdesktop.swingx.JXHyperlink;
+import org.jdesktop.swingx.JXTitledSeparator;
 
 /**
  * Boite de dialogue de gestion d'un concurrent
  * 
  * @author Aurélien Jeoffray
- * @version 5.0
+ * @version 6.0
  */
 @Localizable(textMethod="setTitle",value="concurrent.titre.edition")
 public class ConcurrentDialog extends JDialog implements ActionListener, FocusListener, AutoCompleteDocumentListener, ItemListener {
 
+	/**
+	 * Valeur pour validation de la fiche et fermeture de la fenêtre
+	 */
 	public static final int CONFIRM_AND_CLOSE = 1;
+	
+	/**
+	 * Valeur pour validation de la fiche et affichage de la fiche
+	 * du concurrent suivant en fonction de l'ordre de tri courant
+	 */
 	public static final int CONFIRM_AND_NEXT = 2;
+	
+	/**
+	 * Valeur pour validation de la fiche et affichage de la fiche
+	 * du concurrent précédent en fonction de l'ordre de tri courant
+	 */
 	public static final int CONFIRM_AND_PREVIOUS = 3;
+	
+	/**
+	 * Valeur pour fermeture de la fenêtre du concurrent sans validation
+	 */
 	public static final int CANCEL = 4;
 
 	private AjResourcesReader localisation;
 	private Profile profile;
 	private FicheConcours ficheConcours;
+	private PhaseFinal phaseFinal;
 	private Concurrent concurrent;
 	private Entite entiteConcurrent;
 	private Archer filter = null;
@@ -190,29 +210,24 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 
 	@Localizable("concurrent.description")
 	private JLabel jlDescription = new JLabel(); // Description
-	@Localizable("concurrent.identite")
-	private JLabel jlNom = new JLabel(); // Nom et prénom du Tireur
-	@Localizable("concurrent.numlicence")
-	private JLabel jlLicence = new JLabel(); // N° de Licence
-	@Localizable("concurrent.seecontactdialog")
-	private JXHyperlink jxhSeeContactDialog = new JXHyperlink();
-	@Localizable("concurrent.nomclub")
-	private JLabel jlClub = new JLabel(); // nom du club
-	@Localizable("concurrent.agrementclub")
-	private JLabel jlAgrement = new JLabel(); // n°agrement du club
-	@Localizable("concurrent.cible")
-	private JLabel jlCible = new JLabel(); // cible attribué
-	private JLabel jlDepartages = new JLabel(); // Nb de 10/9
 
 	// Tireur
+	@Localizable(value="concurrent.panel.tireur",textMethod="setTitle")
+	private TitledBorder tbConcurrent = new TitledBorder(""); //$NON-NLS-1$
 	private JPanel jpConcurrent = new JPanel();
+	@Localizable("concurrent.identite")
+	private JLabel jlNom = new JLabel(); // Nom et prénom du Tireur
 	private JTextField jtfNom = new JTextField(8); // Nom du tireur
-	private JTextField jtfPrenom = new JTextField(8); // Prenom du tireur
+	private JTextField jtfPrenom = new JTextField(8); // Prénom du tireur
 	@Localizable(value="",tooltip="bouton.selectionarcher")
 	private JButton jbSelectionArcher = new JButton();
 	@Localizable(value="",tooltip="bouton.editer")
 	private JButton jbEditerArcher = new JButton();
-	private JTextField jtfLicence = new JTextField(16);// Numero de
+	@Localizable("concurrent.numlicence")
+	private JLabel jlLicence = new JLabel(); // N° de Licence
+	private JTextField jtfLicence = new JTextField(16);// Numéro de licence
+	@Localizable("concurrent.seecontactdialog")
+	private JXHyperlink jxhSeeContactDialog = new JXHyperlink();
 	@Localizable("concurrent.handicap")
 	private JCheckBox jcbHandicape = new JCheckBox();
 	@Localizable("concurrent.surclassement")
@@ -224,19 +239,52 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	private JComboBox jcbBlason = new JComboBox();
 
 	// Club du tireur
+	@Localizable(value="concurrent.panel.club",textMethod="setTitle")
+	private TitledBorder tbClub = new TitledBorder(""); //$NON-NLS-1$
 	private JPanel jpClub = new JPanel();
+	@Localizable("concurrent.nomclub")
+	private JLabel jlClub = new JLabel(); // nom du club
 	private JTextField jtfClub = new JTextField(16);// Intitulé du club
-	private JTextField jtfAgrement = new JTextField(16);// Numero d'Agrément
+	@Localizable("concurrent.agrementclub")
+	private JLabel jlAgrement = new JLabel(); // n°agrément du club
+	private JTextField jtfAgrement = new JTextField(16);// Numéro d'Agrément
 	private JButton jbDetailClub = new JButton();
 	private JButton jbListeClub = new JButton();
 	private JPanel jpCible = new JPanel();
 
 	// Point du tireur
+	@Localizable("concurrent.cible")
+	private JLabel jlCible = new JLabel(); // cible attribué
 	private JLabel jlValCible = new JLabel();
+	@Localizable(value="concurrent.points.phasequalificative",textMethod="setTitle")
+	private JXTitledSeparator jxtsPhaseQualificative = new JXTitledSeparator();
 	@Localizable("concurrent.points")
 	private JLabel jlPoints = new JLabel();
 	private JTextField[] tfpd;
+	@Localizable("concurrent.departages")
+	private JLabel jlDepartages = new JLabel();
+	private JLabel jlValDepartages = new JLabel(); // Départage (ex: 10/9/M)
 	private JTextField[] tfDepartages;
+	@Localizable(value="concurrent.points.phasesfinale",textMethod="setTitle")
+	private JXTitledSeparator jxtsPhasesFinale = new JXTitledSeparator();
+	@Localizable("concurrent.thirtysecondfinal")
+	private JLabel jlThirtySecondFinal = new JLabel();
+	private JTextField jtfThirtySecondFinal = new JTextField(new NumberDocument(false, false), "0", 4); //$NON-NLS-1$
+	@Localizable("concurrent.sixteenthfinal")
+	private JLabel jlSixteenthFinal = new JLabel();
+	private JTextField jtfSixteenthFinal = new JTextField(new NumberDocument(false, false), "0", 4); //$NON-NLS-1$
+	@Localizable("concurrent.eighthfinal")
+	private JLabel jlEighthFinal = new JLabel();
+	private JTextField jtfEighthFinal = new JTextField(new NumberDocument(false, false), "0", 4); //$NON-NLS-1$
+	@Localizable("concurrent.quarterfinal")
+	private JLabel jlQuarterFinal = new JLabel();
+	private JTextField jtfQuarterFinal = new JTextField(new NumberDocument(false, false), "0", 4); //$NON-NLS-1$
+	@Localizable("concurrent.semifinal")
+	private JLabel jlSemiFinal = new JLabel();
+	private JTextField jtfSemiFinal = new JTextField(new NumberDocument(false, false), "0", 4); //$NON-NLS-1$
+	@Localizable("concurrent.final")
+	private JLabel jlFinal = new JLabel();
+	private JTextField jtfFinal = new JTextField(new NumberDocument(false, false), "0", 4); //$NON-NLS-1$
 
 	// inscription
 	private final JPanel jpInscription = new JPanel();
@@ -272,12 +320,13 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		super(concoursJeunesFrame, "", true); //$NON-NLS-1$
 
 		this.ficheConcours = ficheConcours;
+		this.phaseFinal = new PhaseFinal(ficheConcours);
 		this.localisation = profile.getLocalisation();
 		this.profile = profile;
 		
 		init();
-		affectLibelle();
-
+		affectLabels();
+		
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowActivated(WindowEvent arg0) {
@@ -302,6 +351,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 
 		GridbagComposer gridbagComposer = new GridbagComposer();
 		
+		JPanel jpPosition = new JPanel();
 		JPanel jpPoints = new JPanel();
 		JPanel jpDepartages = new JPanel();
 
@@ -355,9 +405,10 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		// Panneau de champs
 		jlDescription.setOpaque(true);
 		jlDescription.setPreferredSize(new Dimension(250, 70));
-		jpConcurrent.setBorder(new TitledBorder("")); //$NON-NLS-1$
-		jpClub.setBorder(new TitledBorder("")); //$NON-NLS-1$
+		jpConcurrent.setBorder(tbConcurrent);
+		jpClub.setBorder(tbClub);
 		jpCible.setBorder(new TitledBorder("")); //$NON-NLS-1$
+		jpPoints.setLayout(new FlowLayout(FlowLayout.LEFT));
 		jpPoints.add(jlPoints);
 
 		// panneau validation inscription
@@ -365,13 +416,17 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		jpInscription.add(jcbInscription);
 
 		jpPlaceLibre.setLayout(new BorderLayout());
-		jpPlaceLibre.setPreferredSize(new Dimension(300, 100));
+		jpPlaceLibre.setPreferredSize(new Dimension(350, 200));
 		jpPlaceLibre.setBorder(new TitledBorder("")); //$NON-NLS-1$
 		JScrollPane spPlaceLibre = new JScrollPane(jlPlaceLibre);
 		spPlaceLibre.getVerticalScrollBar().setUnitIncrement(20);
 		jpPlaceLibre.add(spPlaceLibre, BorderLayout.CENTER);
 
 		jpActionPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		
+		jpPosition.setLayout(new FlowLayout(FlowLayout.LEFT));
+		jpPosition.add(jlCible);
+		jpPosition.add(jlValCible);
 
 		tfpd = new JTextField[ficheConcours.getParametre().getReglement().getNbSerie()];
 		for (int i = 0; i < tfpd.length; i++) {
@@ -385,8 +440,10 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			labelDep += dep + "/"; //$NON-NLS-1$
 		if(!labelDep.isEmpty())
 			labelDep = labelDep.substring(0, labelDep.length() - 1);
-		jlDepartages.setText(labelDep + ":"); //$NON-NLS-1$
+		jlValDepartages.setText(labelDep + ":"); //$NON-NLS-1$
+		jpDepartages.setLayout(new FlowLayout(FlowLayout.LEFT));
 		jpDepartages.add(jlDepartages);
+		jpDepartages.add(jlValDepartages);
 		tfDepartages = new JTextField[ficheConcours.getParametre().getReglement().getTie().size()];
 		for(int i = 0; i < tfDepartages.length; i++) {
 			tfDepartages[i] = new JTextField(new NumberDocument(false, false), "0", 4); //$NON-NLS-1$
@@ -447,15 +504,44 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		// panneau cible
 		gridbagComposer.setParentPanel(jpCible);
 		c.gridy = 0;
-		c.gridwidth = 1; // Défaut,Haut
+		c.gridwidth = 8;
 		c.weightx = 1.0;
-		gridbagComposer.addComponentIntoGrid(jlCible, c);
-		gridbagComposer.addComponentIntoGrid(Box.createHorizontalGlue(), c);
-		gridbagComposer.addComponentIntoGrid(jlValCible, c);
+		c.anchor =GridBagConstraints.WEST;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		gridbagComposer.addComponentIntoGrid(jpPosition, c);
+		c.gridy++;
+		c.weighty = 0.5;
+		c.fill = GridBagConstraints.VERTICAL;
+		gridbagComposer.addComponentIntoGrid(Box.createVerticalGlue(), c);
+		c.gridy++;
+		c.weighty = 0.0;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		gridbagComposer.addComponentIntoGrid(jxtsPhaseQualificative, c);
+		c.gridy++;
 		gridbagComposer.addComponentIntoGrid(jpPoints, c);
 		c.gridy++;
-		c.gridwidth = 4;
 		gridbagComposer.addComponentIntoGrid(jpDepartages, c);
+		c.gridy++;
+		gridbagComposer.addComponentIntoGrid(jxtsPhasesFinale, c);
+		c.gridy++;
+		c.gridwidth = 1;
+		gridbagComposer.addComponentIntoGrid(jlThirtySecondFinal, c);
+		gridbagComposer.addComponentIntoGrid(jtfThirtySecondFinal, c);
+		gridbagComposer.addComponentIntoGrid(jlSixteenthFinal, c);
+		gridbagComposer.addComponentIntoGrid(jtfSixteenthFinal, c);
+		gridbagComposer.addComponentIntoGrid(jlEighthFinal, c);
+		gridbagComposer.addComponentIntoGrid(jtfEighthFinal, c);
+		gridbagComposer.addComponentIntoGrid(jlQuarterFinal, c);
+		gridbagComposer.addComponentIntoGrid(jtfQuarterFinal, c);
+		c.gridy++;
+		c.gridwidth = 8;
+		JPanel jpLastFinals = new JPanel();
+		jpLastFinals.add(jlSemiFinal);
+		jpLastFinals.add(jtfSemiFinal);
+		jpLastFinals.add(jlFinal);
+		jpLastFinals.add(jtfFinal);
+		gridbagComposer.addComponentIntoGrid(jpLastFinals, c);
+		
 
 		// panneau action
 		jpActionPane.add(jbValider);
@@ -483,10 +569,10 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		gridbag.setConstraints(jpClub, c);
 		getContentPane().add(jpClub, c);
 		c.gridy++;
-		gridbag.setConstraints(jpCible, c);
-		getContentPane().add(jpCible, c);
-		c.gridy++;
 		c.gridwidth = 2;
+		gridbag.setConstraints(jpPlaceLibre, c);
+		getContentPane().add(jpPlaceLibre);
+		c.gridy++;
 		gridbag.setConstraints(jpActionPane, c);
 		getContentPane().add(jpActionPane, c);
 
@@ -495,11 +581,11 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		gridbag.setConstraints(jpInscription, c);
 		getContentPane().add(jpInscription);
 		c.gridy++;
-		c.gridheight = 3;
+		c.gridheight = 2;
 		c.fill = GridBagConstraints.BOTH;
 		c.anchor = GridBagConstraints.WEST;
-		gridbag.setConstraints(jpPlaceLibre, c);
-		getContentPane().add(jpPlaceLibre);
+		gridbag.setConstraints(jpCible, c);
+		getContentPane().add(jpCible, c);
 
 		getRootPane().setDefaultButton(jbSuivant);
 	}
@@ -507,9 +593,9 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	/**
 	 * affecte les libellé localisé à l'interface
 	 */
-	private void affectLibelle() {
-		((TitledBorder) jpConcurrent.getBorder()).setTitle(localisation.getResourceString("concurrent.panel.tireur")); //$NON-NLS-1$
-		((TitledBorder) jpClub.getBorder()).setTitle(localisation.getResourceString("concurrent.panel.club")); //$NON-NLS-1$
+	private void affectLabels() {
+		//((TitledBorder) jpConcurrent.getBorder()).setTitle(localisation.getResourceString("concurrent.panel.tireur")); //$NON-NLS-1$
+		//((TitledBorder) jpClub.getBorder()).setTitle(localisation.getResourceString("concurrent.panel.club")); //$NON-NLS-1$
 		((TitledBorder) jpCible.getBorder()).setTitle(localisation.getResourceString("concurrent.panel.cible")); //$NON-NLS-1$
 		((TitledBorder) jpInscription.getBorder()).setTitle(localisation.getResourceString("concurrent.inscription.titre")); //$NON-NLS-1$
 		((TitledBorder) jpPlaceLibre.getBorder()).setTitle(localisation.getResourceString("concurrent.placelibre.titre")); //$NON-NLS-1$
@@ -540,7 +626,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	/**
 	 * remplit les champs de la boite de dialogue avec le modèle sous jacent
 	 */
-	private void completeConcurrentDialog() {
+	private void completePanel() {
 		boolean isinit = concurrent.getInscription() != Concurrent.UNINIT && !unlock;
 
 		jbSelectionArcher.setEnabled(!isinit);
@@ -619,7 +705,10 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 				jcbBlason.setSelectedItem(distancesEtBlason.getTargetFace());
 		}
 
-		jlValCible.setText(new TargetPosition(concurrent.getCible(), concurrent.getPosition()).toString());
+		jlValCible.setText("<html><span style=\"font-size: 14pt;\">"  //$NON-NLS-1$
+				+ new TargetPosition(concurrent.getCible(), concurrent.getPosition()).toString()
+				+ "</span></html>"); //$NON-NLS-1$
+
 
 		List<Integer> score = concurrent.getScore();
 		if (score.size() > 0) {
@@ -632,14 +721,14 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			}
 		}
 
-
 		for(int i = 0; i < tfDepartages.length; i++) {
 			if(i < concurrent.getDepartages().length)
 				tfDepartages[i].setText("" + concurrent.getDepartages()[i]); //$NON-NLS-1$
 			else
 				tfDepartages[i].setText("0"); //$NON-NLS-1$
 		}
-
+		
+		checkPhasesFinalPane(concurrent.getCriteriaSet());
 
 		if (concurrent.getInscription() == Concurrent.UNINIT)
 			this.jcbInscription.setSelectedIndex(0);
@@ -765,7 +854,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		this.concurrent = concurrent;
 		this.entiteConcurrent = concurrent.getEntite();
 
-		completeConcurrentDialog();
+		completePanel();
 	}
 
 	/**
@@ -777,6 +866,72 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		return concurrent;
 	}
 
+	private void checkPhasesFinalPane(CriteriaSet criteriaSet) {
+		if(ficheConcours.getParametre().isDuel() && criteriaSet != null) {
+			
+			int nbPhase = phaseFinal.getNombrePhase(
+					criteriaSet.getFilteredCriteriaSet(
+							ficheConcours.getParametre().getReglement().getClassementFilter()));
+			if(nbPhase < 5) {
+				jlThirtySecondFinal.setEnabled(false);
+				jtfThirtySecondFinal.setEnabled(false);
+			} else {
+				jlThirtySecondFinal.setEnabled(true);
+				jtfThirtySecondFinal.setEnabled(true);
+				jtfThirtySecondFinal.setText(String.valueOf(concurrent.getScorePhasefinal(5)));
+			}
+			if(nbPhase < 4) {
+				jlSixteenthFinal.setEnabled(false);
+				jtfSixteenthFinal.setEnabled(false);
+			} else {
+				jlSixteenthFinal.setEnabled(true);
+				jtfSixteenthFinal.setEnabled(true);
+				jtfSixteenthFinal.setText(String.valueOf(concurrent.getScorePhasefinal(4)));
+			}
+			if(nbPhase < 3) {
+				jlEighthFinal.setEnabled(false);
+				jtfEighthFinal.setEnabled(false);
+			} else {
+				jlEighthFinal.setEnabled(true);
+				jtfEighthFinal.setEnabled(true);
+				jtfEighthFinal.setText(String.valueOf(concurrent.getScorePhasefinal(3)));
+			}
+			if(nbPhase < 2) {
+				jlQuarterFinal.setEnabled(false);
+				jtfQuarterFinal.setEnabled(false);
+			} else {
+				jlQuarterFinal.setEnabled(true);
+				jtfQuarterFinal.setEnabled(true);
+				jtfQuarterFinal.setText(String.valueOf(concurrent.getScorePhasefinal(2)));
+			}
+			
+			if(nbPhase < 1) {
+				jlSemiFinal.setEnabled(false);
+				jtfSemiFinal.setEnabled(false);
+			} else {
+				jlSemiFinal.setEnabled(true);
+				jtfSemiFinal.setEnabled(true);
+				jtfSemiFinal.setText(String.valueOf(concurrent.getScorePhasefinal(1)));
+			}
+				
+			jlFinal.setEnabled(true);
+			jtfFinal.setEnabled(true);
+			jtfFinal.setText(String.valueOf(concurrent.getScorePhasefinal(0)));
+		} else {
+			jlThirtySecondFinal.setEnabled(false);
+			jlSixteenthFinal.setEnabled(false);
+			jlEighthFinal.setEnabled(false);
+			jlQuarterFinal.setEnabled(false);
+			jlSemiFinal.setEnabled(false);
+			jlFinal.setEnabled(false);
+			jtfThirtySecondFinal.setEnabled(false);
+			jtfSixteenthFinal.setEnabled(false);
+			jtfEighthFinal.setEnabled(false);
+			jtfQuarterFinal.setEnabled(false);
+			jtfSemiFinal.setEnabled(false);
+			jtfFinal.setEnabled(false);
+		}
+	}
 	/**
 	 * formate l'affichage des places libre en fonction des catégorie de classement
 	 * 
@@ -833,15 +988,25 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 
 	private ArrayList<Integer> readScores() throws NumberFormatException {
 		ArrayList<Integer> points = new ArrayList<Integer>();
-		try {
-			for (int i = 0; i < tfpd.length; i++) {
-				points.add(Integer.parseInt(tfpd[i].getText()));
-			}
-		} catch(NumberFormatException e) {
-			throw e;
+		
+		for (int i = 0; i < tfpd.length; i++) {
+			points.add(Integer.parseInt(tfpd[i].getText()));
 		}
 
 		return points;
+	}
+	
+	private int[] readScoresPhasesFinales() throws NumberFormatException {
+		int[] scoresPhasesFinales = new int[6];
+
+		scoresPhasesFinales[5] = Integer.valueOf(jtfThirtySecondFinal.getText());
+		scoresPhasesFinales[4] = Integer.valueOf(jtfSixteenthFinal.getText());
+		scoresPhasesFinales[3] = Integer.valueOf(jtfEighthFinal.getText());
+		scoresPhasesFinales[2] = Integer.valueOf(jtfQuarterFinal.getText());
+		scoresPhasesFinales[1] = Integer.valueOf(jtfSemiFinal.getText());
+		scoresPhasesFinales[0] = Integer.valueOf(jtfFinal.getText());
+		
+		return scoresPhasesFinales;
 	}
 
 	private CriteriaSet readCriteriaSet() {
@@ -923,7 +1088,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			//concurrent.setClub(findEntite);
 			//setConcurrent(concurrent);
 			entiteConcurrent = findEntite;
-			completeConcurrentDialog();
+			completePanel();
 		}
 	}
 
@@ -940,7 +1105,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		//concurrent.setClub(newEntite);
 		//setConcurrent(concurrent);
 		entiteConcurrent = newEntite;
-		completeConcurrentDialog();
+		completePanel();
 	}
 
 	@Override
@@ -1001,6 +1166,8 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 				}
 			
 				concurrent.setScore(readScores());
+				
+				concurrent.setScoresPhasesFinal(readScoresPhasesFinales());
 			} catch (NumberFormatException e) {
 				JOptionPane.showMessageDialog(this, 
 						localisation.getResourceString("erreur.erreursaisie"), //$NON-NLS-1$
@@ -1174,7 +1341,8 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 					if(distancesEtBlason != null)
 						jcbBlason.setSelectedItem(distancesEtBlason.getTargetFace());
 				}
-
+				
+				checkPhasesFinalPane(classementCS);
 			}
 		}
 	}

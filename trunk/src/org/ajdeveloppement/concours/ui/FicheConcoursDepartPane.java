@@ -204,7 +204,7 @@ public class FicheConcoursDepartPane extends JPanel
 		ficheConcours.addFicheConcoursListener(this);
 
 		init();
-		affectLibelle();
+		affectLabels();
 		initContent();
 	}
 
@@ -388,7 +388,7 @@ public class FicheConcoursDepartPane extends JPanel
 	/**
 	 * Affecte les libellés localisé au composant de l'interface
 	 */
-	private void affectLibelle() {
+	private void affectLabels() {
 		Localizator.localize(this, ficheConcoursPane.getLocalisation());
 	}
 

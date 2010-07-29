@@ -184,7 +184,7 @@ public class CriterionElementDialog extends JDialog implements ActionListener {
         	this.criterionElement = criterionElement;
         
         init();
-        affectLibelle();
+        affectLabels();
     }
     
     private void init() {
@@ -219,7 +219,7 @@ public class CriterionElementDialog extends JDialog implements ActionListener {
         getContentPane().add(jpOperation, BorderLayout.SOUTH);
     }
     
-    private void affectLibelle() {
+    private void affectLabels() {
     	Localizator.localize(this, localisation);
     }
     

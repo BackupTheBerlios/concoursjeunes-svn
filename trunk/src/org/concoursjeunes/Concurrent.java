@@ -557,7 +557,7 @@ public class Concurrent extends Archer implements Cloneable {
 	 * @return 1 si supérieur, -1 si other est supérieur ou 0
 	 */
 	public int compareScorePhaseFinalWith(Concurrent other, int phase) {
-		if(phase < 0 || phase > 5)
+		if(phase < 0 || phase > 5 || other == null)
 			return 0;
 		
 		if(getScorePhasefinal(phase) > other.getScorePhasefinal(phase))

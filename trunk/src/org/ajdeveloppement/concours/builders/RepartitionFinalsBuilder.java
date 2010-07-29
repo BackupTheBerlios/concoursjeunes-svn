@@ -1,5 +1,5 @@
 /*
- * Créé le 17 févr. 2010 à 22:09:59 pour ConcoursJeunes
+ * Créé le 29 juil. 2010 à 15:58:09 pour ConcoursJeunes / ArcCompétition
  *
  * Copyright 2002-2010 - Aurélien JEOFFRAY
  *
@@ -86,39 +86,54 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes;
+package org.ajdeveloppement.concours.builders;
 
-import java.util.List;
+import java.sql.ResultSet;
 import java.util.Map;
 
+import org.ajdeveloppement.commons.persistence.LoadHelper;
+import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.sql.ResultSetLoadHandler;
+import org.ajdeveloppement.commons.persistence.sql.SqlLoadHandler;
+import org.ajdeveloppement.concours.RepartitionFinals;
+import org.concoursjeunes.ApplicationCore;
+
 /**
- * Représente un classement sur un concours
- * 
  * @author Aurélien JEOFFRAY
  *
  */
-public class Classement {
-	private Map<CriteriaSet, List<Concurrent>> classementPhaseQualificative;
+public class RepartitionFinalsBuilder {
+	private static LoadHelper<RepartitionFinals,Map<String,Object>> loadHelper;
+	private static LoadHelper<RepartitionFinals,ResultSet> resultSetLoadHelper;
+	static {
+		try {
+			loadHelper = new LoadHelper<RepartitionFinals,Map<String,Object>>(new SqlLoadHandler<RepartitionFinals>(ApplicationCore.dbConnection, RepartitionFinals.class));
+			resultSetLoadHelper = new LoadHelper<RepartitionFinals, ResultSet>(new ResultSetLoadHandler<RepartitionFinals>(RepartitionFinals.class));
+		} catch(ObjectPersistenceException e) {
+			throw new RuntimeException(e);
+		}
+	}
 	
-	public Classement() {
-	}
-
-	/**
-	 * @return classementPhaseQualificative
-	 */
-	public Map<CriteriaSet, List<Concurrent>> getClassementPhaseQualificative() {
-		return classementPhaseQualificative;
+	public static RepartitionFinals getRepartitionFinals(short numRepartition, short typeRepartition) throws ObjectPersistenceException {
+		return getRepartitionFinals(null, numRepartition, typeRepartition);
 	}
 	
-	public List<Concurrent> getClassementPhaseQualificative(CriteriaSet criteriaSet) {
-		return classementPhaseQualificative.get(criteriaSet);
+	public static RepartitionFinals getRepartitionFinals(ResultSet rs) throws ObjectPersistenceException {
+		return getRepartitionFinals(rs, (short)0, (short)0);
 	}
-
-	/**
-	 * @param classementPhaseQualificative classementPhaseQualificative à définir
-	 */
-	public void setClassementPhaseQualificative(
-			Map<CriteriaSet, List<Concurrent>> classementPhaseQualificative) {
-		this.classementPhaseQualificative = classementPhaseQualificative;
+	
+	private static RepartitionFinals getRepartitionFinals(ResultSet rs, short numRepartition, short typeRepartition) throws ObjectPersistenceException {
+		RepartitionFinals repartitionFinals = new RepartitionFinals();
+		
+		if(rs != null) {
+			resultSetLoadHelper.load(repartitionFinals, rs);
+		} else {
+			repartitionFinals.setNumRepartition(numRepartition);
+			repartitionFinals.setTypeRepartition(typeRepartition);
+			
+			loadHelper.load(repartitionFinals);
+		}
+		
+		return repartitionFinals;
 	}
 }

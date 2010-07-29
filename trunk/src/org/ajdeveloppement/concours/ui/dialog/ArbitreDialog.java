@@ -192,7 +192,7 @@ public class ArbitreDialog extends JDialog implements AutoCompleteDocumentListen
 		});
 		
 		init();
-		affectLibelle();
+		affectLabels();
 		
 		setSize(400, 250);
 		setLocationRelativeTo(null);
@@ -248,7 +248,7 @@ public class ArbitreDialog extends JDialog implements AutoCompleteDocumentListen
 		getRootPane().setDefaultButton(jbValider);
 	}
 	
-	private void affectLibelle() {
+	private void affectLabels() {
 		Localizator.localize(this, localisation);
 	}
 	

@@ -199,7 +199,7 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		this.returnSelection = returnSelection;
 
 		init();
-		affectLibelle();
+		affectLabels();
 		
 		this.pack();
 		this.setLocationRelativeTo(null);
@@ -319,7 +319,7 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		this.getContentPane().add(jpPied, BorderLayout.SOUTH);		
 	}
 	
-	private void affectLibelle() {
+	private void affectLabels() {
 		Localizator.localize(this, profile.getLocalisation(), Collections.<Class<?>, LocalizationHandler>singletonMap(JXHeader.class, new JXHeaderLocalisationHandler()));
 	}
 

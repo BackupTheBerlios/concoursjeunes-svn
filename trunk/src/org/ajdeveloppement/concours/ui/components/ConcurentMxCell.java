@@ -1,5 +1,5 @@
 /*
- * Créé le 17 févr. 2010 à 22:09:59 pour ConcoursJeunes
+ * Créé le 26 juil. 2010 à 17:08:34 pour ConcoursJeunes / ArcCompétition
  *
  * Copyright 2002-2010 - Aurélien JEOFFRAY
  *
@@ -86,39 +86,44 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes;
+package org.ajdeveloppement.concours.ui.components;
 
-import java.util.List;
-import java.util.Map;
+import org.concoursjeunes.Concurrent;
+
+import com.mxgraph.model.mxCell;
+import com.mxgraph.model.mxGeometry;
 
 /**
- * Représente un classement sur un concours
- * 
  * @author Aurélien JEOFFRAY
  *
  */
-public class Classement {
-	private Map<CriteriaSet, List<Concurrent>> classementPhaseQualificative;
+public class ConcurentMxCell extends mxCell {
 	
-	public Classement() {
+	private Concurrent concurrent;
+
+	public ConcurentMxCell(mxGeometry geometry, Concurrent concurrent, int phase, String style) {
+		super("<html><span style=\"font-size:120%;\"><b>"+concurrent.getFullName() //$NON-NLS-1$
+				+ " - " + concurrent.getScorePhasefinal(phase) + "</b><br>" //$NON-NLS-1$ //$NON-NLS-2$
+				+ concurrent.getEntite().getNom()+"</span></html>"); //$NON-NLS-1$
+		
+		this.setConcurrent(concurrent);
+		
+		setVertex(true);
+		setGeometry(geometry);
+		setStyle("rounded=1;" + style); //$NON-NLS-1$
 	}
 
 	/**
-	 * @return classementPhaseQualificative
+	 * @param concurrent concurrent à définir
 	 */
-	public Map<CriteriaSet, List<Concurrent>> getClassementPhaseQualificative() {
-		return classementPhaseQualificative;
-	}
-	
-	public List<Concurrent> getClassementPhaseQualificative(CriteriaSet criteriaSet) {
-		return classementPhaseQualificative.get(criteriaSet);
+	public void setConcurrent(Concurrent concurrent) {
+		this.concurrent = concurrent;
 	}
 
 	/**
-	 * @param classementPhaseQualificative classementPhaseQualificative à définir
+	 * @return concurrent
 	 */
-	public void setClassementPhaseQualificative(
-			Map<CriteriaSet, List<Concurrent>> classementPhaseQualificative) {
-		this.classementPhaseQualificative = classementPhaseQualificative;
+	public Concurrent getConcurrent() {
+		return concurrent;
 	}
 }

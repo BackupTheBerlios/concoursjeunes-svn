@@ -126,6 +126,15 @@ import org.ajdeveloppement.commons.persistence.sql.SqlTable;
 @SqlTable(name="FEDERATION")
 @SqlPrimaryKey(fields={"NUMFEDERATION"},generatedidField=@SqlGeneratedIdField(name="NUMFEDERATION",type=Types.INTEGER))
 public class Federation implements ObjectPersistence {
+	private static StoreHelper<Federation> helper = null;
+	static {
+		try {
+			helper = new StoreHelper<Federation>(new SqlStoreHandler<Federation>(ApplicationCore.dbConnection, Federation.class));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	@SqlField(name="NUMFEDERATION")
 	@XmlTransient
 	private int numFederation = 0;
@@ -138,15 +147,6 @@ public class Federation implements ObjectPersistence {
 	@XmlElementWrapper(name="niveaux",required=true)
 	@XmlElement(name="niveau")
 	private List<CompetitionLevel> competitionLevels = new ArrayList<CompetitionLevel>();
-	
-	private static StoreHelper<Federation> helper = null;
-	static {
-		try {
-			helper = new StoreHelper<Federation>(new SqlStoreHandler<Federation>(ApplicationCore.dbConnection, Federation.class));
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
 	
 	private static PreparedStatement pstmtAlreadyExists = null;
 	
@@ -314,7 +314,7 @@ public class Federation implements ObjectPersistence {
 		
 		return competitionLevelList;
 	}
-	
+
 	private void checkAlreadyExists() throws SQLException {
 		if(pstmtAlreadyExists == null) {
 			String sql = "select NUMFEDERATION from FEDERATION where SIGLEFEDERATION=? and NOMFEDERATION=?"; //$NON-NLS-1$
@@ -356,8 +356,10 @@ public class Federation implements ObjectPersistence {
 				if(session != null)
 					session.addThreatyObject(this);
 		
-				String sql = "delete from NIVEAU_COMPETITION where NUMFEDERATION=" + numFederation; //$NON-NLS-1$
 				Statement stmt = ApplicationCore.dbConnection.createStatement();
+				String sql = "delete from NIVEAU_COMPETITION where NUMFEDERATION=" + numFederation; //$NON-NLS-1$
+				stmt.executeUpdate(sql);
+				sql = "delete from REPARTITION_PHASE_FINALE where NUMFEDERATION=" + numFederation; //$NON-NLS-1$
 				stmt.executeUpdate(sql);
 				
 				Map<String, List<CompetitionLevel>> langFilteredCL = new HashMap<String, List<CompetitionLevel>>();
@@ -372,6 +374,7 @@ public class Federation implements ObjectPersistence {
 					int i = 1;
 					for(CompetitionLevel cl : entry.getValue()) {
 						cl.setNumLevel(i++);
+						cl.setFederation(this);
 						cl.save(session);
 					}
 				}

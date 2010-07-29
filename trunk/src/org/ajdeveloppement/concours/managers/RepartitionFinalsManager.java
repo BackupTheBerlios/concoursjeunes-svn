@@ -1,5 +1,5 @@
 /*
- * Créé le 17 févr. 2010 à 22:09:59 pour ConcoursJeunes
+ * Créé le 29 juil. 2010 à 16:12:47 pour ConcoursJeunes / ArcCompétition
  *
  * Copyright 2002-2010 - Aurélien JEOFFRAY
  *
@@ -86,39 +86,49 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes;
+package org.ajdeveloppement.concours.managers;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
+import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.concours.RepartitionFinals;
+import org.ajdeveloppement.concours.builders.RepartitionFinalsBuilder;
+import org.concoursjeunes.ApplicationCore;
 
 /**
- * Représente un classement sur un concours
- * 
  * @author Aurélien JEOFFRAY
  *
  */
-public class Classement {
-	private Map<CriteriaSet, List<Concurrent>> classementPhaseQualificative;
-	
-	public Classement() {
-	}
-
+public class RepartitionFinalsManager {
+	private static PreparedStatement pstmtAllRepartitionFinals = null;
 	/**
-	 * @return classementPhaseQualificative
+	 * 
+	 * @param federation
+	 * @return
 	 */
-	public Map<CriteriaSet, List<Concurrent>> getClassementPhaseQualificative() {
-		return classementPhaseQualificative;
-	}
-	
-	public List<Concurrent> getClassementPhaseQualificative(CriteriaSet criteriaSet) {
-		return classementPhaseQualificative.get(criteriaSet);
-	}
-
-	/**
-	 * @param classementPhaseQualificative classementPhaseQualificative à définir
-	 */
-	public void setClassementPhaseQualificative(
-			Map<CriteriaSet, List<Concurrent>> classementPhaseQualificative) {
-		this.classementPhaseQualificative = classementPhaseQualificative;
+	public static List<RepartitionFinals> getRepartitionFinals(short typeRepartition) throws ObjectPersistenceException {
+		List<RepartitionFinals> lRepartitionFinals = new ArrayList<RepartitionFinals>();
+		try {
+			if(pstmtAllRepartitionFinals== null)
+				pstmtAllRepartitionFinals = ApplicationCore.dbConnection.prepareStatement(
+						String.format("select * from REPARTITION_PHASE_FINALE where NUM_TYPE_REPARTITION=%s order by NUM_REPARTITION_PHASE_FINALE",//$NON-NLS-1$
+								typeRepartition)); 
+			
+			ResultSet rs = pstmtAllRepartitionFinals.executeQuery();
+			try {
+				while(rs.next()) {
+					lRepartitionFinals.add(RepartitionFinalsBuilder.getRepartitionFinals(rs));
+				}
+			} finally {
+				rs.close();
+			}
+		} catch (SQLException e) {
+			throw new ObjectPersistenceException(e);
+		}
+		return lRepartitionFinals;
 	}
 }

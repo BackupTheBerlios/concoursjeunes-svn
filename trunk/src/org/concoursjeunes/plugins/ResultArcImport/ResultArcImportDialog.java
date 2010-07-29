@@ -145,7 +145,7 @@ public class ResultArcImportDialog extends JDialog implements ActionListener, Re
 		pluginLocalisation.setLocale(new Locale(profile.getConfiguration().getLangue()));
 
 		init();
-		affectLibelle();
+		affectLabels();
 	}
 
 	private void init() {
@@ -185,7 +185,7 @@ public class ResultArcImportDialog extends JDialog implements ActionListener, Re
 		getContentPane().add(jpAnnulation, BorderLayout.SOUTH);
 	}
 
-	private void affectLibelle() {
+	private void affectLabels() {
 		Localizator.localize(this, pluginLocalisation);
 	}
 

@@ -150,11 +150,11 @@ import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.Criterion;
 import org.concoursjeunes.FicheConcours;
+import org.concoursjeunes.state.Categories.Category;
 import org.concoursjeunes.state.State;
 import org.concoursjeunes.state.StateManager;
 import org.concoursjeunes.state.StateProcessor;
 import org.concoursjeunes.state.StateSelector;
-import org.concoursjeunes.state.Categories.Category;
 import org.jdesktop.swingx.JXBusyLabel;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.JXPanel;
@@ -415,7 +415,9 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		tabbedpane.addTab("onglet.pointage.greffe", new ImageIcon(ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$ //$NON-NLS-2$
 				File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.desktop")), //$NON-NLS-1$
 				new GreffePane(this));
-		tabbedpane.addTab("onglet.phasesfinal",new FicheConcoursFinalPane(this)); //$NON-NLS-1$
+		tabbedpane.addTab("onglet.phasesfinal", ApplicationCore.userRessources.getImageIcon("file.icon.finals", 16, 16), //$NON-NLS-1$ //$NON-NLS-2$
+				new FicheConcoursFinalPane(this)); 
+		tabbedpane.setEnabledAt(2, ficheConcours.getParametre().isDuel());
 		tabbedpane.addTab("onglet.classement", //$NON-NLS-1$
 				new ImageIcon(ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
 						File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.team")), //$NON-NLS-1$
@@ -432,7 +434,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		add(tabbedpane, BorderLayout.CENTER);
 		//add(statusbar, BorderLayout.SOUTH);
 
-		affectLibelle();
+		affectLabels();
 	}
 	
 	private JPanel initEditions() {
@@ -604,7 +606,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	 * affecte les libelle localisé à l'interface
 	 *
 	 */
-	private void affectLibelle() {
+	private void affectLabels() {
 		Localizator.localize(this, parentframe.profile.getLocalisation());
 		
 		jcbSeries.removeAllItems();
@@ -617,6 +619,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	 */
 	public void openParametreDialog() {
 		paramDialog.showParametreDialog(ficheConcours.getParametre());
+		tabbedpane.setEnabledAt(2, ficheConcours.getParametre().isDuel());
 	}
 
 	/**

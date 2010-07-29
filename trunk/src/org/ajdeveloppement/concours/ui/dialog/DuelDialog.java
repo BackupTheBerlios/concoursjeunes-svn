@@ -1,7 +1,7 @@
 /*
- * Créé le 17 août 2008 à 12:30:37 pour ConcoursJeunes
+ * Créé le 28 juil. 2010 à 11:43:28 pour ConcoursJeunes / ArcCompétition
  *
- * Copyright 2002-2008 - Aurélien JEOFFRAY
+ * Copyright 2002-2010 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
  *
@@ -36,7 +36,7 @@
  * à l'utiliser et l'exploiter dans les mêmes conditions de sécurité. 
  * 
  * Le fait que vous puissiez accéder à cet en-tête signifie que vous avez 
- * pri connaissance de la licence CeCILL, et que vous en avez accepté les
+ * pris connaissance de la licence CeCILL, et que vous en avez accepté les
  * termes.
  *
  * ENGLISH:
@@ -75,7 +75,7 @@
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
- *  any later version.
+ *  (at your option) any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -89,157 +89,143 @@
 package org.ajdeveloppement.concours.ui.dialog;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
-import java.awt.Window;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Date;
+import java.util.Collections;
 
+import javax.swing.Box;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import org.ajdeveloppement.apps.localisation.Localizable;
+import org.ajdeveloppement.apps.localisation.LocalizationHandler;
 import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
-import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.ui.DefaultDialogReturn;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
-import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
-import org.concoursjeunes.Federation;
-import org.concoursjeunes.Profile;
-import org.concoursjeunes.Reglement;
-import org.concoursjeunes.builders.ReglementBuilder;
-import org.concoursjeunes.manager.FederationManager;
-import org.concoursjeunes.manager.ReglementManager;
+import org.ajdeveloppement.commons.ui.NumberDocument;
+import org.ajdeveloppement.swingxext.localisation.JXHeaderLocalisationHandler;
+import org.concoursjeunes.Duel;
 import org.jdesktop.swingx.JXHeader;
-import org.jdesktop.swingx.painter.GlossPainter;
 
 /**
  * @author Aurélien JEOFFRAY
  *
  */
-@Localizable(textMethod="setTitle",value="newreglement.title")
-public class NewReglementDialog extends JDialog implements ActionListener {
+@Localizable(value="duel.title",textMethod="setTitle")
+public class DuelDialog extends JDialog implements ActionListener {
 	
-	private Profile profile;
 	private AjResourcesReader localisation;
+	private Duel duel;
 	
-	@Localizable(textMethod="setTitle",value="newreglement.headertitle")
-	private JXHeader headerCreateReglement = new JXHeader();
-	@Localizable("newreglement.name")
-	private JLabel jlReglementName = new JLabel();
-	@Localizable("newreglement.federation")
-	private JLabel jlFederation = new JLabel();
-	@Localizable("newreglement.reference")
-	private JLabel jlReference = new JLabel();
-	@Localizable("newreglement.category")
-	private JLabel jlCategorie = new JLabel();
-	private JTextField jtfReglementName = new JTextField(20);
-	private JComboBox jcbFederation = new JComboBox();
-	private JComboBox jcbReference = new JComboBox();
-	private JComboBox jcbCategorie = new JComboBox();
+	@Localizable("duel.header")
+	private JXHeader jxhHeaderDuel = new JXHeader();
+	
+	private JLabel jlConcurrent1 = new JLabel();
+	@Localizable("duel.score")
+	private JLabel jlScore1 = new JLabel();
+	private JTextField jtfScore1 = new JTextField(new NumberDocument(false, false), "0", 4); //$NON-NLS-1$
+	private JLabel jlConcurrent2 = new JLabel();
+	@Localizable("duel.score")
+	private JLabel jlScore2 = new JLabel();
+	private JTextField jtfScore2 = new JTextField(new NumberDocument(false, false), "0", 4); //$NON-NLS-1$
 	
 	@Localizable("bouton.valider")
 	private JButton jbValider = new JButton();
 	@Localizable("bouton.annuler")
 	private JButton jbAnnuler = new JButton();
 	
-	private Reglement reglement = null;
+	private DefaultDialogReturn returnAction = DefaultDialogReturn.CANCEL;
 
-	/**
-	 * 
-	 */
-	public NewReglementDialog(Window parentframe, Profile profile) {
-		super(parentframe, ModalityType.TOOLKIT_MODAL);
-		
-		this.profile = profile;
-		this.localisation = profile.getLocalisation();
+	public DuelDialog(JFrame parent, AjResourcesReader localisation) {
+		super(parent, true);
+		this.localisation = localisation;
 		
 		init();
 		affectLabels();
 	}
 	
 	private void init() {
-		JPanel jpPrincipal = new JPanel();
-		JPanel jpAction = new JPanel();
-		
-		GridbagComposer gpComposer = new GridbagComposer();
-		GridBagConstraints c = new GridBagConstraints();
-		
-		GlossPainter gloss = new GlossPainter();
-		headerCreateReglement.setBackground(new Color(200,200,255));
-		headerCreateReglement.setBackgroundPainter(gloss);
-		headerCreateReglement.setTitleFont(headerCreateReglement.getTitleFont().deriveFont(18.0f));
-		
-		jcbCategorie.addItem(localisation.getResourceString("reglementmanager.category.young")); //$NON-NLS-1$
-		jcbCategorie.addItem(localisation.getResourceString("reglementmanager.category.indoor")); //$NON-NLS-1$
-		jcbCategorie.addItem(localisation.getResourceString("reglementmanager.category.outdoor")); //$NON-NLS-1$
-		jcbCategorie.addItem(localisation.getResourceString("reglementmanager.category.other")); //$NON-NLS-1$
-		
 		jbValider.addActionListener(this);
 		jbAnnuler.addActionListener(this);
-		jcbFederation.addActionListener(this);
 		
-		gpComposer.setParentPanel(jpPrincipal);
+		GridBagConstraints c = new GridBagConstraints();
+		GridbagComposer gridbagComposer = new GridbagComposer();
+		
+		JPanel jpGeneral = new JPanel();
+		gridbagComposer.setParentPanel(jpGeneral);
 		c.gridy = 0;
-		c.anchor = GridBagConstraints.WEST;
-		gpComposer.addComponentIntoGrid(jlReglementName, c);
-		gpComposer.addComponentIntoGrid(jtfReglementName, c);
+		c.anchor = GridBagConstraints.NORTHWEST;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 0.8;
+		c.insets = new Insets(5, 5, 5, 5);
+		c.gridwidth = 1;
+		gridbagComposer.addComponentIntoGrid(jlConcurrent1, c);
+		c.weightx = 0.0;
+		gridbagComposer.addComponentIntoGrid(jlScore1, c);
+		c.weightx = 0.2;
+		gridbagComposer.addComponentIntoGrid(jtfScore1, c);
 		c.gridy++;
-		gpComposer.addComponentIntoGrid(jlFederation, c);
-		gpComposer.addComponentIntoGrid(jcbFederation, c);
+		gridbagComposer.addComponentIntoGrid(jlConcurrent2, c);
+		c.weightx = 0.0;
+		gridbagComposer.addComponentIntoGrid(jlScore2, c);
+		gridbagComposer.addComponentIntoGrid(jtfScore2, c);
 		c.gridy++;
-		gpComposer.addComponentIntoGrid(jlReference, c);
-		gpComposer.addComponentIntoGrid(jcbReference, c);
-		c.gridy++;
-		gpComposer.addComponentIntoGrid(jlCategorie, c);
-		gpComposer.addComponentIntoGrid(jcbCategorie, c);
+		c.weighty = 1.0;
+		c.fill =GridBagConstraints.VERTICAL;
+		gridbagComposer.addComponentIntoGrid(Box.createVerticalGlue(), c);
 		
+		JPanel jpAction = new JPanel();
 		jpAction.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		jpAction.add(jbValider);
 		jpAction.add(jbAnnuler);
 		
-		setLayout(new BorderLayout());
-		add(headerCreateReglement, BorderLayout.NORTH);
-		add(jpPrincipal, BorderLayout.CENTER);
-		add(jpAction, BorderLayout.SOUTH);
-		
+		getContentPane().setLayout(new BorderLayout());
+		getContentPane().add(BorderLayout.NORTH,jxhHeaderDuel);
+		getContentPane().add(BorderLayout.CENTER,jpGeneral);
+		getContentPane().add(BorderLayout.SOUTH,jpAction);
 	}
 	
 	private void affectLabels() {
-		Localizator.localize(this, localisation);
+		Localizator.localize(this, localisation, Collections.<Class<?>, LocalizationHandler>singletonMap(JXHeader.class, new JXHeaderLocalisationHandler()));
 	}
 	
 	private void completePanel() {
-		jcbFederation.removeAllItems();
-		for(Federation federation : FederationManager.getAvailableFederations()) {
-			jcbFederation.addItem(federation);
-		}
-		jcbFederation.addItem(localisation.getResourceString("newreglement.addfederation")); //$NON-NLS-1$
-		
-		ReglementManager reglementManager = new ReglementManager();
-		
-		jcbReference.removeAllItems();
-		jcbReference.addItem(""); //$NON-NLS-1$
-		for(Reglement reglement : reglementManager.getAvailableReglements()) {
-			jcbReference.addItem(reglement);
-		}
+		jxhHeaderDuel.setDescription(localisation.getResourceString("duel.header.description", //$NON-NLS-1$
+				localisation.getResourceString("duel.phase." + (duel.getPhase()-1)), //$NON-NLS-1$
+				duel.getNumDuel()));
+		jlConcurrent1.setText("<html>" //$NON-NLS-1$
+				 + duel.getConcurrent1().getFullName()
+				 + "<br><span style=\"font-style:italic;color:#888888;font-size:90%;\">" //$NON-NLS-1$
+				 + duel.getConcurrent1().getEntite().getNom()
+				 + "</span></html>"); //$NON-NLS-1$
+		jlConcurrent2.setText("<html>" //$NON-NLS-1$
+				 + duel.getConcurrent2().getFullName()
+				 + "<br><span style=\"font-style:italic;color:#888888;font-size:90%;\">" //$NON-NLS-1$
+				 + duel.getConcurrent2().getEntite().getNom()
+				 + "</span></html>"); //$NON-NLS-1$
+		jtfScore1.setText(String.valueOf(duel.getConcurrent1().getScorePhasefinal(duel.getPhase())));
+		jtfScore2.setText(String.valueOf(duel.getConcurrent2().getScorePhasefinal(duel.getPhase())));
 	}
 	
-	public Reglement showNewReglementDialog() {
+	public DefaultDialogReturn showDuelDialog(Duel duel) {
+		returnAction = DefaultDialogReturn.CANCEL;
+		this.duel = duel;
+		
 		completePanel();
 		
-		pack();
+		setSize(430, 200);
 		setLocationRelativeTo(null);
 		setVisible(true);
 		
-		return reglement;
+		return returnAction;
 	}
 	
 	/* (non-Javadoc)
@@ -248,43 +234,13 @@ public class NewReglementDialog extends JDialog implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == jbValider) {
-			Reglement reglement = ReglementBuilder.createReglement();
-			if(jcbReference.getSelectedItem() instanceof Reglement) {
-				Reglement reference = (Reglement)jcbReference.getSelectedItem();
-				try {
-					reglement = ReglementBuilder.getReglement(reference.getNumReglement());
-					reglement.setName("C"+(new Date().getTime())); //$NON-NLS-1$
-					reglement.setNumReglement(0);
-					reglement.setRemovable(true);
-				} catch (ObjectPersistenceException e1) {
-					DisplayableErrorHelper.displayException(e1);
-				}
-			}
+			duel.getConcurrent1().setScorePhasefinal(duel.getPhase(), Integer.valueOf("0"+jtfScore1.getText())); //$NON-NLS-1$
+			duel.getConcurrent2().setScorePhasefinal(duel.getPhase(), Integer.valueOf("0"+jtfScore2.getText())); //$NON-NLS-1$
 			
-			reglement.setDisplayName(jtfReglementName.getText());
-			reglement.setFederation((Federation)jcbFederation.getSelectedItem());
-			reglement.setCategory(jcbCategorie.getSelectedIndex() + 1);
-
-			ReglementDialog reglementDialog = new ReglementDialog(this, reglement, localisation);
-			if(reglementDialog.showReglementDialog() == DefaultDialogReturn.OK) {
-				reglement = reglementDialog.getReglement(); 
-				this.reglement = reglement;
-			}
-			
+			returnAction = DefaultDialogReturn.OK;
 			setVisible(false);
 		} else if(e.getSource() == jbAnnuler) {
 			setVisible(false);
-		} else if(e.getSource() ==jcbFederation) {
-			if(jcbFederation.getSelectedItem() instanceof String) {
-				FederationDialog newFederationDialog = new FederationDialog(this, profile);
-				Federation federation = newFederationDialog.showFederationDialog(null);
-				if(federation != null) {
-					completePanel();
-					jcbFederation.setSelectedItem(federation);
-				} else {
-					jcbFederation.setSelectedIndex(0);
-				}
-			}
 		}
 	}
 

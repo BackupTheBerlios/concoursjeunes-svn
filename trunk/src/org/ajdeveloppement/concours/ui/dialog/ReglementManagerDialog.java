@@ -207,7 +207,7 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 		reglementManager = new ReglementManager();
 		
 		init();
-		affectLibelle();
+		affectLabels();
 	}
 	
 	/**
@@ -347,7 +347,7 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 		add(jpAction, BorderLayout.SOUTH);
 	}
 	
-	private void affectLibelle() {
+	private void affectLabels() {
 		Localizator.localize(this, localisation);
 	}
 	
