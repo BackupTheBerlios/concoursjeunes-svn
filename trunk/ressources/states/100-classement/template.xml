@@ -62,7 +62,7 @@
 	</table>
 	<newline />
 	<bloc::categories>
-	<table columns="9" width="100.0\%" cellpadding="1.0" widths="4.21;24.21;25.7894;9.4737;9.4737;{TAILLE_CHAMPS_DISTANCE}6.8421;9.4737">
+	<table columns="9" width="100.0\%" cellpadding="1.0" widths="4.21;24.21;25.7894;9.4737;9.4737;{TAILLE_CHAMPS_DISTANCE}6.8421;9.4737" lastHeaderRow="1">
 		<row>
 			<cell colspan="3">
 				<phrase style="bold">{CATEGORIE}</phrase>

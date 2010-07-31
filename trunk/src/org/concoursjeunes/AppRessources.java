@@ -234,6 +234,15 @@ public class AppRessources extends org.ajdeveloppement.apps.AppRessources {
 	 * Retourne une ressource graphique de l'application
 	 * 
 	 * @param resourceKey la resource graphique à charger
+	 * @return l'image chargé
+	 */
+	public ImageIcon getImageIcon(String resourceKey) {
+		return getImageIcon(resourceKey, -1, -1);
+	}
+	/**
+	 * Retourne une ressource graphique de l'application
+	 * 
+	 * @param resourceKey la resource graphique à charger
 	 * @param width la longueur de l'image ou -1 si l'on souhaite conserver la dimension par défaut
 	 * @param height la hauteur de l'image ou -1 si l'on souhaite conserver la dimension par défaut
 	 * @return l'image chargé

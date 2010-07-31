@@ -88,19 +88,30 @@
  */
 package org.concoursjeunes;
 
+import static org.concoursjeunes.ApplicationCore.staticParameters;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import org.ajdeveloppement.commons.AJTemplate;
 import org.ajdeveloppement.commons.UncheckedException;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.concours.RepartitionFinals;
 import org.ajdeveloppement.concours.managers.RepartitionFinalsManager;
 import org.concoursjeunes.event.FicheConcoursEvent;
 import org.concoursjeunes.event.FicheConcoursListener;
+import org.concoursjeunes.localisable.CriteriaSetLibelle;
 
 
 /**
@@ -109,19 +120,32 @@ import org.concoursjeunes.event.FicheConcoursListener;
  * @author Aurélien JEOFFRAY
  *
  */
-public class PhaseFinal implements PropertyChangeListener,FicheConcoursListener {
+public class PhasesFinales implements PropertyChangeListener,FicheConcoursListener {
 	
 	private FicheConcours ficheConcours;
 	private Classement classement;
 	private List<RepartitionFinals> repartitionsFinals = new ArrayList<RepartitionFinals>();
+	
+	private transient AJTemplate templateClassementHTML;
 	
 	/**
 	 * Initialise une phase final pour la fiche concours fournit en paramètre
 	 * 
 	 * @param ficheConcours
 	 */
-	public PhaseFinal(FicheConcours ficheConcours) {
+	public PhasesFinales(FicheConcours ficheConcours) {
 		this.ficheConcours = ficheConcours;
+		
+		templateClassementHTML = new AJTemplate(ficheConcours.getProfile().getLocalisation());
+		try {
+			loadTemplates();
+		} catch (UnsupportedEncodingException e1) {
+			throw new UncheckedException(e1);
+		} catch (FileNotFoundException e1) {
+			throw new UncheckedException(e1);
+		} catch (IOException e1) {
+			throw new UncheckedException(e1);
+		}
 		
 		try {
 			repartitionsFinals = RepartitionFinalsManager.getRepartitionFinals(RepartitionFinals.TYPE_INDIV_FRANCAIS);
@@ -142,7 +166,7 @@ public class PhaseFinal implements PropertyChangeListener,FicheConcoursListener 
 	 * @return le nombre d'archer possible sur la phase
 	 */
 	public static int getNombreArcherPhase(int phase) {
-		return (int)Math.pow(2, phase); 
+		return (int)Math.pow(2, phase+1); 
 	}
 	
 	/**
@@ -216,7 +240,7 @@ public class PhaseFinal implements PropertyChangeListener,FicheConcoursListener 
 			return null;
 		
 		//on vérifie que la phase est possible pour cette catégorie
-		if(phase > getNombrePhase(categorie))
+		if(phase >= getNombrePhase(categorie))
 			return null;
 		
 		return getDuelsPhase(categorie, phase).get(numDuel);
@@ -233,28 +257,28 @@ public class PhaseFinal implements PropertyChangeListener,FicheConcoursListener 
 	public List<Duel> getDuelsPhase(CriteriaSet categorie, int phase) {
 		int nombreTotalPhase = getNombrePhase(categorie);
 		//on vérifie que la phase est possible pour cette catégorie
-		if(phase > nombreTotalPhase)
+		if(phase >= nombreTotalPhase)
 			return null;
 		
 		List<Duel> duels = new ArrayList<Duel>();
 		
-		List<RepartitionFinals> repartitionFinals = RepartitionFinals.getRepartitionFinalsPhase(repartitionsFinals, nombreTotalPhase);
+		List<RepartitionFinals> repartitionFinals = RepartitionFinals.getRepartitionFinalsPhase(repartitionsFinals, nombreTotalPhase-1);
 		//Liste des concurrents en pĥase max 
 		List<Concurrent> concurrents = classement.getClassementPhaseQualificative().get(categorie);
 		//production des duels de phase max
-		for(int i = 0; i < getNombreDuelPhase(nombreTotalPhase); i++) {
+		for(int i = 0; i < getNombreDuelPhase(nombreTotalPhase-1); i++) {
 			duels.add(new Duel(
 					concurrents.get(repartitionFinals.get(i*2).getNumeroOrdre()-1),
 					concurrents.get(repartitionFinals.get((i*2)+1).getNumeroOrdre()-1),
-					nombreTotalPhase, i+1
+					nombreTotalPhase-1, i+1
 					));
 		}
 		
-		if(phase < nombreTotalPhase) {
+		if(phase < nombreTotalPhase-1) {
 			Concurrent concurrent1 = null;
 			Concurrent concurrent2 = null;
 			
-			for(int i = nombreTotalPhase - 1; i >= phase; i--) {
+			for(int i = nombreTotalPhase - 2; i >= phase; i--) {
 				List<Duel> duelsPhasePrecedente = duels;
 				duels = new ArrayList<Duel>();
 				
@@ -286,23 +310,35 @@ public class PhaseFinal implements PropertyChangeListener,FicheConcoursListener 
 	public List<Concurrent> getClassement(CriteriaSet categorie) {
 		List<Concurrent> concurrents = new ArrayList<Concurrent>();
 		
-		for(int i = 0; i < getNombrePhase(categorie); i++) {
+		int nbTotalPhases = getNombrePhase(categorie);
+		
+		for(int i = 0; i < nbTotalPhases; i++) {
 			List<Duel> duels = getDuelsPhase(categorie, i);
-			if(i == 0 && duels.size() > 0) {//Finale
-				concurrents.add(duels.get(0).getWinner());
-				concurrents.add(duels.get(0).getLooser());
+			if(duels.size() == 1) {//Finale
+				Duel duel = duels.get(0);
+				if(duel.getWinner() != null) {
+					concurrents.add(duel.getWinner());
+					concurrents.add(duel.getLooser());
+				} else {
+					concurrents.add(duel.getConcurrent1());
+					concurrents.add(duel.getConcurrent2());
+				}
 			} else {
 				List<Concurrent> perdants = new ArrayList<Concurrent>();
 				for(Duel duel : duels) {
 					if(duel.getLooser() != null)
 						perdants.add(duel.getLooser());
+					else if(i < nbTotalPhases-1){
+						perdants.add(duel.getConcurrent1());
+						perdants.add(duel.getConcurrent2());
+					}
 				}
 				if(perdants.size() > 0) {
 					final int phase = i;
 					Collections.sort(perdants, new Comparator<Concurrent>() {
 						@Override
 						public int compare(Concurrent o1, Concurrent o2) {
-							return o1.compareScorePhaseFinalWith(o2, phase);
+							return o1.compareScorePhaseFinalWith(o2, phase) * -1;
 						}
 					});
 					concurrents.addAll(perdants);
@@ -313,10 +349,108 @@ public class PhaseFinal implements PropertyChangeListener,FicheConcoursListener 
 	}
 	
 	/**
+	 * Retourne le classement générale de phase finale
+	 * 
+	 * @return le classement par catégorie
+	 */
+	public Map<CriteriaSet, List<Concurrent>> getClassement() {
+		CriteriaSet[] catList = CriteriaSet.listCriteriaSet(
+				ficheConcours.getParametre().getReglement(),
+				ficheConcours.getParametre().getReglement().getClassementFilter());
+		Map<CriteriaSet, List<Concurrent>> concurrentsClasse = new HashMap<CriteriaSet, List<Concurrent>>();
+		
+		for(CriteriaSet criteriaSet : catList) {
+			concurrentsClasse.put(criteriaSet, getClassement(criteriaSet));
+		}
+		
+		return concurrentsClasse;
+	}
+	
+	/**
+	 * Retourne le classement générale de phase finale au format HTML
+	 * 
+	 * @return le classement par catégorie au format HTML
+	 */
+	public String getClassementHTMLPhasesFinalesIndividuel() {
+		AJTemplate tplClassement = templateClassementHTML;
+		
+		tplClassement.reset();
+		
+		tplClassement.parse("LOGO_CLUB_URI", ficheConcours.getProfile().getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		tplClassement.parse("INTITULE_CLUB", ficheConcours.getParametre().getClub().getNom()); //$NON-NLS-1$
+		
+		Map<CriteriaSet, List<Concurrent>> concurrentsClasse = getClassement();
+		
+		Set<CriteriaSet> scnalst = concurrentsClasse.keySet();
+		List<CriteriaSet> scnaUse = new ArrayList<CriteriaSet>(scnalst);
+		CriteriaSet.sortCriteriaSet(scnaUse, ficheConcours.getParametre().getReglement().getListCriteria());
+		
+		for (CriteriaSet scna : scnaUse) {
+			List<Concurrent> sortList = concurrentsClasse.get(scna);
+			
+			if (sortList.size() > 0) {
+				String strSCNA = CriteriaSetLibelle.getLibelle(scna, ficheConcours.getProfile().getLocalisation());
+				
+				tplClassement.parse("categories.CATEGORIE", strSCNA); //$NON-NLS-1$
+				
+				int place = 0;
+				int scorePrecedent = -1;
+				int phasePrecedente = -1;
+				for(Concurrent concurrent : sortList) {
+					if(concurrent == null)
+						continue;
+					
+					int phase = -1;
+					for(int i = 0; i < 6; i++) {
+						if(concurrent.getScorePhasefinale(i) != 0) {
+							phase = i;
+							break;
+						}
+					}
+					
+					if(phase == -1)
+						continue;
+					
+					if(phasePrecedente != phase || concurrent.getScorePhasefinale(phase) != scorePrecedent)
+						place++;
+					
+					scorePrecedent = concurrent.getScorePhasefinale(phase);
+					phasePrecedente = phase;
+
+					tplClassement.parse("categories.classement.COULEUR", ""); //$NON-NLS-1$ //$NON-NLS-2$
+					
+					tplClassement.parse("categories.classement.POSITION", String.valueOf(concurrent.getDepart()+concurrent.getPosition() + concurrent.getCible())); //$NON-NLS-1$
+					tplClassement.parse("categories.classement.PLACE", String.valueOf(place)); //$NON-NLS-1$
+					tplClassement.parse("categories.classement.IDENTITEE", concurrent.getFullName()); //$NON-NLS-1$
+					tplClassement.parse("categories.classement.CLUB", concurrent.getEntite().toString()); //$NON-NLS-1$
+					tplClassement.parse("categories.classement.PHASE", ficheConcours.getProfile().getLocalisation().getResourceString("duel.phase."+phase)); //$NON-NLS-1$ //$NON-NLS-2$
+					tplClassement.parse("categories.classement.SCORE", String.valueOf(concurrent.getScorePhasefinale(phase))); //$NON-NLS-1$
+					
+					tplClassement.loopBloc("categories.classement"); //$NON-NLS-1$
+				}
+				
+				tplClassement.loopBloc("categories"); //$NON-NLS-1$
+			}
+		}
+		
+		return tplClassement.output();
+	}
+	
+	/**
 	 * Rafraîchit le classement pour travailler sur des données à jour
 	 */
 	private void refreshClassement() {
 		classement = ficheConcours.getConcurrentList().classement();
+	}
+	
+	/**
+	 * Chargement des template de sortie HTML
+	 * 
+	 */
+	private void loadTemplates() throws UnsupportedEncodingException, FileNotFoundException, IOException {
+		if(templateClassementHTML != null)
+			templateClassementHTML.loadTemplate(staticParameters.getResourceString("path.ressources") //$NON-NLS-1$
+					+ File.separator + staticParameters.getResourceString("template.classement_phasesfinales.html")); //$NON-NLS-1$
 	}
 
 	@Override

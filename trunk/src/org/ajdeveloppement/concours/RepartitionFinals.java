@@ -179,7 +179,7 @@ public class RepartitionFinals implements ObjectPersistence {
 	}
 	
 	public static List<RepartitionFinals> getRepartitionFinalsPhase(List<RepartitionFinals> repartitionsFinals, int phase) {
-		int nbParticipant = (int)Math.pow(2, phase);
+		int nbParticipant = (int)Math.pow(2, phase+1);
 		List<RepartitionFinals> repartitionsFinalsPhase = new ArrayList<RepartitionFinals>();
 		for(RepartitionFinals repartitionFinals : repartitionsFinals) {
 			if(repartitionFinals.getNumeroOrdre() <= nbParticipant)

@@ -131,6 +131,10 @@ public class CriteriaSetLibelle {
         
         this.libelle = strSCNA.trim();
     }
+    
+    public static String getLibelle(CriteriaSet criteriaSet, AjResourcesReader localisation) {
+    	return new CriteriaSetLibelle(criteriaSet, localisation).toString();
+    }
      
     
     /**

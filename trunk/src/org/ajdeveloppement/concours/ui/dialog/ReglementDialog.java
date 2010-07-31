@@ -86,8 +86,6 @@
  */
 package org.ajdeveloppement.concours.ui.dialog;
 
-import static org.concoursjeunes.ApplicationCore.staticParameters;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -99,7 +97,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -108,7 +105,6 @@ import java.util.List;
 import javax.swing.Box;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultListCellRenderer;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -145,6 +141,7 @@ import org.ajdeveloppement.commons.ui.DefaultDialogReturn;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
 import org.ajdeveloppement.commons.ui.ToolTipHeader;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Blason;
 import org.concoursjeunes.CriteriaSet;
 import org.concoursjeunes.Criterion;
@@ -152,12 +149,12 @@ import org.concoursjeunes.CriterionElement;
 import org.concoursjeunes.DistancesEtBlason;
 import org.concoursjeunes.Reglement;
 import org.concoursjeunes.localisable.CriteriaSetLibelle;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Binding;
 import org.jdesktop.beansbinding.BindingGroup;
 import org.jdesktop.beansbinding.Bindings;
 import org.jdesktop.beansbinding.Converter;
-import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 
 /**
  * Boite de dialogue de paramétrage d'un règlement
@@ -275,16 +272,11 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		jbValider.addActionListener(this);
 		jbAnnuler.addActionListener(this);
 		
-		jbAddCriteria.setIcon(new ImageIcon(staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$ 
-				File.separator + staticParameters.getResourceString("file.icon.addcriteria"))); //$NON-NLS-1$
-		jbAddCriteriaMember.setIcon(new ImageIcon(staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + staticParameters.getResourceString("file.icon.addcriteriamember"))); //$NON-NLS-1$
-		jbUpElement.setIcon(new ImageIcon(staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + staticParameters.getResourceString("file.icon.upelement"))); //$NON-NLS-1$
-		jbDownElement.setIcon(new ImageIcon(staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + staticParameters.getResourceString("file.icon.downelement"))); //$NON-NLS-1$
-		jbRemoveElement.setIcon(new ImageIcon(staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + staticParameters.getResourceString("file.icon.removeelement"))); //$NON-NLS-1$
+		jbAddCriteria.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.addcriteria")); //$NON-NLS-1$
+		jbAddCriteriaMember.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.addcriteriamember")); //$NON-NLS-1$
+		jbUpElement.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.upelement")); //$NON-NLS-1$
+		jbDownElement.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.downelement")); //$NON-NLS-1$
+		jbRemoveElement.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.removeelement")); //$NON-NLS-1$
 
 		tabbedPane.addTab("general", initGeneral()); //$NON-NLS-1$
 		tabbedPane.addTab("criteres", initCriteria()); //$NON-NLS-1$

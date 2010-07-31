@@ -94,12 +94,13 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.Collections;
 
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -111,28 +112,37 @@ import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.DefaultDialogReturn;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
+import org.ajdeveloppement.concours.ui.FicheConcoursPane;
 import org.ajdeveloppement.swingxext.localisation.JXHeaderLocalisationHandler;
 import org.concoursjeunes.Duel;
 import org.jdesktop.swingx.JXHeader;
+import org.jdesktop.swingx.JXHyperlink;
 
 /**
  * @author Aurélien JEOFFRAY
  *
  */
 @Localizable(value="duel.title",textMethod="setTitle")
-public class DuelDialog extends JDialog implements ActionListener {
+public class DuelDialog extends JDialog implements ActionListener, FocusListener {
 	
 	private AjResourcesReader localisation;
 	private Duel duel;
+	
+	private FicheConcoursPane ficheConcoursPane;
 	
 	@Localizable("duel.header")
 	private JXHeader jxhHeaderDuel = new JXHeader();
 	
 	private JLabel jlConcurrent1 = new JLabel();
+	@Localizable("duel.ficheconcurrent")
+	private JXHyperlink jxhFicheConcurrent1 = new JXHyperlink();
 	@Localizable("duel.score")
 	private JLabel jlScore1 = new JLabel();
 	private JTextField jtfScore1 = new JTextField(new NumberDocument(false, false), "0", 4); //$NON-NLS-1$
+
 	private JLabel jlConcurrent2 = new JLabel();
+	@Localizable("duel.ficheconcurrent")
+	private JXHyperlink jxhFicheConcurrent2 = new JXHyperlink();
 	@Localizable("duel.score")
 	private JLabel jlScore2 = new JLabel();
 	private JTextField jtfScore2 = new JTextField(new NumberDocument(false, false), "0", 4); //$NON-NLS-1$
@@ -144,9 +154,11 @@ public class DuelDialog extends JDialog implements ActionListener {
 	
 	private DefaultDialogReturn returnAction = DefaultDialogReturn.CANCEL;
 
-	public DuelDialog(JFrame parent, AjResourcesReader localisation) {
-		super(parent, true);
+	public DuelDialog(FicheConcoursPane ficheConcoursPane, AjResourcesReader localisation) {
+		super(ficheConcoursPane.getParentframe(), true);
 		this.localisation = localisation;
+		
+		this.ficheConcoursPane = ficheConcoursPane;
 		
 		init();
 		affectLabels();
@@ -155,6 +167,12 @@ public class DuelDialog extends JDialog implements ActionListener {
 	private void init() {
 		jbValider.addActionListener(this);
 		jbAnnuler.addActionListener(this);
+		
+		jxhFicheConcurrent1.addActionListener(this);
+		jxhFicheConcurrent2.addActionListener(this);
+		
+		jtfScore1.addFocusListener(this);
+		jtfScore2.addFocusListener(this);
 		
 		GridBagConstraints c = new GridBagConstraints();
 		GridbagComposer gridbagComposer = new GridbagComposer();
@@ -169,13 +187,17 @@ public class DuelDialog extends JDialog implements ActionListener {
 		c.gridwidth = 1;
 		gridbagComposer.addComponentIntoGrid(jlConcurrent1, c);
 		c.weightx = 0.0;
+		gridbagComposer.addComponentIntoGrid(jxhFicheConcurrent1, c);
 		gridbagComposer.addComponentIntoGrid(jlScore1, c);
 		c.weightx = 0.2;
 		gridbagComposer.addComponentIntoGrid(jtfScore1, c);
 		c.gridy++;
+		c.weightx = 0.8;
 		gridbagComposer.addComponentIntoGrid(jlConcurrent2, c);
 		c.weightx = 0.0;
+		gridbagComposer.addComponentIntoGrid(jxhFicheConcurrent2, c);
 		gridbagComposer.addComponentIntoGrid(jlScore2, c);
+		c.weightx = 0.2;
 		gridbagComposer.addComponentIntoGrid(jtfScore2, c);
 		c.gridy++;
 		c.weighty = 1.0;
@@ -191,6 +213,7 @@ public class DuelDialog extends JDialog implements ActionListener {
 		getContentPane().add(BorderLayout.NORTH,jxhHeaderDuel);
 		getContentPane().add(BorderLayout.CENTER,jpGeneral);
 		getContentPane().add(BorderLayout.SOUTH,jpAction);
+		getRootPane().setDefaultButton(jbValider);
 	}
 	
 	private void affectLabels() {
@@ -199,7 +222,7 @@ public class DuelDialog extends JDialog implements ActionListener {
 	
 	private void completePanel() {
 		jxhHeaderDuel.setDescription(localisation.getResourceString("duel.header.description", //$NON-NLS-1$
-				localisation.getResourceString("duel.phase." + (duel.getPhase()-1)), //$NON-NLS-1$
+				localisation.getResourceString("duel.phase." + duel.getPhase()), //$NON-NLS-1$
 				duel.getNumDuel()));
 		jlConcurrent1.setText("<html>" //$NON-NLS-1$
 				 + duel.getConcurrent1().getFullName()
@@ -211,8 +234,8 @@ public class DuelDialog extends JDialog implements ActionListener {
 				 + "<br><span style=\"font-style:italic;color:#888888;font-size:90%;\">" //$NON-NLS-1$
 				 + duel.getConcurrent2().getEntite().getNom()
 				 + "</span></html>"); //$NON-NLS-1$
-		jtfScore1.setText(String.valueOf(duel.getConcurrent1().getScorePhasefinal(duel.getPhase())));
-		jtfScore2.setText(String.valueOf(duel.getConcurrent2().getScorePhasefinal(duel.getPhase())));
+		jtfScore1.setText(String.valueOf(duel.getConcurrent1().getScorePhasefinale(duel.getPhase())));
+		jtfScore2.setText(String.valueOf(duel.getConcurrent2().getScorePhasefinale(duel.getPhase())));
 	}
 	
 	public DefaultDialogReturn showDuelDialog(Duel duel) {
@@ -234,14 +257,34 @@ public class DuelDialog extends JDialog implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == jbValider) {
-			duel.getConcurrent1().setScorePhasefinal(duel.getPhase(), Integer.valueOf("0"+jtfScore1.getText())); //$NON-NLS-1$
-			duel.getConcurrent2().setScorePhasefinal(duel.getPhase(), Integer.valueOf("0"+jtfScore2.getText())); //$NON-NLS-1$
+			duel.getConcurrent1().setScorePhasefinale(duel.getPhase(), Integer.valueOf("0"+jtfScore1.getText())); //$NON-NLS-1$
+			duel.getConcurrent2().setScorePhasefinale(duel.getPhase(), Integer.valueOf("0"+jtfScore2.getText())); //$NON-NLS-1$
 			
 			returnAction = DefaultDialogReturn.OK;
 			setVisible(false);
 		} else if(e.getSource() == jbAnnuler) {
 			setVisible(false);
+		} else if(e.getSource() == jxhFicheConcurrent1) {
+			ficheConcoursPane.openConcurrentDialog(duel.getConcurrent1(), null);
+			jtfScore1.setText(String.valueOf(duel.getConcurrent1().getScorePhasefinale(duel.getPhase())));
+		} else if(e.getSource() == jxhFicheConcurrent2) {
+			ficheConcoursPane.openConcurrentDialog(duel.getConcurrent2(), null);
+			jtfScore2.setText(String.valueOf(duel.getConcurrent2().getScorePhasefinale(duel.getPhase())));
 		}
+	}
+
+	@Override
+	public void focusGained(FocusEvent e) {
+		if (e.getSource() instanceof JTextField) {
+			((JTextField) e.getSource()).setSelectionStart(0);
+			((JTextField) e.getSource()).setSelectionEnd(((JTextField) e.getSource()).getText().length());
+		}
+	}
+
+	@Override
+	public void focusLost(FocusEvent e) {
+		// TODO Raccord de méthode auto-généré
+		
 	}
 
 }

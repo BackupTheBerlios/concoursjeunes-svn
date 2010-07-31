@@ -134,9 +134,9 @@ public class Concurrent extends Archer implements Cloneable {
 	@XmlElementWrapper(name="departages")
 	@XmlElement(name="departage")
 	private int[] departages			= new int[2];
-	@XmlElementWrapper(name="scoresPhasesFinal")
-	@XmlElement(name="scorePhaseFinal")
-	private int[] scoresPhasesFinal		= new int[6];
+	@XmlElementWrapper(name="scoresPhasesFinales")
+	@XmlElement(name="scorePhaseFinale")
+	private int[] scoresPhasesFinales		= new int[6];
 
 	private int inscription             = UNINIT;
 	private boolean	presence			= false;
@@ -240,21 +240,21 @@ public class Concurrent extends Archer implements Cloneable {
 	 * 
 	 * @return le tableau des scores des phases finales
 	 */
-	public int[] getScoresPhasesFinal() {
-		return scoresPhasesFinal;
+	public int[] getScoresPhasesFinales() {
+		return scoresPhasesFinales;
 	}
 
 	/**
 	 * Définit le tableau des scores des phases finales réalisé par le
 	 * concurrent
-	 * @param scoresPhasesFinal le tableau des scores des phases finales
+	 * @param scoresPhasesFinales le tableau des scores des phases finales
 	 */
-	public void setScoresPhasesFinal(int[] scoresPhasesFinal) {
-		Object oldValue = this.scoresPhasesFinal;
+	public void setScoresPhasesFinales(int[] scoresPhasesFinal) {
+		Object oldValue = this.scoresPhasesFinales;
 		
-		this.scoresPhasesFinal = scoresPhasesFinal;
+		this.scoresPhasesFinales = scoresPhasesFinal;
 		
-		pcs.firePropertyChange("scoresPhasesFinal", oldValue, departages); //$NON-NLS-1$
+		pcs.firePropertyChange("scoresPhasesFinales", oldValue, departages); //$NON-NLS-1$
 	}
 	
 	/**
@@ -263,25 +263,28 @@ public class Concurrent extends Archer implements Cloneable {
 	 * @param phase la phase pour laquelle retourner le score
 	 * @return le score de la phase
 	 */
-	public int getScorePhasefinal(int phase) {
-		if(phase < 0 || phase > 5)
+	public int getScorePhasefinale(int phase) {
+		if(phase < 0 || phase > 5 || phase >= scoresPhasesFinales.length)
 			return 0;
-		return scoresPhasesFinal[phase];
+		return scoresPhasesFinales[phase];
 	}
 	
 	/**
-	 * définit le score de la phase final fournit en paramètre
+	 * définit le score de la phase final fournit en paramètre<br>
 	 * 
-	 * @param phase la phase pour laquelle définir le score
+	 * @param phase la phase pour laquelle définir le score 0->Finale, 5->1/32ème de finale
 	 * @param score le score de la phase
 	 */
-	public void setScorePhasefinal(int phase, int score) {
+	public void setScorePhasefinale(int phase, int score) {
 		if(phase >= 0 && phase < 6) {
-			Object oldValue = this.scoresPhasesFinal;
+			Object oldValue = this.scoresPhasesFinales;
 			
-			scoresPhasesFinal[phase] = score;
+			if(scoresPhasesFinales == null || scoresPhasesFinales.length == 0)
+				scoresPhasesFinales = new int[6];
 			
-			pcs.firePropertyChange("scoresPhasesFinal", oldValue, departages); //$NON-NLS-1$
+			scoresPhasesFinales[phase] = score;
+			
+			pcs.firePropertyChange("scoresPhasesFinales", oldValue, departages); //$NON-NLS-1$
 		}
 	}
 
@@ -560,9 +563,9 @@ public class Concurrent extends Archer implements Cloneable {
 		if(phase < 0 || phase > 5 || other == null)
 			return 0;
 		
-		if(getScorePhasefinal(phase) > other.getScorePhasefinal(phase))
+		if(getScorePhasefinale(phase) > other.getScorePhasefinale(phase))
 			return 1;
-		else if(getScorePhasefinal(phase) < other.getScorePhasefinal(phase))
+		else if(getScorePhasefinale(phase) < other.getScorePhasefinale(phase))
 			return -1;
 		return 0;
 	}

@@ -98,7 +98,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.io.File;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -109,7 +108,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
@@ -211,8 +209,7 @@ public class ArbitreDialog extends JDialog implements AutoCompleteDocumentListen
 		jbValider.addActionListener(this);
 		jbAnnuler.addActionListener(this);
 		jbSelectArbitre.addActionListener(this);
-		jbSelectArbitre.setIcon(new ImageIcon(ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.select"))); //$NON-NLS-1$
+		jbSelectArbitre.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.select")); //$NON-NLS-1$
 		jbSelectArbitre.setMargin(new Insets(0,0,0,0));
 		
 		jtfNom.addFocusListener(this);

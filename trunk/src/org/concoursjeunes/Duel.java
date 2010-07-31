@@ -131,7 +131,10 @@ public class Duel {
 	}
 
 	/**
-	 * @return phase
+	 * Renvoie la phase du duel<br>
+	 * 0->Finale, 5->1/32ème de finale
+	 * 
+	 * @return phase le numéro de la phase du duel
 	 */
 	public int getPhase() {
 		return phase;

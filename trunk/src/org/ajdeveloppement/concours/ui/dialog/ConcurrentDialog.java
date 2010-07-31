@@ -102,7 +102,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -120,7 +119,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.swing.Box;
 import javax.swing.DefaultListCellRenderer;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -155,7 +153,7 @@ import org.concoursjeunes.CriterionElement;
 import org.concoursjeunes.DistancesEtBlason;
 import org.concoursjeunes.Entite;
 import org.concoursjeunes.FicheConcours;
-import org.concoursjeunes.PhaseFinal;
+import org.concoursjeunes.PhasesFinales;
 import org.concoursjeunes.Profile;
 import org.concoursjeunes.Reglement;
 import org.concoursjeunes.TargetPosition;
@@ -200,7 +198,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	private AjResourcesReader localisation;
 	private Profile profile;
 	private FicheConcours ficheConcours;
-	private PhaseFinal phaseFinal;
+	private PhasesFinales phaseFinal;
 	private Concurrent concurrent;
 	private Entite entiteConcurrent;
 	private Archer filter = null;
@@ -248,14 +246,21 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	@Localizable("concurrent.agrementclub")
 	private JLabel jlAgrement = new JLabel(); // n°agrément du club
 	private JTextField jtfAgrement = new JTextField(16);// Numéro d'Agrément
-	private JButton jbDetailClub = new JButton();
+	@Localizable("concurrent.detailclub")
+	private JXHyperlink jxhDetailClub = new JXHyperlink();
 	private JButton jbListeClub = new JButton();
+	
+	@Localizable(value="concurrent.panel.cible",textMethod="setTitle")
+	private TitledBorder tbCible = new TitledBorder(""); //$NON-NLS-1$
 	private JPanel jpCible = new JPanel();
 
 	// Point du tireur
 	@Localizable("concurrent.cible")
 	private JLabel jlCible = new JLabel(); // cible attribué
 	private JLabel jlValCible = new JLabel();
+	@Localizable("concurrent.depart")
+	private JLabel jlDepart = new JLabel();
+	private JLabel jlValDepart = new JLabel();
 	@Localizable(value="concurrent.points.phasequalificative",textMethod="setTitle")
 	private JXTitledSeparator jxtsPhaseQualificative = new JXTitledSeparator();
 	@Localizable("concurrent.points")
@@ -287,10 +292,14 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	private JTextField jtfFinal = new JTextField(new NumberDocument(false, false), "0", 4); //$NON-NLS-1$
 
 	// inscription
+	@Localizable(value="concurrent.inscription.titre",textMethod="setTitle")
+	private TitledBorder tbInscription = new TitledBorder(""); //$NON-NLS-1$
 	private final JPanel jpInscription = new JPanel();
 	private final JComboBox jcbInscription = new JComboBox();
 
 	// place libre
+	@Localizable(value="concurrent.placelibre.titre",textMethod="setTitle")
+	private TitledBorder tbPlaceLibre = new TitledBorder(""); //$NON-NLS-1$
 	private final JPanel jpPlaceLibre = new JPanel();
 	private final JLabel jlPlaceLibre = new JLabel("<html></html>"); //$NON-NLS-1$
 
@@ -320,7 +329,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		super(concoursJeunesFrame, "", true); //$NON-NLS-1$
 
 		this.ficheConcours = ficheConcours;
-		this.phaseFinal = new PhaseFinal(ficheConcours);
+		this.phaseFinal = new PhasesFinales(ficheConcours);
 		this.localisation = profile.getLocalisation();
 		this.profile = profile;
 		
@@ -352,6 +361,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		GridbagComposer gridbagComposer = new GridbagComposer();
 		
 		JPanel jpPosition = new JPanel();
+		JPanel jpDepart = new JPanel();
 		JPanel jpPoints = new JPanel();
 		JPanel jpDepartages = new JPanel();
 
@@ -381,21 +391,17 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 
 		jbSelectionArcher.addActionListener(this);
 		jbSelectionArcher.setMargin(new Insets(0, 0, 0, 0));
-		jbSelectionArcher.setIcon(new ImageIcon(ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.select"))); //$NON-NLS-1$
+		jbSelectionArcher.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.select", 16, 16)); //$NON-NLS-1$
 		jbEditerArcher.addActionListener(this);
 		jbEditerArcher.setMargin(new Insets(0, 0, 0, 0));
 		jbValider.addActionListener(this);
 		jbPrecedent.addActionListener(this);
 		jbSuivant.addActionListener(this);
 		jbAnnuler.addActionListener(this);
-		jbDetailClub.addActionListener(this);
-		jbDetailClub.setMargin(new Insets(0, 0, 0, 0));
-		jbDetailClub.setText("+"); //$NON-NLS-1$
+		jxhDetailClub.addActionListener(this);
 		jbListeClub.addActionListener(this);
 		jbListeClub.setMargin(new Insets(0, 0, 0, 0));
-		jbListeClub.setIcon(new ImageIcon(ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.select"))); //$NON-NLS-1$
+		jbListeClub.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.select")); //$NON-NLS-1$
 		jtfNom.addFocusListener(this);
 		jtfPrenom.addFocusListener(this);
 		jxhSeeContactDialog.addActionListener(this);
@@ -407,17 +413,17 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		jlDescription.setPreferredSize(new Dimension(250, 70));
 		jpConcurrent.setBorder(tbConcurrent);
 		jpClub.setBorder(tbClub);
-		jpCible.setBorder(new TitledBorder("")); //$NON-NLS-1$
+		jpCible.setBorder(tbCible);
 		jpPoints.setLayout(new FlowLayout(FlowLayout.LEFT));
 		jpPoints.add(jlPoints);
 
 		// panneau validation inscription
-		jpInscription.setBorder(new TitledBorder("")); //$NON-NLS-1$
+		jpInscription.setBorder(tbInscription);
 		jpInscription.add(jcbInscription);
 
 		jpPlaceLibre.setLayout(new BorderLayout());
 		jpPlaceLibre.setPreferredSize(new Dimension(350, 200));
-		jpPlaceLibre.setBorder(new TitledBorder("")); //$NON-NLS-1$
+		jpPlaceLibre.setBorder(tbPlaceLibre);
 		JScrollPane spPlaceLibre = new JScrollPane(jlPlaceLibre);
 		spPlaceLibre.getVerticalScrollBar().setUnitIncrement(20);
 		jpPlaceLibre.add(spPlaceLibre, BorderLayout.CENTER);
@@ -427,6 +433,10 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		jpPosition.setLayout(new FlowLayout(FlowLayout.LEFT));
 		jpPosition.add(jlCible);
 		jpPosition.add(jlValCible);
+		
+		jpDepart.setLayout(new FlowLayout(FlowLayout.LEFT));
+		jpDepart.add(jlDepart);
+		jpDepart.add(jlValDepart);
 
 		tfpd = new JTextField[ficheConcours.getParametre().getReglement().getNbSerie()];
 		for (int i = 0; i < tfpd.length; i++) {
@@ -450,6 +460,12 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			tfDepartages[i].addFocusListener(this);
 			jpDepartages.add(tfDepartages[i]);
 		}
+		jtfThirtySecondFinal.addFocusListener(this);
+		jtfSixteenthFinal.addFocusListener(this);
+		jtfEighthFinal.addFocusListener(this);
+		jtfQuarterFinal.addFocusListener(this);
+		jtfSemiFinal.addFocusListener(this);
+		jtfFinal.addFocusListener(this);
 
 		// panneau tireur
 		gridbagComposer.setParentPanel(jpConcurrent);
@@ -493,13 +509,22 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		// panneau club
 		gridbagComposer.setParentPanel(jpClub);
 		c.gridy = 0; // Défaut,Haut
+		c.gridwidth = 1;
+		
 		gridbagComposer.addComponentIntoGrid(jlClub, c);
 		gridbagComposer.addComponentIntoGrid(jtfClub, c);
-		gridbagComposer.addComponentIntoGrid(jbDetailClub, c);
 		gridbagComposer.addComponentIntoGrid(jbListeClub, c);
+		c.weightx = 1.0;
+		gridbagComposer.addComponentIntoGrid(Box.createHorizontalGlue(), c);
 		c.gridy++; // Défaut,Ligne 2
+		c.weightx = 0.0;
 		gridbagComposer.addComponentIntoGrid(jlAgrement, c);
 		gridbagComposer.addComponentIntoGrid(jtfAgrement, c);
+		c.gridy++;
+		c.gridwidth = 4;
+		c.fill = GridBagConstraints.NONE;
+		c.anchor = GridBagConstraints.EAST;
+		gridbagComposer.addComponentIntoGrid(jxhDetailClub, c);
 
 		// panneau cible
 		gridbagComposer.setParentPanel(jpCible);
@@ -509,6 +534,8 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		c.anchor =GridBagConstraints.WEST;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		gridbagComposer.addComponentIntoGrid(jpPosition, c);
+		c.gridy++;
+		gridbagComposer.addComponentIntoGrid(jpDepart, c);
 		c.gridy++;
 		c.weighty = 0.5;
 		c.fill = GridBagConstraints.VERTICAL;
@@ -594,16 +621,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	 * affecte les libellé localisé à l'interface
 	 */
 	private void affectLabels() {
-		//((TitledBorder) jpConcurrent.getBorder()).setTitle(localisation.getResourceString("concurrent.panel.tireur")); //$NON-NLS-1$
-		//((TitledBorder) jpClub.getBorder()).setTitle(localisation.getResourceString("concurrent.panel.club")); //$NON-NLS-1$
-		((TitledBorder) jpCible.getBorder()).setTitle(localisation.getResourceString("concurrent.panel.cible")); //$NON-NLS-1$
-		((TitledBorder) jpInscription.getBorder()).setTitle(localisation.getResourceString("concurrent.inscription.titre")); //$NON-NLS-1$
-		((TitledBorder) jpPlaceLibre.getBorder()).setTitle(localisation.getResourceString("concurrent.placelibre.titre")); //$NON-NLS-1$
-		
 		Localizator.localize(this, localisation);
-
-
-		jlDescription.setBackground(new Color(255, 255, 225));
 
 		for (Criterion key : ficheConcours.getParametre().getReglement().getListCriteria()) {
 			jlCategrieTable.get(key).setText(key.getLibelle());
@@ -629,17 +647,14 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	private void completePanel() {
 		boolean isinit = concurrent.getInscription() != Concurrent.UNINIT && !unlock;
 
+		jlDescription.setBackground(new Color(255, 255, 225));
+		
 		jbSelectionArcher.setEnabled(!isinit);
 		jbEditerArcher.setEnabled(isinit);
-		if (isinit) {
-			jbEditerArcher.setIcon(new ImageIcon(ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
-					File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.lock") //$NON-NLS-1$
-			));
-		} else {
-			jbEditerArcher.setIcon(new ImageIcon(ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
-					File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.open") //$NON-NLS-1$
-			));
-		}
+		if (isinit)
+			jbEditerArcher.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.lock", 16, 16)); //$NON-NLS-1$
+		else
+			jbEditerArcher.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.open", 16, 16)); //$NON-NLS-1$
 
 		jtfNom.setEditable(!isinit);
 		jtfPrenom.setEditable(!isinit);
@@ -708,7 +723,9 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		jlValCible.setText("<html><span style=\"font-size: 14pt;\">"  //$NON-NLS-1$
 				+ new TargetPosition(concurrent.getCible(), concurrent.getPosition()).toString()
 				+ "</span></html>"); //$NON-NLS-1$
-
+		jlValDepart.setText("<html><span style=\"font-size: 14pt;\">"  //$NON-NLS-1$
+				+ (concurrent.getDepart()+1)
+				+ "</span></html>"); //$NON-NLS-1$
 
 		List<Integer> score = concurrent.getScore();
 		if (score.size() > 0) {
@@ -872,51 +889,51 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			int nbPhase = phaseFinal.getNombrePhase(
 					criteriaSet.getFilteredCriteriaSet(
 							ficheConcours.getParametre().getReglement().getClassementFilter()));
-			if(nbPhase < 5) {
+			if(nbPhase < 6) {
 				jlThirtySecondFinal.setEnabled(false);
 				jtfThirtySecondFinal.setEnabled(false);
 			} else {
 				jlThirtySecondFinal.setEnabled(true);
 				jtfThirtySecondFinal.setEnabled(true);
-				jtfThirtySecondFinal.setText(String.valueOf(concurrent.getScorePhasefinal(5)));
+				jtfThirtySecondFinal.setText(String.valueOf(concurrent.getScorePhasefinale(5)));
 			}
-			if(nbPhase < 4) {
+			if(nbPhase < 5) {
 				jlSixteenthFinal.setEnabled(false);
 				jtfSixteenthFinal.setEnabled(false);
 			} else {
 				jlSixteenthFinal.setEnabled(true);
 				jtfSixteenthFinal.setEnabled(true);
-				jtfSixteenthFinal.setText(String.valueOf(concurrent.getScorePhasefinal(4)));
+				jtfSixteenthFinal.setText(String.valueOf(concurrent.getScorePhasefinale(4)));
 			}
-			if(nbPhase < 3) {
+			if(nbPhase < 4) {
 				jlEighthFinal.setEnabled(false);
 				jtfEighthFinal.setEnabled(false);
 			} else {
 				jlEighthFinal.setEnabled(true);
 				jtfEighthFinal.setEnabled(true);
-				jtfEighthFinal.setText(String.valueOf(concurrent.getScorePhasefinal(3)));
+				jtfEighthFinal.setText(String.valueOf(concurrent.getScorePhasefinale(3)));
 			}
-			if(nbPhase < 2) {
+			if(nbPhase < 3) {
 				jlQuarterFinal.setEnabled(false);
 				jtfQuarterFinal.setEnabled(false);
 			} else {
 				jlQuarterFinal.setEnabled(true);
 				jtfQuarterFinal.setEnabled(true);
-				jtfQuarterFinal.setText(String.valueOf(concurrent.getScorePhasefinal(2)));
+				jtfQuarterFinal.setText(String.valueOf(concurrent.getScorePhasefinale(2)));
 			}
 			
-			if(nbPhase < 1) {
+			if(nbPhase < 2) {
 				jlSemiFinal.setEnabled(false);
 				jtfSemiFinal.setEnabled(false);
 			} else {
 				jlSemiFinal.setEnabled(true);
 				jtfSemiFinal.setEnabled(true);
-				jtfSemiFinal.setText(String.valueOf(concurrent.getScorePhasefinal(1)));
+				jtfSemiFinal.setText(String.valueOf(concurrent.getScorePhasefinale(1)));
 			}
 				
 			jlFinal.setEnabled(true);
 			jtfFinal.setEnabled(true);
-			jtfFinal.setText(String.valueOf(concurrent.getScorePhasefinal(0)));
+			jtfFinal.setText(String.valueOf(concurrent.getScorePhasefinale(0)));
 		} else {
 			jlThirtySecondFinal.setEnabled(false);
 			jlSixteenthFinal.setEnabled(false);
@@ -1167,7 +1184,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			
 				concurrent.setScore(readScores());
 				
-				concurrent.setScoresPhasesFinal(readScoresPhasesFinales());
+				concurrent.setScoresPhasesFinales(readScoresPhasesFinales());
 			} catch (NumberFormatException e) {
 				JOptionPane.showMessageDialog(this, 
 						localisation.getResourceString("erreur.erreursaisie"), //$NON-NLS-1$
@@ -1252,7 +1269,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
             } catch (TimeoutException e) {
             	JOptionPane.showMessageDialog(this, localisation.getResourceString("concurrent.info.listing.wait")); //$NON-NLS-1$
             }
-		} else if (ae.getSource() == jbDetailClub) {
+		} else if (ae.getSource() == jxhDetailClub) {
 			if (!jtfAgrement.getText().equals("")) { //$NON-NLS-1$
 				EntiteDialog ed = new EntiteDialog(this, profile);
 				ed.setEntite(concurrent.getEntite());
@@ -1262,8 +1279,10 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			EntiteListDialog entiteListDialog = new EntiteListDialog(null, profile, true);
 			if (entiteListDialog.getAction() == EntiteListDialog.VALIDER) {
 				entiteListDialog.setAction(EntiteListDialog.ANNULER);
-				jtfClub.setText(entiteListDialog.getSelectedEntite().getVille());
-				jtfAgrement.setText(entiteListDialog.getSelectedEntite().getAgrement());
+				if(entiteListDialog.getSelectedEntite() != null) {
+					jtfClub.setText(entiteListDialog.getSelectedEntite().getVille());
+					jtfAgrement.setText(entiteListDialog.getSelectedEntite().getAgrement());
+				}
 			}
 		} else if (ae.getSource() == jbEditerArcher) {
 			unlock = true;
@@ -1283,10 +1302,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 
 			jbEditerArcher.setEnabled(false);
 
-			jbEditerArcher.setIcon(new ImageIcon(ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
-					File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.open") //$NON-NLS-1$
-			));
-
+			jbEditerArcher.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.open")); //$NON-NLS-1$
 		} else if(ae.getSource() == jxhSeeContactDialog) {
 			if(concurrent != null) {
 				ContactDialog contactDialog = new ContactDialog(this, profile);

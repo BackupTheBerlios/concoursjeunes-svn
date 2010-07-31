@@ -103,7 +103,7 @@ public class ConcurentMxCell extends mxCell {
 
 	public ConcurentMxCell(mxGeometry geometry, Concurrent concurrent, int phase, String style) {
 		super("<html><span style=\"font-size:120%;\"><b>"+concurrent.getFullName() //$NON-NLS-1$
-				+ " - " + concurrent.getScorePhasefinal(phase) + "</b><br>" //$NON-NLS-1$ //$NON-NLS-2$
+				+ " - " + concurrent.getScorePhasefinale(phase) + "</b><br>" //$NON-NLS-1$ //$NON-NLS-2$
 				+ concurrent.getEntite().getNom()+"</span></html>"); //$NON-NLS-1$
 		
 		this.setConcurrent(concurrent);

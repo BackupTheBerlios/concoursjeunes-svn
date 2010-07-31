@@ -124,7 +124,7 @@ import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.CriteriaSet;
 import org.concoursjeunes.Duel;
 import org.concoursjeunes.FicheConcours;
-import org.concoursjeunes.PhaseFinal;
+import org.concoursjeunes.PhasesFinales;
 import org.concoursjeunes.localisable.CriteriaSetLibelle;
 import org.w3c.dom.Document;
 
@@ -297,7 +297,6 @@ public class FicheConcoursFinalPane extends JPanel implements ActionListener, Mo
 			}
 		});
 
-		
 		setLayout(new BorderLayout());
 		add(graphComponent, BorderLayout.CENTER);
 
@@ -311,7 +310,7 @@ public class FicheConcoursFinalPane extends JPanel implements ActionListener, Mo
 		graph.removeCells();
 		Object parent = graph.getDefaultParent();
 		
-		PhaseFinal phaseFinal = new PhaseFinal(ficheConcours);
+		PhasesFinales phaseFinal = new PhasesFinales(ficheConcours);
 
 		graph.getModel().beginUpdate();
 		try
@@ -320,7 +319,7 @@ public class FicheConcoursFinalPane extends JPanel implements ActionListener, Mo
 			for(CriteriaSet criteriaSet : ficheConcours.getConcurrentList().listCriteriaSet()) {
 				int nombrePhaseCategorie = phaseFinal.getNombrePhase(criteriaSet);
 				
-				int startHeight = 5;
+				int startHeight = 30;
 				int elementHeight = 120;
 				int spacingHeight = 20;
 				int decalage = 0;
@@ -330,27 +329,27 @@ public class FicheConcoursFinalPane extends JPanel implements ActionListener, Mo
 				
 				Object categoryGraphElement = graph.insertVertex(parent, null, 
 						new CriteriaSetLibelle(criteriaSet, ficheConcoursPane.getLocalisation()), 
-						5, 5, 1, 1, "swimlane;horizontal=0"); //$NON-NLS-1$
+						5, 5, 1, 1, "swimlane;labelPosition=middle;align=left;verticalLabelPosition=middle;verticalAlign=middle"); //$NON-NLS-1$
 				
 				Map<Integer, List<Object>> objectsPhase = new HashMap<Integer,  List<Object>>();
 				
 				for(int i = 0; i < nombrePhaseCategorie; i++) {
 					if(i > 0) {
 						decalage += (duelHeight / 2) - (elementHeight / 2);
-						startHeight = 5 + decalage;
+						startHeight = 30 + decalage;
 						padding = elementHeight + spacingHeight + decalage * 2;
 						duelHeight = padding + elementHeight;
 					}
 					
 					
-					List<Duel> duels = phaseFinal.getDuelsPhase(criteriaSet, nombrePhaseCategorie-i);
+					List<Duel> duels = phaseFinal.getDuelsPhase(criteriaSet, nombrePhaseCategorie-i-1);
 					for(Duel duel : duels) {
 						if(duel != null && duel.getConcurrent1() != null && duel.getConcurrent2() != null) {
 							if(!objectsPhase.containsKey(i))
 								objectsPhase.put(i, new ArrayList<Object>());
 							
 							Object duelGraphElement = graph.addCell(
-									new DuelMxCell(new mxGeometry(30 + 380 * i, startHeight + objectsPhase.get(i).size()*padding, 260, 130),
+									new DuelMxCell(new mxGeometry(5 + 380 * i, startHeight + objectsPhase.get(i).size()*padding, 260, 130),
 									duel, ""), categoryGraphElement); //$NON-NLS-1$
 								//graph.insertVertex(categoryGraphElement, null, "Contre", 30 + 380 * i, startHeight + objectsPhase.get(i).size()*padding, 260, 130);
 							
@@ -359,14 +358,14 @@ public class FicheConcoursFinalPane extends JPanel implements ActionListener, Mo
 							graph.addCell(
 									new ConcurentMxCell(
 											new mxGeometry(5, 5, 250, 50),
-											duel.getConcurrent1(),nombrePhaseCategorie-i,
+											duel.getConcurrent1(),nombrePhaseCategorie-i-1,
 											duel.getWinner() == duel.getConcurrent1() ? "fillColor=green" :  //$NON-NLS-1$
 												duel.getWinner() == null ? "fillColor=#FFFFFF" :"fillColor=gray"),//$NON-NLS-1$ //$NON-NLS-2$
 									duelGraphElement); 
 							graph.addCell(
 									new ConcurentMxCell(
 											new mxGeometry(5, 75, 250, 50),
-											duel.getConcurrent2(),nombrePhaseCategorie-i,
+											duel.getConcurrent2(),nombrePhaseCategorie-i-1,
 											duel.getWinner() == duel.getConcurrent2() ? "fillColor=green" : //$NON-NLS-1$
 													duel.getWinner() == null ? "fillColor=#FFFFFF" :"fillColor=gray"),//$NON-NLS-1$ //$NON-NLS-2$
 									duelGraphElement); 
@@ -383,22 +382,27 @@ public class FicheConcoursFinalPane extends JPanel implements ActionListener, Mo
 				}
 				
 				if(objectsPhase.get(nombrePhaseCategorie-1) != null) {
-					List<Duel> duels = phaseFinal.getDuelsPhase(criteriaSet, 1);
+					List<Duel> duels = phaseFinal.getDuelsPhase(criteriaSet, 0);
 					String nomVainqueur = ""; //$NON-NLS-1$
+					String nomPerdant = ""; //$NON-NLS-1$
 					if(duels.get(0).getWinner() != null)
-						nomVainqueur = duels.get(0).getWinner().getFullName();
-					Object vainqueur = graph.insertVertex(categoryGraphElement, null, nomVainqueur, 20 + 380 * nombrePhaseCategorie, startHeight, 250, 50); 
+						nomVainqueur = "1. " + duels.get(0).getWinner().getFullName(); //$NON-NLS-1$
+					graph.insertVertex(categoryGraphElement, null, nomVainqueur, 5 + 380 * (nombrePhaseCategorie + ((nombrePhaseCategorie > 3) ? -1 : 0)), 80, 250, 50);
 					
-					if(objectsPhase.size() > 0) {
-						for(int j = 0; j < objectsPhase.get(nombrePhaseCategorie-1).size(); j++) {
-							graph.insertEdge(parent, null, "", objectsPhase.get(nombrePhaseCategorie-1).get(j), vainqueur); //$NON-NLS-1$
-						}
-					}
+					if(duels.get(0).getLooser() != null)
+						nomPerdant = "2. " + duels.get(0).getLooser().getFullName(); //$NON-NLS-1$
+					graph.insertVertex(categoryGraphElement, null, nomPerdant, 5 + 380 * (nombrePhaseCategorie + ((nombrePhaseCategorie > 3) ? -1 : 0)), 150, 250, 50); 
+					
+//					if(objectsPhase.size() > 0) {
+//						for(int j = 0; j < objectsPhase.get(nombrePhaseCategorie-1).size(); j++) {
+//							graph.insertEdge(parent, null, "", objectsPhase.get(nombrePhaseCategorie-1).get(j), vainqueur); //$NON-NLS-1$
+//						}
+//					}
 				}
 				
-				graph.resizeCell(categoryGraphElement, new mxRectangle(5, startHeightCriteriaSet - 15, 290 + 380 * 5, decalage * 2 + elementHeight + spacingHeight));
+				graph.resizeCell(categoryGraphElement, new mxRectangle(5, startHeightCriteriaSet - 15, 290 + 380 * 5, 30 + decalage * 2 + elementHeight + spacingHeight));
 
-				startHeightCriteriaSet += decalage * 2 + elementHeight + spacingHeight * 2;
+				startHeightCriteriaSet += 30 + decalage * 2 + elementHeight + spacingHeight * 2;
 			}
 		}
 		finally
@@ -433,12 +437,12 @@ public class FicheConcoursFinalPane extends JPanel implements ActionListener, Mo
 			mxGraphComponent graphComponent = ((mxGraphControl)e.getSource()).getGraphContainer();
 			Object cell = graphComponent.getCellAt(e.getX(), e.getY());
 			if(cell instanceof ConcurentMxCell) {
-				DuelDialog duelDialog = new DuelDialog(ficheConcoursPane.getParentframe(), ficheConcours.getProfile().getLocalisation());
+				DuelDialog duelDialog = new DuelDialog(ficheConcoursPane, ficheConcours.getProfile().getLocalisation());
 				duelDialog.showDuelDialog(((DuelMxCell)((ConcurentMxCell)cell).getParent()).getDuel());
 				
 				completePanel();
 			} else if(cell instanceof DuelMxCell) {
-				DuelDialog duelDialog = new DuelDialog(ficheConcoursPane.getParentframe(), ficheConcours.getProfile().getLocalisation());
+				DuelDialog duelDialog = new DuelDialog(ficheConcoursPane, ficheConcours.getProfile().getLocalisation());
 				duelDialog.showDuelDialog(((DuelMxCell)cell).getDuel());
 				
 				completePanel();

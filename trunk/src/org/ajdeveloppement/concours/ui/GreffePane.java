@@ -98,14 +98,12 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
 import javax.script.ScriptException;
 import javax.swing.AbstractButton;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -116,8 +114,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.RowFilter;
-import javax.swing.SortOrder;
 import javax.swing.RowSorter.SortKey;
+import javax.swing.SortOrder;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.table.AbstractTableModel;
@@ -221,8 +219,7 @@ public class GreffePane extends JPanel implements
 		jcbPayee.addItem(ficheConcoursPane.getLocalisation().getResourceString("greffepane.paid.false")); //$NON-NLS-1$
 		jcbPayee.addItemListener(this);
 		jbResetFilter.addActionListener(this);
-		jbResetFilter.setIcon(new ImageIcon(ApplicationCore.staticParameters.getResourceString("path.ressources") //$NON-NLS-1$
-				+ File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.clear"))); //$NON-NLS-1$
+		jbResetFilter.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.clear")); //$NON-NLS-1$
 		jbResetFilter.setMargin(new Insets(1, 1, 1, 1));
 		jtConcurrents.addMouseListener(this);
 		jbImpression.addActionListener(this);

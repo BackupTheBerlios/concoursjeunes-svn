@@ -94,10 +94,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -545,33 +543,12 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 			Map<CriteriaSet, List<Concurrent>> concurrentsClasse = concurrentList.classement().getClassementPhaseQualificative();
 
 			AJTemplate tplClassement = templateClassementHTML;
-			String strArbitreResp = ""; //$NON-NLS-1$
-			String strArbitresAss = ""; //$NON-NLS-1$
 
 			tplClassement.reset();
 
-			tplClassement.parse("CURRENT_TIME", DateFormat.getDateInstance(DateFormat.FULL).format(new Date())); //$NON-NLS-1$
 			tplClassement.parse("LOGO_CLUB_URI", this.profile.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			tplClassement.parse("INTITULE_CLUB", parametre.getClub().getNom()); //$NON-NLS-1$
-			tplClassement.parse("INTITULE_CONCOURS", parametre.getIntituleConcours()); //$NON-NLS-1$
-			tplClassement.parse("VILLE_CLUB", parametre.getLieuConcours()); //$NON-NLS-1$
-			tplClassement.parse("DATE_CONCOURS", DateFormat.getDateInstance(DateFormat.LONG).format(parametre.getDateDebutConcours())); //$NON-NLS-1$
-			tplClassement.parse("author", parametre.getClub().getNom()); //$NON-NLS-1$
 
-			for (Judge arbitre : parametre.getJudges()) {
-				if (arbitre.isResponsable())
-					strArbitreResp = arbitre.getFullName();
-				else {
-					if (!strArbitresAss.equals("")) //$NON-NLS-1$
-						strArbitresAss += ", "; //$NON-NLS-1$
-					strArbitresAss += arbitre.getFullName();
-				}
-			}
-			tplClassement.parse("ARBITRE_RESPONSABLE", XmlUtils.sanitizeText(strArbitreResp)); //$NON-NLS-1$
-			tplClassement.parse("ARBITRES_ASSISTANT", XmlUtils.sanitizeText(strArbitresAss)); //$NON-NLS-1$
-			tplClassement.parse("NB_CLUB", "" + concurrentList.countCompagnie()); //$NON-NLS-1$ //$NON-NLS-2$
-			tplClassement.parse("NB_TIREURS", "" + concurrentList.countArcher()); //$NON-NLS-1$ //$NON-NLS-2$
-			
 			// Entête de catégorie
 			Set<CriteriaSet> scnalst = concurrentsClasse.keySet();
 
@@ -586,19 +563,9 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 				String strSCNA;
 
 				if (sortList.size() > 0) {
-
-					double tailleChampDistance = 10.5262 / parametre.getReglement().getNbSerie();
-					String strTailleChampsDistance = ""; //$NON-NLS-1$
-					for (int j = 0; j < parametre.getReglement().getNbSerie(); j++) {
-						strTailleChampsDistance += tailleChampDistance + ";"; //$NON-NLS-1$
-					}
-
 					strSCNA = new CriteriaSetLibelle(scna, this.profile.getLocalisation()).toString();
 
-					tplClassement.parse("categories.TAILLE_CHAMPS_DISTANCE", strTailleChampsDistance); //$NON-NLS-1$
 					tplClassement.parse("categories.CATEGORIE", strSCNA); //$NON-NLS-1$
-					tplClassement.parse("categories.NB_TIREUR_COLS", "" + (4 + parametre.getReglement().getNbSerie())); //$NON-NLS-1$ //$NON-NLS-2$
-					tplClassement.parse("categories.NB_TIREURS", "" + sortList.size()); //$NON-NLS-1$ //$NON-NLS-2$
 
 					for (int j = 0; j < parametre.getReglement().getNbSerie(); j++) {
 						tplClassement.parse("categories.distances.DISTANCE", //$NON-NLS-1$
@@ -619,8 +586,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 						for (int j = 0; j < sortList.size(); j++) {
 							if (sortList.get(j).getTotalScore() > 0) {
 								row_exist = true;
-								// test d'ex-Eaquo
-								
+								// test d'ex-Aequo
 								if ((j < sortList.size() - 1 && sortList.get(j).compareScoreWith(sortList.get(j + 1)) == 0 && this.profile.getConfiguration().isInterfaceAffResultatExEquo())
 										|| (j > 0 && sortList.get(j).compareScoreWith(sortList.get(j - 1)) == 0 && this.profile.getConfiguration().isInterfaceAffResultatExEquo())) {
 
@@ -634,11 +600,6 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 								tplClassement.parse("categories.classement.POSITION", "" + sortList.get(j).getDepart()+sortList.get(j).getPosition() + sortList.get(j).getCible()); //$NON-NLS-1$ //$NON-NLS-2$
 								tplClassement.parse("categories.classement.IDENTITEE", sortList.get(j).getFullName()); //$NON-NLS-1$
 								tplClassement.parse("categories.classement.CLUB", sortList.get(j).getEntite().toString()); //$NON-NLS-1$
-								tplClassement.parse("categories.classement.NUM_LICENCE", sortList.get(j).getNumLicenceArcher()); //$NON-NLS-1$
-
-								/*for (Criterion key : parametre.getReglement().getListCriteria())
-									tplClassement.parse("categories.classement." //$NON-NLS-1$
-											+ key.getCode(), sortList.get(j).getCriteriaSet().getCriterionElement(key).getCode());*/
 
 								for (int k = 0; k < parametre.getReglement().getNbSerie(); k++) {
 									if (sortList.get(j).getScore() != null)

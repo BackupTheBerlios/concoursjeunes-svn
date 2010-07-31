@@ -96,12 +96,10 @@ import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.Box;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -324,9 +322,7 @@ public class DistancesBlasonsDialog extends JDialog implements ActionListener {
 		
 		final JComboBox jcbBlasons = new JComboBox();
 		JButton jbDeleteBlasonAlt = new JButton();
-		jbDeleteBlasonAlt.setIcon(new ImageIcon(new File(
-				ApplicationCore.staticParameters.getResourceString("path.ressources"), //$NON-NLS-1$
-				ApplicationCore.staticParameters.getResourceString("file.icon.removeelement")).getPath())); //$NON-NLS-1$
+		jbDeleteBlasonAlt.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.removeelement")); //$NON-NLS-1$
 		jbDeleteBlasonAlt.setMargin(new Insets(1, 0, 1, 0));
 		jbDeleteBlasonAlt.addActionListener(new ActionListener() {
 			@Override

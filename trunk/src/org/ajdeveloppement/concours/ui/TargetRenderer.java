@@ -87,7 +87,6 @@
 package org.ajdeveloppement.concours.ui;
 
 import java.awt.Component;
-import java.io.File;
 
 import javax.swing.ImageIcon;
 import javax.swing.JTree;
@@ -121,18 +120,10 @@ public class TargetRenderer extends DefaultTreeCellRenderer {
 	public TargetRenderer(AjResourcesReader localisation) {
 		this.localisation = localisation;
 		
-		archerIcon = new ImageIcon(
-				ApplicationCore.staticParameters.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
-				ApplicationCore.staticParameters.getResourceString("file.icon.archer.normal")); //$NON-NLS-1$
-		archerHandicapIcon = new ImageIcon(
-				ApplicationCore.staticParameters.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
-				ApplicationCore.staticParameters.getResourceString("file.icon.archer.handicap")); //$NON-NLS-1$
-		cibleIcon = new ImageIcon(
-				ApplicationCore.staticParameters.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
-				ApplicationCore.staticParameters.getResourceString("file.icon.target")); //$NON-NLS-1$
-		disableIcon = new ImageIcon(
-				ApplicationCore.staticParameters.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
-				ApplicationCore.staticParameters.getResourceString("file.icon.disable")); //$NON-NLS-1$
+		archerIcon = ApplicationCore.userRessources.getImageIcon("file.icon.archer.normal"); //$NON-NLS-1$
+		archerHandicapIcon = ApplicationCore.userRessources.getImageIcon("file.icon.archer.handicap"); //$NON-NLS-1$
+		cibleIcon = ApplicationCore.userRessources.getImageIcon("file.icon.target"); //$NON-NLS-1$
+		disableIcon = ApplicationCore.userRessources.getImageIcon("file.icon.disable"); //$NON-NLS-1$
 	}
 
 	/**

@@ -112,7 +112,6 @@ import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -150,6 +149,7 @@ import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.Criterion;
 import org.concoursjeunes.FicheConcours;
+import org.concoursjeunes.PhasesFinales;
 import org.concoursjeunes.state.Categories.Category;
 import org.concoursjeunes.state.State;
 import org.concoursjeunes.state.StateManager;
@@ -194,6 +194,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	private JEditorPane jepClassIndiv		= new JEditorPane();
 	private JEditorPane jepClassTeam		= new JEditorPane();
 	private JEditorPane jepClassClub		= new JEditorPane();
+	private JEditorPane jepClassFinals		= new JEditorPane();
 	
 	//panneau de classement
 	//bouton d'enregistrement
@@ -293,6 +294,11 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		jepClassClub.setEditable(false);
 		//empeche le retour automatique au début de la page à chaque update
 		((DefaultCaret)jepClassClub.getCaret()).setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
+		
+		jepClassFinals.setEditorKit(new HTMLEditorKit());
+		jepClassFinals.setEditable(false);
+		jepClassFinals.addHyperlinkListener(this);
+		((DefaultCaret)jepClassFinals.getCaret()).setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
 
 		jbResultat.addActionListener(this);
 
@@ -302,15 +308,9 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		printClassementEquipe.setName("printClassementEquipe"); //$NON-NLS-1$
 		printClassementClub.addActionListener(this);
 		printClassementClub.setName("printClassementClub"); //$NON-NLS-1$
-		printClassementIndiv.setIcon(new ImageIcon(ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.print") //$NON-NLS-1$
-		));
-		printClassementEquipe.setIcon(new ImageIcon(ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.print") //$NON-NLS-1$
-		));
-		printClassementClub.setIcon(new ImageIcon(ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.print") //$NON-NLS-1$
-		));
+		printClassementIndiv.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.print")); //$NON-NLS-1$
+		printClassementEquipe.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.print")); //$NON-NLS-1$
+		printClassementClub.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.print")); //$NON-NLS-1$
 
 		//classement individuel
 		GridbagComposer composer = new GridbagComposer();
@@ -374,18 +374,25 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		ficheC.add(northpaneClub, BorderLayout.NORTH);
 		ficheC.add(new JScrollPane(jepClassClub),BorderLayout.CENTER);
 		
+		//panneau de classement finale indiv
+		JPanel ficheF = new JPanel();
+		ficheF.setLayout(new BorderLayout());
+		//ficheF.add(northpaneClub, BorderLayout.NORTH);
+		ficheF.add(new JScrollPane(jepClassFinals),BorderLayout.CENTER);
+		//jepClassFinals
+		
 		jtbClassement.addChangeListener(this);
 		jtbClassement.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		jtbClassement.setTabPlacement(JTabbedPane.LEFT);
-		jtbClassement.addTab("onglet.classementindividuel", new ImageIcon(ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$ //$NON-NLS-2$ 
-				File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.archer")), //$NON-NLS-1$
+		jtbClassement.addTab("onglet.classementindividuel", ApplicationCore.userRessources.getImageIcon("file.icon.archer"), //$NON-NLS-1$ //$NON-NLS-2$
 				ficheI);
-		jtbClassement.addTab("onglet.classementequipe",new ImageIcon(ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$ //$NON-NLS-2$ 
-				File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.team")), //$NON-NLS-1$
+		jtbClassement.addTab("onglet.classementequipe",ApplicationCore.userRessources.getImageIcon("file.icon.team"), //$NON-NLS-1$ //$NON-NLS-2$
 				ficheE);
-		jtbClassement.addTab("onglet.classementclub",new ImageIcon(ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$ //$NON-NLS-2$ 
-				File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.team")), //$NON-NLS-1$
+		jtbClassement.addTab("onglet.classementclub",ApplicationCore.userRessources.getImageIcon("file.icon.team"), //$NON-NLS-1$ //$NON-NLS-2$
 				ficheC);
+		jtbClassement.addTab("onglet.classementfinalesindv",ApplicationCore.userRessources.getImageIcon("file.icon.finals"), //$NON-NLS-1$ //$NON-NLS-2$
+				ficheF);
+		jtbClassement.setEnabledAt(3, ficheConcours.getParametre().isDuel());
 		
 		JPanel jpEdition = initEditions();
 		ajlDocuments.setCellRenderer(new ListCellRenderer() {
@@ -412,18 +419,15 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		tabbedpane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		tabbedpane.addTab("onglet.gestionarcher", null, fichesDepart); //$NON-NLS-1$
 		tabbedpane.setTabComponentAt(0, getGestArchersTabComponent());
-		tabbedpane.addTab("onglet.pointage.greffe", new ImageIcon(ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$ //$NON-NLS-2$
-				File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.desktop")), //$NON-NLS-1$
+		tabbedpane.addTab("onglet.pointage.greffe", ApplicationCore.userRessources.getImageIcon("file.icon.desktop"), //$NON-NLS-1$ //$NON-NLS-2$
 				new GreffePane(this));
-		tabbedpane.addTab("onglet.phasesfinal", ApplicationCore.userRessources.getImageIcon("file.icon.finals", 16, 16), //$NON-NLS-1$ //$NON-NLS-2$
+		tabbedpane.addTab("onglet.phasesfinal", ApplicationCore.userRessources.getImageIcon("file.icon.finals"), //$NON-NLS-1$ //$NON-NLS-2$
 				new FicheConcoursFinalPane(this)); 
 		tabbedpane.setEnabledAt(2, ficheConcours.getParametre().isDuel());
 		tabbedpane.addTab("onglet.classement", //$NON-NLS-1$
-				new ImageIcon(ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
-						File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.team")), //$NON-NLS-1$
+				ApplicationCore.userRessources.getImageIcon("file.icon.team"), //$NON-NLS-1$
 						jtbClassement);
-		tabbedpane.addTab("onglet.edition", new ImageIcon(ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$ //$NON-NLS-2$
-				File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.print")), //$NON-NLS-1$
+		tabbedpane.addTab("onglet.edition", ApplicationCore.userRessources.getImageIcon("file.icon.print"), //$NON-NLS-1$ //$NON-NLS-2$
 				jpEdition);
 		
 		//if(!ficheConcours.getParametre().isDuel())
@@ -506,16 +510,10 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		ajlDocuments.addMouseListener(this);
 		jbOpenDocument.addActionListener(this);
 		jbOpenDocument.setMargin(new Insets(0,0,0,0));
-		jbOpenDocument.setIcon(new ImageIcon(
-				ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator +
-				ApplicationCore.staticParameters.getResourceString("file.icon.opendocument"))); //$NON-NLS-1$
+		jbOpenDocument.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.opendocument")); //$NON-NLS-1$
 		jbDeleteDocument.addActionListener(this);
 		jbDeleteDocument.setMargin(new Insets(0,0,0,0));
-		jbDeleteDocument.setIcon(new ImageIcon(
-				ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator +
-				ApplicationCore.staticParameters.getResourceString("file.icon.removeelement"))); //$NON-NLS-1$
+		jbDeleteDocument.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.removeelement")); //$NON-NLS-1$
 		
 		jpInformations.add(jlAide);
 
@@ -698,8 +696,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
             	prepareState(actionState);
             }
         };
-        action.putValue(Action.SMALL_ICON, new ImageIcon(
-               ApplicationCore.staticParameters.getResourceString("path.ressources") + "/document-print.png"));  //$NON-NLS-1$//$NON-NLS-2$
+        action.putValue(Action.SMALL_ICON, ApplicationCore.userRessources.getImageIcon("file.icon.print"));  //$NON-NLS-1$
         //action.putValue(Action.SHORT_DESCRIPTION, tooltiptext);
         
         return action;
@@ -898,6 +895,10 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 						break;
 					case 2:
 						jepClassClub.setText(ficheConcours.getClassementClub());
+						break;
+					case 3:
+						PhasesFinales finales = new PhasesFinales(ficheConcours);
+						jepClassFinals.setText(finales.getClassementHTMLPhasesFinalesIndividuel());
 				}
 			}
 		} else if(e.getSource() == jtbClassement) {
@@ -919,6 +920,10 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 					break;
 				case 2:
 					jepClassClub.setText(ficheConcours.getClassementClub());
+					break;
+				case 3:
+					PhasesFinales finales = new PhasesFinales(ficheConcours);
+					jepClassFinals.setText(finales.getClassementHTMLPhasesFinalesIndividuel());
 			}
 		}
 	}

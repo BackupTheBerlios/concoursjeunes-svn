@@ -104,12 +104,27 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import javax.swing.*;
+import javax.swing.AbstractListModel;
+import javax.swing.Box;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTree;
+import javax.swing.ListSelectionModel;
+import javax.swing.SortOrder;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
@@ -124,17 +139,17 @@ import org.ajdeveloppement.concours.ui.dialog.ConcurrentDialog;
 import org.ajdeveloppement.concours.ui.dialog.EquipeDialog;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Concurrent;
-import org.concoursjeunes.FicheConcours;
-import org.concoursjeunes.Target;
-import org.concoursjeunes.TargetPosition;
 import org.concoursjeunes.ConcurrentList.ClubComparator;
 import org.concoursjeunes.ConcurrentList.NameComparator;
 import org.concoursjeunes.ConcurrentList.TargetComparator;
+import org.concoursjeunes.FicheConcours;
+import org.concoursjeunes.Target;
+import org.concoursjeunes.TargetPosition;
 import org.concoursjeunes.event.FicheConcoursEvent;
 import org.concoursjeunes.event.FicheConcoursListener;
 import org.concoursjeunes.exceptions.FicheConcoursException;
-import org.concoursjeunes.exceptions.PlacementException;
 import org.concoursjeunes.exceptions.FicheConcoursException.Nature;
+import org.concoursjeunes.exceptions.PlacementException;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.decorator.ColorHighlighter;
@@ -257,21 +272,16 @@ public class FicheConcoursDepartPane extends JPanel
 		JScrollPane scrollarcher = new JScrollPane();
 		scrollarcher.setViewportView(ajxlConcurrent);
 
-		jbAjouterArcher.setIcon(new ImageIcon(ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.addarcher") //$NON-NLS-1$
-		));
+		jbAjouterArcher.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.addarcher")); //$NON-NLS-1$
 		jbAjouterArcher.setMargin(new Insets(0, 0, 0, 0));
 		jbAjouterArcher.addActionListener(this);
 
-		jbSupprimerArcher.setIcon(new ImageIcon(ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$
-				File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.removearcher") //$NON-NLS-1$
-		));
+		jbSupprimerArcher.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.removearcher")); //$NON-NLS-1$
 		jbSupprimerArcher.setMargin(new Insets(0, 0, 0, 0));
 		jbSupprimerArcher.setEnabled(false);
 		jbSupprimerArcher.addActionListener(this);
 
-		jbEquipe.setIcon(new ImageIcon(ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$ 
-				File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.team"))); //$NON-NLS-1$
+		jbEquipe.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.team")); //$NON-NLS-1$
 		jbEquipe.setMargin(new Insets(0, 0, 0, 0));
 		jbEquipe.addActionListener(this);
 
@@ -773,7 +783,8 @@ public class FicheConcoursDepartPane extends JPanel
 	@Override
 	public void mousePressed(MouseEvent e) {
 		if (e.getSource() == ajxlConcurrent) {
-			dragObject = lstModelConcurrent.getElementAt(ajxlConcurrent.convertIndexToModel(ajxlConcurrent.getSelectedIndex()));
+			if(ajxlConcurrent.getSelectedIndex() != -1)
+				dragObject = lstModelConcurrent.getElementAt(ajxlConcurrent.convertIndexToModel(ajxlConcurrent.getSelectedIndex()));
 		} else if (e.getSource() == treeTarget) {
 			Point p = e.getPoint();
 			TreePath tp = treeTarget.getPathForLocation(p.x, p.y);

@@ -1,4 +1,4 @@
-#Fri May 21 23:55:37 CEST 2010
+#Sat Jul 31 16:58:32 CEST 2010
 eclipse.preferences.version=1
 encoding//config/parametre.properties=UTF-8
 encoding//lang/libelle.properties=UTF-8
@@ -10,6 +10,8 @@ encoding//packager/linux/debian/copyright=ISO-8859-1
 encoding//packager/version.properties=ISO-8859-1
 encoding//ressources/states/100-listalpha/lang.properties=UTF-8
 encoding//ressources/states/300-targetscoresheet/lang.properties=UTF-8
+encoding//ressources/states/400-classementfinals/lang.properties=UTF-8
+encoding//ressources/states/400-classementfinals/lang_en.properties=UTF-8
 encoding//ressources/states/shootingline/lang.properties=UTF-8
 encoding//ressources/update/result_club.txt=ISO-8859-1
 encoding//src/org/concoursjeunes/plugins/FFTAImport/FFTAImportPlugin_libelle.properties=UTF-8

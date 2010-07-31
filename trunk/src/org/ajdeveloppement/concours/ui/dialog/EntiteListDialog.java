@@ -347,9 +347,12 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 	}
 
 	public Entite getSelectedEntite() {
-		int row = jTable.convertRowIndexToModel(jTable.getSelectedRow());
-
-		return dtm.getEntiteAtRow(row);
+		if(jTable.getSelectedRow() != -1) {
+			int row = jTable.convertRowIndexToModel(jTable.getSelectedRow());
+	
+			return dtm.getEntiteAtRow(row);
+		}
+		return null;
 	}
 	
 	private void showEntiteDialog() {

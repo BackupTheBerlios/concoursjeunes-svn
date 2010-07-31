@@ -88,8 +88,6 @@
  */
 package org.ajdeveloppement.concours.ui.dialog;
 
-import static org.concoursjeunes.ApplicationCore.staticParameters;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
@@ -104,7 +102,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.swing.DefaultListCellRenderer;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -128,6 +125,7 @@ import org.ajdeveloppement.commons.ui.AJList;
 import org.ajdeveloppement.commons.ui.DefaultDialogReturn;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Federation;
 import org.concoursjeunes.Profile;
 import org.concoursjeunes.Reglement;
@@ -217,20 +215,14 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 		GridBagConstraints c = new GridBagConstraints();
 		GridbagComposer gbcomposer = new GridbagComposer(); 
 		
-		jbNewFederation.setIcon(new ImageIcon(staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$ 
-				File.separator + staticParameters.getResourceString("file.icon.addcriteria"))); //$NON-NLS-1$
+		jbNewFederation.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.addcriteria")); //$NON-NLS-1$
 		jbEditFederation.setEnabled(false);
-		jbEditFederation.setIcon(new ImageIcon(staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$ 
-				File.separator + staticParameters.getResourceString("file.icon.opendocument"))); //$NON-NLS-1$
+		jbEditFederation.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.opendocument")); //$NON-NLS-1$
 		jbDeleteFederation.setEnabled(false);
-		jbDeleteFederation.setIcon(new ImageIcon(staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$ 
-				File.separator + staticParameters.getResourceString("file.icon.removeelement"))); //$NON-NLS-1$
-		jbNew.setIcon(new ImageIcon(staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$ 
-				File.separator + staticParameters.getResourceString("file.icon.addcriteria"))); //$NON-NLS-1$
-		jbEdit.setIcon(new ImageIcon(staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$ 
-				File.separator + staticParameters.getResourceString("file.icon.opendocument"))); //$NON-NLS-1$
-		jbDelete.setIcon(new ImageIcon(staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$ 
-				File.separator + staticParameters.getResourceString("file.icon.removeelement"))); //$NON-NLS-1$
+		jbDeleteFederation.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.removeelement")); //$NON-NLS-1$
+		jbNew.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.addcriteria")); //$NON-NLS-1$
+		jbEdit.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.opendocument")); //$NON-NLS-1$
+		jbDelete.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.removeelement")); //$NON-NLS-1$
 		
 		ajlFederations.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		ajlFederations.addListSelectionListener(this);

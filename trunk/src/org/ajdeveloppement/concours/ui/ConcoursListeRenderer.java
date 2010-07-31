@@ -89,7 +89,6 @@
 package org.ajdeveloppement.concours.ui;
 
 import java.awt.Component;
-import java.io.File;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -116,18 +115,10 @@ public class ConcoursListeRenderer extends JLabel implements ListCellRenderer {
 	 * Construit le rendu des icone pour l'arbre
 	 */
 	public ConcoursListeRenderer() {
-		archerIcon = new ImageIcon(
-				ApplicationCore.staticParameters.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
-				ApplicationCore.staticParameters.getResourceString("file.icon.archer.normal")); //$NON-NLS-1$
-		archerHandicapIcon = new ImageIcon(
-				ApplicationCore.staticParameters.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
-				ApplicationCore.staticParameters.getResourceString("file.icon.archer.handicap")); //$NON-NLS-1$
-		archerRedIcon = new ImageIcon(
-				ApplicationCore.staticParameters.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
-				ApplicationCore.staticParameters.getResourceString("file.icon.archer.notarget")); //$NON-NLS-1$
-		archerHandicapRedIcon = new ImageIcon(
-				ApplicationCore.staticParameters.getResourceString("path.ressources") + File.separator + //$NON-NLS-1$
-				ApplicationCore.staticParameters.getResourceString("file.icon.archer.handicap.notarget")); //$NON-NLS-1$
+		archerIcon = ApplicationCore.userRessources.getImageIcon("file.icon.archer.normal"); //$NON-NLS-1$
+		archerHandicapIcon = ApplicationCore.userRessources.getImageIcon("file.icon.archer.handicap"); //$NON-NLS-1$
+		archerRedIcon = ApplicationCore.userRessources.getImageIcon("file.icon.archer.notarget"); //$NON-NLS-1$
+		archerHandicapRedIcon = ApplicationCore.userRessources.getImageIcon("file.icon.archer.handicap.notarget"); //$NON-NLS-1$
 	}
 
 	/**
