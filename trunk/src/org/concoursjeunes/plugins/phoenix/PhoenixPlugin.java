@@ -247,7 +247,7 @@ public class PhoenixPlugin implements ProfileListener, ApplicationCoreListener {
 			if(reglement.getVersion() == 1) {
 				reglement.setTie(new ArrayList<String>(Arrays.asList(new String[] { "10","9" }))); //$NON-NLS-1$ //$NON-NLS-2$
 				reglement.setDisplayName(reglement.getName());
-				reglement.setVersion(2);
+				reglement.setVersion(Reglement.CURRENT_VERSION);
 				
 				for(Entry<CriteriaSet, CriteriaSet> entry : reglement.getSurclassement().entrySet()) {
 					for(Entry<Criterion, CriterionElement> entry2 : entry.getKey().getCriteria().entrySet()) {

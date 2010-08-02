@@ -96,9 +96,9 @@ import java.util.List;
 
 import javax.swing.event.EventListenerList;
 
+import org.ajdeveloppement.concours.exceptions.PlacementException;
 import org.concoursjeunes.event.TargetEvent;
 import org.concoursjeunes.event.TargetListener;
-import org.concoursjeunes.exceptions.PlacementException;
 
 /**
  * Representation de l'entite 'Cible' avec ses paramètres de distances, de
@@ -109,8 +109,18 @@ import org.concoursjeunes.exceptions.PlacementException;
  */
 public class Target implements PropertyChangeListener {
 	
+	/**
+	 * Ordre de répartion des archers sur la cible
+	 *
+	 */
 	public enum Repartition {
+		/**
+		 * Remplissage de la cible dans l'ordre ABCD
+		 */
 		ABCD,
+		/**
+		 * Remplissage de la cible dans l'ordre ACBD
+		 */
 		ACBD
 	}
 

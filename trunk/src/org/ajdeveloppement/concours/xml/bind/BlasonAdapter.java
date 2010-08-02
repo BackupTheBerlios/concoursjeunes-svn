@@ -86,7 +86,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes.xml.bind;
+package org.ajdeveloppement.concours.xml.bind;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 

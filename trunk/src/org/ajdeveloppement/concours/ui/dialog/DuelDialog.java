@@ -112,9 +112,9 @@ import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.DefaultDialogReturn;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
+import org.ajdeveloppement.concours.Duel;
 import org.ajdeveloppement.concours.ui.FicheConcoursPane;
 import org.ajdeveloppement.swingxext.localisation.JXHeaderLocalisationHandler;
-import org.concoursjeunes.Duel;
 import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.JXHyperlink;
 

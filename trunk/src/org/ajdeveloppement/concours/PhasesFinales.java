@@ -86,7 +86,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes;
+package org.ajdeveloppement.concours;
 
 import static org.concoursjeunes.ApplicationCore.staticParameters;
 
@@ -107,8 +107,11 @@ import java.util.Set;
 import org.ajdeveloppement.commons.AJTemplate;
 import org.ajdeveloppement.commons.UncheckedException;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
-import org.ajdeveloppement.concours.RepartitionFinals;
 import org.ajdeveloppement.concours.managers.RepartitionFinalsManager;
+import org.concoursjeunes.Classement;
+import org.concoursjeunes.Concurrent;
+import org.concoursjeunes.CriteriaSet;
+import org.concoursjeunes.FicheConcours;
 import org.concoursjeunes.event.FicheConcoursEvent;
 import org.concoursjeunes.event.FicheConcoursListener;
 import org.concoursjeunes.localisable.CriteriaSetLibelle;

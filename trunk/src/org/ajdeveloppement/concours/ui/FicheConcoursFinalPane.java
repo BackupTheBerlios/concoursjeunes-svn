@@ -117,14 +117,14 @@ import javax.swing.JPanel;
 
 import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.Converters;
+import org.ajdeveloppement.concours.Duel;
+import org.ajdeveloppement.concours.PhasesFinales;
 import org.ajdeveloppement.concours.ui.components.ConcurentMxCell;
 import org.ajdeveloppement.concours.ui.components.DuelMxCell;
 import org.ajdeveloppement.concours.ui.dialog.DuelDialog;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.CriteriaSet;
-import org.concoursjeunes.Duel;
 import org.concoursjeunes.FicheConcours;
-import org.concoursjeunes.PhasesFinales;
 import org.concoursjeunes.localisable.CriteriaSetLibelle;
 import org.w3c.dom.Document;
 

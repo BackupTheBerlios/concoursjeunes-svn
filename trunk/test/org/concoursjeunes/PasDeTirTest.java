@@ -117,7 +117,7 @@ public class PasDeTirTest extends TestCase{
 	}
 
 	/**
-	 * Test method for {@link org.concoursjeunes.PasDeTir#getTargetsOccupation(int)}.
+	 * Test method for {@link org.concoursjeunes.ShootingLine#getTargetsOccupation(int)}.
 	 */
 	@Test
 	public void testGetOccupationCibles() {
@@ -125,7 +125,7 @@ public class PasDeTirTest extends TestCase{
 	}
 
 	/**
-	 * Test method for {@link org.concoursjeunes.PasDeTir#getNbFreeTargets(int)}.
+	 * Test method for {@link org.concoursjeunes.ShootingLine#getNbFreeTargets(int)}.
 	 */
 	@Test
 	public void testGetNbCiblesLibre() {
@@ -133,7 +133,7 @@ public class PasDeTirTest extends TestCase{
 	}
 
 	/**
-	 * Test method for {@link org.concoursjeunes.PasDeTir#havePlaceForConcurrent(org.concoursjeunes.Concurrent)}.
+	 * Test method for {@link org.concoursjeunes.ShootingLine#havePlaceForConcurrent(org.concoursjeunes.Concurrent)}.
 	 */
 	@Test
 	public void testHavePlaceForConcurrent() {
@@ -141,7 +141,7 @@ public class PasDeTirTest extends TestCase{
 	}
 
 	/**
-	 * Test method for {@link org.concoursjeunes.PasDeTir#placementConcurrents()}.
+	 * Test method for {@link org.concoursjeunes.ShootingLine#placementConcurrents()}.
 	 */
 	@Test
 	public void testPlacementConcurrents() {
@@ -149,7 +149,7 @@ public class PasDeTirTest extends TestCase{
 	}
 
 	/**
-	 * Test method for {@link org.concoursjeunes.PasDeTir#placementConcurrent(org.concoursjeunes.Concurrent, org.concoursjeunes.Cible, int)}.
+	 * Test method for {@link org.concoursjeunes.ShootingLine#placementConcurrent(org.concoursjeunes.Concurrent, org.concoursjeunes.Cible, int)}.
 	 */
 	@Test
 	public void testPlacementConcurrent() {
@@ -157,7 +157,7 @@ public class PasDeTirTest extends TestCase{
 	}
 
 	/**
-	 * Test method for {@link org.concoursjeunes.PasDeTir#retraitConcurrent(org.concoursjeunes.Concurrent)}.
+	 * Test method for {@link org.concoursjeunes.ShootingLine#retraitConcurrent(org.concoursjeunes.Concurrent)}.
 	 */
 	@Test
 	public void testRetraitConcurrent() {

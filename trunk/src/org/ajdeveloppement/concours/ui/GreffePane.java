@@ -529,7 +529,7 @@ public class GreffePane extends JPanel implements
 					}
 					return categorie;
 				case 5:
-					return new TargetPosition(concurrent.getCible(), concurrent.getPosition()).toString();
+					return TargetPosition.toString(concurrent.getCible(), concurrent.getPosition());
 				case 6:
 					return concurrent.getInscription() == Concurrent.PAYEE;
 				case 7:

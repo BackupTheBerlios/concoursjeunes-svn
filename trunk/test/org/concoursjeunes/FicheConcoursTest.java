@@ -92,11 +92,11 @@ import javax.xml.bind.JAXBException;
 
 import junit.framework.TestCase;
 
+import org.ajdeveloppement.concours.exceptions.FicheConcoursException;
+import org.ajdeveloppement.concours.exceptions.NullConfigurationException;
 import org.concoursjeunes.builders.ConcurrentBuilder;
 import org.concoursjeunes.event.ProfileEvent;
 import org.concoursjeunes.event.ProfileListener;
-import org.concoursjeunes.exceptions.FicheConcoursException;
-import org.concoursjeunes.exceptions.NullConfigurationException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

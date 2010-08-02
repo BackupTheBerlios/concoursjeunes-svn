@@ -100,7 +100,7 @@ import org.concoursjeunes.Ancrage;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.DistancesEtBlason;
-import org.concoursjeunes.PasDeTir;
+import org.concoursjeunes.ShootingLine;
 import org.concoursjeunes.Profile;
 import org.concoursjeunes.Target;
 
@@ -121,7 +121,7 @@ public class ShootingLineState {
 	
 	private AjResourcesReader localisation;
 	private Profile profile;
-	private PasDeTir pasDeTir;
+	private ShootingLine pasDeTir;
 	
 	private Document document;
 	private PdfWriter writer;
@@ -131,7 +131,7 @@ public class ShootingLineState {
 	private float pageHeight = 0;
 	private int maxDistance = 0;
 	
-	public ShootingLineState(AjResourcesReader localisation, Profile profile, PasDeTir pasDeTir, Document document, PdfWriter writer) {
+	public ShootingLineState(AjResourcesReader localisation, Profile profile, ShootingLine pasDeTir, Document document, PdfWriter writer) {
 		this.localisation = localisation;
 		this.profile = profile;
 		this.pasDeTir = pasDeTir;

@@ -111,7 +111,7 @@ import org.ajdeveloppement.commons.persistence.sql.SqlGeneratedIdField;
 import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
 import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
 import org.ajdeveloppement.commons.persistence.sql.SqlTable;
-import org.concoursjeunes.xml.bind.BlasonAdapter;
+import org.ajdeveloppement.concours.xml.bind.BlasonAdapter;
 
 /**
  * parametre de distances et blason pour une cible et un concurrent

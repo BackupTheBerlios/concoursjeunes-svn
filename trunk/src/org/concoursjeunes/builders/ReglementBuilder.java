@@ -199,7 +199,7 @@ public class ReglementBuilder {
 			throws ObjectPersistenceException {
 
 		Reglement reglement = new Reglement();
-		reglement.setVersion(2);
+		reglement.setVersion(Reglement.CURRENT_VERSION);
 		
 		try {
 			Map<Class<?>, Map<String,Object>> foreignKeys = null;
@@ -297,7 +297,7 @@ public class ReglementBuilder {
 	private static Reglement getDefaultReglement() {
 		Reglement reglement = new Reglement();
 		
-		reglement.setVersion(2);
+		reglement.setVersion(Reglement.CURRENT_VERSION);
 		reglement.setName("C"+(new Date().getTime())); //$NON-NLS-1$
 		reglement.setNbVoleeParSerie(10);
 

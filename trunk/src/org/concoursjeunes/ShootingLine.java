@@ -89,16 +89,17 @@
 package org.concoursjeunes;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.event.EventListenerList;
 
+import org.ajdeveloppement.concours.exceptions.PlacementException;
 import org.concoursjeunes.Target.Repartition;
 import org.concoursjeunes.event.FicheConcoursEvent;
 import org.concoursjeunes.event.FicheConcoursListener;
 import org.concoursjeunes.event.PasDeTirListener;
-import org.concoursjeunes.exceptions.PlacementException;
 
 /**
  * <p>
@@ -107,7 +108,7 @@ import org.concoursjeunes.exceptions.PlacementException;
  * sur celui-ci.
  * </p>
  * <p>
- * La class <i>PasDeTir</i> va fournir des méthodes permettant de placer un archer sur le pas
+ * La class <i>ShootingLine</i> va fournir des méthodes permettant de placer un archer sur le pas
  * de tir du concours ainsi que des méthodes permettant de calculer l'occupation de celui-ci et
  * bloquer l'insertion en cas de dépassement.
  * </p>
@@ -116,7 +117,7 @@ import org.concoursjeunes.exceptions.PlacementException;
  * @version 1.0
  *
  */
-public class PasDeTir implements FicheConcoursListener {
+public class ShootingLine implements FicheConcoursListener {
 	private List<Target> targets = new ArrayList<Target>();
 	private List<Target> simulationTargets = new ArrayList<Target>();
 
@@ -131,7 +132,7 @@ public class PasDeTir implements FicheConcoursListener {
 	 * @param ficheConcours le concours associé au pas de tir
 	 * @param depart le depart associé au pas de tir
 	 */
-	public PasDeTir(FicheConcours ficheConcours, int depart) {
+	public ShootingLine(FicheConcours ficheConcours, int depart) {
 		this.ficheConcours = ficheConcours;
 		this.depart = depart;
 		
@@ -172,7 +173,7 @@ public class PasDeTir implements FicheConcoursListener {
 	 */
 	private int getOptimalRythme(List<DistancesEtBlason> lDB) {
 		for(int i = 2; i <= ficheConcours.getParametre().getNbTireur(); i+=2) {
-			Hashtable<DistancesEtBlason, TargetsOccupation> targetsOccupation = getTargetsOccupation(i);
+			Map<DistancesEtBlason, TargetsOccupation> targetsOccupation = getTargetsOccupation(i);
 			if(targetsOccupation != null)
 				return i;
 		}
@@ -186,8 +187,8 @@ public class PasDeTir implements FicheConcoursListener {
 	 * @param nbtireurparcible le nombre de tireur par cible servant de base au calcul de la table d'occupation
 	 * @return la table d'occupation des cibles
 	 */
-	public Hashtable<DistancesEtBlason, TargetsOccupation> getTargetsOccupation(int nbtireurparcible) {
-		Hashtable<DistancesEtBlason, TargetsOccupation> occupationCibles = new Hashtable<DistancesEtBlason, TargetsOccupation>();
+	public Map<DistancesEtBlason, TargetsOccupation> getTargetsOccupation(int nbtireurparcible) {
+		Map<DistancesEtBlason, TargetsOccupation> occupationCibles = new HashMap<DistancesEtBlason, TargetsOccupation>();
 		List<DistancesEtBlason> distancesEtBlasons = ficheConcours.getParametre().getReglement().getListDistancesEtBlason();
 		
 		//effectue une simulation de placement

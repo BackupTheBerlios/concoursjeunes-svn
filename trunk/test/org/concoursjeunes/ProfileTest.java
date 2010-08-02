@@ -7,9 +7,9 @@ import javax.xml.bind.JAXBException;
 
 import junit.framework.TestCase;
 
+import org.ajdeveloppement.concours.exceptions.NullConfigurationException;
 import org.concoursjeunes.event.ProfileEvent;
 import org.concoursjeunes.event.ProfileListener;
-import org.concoursjeunes.exceptions.NullConfigurationException;
 import org.junit.Before;
 import org.junit.Test;
 

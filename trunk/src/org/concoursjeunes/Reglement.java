@@ -153,6 +153,12 @@ import org.ajdeveloppement.commons.persistence.sql.SqlTable;
 @SqlPrimaryKey(fields="NUMREGLEMENT",generatedidField=@SqlGeneratedIdField(name="NUMREGLEMENT",type=Types.INTEGER))
 public class Reglement implements ObjectPersistence {
 	
+	/**
+	 * Type de réglement
+	 * 
+	 * @author Aurélien JEOFFRAY
+	 *
+	 */
 	public enum TypeReglement {
 		/**
 		 * Règlement sur cible anglaise
@@ -164,6 +170,8 @@ public class Reglement implements ObjectPersistence {
 		NATURE
 	}
 
+	public static final int CURRENT_VERSION = 2;
+	
 	@XmlAttribute
 	private int version = 1;
 	@XmlTransient
@@ -249,6 +257,9 @@ public class Reglement implements ObjectPersistence {
 
 	/**
 	 * Retourne le numéro de version interne du règlement.
+	 * La version courante retourné par un fichier sérialisé devrais être 2.
+	 * Si c'est 1 alors envisager de passer par une routine de mise à jour des réglements (opération
+	 * généralement effectué par l'extension PhoenixPlugin)
 	 * 
 	 * @return version le numéro de version du règlement.
 	 */
@@ -257,7 +268,8 @@ public class Reglement implements ObjectPersistence {
 	}
 
 	/**
-	 * Définit le numéro interne de version du règlement
+	 * Définit le numéro interne de version du règlement. Doit
+	 * être actuellement définit à 2 utiliser la constante {@link #CURRENT_VERSION}.
 	 * 
 	 * @param version le numéro de version du règlement.
 	 */
@@ -266,14 +278,18 @@ public class Reglement implements ObjectPersistence {
 	}
 
 	/**
-	 * @return numReglement
+	 * Retourne l'identifiant du réglement en base ou 0 si non lié à la base. Information non sérialisé en XML
+	 * 
+	 * @return Identifiant du réglement en base
 	 */
 	public int getNumReglement() {
 		return numReglement;
 	}
 
 	/**
-	 * @param numReglement numReglement à définir
+	 * Définit l'identifiant du réglementen base
+	 * 
+	 * @param numReglement Identifiant du réglement en base
 	 */
 	public void setNumReglement(int numReglement) {
 		this.numReglement = numReglement;
@@ -394,6 +410,11 @@ public class Reglement implements ObjectPersistence {
 		criterion.setReglement(this);
 	}
 	
+	/**
+	 * Supprime un critère du réglement.
+	 * 
+	 * @param criterion le critèrev à supprimer
+	 */
 	public void removeCriterion(Criterion criterion) {
 		listCriteria.remove(criterion);
 	}

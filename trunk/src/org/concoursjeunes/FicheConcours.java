@@ -120,12 +120,12 @@ import org.ajdeveloppement.commons.XmlUtils;
 import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.concours.Contact;
+import org.ajdeveloppement.concours.exceptions.FicheConcoursException;
+import org.ajdeveloppement.concours.exceptions.FicheConcoursException.Nature;
 import org.concoursjeunes.builders.EquipeListBuilder;
 import org.concoursjeunes.event.FicheConcoursEvent;
 import org.concoursjeunes.event.FicheConcoursListener;
 import org.concoursjeunes.event.PasDeTirListener;
-import org.concoursjeunes.exceptions.FicheConcoursException;
-import org.concoursjeunes.exceptions.FicheConcoursException.Nature;
 import org.concoursjeunes.localisable.CriteriaSetLibelle;
 import org.concoursjeunes.manager.EntiteManager;
 
@@ -154,7 +154,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	@XmlElement(name="equipes")
 	private EquipeList equipes;
 	
-	private transient Map<Integer, PasDeTir> pasDeTir = new HashMap<Integer, PasDeTir>();
+	private transient Map<Integer, ShootingLine> pasDeTir = new HashMap<Integer, ShootingLine>();
 
 	private transient EventListenerList ficheConcoursListeners = new EventListenerList();
 
@@ -379,7 +379,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	 * 
 	 * @return pasDeTir le pas de tir du départ en paramètre
 	 */
-	public PasDeTir getPasDeTir(int depart) {
+	public ShootingLine getPasDeTir(int depart) {
 		if(pasDeTir != null)
 			return pasDeTir.get(depart);
 		return null;
@@ -496,7 +496,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	private void makePasDeTir() {
 		if(parametre != null && pasDeTir != null && concurrentList != null) {
 			for (int i = 0; i < parametre.getNbDepart(); i++) {
-				PasDeTir pdt = new PasDeTir(this, i);
+				ShootingLine pdt = new ShootingLine(this, i);
 				pdt.addPasDeTirListener(this);
 				pasDeTir.put(i, pdt);
 			}

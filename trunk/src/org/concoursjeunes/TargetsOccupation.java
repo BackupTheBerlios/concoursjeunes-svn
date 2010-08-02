@@ -87,6 +87,8 @@
 package org.concoursjeunes;
 
 /**
+ * Représente une vue d'occupation des cibles pour un groupe de cibles donnée.
+ * 
  * @author Aurélien JEOFFRAY
  */
 public class TargetsOccupation {
@@ -94,40 +96,52 @@ public class TargetsOccupation {
 	private int placeOccupe = 0;
 	
 	/**
-	 * @param placeLibre
-	 * @param placeOccupe
+	 * Initialise l'occupation des cibles en précisant la place libre et la place occupé sur celle
+	 * ci. Ne doit pas être initialisé directement, passer par {@link ShootingLine#getTargetsOccupation(int)}
+	 * 
+	 * @param placeLibre la place libre sur le groupe de cible
+	 * @param placeOccupe la place occupé sur le groupe de cible
 	 */
-	public TargetsOccupation(int placeLibre, int placeOccupe) {
+	protected TargetsOccupation(int placeLibre, int placeOccupe) {
 		this.placeLibre = placeLibre;
 		this.placeOccupe = placeOccupe;
 	}
 
 	/**
-	 * @return  placeLibre
+	 * Retourne la place disponible sur le groupe de cible
+	 * 
+	 * @return la place disponible
 	 */
 	public int getPlaceLibre() {
 		return placeLibre;
 	}
 
 	/**
-	 * @param placeLibre  placeLibre à définir
+	 * Définit la place disponible sur le groupe de
+	 * cible
+	 * 
+	 * @param placeLibre la place disponible
 	 */
-	public void setPlaceLibre(int placeLibre) {
+	protected void setPlaceLibre(int placeLibre) {
 		this.placeLibre = placeLibre;
 	}
 
 
 	/**
-	 * @return  placeOccupe
+	 * Retourne la place occupé sur le groupe de cible
+	 * 
+	 * @return la place occupé 
 	 */
 	public int getPlaceOccupe() {
 		return placeOccupe;
 	}
 
 	/**
-	 * @param placeOccupe  placeOccupe à définir
+	 * Définit la place coccupé sur le groupe de cible
+	 * 
+	 * @param placeOccupe la place coccupé
 	 */
-	public void setPlaceOccupe(int placeOccupe) {
+	protected void setPlaceOccupe(int placeOccupe) {
 		this.placeOccupe = placeOccupe;
 	}
 	

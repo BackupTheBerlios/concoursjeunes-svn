@@ -88,7 +88,7 @@
  */
 package org.ajdeveloppement.concours.ui.components;
 
-import org.concoursjeunes.Duel;
+import org.ajdeveloppement.concours.Duel;
 
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGeometry;

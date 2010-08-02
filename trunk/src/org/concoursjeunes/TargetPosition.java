@@ -101,41 +101,70 @@ import javax.xml.bind.annotation.XmlAccessorType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TargetPosition implements Cloneable {
+	public static final int A = 0;
+	public static final int B = 1;
+	public static final int C = 2;
+	public static final int D = 3;
+	
 	private int target = 0;
-	private int position = 0;
+	private int position = A;
 	
 	public TargetPosition() {
 		
 	}
+	
 	/**
-	 * @param target
-	 * @param position
+	 * Initialise une nouvelle position sur cible
+	 * 
+	 * @param target le numéro de la cible
+	 * @param position la position sur la cible (O->A,1->B,2->C,3->D)
 	 */
 	public TargetPosition(int target, int position) {
 		super();
 		this.target = target;
 		this.position = position;
 	}
+	
 	/**
-	 * @return target
+	 * Retourne le numéro de cible
+	 * 
+	 * @return target le numéro de cible
 	 */
 	public int getTarget() {
 		return target;
 	}
+	
 	/**
-	 * @param target target à définir
+	 * Définit le numéro de la cible
+	 * 
+	 * @param target le numéro de la cible
 	 */
 	public void setTarget(int target) {
 		this.target = target;
 	}
+	
 	/**
-	 * @return position
+	 * Retourne l'index de la position sur cible
+	 * 
+	 * @return l'index de la position
 	 */
 	public int getPosition() {
 		return position;
 	}
+	
 	/**
-	 * @param position position à définir
+	 * Retourne la position sous la forme d'une lettre (A,B,C,D)
+	 * 
+	 * @return la position en lettre
+	 */
+	public String getStringPosition() {
+		return String.valueOf((char) ('A' + position));
+	}
+	
+	/**
+	 * Définit la position sur la cible
+	 * 
+	 * @param position l'index de la position
 	 */
 	public void setPosition(int position) {
 		this.position = position;
@@ -154,8 +183,28 @@ public class TargetPosition implements Cloneable {
 		}
 	}
 	
+	/**
+	 * Retourne la position sur le pas de tir
+	 * sous la forme XXY ou XX représente le numéro de cible
+	 * et Y la position (A,B,C,D) sur celle ci.
+	 * 
+	 * @return la position au format XXY
+	 */
 	@Override
 	public String toString() {
-		return new DecimalFormat("00").format(target) + (char) ('A' + position); //$NON-NLS-1$
+		return new DecimalFormat("00").format(target) + getStringPosition(); //$NON-NLS-1$
+	}
+	
+	/**
+	 * Retourne la position sur le pas de tir
+	 * sous la forme XXY ou XX représente le numéro de cible
+	 * et Y laposition (A,B,C,D) sur celle ci.
+	 * 
+	 * @param target le numéro de la cible
+	 * @param position l'index de la position
+	 * @return la position au format XXY
+	 */
+	public static String toString(int target, int position) {
+		return new TargetPosition(target, position).toString();
 	}
 }

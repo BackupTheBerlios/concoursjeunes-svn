@@ -90,9 +90,9 @@ package org.concoursjeunes;
 
 import junit.framework.TestCase;
 
+import org.ajdeveloppement.concours.exceptions.PlacementException;
 import org.concoursjeunes.Target.Repartition;
 import org.concoursjeunes.builders.ConcurrentBuilder;
-import org.concoursjeunes.exceptions.PlacementException;
 import org.concoursjeunes.manager.ReglementManager;
 import org.junit.After;
 import org.junit.Before;

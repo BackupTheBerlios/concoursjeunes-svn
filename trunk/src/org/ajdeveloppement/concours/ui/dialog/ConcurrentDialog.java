@@ -104,7 +104,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -139,6 +138,7 @@ import org.ajdeveloppement.commons.StringUtils;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
+import org.ajdeveloppement.concours.PhasesFinales;
 import org.ajdeveloppement.concours.ui.ConcoursJeunesFrame;
 import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
 import org.concoursjeunes.ApplicationCore;
@@ -153,7 +153,6 @@ import org.concoursjeunes.CriterionElement;
 import org.concoursjeunes.DistancesEtBlason;
 import org.concoursjeunes.Entite;
 import org.concoursjeunes.FicheConcours;
-import org.concoursjeunes.PhasesFinales;
 import org.concoursjeunes.Profile;
 import org.concoursjeunes.Reglement;
 import org.concoursjeunes.TargetPosition;
@@ -721,7 +720,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		}
 
 		jlValCible.setText("<html><span style=\"font-size: 14pt;\">"  //$NON-NLS-1$
-				+ new TargetPosition(concurrent.getCible(), concurrent.getPosition()).toString()
+				+ TargetPosition.toString(concurrent.getCible(), concurrent.getPosition())
 				+ "</span></html>"); //$NON-NLS-1$
 		jlValDepart.setText("<html><span style=\"font-size: 14pt;\">"  //$NON-NLS-1$
 				+ (concurrent.getDepart()+1)
@@ -962,7 +961,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 				": " + ficheConcours.getConcurrentList().countArcher() + "<br><br>"; //$NON-NLS-1$ //$NON-NLS-2$
 
 		// récupère la table d'occupation des cibles
-		Hashtable<DistancesEtBlason, TargetsOccupation> occupationCibles = ficheConcours.getPasDeTir(concurrent.getDepart()).getTargetsOccupation(ficheConcours.getParametre().getNbTireur());
+		Map<DistancesEtBlason, TargetsOccupation> occupationCibles = ficheConcours.getPasDeTir(concurrent.getDepart()).getTargetsOccupation(ficheConcours.getParametre().getNbTireur());
 
 		List<DistancesEtBlason> tableCorresp = ficheConcours.getParametre().getReglement().getListDistancesEtBlason();
 

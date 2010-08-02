@@ -110,11 +110,11 @@ import javax.xml.bind.JAXBException;
 
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.io.FileUtils;
+import org.ajdeveloppement.concours.exceptions.NullConfigurationException;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Configuration;
 import org.concoursjeunes.MetaDataFicheConcours;
 import org.concoursjeunes.Profile;
-import org.concoursjeunes.exceptions.NullConfigurationException;
 import org.concoursjeunes.plugins.Plugin;
 import org.concoursjeunes.plugins.PluginEntry;
 import org.jdesktop.swingx.JXErrorPane;

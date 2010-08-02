@@ -1,5 +1,5 @@
 /*
- * Créé le 3 mai 07 à 12:26:51 pour ConcoursJeunes
+ * Créé le 21 août 07 à 16:36:29 pour ConcoursJeunes
  *
  * Copyright 2002-2007 - Aurélien JEOFFRAY
  *
@@ -86,30 +86,29 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes.exceptions;
+package org.ajdeveloppement.concours.exceptions;
+
+import java.awt.AWTEvent;
+import java.awt.EventQueue;
+import java.util.logging.Level;
+
+import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
+import org.jdesktop.swingx.error.ErrorInfo;
 
 /**
- * Répresente une exception de l'execution du programme
- * pour cause d'absence d'objet de configuration
- * 
  * @author Aurélien JEOFFRAY
- *
+ * 
  */
-public class NullConfigurationException extends Exception {
-
-	public NullConfigurationException() {
-		super();
-	}
-
-	public NullConfigurationException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
-	public NullConfigurationException(String message) {
-		super(message);
-	}
-
-	public NullConfigurationException(Throwable cause) {
-		super(cause);
+public class ExceptionHandlingEventQueue extends EventQueue {
+	@Override
+	public void dispatchEvent(AWTEvent event) {
+		try {
+			super.dispatchEvent(event);
+		} catch (RuntimeException e) {
+			DisplayableErrorHelper.displayErrorInfo(new ErrorInfo("Event Queue Exception!", //$NON-NLS-1$
+					e.toString(),
+					null, null, e, Level.SEVERE, null));
+			e.printStackTrace();
+		}
 	}
 }

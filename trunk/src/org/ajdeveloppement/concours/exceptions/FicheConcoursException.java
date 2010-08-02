@@ -1,6 +1,6 @@
 /*
- * Created on 25 nov. 2008
- * 
+ * Créé le 21 mars 08 à 21:36:38 pour ConcoursJeunes
+ *
  * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
@@ -36,7 +36,7 @@
  * à l'utiliser et l'exploiter dans les mêmes conditions de sécurité. 
  * 
  * Le fait que vous puissiez accéder à cet en-tête signifie que vous avez 
- * pris connaissance de la licence CeCILL, et que vous en avez accepté les
+ * pri connaissance de la licence CeCILL, et que vous en avez accepté les
  * termes.
  *
  * ENGLISH:
@@ -71,7 +71,7 @@
  * knowledge of the CeCILL license and that you accept its terms.
  *
  *  *** GNU GPL Terms *** 
- *
+ * 
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -86,43 +86,66 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.concoursjeunes;
+package org.ajdeveloppement.concours.exceptions;
 
 /**
- * Utilisé pour les Tirs campagne, 3D et Nature, les pelotons se comporte comme des cibles
- * sans toutefois imposé de contrainte de placement de type blason/distance.
- * 
- * TODO La class est actuellement en travaux
- * 
  * @author Aurélien JEOFFRAY
  *
  */
-public class Peloton extends Target {
-	public Peloton(int numPeloton, Reglement reglement, int nbTireurMaxparCible) {
-		super(numPeloton, reglement, nbTireurMaxparCible);
+public class FicheConcoursException extends Exception {
+
+	public enum Nature {
+		ALREADY_EXISTS,
+		NO_SLOT_AVAILABLE,
+		SAVE_IO_ERROR,
+		UNKNOWN
+	}
+	
+	private Nature nature = Nature.UNKNOWN;
+	/**
+	 * 
+	 */
+	public FicheConcoursException() {
+		super();
 	}
 
 	/**
-	 * Retourne toujours false. En effet, il n'y a aucun besoin de condamné une position pour un peloton
-	 * contrairement à une cible
-	 * 
-	 * @param position Conservé par héritage, laisser la valeur à 0
+	 * @param message
+	 * @param cause
 	 */
-	@Override
-	public boolean isReservedPosition(int position) {
-		return false;
+	public FicheConcoursException(String message, Throwable cause) {
+		super(message, cause);
 	}
 	
-	/**
-	 * Retourne true si la place est libre, false dans le cas contraire
-	 * 
-	 * @param blason Conservé par héritage, donner la valeur null
-	 * @param position la position sur laquelle tester la présence d'un blason
-	 */
-	@Override
-	public boolean isSlotAvailable(Blason blason, int position) {
-		if(getConcurrentAt(position) != null)
-			return false;
-		return true;
+	public FicheConcoursException(Nature nature, String message, Throwable cause) {
+		super(message, cause);
+		this.nature = nature;
 	}
+
+	/**
+	 * @param message
+	 */
+	public FicheConcoursException(String message) {
+		super(message);
+	}
+	
+	public FicheConcoursException(Nature nature, String message) {
+		super(message);
+		this.nature = nature;
+	}
+
+	/**
+	 * @param cause
+	 */
+	public FicheConcoursException(Throwable cause) {
+		super(cause);
+	}
+
+	/**
+	 * @return nature
+	 */
+	public Nature getNature() {
+		return nature;
+	}
+	
 }

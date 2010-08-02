@@ -99,10 +99,10 @@ import javax.swing.event.EventListenerList;
 import javax.xml.bind.JAXBException;
 
 import org.ajdeveloppement.commons.AjResourcesReader;
+import org.ajdeveloppement.concours.exceptions.NullConfigurationException;
 import org.concoursjeunes.builders.FicheConcoursBuilder;
 import org.concoursjeunes.event.ProfileEvent;
 import org.concoursjeunes.event.ProfileListener;
-import org.concoursjeunes.exceptions.NullConfigurationException;
 import org.concoursjeunes.manager.ConfigurationManager;
 
 /**
