@@ -91,7 +91,6 @@ package org.ajdeveloppement.concours.ui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Desktop;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -101,9 +100,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
-import java.awt.print.Printable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -133,10 +132,12 @@ import com.lowagie.text.PageSize;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfWriter;
 import com.mxgraph.io.mxCodec;
+import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGeometry;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.swing.mxGraphComponent.mxGraphControl;
 import com.mxgraph.swing.mxGraphOutline;
+import com.mxgraph.util.mxCellRenderer;
 import com.mxgraph.util.mxRectangle;
 import com.mxgraph.util.mxUtils;
 import com.mxgraph.view.mxGraph;
@@ -145,7 +146,7 @@ import com.mxgraph.view.mxGraph;
  * @author Aurélien JEOFFRAY
  *
  */
-public class FicheConcoursFinalPane extends JPanel implements ActionListener, MouseListener {
+public class FicheConcoursFinalsPane extends JPanel implements ActionListener, MouseListener {
 	
 	private mxGraph graph = new mxGraph();
 	
@@ -154,10 +155,13 @@ public class FicheConcoursFinalPane extends JPanel implements ActionListener, Mo
 	
 	//modele
 	private FicheConcours ficheConcours;
+	private PhasesFinales phaseFinal;
 
-	public FicheConcoursFinalPane(FicheConcoursPane ficheConcoursPane) {
+	public FicheConcoursFinalsPane(FicheConcoursPane ficheConcoursPane) {
 		this.ficheConcoursPane = ficheConcoursPane;
 		this.ficheConcours = ficheConcoursPane.getFicheConcours();
+		
+		this.phaseFinal = new PhasesFinales(ficheConcours);
 		
 		init();
 		affectLabels();
@@ -194,6 +198,7 @@ public class FicheConcoursFinalPane extends JPanel implements ActionListener, Mo
 		graphComponent.setFoldingEnabled(false);
 		graphComponent.getGraphControl().addMouseListener(this);
 		graphComponent.getVerticalScrollBar().setUnitIncrement(20);
+		graphComponent.setDoubleBuffered(true);
 		//Gestion du zoom
 		graphComponent.addMouseWheelListener(new MouseWheelListener() {
 			
@@ -229,7 +234,7 @@ public class FicheConcoursFinalPane extends JPanel implements ActionListener, Mo
 					try {
 						File tempPdf= File.createTempFile("acpf", ".pdf"); //$NON-NLS-1$ //$NON-NLS-2$
 						com.lowagie.text.Document document = new com.lowagie.text.Document();
-						document.setPageSize(PageSize.A3.rotate());
+						document.setPageSize(PageSize.A4.rotate());
 						document.addCreationDate();
 						
 						PageFormat pageFormat = new PageFormat();
@@ -238,7 +243,7 @@ public class FicheConcoursFinalPane extends JPanel implements ActionListener, Mo
 						float height = document.getPageSize().getHeight();
 						double margin = Converters.centimeterToDpi(0.5);
 						paper.setSize(width, height);
-						paper.setImageableArea(margin, margin, width-margin, height-margin);
+						paper.setImageableArea(margin, margin, width-(margin*2), height-(margin*2));
 						pageFormat.setPaper(paper);
 						
 						PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(tempPdf));
@@ -246,26 +251,77 @@ public class FicheConcoursFinalPane extends JPanel implements ActionListener, Mo
 						
 						document.open();
 						
-						//BufferedImage image = mxCellRenderer.createBufferedImage(graph, null, 1, Color.white, false, null);
+						for(CriteriaSet criteriaSet : phaseFinal.getCriteriaSetPhasesFinal()) {
+							int nbPage = getNbPrintablePage(criteriaSet);
+							for(int i = 0; i < nbPage; i++) {
+								PdfContentByte cb = writer.getDirectContent();
+								
+								BufferedImage image = drawPrintableGraph(criteriaSet, i);
 
-					    Font oldFont = graphComponent.getFont();
+								if(image == null)
+									continue;
+								float srcWidth = image.getWidth();
+								float srcHeight = image.getHeight();
+								
+								float destHeight = (float)(height-(margin*2));
+								float destWidth = srcWidth * destHeight / srcHeight;
+								if(destWidth > width-(margin*2)) {
+									destWidth = (float)(width-(margin*2));
+									destHeight = srcHeight * destWidth / srcWidth;
+								}
+								
+								float x = (float)margin;
+								float y = (float)margin;
+								
+								if(destHeight < (float)(height-(margin*2))) {
+									y = ((height - destHeight) / 2);
+								}
+								
+								cb.addImage(com.lowagie.text.Image.getInstance(cb, image, 1), destWidth, 0, 0, destHeight, x, y);
+								
+								Graphics2D g2d = cb.createGraphics((float)paper.getWidth(), (float)paper.getHeight());
+								String pool = "Phases Finales";
+								if(nbPage == 3) {
+									switch (i) {
+										case 0:
+											pool = "1/16ème -> Demi finale - Pool A.B.C.D";
+											break;
+										case 1:
+											pool = "1/16ème -> Demi finale - Pool E.F.G.H";
+											break;
+									}
+								} else if(nbPage == 5) {
+									switch (i) {
+										case 0:
+											pool = "1/32ème -> Quart de finale - Pool A.B";
+											break;
+										case 1:
+											pool = "1/32ème -> Quart de finale - Pool C.D";
+											break;
+										case 2:
+											pool = "1/32ème -> Quart de finale - Pool E.F";
+											break;
+										case 3:
+											pool = "1/32ème -> Quart de finale - Pool G.H";
+											break;
+									}
+								}
+									
+								g2d.drawString(
+										CriteriaSetLibelle.getLibelle(criteriaSet, ficheConcours.getProfile().getLocalisation()),
+										600, 50);
+								g2d.drawString(
+										pool,
+										600, 65);
+								
+								g2d.dispose();
+
+								document.newPage();
+								writer.newPage();
+							}
+						}
 					    
-						int printPage = 0;
-						int printState = -1;
-						do {
-							PdfContentByte cb = writer.getDirectContent();
-							
-							Graphics2D g2 = cb.createGraphicsShapes((float)paper.getWidth(), (float)paper.getHeight());
-							
-							printState = graphComponent.print(g2, pageFormat, printPage++);
-							g2.dispose();
-							document.newPage();
-							writer.newPage();
-						} while(printState == Printable.PAGE_EXISTS);
-
 						document.close();
-						
-						graphComponent.setFont(oldFont);
 						
 						if(Desktop.isDesktopSupported()) {
 							Desktop.getDesktop().open(tempPdf);
@@ -307,14 +363,15 @@ public class FicheConcoursFinalPane extends JPanel implements ActionListener, Mo
 	}
 	
 	private void completePanel() {
-		graph.removeCells();
+		//graph.removeCells();
 		Object parent = graph.getDefaultParent();
-		
-		PhasesFinales phaseFinal = new PhasesFinales(ficheConcours);
 
 		graph.getModel().beginUpdate();
-		try
-		{
+		int nbChild = ((mxCell)parent).getChildCount();
+		for(int i = 0; i < nbChild; i++) {
+			graph.getModel().remove(((mxCell)parent).getChildAt(0));
+		}
+		try {
 			int startHeightCriteriaSet = 20;
 			for(CriteriaSet criteriaSet : ficheConcours.getConcurrentList().listCriteriaSet()) {
 				int nombrePhaseCategorie = phaseFinal.getNombrePhase(criteriaSet);
@@ -331,8 +388,8 @@ public class FicheConcoursFinalPane extends JPanel implements ActionListener, Mo
 						new CriteriaSetLibelle(criteriaSet, ficheConcoursPane.getLocalisation()), 
 						5, 5, 1, 1, "swimlane;labelPosition=middle;align=left;verticalLabelPosition=middle;verticalAlign=middle"); //$NON-NLS-1$
 				
-				Map<Integer, List<Object>> objectsPhase = new HashMap<Integer,  List<Object>>();
-				
+				Map<Integer, List<Object>> objectsPhase = new HashMap<Integer, List<Object>>();
+
 				for(int i = 0; i < nombrePhaseCategorie; i++) {
 					if(i > 0) {
 						decalage += (duelHeight / 2) - (elementHeight / 2);
@@ -340,79 +397,234 @@ public class FicheConcoursFinalPane extends JPanel implements ActionListener, Mo
 						padding = elementHeight + spacingHeight + decalage * 2;
 						duelHeight = padding + elementHeight;
 					}
-					
-					
+
 					List<Duel> duels = phaseFinal.getDuelsPhase(criteriaSet, nombrePhaseCategorie-i-1);
 					for(Duel duel : duels) {
 						if(duel != null && duel.getConcurrent1() != null && duel.getConcurrent2() != null) {
+							Object duelGraphElement = null;
 							if(!objectsPhase.containsKey(i))
 								objectsPhase.put(i, new ArrayList<Object>());
 							
-							Object duelGraphElement = graph.addCell(
-									new DuelMxCell(new mxGeometry(5 + 380 * i, startHeight + objectsPhase.get(i).size()*padding, 260, 130),
-									duel, ""), categoryGraphElement); //$NON-NLS-1$
-								//graph.insertVertex(categoryGraphElement, null, "Contre", 30 + 380 * i, startHeight + objectsPhase.get(i).size()*padding, 260, 130);
-							
+							if(duel.getPhase() != 0 || duel.getNumDuel() == 1) { //exclu la petite finale
+								duelGraphElement = drawDuel(5 + 380 * i, startHeight + objectsPhase.get(i).size()*padding,
+										duel, categoryGraphElement, nombrePhaseCategorie-i-1);
+							} else { //affichage de la petite finale en fonction du nombre totale de phases
+								if(nombrePhaseCategorie > 3) {
+									duelGraphElement = drawDuel(5 + 380 * (i - 1), startHeight,
+											duel, categoryGraphElement, nombrePhaseCategorie-i-1);
+
+									graph.insertEdge(categoryGraphElement, null, "", objectsPhase.get(i-1).get(0), duelGraphElement); //$NON-NLS-1$
+									graph.insertEdge(categoryGraphElement, null, "", objectsPhase.get(i-1).get(1), duelGraphElement); //$NON-NLS-1$
+								} else {
+									duelGraphElement = drawDuel(5 + 380 * i, startHeight + 160,
+											duel, categoryGraphElement, nombrePhaseCategorie-i-1);
+								}
+							}
 							objectsPhase.get(i).add(duelGraphElement);
-							
-							graph.addCell(
-									new ConcurentMxCell(
-											new mxGeometry(5, 5, 250, 50),
-											duel.getConcurrent1(),nombrePhaseCategorie-i-1,
-											duel.getWinner() == duel.getConcurrent1() ? "fillColor=green" :  //$NON-NLS-1$
-												duel.getWinner() == null ? "fillColor=#FFFFFF" :"fillColor=gray"),//$NON-NLS-1$ //$NON-NLS-2$
-									duelGraphElement); 
-							graph.addCell(
-									new ConcurentMxCell(
-											new mxGeometry(5, 75, 250, 50),
-											duel.getConcurrent2(),nombrePhaseCategorie-i-1,
-											duel.getWinner() == duel.getConcurrent2() ? "fillColor=green" : //$NON-NLS-1$
-													duel.getWinner() == null ? "fillColor=#FFFFFF" :"fillColor=gray"),//$NON-NLS-1$ //$NON-NLS-2$
-									duelGraphElement); 
 						}
 					}
 					
 					if(i > 0 && objectsPhase.get(i-1) != null && objectsPhase.get(i) != null) {
 						for(int j = 0; j < objectsPhase.get(i-1).size(); j++) {
 							int l2i = (int)Math.floor(j / 2.0);
-							if(objectsPhase.get(i).size() > l2i)
-								graph.insertEdge(parent, null, "", objectsPhase.get(i-1).get(j), objectsPhase.get(i).get(l2i)); //$NON-NLS-1$
+							if(objectsPhase.get(i).size() > l2i) {
+								graph.insertEdge(categoryGraphElement, null, "", objectsPhase.get(i-1).get(j), objectsPhase.get(i).get(l2i)); //$NON-NLS-1$
+							}
 						}
 					}
 				}
 				
+				// Affichage du podium
 				if(objectsPhase.get(nombrePhaseCategorie-1) != null) {
 					List<Duel> duels = phaseFinal.getDuelsPhase(criteriaSet, 0);
 					String nomVainqueur = ""; //$NON-NLS-1$
 					String nomPerdant = ""; //$NON-NLS-1$
 					if(duels.get(0).getWinner() != null)
 						nomVainqueur = "1. " + duels.get(0).getWinner().getFullName(); //$NON-NLS-1$
-					graph.insertVertex(categoryGraphElement, null, nomVainqueur, 5 + 380 * (nombrePhaseCategorie + ((nombrePhaseCategorie > 3) ? -1 : 0)), 80, 250, 50);
+					graph.insertVertex(categoryGraphElement, null, nomVainqueur, 5 + 380 * (nombrePhaseCategorie + ((nombrePhaseCategorie > 3) ? -1 : 0)), 150, 250, 50);
 					
 					if(duels.get(0).getLooser() != null)
 						nomPerdant = "2. " + duels.get(0).getLooser().getFullName(); //$NON-NLS-1$
-					graph.insertVertex(categoryGraphElement, null, nomPerdant, 5 + 380 * (nombrePhaseCategorie + ((nombrePhaseCategorie > 3) ? -1 : 0)), 150, 250, 50); 
+					graph.insertVertex(categoryGraphElement, null, nomPerdant, 5 + 380 * (nombrePhaseCategorie + ((nombrePhaseCategorie > 3) ? -1 : 0)), 220, 250, 50); 
 					
-//					if(objectsPhase.size() > 0) {
-//						for(int j = 0; j < objectsPhase.get(nombrePhaseCategorie-1).size(); j++) {
-//							graph.insertEdge(parent, null, "", objectsPhase.get(nombrePhaseCategorie-1).get(j), vainqueur); //$NON-NLS-1$
-//						}
-//					}
+					if(duels.size() > 1) {
+						nomVainqueur = ""; //$NON-NLS-1$
+						nomPerdant = ""; //$NON-NLS-1$
+						if(duels.get(1).getWinner() != null)
+							nomVainqueur = "3. " + duels.get(1).getWinner().getFullName(); //$NON-NLS-1$
+						graph.insertVertex(categoryGraphElement, null, nomVainqueur, 5 + 380 * (nombrePhaseCategorie + ((nombrePhaseCategorie > 3) ? -1 : 0)), 290, 250, 50);
+						
+						if(duels.get(1).getLooser() != null)
+							nomPerdant = "4. " + duels.get(1).getLooser().getFullName(); //$NON-NLS-1$
+						graph.insertVertex(categoryGraphElement, null, nomPerdant, 5 + 380 * (nombrePhaseCategorie + ((nombrePhaseCategorie > 3) ? -1 : 0)), 360, 250, 50);
+					}
 				}
 				
 				graph.resizeCell(categoryGraphElement, new mxRectangle(5, startHeightCriteriaSet - 15, 290 + 380 * 5, 30 + decalage * 2 + elementHeight + spacingHeight));
 
 				startHeightCriteriaSet += 30 + decalage * 2 + elementHeight + spacingHeight * 2;
 			}
-		}
-		finally
-		{
+		} finally {
 			graph.getModel().endUpdate();
 		}
 		graph.setCellsResizable(false);
 		graph.refresh();
 	}
 	
+	private Object drawDuel(int x, int y, Duel duel, Object categoryGraphElement, int phase) {
+		Object duelGraphElement = graph.addCell(
+				new DuelMxCell(new mxGeometry(x, y, 260, 130),
+				duel, ""), categoryGraphElement); //$NON-NLS-1$
+
+		graph.addCell(
+				new ConcurentMxCell(
+						new mxGeometry(5, 5, 250, 50),
+						duel.getConcurrent1(), phase,
+						duel.getWinner() == duel.getConcurrent1() ? "fillColor=green" :  //$NON-NLS-1$
+							duel.getWinner() == null ? "fillColor=#FFFFFF" :"fillColor=gray"),//$NON-NLS-1$ //$NON-NLS-2$
+				duelGraphElement); 
+		graph.addCell(
+				new ConcurentMxCell(
+						new mxGeometry(5, 75, 250, 50),
+						duel.getConcurrent2(), phase,
+						duel.getWinner() == duel.getConcurrent2() ? "fillColor=green" : //$NON-NLS-1$
+								duel.getWinner() == null ? "fillColor=#FFFFFF" :"fillColor=gray"),//$NON-NLS-1$ //$NON-NLS-2$
+				duelGraphElement);
+		
+		return duelGraphElement;
+	}
+	
+	private int getNbPrintablePage(CriteriaSet criteriaSet) {
+		int nombrePhaseCategorie = phaseFinal.getNombrePhase(criteriaSet);
+		if(nombrePhaseCategorie == 5)
+			return 3;
+		else if(nombrePhaseCategorie == 6)
+			return 5;
+		return 1;
+	}
+	
+	/**
+	 * 
+	 * @param criteriaSet
+	 * @param page
+	 * @return
+	 */
+	private BufferedImage drawPrintableGraph(CriteriaSet criteriaSet, int page) {
+		mxGraph printableGraph = new mxGraph();
+		printableGraph.setSwimlaneNesting(true);
+		printableGraph.setHtmlLabels(true);
+		
+		// Loads the default stylesheet from an external file
+		mxCodec codec = new mxCodec();
+		Document doc = mxUtils.loadDocument(getClass().getResource("default-style.xml").toString()); //$NON-NLS-1$
+		codec.decode(doc.getDocumentElement(), printableGraph.getStylesheet());
+		
+		int nombrePhaseCategorie = phaseFinal.getNombrePhase(criteriaSet);
+		
+		int startHeight = 5; //Hauteur de départ
+		int startWidth = 0;	//Largeur de départ
+		int elementHeight = 120; //Hauteur d'un duel
+		int elementWidth = 380;
+		int decalage = 0;
+		int spacingHeight = 20; //espace initial entre 2 duel
+		int padding = elementHeight + spacingHeight; //interval (vertical) entre le début de deux duel
+		
+		int duelHeight = elementHeight * 2 + spacingHeight;
+		
+		Object parent = printableGraph.getDefaultParent();
+
+		printableGraph.getModel().beginUpdate();
+		try {
+			
+			int premierePhaseAffiche = nombrePhaseCategorie - 1;
+			int dernierePhaseAffiche = 0;
+			if(nombrePhaseCategorie == 5) {
+				if(page < 2)
+					dernierePhaseAffiche = 1;
+				else
+					premierePhaseAffiche = 1;
+			} else if(nombrePhaseCategorie == 6) {
+				if(page < 4)
+					dernierePhaseAffiche = 2;
+				else
+					premierePhaseAffiche = 2;
+			}
+			
+			Map<Integer, List<Object>> objectsPhase = new HashMap<Integer, List<Object>>();
+			
+			for(int i = (nombrePhaseCategorie - 1) - premierePhaseAffiche; i < nombrePhaseCategorie - dernierePhaseAffiche; i++) {
+				if(i > (nombrePhaseCategorie - 1) - premierePhaseAffiche || premierePhaseAffiche < 3) {
+					decalage += (duelHeight / 2) - (elementHeight / 2);
+					startHeight = 5 + decalage;
+					padding = elementHeight + spacingHeight + decalage * 2;
+					duelHeight = padding + elementHeight;
+					if(premierePhaseAffiche == 1 && i == (nombrePhaseCategorie - 1) - premierePhaseAffiche) { // si on démarre au demi-finale au faitdouble décalage
+						decalage += (duelHeight / 2) - (elementHeight / 2);
+						startHeight = 5 + decalage;
+						padding = elementHeight + spacingHeight + decalage * 2;
+						duelHeight = padding + elementHeight;
+					}
+				}
+				
+				List<Duel> duels = phaseFinal.getDuelsPhase(criteriaSet, nombrePhaseCategorie-i-1);
+				int nbDuelAAfficher = duels.size();
+				int premierDuel = 0;
+				if(nombrePhaseCategorie == 5 && page < 2) {
+					nbDuelAAfficher = nbDuelAAfficher / 2;
+					premierDuel = nbDuelAAfficher * page;
+
+				} else if(nombrePhaseCategorie == 6 && page < 4) {
+					nbDuelAAfficher = nbDuelAAfficher / 4;
+					premierDuel = nbDuelAAfficher * page;
+				}
+				int dernierDuel = premierDuel + nbDuelAAfficher -1;
+				
+				for(int j = premierDuel; j <= dernierDuel; j++) {
+					Duel duel = duels.get(j);
+					if(duel != null && duel.getConcurrent1() != null && duel.getConcurrent2() != null) {
+						Object duelGraphElement = null;
+						if(!objectsPhase.containsKey(i))
+							objectsPhase.put(i, new ArrayList<Object>());
+						
+						if(duel.getPhase() != 0 || duel.getNumDuel() == 1) { //exclu la petite finale
+							duelGraphElement = drawDuel(startWidth + elementWidth * i + ((duel.getPhase() == 0) ? 100 : 0), startHeight + objectsPhase.get(i).size()*padding,
+									duel, parent, nombrePhaseCategorie-i-1);
+						} else { //affichage de la petite finale en fonction du nombre totale de phases
+							if(nombrePhaseCategorie > 2) {
+								duelGraphElement = drawDuel(startWidth + elementWidth * (i - 1) + 100, startHeight,
+										duel, parent, nombrePhaseCategorie-i-1);
+
+								graph.insertEdge(parent, null, "", objectsPhase.get(i-1).get(0), duelGraphElement); //$NON-NLS-1$
+								graph.insertEdge(parent, null, "", objectsPhase.get(i-1).get(1), duelGraphElement); //$NON-NLS-1$
+							} else {
+								duelGraphElement = drawDuel(startWidth + elementWidth * i + 100, startHeight + 160,
+										duel, parent, nombrePhaseCategorie-i-1);
+							}
+						}
+						
+						objectsPhase.get(i).add(duelGraphElement);
+					}
+				}
+				
+				if(i > 0 && objectsPhase.get(i-1) != null && objectsPhase.get(i) != null) {
+					for(int j = 0; j < objectsPhase.get(i-1).size(); j++) {
+						int l2i = (int)Math.floor(j / 2.0);
+						if(objectsPhase.get(i).size() > l2i) {
+							graph.insertEdge(parent, null, "", objectsPhase.get(i-1).get(j), objectsPhase.get(i).get(l2i)); //$NON-NLS-1$
+						}
+					}
+				}
+			}
+		} finally {
+			printableGraph.getModel().endUpdate();
+		}
+
+		BufferedImage image = mxCellRenderer.createBufferedImage(printableGraph, null, 2, Color.white, true, null);
+		
+		return image;
+	}
+	
+	//private drawPodium
 	/* (non-Javadoc)
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
@@ -428,9 +640,9 @@ public class FicheConcoursFinalPane extends JPanel implements ActionListener, Mo
 				Object cell = graphComponent.getCellAt(e.getX(), e.getY());
 				if(cell instanceof ConcurentMxCell) {
 					
-					System.out.println("ok:"+((DuelMxCell)((ConcurentMxCell)cell).getParent()).getDuel());
+					//System.out.println("ok:"+((DuelMxCell)((ConcurentMxCell)cell).getParent()).getDuel());
 				} else if(cell instanceof DuelMxCell) {
-					System.out.println("ok:"+((DuelMxCell)cell).getDuel());
+					//System.out.println("ok:"+((DuelMxCell)cell).getDuel());
 				}
 			}
 		} else if(e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2) {

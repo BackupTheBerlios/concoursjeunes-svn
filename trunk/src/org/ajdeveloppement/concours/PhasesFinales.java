@@ -277,12 +277,14 @@ public class PhasesFinales implements PropertyChangeListener,FicheConcoursListen
 					));
 		}
 		
+		List<Duel> duelsPhasePrecedente = null;
+		
 		if(phase < nombreTotalPhase-1) {
 			Concurrent concurrent1 = null;
 			Concurrent concurrent2 = null;
 			
 			for(int i = nombreTotalPhase - 2; i >= phase; i--) {
-				List<Duel> duelsPhasePrecedente = duels;
+				duelsPhasePrecedente = duels;
 				duels = new ArrayList<Duel>();
 				
 				int numDuel = 1;
@@ -301,6 +303,15 @@ public class PhasesFinales implements PropertyChangeListener,FicheConcoursListen
 			}
 		}
 		
+		//Si il y a matière à réaliser une petite finale
+		//alors on l'ajoute
+		if(phase == 0 && nombreTotalPhase > 1 && duelsPhasePrecedente != null && duelsPhasePrecedente.size() == 2) {
+			duels.add(new Duel(
+					duelsPhasePrecedente.get(0).getLooser(), //on prend les 2 perdants de la demi-finale
+					duelsPhasePrecedente.get(1).getLooser(),
+					phase, 2));
+		}
+		
 		return duels;
 	}
 
@@ -317,7 +328,7 @@ public class PhasesFinales implements PropertyChangeListener,FicheConcoursListen
 		
 		for(int i = 0; i < nbTotalPhases; i++) {
 			List<Duel> duels = getDuelsPhase(categorie, i);
-			if(duels.size() == 1) {//Finale
+			if(duels.size() == 2 && duels.get(0).getPhase() == 0) {
 				Duel duel = duels.get(0);
 				if(duel.getWinner() != null) {
 					concurrents.add(duel.getWinner());
@@ -326,7 +337,17 @@ public class PhasesFinales implements PropertyChangeListener,FicheConcoursListen
 					concurrents.add(duel.getConcurrent1());
 					concurrents.add(duel.getConcurrent2());
 				}
-			} else {
+				
+				//Petite finale
+				duel = duels.get(1);
+				if(duel.getWinner() != null) {
+					concurrents.add(duel.getWinner());
+					concurrents.add(duel.getLooser());
+				} else {
+					concurrents.add(duel.getConcurrent1());
+					concurrents.add(duel.getConcurrent2());
+				}
+			} else if(duels.size() > 2 || concurrents.size() == 0 ) {
 				List<Concurrent> perdants = new ArrayList<Concurrent>();
 				for(Duel duel : duels) {
 					if(duel.getLooser() != null)

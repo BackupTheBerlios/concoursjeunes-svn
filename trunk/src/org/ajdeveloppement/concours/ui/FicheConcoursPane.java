@@ -422,7 +422,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		tabbedpane.addTab("onglet.pointage.greffe", ApplicationCore.userRessources.getImageIcon("file.icon.desktop"), //$NON-NLS-1$ //$NON-NLS-2$
 				new GreffePane(this));
 		tabbedpane.addTab("onglet.phasesfinal", ApplicationCore.userRessources.getImageIcon("file.icon.finals"), //$NON-NLS-1$ //$NON-NLS-2$
-				new FicheConcoursFinalPane(this)); 
+				new FicheConcoursFinalsPane(this)); 
 		tabbedpane.setEnabledAt(2, ficheConcours.getParametre().isDuel());
 		tabbedpane.addTab("onglet.classement", //$NON-NLS-1$
 				ApplicationCore.userRessources.getImageIcon("file.icon.team"), //$NON-NLS-1$

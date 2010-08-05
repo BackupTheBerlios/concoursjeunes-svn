@@ -311,10 +311,10 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 			concurrentList = new ConcurrentList(parametre);
 
 		if (concurrentList.contains(concurrent, depart))
-			throw new FicheConcoursException(Nature.ALREADY_EXISTS, "Le concurrent est déjà présent");
+			throw new FicheConcoursException(Nature.ALREADY_EXISTS, profile.getLocalisation().getResourceString("erreur.ficheconcours.alreadyexists")); //$NON-NLS-1$
 
 		if (pasDeTir.size() != 0 && !pasDeTir.get(depart).havePlaceForConcurrent(concurrent))
-			throw new FicheConcoursException(Nature.NO_SLOT_AVAILABLE, "Il n'y a pas de place pour le concurrent");
+			throw new FicheConcoursException(Nature.NO_SLOT_AVAILABLE, profile.getLocalisation().getResourceString("erreur.ficheconcours.noslotavailable")); //$NON-NLS-1$
 
 		concurrentList.add(concurrent);
 
@@ -322,9 +322,9 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 		try {
 			save();
 		} catch (IOException e) {
-			throw new FicheConcoursException(Nature.SAVE_IO_ERROR, "Une erreur est survenue au moment de la sauvegarde", e);
+			throw new FicheConcoursException(Nature.SAVE_IO_ERROR, profile.getLocalisation().getResourceString("erreur.ficheconcours.ioerror"), e); //$NON-NLS-1$
 		} catch (JAXBException e) {
-			throw new FicheConcoursException(Nature.SAVE_IO_ERROR, "Une erreur est survenue au moment de la sauvegarde", e);
+			throw new FicheConcoursException(Nature.SAVE_IO_ERROR, profile.getLocalisation().getResourceString("erreur.ficheconcours.ioerror"), e); //$NON-NLS-1$
 		}
 	}
 
@@ -349,9 +349,9 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 			try {
 				save();
 			} catch (IOException e) {
-				throw new FicheConcoursException(Nature.SAVE_IO_ERROR, "Une erreur est survenue au moment de la sauvegarde", e);
+				throw new FicheConcoursException(Nature.SAVE_IO_ERROR, profile.getLocalisation().getResourceString("erreur.ficheconcours.ioerror"), e); //$NON-NLS-1$
 			} catch (JAXBException e) {
-				throw new FicheConcoursException(Nature.SAVE_IO_ERROR, "Une erreur est survenue au moment de la sauvegarde", e);
+				throw new FicheConcoursException(Nature.SAVE_IO_ERROR, profile.getLocalisation().getResourceString("erreur.ficheconcours.ioerror"), e); //$NON-NLS-1$
 			}
 		}
 	}

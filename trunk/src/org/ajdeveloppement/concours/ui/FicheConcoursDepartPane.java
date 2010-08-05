@@ -136,8 +136,8 @@ import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.ui.AJTree;
 import org.ajdeveloppement.commons.ui.GhostGlassPane;
 import org.ajdeveloppement.concours.exceptions.FicheConcoursException;
-import org.ajdeveloppement.concours.exceptions.PlacementException;
 import org.ajdeveloppement.concours.exceptions.FicheConcoursException.Nature;
+import org.ajdeveloppement.concours.exceptions.PlacementException;
 import org.ajdeveloppement.concours.ui.dialog.ConcurrentDialog;
 import org.ajdeveloppement.concours.ui.dialog.EquipeDialog;
 import org.concoursjeunes.ApplicationCore;
@@ -441,8 +441,8 @@ public class FicheConcoursDepartPane extends JPanel
 				try {
 					ficheConcours.addConcurrent(ficheConcoursPane.concDialog.getConcurrent(), depart);
 				} catch (FicheConcoursException e) {
-					if(e.getNature() == Nature.ALREADY_EXISTS) {
-						JOptionPane.showMessageDialog(ficheConcoursPane.getParentframe(), e.getLocalizedMessage(), "", JOptionPane.ERROR_MESSAGE);
+					if(e.getNature() == Nature.ALREADY_EXISTS || e.getNature() == Nature.NO_SLOT_AVAILABLE) {
+						JOptionPane.showMessageDialog(ficheConcoursPane.getParentframe(), e.getLocalizedMessage(), "", JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
 					} else {
 						JXErrorPane.showDialog(ficheConcoursPane.getParentframe(), new ErrorInfo(ficheConcoursPane.getLocalisation().getResourceString("erreur"), e.toString(), //$NON-NLS-1$
 								null, null, e, Level.SEVERE, null));
