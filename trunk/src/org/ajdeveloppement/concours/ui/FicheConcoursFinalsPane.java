@@ -91,6 +91,7 @@ package org.ajdeveloppement.concours.ui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Desktop;
+import java.awt.FlowLayout;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -112,8 +113,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
 
+import org.ajdeveloppement.apps.localisation.Localizable;
 import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.Converters;
 import org.ajdeveloppement.concours.Duel;
@@ -121,10 +128,15 @@ import org.ajdeveloppement.concours.PhasesFinales;
 import org.ajdeveloppement.concours.ui.components.ConcurentMxCell;
 import org.ajdeveloppement.concours.ui.components.DuelMxCell;
 import org.ajdeveloppement.concours.ui.dialog.DuelDialog;
+import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.CriteriaSet;
 import org.concoursjeunes.FicheConcours;
 import org.concoursjeunes.localisable.CriteriaSetLibelle;
+import org.concoursjeunes.state.PageFooter;
+import org.concoursjeunes.state.State;
+import org.concoursjeunes.state.StateSelector;
+import org.jdesktop.swingx.JXBusyLabel;
 import org.w3c.dom.Document;
 
 import com.lowagie.text.DocumentException;
@@ -156,6 +168,15 @@ public class FicheConcoursFinalsPane extends JPanel implements ActionListener, M
 	//modele
 	private FicheConcours ficheConcours;
 	private PhasesFinales phaseFinal;
+	
+	@Localizable(value="",tooltip="finals.help")
+	private JLabel jlHelp = new JLabel();
+	private JXBusyLabel jxbPrint = new JXBusyLabel();
+	@Localizable("finals.printgraph")
+	private JButton jbPrintGraph = new JButton();
+	@StateSelector(name="400-classementfinals")
+	@Localizable("finals.printclassement")
+	private JButton jbPrintClassement = new JButton();
 
 	public FicheConcoursFinalsPane(FicheConcoursPane ficheConcoursPane) {
 		this.ficheConcoursPane = ficheConcoursPane;
@@ -177,12 +198,24 @@ public class FicheConcoursFinalsPane extends JPanel implements ActionListener, M
 		graph.setSwimlaneNesting(true);
 		graph.setHtmlLabels(true);
 		
-		//mxLighweightLabel.getSharedInstance().setVerticalAlignment(SwingConstants.TOP);
-		
+		jlHelp.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.help", 24, 24)); //$NON-NLS-1$
+		jbPrintGraph.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.print")); //$NON-NLS-1$
+		jbPrintGraph.addActionListener(this);
+		jbPrintClassement.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.print")); //$NON-NLS-1$
+		jbPrintClassement.setName("jbPrintClassement"); //$NON-NLS-1$
+		jbPrintClassement.addActionListener(this);
+
 		// Loads the default stylesheet from an external file
 		mxCodec codec = new mxCodec();
 		Document doc = mxUtils.loadDocument(getClass().getResource("default-style.xml").toString()); //$NON-NLS-1$
 		codec.decode(doc.getDocumentElement(), graph.getStylesheet());
+		
+		JPanel northPane = new JPanel();
+		northPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		northPane.add(jlHelp);
+		northPane.add(jbPrintGraph);
+		northPane.add(jbPrintClassement);
+		northPane.add(jxbPrint);
 		
 		final mxGraphComponent graphComponent = new mxGraphComponent(graph);
 		graphComponent.setConnectable(false);
@@ -231,116 +264,12 @@ public class FicheConcoursFinalsPane extends JPanel implements ActionListener, M
 				else if(e.getKeyChar() == '-' && graph.getView().getScale() > 0.15)
 					graphComponent.zoomOut();
 				else if(e.getModifiers() == KeyEvent.CTRL_MASK && e.getKeyChar() == '') {
-					try {
-						File tempPdf= File.createTempFile("acpf", ".pdf"); //$NON-NLS-1$ //$NON-NLS-2$
-						com.lowagie.text.Document document = new com.lowagie.text.Document();
-						document.setPageSize(PageSize.A4.rotate());
-						document.addCreationDate();
-						
-						PageFormat pageFormat = new PageFormat();
-						Paper paper = new Paper();
-						float width = document.getPageSize().getWidth();
-						float height = document.getPageSize().getHeight();
-						double margin = Converters.centimeterToDpi(0.5);
-						paper.setSize(width, height);
-						paper.setImageableArea(margin, margin, width-(margin*2), height-(margin*2));
-						pageFormat.setPaper(paper);
-						
-						PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(tempPdf));
-						writer.setFullCompression();
-						
-						document.open();
-						
-						for(CriteriaSet criteriaSet : phaseFinal.getCriteriaSetPhasesFinal()) {
-							int nbPage = getNbPrintablePage(criteriaSet);
-							for(int i = 0; i < nbPage; i++) {
-								PdfContentByte cb = writer.getDirectContent();
-								
-								BufferedImage image = drawPrintableGraph(criteriaSet, i);
-
-								if(image == null)
-									continue;
-								float srcWidth = image.getWidth();
-								float srcHeight = image.getHeight();
-								
-								float destHeight = (float)(height-(margin*2));
-								float destWidth = srcWidth * destHeight / srcHeight;
-								if(destWidth > width-(margin*2)) {
-									destWidth = (float)(width-(margin*2));
-									destHeight = srcHeight * destWidth / srcWidth;
-								}
-								
-								float x = (float)margin;
-								float y = (float)margin;
-								
-								if(destHeight < (float)(height-(margin*2))) {
-									y = ((height - destHeight) / 2);
-								}
-								
-								cb.addImage(com.lowagie.text.Image.getInstance(cb, image, 1), destWidth, 0, 0, destHeight, x, y);
-								
-								Graphics2D g2d = cb.createGraphics((float)paper.getWidth(), (float)paper.getHeight());
-								String pool = "Phases Finales";
-								if(nbPage == 3) {
-									switch (i) {
-										case 0:
-											pool = "1/16ème -> Demi finale - Pool A.B.C.D";
-											break;
-										case 1:
-											pool = "1/16ème -> Demi finale - Pool E.F.G.H";
-											break;
-									}
-								} else if(nbPage == 5) {
-									switch (i) {
-										case 0:
-											pool = "1/32ème -> Quart de finale - Pool A.B";
-											break;
-										case 1:
-											pool = "1/32ème -> Quart de finale - Pool C.D";
-											break;
-										case 2:
-											pool = "1/32ème -> Quart de finale - Pool E.F";
-											break;
-										case 3:
-											pool = "1/32ème -> Quart de finale - Pool G.H";
-											break;
-									}
-								}
-									
-								g2d.drawString(
-										CriteriaSetLibelle.getLibelle(criteriaSet, ficheConcours.getProfile().getLocalisation()),
-										600, 50);
-								g2d.drawString(
-										pool,
-										600, 65);
-								
-								g2d.dispose();
-
-								document.newPage();
-								writer.newPage();
-							}
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							printGraph();
 						}
-					    
-						document.close();
-						
-						if(Desktop.isDesktopSupported()) {
-							Desktop.getDesktop().open(tempPdf);
-						} else {
-							String NAV = ApplicationCore.getAppConfiguration().getPdfReaderPath();
-
-							Runtime.getRuntime().exec(NAV + " " + tempPdf.getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
-						}
-						//tempPdf.delete();
-					} catch (FileNotFoundException e1) {
-						// TODO Bloc catch auto-généré
-						e1.printStackTrace();
-					} catch (DocumentException e1) {
-						// TODO Bloc catch auto-généré
-						e1.printStackTrace();
-					} catch (IOException e1) {
-						// TODO Bloc catch auto-généré
-						e1.printStackTrace();
-					}
+					});
 				}
 			}
 			
@@ -354,8 +283,8 @@ public class FicheConcoursFinalsPane extends JPanel implements ActionListener, M
 		});
 
 		setLayout(new BorderLayout());
+		add(northPane, BorderLayout.NORTH);
 		add(graphComponent, BorderLayout.CENTER);
-
 	}
 	
 	private void affectLabels() {
@@ -406,17 +335,17 @@ public class FicheConcoursFinalsPane extends JPanel implements ActionListener, M
 								objectsPhase.put(i, new ArrayList<Object>());
 							
 							if(duel.getPhase() != 0 || duel.getNumDuel() == 1) { //exclu la petite finale
-								duelGraphElement = drawDuel(5 + 380 * i, startHeight + objectsPhase.get(i).size()*padding,
+								duelGraphElement = drawDuel(graph, 5 + 380 * i, startHeight + objectsPhase.get(i).size()*padding,
 										duel, categoryGraphElement, nombrePhaseCategorie-i-1);
 							} else { //affichage de la petite finale en fonction du nombre totale de phases
 								if(nombrePhaseCategorie > 3) {
-									duelGraphElement = drawDuel(5 + 380 * (i - 1), startHeight,
+									duelGraphElement = drawDuel(graph, 5 + 380 * (i - 1), startHeight,
 											duel, categoryGraphElement, nombrePhaseCategorie-i-1);
 
 									graph.insertEdge(categoryGraphElement, null, "", objectsPhase.get(i-1).get(0), duelGraphElement); //$NON-NLS-1$
 									graph.insertEdge(categoryGraphElement, null, "", objectsPhase.get(i-1).get(1), duelGraphElement); //$NON-NLS-1$
 								} else {
-									duelGraphElement = drawDuel(5 + 380 * i, startHeight + 160,
+									duelGraphElement = drawDuel(graph, 5 + 380 * i, startHeight + 160,
 											duel, categoryGraphElement, nombrePhaseCategorie-i-1);
 								}
 							}
@@ -471,10 +400,10 @@ public class FicheConcoursFinalsPane extends JPanel implements ActionListener, M
 		graph.refresh();
 	}
 	
-	private Object drawDuel(int x, int y, Duel duel, Object categoryGraphElement, int phase) {
+	private Object drawDuel(mxGraph graph, int x, int y, Duel duel, Object categoryGraphElement, int phase) {
 		Object duelGraphElement = graph.addCell(
 				new DuelMxCell(new mxGeometry(x, y, 260, 130),
-				duel, ""), categoryGraphElement); //$NON-NLS-1$
+				duel, ficheConcours.getProfile().getLocalisation(), ""), categoryGraphElement); //$NON-NLS-1$
 
 		graph.addCell(
 				new ConcurentMxCell(
@@ -587,17 +516,17 @@ public class FicheConcoursFinalsPane extends JPanel implements ActionListener, M
 							objectsPhase.put(i, new ArrayList<Object>());
 						
 						if(duel.getPhase() != 0 || duel.getNumDuel() == 1) { //exclu la petite finale
-							duelGraphElement = drawDuel(startWidth + elementWidth * i + ((duel.getPhase() == 0) ? 100 : 0), startHeight + objectsPhase.get(i).size()*padding,
+							duelGraphElement = drawDuel(printableGraph, startWidth + elementWidth * i + ((duel.getPhase() == 0) ? 100 : 0), startHeight + objectsPhase.get(i).size()*padding,
 									duel, parent, nombrePhaseCategorie-i-1);
 						} else { //affichage de la petite finale en fonction du nombre totale de phases
 							if(nombrePhaseCategorie > 2) {
-								duelGraphElement = drawDuel(startWidth + elementWidth * (i - 1) + 100, startHeight,
+								duelGraphElement = drawDuel(printableGraph, startWidth + elementWidth * (i - 1) + 100, startHeight,
 										duel, parent, nombrePhaseCategorie-i-1);
 
-								graph.insertEdge(parent, null, "", objectsPhase.get(i-1).get(0), duelGraphElement); //$NON-NLS-1$
-								graph.insertEdge(parent, null, "", objectsPhase.get(i-1).get(1), duelGraphElement); //$NON-NLS-1$
+								printableGraph.insertEdge(parent, null, "", objectsPhase.get(i-1).get(0), duelGraphElement); //$NON-NLS-1$
+								printableGraph.insertEdge(parent, null, "", objectsPhase.get(i-1).get(1), duelGraphElement); //$NON-NLS-1$
 							} else {
-								duelGraphElement = drawDuel(startWidth + elementWidth * i + 100, startHeight + 160,
+								duelGraphElement = drawDuel(printableGraph, startWidth + elementWidth * i + 100, startHeight + 160,
 										duel, parent, nombrePhaseCategorie-i-1);
 							}
 						}
@@ -610,7 +539,7 @@ public class FicheConcoursFinalsPane extends JPanel implements ActionListener, M
 					for(int j = 0; j < objectsPhase.get(i-1).size(); j++) {
 						int l2i = (int)Math.floor(j / 2.0);
 						if(objectsPhase.get(i).size() > l2i) {
-							graph.insertEdge(parent, null, "", objectsPhase.get(i-1).get(j), objectsPhase.get(i).get(l2i)); //$NON-NLS-1$
+							printableGraph.insertEdge(parent, null, "", objectsPhase.get(i-1).get(j), objectsPhase.get(i).get(l2i)); //$NON-NLS-1$
 						}
 					}
 				}
@@ -624,12 +553,156 @@ public class FicheConcoursFinalsPane extends JPanel implements ActionListener, M
 		return image;
 	}
 	
-	//private drawPodium
+	private void printGraph() {
+		try {
+			jxbPrint.setBusy(true);
+			File tempPdf= File.createTempFile("acpf", ".pdf"); //$NON-NLS-1$ //$NON-NLS-2$
+			com.lowagie.text.Document document = new com.lowagie.text.Document();
+			document.setPageSize(PageSize.A4.rotate());
+			document.addCreationDate();
+			
+			PageFormat pageFormat = new PageFormat();
+			Paper paper = new Paper();
+			float width = document.getPageSize().getWidth();
+			float height = document.getPageSize().getHeight();
+			double margin = Converters.centimeterToDpi(0.5);
+			paper.setSize(width, height);
+			paper.setImageableArea(margin, margin, width-(margin*2), height-(margin*2));
+			pageFormat.setPaper(paper);
+			
+			PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(tempPdf));
+			writer.setFullCompression();
+			writer.setPageEvent(new PageFooter());
+			
+			document.open();
+			
+			for(CriteriaSet criteriaSet : phaseFinal.getCriteriaSetPhasesFinal()) {
+				int nbPage = getNbPrintablePage(criteriaSet);
+				for(int i = 0; i < nbPage; i++) {
+					PdfContentByte cb = writer.getDirectContent();
+					
+					BufferedImage image = drawPrintableGraph(criteriaSet, i);
+
+					if(image == null)
+						continue;
+					float srcWidth = image.getWidth();
+					float srcHeight = image.getHeight();
+					
+					float destHeight = (float)(height-(margin*2));
+					float destWidth = srcWidth * destHeight / srcHeight;
+					if(destWidth > width-(margin*2)) {
+						destWidth = (float)(width-(margin*2));
+						destHeight = srcHeight * destWidth / srcWidth;
+					}
+					
+					float x = (float)margin;
+					float y = (float)margin;
+					
+					if(destHeight < (float)(height-(margin*2))) {
+						y = ((height - destHeight) / 2);
+					}
+					
+					cb.addImage(com.lowagie.text.Image.getInstance(cb, image, 1), destWidth, 0, 0, destHeight, x, y);
+					
+					Graphics2D g2d = cb.createGraphics((float)paper.getWidth(), (float)paper.getHeight());
+					String poules = ficheConcours.getProfile().getLocalisation().getResourceString("finals.finals"); //$NON-NLS-1$
+					if(nbPage == 3) {
+						switch (i) {
+							case 0:
+								poules = ficheConcours.getProfile().getLocalisation().getResourceString("finals.init16a"); //$NON-NLS-1$
+								break;
+							case 1:
+								poules = ficheConcours.getProfile().getLocalisation().getResourceString("finals.init16b"); //$NON-NLS-1$
+								break;
+						}
+					} else if(nbPage == 5) {
+						switch (i) {
+							case 0:
+								poules = ficheConcours.getProfile().getLocalisation().getResourceString("finals.init32a"); //$NON-NLS-1$
+								break;
+							case 1:
+								poules = ficheConcours.getProfile().getLocalisation().getResourceString("finals.init32b"); //$NON-NLS-1$
+								break;
+							case 2:
+								poules = ficheConcours.getProfile().getLocalisation().getResourceString("finals.init32c"); //$NON-NLS-1$
+								break;
+							case 3:
+								poules = ficheConcours.getProfile().getLocalisation().getResourceString("finals.init32d"); //$NON-NLS-1$
+								break;
+						}
+					}
+						
+					g2d.drawString(
+							CriteriaSetLibelle.getLibelle(criteriaSet, ficheConcours.getProfile().getLocalisation()),
+							550, 50);
+					g2d.drawString(
+							poules,
+							550, 65);
+					
+					g2d.dispose();
+
+					document.newPage();
+					writer.newPage();
+				}
+			}
+		    
+			document.close();
+			
+			if(Desktop.isDesktopSupported()) {
+				Desktop.getDesktop().open(tempPdf);
+			} else {
+				String NAV = ApplicationCore.getAppConfiguration().getPdfReaderPath();
+
+				Runtime.getRuntime().exec(NAV + " " + tempPdf.getAbsolutePath() + ""); //$NON-NLS-1$ //$NON-NLS-2$
+			}
+		} catch (FileNotFoundException e1) {
+			DisplayableErrorHelper.displayException(e1);
+			e1.printStackTrace();
+		} catch (DocumentException e1) {
+			DisplayableErrorHelper.displayException(e1);
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			DisplayableErrorHelper.displayException(e1);
+			e1.printStackTrace();
+		} finally {
+			jxbPrint.setBusy(false);
+		}
+	}
+	
+	public void updateGraph() {
+		completePanel();
+	}
 	/* (non-Javadoc)
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() == jbPrintGraph) {
+			Thread t = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					printGraph();
+				}
+			});
+			t.start();
+		} else if(e.getSource() == jbPrintClassement) {
+			ficheConcoursPane.switchToEditPane();
+			//ficheConcoursPane.
+			if(ficheConcoursPane.getStateManager() != null) {
+				try {
+					String stateName = this.getClass().getDeclaredField(((JButton)e.getSource()).getName()).getAnnotation(StateSelector.class).name();
+					State state = ficheConcoursPane.getStateManager().getState(stateName);
+					if(state != null)
+						ficheConcoursPane.prepareState(state);
+				} catch (SecurityException e1) {
+					DisplayableErrorHelper.displayException(e1);
+					e1.printStackTrace();
+				} catch (NoSuchFieldException e1) {
+					DisplayableErrorHelper.displayException(e1);
+					e1.printStackTrace();
+				}
+			}
+		}
 	}
 
 	@Override
@@ -637,12 +710,48 @@ public class FicheConcoursFinalsPane extends JPanel implements ActionListener, M
 		if(e.getButton() == MouseEvent.BUTTON3) {
 			if(e.getSource() instanceof mxGraphControl) {
 				mxGraphComponent graphComponent = ((mxGraphControl)e.getSource()).getGraphContainer();
-				Object cell = graphComponent.getCellAt(e.getX(), e.getY());
+				final Object cell = graphComponent.getCellAt(e.getX(), e.getY());
 				if(cell instanceof ConcurentMxCell) {
+					JPopupMenu popup = new JPopupMenu("Edit"); //$NON-NLS-1$
 					
-					//System.out.println("ok:"+((DuelMxCell)((ConcurentMxCell)cell).getParent()).getDuel());
+					JMenuItem mi = new JMenuItem(ficheConcours.getProfile().getLocalisation().getResourceString("finals.editresults")); //$NON-NLS-1$
+					mi.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							DuelDialog duelDialog = new DuelDialog(ficheConcoursPane, ficheConcours.getProfile().getLocalisation());
+							duelDialog.showDuelDialog(((DuelMxCell)((ConcurentMxCell)cell).getParent()).getDuel());
+							
+							completePanel();
+						}
+					});
+					popup.add(mi);
+					mi = new JMenuItem(ficheConcours.getProfile().getLocalisation().getResourceString("finals.seeconcurrent")); //$NON-NLS-1$
+					mi.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							ficheConcoursPane.openConcurrentDialog(((ConcurentMxCell)cell).getConcurrent(), null);
+							
+							completePanel();
+						}
+					});
+					popup.add(mi);
+					popup.show(graphComponent, e.getX(), e.getY());
+
 				} else if(cell instanceof DuelMxCell) {
-					//System.out.println("ok:"+((DuelMxCell)cell).getDuel());
+					JPopupMenu popup = new JPopupMenu("Edit"); //$NON-NLS-1$
+					
+					JMenuItem mi = new JMenuItem(ficheConcours.getProfile().getLocalisation().getResourceString("finals.editresults")); //$NON-NLS-1$
+					mi.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							DuelDialog duelDialog = new DuelDialog(ficheConcoursPane, ficheConcours.getProfile().getLocalisation());
+							duelDialog.showDuelDialog(((DuelMxCell)cell).getDuel());
+							
+							completePanel();
+						}
+					});
+					popup.add(mi);
+					popup.show(graphComponent, e.getX(), e.getY());
 				}
 			}
 		} else if(e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2) {

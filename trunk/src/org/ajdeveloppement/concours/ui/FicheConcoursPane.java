@@ -173,6 +173,12 @@ import com.lowagie.text.DocumentException;
  */
 public class FicheConcoursPane extends JPanel implements ActionListener, ChangeListener, HyperlinkListener, MouseListener {
 
+	//private static final int TAB_ARCHERS= 0;
+	//private static final int TAB_GREFFE = 1;
+	private static final int TAB_FINALES = 2;
+	private static final int TAB_CLASSEMENT = 3;
+	//private static final int TAB_EDITION= 4;
+	
 	private ConcoursJeunesFrame parentframe;
 	private AjResourcesReader localisation;
 
@@ -236,6 +242,8 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	@Localizable(value="",tooltip="state.deletedocument")
 	private JButton jbDeleteDocument = new JButton();
 	private AJList<File> ajlDocuments = new AJList<File>();
+	
+	private FicheConcoursFinalsPane paneFinals;
 
 	public ParametreDialog paramDialog;
 	public ConcurrentDialog concDialog;
@@ -414,6 +422,8 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 			}
 		});
 
+		paneFinals = new FicheConcoursFinalsPane(this);
+		
 		//panneau global
 		tabbedpane.addChangeListener(this);
 		tabbedpane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -422,7 +432,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		tabbedpane.addTab("onglet.pointage.greffe", ApplicationCore.userRessources.getImageIcon("file.icon.desktop"), //$NON-NLS-1$ //$NON-NLS-2$
 				new GreffePane(this));
 		tabbedpane.addTab("onglet.phasesfinal", ApplicationCore.userRessources.getImageIcon("file.icon.finals"), //$NON-NLS-1$ //$NON-NLS-2$
-				new FicheConcoursFinalsPane(this)); 
+				paneFinals); 
 		tabbedpane.setEnabledAt(2, ficheConcours.getParametre().isDuel());
 		tabbedpane.addTab("onglet.classement", //$NON-NLS-1$
 				ApplicationCore.userRessources.getImageIcon("file.icon.team"), //$NON-NLS-1$
@@ -739,6 +749,13 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 		}
 	}
 	
+	/**
+	 * @return stateManager
+	 */
+	protected StateManager getStateManager() {
+		return stateManager;
+	}
+
 	private void openPdf(File file) {
 		try {
 			if(Desktop.isDesktopSupported()) {
@@ -875,7 +892,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	public void stateChanged(ChangeEvent e) {
 		if(e.getSource() == tabbedpane) {
 			int i = tabbedpane.getSelectedIndex();
-			if(i == 2) {
+			if(i == TAB_CLASSEMENT) {
 				List<Concurrent> listConcurrents = ficheConcours.getConcurrentList().list(ficheConcours.getCurrentDepart());
 				for(Concurrent concurrent : listConcurrents) {
 					if(concurrent.getCible() == 0) {
@@ -900,6 +917,8 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 						PhasesFinales finales = new PhasesFinales(ficheConcours);
 						jepClassFinals.setText(finales.getClassementHTMLPhasesFinalesIndividuel());
 				}
+			} else if(i == TAB_FINALES) {
+				paneFinals.updateGraph();
 			}
 		} else if(e.getSource() == jtbClassement) {
 			List<Concurrent> listConcurrents = ficheConcours.getConcurrentList().list(ficheConcours.getCurrentDepart());

@@ -119,7 +119,7 @@ public class AvailablePluginsManagerImpl extends AvailablePluginsManager {
 		
 		categories = new Hashtable<String, String>();
 		
-		PluginDescriptionArray pluginDescriptionArray = services.getAvailablePluginsForVersion(AppInfos.VERSION);
+		PluginDescriptionArray pluginDescriptionArray = services.getAvailablePluginsForVersion(AppInfos.VERSION + " - " + AppInfos.VERSION_DATE); //$NON-NLS-1$
 		pluginsDetail = pluginDescriptionArray.getItem();
 		
 		for(PluginDescription pluginDescription : pluginsDetail) {

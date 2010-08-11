@@ -15,6 +15,8 @@ function printState(ficheConcours, template, document, writer, options) {
 		var tplClassement = new org.ajdeveloppement.commons.AJTemplate();
 		var strArbitreResp = "";
 		var strArbitresAss = "";
+		
+		writer.setPageEvent(new org.concoursjeunes.state.PageFooter());
 
 		tplClassement.setLocalisationReader(localeReader);
 		tplClassement.loadTemplate(template);

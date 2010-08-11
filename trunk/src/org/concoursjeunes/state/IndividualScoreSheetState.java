@@ -146,7 +146,7 @@ public class IndividualScoreSheetState {
 		templateXML.loadTemplate(template);
 	
 		try {
-			templateXML.parse("producer", AppInfos.NOM + " " + AppInfos.VERSION); //$NON-NLS-1$ //$NON-NLS-2$
+			templateXML.parse("producer", AppInfos.NOM + " " + AppInfos.VERSION + " - " + AppInfos.VERSION_DATE); //$NON-NLS-1$ //$NON-NLS-2$
 			templateXML.parse("author", profile.getConfiguration().getClub().getNom()); //$NON-NLS-1$
 			
 			List<Concurrent> concurrents = ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), ConcurrentList.SortCriteria.SORT_BY_TARGETS);

@@ -94,6 +94,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -111,6 +112,8 @@ import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 
 /**
+ * Boite de dialogue permettant d'afficher un fichier texte
+ * 
  * @author Aurélien JEOFFRAY
  *
  */
@@ -122,8 +125,14 @@ public class TextDialog extends JDialog implements ActionListener {
 	@Localizable("bouton.fermer")
 	private JButton jbFermer = new JButton(); 
 	
-	private String textPath;
+	private File textPath;
 	
+	/**
+	 * Intialise la boite de dialogue
+	 * 
+	 * @param parentframe la fenetre parente dont dépend la boite
+	 * @param localisation le source de localisation pour les libellé de la boite
+	 */
 	public TextDialog(JFrame parentframe, AjResourcesReader localisation) {
 		super(parentframe, true);
 		this.localisation = localisation;
@@ -170,7 +179,13 @@ public class TextDialog extends JDialog implements ActionListener {
 		}
 	}
 	
-	public void showTextDialog(String title,String textPath) {
+	/**
+	 * Affiche la boite de dialogue avec comme contenue le fichier texte founit
+	 * 
+	 * @param title le titre de la boite à afficher
+	 * @param textPath le fichier à afficher
+	 */
+	public void showTextDialog(String title,File textPath) {
 		setTitle(title);
 		this.textPath = textPath;
 		completePane();

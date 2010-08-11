@@ -258,7 +258,7 @@ public class ShootingLine implements FicheConcoursListener {
 		DistancesEtBlason db1 = DistancesEtBlason.getDistancesEtBlasonForConcurrent(ficheConcours.getParametre().getReglement(), concurrent);
 		DistancesEtBlason db2 = DistancesEtBlason.getDistancesEtBlasonForConcurrent(ficheConcours.getParametre().getReglement(), conc2);
 
-		//si on ne change pas de db pas de pb
+		//si on ne change pas de db
 		//et que l'archer ne devient pas handicapé ;)
 		if(db1.equals(db2) && concurrent.isHandicape() == conc2.isHandicape()) {
 			return true;

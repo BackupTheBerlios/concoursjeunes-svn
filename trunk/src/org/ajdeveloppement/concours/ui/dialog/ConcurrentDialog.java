@@ -612,8 +612,6 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		c.anchor = GridBagConstraints.WEST;
 		gridbag.setConstraints(jpCible, c);
 		getContentPane().add(jpCible, c);
-
-		getRootPane().setDefaultButton(jbSuivant);
 	}
 
 	/**
@@ -813,6 +811,8 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		jlDescription.setText(localisation.getResourceString("concurrent.description")); //$NON-NLS-1$
 		jlDescription.setBackground(new Color(255, 255, 225));
 		
+		getRootPane().setDefaultButton(jbSuivant);
+		
 		returnVal = CANCEL;
 
 		pack();
@@ -850,7 +850,11 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 		
 		jbPrecedent.setEnabled(hasPrevious);
 		jbSuivant.setEnabled(hasNext);
-
+		
+		if(hasNext)
+			getRootPane().setDefaultButton(jbSuivant);
+		else
+			getRootPane().setDefaultButton(jbValider);
 		returnVal = CANCEL;
 
 		pack();
@@ -1132,7 +1136,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			
 			//évite de modifier l'objet concurrent avant d'avoir
 			//validé les paramètres
-			Concurrent tempConcurrent = concurrent.clone();
+			Concurrent tempConcurrent = concurrent.clone(true);
 			DistancesEtBlason db1 = null;
 			if(tempConcurrent.getCriteriaSet() != null)
 				db1 = DistancesEtBlason.getDistancesEtBlasonForConcurrent(ficheConcours.getParametre().getReglement(), tempConcurrent);

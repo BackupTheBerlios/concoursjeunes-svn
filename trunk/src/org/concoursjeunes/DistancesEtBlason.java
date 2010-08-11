@@ -324,6 +324,7 @@ public class DistancesEtBlason implements ObjectPersistence {
 	@Override
 	public void save(Session session) throws ObjectPersistenceException {
 		if(session == null || !session.contains(this)) {
+			criteriaSet.setReglement(reglement);
 			criteriaSet.save(session);
 			
 			if(criteriaSet.getNumCriteriaSet() == 0)

@@ -663,11 +663,7 @@ public class ConcurrentList {
 	 */
 	public boolean contains(Concurrent concurrent, int depart) {
 		if(concurrent != null) {
-			ArrayList<Concurrent> conc = new ArrayList<Concurrent>();
-			for(Concurrent aConc : archList) {
-				if(aConc.getDepart() == depart)
-					conc.add(aConc);
-			}
+			List<Concurrent> conc = list(depart);
 			return conc.contains(concurrent);
 		}
 		return false;

@@ -1034,6 +1034,7 @@ public class Reglement implements ObjectPersistence {
 			int i = 1;
 			for (DistancesEtBlason distancesEtBlason : listDistancesEtBlason) {
 				distancesEtBlason.setNumdistancesblason(i++);
+				distancesEtBlason.setReglement(this);
 				distancesEtBlason.save(session);
 			}
 		} catch (SQLException e) {
@@ -1132,6 +1133,6 @@ public class Reglement implements ObjectPersistence {
 	 */
 	@Override
 	public String toString() {
-		return displayName;
+		return displayName + " (" + federation.getSigleFederation() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 }

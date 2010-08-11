@@ -342,26 +342,46 @@ public class CriterionElement implements ObjectPersistence {
     }
     
     /**
-     * Test si deux critères sont équivalent en se basant sur la comparaison d'objet
-     * 
-     * @param criterionElement - l'objet à comparer
-     * @return boolean - le résultats de la comparaison de critères
-     */
-    @Override
-    public boolean equals(Object criterionElement) {
-        if(criterionElement instanceof CriterionElement)
-            return equals((CriterionElement)criterionElement);
-        return false;
-    }
-    
-    /**
      * donne le hash de l'objet en se basant sur celui de son code
      */
-    @Override
-    public int hashCode() {
-        return code.hashCode();
-    }
-    
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((code == null) ? 0 : code.hashCode());
+		result = prime * result
+				+ ((criterion == null) ? 0 : criterion.hashCode());
+		return result;
+	}
+
+	/**
+     * Test si deux critères sont équivalent en se basant sur la comparaison d'objet
+     * 
+     * @param obj - l'objet à comparer
+     * @return boolean - le résultats de la comparaison de critères
+     */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CriterionElement other = (CriterionElement) obj;
+		if (code == null) {
+			if (other.code != null)
+				return false;
+		} else if (!code.equals(other.code))
+			return false;
+		if (criterion == null) {
+			if (other.criterion != null)
+				return false;
+		} else if (!criterion.equals(other.criterion))
+			return false;
+		return true;
+	}
+
     /**
      * Retourne l'ensemble des éléments de critère associé à un critère donné
      * 
@@ -387,4 +407,6 @@ public class CriterionElement implements ObjectPersistence {
 		}
     	return elements;
     }
+
+	
 }

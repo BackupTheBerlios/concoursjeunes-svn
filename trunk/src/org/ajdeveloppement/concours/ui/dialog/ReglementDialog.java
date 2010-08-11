@@ -576,7 +576,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 				for(String departage : list) {
 					sb.append(",").append(departage); //$NON-NLS-1$
 				}
-				return sb.toString().substring(1);
+				return sb.length() > 0 ? sb.toString().substring(1) : ""; //$NON-NLS-1$
 			}
 		});
 		reglementBinding.addBinding(departageBinding);
@@ -765,6 +765,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		DefaultMutableTreeNode dmtn = (DefaultMutableTreeNode) treeCriteria.getPathForRow(0).getLastPathComponent();
 		if (dmtn != null) {
 			CriterionDialog cd = new CriterionDialog(this, reglement, localisation);
+			cd.setEditable(true);
 			if (cd.showCriterionDialog() == DefaultDialogReturn.OK) {
 				reglement.addCriterion(cd.getCriterion());
 				

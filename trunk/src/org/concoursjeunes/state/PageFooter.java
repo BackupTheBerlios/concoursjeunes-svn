@@ -1,5 +1,5 @@
 /*
- * Créé le 26 juil. 2010 à 17:49:51 pour ConcoursJeunes / ArcCompétition
+ * Créé le 6 août 2010 à 15:50:12 pour ConcoursJeunes / ArcCompétition
  *
  * Copyright 2002-2010 - Aurélien JEOFFRAY
  *
@@ -86,47 +86,76 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.ajdeveloppement.concours.ui.components;
+package org.concoursjeunes.state;
 
-import org.ajdeveloppement.commons.AjResourcesReader;
-import org.ajdeveloppement.concours.Duel;
+import java.io.IOException;
+import java.util.Date;
 
-import com.mxgraph.model.mxCell;
-import com.mxgraph.model.mxGeometry;
+import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
+import org.concoursjeunes.AppInfos;
+
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.BaseFont;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfPageEventHelper;
+import com.lowagie.text.pdf.PdfTemplate;
+import com.lowagie.text.pdf.PdfWriter;
 
 /**
  * @author Aurélien JEOFFRAY
  *
  */
-public class DuelMxCell extends mxCell {
-	private Duel duel;
+public class PageFooter extends PdfPageEventHelper {
+	private PdfTemplate total = null;
+	private BaseFont helv = null;
 	
-	public DuelMxCell(mxGeometry geometry, Duel duel, AjResourcesReader localisation, String style) {
-		super();
-		
-		String label = "<html><span style=\"font-size:120%\">" //$NON-NLS-1$
-			+ ((duel.getPhase() != 0 || duel.getNumDuel() == 1) ? localisation.getResourceString("duel.phase." + duel.getPhase()) : localisation.getResourceString("duel.phase.smallfinal")) //$NON-NLS-1$ //$NON-NLS-2$
-			+ (duel.getPhase() != 0 ? " n°" + duel.getNumDuel() : "") + "</span></html>";  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
-		setValue(label);
-		this.duel = duel;
-		
-		setVertex(true);
-		setGeometry(geometry);
-		setStyle(style);
-		
-	}
+	@Override
+	public void onOpenDocument(PdfWriter writer,
+			com.lowagie.text.Document document) {
+		total = writer.getDirectContent().createTemplate(100, 100);
+		total.setBoundingBox(new Rectangle(0, -20, 100, 100));
 
-	/**
-	 * @param duel duel à définir
-	 */
-	public void setDuel(Duel duel) {
-		this.duel = duel;
+		try {
+			helv = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
+		} catch (DocumentException e) {
+			DisplayableErrorHelper.displayException(e);
+			e.printStackTrace();
+		} catch (IOException e) {
+			DisplayableErrorHelper.displayException(e);
+			e.printStackTrace();
+		}
 	}
+	
+	@Override
+	public void onCloseDocument(PdfWriter writer, com.lowagie.text.Document document)
+	{
+		total.beginText();
+		total.setFontAndSize(helv, 8);
+		total.setTextMatrix(0, 0);
+		total.showText(String.valueOf(writer.getPageNumber() - 1));
+		total.endText();
+	}
+	
+	@Override
+	public void onEndPage(PdfWriter writer, com.lowagie.text.Document document) {
+		PdfContentByte cb = writer.getDirectContent();
+        cb.saveState();
+        
+        String text = AppInfos.NOM + " " + AppInfos.VERSION + " - " + java.text.DateFormat.getDateInstance(java.text.DateFormat.SHORT).format(new Date()); //$NON-NLS-1$ //$NON-NLS-2$
+        text += " - Page " + writer.getPageNumber() + "/"; //$NON-NLS-1$ //$NON-NLS-2$
+        float textBase = document.bottom() - 20;
+        float textSize = helv.getWidthPoint(text, 8);
+        cb.beginText();
+        cb.setFontAndSize(helv, 8);
+      
+        float adjust = helv.getWidthPoint("0", 8)+10; //$NON-NLS-1$
+        cb.setTextMatrix(document.right() - textSize - adjust, textBase);
+        
+        cb.showText(text);
+        cb.endText();
+        cb.addTemplate(total, document.right() - adjust, textBase);
 
-	/**
-	 * @return duel
-	 */
-	public Duel getDuel() {
-		return duel;
+        cb.restoreState();
 	}
 }

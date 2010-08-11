@@ -18,7 +18,12 @@ public class AppInfos {
 	/**
 	 * version de l'application
 	 */
-	public static final String VERSION = new String("{versionNumero} - {versionDate}");//$NON-NLS-1$
+	public static final String VERSION = new String("{versionNumero}"); //$NON-NLS-1$
+	
+	/**
+	 * Date de la version
+	 */
+	public static final String VERSION_DATE = new String("{versionDate}"); //$NON-NLS-1$
 	
 	/**
 	 * Nom de code de l'application

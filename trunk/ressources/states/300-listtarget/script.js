@@ -20,6 +20,8 @@ function printState(ficheConcours, template, document, writer, options) {
 	var profile = options.getProfile();
 	
 	with(contexte) {
+		writer.setPageEvent(new org.concoursjeunes.state.PageFooter());
+		
 		var listeArcherXML = new AJTemplate();
 		listeArcherXML.setLocalisationReader(localeReader);
 		listeArcherXML.loadTemplate(template);

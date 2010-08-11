@@ -332,6 +332,7 @@ public class CriteriaSet implements ObjectPersistence {
 			} catch (SQLException e) {
 				throw new ObjectPersistenceException(e);
 			}
+			
 	
 			helper.save(this, Collections.<String, Object>singletonMap("IDCRITERIASET", uid)); //$NON-NLS-1$
 			
@@ -352,11 +353,15 @@ public class CriteriaSet implements ObjectPersistence {
 						Criterion criterion = entry.getKey();
 						CriterionElement criterionElement = entry.getValue();
 						
+						criterion.setReglement(reglement);
+						criterion.save(session);
+						criterionElement.save(session);
+						
 						pstmt.setInt(1, numCriteriaSet); 
 						pstmt.setString(2, criterionElement.getCode());
 						pstmt.setString(3, criterion.getCode());
 						pstmt.setInt(4, reglement.getNumReglement());
-		
+
 						pstmt.executeUpdate();
 					}
 				} finally {

@@ -220,7 +220,7 @@ public class Main {
 		try {
 			ApplicationContext contexte = ApplicationContext.getContext();
 			contexte.setApplicationName(AppInfos.NOM);
-			contexte.setApplicationVersion(AppInfos.VERSION);
+			contexte.setApplicationVersion(AppInfos.VERSION + " - " + AppInfos.VERSION_DATE); //$NON-NLS-1$
 			
 			DisplayableErrorHelper.setErrorReporter(new WebErrorReporter(
 					new URL(ApplicationCore.staticParameters.getResourceString("url.errorreport")), //$NON-NLS-1$

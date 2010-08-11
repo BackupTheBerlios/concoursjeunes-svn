@@ -90,9 +90,9 @@ package org.ajdeveloppement.concours.ui.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.Desktop;
+import java.awt.Desktop.Action;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Desktop.Action;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -107,8 +107,8 @@ import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
 import javax.swing.event.HyperlinkEvent.EventType;
+import javax.swing.event.HyperlinkListener;
 import javax.swing.text.html.HTMLEditorKit;
 
 import org.ajdeveloppement.apps.localisation.Localizable;
@@ -177,7 +177,7 @@ public class AboutDialog extends JDialog implements ActionListener, HyperlinkLis
 				+ AppInfos.NOM + "<br>" + //$NON-NLS-1$ 
 				localisation.getResourceString("apropos.description") + "<br><br>" + //$NON-NLS-1$ //$NON-NLS-2$
 				localisation.getResourceString("apropos.version") + "<br>" +  //$NON-NLS-1$ //$NON-NLS-2$
-				AppInfos.VERSION + "<br>" + //$NON-NLS-1$
+				AppInfos.VERSION + " - " + AppInfos.VERSION_DATE + "<br>" + //$NON-NLS-1$ //$NON-NLS-2$
 				localisation.getResourceString("apropos.codename") + " " + AppInfos.CODENAME + "<br>" + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				AppInfos.COPYR + " " + AppInfos.AUTEURS + "<br>" + //$NON-NLS-1$ //$NON-NLS-2$
 				"version base: " + ApplicationCore.dbVersion + "<br><br>" //$NON-NLS-1$ //$NON-NLS-2$

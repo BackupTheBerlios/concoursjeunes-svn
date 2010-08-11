@@ -635,11 +635,26 @@ public class Contact implements ObjectPersistence, Cloneable {
 	
 	/**
 	 * clone the contact and all non-immutable properties
+	 * 
+	 * @return the cloned contact
+	 * @throws CloneNotSupportedException
 	 */
 	@Override
 	protected Contact clone() throws CloneNotSupportedException {
+		return clone(true);
+	}
+	
+	/**
+	 * clone the contact and all non-immutable properties.
+	 * 
+	 * @param conserveId if true, the id is conserved else id is reset to null
+	 * @return the cloned contact
+	 * @throws CloneNotSupportedException
+	 */
+	protected Contact clone(boolean conserveId) throws CloneNotSupportedException {
 		Contact clone = (Contact)super.clone();
-		clone.setIdContact(null);
+		if(!conserveId)
+			clone.setIdContact(null);
 		clone.pcs = new PropertyChangeSupport(clone);
 		
 		List<Coordinate> clonedCoordinates = new ArrayList<Coordinate>();

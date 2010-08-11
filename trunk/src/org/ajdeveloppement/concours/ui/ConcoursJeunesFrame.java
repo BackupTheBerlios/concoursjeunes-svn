@@ -210,7 +210,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	private void init() {
 		FrameCreator frameCreator = new FrameCreator(this);
 
-		frameCreator.formatTitle(AppInfos.NOM, AppInfos.VERSION);
+		frameCreator.formatTitle(AppInfos.NOM, AppInfos.VERSION + " - " + AppInfos.VERSION_DATE); //$NON-NLS-1$
 		frameCreator.setL10N(profile.getLocalisation());
 		frameCreator.addActionListener(this);
 		frameCreator.getFrame().addWindowListener(new WindowAdapter() {
@@ -507,10 +507,10 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			}
 		} else if (cmd.equals("menubar.aide.versionnote")) { //$NON-NLS-1$
 			TextDialog textDialog = new TextDialog(this, profile.getLocalisation());
-			textDialog.showTextDialog(profile.getLocalisation().getResourceString("changelog.title"), "changelog.txt"); //$NON-NLS-1$ //$NON-NLS-2$
+			textDialog.showTextDialog(profile.getLocalisation().getResourceString("changelog.title"), new File("changelog.txt")); //$NON-NLS-1$ //$NON-NLS-2$
 		} else if (cmd.equals("menubar.aide.licence")) { //$NON-NLS-1$
 			TextDialog textDialog = new TextDialog(this, profile.getLocalisation());
-			textDialog.showTextDialog(profile.getLocalisation().getResourceString("licence.title"), "Licence.txt"); //$NON-NLS-1$ //$NON-NLS-2$
+			textDialog.showTextDialog(profile.getLocalisation().getResourceString("licence.title"), new File("Licence.txt")); //$NON-NLS-1$ //$NON-NLS-2$
 		} else if (cmd.equals("menubar.debug.addpoints")) { //$NON-NLS-1$
 			if (jif != null) {
 				org.concoursjeunes.debug.Debug.attributePoints(jif.getFicheConcours().getConcurrentList());

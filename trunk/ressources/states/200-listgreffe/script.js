@@ -9,6 +9,8 @@ function printState(ficheConcours, template, document, writer, options) {
 	var serie = options.getSerie();
 	var depart = options.getDepart();
 	var profile = options.getProfile();
+	
+	writer.setPageEvent(new org.concoursjeunes.state.PageFooter());
 
 	var listeArcherXML = new org.ajdeveloppement.commons.AJTemplate();
 	listeArcherXML.setLocalisationReader(localeReader);

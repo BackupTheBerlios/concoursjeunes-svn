@@ -443,11 +443,11 @@ public class PhasesFinales implements PropertyChangeListener,FicheConcoursListen
 
 					tplClassement.parse("categories.classement.COULEUR", ""); //$NON-NLS-1$ //$NON-NLS-2$
 					
-					tplClassement.parse("categories.classement.POSITION", String.valueOf(concurrent.getDepart()+concurrent.getPosition() + concurrent.getCible())); //$NON-NLS-1$
+					tplClassement.parse("categories.classement.POSITION", "" + concurrent.getDepart() + concurrent.getPosition() + concurrent.getCible()); //$NON-NLS-1$ //$NON-NLS-2$
 					tplClassement.parse("categories.classement.PLACE", String.valueOf(place)); //$NON-NLS-1$
 					tplClassement.parse("categories.classement.IDENTITEE", concurrent.getFullName()); //$NON-NLS-1$
 					tplClassement.parse("categories.classement.CLUB", concurrent.getEntite().toString()); //$NON-NLS-1$
-					tplClassement.parse("categories.classement.PHASE", ficheConcours.getProfile().getLocalisation().getResourceString("duel.phase."+phase)); //$NON-NLS-1$ //$NON-NLS-2$
+					tplClassement.parse("categories.classement.PHASE", (phase > 0 || place < 3) ? ficheConcours.getProfile().getLocalisation().getResourceString("duel.phase."+phase) : ficheConcours.getProfile().getLocalisation().getResourceString("duel.phase.smallfinal")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 					tplClassement.parse("categories.classement.SCORE", String.valueOf(concurrent.getScorePhasefinale(phase))); //$NON-NLS-1$
 					
 					tplClassement.loopBloc("categories.classement"); //$NON-NLS-1$
@@ -481,6 +481,7 @@ public class PhasesFinales implements PropertyChangeListener,FicheConcoursListen
 	public void propertyChange(PropertyChangeEvent e) {
 		if(e.getPropertyName().equals("score") || e.getPropertyName().equals("criteriaSet")) //$NON-NLS-1$ //$NON-NLS-2$
 			refreshClassement();
+		//|| e.getPropertyName().equals("departages") || e.getPropertyName().equals("scoresPhasesFinales")
 	}
 
 	@Override

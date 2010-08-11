@@ -12,11 +12,13 @@ function printState(ficheConcours, template, document, writer, options) {
 	var strClassement = "";
 	if (ficheConcours.getConcurrentList() != null && ficheConcours.getConcurrentList().countArcher() > 0) {
 		
+		writer.setPageEvent(new org.concoursjeunes.state.PageFooter());
+		
 		var tplClassement = new org.ajdeveloppement.commons.AJTemplate();
 		var strArbitreResp = "";
 		var strArbitresAss = "";
 		
-		var phasesFinales = new org.concoursjeunes.PhasesFinales(ficheConcours);
+		var phasesFinales = new org.ajdeveloppement.concours.PhasesFinales(ficheConcours);
 		
 		tplClassement.setLocalisationReader(localeReader);
 		tplClassement.loadTemplate(template);
@@ -92,7 +94,7 @@ function printState(ficheConcours, template, document, writer, options) {
 					for (var k = 0; k < keys.size(); k++)
 						catStr += concurrent.getCriteriaSet().getCriterionElement(keys.get(k)).getCode();
 					tplClassement.parse("categories.classement.categorie", catStr);
-					tplClassement.parse("categories.classement.PHASE", ficheConcours.getProfile().getLocalisation().getResourceString("duel.phase."+phase)); //$NON-NLS-1$ //$NON-NLS-2$
+					tplClassement.parse("categories.classement.PHASE", (phase > 0 || place < 3) ? ficheConcours.getProfile().getLocalisation().getResourceString("duel.phase."+phase) : ficheConcours.getProfile().getLocalisation().getResourceString("duel.phase.smallfinal")); //$NON-NLS-1$ //$NON-NLS-2$
 					tplClassement.parse("categories.classement.SCORE", "" + concurrent.getScorePhasefinale(phase)); //$NON-NLS-1$
 					
 					tplClassement.loopBloc("categories.classement"); //$NON-NLS-1$

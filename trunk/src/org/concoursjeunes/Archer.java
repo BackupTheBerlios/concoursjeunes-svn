@@ -362,7 +362,12 @@ public class Archer extends Contact {
 
 	@Override
 	protected Archer clone() throws CloneNotSupportedException {
-		Archer clone = (Archer)super.clone();
+		return clone(true);
+	}
+	
+	@Override
+	protected Archer clone(boolean conserveId) throws CloneNotSupportedException {
+		Archer clone = (Archer)super.clone(conserveId);
 		
 		return clone;
 	}

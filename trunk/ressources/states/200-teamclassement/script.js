@@ -16,6 +16,8 @@ function printState(ficheConcours, template, document, writer, options) {
 
 	if (ficheConcours.getEquipes() != null && ficheConcours.getEquipes().countEquipes() > 0) {
 		
+		writer.setPageEvent(new org.concoursjeunes.state.PageFooter());
+		
 		var tplClassementEquipe = new org.ajdeveloppement.commons.AJTemplate();
 		tplClassementEquipe.loadTemplate(template);
 

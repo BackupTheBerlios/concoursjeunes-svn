@@ -359,8 +359,6 @@ public class Federation implements ObjectPersistence {
 				Statement stmt = ApplicationCore.dbConnection.createStatement();
 				String sql = "delete from NIVEAU_COMPETITION where NUMFEDERATION=" + numFederation; //$NON-NLS-1$
 				stmt.executeUpdate(sql);
-				sql = "delete from REPARTITION_PHASE_FINALE where NUMFEDERATION=" + numFederation; //$NON-NLS-1$
-				stmt.executeUpdate(sql);
 				
 				Map<String, List<CompetitionLevel>> langFilteredCL = new HashMap<String, List<CompetitionLevel>>();
 				

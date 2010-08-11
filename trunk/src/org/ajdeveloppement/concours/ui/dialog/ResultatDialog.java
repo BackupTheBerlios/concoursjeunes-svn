@@ -118,12 +118,13 @@ import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
 import org.concoursjeunes.Concurrent;
 import org.concoursjeunes.ConcurrentList;
+import org.concoursjeunes.ConcurrentList.SortCriteria;
 import org.concoursjeunes.Parametre;
 import org.concoursjeunes.Profile;
-import org.concoursjeunes.ConcurrentList.SortCriteria;
 
 /**
  * Boite de dialogue de saisie des résultats pour une cible
+ * 
  * @author  Aurélien Jeoffray
  * @version  3.0
  */

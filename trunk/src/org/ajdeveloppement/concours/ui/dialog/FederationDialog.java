@@ -338,7 +338,7 @@ public class FederationDialog extends JDialog implements ActionListener {
 	
 	private void redimDialog() {
 		pack();
-		setSize(getSize().width, getSize().height + 15);
+		setSize(getSize().width + 5, getSize().height + 25);
 	}
 	
 	/**

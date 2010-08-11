@@ -220,11 +220,11 @@ Function .onInit
     InitPluginsDir
     !insertmacro MUI_LANGDLL_DISPLAY
     
-    System::Call 'kernel32::CreateMutexA(i 0, i 0, t "myMutex") i .r1 ?e'
-	Pop $R0
-	StrCmp $R0 0 +3
-	MessageBox MB_OK|MB_ICONEXCLAMATION "The installer is already running."
-	Abort
+;   System::Call 'kernel32::CreateMutexA(i 0, i 0, t '$(^Name)') i .r0 ?e'
+;	Pop $R0
+;	StrCmp $R0 0 +3
+;	MessageBox MB_OK|MB_ICONEXCLAMATION "The installer is already running."
+;	Abort
 	
 	ReadRegStr $R0 HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" "UninstallString"
 	StrCmp $R0 "" done

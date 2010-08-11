@@ -89,6 +89,7 @@
 package org.ajdeveloppement.concours.ui.dialog;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -117,6 +118,7 @@ import org.ajdeveloppement.concours.ui.FicheConcoursPane;
 import org.ajdeveloppement.swingxext.localisation.JXHeaderLocalisationHandler;
 import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.JXHyperlink;
+import org.jdesktop.swingx.painter.GlossPainter;
 
 /**
  * @author Aurélien JEOFFRAY
@@ -165,6 +167,10 @@ public class DuelDialog extends JDialog implements ActionListener, FocusListener
 	}
 	
 	private void init() {
+		GlossPainter gloss = new GlossPainter();
+		jxhHeaderDuel.setBackground(new Color(200,200,255));
+		jxhHeaderDuel.setBackgroundPainter(gloss);
+		
 		jbValider.addActionListener(this);
 		jbAnnuler.addActionListener(this);
 		

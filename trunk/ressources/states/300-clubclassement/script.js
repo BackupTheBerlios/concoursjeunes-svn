@@ -28,6 +28,8 @@ function printState(ficheConcours, template, document, writer, options) {
 		var clubList = EquipeListBuilder.getClubEquipeList(ficheConcours.getConcurrentList(), ficheConcours.getParametre().getReglement().getNbMembresRetenu());
 
 		if (clubList != null && clubList.countEquipes() > 0) {
+			writer.setPageEvent(new org.concoursjeunes.state.PageFooter());
+			
 			var tplClassementEquipe = new AJTemplate();
 			tplClassementEquipe.loadTemplate(template);
 

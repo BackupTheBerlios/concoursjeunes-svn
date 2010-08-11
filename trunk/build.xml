@@ -176,7 +176,7 @@
 		<manifest file="${projet.pack.dir}/MANIFEST.MF" mode="update">
 		    <attribute name="Main-Class" value="org.ajdeveloppement.concours.Main"/>
 			<attribute name="Class-Path" value="${classpath}"/>
-			<attribute name="SplashScreen-Image" value="ressources/Logo.png" />
+			<attribute name="SplashScreen-Image" value="Logo.png" />
         </manifest>
 		<jar jarfile="${projet.pack.dir}/ConcoursJeunes.jar"
 			manifest="${projet.pack.dir}/MANIFEST.MF">
@@ -184,6 +184,9 @@
 			<fileset dir="${projet.pack.dir}/bin">
 				<include name="org/ajdeveloppement/concours/Main*" />
 				<include name="org/ajdeveloppement/concours/ui/**" />
+			</fileset>
+			<fileset dir="${projet.pack.dir}/ressources">
+				<include name="Logo.png"/>
 			</fileset>
 		</jar>
 		<jar jarfile="${projet.pack.dir}/lib/ConcoursJeunes-core.jar"

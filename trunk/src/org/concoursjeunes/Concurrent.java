@@ -639,8 +639,13 @@ public class Concurrent extends Archer implements Cloneable {
 	 */
 	@Override
 	public Concurrent clone() {
+		return clone(true);
+	}
+	
+	@Override
+	public Concurrent clone(boolean conserveId) {
 		try {
-			Concurrent clone = (Concurrent)super.clone();
+			Concurrent clone = (Concurrent)super.clone(conserveId);
 			if(points != null) {
 				clone.points = new ArrayList<Integer>(points);
 			}
