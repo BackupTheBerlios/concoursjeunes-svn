@@ -195,7 +195,7 @@ public class Target implements PropertyChangeListener {
 		for(Concurrent concurrent : concurrents) {
 			if(concurrent != null) {
 				DistancesEtBlason concDb = DistancesEtBlason.getDistancesEtBlasonForConcurrent(reglement, concurrent);
-				if(db.equals(concDb)) {
+				if(db.haveSameDistancesAndTargetFace(concDb)) {
 					nbArcher++;
 				}
 			}

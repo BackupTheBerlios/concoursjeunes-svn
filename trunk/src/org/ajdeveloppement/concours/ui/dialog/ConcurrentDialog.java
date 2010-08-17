@@ -116,18 +116,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.swing.Box;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.PlainDocument;
 
@@ -141,22 +130,7 @@ import org.ajdeveloppement.commons.ui.NumberDocument;
 import org.ajdeveloppement.concours.PhasesFinales;
 import org.ajdeveloppement.concours.ui.ConcoursJeunesFrame;
 import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
-import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.Archer;
-import org.concoursjeunes.AutoCompleteDocument;
-import org.concoursjeunes.AutoCompleteDocumentContext;
-import org.concoursjeunes.Blason;
-import org.concoursjeunes.Concurrent;
-import org.concoursjeunes.CriteriaSet;
-import org.concoursjeunes.Criterion;
-import org.concoursjeunes.CriterionElement;
-import org.concoursjeunes.DistancesEtBlason;
-import org.concoursjeunes.Entite;
-import org.concoursjeunes.FicheConcours;
-import org.concoursjeunes.Profile;
-import org.concoursjeunes.Reglement;
-import org.concoursjeunes.TargetPosition;
-import org.concoursjeunes.TargetsOccupation;
+import org.concoursjeunes.*;
 import org.concoursjeunes.event.AutoCompleteDocumentEvent;
 import org.concoursjeunes.event.AutoCompleteDocumentListener;
 import org.concoursjeunes.localisable.CriteriaSetLibelle;
@@ -1196,7 +1170,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 				return;
 			}
 			
-			if(db1 != null && !db1.equals(db2)) {
+			if(db1 != null && !db1.haveSameDistancesAndTargetFace(db2)) {
 				ficheConcours.getPasDeTir(tempConcurrent.getDepart()).retraitConcurrent(concurrent);
 			}
 			

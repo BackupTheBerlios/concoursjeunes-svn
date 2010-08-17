@@ -322,7 +322,7 @@ public class ConcurrentList {
 			if(depart == -1 || concurrent.getDepart() == depart) {
 				DistancesEtBlason db = DistancesEtBlason.getDistancesEtBlasonForConcurrent(parametre.getReglement(), concurrent);
 
-				if(distancesEtBlason == null || db.equals(distancesEtBlason)) {
+				if(distancesEtBlason == null || db.haveSameDistancesAndTargetFace(distancesEtBlason)) {
 					sel.add(concurrent);
 					if(handicap && concurrent.isHandicape())
 						sel.add(concurrent);
@@ -610,7 +610,7 @@ public class ConcurrentList {
 				boolean add = true;
 				for(DistancesEtBlason dbtemp : alDB) {
 					DistancesEtBlason db = DistancesEtBlason.getDistancesEtBlasonForConcurrent(reglement, concurrent);
-					if(dbtemp.equals(db)) {
+					if(dbtemp.haveSameDistancesAndTargetFace(db)) {
 						add = false;
 						break;
 					}

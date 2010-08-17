@@ -260,7 +260,7 @@ public class ShootingLine implements FicheConcoursListener {
 
 		//si on ne change pas de db
 		//et que l'archer ne devient pas handicapé ;)
-		if(db1.equals(db2) && concurrent.isHandicape() == conc2.isHandicape()) {
+		if(db1.haveSameDistancesAndTargetFace(db2) && concurrent.isHandicape() == conc2.isHandicape()) {
 			return true;
 		}
 

@@ -127,6 +127,7 @@ public class DistancesEtBlason implements ObjectPersistence {
     @XmlElement(name="distance")
 	private int[] distances = new int[] { 18, 18 };
 	@XmlTransient
+	@Deprecated
 	private int blason = 80;
 	@XmlJavaTypeAdapter(BlasonAdapter.class)
 	@SqlForeignKey(mappedTo="NUMBLASON")
@@ -392,6 +393,30 @@ public class DistancesEtBlason implements ObjectPersistence {
 	}
 	
 	/**
+	 * Indique si deux instances ont les mêmes distances et blason ou non
+	 * 
+	 * @param db l'objet avec lequel comparer
+	 * @return true si similaire, false sinon
+	 */
+	public boolean haveSameDistancesAndTargetFace(DistancesEtBlason other) {
+		if (this == other)
+			return true;
+		if (other == null)
+			return false;
+
+		if (!Arrays.equals(distances, other.distances))
+			return false;
+		
+		if (targetFace == null) {
+			if (other.targetFace != null)
+				return false;
+		} else if (!targetFace.equals(other.targetFace))
+			return false;
+		
+		return true;
+	}
+	
+	/**
 	 * Used by JAXB Only
 	 * 
 	 * @param unmarshaller
@@ -403,6 +428,8 @@ public class DistancesEtBlason implements ObjectPersistence {
 			reglement = (Reglement)parent;
 		}
 	}
+
+	
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
@@ -428,9 +455,14 @@ public class DistancesEtBlason implements ObjectPersistence {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof DistancesEtBlason))
 			return false;
-		final DistancesEtBlason other = (DistancesEtBlason) obj;
+		DistancesEtBlason other = (DistancesEtBlason) obj;
+		if (criteriaSet == null) {
+			if (other.criteriaSet != null)
+				return false;
+		} else if (!criteriaSet.equals(other.criteriaSet))
+			return false;
 		if (!Arrays.equals(distances, other.distances))
 			return false;
 		if (targetFace == null) {
