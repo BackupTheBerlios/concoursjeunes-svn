@@ -91,13 +91,14 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyStore;
+import java.security.KeyStore.SecretKeyEntry;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableEntryException;
-import java.security.KeyStore.SecretKeyEntry;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Hashtable;
@@ -209,8 +210,11 @@ public class FFTAImportThread extends Thread {
 			if(!fftalogpath.isEmpty())
 				ftpFFTA = new File(fftalogpath, "result_data.zip").toURI().toURL(); //$NON-NLS-1$
 			else
-				ftpFFTA = new URL(secureProperties.get("ffta.ftp.url")); //$NON-NLS-1$
-			EncryptedZipInputStream ezis = new EncryptedZipInputStream(ftpFFTA.openStream());
+				ftpFFTA = new URL(secureProperties.get("ffta.data.url")); //$NON-NLS-1$
+			URLConnection uc = ftpFFTA.openConnection();
+			//On se fait passer pour  un navigateur classique
+			uc.setRequestProperty("User-Agent", "Mozilla/5.0 (X11; U; Linux x86_64; fr; rv:1.9.2.7) Gecko/20100723 Fedora/3.6.7-1.fc13 Firefox/3.6.7"); //$NON-NLS-1$ //$NON-NLS-2$
+			EncryptedZipInputStream ezis = new EncryptedZipInputStream(uc.getInputStream());
 			ezis.setEncryptedPassword(secureProperties.get("ffta.zip.password").getBytes()); //$NON-NLS-1$
 			
 			byte[] buffer = new byte[2048];
