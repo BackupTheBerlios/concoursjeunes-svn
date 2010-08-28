@@ -87,7 +87,6 @@
 package org.concoursjeunes.plugins.FFTAImport;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
@@ -115,6 +114,7 @@ import javax.swing.event.EventListenerList;
 
 import org.ajdeveloppement.apps.AppUtilities;
 import org.ajdeveloppement.commons.AjResourcesReader;
+import org.ajdeveloppement.commons.io.FileUtils;
 import org.ajdeveloppement.commons.security.SecureProperties;
 import org.ajdeveloppement.commons.sql.SqlParser;
 import org.ajdeveloppement.io.zip.EncryptedZipInputStream;
@@ -144,7 +144,7 @@ public class FFTAImportThread extends Thread {
 	 * 
 	 */
 	public FFTAImportThread(AjResourcesReader localisation) {
-		this.setName("ResultArcImportThread"); //$NON-NLS-1$
+		this.setName("FFTAImportThread"); //$NON-NLS-1$
 		this.localisation = localisation;
 	}
 
@@ -215,38 +215,40 @@ public class FFTAImportThread extends Thread {
 			//On se fait passer pour  un navigateur classique
 			uc.setRequestProperty("User-Agent", "Mozilla/5.0 (X11; U; Linux x86_64; fr; rv:1.9.2.7) Gecko/20100723 Fedora/3.6.7-1.fc13 Firefox/3.6.7"); //$NON-NLS-1$ //$NON-NLS-2$
 			EncryptedZipInputStream ezis = new EncryptedZipInputStream(uc.getInputStream());
-			ezis.setEncryptedPassword(secureProperties.get("ffta.zip.password").getBytes()); //$NON-NLS-1$
-			
-			byte[] buffer = new byte[2048];
-			ZipEntry entry;
-            while((entry = ezis.getNextEntry())!=null) {
-            	String temppath = System.getProperty("java.io.tmpdir"); //$NON-NLS-1$
-            	if(!temppath.endsWith("\\") && !temppath.endsWith("/")) //$NON-NLS-1$ //$NON-NLS-2$
-            		temppath += File.separator;
-            	String outpath = temppath + entry.getName();
-                FileOutputStream output = null;
-                 
-                output = new FileOutputStream(outpath);
-                int len = 0;
-                while ((len = ezis.read(buffer)) > 0) {
-                    output.write(buffer, 0, len);
-                }
-            }
-            
-            Statement stmt = ApplicationCore.dbConnection.createStatement();
+			try {
+				ezis.setEncryptedPassword(secureProperties.get("ffta.zip.password").getBytes()); //$NON-NLS-1$
+				try {
+					ZipEntry entry;
+		            while((entry = ezis.getNextEntry())!=null) {
+		            	String temppath = System.getProperty("java.io.tmpdir"); //$NON-NLS-1$
+		            	
+		            	if(!temppath.endsWith("\\") && !temppath.endsWith("/")) //$NON-NLS-1$ //$NON-NLS-2$
+		            		temppath += File.separator;
+		            	String outpath = temppath + entry.getName();
 
-			Hashtable<String, String> ht = new Hashtable<String, String>();
-			ht.put("temp", System.getProperty("java.io.tmpdir").replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ 
-
-			SqlParser.createBatch(new File(pluginRessources.getResourceString("sql.importftpffta")), stmt, ht); //$NON-NLS-1$
-
-			fireProgressionInfo(pluginLocalisation.getResourceString("progress.integration")); //$NON-NLS-1$
-			stmt.executeBatch();
-			
-			new File(System.getProperty("java.io.tmpdir"), "result_club.txt").delete(); //$NON-NLS-1$ //$NON-NLS-2$
-			new File(System.getProperty("java.io.tmpdir"), "result_licence.txt").delete(); //$NON-NLS-1$ //$NON-NLS-2$
-
-			stmt.close();
+		                FileUtils.dumpStreamToFile(ezis, new File(outpath), false);
+		            }
+				} finally {
+					ezis.close();
+				}
+	            
+	            Statement stmt = ApplicationCore.dbConnection.createStatement();
+	            try {
+					Hashtable<String, String> ht = new Hashtable<String, String>();
+					ht.put("temp", System.getProperty("java.io.tmpdir").replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ 
+		
+					SqlParser.createBatch(new File(pluginRessources.getResourceString("sql.importftpffta")), stmt, ht); //$NON-NLS-1$
+		
+					fireProgressionInfo(pluginLocalisation.getResourceString("progress.integration")); //$NON-NLS-1$
+					
+					stmt.executeBatch();
+	            } finally {
+	            	stmt.close();
+	            }
+			} finally {
+				new File(System.getProperty("java.io.tmpdir"), "result_club.txt").delete(); //$NON-NLS-1$ //$NON-NLS-2$
+				new File(System.getProperty("java.io.tmpdir"), "result_licence.txt").delete(); //$NON-NLS-1$ //$NON-NLS-2$
+			}
 		} catch (NoSuchAlgorithmException e) {
 			JXErrorPane.showDialog(parentframe, new ErrorInfo(localisation.getResourceString("erreur"), e.getLocalizedMessage(), //$NON-NLS-1$
 					null, null, e, Level.SEVERE, null));
