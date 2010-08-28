@@ -1,0 +1,95 @@
+<!--
+	This DTD can be used to validate an XML AjGUI Interface
+
+    For further information, see: http://www.ajdeveloppement.org
+
+    Copyright 2007-2009 by Aurélien JEOFFRAY
+    All Rights Reserved.
+
+	v 1.10 2009/04/29 19:56:00 Aurélien JEOFFRAY - Ajout du support des LayoutManager
+    v 1.00 2007/08/06 17:03:00 Aurélien JEOFFRAY    
+-->
+
+<!ENTITY % class.attributes
+"class		NMTOKEN				#REQUIRED"
+>
+
+<!ENTITY % param.attributes
+"class		NMTOKEN				#IMPLIED
+ paramclass	NMTOKEN				#REQUIRED
+ type		(value|staticfield) #IMPLIED
+ value		CDATA 				#IMPLIED"
+>
+
+<!--Noeud racine.
+Correspond à écran à décrire. Cette écran peut être un frame ou un window-->
+<!ELEMENT screen ( frame | window ) >
+
+<!--Représente un objet swing JFrame-->
+<!ELEMENT frame ( title, icon, menubar, contentpane ) >
+<!ATTLIST frame extendedstate (NORMAL|ICONIFIED|MAXIMIZED_HORIZ|MAXIMIZED_VERT|MAXIMIZED_BOTH) #IMPLIED >
+<!ATTLIST frame height NMTOKEN #REQUIRED >
+<!ATTLIST frame width NMTOKEN #REQUIRED >
+<!ATTLIST frame minheight NMTOKEN #IMPLIED >
+<!ATTLIST frame minwidth NMTOKEN #IMPLIED >
+
+<!--Représente un objet de type JWindows (non implémenté actuellement)-->
+<!ELEMENT window ( contentpane ) >
+
+<!--Représente le titre de la fenetre-->
+<!ELEMENT title ( #PCDATA ) >
+
+<!--Représente l'icone de la fenetre-->
+<!ELEMENT icon EMPTY >
+<!ATTLIST icon src CDATA #REQUIRED >
+
+<!ELEMENT menubar ( menu+ ) >
+
+<!ELEMENT contentpane ( tabbedpane* ) >
+
+<!ELEMENT menu ( #PCDATA | label | menuitems )* >
+<!ATTLIST menu id ID #REQUIRED >
+<!ATTLIST menu name NMTOKEN #IMPLIED >
+<!ATTLIST menu visible (true|false) #IMPLIED >
+
+<!ELEMENT label ( #PCDATA ) >
+
+<!ELEMENT menuitems ( menu | menuitem | separator )* >
+
+<!ELEMENT menuitem ( #PCDATA ) >
+<!ATTLIST menuitem enable (true|false) #IMPLIED >
+<!ATTLIST menuitem keycode NMTOKEN #IMPLIED >
+<!ATTLIST menuitem modifier NMTOKEN #IMPLIED >
+<!ATTLIST menuitem name NMTOKEN #IMPLIED >
+<!ATTLIST menuitem action NMTOKEN #IMPLIED >
+
+<!ELEMENT tabbedpane ( method*, tab* ) >
+<!ATTLIST tabbedpane name NMTOKEN #IMPLIED >
+
+<!ELEMENT method ( param*,method* ) >
+<!ATTLIST method name NMTOKEN #REQUIRED >
+
+<!ELEMENT param ( param*,method* ) >
+<!ATTLIST param 
+	%param.attributes;
+	name		NMTOKEN		#IMPLIED
+>
+
+<!ELEMENT separator EMPTY >
+
+<!ELEMENT tab ( label, content? ) >
+<!ATTLIST tab closebutton (true|false) #IMPLIED >
+
+<!ELEMENT content ( layout?, component* ) >
+
+<!ELEMENT layout ( param*, method* ) >
+<!ATTLIST layout %class.attributes; >
+
+<!ELEMENT component ( param*,method*,constraints? ) >
+<!ATTLIST component
+	%class.attributes;
+	name		NMTOKEN		#IMPLIED
+>
+
+<!ELEMENT constraints ( param*, method* ) >
+<!ATTLIST constraints %param.attributes; >
