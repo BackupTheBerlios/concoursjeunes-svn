@@ -20,6 +20,8 @@
 		<revisionscreator 
 				revisionpath="${projet.pack.dir}/plugins/ConcoursJeunesUpdate/revision.xml.gz"
 				reposname="ConcoursJeunesUpdate"
+				changelogXML="packager/changelog-ConcoursJeunesUpdate.xml"
+				changelogTXT="${projet.pack.dir}/plugins/ConcoursJeunesUpdate/changelog-ConcoursJeunesUpdate.txt"
 				keystorepath="${projet.keystorepath}"
 				keystorepassword="${projet.keystorepassword}"
 				signkeysalias="${projet.signkeyalias}"

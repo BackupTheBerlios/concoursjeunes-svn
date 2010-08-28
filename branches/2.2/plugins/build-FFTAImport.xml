@@ -33,6 +33,8 @@
 		<revisionscreator 
 				revisionpath="${projet.pack.dir}/plugins/FFTAImport/revision.xml.gz"
 				reposname="FFTAImport"
+				changelogXML="packager/changelog-FFTAImport.xml"
+				changelogTXT="${projet.pack.dir}/plugins/FFTAImport/changelog-FFTAImport.txt"
 				keystorepath="${projet.keystorepath}"
 				keystorepassword="${projet.keystorepassword}"
 				signkeysalias="${projet.signkeyalias}"
