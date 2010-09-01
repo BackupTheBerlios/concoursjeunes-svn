@@ -28,7 +28,8 @@ namespace AJDeveloppement.ArcCompetition
 					startInfo.Arguments = Properties.Settings.Default.VMArgs 
                             + " -cp " + Properties.Settings.Default.ClassPath
                             + " " + Properties.Settings.Default.MainClass + " \"" + args[0] + "\" \"" + args[1] + "\"";
-                    startInfo.Verb = "runas";
+					if(Environment.OSVersion.Platform == PlatformID.Win32NT && Environment.OSVersion.Version.Major < 6)
+						startInfo.Verb = "runas";
 					Process updateProcess = Process.Start(startInfo);
                     updateProcess.WaitForExit();
 				} else {
