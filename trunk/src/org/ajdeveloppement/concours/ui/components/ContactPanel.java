@@ -92,11 +92,11 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Desktop;
+import java.awt.Desktop.Action;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import java.awt.Desktop.Action;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -133,11 +133,11 @@ import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
 import org.ajdeveloppement.swingxext.localisation.JXHeaderLocalisationHandler;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Profile;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Binding;
 import org.jdesktop.beansbinding.BindingGroup;
 import org.jdesktop.beansbinding.Bindings;
-import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.JXHyperlink;
 import org.jdesktop.swingx.JXTitledSeparator;
@@ -286,9 +286,14 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 				
 				if(value instanceof Coordinate) {
 					Coordinate coordinate = (Coordinate)value;
-					value = "<html><span style=\"color: #888888;\">" +  //$NON-NLS-1$
-						profile.getLocalisation().getResourceString("entite.coordinate.type."  //$NON-NLS-1$
-							+ coordinate.getCoordinateType().getValue().toLowerCase()) + " - </span>" +  coordinate.getValue() + "</html>"; //$NON-NLS-1$ //$NON-NLS-2$
+					if(coordinate.getValue() != null) {
+						value = "<html><span style=\"color: #888888;\">" +  //$NON-NLS-1$
+							profile.getLocalisation().getResourceString("entite.coordinate.type."  //$NON-NLS-1$
+								+ coordinate.getCoordinateType().getValue().toLowerCase()) + " - </span>" +  coordinate.getValue() + "</html>"; //$NON-NLS-1$ //$NON-NLS-2$
+					} else
+						value = "<html></html>";
+				} else {
+					value = "<html></html>";
 				}
 				
 				return super.getListCellRendererComponent(list, value, index, isSelected,
@@ -532,8 +537,10 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 			
 			categoriesContact = contact.getCategories();
 			
-			if(contact.getCoordinates() != null)
+			if(contact.getCoordinates() != null && contact.getCoordinates().size() > 0)
 				coordinatesModel.setElements(new ArrayList<Coordinate>(contact.getCoordinates()));
+			else
+				coordinatesModel.setElements(Collections.singletonList(new Coordinate()));
 			
 			jlSateSaveContact.setEnabled(true);
 		} else {
@@ -708,7 +715,7 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 			}
 		} else if(e.getSource() == jbDelCoordinate) {
 			Coordinate deletedCoordinate = (Coordinate)jlstCoordinates.getSelectedValue();
-			if(deletedCoordinate != null)
+			if(deletedCoordinate != null && deletedCoordinate.getValue() != null)
 				coordinatesModel.remove(deletedCoordinate);
 		} else if(e.getSource() == jxhSaveCoordinate || e.getSource() == jxhCancelCoordinate) {
 			if(e.getSource() == jxhSaveCoordinate) {

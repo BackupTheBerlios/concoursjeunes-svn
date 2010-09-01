@@ -17,37 +17,37 @@
             <champsTableArchers></champsTableArchers>
             <numordre>1</numordre>
             <criterionelements>
-                <element id="e1ac5f2b-6d7f-4771-bd65-ea0900726669">
+                <element id="8edc0dfe-f75d-4b37-b679-840c0434f5f1">
                     <code>R</code>
                     <libelle>Recurve</libelle>
                     <active>true</active>
                     <numordre>1</numordre>
                 </element>
-                <element id="83ee6a38-c59e-42b7-b327-70aeac43813d">
+                <element id="f10d412e-ecdb-4d76-8c4e-c14c5c4f8e7c">
                     <code>C</code>
                     <libelle>Compound</libelle>
                     <active>true</active>
                     <numordre>2</numordre>
                 </element>
-                <element id="26d8c53c-6c17-488a-98ee-10e36b765c62">
+                <element id="f687428e-bda9-40b3-99b3-e200573de05d">
                     <code>BB</code>
                     <libelle>Barebow</libelle>
                     <active>true</active>
                     <numordre>3</numordre>
                 </element>
-                <element id="7ebb705b-3328-4d45-a062-f32c537127b4">
+                <element id="dab3a77c-6c70-4237-a44e-2b253bb3881e">
                     <code>BH</code>
                     <libelle>Bowhunter</libelle>
                     <active>true</active>
                     <numordre>4</numordre>
                 </element>
-                <element id="1a7584a9-8e0d-4d7d-9fdd-f1d7409b9945">
+                <element id="efa0edd2-68d6-42a8-a4d3-10f775855732">
                     <code>L</code>
                     <libelle>Longbow</libelle>
                     <active>true</active>
                     <numordre>5</numordre>
                 </element>
-                <element id="05e98b83-ada3-449b-bdfd-76f89199a353">
+                <element id="a2d0ec3e-13b2-48ad-9bca-324ff0694214">
                     <code> </code>
                     <libelle> </libelle>
                     <active>true</active>
@@ -64,43 +64,43 @@
             <champsTableArchers></champsTableArchers>
             <numordre>2</numordre>
             <criterionelements>
-                <element id="44f27b0a-3251-4bdb-93f1-61e32d784a1b">
+                <element id="1bfc6b35-a097-4d1a-a7b9-77eb1d82caf3">
                     <code>PIC</code>
                     <libelle>Piccolo</libelle>
                     <active>true</active>
                     <numordre>1</numordre>
                 </element>
-                <element id="996d4c85-22b1-4226-8e82-5634930228a6">
+                <element id="78661ad8-1a94-402d-9602-adc97c98e354">
                     <code>MIN</code>
                     <libelle>Mini</libelle>
                     <active>true</active>
                     <numordre>2</numordre>
                 </element>
-                <element id="8b40f70b-ff29-4b66-b0f7-009ff67e3473">
+                <element id="f0cc80d3-a4e0-4d1e-92b6-7e3b756bdede">
                     <code>JE</code>
                     <libelle>Jugend-Jeunesse-Ragazzi</libelle>
                     <active>true</active>
                     <numordre>3</numordre>
                 </element>
-                <element id="5408c8fd-4d4e-48be-a0f0-7a3a3e476091">
+                <element id="30846d17-33f4-4535-87b7-381448fff15a">
                     <code>C</code>
                     <libelle>Kadet-Cadet-Cadetti</libelle>
                     <active>true</active>
                     <numordre>4</numordre>
                 </element>
-                <element id="610d8817-16fb-4d69-bdf6-b2103b119025">
+                <element id="7810f95e-27db-4c77-8e60-26f1c2b3b885">
                     <code>J</code>
                     <libelle>Junior-Giovani</libelle>
                     <active>true</active>
                     <numordre>5</numordre>
                 </element>
-                <element id="809b687e-dac0-4ea7-9456-ea7891d3bf3c">
+                <element id="edc84a2e-6f4c-4a41-a730-b8c97124d4b9">
                     <code>S</code>
                     <libelle>Senior</libelle>
                     <active>true</active>
                     <numordre>6</numordre>
                 </element>
-                <element id="0224b6bc-9c40-4764-817e-3a988998dfd8">
+                <element id="8282d1f5-1f8a-4b5f-a9e3-ff1e24ac277d">
                     <code>V</code>
                     <libelle>Veteran-Vétéran-Veteran(i)(e)</libelle>
                     <active>true</active>
@@ -117,19 +117,19 @@
             <champsTableArchers></champsTableArchers>
             <numordre>3</numordre>
             <criterionelements>
-                <element id="dd873d9e-5eb2-459a-b089-3b65488e7580">
+                <element id="124f517e-0629-45d4-ae47-8f757cb1ae5d">
                     <code>D</code>
                     <libelle>Damen-Dames-Donne</libelle>
                     <active>true</active>
                     <numordre>1</numordre>
                 </element>
-                <element id="79815456-c94c-49aa-a3e2-e0bd91e73a60">
+                <element id="7a05c7f5-663d-4c31-9b6c-cdbe8149f53c">
                     <code>H</code>
                     <libelle>Herren-Hommes-Uomini</libelle>
                     <active>true</active>
                     <numordre>2</numordre>
                 </element>
-                <element id="dc57a7fc-8890-4d20-abd1-8dca83add7a3">
+                <element id="2165c235-5a01-4dd6-95e6-8731503ed2f5">
                     <code> </code>
                     <libelle> </libelle>
                     <active>true</active>
@@ -143,16 +143,34 @@
             <key>
                 <criteria>
                     <entry>
-                        <key>categorie</key>
-                        <value>610d8817-16fb-4d69-bdf6-b2103b119025</value>
+                        <key>arc</key>
+                        <value>8edc0dfe-f75d-4b37-b679-840c0434f5f1</value>
                     </entry>
                     <entry>
-                        <key>arc</key>
-                        <value>26d8c53c-6c17-488a-98ee-10e36b765c62</value>
+                        <key>categorie</key>
+                        <value>f0cc80d3-a4e0-4d1e-92b6-7e3b756bdede</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>arc</key>
+                        <value>8edc0dfe-f75d-4b37-b679-840c0434f5f1</value>
+                    </entry>
+                    <entry>
+                        <key>categorie</key>
+                        <value>7810f95e-27db-4c77-8e60-26f1c2b3b885</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
                     </entry>
                 </criteria>
             </key>
@@ -162,15 +180,141 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>8b40f70b-ff29-4b66-b0f7-009ff67e3473</value>
+                        <value>30846d17-33f4-4535-87b7-381448fff15a</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>7ebb705b-3328-4d45-a062-f32c537127b4</value>
+                        <value>f10d412e-ecdb-4d76-8c4e-c14c5c4f8e7c</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>79815456-c94c-49aa-a3e2-e0bd91e73a60</value>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>30846d17-33f4-4535-87b7-381448fff15a</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>7810f95e-27db-4c77-8e60-26f1c2b3b885</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>124f517e-0629-45d4-ae47-8f757cb1ae5d</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>arc</key>
+                        <value>efa0edd2-68d6-42a8-a4d3-10f775855732</value>
+                    </entry>
+                    <entry>
+                        <key>categorie</key>
+                        <value>7810f95e-27db-4c77-8e60-26f1c2b3b885</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>1bfc6b35-a097-4d1a-a7b9-77eb1d82caf3</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>dab3a77c-6c70-4237-a44e-2b253bb3881e</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>1bfc6b35-a097-4d1a-a7b9-77eb1d82caf3</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>f687428e-bda9-40b3-99b3-e200573de05d</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>7810f95e-27db-4c77-8e60-26f1c2b3b885</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>7a05c7f5-663d-4c31-9b6c-cdbe8149f53c</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>f0cc80d3-a4e0-4d1e-92b6-7e3b756bdede</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>f687428e-bda9-40b3-99b3-e200573de05d</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>7a05c7f5-663d-4c31-9b6c-cdbe8149f53c</value>
                     </entry>
                 </criteria>
             </key>
@@ -178,15 +322,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>8b40f70b-ff29-4b66-b0f7-009ff67e3473</value>
+                        <value>f0cc80d3-a4e0-4d1e-92b6-7e3b756bdede</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>79815456-c94c-49aa-a3e2-e0bd91e73a60</value>
+                        <value>7a05c7f5-663d-4c31-9b6c-cdbe8149f53c</value>
                     </entry>
                 </criteria>
             </value>
@@ -196,15 +340,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>996d4c85-22b1-4226-8e82-5634930228a6</value>
+                        <value>78661ad8-1a94-402d-9602-adc97c98e354</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>1a7584a9-8e0d-4d7d-9fdd-f1d7409b9945</value>
+                        <value>f687428e-bda9-40b3-99b3-e200573de05d</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dd873d9e-5eb2-459a-b089-3b65488e7580</value>
+                        <value>124f517e-0629-45d4-ae47-8f757cb1ae5d</value>
                     </entry>
                 </criteria>
             </key>
@@ -212,15 +356,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>996d4c85-22b1-4226-8e82-5634930228a6</value>
+                        <value>78661ad8-1a94-402d-9602-adc97c98e354</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
                     </entry>
                 </criteria>
             </value>
@@ -230,15 +374,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>809b687e-dac0-4ea7-9456-ea7891d3bf3c</value>
+                        <value>8282d1f5-1f8a-4b5f-a9e3-ff1e24ac277d</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>26d8c53c-6c17-488a-98ee-10e36b765c62</value>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
+                        <value>124f517e-0629-45d4-ae47-8f757cb1ae5d</value>
                     </entry>
                 </criteria>
             </key>
@@ -248,15 +392,15 @@
                 <criteria>
                     <entry>
                         <key>arc</key>
-                        <value>1a7584a9-8e0d-4d7d-9fdd-f1d7409b9945</value>
+                        <value>8edc0dfe-f75d-4b37-b679-840c0434f5f1</value>
                     </entry>
                     <entry>
                         <key>categorie</key>
-                        <value>8b40f70b-ff29-4b66-b0f7-009ff67e3473</value>
+                        <value>78661ad8-1a94-402d-9602-adc97c98e354</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
                     </entry>
                 </criteria>
             </key>
@@ -266,15 +410,69 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>44f27b0a-3251-4bdb-93f1-61e32d784a1b</value>
+                        <value>7810f95e-27db-4c77-8e60-26f1c2b3b885</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>26d8c53c-6c17-488a-98ee-10e36b765c62</value>
+                        <value>f687428e-bda9-40b3-99b3-e200573de05d</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dd873d9e-5eb2-459a-b089-3b65488e7580</value>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>78661ad8-1a94-402d-9602-adc97c98e354</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>124f517e-0629-45d4-ae47-8f757cb1ae5d</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>f0cc80d3-a4e0-4d1e-92b6-7e3b756bdede</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>f687428e-bda9-40b3-99b3-e200573de05d</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>arc</key>
+                        <value>efa0edd2-68d6-42a8-a4d3-10f775855732</value>
+                    </entry>
+                    <entry>
+                        <key>categorie</key>
+                        <value>f0cc80d3-a4e0-4d1e-92b6-7e3b756bdede</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>7a05c7f5-663d-4c31-9b6c-cdbe8149f53c</value>
                     </entry>
                 </criteria>
             </key>
@@ -282,15 +480,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>44f27b0a-3251-4bdb-93f1-61e32d784a1b</value>
+                        <value>f0cc80d3-a4e0-4d1e-92b6-7e3b756bdede</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
+                        <value>7a05c7f5-663d-4c31-9b6c-cdbe8149f53c</value>
                     </entry>
                 </criteria>
             </value>
@@ -300,15 +498,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>8b40f70b-ff29-4b66-b0f7-009ff67e3473</value>
+                        <value>8282d1f5-1f8a-4b5f-a9e3-ff1e24ac277d</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>83ee6a38-c59e-42b7-b327-70aeac43813d</value>
+                        <value>f10d412e-ecdb-4d76-8c4e-c14c5c4f8e7c</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
                     </entry>
                 </criteria>
             </key>
@@ -318,15 +516,15 @@
                 <criteria>
                     <entry>
                         <key>arc</key>
-                        <value>e1ac5f2b-6d7f-4771-bd65-ea0900726669</value>
+                        <value>8edc0dfe-f75d-4b37-b679-840c0434f5f1</value>
                     </entry>
                     <entry>
                         <key>categorie</key>
-                        <value>8b40f70b-ff29-4b66-b0f7-009ff67e3473</value>
+                        <value>78661ad8-1a94-402d-9602-adc97c98e354</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dd873d9e-5eb2-459a-b089-3b65488e7580</value>
+                        <value>7a05c7f5-663d-4c31-9b6c-cdbe8149f53c</value>
                     </entry>
                 </criteria>
             </key>
@@ -334,49 +532,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>8b40f70b-ff29-4b66-b0f7-009ff67e3473</value>
+                        <value>78661ad8-1a94-402d-9602-adc97c98e354</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dd873d9e-5eb2-459a-b089-3b65488e7580</value>
-                    </entry>
-                </criteria>
-            </value>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>arc</key>
-                        <value>e1ac5f2b-6d7f-4771-bd65-ea0900726669</value>
-                    </entry>
-                    <entry>
-                        <key>categorie</key>
-                        <value>44f27b0a-3251-4bdb-93f1-61e32d784a1b</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dd873d9e-5eb2-459a-b089-3b65488e7580</value>
-                    </entry>
-                </criteria>
-            </key>
-            <value>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>44f27b0a-3251-4bdb-93f1-61e32d784a1b</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
                     </entry>
                 </criteria>
             </value>
@@ -386,15 +550,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>809b687e-dac0-4ea7-9456-ea7891d3bf3c</value>
+                        <value>1bfc6b35-a097-4d1a-a7b9-77eb1d82caf3</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
+                        <value>7a05c7f5-663d-4c31-9b6c-cdbe8149f53c</value>
                     </entry>
                 </criteria>
             </key>
@@ -404,15 +568,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>809b687e-dac0-4ea7-9456-ea7891d3bf3c</value>
+                        <value>edc84a2e-6f4c-4a41-a730-b8c97124d4b9</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>e1ac5f2b-6d7f-4771-bd65-ea0900726669</value>
+                        <value>8edc0dfe-f75d-4b37-b679-840c0434f5f1</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
                     </entry>
                 </criteria>
             </key>
@@ -422,69 +586,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>8b40f70b-ff29-4b66-b0f7-009ff67e3473</value>
+                        <value>78661ad8-1a94-402d-9602-adc97c98e354</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
+                        <value>efa0edd2-68d6-42a8-a4d3-10f775855732</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>44f27b0a-3251-4bdb-93f1-61e32d784a1b</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dd873d9e-5eb2-459a-b089-3b65488e7580</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>arc</key>
-                        <value>e1ac5f2b-6d7f-4771-bd65-ea0900726669</value>
-                    </entry>
-                    <entry>
-                        <key>categorie</key>
-                        <value>610d8817-16fb-4d69-bdf6-b2103b119025</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>44f27b0a-3251-4bdb-93f1-61e32d784a1b</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>83ee6a38-c59e-42b7-b327-70aeac43813d</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dd873d9e-5eb2-459a-b089-3b65488e7580</value>
+                        <value>7a05c7f5-663d-4c31-9b6c-cdbe8149f53c</value>
                     </entry>
                 </criteria>
             </key>
@@ -492,15 +602,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>44f27b0a-3251-4bdb-93f1-61e32d784a1b</value>
+                        <value>78661ad8-1a94-402d-9602-adc97c98e354</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
                     </entry>
                 </criteria>
             </value>
@@ -510,15 +620,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>610d8817-16fb-4d69-bdf6-b2103b119025</value>
+                        <value>7810f95e-27db-4c77-8e60-26f1c2b3b885</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>83ee6a38-c59e-42b7-b327-70aeac43813d</value>
+                        <value>f10d412e-ecdb-4d76-8c4e-c14c5c4f8e7c</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
                     </entry>
                 </criteria>
             </key>
@@ -528,33 +638,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>0224b6bc-9c40-4764-817e-3a988998dfd8</value>
+                        <value>f0cc80d3-a4e0-4d1e-92b6-7e3b756bdede</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>7ebb705b-3328-4d45-a062-f32c537127b4</value>
+                        <value>f10d412e-ecdb-4d76-8c4e-c14c5c4f8e7c</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>996d4c85-22b1-4226-8e82-5634930228a6</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>7ebb705b-3328-4d45-a062-f32c537127b4</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>79815456-c94c-49aa-a3e2-e0bd91e73a60</value>
+                        <value>7a05c7f5-663d-4c31-9b6c-cdbe8149f53c</value>
                     </entry>
                 </criteria>
             </key>
@@ -562,15 +654,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>996d4c85-22b1-4226-8e82-5634930228a6</value>
+                        <value>f0cc80d3-a4e0-4d1e-92b6-7e3b756bdede</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
+                        <value>7a05c7f5-663d-4c31-9b6c-cdbe8149f53c</value>
                     </entry>
                 </criteria>
             </value>
@@ -580,15 +672,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>8b40f70b-ff29-4b66-b0f7-009ff67e3473</value>
+                        <value>f0cc80d3-a4e0-4d1e-92b6-7e3b756bdede</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>83ee6a38-c59e-42b7-b327-70aeac43813d</value>
+                        <value>dab3a77c-6c70-4237-a44e-2b253bb3881e</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dd873d9e-5eb2-459a-b089-3b65488e7580</value>
+                        <value>124f517e-0629-45d4-ae47-8f757cb1ae5d</value>
                     </entry>
                 </criteria>
             </key>
@@ -596,15 +688,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>8b40f70b-ff29-4b66-b0f7-009ff67e3473</value>
+                        <value>f0cc80d3-a4e0-4d1e-92b6-7e3b756bdede</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dd873d9e-5eb2-459a-b089-3b65488e7580</value>
+                        <value>124f517e-0629-45d4-ae47-8f757cb1ae5d</value>
                     </entry>
                 </criteria>
             </value>
@@ -614,15 +706,51 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>44f27b0a-3251-4bdb-93f1-61e32d784a1b</value>
+                        <value>edc84a2e-6f4c-4a41-a730-b8c97124d4b9</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>7ebb705b-3328-4d45-a062-f32c537127b4</value>
+                        <value>f687428e-bda9-40b3-99b3-e200573de05d</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dd873d9e-5eb2-459a-b089-3b65488e7580</value>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>8282d1f5-1f8a-4b5f-a9e3-ff1e24ac277d</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>f687428e-bda9-40b3-99b3-e200573de05d</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>f0cc80d3-a4e0-4d1e-92b6-7e3b756bdede</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>f687428e-bda9-40b3-99b3-e200573de05d</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>124f517e-0629-45d4-ae47-8f757cb1ae5d</value>
                     </entry>
                 </criteria>
             </key>
@@ -630,15 +758,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>44f27b0a-3251-4bdb-93f1-61e32d784a1b</value>
+                        <value>f0cc80d3-a4e0-4d1e-92b6-7e3b756bdede</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
+                        <value>124f517e-0629-45d4-ae47-8f757cb1ae5d</value>
                     </entry>
                 </criteria>
             </value>
@@ -648,15 +776,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>610d8817-16fb-4d69-bdf6-b2103b119025</value>
+                        <value>78661ad8-1a94-402d-9602-adc97c98e354</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
+                        <value>f10d412e-ecdb-4d76-8c4e-c14c5c4f8e7c</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>79815456-c94c-49aa-a3e2-e0bd91e73a60</value>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
                     </entry>
                 </criteria>
             </key>
@@ -666,69 +794,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>610d8817-16fb-4d69-bdf6-b2103b119025</value>
+                        <value>78661ad8-1a94-402d-9602-adc97c98e354</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>7ebb705b-3328-4d45-a062-f32c537127b4</value>
+                        <value>dab3a77c-6c70-4237-a44e-2b253bb3881e</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>5408c8fd-4d4e-48be-a0f0-7a3a3e476091</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>83ee6a38-c59e-42b7-b327-70aeac43813d</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>arc</key>
-                        <value>e1ac5f2b-6d7f-4771-bd65-ea0900726669</value>
-                    </entry>
-                    <entry>
-                        <key>categorie</key>
-                        <value>5408c8fd-4d4e-48be-a0f0-7a3a3e476091</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>arc</key>
-                        <value>e1ac5f2b-6d7f-4771-bd65-ea0900726669</value>
-                    </entry>
-                    <entry>
-                        <key>categorie</key>
-                        <value>44f27b0a-3251-4bdb-93f1-61e32d784a1b</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>79815456-c94c-49aa-a3e2-e0bd91e73a60</value>
+                        <value>124f517e-0629-45d4-ae47-8f757cb1ae5d</value>
                     </entry>
                 </criteria>
             </key>
@@ -736,15 +810,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>44f27b0a-3251-4bdb-93f1-61e32d784a1b</value>
+                        <value>78661ad8-1a94-402d-9602-adc97c98e354</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
                     </entry>
                 </criteria>
             </value>
@@ -754,15 +828,33 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>44f27b0a-3251-4bdb-93f1-61e32d784a1b</value>
+                        <value>f0cc80d3-a4e0-4d1e-92b6-7e3b756bdede</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>26d8c53c-6c17-488a-98ee-10e36b765c62</value>
+                        <value>dab3a77c-6c70-4237-a44e-2b253bb3881e</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>79815456-c94c-49aa-a3e2-e0bd91e73a60</value>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>78661ad8-1a94-402d-9602-adc97c98e354</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>dab3a77c-6c70-4237-a44e-2b253bb3881e</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>7a05c7f5-663d-4c31-9b6c-cdbe8149f53c</value>
                     </entry>
                 </criteria>
             </key>
@@ -770,15 +862,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>44f27b0a-3251-4bdb-93f1-61e32d784a1b</value>
+                        <value>78661ad8-1a94-402d-9602-adc97c98e354</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
                     </entry>
                 </criteria>
             </value>
@@ -788,33 +880,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>44f27b0a-3251-4bdb-93f1-61e32d784a1b</value>
+                        <value>8282d1f5-1f8a-4b5f-a9e3-ff1e24ac277d</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>26d8c53c-6c17-488a-98ee-10e36b765c62</value>
+                        <value>8edc0dfe-f75d-4b37-b679-840c0434f5f1</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>arc</key>
-                        <value>1a7584a9-8e0d-4d7d-9fdd-f1d7409b9945</value>
-                    </entry>
-                    <entry>
-                        <key>categorie</key>
-                        <value>610d8817-16fb-4d69-bdf6-b2103b119025</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
                     </entry>
                 </criteria>
             </key>
@@ -824,15 +898,69 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>996d4c85-22b1-4226-8e82-5634930228a6</value>
+                        <value>30846d17-33f4-4535-87b7-381448fff15a</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>7ebb705b-3328-4d45-a062-f32c537127b4</value>
+                        <value>f687428e-bda9-40b3-99b3-e200573de05d</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dd873d9e-5eb2-459a-b089-3b65488e7580</value>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>f0cc80d3-a4e0-4d1e-92b6-7e3b756bdede</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>f10d412e-ecdb-4d76-8c4e-c14c5c4f8e7c</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>edc84a2e-6f4c-4a41-a730-b8c97124d4b9</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>f10d412e-ecdb-4d76-8c4e-c14c5c4f8e7c</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>1bfc6b35-a097-4d1a-a7b9-77eb1d82caf3</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>f687428e-bda9-40b3-99b3-e200573de05d</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>7a05c7f5-663d-4c31-9b6c-cdbe8149f53c</value>
                     </entry>
                 </criteria>
             </key>
@@ -840,15 +968,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>996d4c85-22b1-4226-8e82-5634930228a6</value>
+                        <value>1bfc6b35-a097-4d1a-a7b9-77eb1d82caf3</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
                     </entry>
                 </criteria>
             </value>
@@ -858,51 +986,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>44f27b0a-3251-4bdb-93f1-61e32d784a1b</value>
+                        <value>1bfc6b35-a097-4d1a-a7b9-77eb1d82caf3</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>83ee6a38-c59e-42b7-b327-70aeac43813d</value>
+                        <value>dab3a77c-6c70-4237-a44e-2b253bb3881e</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>44f27b0a-3251-4bdb-93f1-61e32d784a1b</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>7ebb705b-3328-4d45-a062-f32c537127b4</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>44f27b0a-3251-4bdb-93f1-61e32d784a1b</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>7ebb705b-3328-4d45-a062-f32c537127b4</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>79815456-c94c-49aa-a3e2-e0bd91e73a60</value>
+                        <value>124f517e-0629-45d4-ae47-8f757cb1ae5d</value>
                     </entry>
                 </criteria>
             </key>
@@ -910,15 +1002,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>44f27b0a-3251-4bdb-93f1-61e32d784a1b</value>
+                        <value>1bfc6b35-a097-4d1a-a7b9-77eb1d82caf3</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
                     </entry>
                 </criteria>
             </value>
@@ -928,51 +1020,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>610d8817-16fb-4d69-bdf6-b2103b119025</value>
+                        <value>1bfc6b35-a097-4d1a-a7b9-77eb1d82caf3</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
+                        <value>f687428e-bda9-40b3-99b3-e200573de05d</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>809b687e-dac0-4ea7-9456-ea7891d3bf3c</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>83ee6a38-c59e-42b7-b327-70aeac43813d</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>996d4c85-22b1-4226-8e82-5634930228a6</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>83ee6a38-c59e-42b7-b327-70aeac43813d</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dd873d9e-5eb2-459a-b089-3b65488e7580</value>
+                        <value>124f517e-0629-45d4-ae47-8f757cb1ae5d</value>
                     </entry>
                 </criteria>
             </key>
@@ -980,15 +1036,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>996d4c85-22b1-4226-8e82-5634930228a6</value>
+                        <value>1bfc6b35-a097-4d1a-a7b9-77eb1d82caf3</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
                     </entry>
                 </criteria>
             </value>
@@ -998,15 +1054,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>8b40f70b-ff29-4b66-b0f7-009ff67e3473</value>
+                        <value>78661ad8-1a94-402d-9602-adc97c98e354</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>83ee6a38-c59e-42b7-b327-70aeac43813d</value>
+                        <value>efa0edd2-68d6-42a8-a4d3-10f775855732</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>79815456-c94c-49aa-a3e2-e0bd91e73a60</value>
+                        <value>124f517e-0629-45d4-ae47-8f757cb1ae5d</value>
                     </entry>
                 </criteria>
             </key>
@@ -1014,15 +1070,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>8b40f70b-ff29-4b66-b0f7-009ff67e3473</value>
+                        <value>78661ad8-1a94-402d-9602-adc97c98e354</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>79815456-c94c-49aa-a3e2-e0bd91e73a60</value>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
                     </entry>
                 </criteria>
             </value>
@@ -1032,51 +1088,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>5408c8fd-4d4e-48be-a0f0-7a3a3e476091</value>
+                        <value>1bfc6b35-a097-4d1a-a7b9-77eb1d82caf3</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
+                        <value>dab3a77c-6c70-4237-a44e-2b253bb3881e</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dd873d9e-5eb2-459a-b089-3b65488e7580</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>0224b6bc-9c40-4764-817e-3a988998dfd8</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>e1ac5f2b-6d7f-4771-bd65-ea0900726669</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>996d4c85-22b1-4226-8e82-5634930228a6</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>1a7584a9-8e0d-4d7d-9fdd-f1d7409b9945</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>79815456-c94c-49aa-a3e2-e0bd91e73a60</value>
+                        <value>7a05c7f5-663d-4c31-9b6c-cdbe8149f53c</value>
                     </entry>
                 </criteria>
             </key>
@@ -1084,157 +1104,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>996d4c85-22b1-4226-8e82-5634930228a6</value>
+                        <value>1bfc6b35-a097-4d1a-a7b9-77eb1d82caf3</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
-                    </entry>
-                </criteria>
-            </value>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>arc</key>
-                        <value>e1ac5f2b-6d7f-4771-bd65-ea0900726669</value>
-                    </entry>
-                    <entry>
-                        <key>categorie</key>
-                        <value>996d4c85-22b1-4226-8e82-5634930228a6</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>0224b6bc-9c40-4764-817e-3a988998dfd8</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>1a7584a9-8e0d-4d7d-9fdd-f1d7409b9945</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>809b687e-dac0-4ea7-9456-ea7891d3bf3c</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>79815456-c94c-49aa-a3e2-e0bd91e73a60</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>996d4c85-22b1-4226-8e82-5634930228a6</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dd873d9e-5eb2-459a-b089-3b65488e7580</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>arc</key>
-                        <value>e1ac5f2b-6d7f-4771-bd65-ea0900726669</value>
-                    </entry>
-                    <entry>
-                        <key>categorie</key>
-                        <value>44f27b0a-3251-4bdb-93f1-61e32d784a1b</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>610d8817-16fb-4d69-bdf6-b2103b119025</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dd873d9e-5eb2-459a-b089-3b65488e7580</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>arc</key>
-                        <value>e1ac5f2b-6d7f-4771-bd65-ea0900726669</value>
-                    </entry>
-                    <entry>
-                        <key>categorie</key>
-                        <value>996d4c85-22b1-4226-8e82-5634930228a6</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dd873d9e-5eb2-459a-b089-3b65488e7580</value>
-                    </entry>
-                </criteria>
-            </key>
-            <value>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>996d4c85-22b1-4226-8e82-5634930228a6</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
                     </entry>
                 </criteria>
             </value>
@@ -1244,33 +1122,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>44f27b0a-3251-4bdb-93f1-61e32d784a1b</value>
+                        <value>f0cc80d3-a4e0-4d1e-92b6-7e3b756bdede</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>1a7584a9-8e0d-4d7d-9fdd-f1d7409b9945</value>
+                        <value>dab3a77c-6c70-4237-a44e-2b253bb3881e</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>arc</key>
-                        <value>1a7584a9-8e0d-4d7d-9fdd-f1d7409b9945</value>
-                    </entry>
-                    <entry>
-                        <key>categorie</key>
-                        <value>8b40f70b-ff29-4b66-b0f7-009ff67e3473</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>79815456-c94c-49aa-a3e2-e0bd91e73a60</value>
+                        <value>7a05c7f5-663d-4c31-9b6c-cdbe8149f53c</value>
                     </entry>
                 </criteria>
             </key>
@@ -1278,15 +1138,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>8b40f70b-ff29-4b66-b0f7-009ff67e3473</value>
+                        <value>f0cc80d3-a4e0-4d1e-92b6-7e3b756bdede</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>79815456-c94c-49aa-a3e2-e0bd91e73a60</value>
+                        <value>7a05c7f5-663d-4c31-9b6c-cdbe8149f53c</value>
                     </entry>
                 </criteria>
             </value>
@@ -1296,15 +1156,69 @@
                 <criteria>
                     <entry>
                         <key>arc</key>
-                        <value>1a7584a9-8e0d-4d7d-9fdd-f1d7409b9945</value>
+                        <value>8edc0dfe-f75d-4b37-b679-840c0434f5f1</value>
                     </entry>
                     <entry>
                         <key>categorie</key>
-                        <value>8b40f70b-ff29-4b66-b0f7-009ff67e3473</value>
+                        <value>30846d17-33f4-4535-87b7-381448fff15a</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dd873d9e-5eb2-459a-b089-3b65488e7580</value>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>8282d1f5-1f8a-4b5f-a9e3-ff1e24ac277d</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>7a05c7f5-663d-4c31-9b6c-cdbe8149f53c</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>edc84a2e-6f4c-4a41-a730-b8c97124d4b9</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>dab3a77c-6c70-4237-a44e-2b253bb3881e</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>78661ad8-1a94-402d-9602-adc97c98e354</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>f10d412e-ecdb-4d76-8c4e-c14c5c4f8e7c</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>124f517e-0629-45d4-ae47-8f757cb1ae5d</value>
                     </entry>
                 </criteria>
             </key>
@@ -1312,15 +1226,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>8b40f70b-ff29-4b66-b0f7-009ff67e3473</value>
+                        <value>78661ad8-1a94-402d-9602-adc97c98e354</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dd873d9e-5eb2-459a-b089-3b65488e7580</value>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
                     </entry>
                 </criteria>
             </value>
@@ -1330,33 +1244,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>0224b6bc-9c40-4764-817e-3a988998dfd8</value>
+                        <value>f0cc80d3-a4e0-4d1e-92b6-7e3b756bdede</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>83ee6a38-c59e-42b7-b327-70aeac43813d</value>
+                        <value>f10d412e-ecdb-4d76-8c4e-c14c5c4f8e7c</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>996d4c85-22b1-4226-8e82-5634930228a6</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>26d8c53c-6c17-488a-98ee-10e36b765c62</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dd873d9e-5eb2-459a-b089-3b65488e7580</value>
+                        <value>124f517e-0629-45d4-ae47-8f757cb1ae5d</value>
                     </entry>
                 </criteria>
             </key>
@@ -1364,15 +1260,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>996d4c85-22b1-4226-8e82-5634930228a6</value>
+                        <value>f0cc80d3-a4e0-4d1e-92b6-7e3b756bdede</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
+                        <value>124f517e-0629-45d4-ae47-8f757cb1ae5d</value>
                     </entry>
                 </criteria>
             </value>
@@ -1382,15 +1278,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>0224b6bc-9c40-4764-817e-3a988998dfd8</value>
+                        <value>7810f95e-27db-4c77-8e60-26f1c2b3b885</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dd873d9e-5eb2-459a-b089-3b65488e7580</value>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
                     </entry>
                 </criteria>
             </key>
@@ -1400,15 +1296,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>8b40f70b-ff29-4b66-b0f7-009ff67e3473</value>
+                        <value>1bfc6b35-a097-4d1a-a7b9-77eb1d82caf3</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>26d8c53c-6c17-488a-98ee-10e36b765c62</value>
+                        <value>f10d412e-ecdb-4d76-8c4e-c14c5c4f8e7c</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>79815456-c94c-49aa-a3e2-e0bd91e73a60</value>
+                        <value>7a05c7f5-663d-4c31-9b6c-cdbe8149f53c</value>
                     </entry>
                 </criteria>
             </key>
@@ -1416,593 +1312,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>8b40f70b-ff29-4b66-b0f7-009ff67e3473</value>
+                        <value>1bfc6b35-a097-4d1a-a7b9-77eb1d82caf3</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>79815456-c94c-49aa-a3e2-e0bd91e73a60</value>
-                    </entry>
-                </criteria>
-            </value>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>5408c8fd-4d4e-48be-a0f0-7a3a3e476091</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>26d8c53c-6c17-488a-98ee-10e36b765c62</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>0224b6bc-9c40-4764-817e-3a988998dfd8</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>8b40f70b-ff29-4b66-b0f7-009ff67e3473</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>26d8c53c-6c17-488a-98ee-10e36b765c62</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>arc</key>
-                        <value>e1ac5f2b-6d7f-4771-bd65-ea0900726669</value>
-                    </entry>
-                    <entry>
-                        <key>categorie</key>
-                        <value>8b40f70b-ff29-4b66-b0f7-009ff67e3473</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>996d4c85-22b1-4226-8e82-5634930228a6</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>79815456-c94c-49aa-a3e2-e0bd91e73a60</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>5408c8fd-4d4e-48be-a0f0-7a3a3e476091</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>79815456-c94c-49aa-a3e2-e0bd91e73a60</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>0224b6bc-9c40-4764-817e-3a988998dfd8</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>79815456-c94c-49aa-a3e2-e0bd91e73a60</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>0224b6bc-9c40-4764-817e-3a988998dfd8</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>26d8c53c-6c17-488a-98ee-10e36b765c62</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>809b687e-dac0-4ea7-9456-ea7891d3bf3c</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dd873d9e-5eb2-459a-b089-3b65488e7580</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>arc</key>
-                        <value>1a7584a9-8e0d-4d7d-9fdd-f1d7409b9945</value>
-                    </entry>
-                    <entry>
-                        <key>categorie</key>
-                        <value>5408c8fd-4d4e-48be-a0f0-7a3a3e476091</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>arc</key>
-                        <value>e1ac5f2b-6d7f-4771-bd65-ea0900726669</value>
-                    </entry>
-                    <entry>
-                        <key>categorie</key>
-                        <value>8b40f70b-ff29-4b66-b0f7-009ff67e3473</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>79815456-c94c-49aa-a3e2-e0bd91e73a60</value>
-                    </entry>
-                </criteria>
-            </key>
-            <value>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>8b40f70b-ff29-4b66-b0f7-009ff67e3473</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>79815456-c94c-49aa-a3e2-e0bd91e73a60</value>
-                    </entry>
-                </criteria>
-            </value>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>996d4c85-22b1-4226-8e82-5634930228a6</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>83ee6a38-c59e-42b7-b327-70aeac43813d</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>44f27b0a-3251-4bdb-93f1-61e32d784a1b</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>1a7584a9-8e0d-4d7d-9fdd-f1d7409b9945</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>79815456-c94c-49aa-a3e2-e0bd91e73a60</value>
-                    </entry>
-                </criteria>
-            </key>
-            <value>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>44f27b0a-3251-4bdb-93f1-61e32d784a1b</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
-                    </entry>
-                </criteria>
-            </value>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>996d4c85-22b1-4226-8e82-5634930228a6</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>83ee6a38-c59e-42b7-b327-70aeac43813d</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>79815456-c94c-49aa-a3e2-e0bd91e73a60</value>
-                    </entry>
-                </criteria>
-            </key>
-            <value>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>996d4c85-22b1-4226-8e82-5634930228a6</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
-                    </entry>
-                </criteria>
-            </value>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>5408c8fd-4d4e-48be-a0f0-7a3a3e476091</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>7ebb705b-3328-4d45-a062-f32c537127b4</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>996d4c85-22b1-4226-8e82-5634930228a6</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>26d8c53c-6c17-488a-98ee-10e36b765c62</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>44f27b0a-3251-4bdb-93f1-61e32d784a1b</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>83ee6a38-c59e-42b7-b327-70aeac43813d</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>79815456-c94c-49aa-a3e2-e0bd91e73a60</value>
-                    </entry>
-                </criteria>
-            </key>
-            <value>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>44f27b0a-3251-4bdb-93f1-61e32d784a1b</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
-                    </entry>
-                </criteria>
-            </value>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>44f27b0a-3251-4bdb-93f1-61e32d784a1b</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>1a7584a9-8e0d-4d7d-9fdd-f1d7409b9945</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dd873d9e-5eb2-459a-b089-3b65488e7580</value>
-                    </entry>
-                </criteria>
-            </key>
-            <value>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>44f27b0a-3251-4bdb-93f1-61e32d784a1b</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
-                    </entry>
-                </criteria>
-            </value>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>996d4c85-22b1-4226-8e82-5634930228a6</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>26d8c53c-6c17-488a-98ee-10e36b765c62</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>79815456-c94c-49aa-a3e2-e0bd91e73a60</value>
-                    </entry>
-                </criteria>
-            </key>
-            <value>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>996d4c85-22b1-4226-8e82-5634930228a6</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
-                    </entry>
-                </criteria>
-            </value>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>5408c8fd-4d4e-48be-a0f0-7a3a3e476091</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>8b40f70b-ff29-4b66-b0f7-009ff67e3473</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>26d8c53c-6c17-488a-98ee-10e36b765c62</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dd873d9e-5eb2-459a-b089-3b65488e7580</value>
-                    </entry>
-                </criteria>
-            </key>
-            <value>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>8b40f70b-ff29-4b66-b0f7-009ff67e3473</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dd873d9e-5eb2-459a-b089-3b65488e7580</value>
-                    </entry>
-                </criteria>
-            </value>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>996d4c85-22b1-4226-8e82-5634930228a6</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>1a7584a9-8e0d-4d7d-9fdd-f1d7409b9945</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>996d4c85-22b1-4226-8e82-5634930228a6</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>7ebb705b-3328-4d45-a062-f32c537127b4</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>44f27b0a-3251-4bdb-93f1-61e32d784a1b</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>79815456-c94c-49aa-a3e2-e0bd91e73a60</value>
-                    </entry>
-                </criteria>
-            </key>
-        </entry>
-        <entry>
-            <key>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>8b40f70b-ff29-4b66-b0f7-009ff67e3473</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>7ebb705b-3328-4d45-a062-f32c537127b4</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dd873d9e-5eb2-459a-b089-3b65488e7580</value>
-                    </entry>
-                </criteria>
-            </key>
-            <value>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>8b40f70b-ff29-4b66-b0f7-009ff67e3473</value>
-                    </entry>
-                    <entry>
-                        <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
-                    </entry>
-                    <entry>
-                        <key>Sexe</key>
-                        <value>dd873d9e-5eb2-459a-b089-3b65488e7580</value>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
                     </entry>
                 </criteria>
             </value>
@@ -2012,15 +1330,15 @@
                 <criteria>
                     <entry>
                         <key>arc</key>
-                        <value>e1ac5f2b-6d7f-4771-bd65-ea0900726669</value>
+                        <value>8edc0dfe-f75d-4b37-b679-840c0434f5f1</value>
                     </entry>
                     <entry>
                         <key>categorie</key>
-                        <value>996d4c85-22b1-4226-8e82-5634930228a6</value>
+                        <value>1bfc6b35-a097-4d1a-a7b9-77eb1d82caf3</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>79815456-c94c-49aa-a3e2-e0bd91e73a60</value>
+                        <value>7a05c7f5-663d-4c31-9b6c-cdbe8149f53c</value>
                     </entry>
                 </criteria>
             </key>
@@ -2028,15 +1346,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>996d4c85-22b1-4226-8e82-5634930228a6</value>
+                        <value>1bfc6b35-a097-4d1a-a7b9-77eb1d82caf3</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
                     </entry>
                 </criteria>
             </value>
@@ -2046,15 +1364,15 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>809b687e-dac0-4ea7-9456-ea7891d3bf3c</value>
+                        <value>edc84a2e-6f4c-4a41-a730-b8c97124d4b9</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>7ebb705b-3328-4d45-a062-f32c537127b4</value>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
+                        <value>124f517e-0629-45d4-ae47-8f757cb1ae5d</value>
                     </entry>
                 </criteria>
             </key>
@@ -2064,15 +1382,49 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>8b40f70b-ff29-4b66-b0f7-009ff67e3473</value>
+                        <value>78661ad8-1a94-402d-9602-adc97c98e354</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>7ebb705b-3328-4d45-a062-f32c537127b4</value>
+                        <value>f687428e-bda9-40b3-99b3-e200573de05d</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
+                        <value>7a05c7f5-663d-4c31-9b6c-cdbe8149f53c</value>
+                    </entry>
+                </criteria>
+            </key>
+            <value>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>78661ad8-1a94-402d-9602-adc97c98e354</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </value>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>8282d1f5-1f8a-4b5f-a9e3-ff1e24ac277d</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>efa0edd2-68d6-42a8-a4d3-10f775855732</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
                     </entry>
                 </criteria>
             </key>
@@ -2082,15 +1434,663 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>809b687e-dac0-4ea7-9456-ea7891d3bf3c</value>
+                        <value>78661ad8-1a94-402d-9602-adc97c98e354</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>1a7584a9-8e0d-4d7d-9fdd-f1d7409b9945</value>
+                        <value>f687428e-bda9-40b3-99b3-e200573de05d</value>
                     </entry>
                     <entry>
                         <key>Sexe</key>
-                        <value>dc57a7fc-8890-4d20-abd1-8dca83add7a3</value>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>8282d1f5-1f8a-4b5f-a9e3-ff1e24ac277d</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>1bfc6b35-a097-4d1a-a7b9-77eb1d82caf3</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>f10d412e-ecdb-4d76-8c4e-c14c5c4f8e7c</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>f0cc80d3-a4e0-4d1e-92b6-7e3b756bdede</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>7810f95e-27db-4c77-8e60-26f1c2b3b885</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>dab3a77c-6c70-4237-a44e-2b253bb3881e</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>arc</key>
+                        <value>8edc0dfe-f75d-4b37-b679-840c0434f5f1</value>
+                    </entry>
+                    <entry>
+                        <key>categorie</key>
+                        <value>1bfc6b35-a097-4d1a-a7b9-77eb1d82caf3</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>arc</key>
+                        <value>8edc0dfe-f75d-4b37-b679-840c0434f5f1</value>
+                    </entry>
+                    <entry>
+                        <key>categorie</key>
+                        <value>1bfc6b35-a097-4d1a-a7b9-77eb1d82caf3</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>124f517e-0629-45d4-ae47-8f757cb1ae5d</value>
+                    </entry>
+                </criteria>
+            </key>
+            <value>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>1bfc6b35-a097-4d1a-a7b9-77eb1d82caf3</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </value>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>1bfc6b35-a097-4d1a-a7b9-77eb1d82caf3</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>efa0edd2-68d6-42a8-a4d3-10f775855732</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>124f517e-0629-45d4-ae47-8f757cb1ae5d</value>
+                    </entry>
+                </criteria>
+            </key>
+            <value>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>1bfc6b35-a097-4d1a-a7b9-77eb1d82caf3</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </value>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>arc</key>
+                        <value>efa0edd2-68d6-42a8-a4d3-10f775855732</value>
+                    </entry>
+                    <entry>
+                        <key>categorie</key>
+                        <value>f0cc80d3-a4e0-4d1e-92b6-7e3b756bdede</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>124f517e-0629-45d4-ae47-8f757cb1ae5d</value>
+                    </entry>
+                </criteria>
+            </key>
+            <value>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>f0cc80d3-a4e0-4d1e-92b6-7e3b756bdede</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>124f517e-0629-45d4-ae47-8f757cb1ae5d</value>
+                    </entry>
+                </criteria>
+            </value>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>arc</key>
+                        <value>8edc0dfe-f75d-4b37-b679-840c0434f5f1</value>
+                    </entry>
+                    <entry>
+                        <key>categorie</key>
+                        <value>f0cc80d3-a4e0-4d1e-92b6-7e3b756bdede</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>7a05c7f5-663d-4c31-9b6c-cdbe8149f53c</value>
+                    </entry>
+                </criteria>
+            </key>
+            <value>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>f0cc80d3-a4e0-4d1e-92b6-7e3b756bdede</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>7a05c7f5-663d-4c31-9b6c-cdbe8149f53c</value>
+                    </entry>
+                </criteria>
+            </value>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>arc</key>
+                        <value>8edc0dfe-f75d-4b37-b679-840c0434f5f1</value>
+                    </entry>
+                    <entry>
+                        <key>categorie</key>
+                        <value>78661ad8-1a94-402d-9602-adc97c98e354</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>124f517e-0629-45d4-ae47-8f757cb1ae5d</value>
+                    </entry>
+                </criteria>
+            </key>
+            <value>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>78661ad8-1a94-402d-9602-adc97c98e354</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </value>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>30846d17-33f4-4535-87b7-381448fff15a</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>124f517e-0629-45d4-ae47-8f757cb1ae5d</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>8282d1f5-1f8a-4b5f-a9e3-ff1e24ac277d</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>dab3a77c-6c70-4237-a44e-2b253bb3881e</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>edc84a2e-6f4c-4a41-a730-b8c97124d4b9</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>7a05c7f5-663d-4c31-9b6c-cdbe8149f53c</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>edc84a2e-6f4c-4a41-a730-b8c97124d4b9</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>efa0edd2-68d6-42a8-a4d3-10f775855732</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>1bfc6b35-a097-4d1a-a7b9-77eb1d82caf3</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>efa0edd2-68d6-42a8-a4d3-10f775855732</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>7a05c7f5-663d-4c31-9b6c-cdbe8149f53c</value>
+                    </entry>
+                </criteria>
+            </key>
+            <value>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>1bfc6b35-a097-4d1a-a7b9-77eb1d82caf3</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </value>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>78661ad8-1a94-402d-9602-adc97c98e354</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>dab3a77c-6c70-4237-a44e-2b253bb3881e</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>78661ad8-1a94-402d-9602-adc97c98e354</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>7a05c7f5-663d-4c31-9b6c-cdbe8149f53c</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>78661ad8-1a94-402d-9602-adc97c98e354</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>efa0edd2-68d6-42a8-a4d3-10f775855732</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>30846d17-33f4-4535-87b7-381448fff15a</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>7a05c7f5-663d-4c31-9b6c-cdbe8149f53c</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>edc84a2e-6f4c-4a41-a730-b8c97124d4b9</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>arc</key>
+                        <value>efa0edd2-68d6-42a8-a4d3-10f775855732</value>
+                    </entry>
+                    <entry>
+                        <key>categorie</key>
+                        <value>30846d17-33f4-4535-87b7-381448fff15a</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>1bfc6b35-a097-4d1a-a7b9-77eb1d82caf3</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>f10d412e-ecdb-4d76-8c4e-c14c5c4f8e7c</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>124f517e-0629-45d4-ae47-8f757cb1ae5d</value>
+                    </entry>
+                </criteria>
+            </key>
+            <value>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>1bfc6b35-a097-4d1a-a7b9-77eb1d82caf3</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </value>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>1bfc6b35-a097-4d1a-a7b9-77eb1d82caf3</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>124f517e-0629-45d4-ae47-8f757cb1ae5d</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>arc</key>
+                        <value>8edc0dfe-f75d-4b37-b679-840c0434f5f1</value>
+                    </entry>
+                    <entry>
+                        <key>categorie</key>
+                        <value>f0cc80d3-a4e0-4d1e-92b6-7e3b756bdede</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>124f517e-0629-45d4-ae47-8f757cb1ae5d</value>
+                    </entry>
+                </criteria>
+            </key>
+            <value>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>f0cc80d3-a4e0-4d1e-92b6-7e3b756bdede</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>124f517e-0629-45d4-ae47-8f757cb1ae5d</value>
+                    </entry>
+                </criteria>
+            </value>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>78661ad8-1a94-402d-9602-adc97c98e354</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>f10d412e-ecdb-4d76-8c4e-c14c5c4f8e7c</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>7a05c7f5-663d-4c31-9b6c-cdbe8149f53c</value>
+                    </entry>
+                </criteria>
+            </key>
+            <value>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>78661ad8-1a94-402d-9602-adc97c98e354</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </value>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>30846d17-33f4-4535-87b7-381448fff15a</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>dab3a77c-6c70-4237-a44e-2b253bb3881e</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>1bfc6b35-a097-4d1a-a7b9-77eb1d82caf3</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>efa0edd2-68d6-42a8-a4d3-10f775855732</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
+                    </entry>
+                </criteria>
+            </key>
+        </entry>
+        <entry>
+            <key>
+                <criteria>
+                    <entry>
+                        <key>arc</key>
+                        <value>efa0edd2-68d6-42a8-a4d3-10f775855732</value>
+                    </entry>
+                    <entry>
+                        <key>categorie</key>
+                        <value>f0cc80d3-a4e0-4d1e-92b6-7e3b756bdede</value>
+                    </entry>
+                    <entry>
+                        <key>Sexe</key>
+                        <value>2165c235-5a01-4dd6-95e6-8731503ed2f5</value>
                     </entry>
                 </criteria>
             </key>
@@ -2108,31 +2108,11 @@
                 <criteria>
                     <entry>
                         <key>arc</key>
-                        <value>e1ac5f2b-6d7f-4771-bd65-ea0900726669</value>
+                        <value>8edc0dfe-f75d-4b37-b679-840c0434f5f1</value>
                     </entry>
                     <entry>
                         <key>categorie</key>
-                        <value>5408c8fd-4d4e-48be-a0f0-7a3a3e476091</value>
-                    </entry>
-                </criteria>
-            </criteriaSet>
-        </distancesetblason>
-        <distancesetblason>
-            <distances>
-                <distance>18</distance>
-                <distance>18</distance>
-            </distances>
-            <targetFace>Tri Spot &quot;Vegas&quot;</targetFace>
-            <defaultTargetFace>false</defaultTargetFace>
-            <criteriaSet>
-                <criteria>
-                    <entry>
-                        <key>arc</key>
-                        <value>e1ac5f2b-6d7f-4771-bd65-ea0900726669</value>
-                    </entry>
-                    <entry>
-                        <key>categorie</key>
-                        <value>5408c8fd-4d4e-48be-a0f0-7a3a3e476091</value>
+                        <value>30846d17-33f4-4535-87b7-381448fff15a</value>
                     </entry>
                 </criteria>
             </criteriaSet>
@@ -2148,11 +2128,451 @@
                 <criteria>
                     <entry>
                         <key>arc</key>
-                        <value>e1ac5f2b-6d7f-4771-bd65-ea0900726669</value>
+                        <value>8edc0dfe-f75d-4b37-b679-840c0434f5f1</value>
                     </entry>
                     <entry>
                         <key>categorie</key>
-                        <value>610d8817-16fb-4d69-bdf6-b2103b119025</value>
+                        <value>30846d17-33f4-4535-87b7-381448fff15a</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>18</distance>
+                <distance>18</distance>
+            </distances>
+            <targetFace>Tri Spot &quot;Vegas&quot;</targetFace>
+            <defaultTargetFace>false</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>arc</key>
+                        <value>8edc0dfe-f75d-4b37-b679-840c0434f5f1</value>
+                    </entry>
+                    <entry>
+                        <key>categorie</key>
+                        <value>30846d17-33f4-4535-87b7-381448fff15a</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>18</distance>
+                <distance>18</distance>
+            </distances>
+            <targetFace>40cm</targetFace>
+            <defaultTargetFace>false</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>arc</key>
+                        <value>8edc0dfe-f75d-4b37-b679-840c0434f5f1</value>
+                    </entry>
+                    <entry>
+                        <key>categorie</key>
+                        <value>7810f95e-27db-4c77-8e60-26f1c2b3b885</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>18</distance>
+                <distance>18</distance>
+            </distances>
+            <targetFace>Tri Spot Vertical</targetFace>
+            <defaultTargetFace>false</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>arc</key>
+                        <value>8edc0dfe-f75d-4b37-b679-840c0434f5f1</value>
+                    </entry>
+                    <entry>
+                        <key>categorie</key>
+                        <value>7810f95e-27db-4c77-8e60-26f1c2b3b885</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>18</distance>
+                <distance>18</distance>
+            </distances>
+            <targetFace>Tri Spot &quot;Vegas&quot;</targetFace>
+            <defaultTargetFace>false</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>arc</key>
+                        <value>8edc0dfe-f75d-4b37-b679-840c0434f5f1</value>
+                    </entry>
+                    <entry>
+                        <key>categorie</key>
+                        <value>7810f95e-27db-4c77-8e60-26f1c2b3b885</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>18</distance>
+                <distance>18</distance>
+            </distances>
+            <targetFace>40cm</targetFace>
+            <defaultTargetFace>true</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>edc84a2e-6f4c-4a41-a730-b8c97124d4b9</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>8edc0dfe-f75d-4b37-b679-840c0434f5f1</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>18</distance>
+                <distance>18</distance>
+            </distances>
+            <targetFace>Tri Spot Vertical</targetFace>
+            <defaultTargetFace>false</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>edc84a2e-6f4c-4a41-a730-b8c97124d4b9</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>8edc0dfe-f75d-4b37-b679-840c0434f5f1</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>18</distance>
+                <distance>18</distance>
+            </distances>
+            <targetFace>Tri Spot &quot;Vegas&quot;</targetFace>
+            <defaultTargetFace>false</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>edc84a2e-6f4c-4a41-a730-b8c97124d4b9</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>8edc0dfe-f75d-4b37-b679-840c0434f5f1</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>18</distance>
+                <distance>18</distance>
+            </distances>
+            <targetFace>40cm</targetFace>
+            <defaultTargetFace>true</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>8282d1f5-1f8a-4b5f-a9e3-ff1e24ac277d</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>8edc0dfe-f75d-4b37-b679-840c0434f5f1</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>18</distance>
+                <distance>18</distance>
+            </distances>
+            <targetFace>Tri Spot Vertical</targetFace>
+            <defaultTargetFace>false</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>8282d1f5-1f8a-4b5f-a9e3-ff1e24ac277d</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>8edc0dfe-f75d-4b37-b679-840c0434f5f1</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>18</distance>
+                <distance>18</distance>
+            </distances>
+            <targetFace>Tri Spot &quot;Vegas&quot;</targetFace>
+            <defaultTargetFace>false</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>8282d1f5-1f8a-4b5f-a9e3-ff1e24ac277d</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>8edc0dfe-f75d-4b37-b679-840c0434f5f1</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>18</distance>
+                <distance>18</distance>
+            </distances>
+            <targetFace>Tri Spot Vertical</targetFace>
+            <defaultTargetFace>true</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>30846d17-33f4-4535-87b7-381448fff15a</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>f10d412e-ecdb-4d76-8c4e-c14c5c4f8e7c</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>18</distance>
+                <distance>18</distance>
+            </distances>
+            <targetFace>Tri Spot &quot;Vegas&quot;</targetFace>
+            <defaultTargetFace>false</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>30846d17-33f4-4535-87b7-381448fff15a</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>f10d412e-ecdb-4d76-8c4e-c14c5c4f8e7c</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>18</distance>
+                <distance>18</distance>
+            </distances>
+            <targetFace>Tri Spot Vertical</targetFace>
+            <defaultTargetFace>true</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>7810f95e-27db-4c77-8e60-26f1c2b3b885</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>f10d412e-ecdb-4d76-8c4e-c14c5c4f8e7c</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>18</distance>
+                <distance>18</distance>
+            </distances>
+            <targetFace>Tri Spot &quot;Vegas&quot;</targetFace>
+            <defaultTargetFace>false</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>7810f95e-27db-4c77-8e60-26f1c2b3b885</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>f10d412e-ecdb-4d76-8c4e-c14c5c4f8e7c</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>18</distance>
+                <distance>18</distance>
+            </distances>
+            <targetFace>Tri Spot Vertical</targetFace>
+            <defaultTargetFace>true</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>edc84a2e-6f4c-4a41-a730-b8c97124d4b9</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>f10d412e-ecdb-4d76-8c4e-c14c5c4f8e7c</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>18</distance>
+                <distance>18</distance>
+            </distances>
+            <targetFace>Tri Spot &quot;Vegas&quot;</targetFace>
+            <defaultTargetFace>false</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>edc84a2e-6f4c-4a41-a730-b8c97124d4b9</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>f10d412e-ecdb-4d76-8c4e-c14c5c4f8e7c</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>18</distance>
+                <distance>18</distance>
+            </distances>
+            <targetFace>Tri Spot Vertical</targetFace>
+            <defaultTargetFace>true</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>8282d1f5-1f8a-4b5f-a9e3-ff1e24ac277d</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>f10d412e-ecdb-4d76-8c4e-c14c5c4f8e7c</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>18</distance>
+                <distance>18</distance>
+            </distances>
+            <targetFace>Tri Spot &quot;Vegas&quot;</targetFace>
+            <defaultTargetFace>false</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>8282d1f5-1f8a-4b5f-a9e3-ff1e24ac277d</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>f10d412e-ecdb-4d76-8c4e-c14c5c4f8e7c</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>18</distance>
+                <distance>18</distance>
+            </distances>
+            <targetFace>40cm</targetFace>
+            <defaultTargetFace>true</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>30846d17-33f4-4535-87b7-381448fff15a</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>f687428e-bda9-40b3-99b3-e200573de05d</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>18</distance>
+                <distance>18</distance>
+            </distances>
+            <targetFace>40cm</targetFace>
+            <defaultTargetFace>true</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>7810f95e-27db-4c77-8e60-26f1c2b3b885</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>f687428e-bda9-40b3-99b3-e200573de05d</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>18</distance>
+                <distance>18</distance>
+            </distances>
+            <targetFace>40cm</targetFace>
+            <defaultTargetFace>true</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>edc84a2e-6f4c-4a41-a730-b8c97124d4b9</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>f687428e-bda9-40b3-99b3-e200573de05d</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>18</distance>
+                <distance>18</distance>
+            </distances>
+            <targetFace>40cm</targetFace>
+            <defaultTargetFace>true</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>8282d1f5-1f8a-4b5f-a9e3-ff1e24ac277d</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>f687428e-bda9-40b3-99b3-e200573de05d</value>
                     </entry>
                 </criteria>
             </criteriaSet>
@@ -2168,11 +2588,151 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>5408c8fd-4d4e-48be-a0f0-7a3a3e476091</value>
+                        <value>30846d17-33f4-4535-87b7-381448fff15a</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>7ebb705b-3328-4d45-a062-f32c537127b4</value>
+                        <value>dab3a77c-6c70-4237-a44e-2b253bb3881e</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>18</distance>
+                <distance>18</distance>
+            </distances>
+            <targetFace>60cm</targetFace>
+            <defaultTargetFace>true</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>7810f95e-27db-4c77-8e60-26f1c2b3b885</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>dab3a77c-6c70-4237-a44e-2b253bb3881e</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>18</distance>
+                <distance>18</distance>
+            </distances>
+            <targetFace>60cm</targetFace>
+            <defaultTargetFace>true</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>edc84a2e-6f4c-4a41-a730-b8c97124d4b9</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>dab3a77c-6c70-4237-a44e-2b253bb3881e</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>18</distance>
+                <distance>18</distance>
+            </distances>
+            <targetFace>60cm</targetFace>
+            <defaultTargetFace>true</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>8282d1f5-1f8a-4b5f-a9e3-ff1e24ac277d</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>dab3a77c-6c70-4237-a44e-2b253bb3881e</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>18</distance>
+                <distance>18</distance>
+            </distances>
+            <targetFace>60cm</targetFace>
+            <defaultTargetFace>true</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>arc</key>
+                        <value>efa0edd2-68d6-42a8-a4d3-10f775855732</value>
+                    </entry>
+                    <entry>
+                        <key>categorie</key>
+                        <value>30846d17-33f4-4535-87b7-381448fff15a</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>18</distance>
+                <distance>18</distance>
+            </distances>
+            <targetFace>60cm</targetFace>
+            <defaultTargetFace>true</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>arc</key>
+                        <value>efa0edd2-68d6-42a8-a4d3-10f775855732</value>
+                    </entry>
+                    <entry>
+                        <key>categorie</key>
+                        <value>7810f95e-27db-4c77-8e60-26f1c2b3b885</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>18</distance>
+                <distance>18</distance>
+            </distances>
+            <targetFace>60cm</targetFace>
+            <defaultTargetFace>true</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>edc84a2e-6f4c-4a41-a730-b8c97124d4b9</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>efa0edd2-68d6-42a8-a4d3-10f775855732</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>18</distance>
+                <distance>18</distance>
+            </distances>
+            <targetFace>60cm</targetFace>
+            <defaultTargetFace>true</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>8282d1f5-1f8a-4b5f-a9e3-ff1e24ac277d</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>efa0edd2-68d6-42a8-a4d3-10f775855732</value>
                     </entry>
                 </criteria>
             </criteriaSet>
@@ -2188,11 +2748,11 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>44f27b0a-3251-4bdb-93f1-61e32d784a1b</value>
+                        <value>1bfc6b35-a097-4d1a-a7b9-77eb1d82caf3</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
                     </entry>
                 </criteria>
             </criteriaSet>
@@ -2208,11 +2768,31 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>996d4c85-22b1-4226-8e82-5634930228a6</value>
+                        <value>78661ad8-1a94-402d-9602-adc97c98e354</value>
                     </entry>
                     <entry>
                         <key>arc</key>
-                        <value>05e98b83-ada3-449b-bdfd-76f89199a353</value>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>18</distance>
+                <distance>18</distance>
+            </distances>
+            <targetFace>60cm</targetFace>
+            <defaultTargetFace>true</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>f0cc80d3-a4e0-4d1e-92b6-7e3b756bdede</value>
+                    </entry>
+                    <entry>
+                        <key>arc</key>
+                        <value>a2d0ec3e-13b2-48ad-9bca-324ff0694214</value>
                     </entry>
                 </criteria>
             </criteriaSet>
@@ -2222,7 +2802,7 @@
         <departage>10</departage>
         <departage>9</departage>
     </departages>
-    <officialReglement>true</officialReglement>
+    <officialReglement>false</officialReglement>
     <federation>
         <sigle>ASTA-SBV</sigle>
         <nom>Association Suisse de Tir à l'Arc</nom>

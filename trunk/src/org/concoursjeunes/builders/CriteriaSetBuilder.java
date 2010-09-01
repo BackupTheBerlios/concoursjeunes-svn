@@ -95,6 +95,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.ajdeveloppement.concours.cache.CriteriaSetCache;
+import org.ajdeveloppement.concours.cache.CriteriaSetCache.CriteriaSetPK;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.CriteriaSet;
 import org.concoursjeunes.Criterion;
@@ -121,7 +122,7 @@ public class CriteriaSetBuilder {
 		try {
 			CriteriaSetCache cache = CriteriaSetCache.getInstance();
 			
-			CriteriaSet criteriaSet = cache.get(numCriteriaSet);
+			CriteriaSet criteriaSet = cache.get(new CriteriaSetPK(numCriteriaSet, reglement));
 			if(criteriaSet == null) {
 			
 				Map<Criterion, CriterionElement> criteria = new HashMap<Criterion, CriterionElement>();

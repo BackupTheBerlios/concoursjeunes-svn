@@ -119,6 +119,7 @@ import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
 import org.ajdeveloppement.commons.persistence.sql.SqlTable;
 import org.ajdeveloppement.commons.persistence.sql.SqlUnmappedFields;
 import org.ajdeveloppement.concours.cache.CriteriaSetCache;
+import org.ajdeveloppement.concours.cache.CriteriaSetCache.CriteriaSetPK;
 
 /**
  * Jeux de critères utilisé pour distinguer un archer a des fins
@@ -371,7 +372,7 @@ public class CriteriaSet implements ObjectPersistence {
 				throw new ObjectPersistenceException(e);
 			}
 			
-			if(!CriteriaSetCache.getInstance().containsKey(numCriteriaSet))
+			if(!CriteriaSetCache.getInstance().containsKey(new CriteriaSetPK(numCriteriaSet, reglement)))
 				CriteriaSetCache.getInstance().add(this);
 		}
 	}
@@ -381,7 +382,7 @@ public class CriteriaSet implements ObjectPersistence {
 		if(session == null || !session.contains(this)) {
 			helper.delete(this);
 			
-			CriteriaSetCache.getInstance().remove(numCriteriaSet);
+			CriteriaSetCache.getInstance().remove(new CriteriaSetPK(numCriteriaSet, reglement));
 			
 			if(session != null)
 				session.addThreatyObject(this);

@@ -88,13 +88,15 @@
  */
 package org.ajdeveloppement.concours.cache;
 
+import org.ajdeveloppement.concours.cache.CriteriaSetCache.CriteriaSetPK;
 import org.concoursjeunes.CriteriaSet;
+import org.concoursjeunes.Reglement;
 
 /**
  * @author Aurélien JEOFFRAY
  *
  */
-public class CriteriaSetCache extends AbstractCache<Integer, CriteriaSet> {
+public class CriteriaSetCache extends AbstractCache<CriteriaSetPK, CriteriaSet> {
 
 	private static CriteriaSetCache instance = new CriteriaSetCache();
 	
@@ -110,7 +112,55 @@ public class CriteriaSetCache extends AbstractCache<Integer, CriteriaSet> {
 	 */
 	@Override
 	public void add(CriteriaSet criteriaSet) {
-		put(criteriaSet.getNumCriteriaSet(), criteriaSet);
+		put(new CriteriaSetPK(criteriaSet.getNumCriteriaSet(), criteriaSet.getReglement()), criteriaSet);
 	}
 
+	public static class CriteriaSetPK {
+		private int numCriteriaSet;
+		private Reglement reglement;
+		/**
+		 * @param numCriteriaSet
+		 * @param reglement
+		 */
+		public CriteriaSetPK(int numCriteriaSet, Reglement reglement) {
+			super();
+			this.numCriteriaSet = numCriteriaSet;
+			this.reglement = reglement;
+		}
+		
+		/* (non-Javadoc)
+		 * @see java.lang.Object#hashCode()
+		 */
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + numCriteriaSet;
+			result = prime * result
+					+ ((reglement == null) ? 0 : reglement.hashCode());
+			return result;
+		}
+		
+		/* (non-Javadoc)
+		 * @see java.lang.Object#equals(java.lang.Object)
+		 */
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (!(obj instanceof CriteriaSetPK))
+				return false;
+			CriteriaSetPK other = (CriteriaSetPK) obj;
+			if (numCriteriaSet != other.numCriteriaSet)
+				return false;
+			if (reglement == null) {
+				if (other.reglement != null)
+					return false;
+			} else if (!reglement.equals(other.reglement))
+				return false;
+			return true;
+		}
+	}
 }

@@ -121,11 +121,11 @@ import org.concoursjeunes.Entite;
 import org.concoursjeunes.Federation;
 import org.concoursjeunes.Profile;
 import org.concoursjeunes.manager.FederationManager;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Binding;
 import org.jdesktop.beansbinding.BindingGroup;
 import org.jdesktop.beansbinding.Bindings;
-import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.JXTitledSeparator;
 import org.jdesktop.swingx.painter.GlossPainter;
@@ -234,7 +234,7 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 		JPanel jpContact = new JPanel();
 		
 		contactPanel = new ContactPanel(profile);
-		contactPanel.setSize(438, 400);
+		contactPanel.setSize(450, 400);
 		contactPanel.addContactPanelListener(this);
 		// [end]
 		
@@ -493,7 +493,7 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 		this.fullEditable = fullEditable;
 		completePanel();
 		
-		setSize(905, 705);
+		setSize(905, 715);
 		setResizable(false);
 		setLocationRelativeTo(null);
 		
