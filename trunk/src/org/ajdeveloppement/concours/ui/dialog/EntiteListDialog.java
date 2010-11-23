@@ -102,19 +102,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
-import javax.swing.RowFilter;
+import javax.swing.*;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.EventListenerList;
@@ -225,6 +213,7 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		
 		for(Federation federation : FederationManager.getAvailableFederations())
 			jcbFederation.addItem(federation);
+		jcbFederation.addActionListener(this);
 		//jcbFederation.setSelectedItem(ApplicationCore..getFederation());
 
 		//jtfNom.addFocusListener(this);
@@ -407,6 +396,8 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 			}
 		} else if(ae.getSource() == jbEdit) {
 			showEntiteDialog();
+		} else if(ae.getSource() == jcbFederation) {
+			
 		}
 	}
 

@@ -1,4 +1,7 @@
 function checkPrintable(ficheConcours, options) {
+	var phasesFinales = new org.ajdeveloppement.concours.PhasesFinales(ficheConcours);
+	if(phasesFinales == null || phasesFinales.getClassement().size() == 0)
+		return false;
 	return true;
 }
 
@@ -19,6 +22,8 @@ function printState(ficheConcours, template, document, writer, options) {
 		var strArbitresAss = "";
 		
 		var phasesFinales = new org.ajdeveloppement.concours.PhasesFinales(ficheConcours);
+		if(phasesFinales == null)
+			return;
 		
 		tplClassement.setLocalisationReader(localeReader);
 		tplClassement.loadTemplate(template);

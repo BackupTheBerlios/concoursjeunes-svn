@@ -302,7 +302,12 @@ public class FicheConcoursFinalsPane extends JPanel implements ActionListener, M
 		}
 		try {
 			int startHeightCriteriaSet = 20;
-			for(CriteriaSet criteriaSet : ficheConcours.getConcurrentList().listCriteriaSet()) {
+			
+			List<CriteriaSet> lstCriteriaSet = ficheConcours.getConcurrentList().listCriteriaSet();
+			
+			CriteriaSet.sortCriteriaSet(lstCriteriaSet, ficheConcours.getParametre().getReglement().getListCriteria());
+			
+			for(CriteriaSet criteriaSet : lstCriteriaSet) {
 				int nombrePhaseCategorie = phaseFinal.getNombrePhase(criteriaSet);
 				
 				int startHeight = 30;

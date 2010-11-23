@@ -114,6 +114,8 @@ import java.util.List;
 
 import javax.swing.*;
 import javax.swing.event.EventListenerList;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.text.html.HTMLEditorKit;
 
 import org.ajdeveloppement.apps.localisation.Localizable;
@@ -150,7 +152,7 @@ import com.lowagie.text.Font;
  * @author Aurélien JEOFFRAY
  *
  */
-public class ContactPanel extends JPanel implements ActionListener, MouseListener {
+public class ContactPanel extends JPanel implements ActionListener, MouseListener, ListSelectionListener {
 	private Profile profile;
 	private Contact contact = new Contact();
 	private boolean create = true;
@@ -456,6 +458,10 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 			jcbTypeCoordinate.addItem(type);
 		}
 		
+		jlstCoordinates.addListSelectionListener(this);
+		jbEditCoordinate.setEnabled(false);
+		jbDelCoordinate.setEnabled(false);
+		
 		jxhSaveCoordinate.addActionListener(this);
 		jxhCancelCoordinate.addActionListener(this);
 		
@@ -540,7 +546,7 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 			if(contact.getCoordinates() != null && contact.getCoordinates().size() > 0)
 				coordinatesModel.setElements(new ArrayList<Coordinate>(contact.getCoordinates()));
 			else
-				coordinatesModel.setElements(Collections.singletonList(new Coordinate()));
+				coordinatesModel.setElements(new ArrayList<Coordinate>(Collections.singletonList(new Coordinate())));
 			
 			jlSateSaveContact.setEnabled(true);
 		} else {
@@ -721,8 +727,11 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 			if(e.getSource() == jxhSaveCoordinate) {
 				editedCoordinate.setCoordinateType((Coordinate.Type)jcbTypeCoordinate.getSelectedItem());
 				editedCoordinate.setValue(jtfValueCoordinate.getText());
-				if(!coordinatesModel.getElements().contains(editedCoordinate))
+				if(!coordinatesModel.getElements().contains(editedCoordinate)) {
+					if(coordinatesModel.getSize() == 1 && ((Coordinate)coordinatesModel.getElementAt(0)).getValue() == null)
+						coordinatesModel.remove((Coordinate)coordinatesModel.getElementAt(0));
 					coordinatesModel.add(editedCoordinate);
+				}
 			}
 			cardLayout.show(this, "contact"); //$NON-NLS-1$
 		} else if(e.getSource() == miMail) {
@@ -776,6 +785,19 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 	@Override
 	public void mouseEntered(MouseEvent e) {
 	}
+	
+	@Override
+	public void valueChanged(ListSelectionEvent e) {
+		if(e.getSource() == jlstCoordinates) {
+			if(jlstCoordinates.getSelectedValue() != null && ((Coordinate)jlstCoordinates.getSelectedValue()).getValue() != null) {
+				jbEditCoordinate.setEnabled(true);
+				jbDelCoordinate.setEnabled(true);
+			} else {
+				jbEditCoordinate.setEnabled(false);
+				jbDelCoordinate.setEnabled(false);
+			}
+		}
+	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
@@ -798,4 +820,6 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 		
 		public void contactAdded(Contact contact);
 	}
+
+	
 }
