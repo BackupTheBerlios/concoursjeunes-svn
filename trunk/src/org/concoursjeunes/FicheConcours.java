@@ -136,10 +136,15 @@ import org.concoursjeunes.manager.EntiteManager;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
+//@XmlAccessorOrder(value=)
 public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 
 	@XmlAttribute(name="dbuuid")
-	private UUID dbUUID = null; 
+	private UUID dbUUID = null;
+	
+	@XmlElementWrapper(name="federations")
+	@XmlElement(name="federation")
+	private List<Federation> federations = null;
 	
 	@XmlElementWrapper(name="entitesConcours")
 	@XmlElement(name="entite")
@@ -424,6 +429,14 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 			for(Judge judge : parametre.getJudges()) {
 				if(!entitesConcours.contains(judge.getEntite()))
 					entitesConcours.add(judge.getEntite());
+			}
+			if(!entitesConcours.contains(parametre.getClub()))
+				entitesConcours.add(parametre.getClub());
+			
+			federations = new ArrayList<Federation>();
+			for(Entite entite : entitesConcours) {
+				if(!federations.contains(entite.getFederation()))
+					federations.add(entite.getFederation());
 			}
 		}
 	}

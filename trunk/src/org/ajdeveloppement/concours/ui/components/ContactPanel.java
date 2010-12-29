@@ -112,7 +112,19 @@ import java.util.Comparator;
 import java.util.EventListener;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JEditorPane;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.event.EventListenerList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -293,9 +305,9 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 							profile.getLocalisation().getResourceString("entite.coordinate.type."  //$NON-NLS-1$
 								+ coordinate.getCoordinateType().getValue().toLowerCase()) + " - </span>" +  coordinate.getValue() + "</html>"; //$NON-NLS-1$ //$NON-NLS-2$
 					} else
-						value = "<html></html>";
+						value = "<html></html>"; //$NON-NLS-1$
 				} else {
-					value = "<html></html>";
+					value = "<html></html>"; //$NON-NLS-1$
 				}
 				
 				return super.getListCellRendererComponent(list, value, index, isSelected,
@@ -820,6 +832,4 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 		
 		public void contactAdded(Contact contact);
 	}
-
-	
 }

@@ -93,7 +93,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.ajdeveloppement.commons.persistence.LoadHelper;
+import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.sql.ResultSetLoadHandler;
+import org.ajdeveloppement.commons.persistence.sql.SqlLoadHandler;
+import org.ajdeveloppement.concours.cache.FederationCache;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.CompetitionLevel;
 import org.concoursjeunes.Federation;
@@ -103,48 +109,106 @@ import org.concoursjeunes.Federation;
  *
  */
 public class FederationBuilder {
+	
+	private static LoadHelper<Federation,Map<String,Object>> loadHelper;
+	private static LoadHelper<Federation,ResultSet> resultSetLoadHelper;
+	static {
+		try {
+			loadHelper = new LoadHelper<Federation,Map<String,Object>>(new SqlLoadHandler<Federation>(ApplicationCore.dbConnection, Federation.class));
+			resultSetLoadHelper = new LoadHelper<Federation, ResultSet>(new ResultSetLoadHandler<Federation>(Federation.class));
+		} catch(ObjectPersistenceException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param numFederation
+	 * @return
+	 * @throws ObjectPersistenceException
+	 */
+	public static Federation getFederation(int numFederation) throws ObjectPersistenceException {
+		return getFederation(numFederation, null);
+	}
+	
+	/**
+	 * 
+	 * @param rs
+	 * @return
+	 * @throws ObjectPersistenceException
+	 */
+	public static Federation getFederation(ResultSet rs) throws ObjectPersistenceException {
+		return getFederation(0, rs);
+	}
+	
+	/**
+	 * 
+	 * @param numFederation
+	 * @param rs
+	 * @return
+	 * @throws ObjectPersistenceException
+	 */
 	@SuppressWarnings("nls")
-	public static Federation getFederation(int numFederation) throws SQLException {
-		String sql = "select * from FEDERATION where NUMFEDERATION=" + numFederation;
+	private static Federation getFederation(int numFederation, ResultSet resultSet) throws ObjectPersistenceException {
 		Federation federation = null;
 		
-		Statement stmt = ApplicationCore.dbConnection.createStatement();
-		try {
-			ResultSet rs = stmt.executeQuery(sql);
+		if(resultSet != null) {
 			try {
-				if(rs.first()) {
-					federation = new Federation(
-							rs.getString("NOMFEDERATION"),
-							rs.getInt("NUMFEDERATION"),
-							rs.getString("SIGLEFEDERATION"));
-					rs.close();
-					
-					//retourne les langues disponible pour les niveaux de compétition
-					List<String> langs = new ArrayList<String>();
-					sql = "select distinct LANG from NIVEAU_COMPETITION where NUMFEDERATION=" + numFederation;
-					rs = stmt.executeQuery(sql);
-					while(rs.next()) {
-						langs.add(rs.getString(1));
-					}
-					rs.close();
-					
-					//construit les niveaux
-					List<CompetitionLevel> competitionLevels = new ArrayList<CompetitionLevel>();
-					sql = "select distinct CODENIVEAU from NIVEAU_COMPETITION where NUMFEDERATION=" + numFederation;
-					rs = stmt.executeQuery(sql);
-					while(rs.next()) {
-						for(String lang : langs) {
-							competitionLevels.add(CompetitionLevelBuilder.getCompetitionLevel(
-									rs.getInt(1), federation, lang));
-						}
-					}
-					federation.setCompetitionLevels(competitionLevels);
-				}
-			} finally {
-				rs.close();
+				federation = FederationCache.getInstance().get(resultSet.getInt("FEDERATION.NUMFEDERATION"));
+			} catch (SQLException e) {
+				throw new ObjectPersistenceException(e);
 			}
-		} finally {
-			stmt.close();
+		} else
+			federation = FederationCache.getInstance().get(numFederation);
+		
+		if(federation == null) {
+			federation = new Federation();
+			if(resultSet == null) {
+				federation.setNumFederation(numFederation);
+				
+				loadHelper.load(federation);
+			} else {
+				resultSetLoadHelper.load(federation, resultSet);
+			}
+		
+			try {
+				Statement stmt = ApplicationCore.dbConnection.createStatement();
+				try {
+					//ResultSet rs = stmt.executeQuery(sql);
+					ResultSet rs = null;
+					try {
+						//retourne les langues disponible pour les niveaux de compétition
+						List<String> langs = new ArrayList<String>();
+						String sql = "select distinct LANG from NIVEAU_COMPETITION where NUMFEDERATION=" + numFederation;
+						rs = stmt.executeQuery(sql);
+						while(rs.next()) {
+							langs.add(rs.getString(1));
+						}
+						rs.close();
+						
+						//construit les niveaux
+						List<CompetitionLevel> competitionLevels = new ArrayList<CompetitionLevel>();
+						sql = "select distinct CODENIVEAU from NIVEAU_COMPETITION where NUMFEDERATION=" + numFederation;
+						rs = stmt.executeQuery(sql);
+						while(rs.next()) {
+							for(String lang : langs) {
+								competitionLevels.add(CompetitionLevelBuilder.getCompetitionLevel(
+										rs.getInt(1), federation, lang));
+							}
+						}
+						federation.setCompetitionLevels(competitionLevels);
+						
+						FederationCache.getInstance().add(federation);
+					} finally {
+						if(rs != null)
+							rs.close();
+					}
+				} finally {
+					stmt.close();
+				}
+			} catch (SQLException e) {
+				throw new ObjectPersistenceException(e);
+			}
 		}
 		
 		return federation;

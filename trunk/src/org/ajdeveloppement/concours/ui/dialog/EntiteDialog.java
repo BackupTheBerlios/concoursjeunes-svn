@@ -98,7 +98,18 @@ import java.text.ParseException;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JFormattedTextField;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -493,7 +504,7 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 		this.fullEditable = fullEditable;
 		completePanel();
 		
-		setSize(905, 715);
+		setSize(910, 715);
 		setResizable(false);
 		setLocationRelativeTo(null);
 		
@@ -518,7 +529,6 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 	@Override
 	public void actionPerformed(ActionEvent ae) {
 		if (ae.getSource() == jbAnnuler) {
-			System.out.println(jtaAdresse.getSize());
 			setVisible(false);
 		} else if(ae.getSource() == jbValider) {
 			if(entiteBinding != null) {

@@ -98,12 +98,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
 
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.ajdeveloppement.commons.persistence.ObjectPersistence;
@@ -116,6 +120,7 @@ import org.ajdeveloppement.commons.persistence.sql.SqlGeneratedIdField;
 import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
 import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
 import org.ajdeveloppement.commons.persistence.sql.SqlTable;
+import org.ajdeveloppement.concours.cache.FederationCache;
 
 /**
  * Représente une fédération de tir à l'arc
@@ -134,6 +139,10 @@ public class Federation implements ObjectPersistence {
 			e.printStackTrace();
 		}
 	}
+	
+	@XmlID
+	@XmlAttribute(name="id")
+	private String xmlId;
 	
 	@SqlField(name="NUMFEDERATION")
 	@XmlTransient
@@ -355,6 +364,9 @@ public class Federation implements ObjectPersistence {
 				
 				if(session != null)
 					session.addThreatyObject(this);
+				
+				if(!FederationCache.getInstance().containsKey(numFederation))
+					FederationCache.getInstance().add(this);
 		
 				Statement stmt = ApplicationCore.dbConnection.createStatement();
 				String sql = "delete from NIVEAU_COMPETITION where NUMFEDERATION=" + numFederation; //$NON-NLS-1$
@@ -394,7 +406,18 @@ public class Federation implements ObjectPersistence {
 			
 			if(session != null)
 				session.addThreatyObject(this);
+			
+			FederationCache.getInstance().remove(numFederation);
 		}
+	}
+	
+	/**
+	 * For JAXB Usage only. Do not use.
+	 * 
+	 * @param marshaller
+	 */
+	protected void beforeMarshal(Marshaller marshaller) {
+		xmlId = UUID.randomUUID().toString();
 	}
 	
 	/**

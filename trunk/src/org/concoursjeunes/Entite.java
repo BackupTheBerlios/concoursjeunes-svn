@@ -105,6 +105,7 @@ import org.ajdeveloppement.commons.persistence.Session;
 import org.ajdeveloppement.commons.persistence.StoreHelper;
 import org.ajdeveloppement.commons.persistence.sql.SessionHelper;
 import org.ajdeveloppement.commons.persistence.sql.SqlField;
+import org.ajdeveloppement.commons.persistence.sql.SqlForeignKey;
 import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
 import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
 import org.ajdeveloppement.commons.persistence.sql.SqlTable;
@@ -146,6 +147,9 @@ public class Entite implements ObjectPersistence {
 	private String nom;
 	@SqlField(name = "AGREMENTENTITE")
 	private String agrement;
+	@XmlTransient
+	@SqlForeignKey(mappedTo="NUMFEDERATION")
+	private Federation federation;
 	@SqlField(name = "ADRESSEENTITE")
 	private String adresse;
 	@SqlField(name = "CODEPOSTALENTITE")
@@ -292,6 +296,20 @@ public class Entite implements ObjectPersistence {
 	 */
 	public void setAgrement(String agrement) {
 		this.agrement = agrement;
+	}
+
+	/**
+	 * @param federation federation à définir
+	 */
+	public void setFederation(Federation federation) {
+		this.federation = federation;
+	}
+
+	/**
+	 * @return federation
+	 */
+	public Federation getFederation() {
+		return federation;
 	}
 
 	/**

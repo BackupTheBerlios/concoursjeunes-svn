@@ -94,6 +94,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Federation;
 import org.concoursjeunes.builders.FederationBuilder;
@@ -120,6 +121,8 @@ public class FederationManager {
 				federations.add(FederationBuilder.getFederation(rs.getInt("NUMFEDERATION"))); //$NON-NLS-1$
 			}
 		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (ObjectPersistenceException e) {
 			e.printStackTrace();
 		}
 		

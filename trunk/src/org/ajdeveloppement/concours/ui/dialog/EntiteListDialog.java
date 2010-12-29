@@ -94,6 +94,8 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.sql.PreparedStatement;
@@ -102,7 +104,19 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.RowFilter;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.EventListenerList;
@@ -133,7 +147,7 @@ import org.jdesktop.swingx.painter.GlossPainter;
 /**
  * @author Aurélien JEOFFRAY
  */
-public class EntiteListDialog extends JDialog implements ActionListener, MouseListener, CaretListener, ListSelectionListener {
+public class EntiteListDialog extends JDialog implements ActionListener, MouseListener, CaretListener, ListSelectionListener, ItemListener {
 
 	public static final int VALIDER = 1;
 	public static final int ANNULER = 2;
@@ -205,7 +219,7 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		GridBagConstraints c = new GridBagConstraints();
 		GridbagComposer gridbagComposer = new GridbagComposer();
 		
-		dtm = new EntiteTableModel();
+		
 		
 		GlossPainter gloss = new GlossPainter();
 		jxhHeader.setBackground(new Color(200,200,255));
@@ -213,8 +227,10 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		
 		for(Federation federation : FederationManager.getAvailableFederations())
 			jcbFederation.addItem(federation);
-		jcbFederation.addActionListener(this);
-		//jcbFederation.setSelectedItem(ApplicationCore..getFederation());
+		jcbFederation.setSelectedItem(profile.getConfiguration().getFederation());
+		jcbFederation.addItemListener(this);
+		
+		dtm = new EntiteTableModel((Federation)jcbFederation.getSelectedItem());
 
 		//jtfNom.addFocusListener(this);
 		jtfNom.addCaretListener(this);
@@ -396,8 +412,6 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 			}
 		} else if(ae.getSource() == jbEdit) {
 			showEntiteDialog();
-		} else if(ae.getSource() == jcbFederation) {
-			
 		}
 	}
 
@@ -452,7 +466,19 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		}
 	}
 	
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		if(e.getSource() == jcbFederation) {
+			dtm.setFederation((Federation)e.getItem());
+		}
+	}
+	
 	private class EntiteTableModel implements TableModel {
+		
+		/**
+		 * Fédération de rattachement de l'entité
+		 */
+		private Federation federation;
 		
 		private EventListenerList listenerList = new EventListenerList();
 
@@ -465,24 +491,31 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		private int nbRows = 0;
 		private int curIndex = 0;
 
-		public EntiteTableModel() {
-			try {
-				pstmt = ApplicationCore.dbConnection.prepareStatement(
-						"select * from Entite order by VilleEntite",ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);//$NON-NLS-1$
-				pstmt.setFetchSize(200);
-				
-				pstmtCountRow = ApplicationCore.dbConnection.prepareStatement("select count(*) as NbRows from Entite"); //$NON-NLS-1$
-
-				rs = pstmt.executeQuery();
-			} catch (SQLException e) {
-				DisplayableErrorHelper.displayException(e);
-				e.printStackTrace();
-			}
+		public EntiteTableModel(Federation federation) {
+			this.federation = federation;
 
 			columnName.add(profile.getLocalisation().getResourceString("listeentite.nom")); //$NON-NLS-1$
 			columnName.add(profile.getLocalisation().getResourceString("listeentite.agrement")); //$NON-NLS-1$
 			columnName.add(profile.getLocalisation().getResourceString("listeentite.adresse")); //$NON-NLS-1$
 			columnName.add(profile.getLocalisation().getResourceString("listeentite.ville")); //$NON-NLS-1$
+			
+			executeQuery();
+		}
+//
+//		/**
+//		 * @return federation
+//		 */
+//		public Federation getFederation() {
+//			return federation;
+//		}
+
+		/**
+		 * @param federation federation à définir
+		 */
+		public void setFederation(Federation federation) {
+			this.federation = federation;
+			
+			executeQuery();
 		}
 
 		/**
@@ -491,6 +524,14 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		@Override
 		public void addTableModelListener(TableModelListener l) {
 			listenerList.add(TableModelListener.class, l);
+		}
+		
+		/**
+		 * @see javax.swing.table.TableModel#removeTableModelListener(javax.swing.event.TableModelListener)
+		 */
+		@Override
+		public void removeTableModelListener(TableModelListener l) {
+			listenerList.remove(TableModelListener.class, l);
 		}
 
 		/**
@@ -544,21 +585,26 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		public Object getValueAt(int rowIndex, int columnIndex) {
 			getEntiteAtRow(rowIndex);
 
-			switch(columnIndex) {
-			case 0:
-				return curEntite.getNom();
-			case 1:
-				return curEntite.getAgrement();
-			case 2:
-				return curEntite.getAdresse();
-			case 3:
-				return curEntite.getVille();
-			default:
-				return null;
+			if(curEntite != null) {
+				switch(columnIndex) {
+					case 0:
+						return curEntite.getNom();
+					case 1:
+						return curEntite.getAgrement();
+					case 2:
+						return curEntite.getAdresse();
+					case 3:
+						return curEntite.getVille();
+					default:
+						return null;
+				}
 			}
+			return null;
 		}
 
 		/**
+		 * Retourne toujours false (le tableau n'est pas éditable)
+		 * 
 		 * @see javax.swing.table.TableModel#isCellEditable(int, int)
 		 */
 		@Override
@@ -567,20 +613,20 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 		}
 
 		/**
-		 * @see javax.swing.table.TableModel#removeTableModelListener(javax.swing.event.TableModelListener)
-		 */
-		@Override
-		public void removeTableModelListener(TableModelListener l) {
-			listenerList.remove(TableModelListener.class, l);
-		}
-
-		/**
+		 * Ne fait rien car le tableau n'est pas édiable
+		 * 
 		 * @see javax.swing.table.TableModel#setValueAt(java.lang.Object, int, int)
 		 */
 		@Override
 		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 		}
 
+		/**
+		 * Retourne l'entité à la ligne passé en paramétre
+		 * 
+		 * @param rowIndex l'index de l'entité à retourner
+		 * @return l'entité à l'index données
+		 */
 		public Entite getEntiteAtRow(int rowIndex) {
 
 			if(rowIndex != curIndex || curEntite == null) {
@@ -591,6 +637,9 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 			return curEntite;
 		}
 		
+		/**
+		 * Réactualise le modele avec la base de données
+		 */
 		public void refreshModel() {
 			try {
 				if(rs != null)	
@@ -621,11 +670,38 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 			return entite;
 		}
 		
+		private void executeQuery() {
+			try {
+				String condition = ""; //$NON-NLS-1$
+				if(federation != null)
+					condition = "where NUMFEDERATION=" + federation.getNumFederation(); //$NON-NLS-1$
+				
+				pstmt = ApplicationCore.dbConnection.prepareStatement(
+						String.format("select * from Entite %s order by VilleEntite", condition), //$NON-NLS-1$
+						ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+				pstmt.setFetchSize(200);
+				
+				pstmtCountRow = ApplicationCore.dbConnection.prepareStatement(
+						String.format("select count(*) as NbRows from Entite %s", condition)); //$NON-NLS-1$
+
+				if(rs != null)	
+					rs.close();
+				rs = pstmt.executeQuery();
+				
+				nbRows = 0;
+				getRowCount();
+				
+				fireTableChanged(new TableModelEvent(this));
+			} catch (SQLException e) {
+				DisplayableErrorHelper.displayException(e);
+				e.printStackTrace();
+			}
+		}
+		
 		private void fireTableChanged(TableModelEvent e) {
 			for(TableModelListener l : listenerList.getListeners(TableModelListener.class)) {
 				l.tableChanged(e);
 			}
 		}
 	}
-
 }

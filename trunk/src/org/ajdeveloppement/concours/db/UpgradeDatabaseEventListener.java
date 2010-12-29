@@ -1,5 +1,5 @@
 /*
- * Créé le 8 mai 2010 à 13:41:10 pour ConcoursJeunes
+ * Créé le 29 déc. 2010 à 15:06:47 pour ConcoursJeunes / ArcCompétition
  *
  * Copyright 2002-2010 - Aurélien JEOFFRAY
  *
@@ -86,59 +86,88 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.ajdeveloppement.concours.managers;
+package org.ajdeveloppement.concours.db;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
-import org.ajdeveloppement.commons.sql.SqlManager;
-import org.ajdeveloppement.concours.Contact;
-import org.ajdeveloppement.concours.builders.ContactBuilder;
-import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.Entite;
+import javax.swing.ProgressMonitor;
+
+import org.h2.api.DatabaseEventListener;
 
 /**
  * @author Aurélien JEOFFRAY
  *
  */
-public class ContactManager {
+public class UpgradeDatabaseEventListener implements org.h2.upgrade.v1_1.api.DatabaseEventListener,DatabaseEventListener {
+
+	private static ProgressMonitor monitor = new ProgressMonitor(null, "Chargement/Migration de la base\nL'opération peut durer plusieurs minutes\n ", "", 0, 1);
+	private static boolean enabled = true;
 	
-	public static List<Contact> getAllContacts() throws ObjectPersistenceException {
-		return getContactsForEntity(null);
+	public static void forceCloseMonitor() {
+		monitor.close();
 	}
 	
-	public static List<Contact> getContactsForEntity(Entite entity) throws ObjectPersistenceException {
-		List<Contact> contacts = new ArrayList<Contact>();
-		
-		SqlManager manager = new SqlManager(ApplicationCore.dbConnection, null);
-		try {
-			String sql = "select distinct CONTACT.*,CIVILITY.* from CONTACT left join CIVILITY on CONTACT.ID_CIVILITY=CIVILITY.ID_CIVILITY"; //$NON-NLS-1$
-			
-			if(entity == null || entity.getIdEntite() != null) {
-				if(entity != null && entity.getIdEntite() != null)
-					sql += " where ID_ENTITE = '" + entity.getIdEntite().toString() + "'";  //$NON-NLS-1$//$NON-NLS-2$
-				
-				sql += " order by CONTACT.NAME,CONTACT.FIRSTNAME"; //$NON-NLS-1$
-				
-				ResultSet rs = manager.executeQuery(sql); 
-				try {
-					while(rs.next()) {
-						Contact contact = ContactBuilder.getContact(rs);
-						contact.setEntite(entity);
-						
-						contacts.add(contact);
-					}
-				} finally {
-					rs.close();
-				}
-			}
-		} catch (SQLException e) {
-			throw new ObjectPersistenceException(e);
+	public static void setMonitorEnabled(boolean enabled) {
+		UpgradeDatabaseEventListener.enabled = enabled;
+	}
+	/* (non-Javadoc)
+	 * @see org.h2.api.DatabaseEventListener#closingDatabase()
+	 */
+	@Override
+	public void closingDatabase() {
+		// TODO Raccord de méthode auto-généré
+
+	}
+
+	/* (non-Javadoc)
+	 * @see org.h2.api.DatabaseEventListener#exceptionThrown(java.sql.SQLException, java.lang.String)
+	 */
+	@Override
+	public void exceptionThrown(SQLException arg0, String arg1) {
+		// TODO Raccord de méthode auto-généré
+
+	}
+
+	/* (non-Javadoc)
+	 * @see org.h2.api.DatabaseEventListener#init(java.lang.String)
+	 */
+	@Override
+	public void init(String arg0) {
+		// TODO Raccord de méthode auto-généré
+
+	}
+
+	/* (non-Javadoc)
+	 * @see org.h2.api.DatabaseEventListener#opened()
+	 */
+	@Override
+	public void opened() {
+		// TODO Raccord de méthode auto-généré
+
+	}
+
+	/* (non-Javadoc)
+	 * @see org.h2.api.DatabaseEventListener#setProgress(int, java.lang.String, int, int)
+	 */
+	@Override
+	public void setProgress(int state, String name, int x, int max) {
+		if(enabled) {
+			monitor.setMaximum(max);
+			monitor.setNote("Traitement de " + name); //$NON-NLS-1$
+			monitor.setProgress((x < max) ? x+1 : x);
 		}
-		
-		return contacts;
 	}
+
+	@Override
+	public void diskSpaceIsLow(long arg0) throws SQLException {
+		// TODO Raccord de méthode auto-généré
+		
+	}
+
+	@Override
+	public void diskSpaceIsLow() {
+		// TODO Raccord de méthode auto-généré
+		
+	}
+
 }

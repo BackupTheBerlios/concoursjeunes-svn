@@ -115,6 +115,7 @@ public class AutoCompleteDocument extends PlainDocument {
 	 * d'autocomplement
 	 * 
 	 * @author Aurélien JEOFFRAY
+	 * @version 1.0
 	 */
 	public enum SearchType {
 		/**

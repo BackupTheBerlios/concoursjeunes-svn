@@ -116,6 +116,7 @@ import org.ajdeveloppement.commons.io.FileUtils;
 import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
 import org.ajdeveloppement.commons.security.SecurityImporter;
 import org.ajdeveloppement.commons.sql.SqlManager;
+import org.ajdeveloppement.concours.db.UpgradeDatabaseEventListener;
 import org.concoursjeunes.event.ApplicationCoreEvent;
 import org.concoursjeunes.event.ApplicationCoreListener;
 import org.concoursjeunes.manager.ConfigurationManager;
@@ -182,6 +183,8 @@ public class ApplicationCore {
 		debugLogger();
 		openDatabase();
 		checkUpdateDatabase();
+		UpgradeDatabaseEventListener.forceCloseMonitor();
+		UpgradeDatabaseEventListener.setMonitorEnabled(false);
 		loadAppConfiguration();
 	}
 

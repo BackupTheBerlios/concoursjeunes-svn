@@ -157,12 +157,16 @@ public class EntiteBuilder {
 		if(entite == null) {	
 			entite = new Entite();
 			
+			Map<Class<?>,Map<String, Object>> foreignKeyValue;
+			
 			if(rs == null) {
 				entite.setIdEntite(idEntite);
 				
-				loadHelper.load(entite);
+				foreignKeyValue = loadHelper.load(entite);
 			} else
-				resultSetLoadHelper.load(entite, rs);
+				foreignKeyValue = resultSetLoadHelper.load(entite, rs);
+			
+			entite.setFederation(FederationBuilder.getFederation((Integer)foreignKeyValue.get(Entite.class).get("NUMFEDERATION"))); //$NON-NLS-1$
 			
 			EntiteCache.getInstance().add(entite);
 		}

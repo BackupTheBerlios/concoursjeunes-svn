@@ -1,5 +1,5 @@
 /*
- * Créé le 8 mai 2010 à 13:41:10 pour ConcoursJeunes
+ * Créé le 28 oct. 2010 à 20:41:48 pour ConcoursJeunes / ArcCompétition
  *
  * Copyright 2002-2010 - Aurélien JEOFFRAY
  *
@@ -86,59 +86,26 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package org.ajdeveloppement.concours.managers;
+package org.ajdeveloppement.concours.cache;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
-import org.ajdeveloppement.commons.sql.SqlManager;
-import org.ajdeveloppement.concours.Contact;
-import org.ajdeveloppement.concours.builders.ContactBuilder;
-import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.Entite;
+import org.concoursjeunes.Federation;
 
 /**
  * @author Aurélien JEOFFRAY
  *
  */
-public class ContactManager {
+public class FederationCache extends AbstractCache<Integer, Federation> {
+	private static FederationCache instance = new FederationCache();
 	
-	public static List<Contact> getAllContacts() throws ObjectPersistenceException {
-		return getContactsForEntity(null);
+	private FederationCache() {
 	}
 	
-	public static List<Contact> getContactsForEntity(Entite entity) throws ObjectPersistenceException {
-		List<Contact> contacts = new ArrayList<Contact>();
-		
-		SqlManager manager = new SqlManager(ApplicationCore.dbConnection, null);
-		try {
-			String sql = "select distinct CONTACT.*,CIVILITY.* from CONTACT left join CIVILITY on CONTACT.ID_CIVILITY=CIVILITY.ID_CIVILITY"; //$NON-NLS-1$
-			
-			if(entity == null || entity.getIdEntite() != null) {
-				if(entity != null && entity.getIdEntite() != null)
-					sql += " where ID_ENTITE = '" + entity.getIdEntite().toString() + "'";  //$NON-NLS-1$//$NON-NLS-2$
-				
-				sql += " order by CONTACT.NAME,CONTACT.FIRSTNAME"; //$NON-NLS-1$
-				
-				ResultSet rs = manager.executeQuery(sql); 
-				try {
-					while(rs.next()) {
-						Contact contact = ContactBuilder.getContact(rs);
-						contact.setEntite(entity);
-						
-						contacts.add(contact);
-					}
-				} finally {
-					rs.close();
-				}
-			}
-		} catch (SQLException e) {
-			throw new ObjectPersistenceException(e);
-		}
-		
-		return contacts;
+	public static FederationCache getInstance() {
+		return instance;
+	}
+
+	@Override
+	public void add(Federation federation) {
+		put(federation.getNumFederation(), federation);
 	}
 }
