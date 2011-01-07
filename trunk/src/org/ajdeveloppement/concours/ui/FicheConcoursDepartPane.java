@@ -653,7 +653,12 @@ public class FicheConcoursDepartPane extends JPanel
 		String cmd = e.getActionCommand();
 
 		if (source == jbAjouterArcher) {
-			showAddConcurrentDialog();
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					showAddConcurrentDialog();
+				}
+			});
 		} else if (source == jbSupprimerArcher) {
 			// Supprime un concurrent à la liste des inscrits
 			removeSelectedConcurrent();

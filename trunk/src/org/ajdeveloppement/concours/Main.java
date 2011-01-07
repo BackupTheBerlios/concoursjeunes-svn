@@ -124,6 +124,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSession;
 import javax.swing.JOptionPane;
+import javax.swing.RepaintManager;
 import javax.swing.SwingUtilities;
 import javax.xml.bind.JAXBException;
 
@@ -146,6 +147,7 @@ import org.concoursjeunes.plugins.PluginEntry;
 import org.concoursjeunes.plugins.PluginLoader;
 import org.concoursjeunes.plugins.PluginMetadata;
 import org.h2.tools.DeleteDbFiles;
+import org.jdesktop.swinghelper.debug.CheckThreadViolationRepaintManager;
 import org.jdesktop.swingx.error.ErrorInfo;
 
 /**
@@ -481,6 +483,11 @@ public class Main {
 	 * @param core la couche métier sous jacente
 	 */
 	private static void showUserInterface() {
+		try {
+			Class.forName("org.jdesktop.swinghelper.debug.CheckThreadViolationRepaintManager", false, Main.class.getClassLoader()); //$NON-NLS-1$
+			RepaintManager.setCurrentManager(new CheckThreadViolationRepaintManager());
+		} catch(ClassNotFoundException e) {
+		}
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {

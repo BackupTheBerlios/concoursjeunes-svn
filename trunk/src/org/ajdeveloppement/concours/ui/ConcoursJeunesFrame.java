@@ -383,7 +383,18 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 				ajtHome.parseBloc("listconcours", ""); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 
-			jepHome.setText(ajtHome.output());
+			Runnable homeUpdateThread = new Runnable() {
+				@Override
+				public void run() {
+					jepHome.setText(ajtHome.output());
+				}
+			};
+			
+			if(SwingUtilities.isEventDispatchThread()) {
+				homeUpdateThread.run();
+			} else {
+				SwingUtilities.invokeLater(homeUpdateThread);
+			}
 		}
 	}
 
@@ -391,17 +402,22 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	 * 
 	 * @param ficheConcours
 	 */
-	private void addFicheConcours(FicheConcours ficheConcours) {
-		FicheConcoursPane jif = new FicheConcoursPane(this, ficheConcours);
-
-		DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM);
-		// ajoute la fiche à l'espace de travail et l'affiche
-		tabbedpane.addTab(ficheConcours.getParametre().getIntituleConcours() + " - " + df.format(ficheConcours.getParametre().getDateDebutConcours()), jif); //$NON-NLS-1$
-		tabbedpane.setSelectedComponent(jif);
+	private void addFicheConcours(final FicheConcours ficheConcours) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				FicheConcoursPane jif = new FicheConcoursPane(ConcoursJeunesFrame.this, ficheConcours);
 		
-		jif = null;
-
-		displayHome();
+				DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM);
+				// ajoute la fiche à l'espace de travail et l'affiche
+				tabbedpane.addTab(ficheConcours.getParametre().getIntituleConcours() + " - " + df.format(ficheConcours.getParametre().getDateDebutConcours()), jif); //$NON-NLS-1$
+				tabbedpane.setSelectedComponent(jif);
+				
+				jif = null;
+		
+				displayHome();
+			}
+		});
 	}
 
 	/**
@@ -605,7 +621,19 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	public void ficheConcoursRestored(ProfileEvent concoursJeunesEvent) {
 		addFicheConcours(concoursJeunesEvent.getFicheConcours());
 		concoursJeunesEvent.getFicheConcours().getParametre().addPropertyChangeListener(this);
+
 		displayHome();
+
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				if(!ConcoursJeunesFrame.this.jepHome.isEnabled()) {
+					ConcoursJeunesFrame.this.setCursor(Cursor.getDefaultCursor());
+					ConcoursJeunesFrame.this.jepHome.setEnabled(true);
+				}
+			}
+		});
 	}
 
 	/* (non-Javadoc)
@@ -683,13 +711,9 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 										DisplayableErrorHelper.displayException(e);
 										e.printStackTrace();
 									}
-									ConcoursJeunesFrame.this.setCursor(Cursor.getDefaultCursor());
-									//ConcoursJeunesFrame.this.jepHome.setCursor(Cursor.getDefaultCursor());
-									ConcoursJeunesFrame.this.jepHome.setEnabled(true);
 								}
 							};
 							this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-							//this.jepHome.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 							this.jepHome.setEnabled(false);
 							Thread.yield();
 							launchFiche.start();

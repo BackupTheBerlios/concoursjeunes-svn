@@ -274,8 +274,17 @@ public class CriteriaSet implements ObjectPersistence {
 	private String getUID() {
 		//garantie l'ordre des éléments
 		List<String> l = new ArrayList<String>();
-		for(Entry<Criterion, CriterionElement> entry : criteria.entrySet())
-			l.add(entry.getKey().getCode()+"="+entry.getValue().getCode());
+		for(Entry<Criterion, CriterionElement> entry : criteria.entrySet()) {
+			Criterion criterion = entry.getKey();
+			CriterionElement element = entry.getValue();
+			String criterionCode = "";
+			String elementCode = "";
+			if(criterion != null)
+				criterionCode = criterion.getCode();
+			if(element != null)
+				elementCode = element.getCode();
+			l.add(criterionCode+"="+elementCode);
+		}
 		Collections.sort(l);
 		String uid = "{";
 		for(String e : l) {
