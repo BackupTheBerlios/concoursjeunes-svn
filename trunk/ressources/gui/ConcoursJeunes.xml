@@ -8,10 +8,10 @@
 			<menu id="file">
 				<label>menubar.fichier</label>
 				<menuitems>
-					<menu id="import" name="mi.import" visible="false">
+					<menu id="import" name="mi.import" visible="true">
 						<label>menubar.fichier.importer</label>
 					</menu>
-					<menu id="export" name="mi.export" visible="false">
+					<menu id="export" name="mi.export" visible="true">
 						<label>menubar.fichier.exporter</label>
 					</menu>
 					<separator />

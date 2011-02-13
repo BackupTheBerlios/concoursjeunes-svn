@@ -147,7 +147,6 @@ import org.concoursjeunes.plugins.PluginEntry;
 import org.concoursjeunes.plugins.PluginLoader;
 import org.concoursjeunes.plugins.PluginMetadata;
 import org.h2.tools.DeleteDbFiles;
-import org.jdesktop.swinghelper.debug.CheckThreadViolationRepaintManager;
 import org.jdesktop.swingx.error.ErrorInfo;
 
 /**
@@ -483,10 +482,20 @@ public class Main {
 	 * @param core la couche métier sous jacente
 	 */
 	private static void showUserInterface() {
+		//Pour débugage de l'EDT
+		//on charge dynamiquement pour ne pas avoir de dépendance dans le byte code et pouvoir livrer
+		//les versions sans le jar associé
 		try {
-			Class.forName("org.jdesktop.swinghelper.debug.CheckThreadViolationRepaintManager", false, Main.class.getClassLoader()); //$NON-NLS-1$
-			RepaintManager.setCurrentManager(new CheckThreadViolationRepaintManager());
+			Class<?> swingEdtDebugClass = Class.forName("org.jdesktop.swinghelper.debug.CheckThreadViolationRepaintManager", false, Main.class.getClassLoader()); //$NON-NLS-1$
+			Object swingEdtDebugImpl = swingEdtDebugClass.getConstructor().newInstance();
+			RepaintManager.setCurrentManager((RepaintManager)swingEdtDebugImpl);
 		} catch(ClassNotFoundException e) {
+		} catch (SecurityException e) {
+		} catch (NoSuchMethodException e) {
+		} catch (IllegalArgumentException e) {
+		} catch (InstantiationException e) {
+		} catch (IllegalAccessException e) {;
+		} catch (InvocationTargetException e) {
 		}
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override

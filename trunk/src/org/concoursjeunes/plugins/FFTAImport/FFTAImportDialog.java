@@ -97,7 +97,17 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.Locale;
 
-import javax.swing.*;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 import org.ajdeveloppement.apps.localisation.Localizable;
 import org.ajdeveloppement.apps.localisation.Localizator;
@@ -261,8 +271,13 @@ public class FFTAImportDialog extends JDialog implements ActionListener, FFTAImp
 	 * @see org.concoursjeunes.plugins.ResultArcImport.ResultArcImportThreadListener#progressionInfo(java.lang.String)
 	 */
 	@Override
-	public void progressionInfo(String info) {
-		jpbProgression.setString(info);
-		// jlProgression.repaint();
+	public void progressionInfo(final String info) {
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				jpbProgression.setString(info);
+			}
+		});
 	}
 }
