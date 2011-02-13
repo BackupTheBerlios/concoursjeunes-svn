@@ -394,9 +394,12 @@ public class FicheConcoursFinalsPane extends JPanel implements ActionListener, M
 					}
 				}
 				
-				graph.resizeCell(categoryGraphElement, new mxRectangle(5, startHeightCriteriaSet - 15, 290 + 380 * 5, 30 + decalage * 2 + elementHeight + spacingHeight));
+				int hauteurCriteriaSet = 30 + decalage * 2 + elementHeight + spacingHeight;
+				if(hauteurCriteriaSet < 430)
+					hauteurCriteriaSet = 430;
+				graph.resizeCell(categoryGraphElement, new mxRectangle(5, startHeightCriteriaSet - 15, 290 + 380 * 5, hauteurCriteriaSet));
 
-				startHeightCriteriaSet += 30 + decalage * 2 + elementHeight + spacingHeight * 2;
+				startHeightCriteriaSet += hauteurCriteriaSet + spacingHeight;
 			}
 		} finally {
 			graph.getModel().endUpdate();

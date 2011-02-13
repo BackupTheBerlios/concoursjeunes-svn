@@ -107,6 +107,8 @@ import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.text.DateFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -129,10 +131,12 @@ import javax.xml.bind.JAXBException;
 import org.ajdeveloppement.commons.AJTemplate;
 import org.ajdeveloppement.commons.ui.AJTabbedPane;
 import org.ajdeveloppement.commons.ui.AJTabbedPaneListener;
+import org.ajdeveloppement.commons.ui.DefaultDialogReturn;
 import org.ajdeveloppement.commons.ui.GhostGlassPane;
 import org.ajdeveloppement.commons.ui.MenuBarTools;
 import org.ajdeveloppement.concours.exceptions.NullConfigurationException;
 import org.ajdeveloppement.concours.ui.dialog.AboutDialog;
+import org.ajdeveloppement.concours.ui.dialog.CompetitionSelectionDialog;
 import org.ajdeveloppement.concours.ui.dialog.ConfigurationDialog;
 import org.ajdeveloppement.concours.ui.dialog.DisablePluginDialog;
 import org.ajdeveloppement.concours.ui.dialog.EntiteListDialog;
@@ -367,23 +371,37 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			ajtHome.parse("PROFILE_NAME", profile.getConfiguration().getCurProfil()); //$NON-NLS-1$
 
 			MetaDataFichesConcours metaDataFichesConcours = profile.getConfiguration().getMetaDataFichesConcours();
-			if (metaDataFichesConcours.getFiches().size() > 0) {
+			List<MetaDataFicheConcours> fiches = metaDataFichesConcours.getFiches();
+			if (fiches.size() > 0) {
+				Collections.sort(fiches, new Comparator<MetaDataFicheConcours>() {
+					@Override
+					public int compare(MetaDataFicheConcours o1, MetaDataFicheConcours o2) {
+						return o2.getDateConcours().compareTo(o1.getDateConcours());
+					}
+				});
 				int i = 0;
-				for (MetaDataFicheConcours metaDataFicheConcours : metaDataFichesConcours.getFiches()) {
+				for (MetaDataFicheConcours metaDataFicheConcours : fiches) {
 					DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM);
 					if(profile.isOpenFicheConcours(metaDataFicheConcours)) {
-						ajtHome.parse("listconcours.STATE", ""); //$NON-NLS-1$ //$NON-NLS-2$
+						ajtHome.parse("listconcours.STATE", ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$ //$NON-NLS-2$
+								File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.openedcompetition")); //$NON-NLS-1$
 					} else {
-						ajtHome.parse("listconcours.STATE", "./ressources/gestion.png"); //$NON-NLS-1$ //$NON-NLS-2$
+						ajtHome.parse("listconcours.STATE", ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$ //$NON-NLS-2$
+								File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.closedcompetition")); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 					ajtHome.parse("listconcours.ID_CONCOURS", i + ""); //$NON-NLS-1$ //$NON-NLS-2$
 					ajtHome.parse("listconcours.LIBELLE_CONCOURS", df.format(metaDataFicheConcours.getDateConcours()) //$NON-NLS-1$
 							+ " - " + metaDataFicheConcours.getIntituleConcours()); //$NON-NLS-1$
 					ajtHome.loopBloc("listconcours"); //$NON-NLS-1$
 					i++;
+					if(i == 10)
+						break;
 				}
+				if(fiches.size() < 11)
+					ajtHome.parseBloc("extendedlist", ""); //$NON-NLS-1$ //$NON-NLS-2$
 			} else {
 				ajtHome.parseBloc("listconcours", ""); //$NON-NLS-1$ //$NON-NLS-2$
+				ajtHome.parseBloc("extendedlist", ""); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 
 			Runnable homeUpdateThread = new Runnable() {
@@ -397,6 +415,59 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 				homeUpdateThread.run();
 			} else {
 				SwingUtilities.invokeLater(homeUpdateThread);
+			}
+		}
+	}
+	
+	private void openFicheConcours(final MetaDataFicheConcours metaDataFicheConcours) {
+		if(metaDataFicheConcours.getFilenameConcours().endsWith(".cta")) { //$NON-NLS-1$
+			JOptionPane.showMessageDialog(this, 
+					profile.getLocalisation().getResourceString("home.warning.oldformat"), //$NON-NLS-1$
+					profile.getLocalisation().getResourceString("home.warning.oldformat.title"), //$NON-NLS-1$
+					JOptionPane.WARNING_MESSAGE);
+		} else {
+			if(!profile.isOpenFicheConcours(metaDataFicheConcours)) {
+				Thread launchFiche = new Thread() {
+					@Override
+					public void run() {
+						
+						try {
+							profile.restoreFicheConcours(metaDataFicheConcours);
+						} catch (NumberFormatException e) {
+							DisplayableErrorHelper.displayException(e);
+							e.printStackTrace();
+						} catch (NullConfigurationException e) {
+							DisplayableErrorHelper.displayException(e);
+							e.printStackTrace();
+						} catch (IOException e) {
+							DisplayableErrorHelper.displayException(e);
+							e.printStackTrace();
+						} catch (NullPointerException e) {
+							DisplayableErrorHelper.displayException(e);
+							e.printStackTrace();
+						} catch (JAXBException e) {
+							DisplayableErrorHelper.displayException(e);
+							e.printStackTrace();
+						}
+					}
+				};
+				this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+				this.jepHome.setEnabled(false);
+				Thread.yield();
+				launchFiche.start();
+			} else {
+				ConcoursJeunesFrame.this.setCursor(Cursor.getDefaultCursor());
+				for (int i = 1; i < tabbedpane.getTabCount(); i++) {
+					FicheConcoursPane jif = (FicheConcoursPane) tabbedpane.getComponentAt(i);
+					if (jif.getFicheConcours().getMetaDataFicheConcours().equals(metaDataFicheConcours)) {
+						tabbedpane.setSelectedIndex(i);
+						break;
+					}
+				}
+				/*JOptionPane.showMessageDialog(this, 
+						profile.getLocalisation().getResourceString("home.warning.alreadyopen"), //$NON-NLS-1$
+						profile.getLocalisation().getResourceString("home.warning.alreadyopen.title"), //$NON-NLS-1$
+						JOptionPane.WARNING_MESSAGE);*/
 			}
 		}
 	}
@@ -682,59 +753,10 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 				((HTMLDocument) jepHome.getDocument()).processHTMLFrameHyperlinkEvent((HTMLFrameHyperlinkEvent) e);
 			} else {
 				if (e.getURL().getHost().equals("open_concours")) { //$NON-NLS-1$
-					final String concref = e.getURL().getRef();
+					String concref = e.getURL().getRef();
+					MetaDataFicheConcours metaDataFicheConcours = profile.getConfiguration().getMetaDataFichesConcours().get(Integer.parseInt(concref));
 					
-					final MetaDataFicheConcours metaDataFicheConcours = profile.getConfiguration().getMetaDataFichesConcours().get(Integer.parseInt(concref));
-					if(metaDataFicheConcours.getFilenameConcours().endsWith(".cta")) { //$NON-NLS-1$
-						JOptionPane.showMessageDialog(this, 
-								profile.getLocalisation().getResourceString("home.warning.oldformat"), //$NON-NLS-1$
-								profile.getLocalisation().getResourceString("home.warning.oldformat.title"), //$NON-NLS-1$
-								JOptionPane.WARNING_MESSAGE);
-					} else {
-						if(!profile.isOpenFicheConcours(metaDataFicheConcours)) {
-							Thread launchFiche = new Thread() {
-								@Override
-								public void run() {
-									
-									try {
-										profile.restoreFicheConcours(metaDataFicheConcours);
-									} catch (NumberFormatException e) {
-										DisplayableErrorHelper.displayException(e);
-										e.printStackTrace();
-									} catch (NullConfigurationException e) {
-										DisplayableErrorHelper.displayException(e);
-										e.printStackTrace();
-									} catch (IOException e) {
-										DisplayableErrorHelper.displayException(e);
-										e.printStackTrace();
-									} catch (NullPointerException e) {
-										DisplayableErrorHelper.displayException(e);
-										e.printStackTrace();
-									} catch (JAXBException e) {
-										DisplayableErrorHelper.displayException(e);
-										e.printStackTrace();
-									}
-								}
-							};
-							this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-							this.jepHome.setEnabled(false);
-							Thread.yield();
-							launchFiche.start();
-						} else {
-							ConcoursJeunesFrame.this.setCursor(Cursor.getDefaultCursor());
-							for (int i = 1; i < tabbedpane.getTabCount(); i++) {
-								FicheConcoursPane jif = (FicheConcoursPane) tabbedpane.getComponentAt(i);
-								if (jif.getFicheConcours().getMetaDataFicheConcours().equals(metaDataFicheConcours)) {
-									tabbedpane.setSelectedIndex(i);
-									break;
-								}
-							}
-							/*JOptionPane.showMessageDialog(this, 
-									profile.getLocalisation().getResourceString("home.warning.alreadyopen"), //$NON-NLS-1$
-									profile.getLocalisation().getResourceString("home.warning.alreadyopen.title"), //$NON-NLS-1$
-									JOptionPane.WARNING_MESSAGE);*/
-						}
-					}
+					openFicheConcours(metaDataFicheConcours);
 				} else if (e.getURL().getHost().equals("delete_concours")) { //$NON-NLS-1$
 					if (JOptionPane.showConfirmDialog(this, profile.getLocalisation().getResourceString("confirmation.suppression.concours"), //$NON-NLS-1$
 							profile.getLocalisation().getResourceString("confirmation.suppression.concours.titre"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) { //$NON-NLS-1$
@@ -788,6 +810,10 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 					}
 				} else if (e.getURL().getHost().equals("change_profile")) { //$NON-NLS-1$
 					showConfigurationDialog();
+				} else if (e.getURL().getHost().equals("list_all_concours")) { //$NON-NLS-1$
+					CompetitionSelectionDialog competitionSelectionDialog = new CompetitionSelectionDialog(this, profile, profile.getLocalisation());
+					if(competitionSelectionDialog.showCompetitionSelectionDialog() == DefaultDialogReturn.OK && competitionSelectionDialog.getSelectedCompetition() != null)
+						openFicheConcours(competitionSelectionDialog.getSelectedCompetition());
 				} else if(e.getURL().getProtocol().equals("http")) { //$NON-NLS-1$
 					try {
 						if(Desktop.isDesktopSupported()) {

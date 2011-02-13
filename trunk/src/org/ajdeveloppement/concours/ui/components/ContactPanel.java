@@ -106,6 +106,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -134,6 +135,7 @@ import org.ajdeveloppement.apps.localisation.Localizable;
 import org.ajdeveloppement.apps.localisation.LocalizationHandler;
 import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.ui.AJSuggestTextField;
 import org.ajdeveloppement.commons.ui.GenericListModel;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.concours.CategoryContact;
@@ -143,6 +145,7 @@ import org.ajdeveloppement.concours.Coordinate;
 import org.ajdeveloppement.concours.Coordinate.Type;
 import org.ajdeveloppement.concours.managers.CategoryContactManager;
 import org.ajdeveloppement.concours.managers.CivilityManager;
+import org.ajdeveloppement.concours.ui.components.ZipCodeCitySuggestModel.SuggestType;
 import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
 import org.ajdeveloppement.swingxext.localisation.JXHeaderLocalisationHandler;
 import org.concoursjeunes.ApplicationCore;
@@ -202,10 +205,10 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 	private JTextArea jtaAddressContact = new JTextArea(4, 30);
 	@Localizable("entite.codepostal")
 	private JLabel jlZipCodeContact = new JLabel();
-	private JTextField jtfZipCodeContact = new JTextField("", 10); //$NON-NLS-1$
+	private AJSuggestTextField jtfZipCodeContact = new AJSuggestTextField("", 10); //$NON-NLS-1$
 	@Localizable("entite.ville")
 	private JLabel jlCityContact = new JLabel();
-	private JTextField jtfCityContact = new JTextField("", 10); //$NON-NLS-1$
+	private AJSuggestTextField jtfCityContact = new AJSuggestTextField("", 10); //$NON-NLS-1$
 	@Localizable("entite.coordinates")
 	private JLabel jlCoordinates = new JLabel();
 	private JList jlstCoordinates = new JList();
@@ -290,7 +293,16 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 		jxhCategories.setFont(jxhCategories.getFont().deriveFont(Font.NORMAL|Font.ITALIC));
 		jxhCategories.addActionListener(this);
 		dropDownRemoveSeparator.setForeground(new Color(150,150,150));
-		dropDownAddSeparator.setForeground(new Color(150,150,150));		
+		dropDownAddSeparator.setForeground(new Color(150,150,150));
+		
+		try {
+			jtfZipCodeContact.setModel(new ZipCodeCitySuggestModel(SuggestType.ZIP_CODE, jtfCityContact));
+			jtfCityContact.setModel(new ZipCodeCitySuggestModel(SuggestType.CITY, jtfZipCodeContact));
+		} catch (SQLException e) {
+			DisplayableErrorHelper.displayException(e);
+			e.printStackTrace();
+		}
+
 		jlstCoordinates.setVisibleRowCount(5);
 		jlstCoordinates.setModel(coordinatesModel);
 		jlstCoordinates.setCellRenderer(new DefaultListCellRenderer() {

@@ -172,10 +172,16 @@ public class ShootingLine implements FicheConcoursListener {
 	 * @return le nombre de tireur par cible à utiliser
 	 */
 	private int getOptimalRythme(List<DistancesEtBlason> lDB) {
-		for(int i = 2; i <= ficheConcours.getParametre().getNbTireur(); i+=2) {
-			Map<DistancesEtBlason, TargetsOccupation> targetsOccupation = getTargetsOccupation(i);
+		if(ficheConcours.getParametre().getNbTireur() == 3) { //Mode ABC
+			Map<DistancesEtBlason, TargetsOccupation> targetsOccupation = getTargetsOccupation(3);
 			if(targetsOccupation != null)
-				return i;
+				return 3;
+		} else { //Mode 2/4
+			for(int i = 2; i <= ficheConcours.getParametre().getNbTireur(); i+=2) {
+				Map<DistancesEtBlason, TargetsOccupation> targetsOccupation = getTargetsOccupation(i);
+				if(targetsOccupation != null)
+					return i;
+			}
 		}
 		
 		return 0;
@@ -404,7 +410,7 @@ public class ShootingLine implements FicheConcoursListener {
 			if(currentTargetsTable.get(curTarget - 1).getNbArcher() + currentTargetsTable.get(curTarget - 1).getNbHandicap() < nbTireurParCible) {
 				try {
 					Repartition repartition;
-					if(nbTireurParCible == 2)
+					if(nbTireurParCible < 4)
 						repartition = Repartition.ABCD;
 					else
 						repartition = Repartition.ACBD;

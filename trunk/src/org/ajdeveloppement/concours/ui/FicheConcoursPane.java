@@ -123,6 +123,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.ListCellRenderer;
+import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -603,10 +604,17 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 				ApplicationCore.userRessources.getConcoursPathForProfile(parentframe.profile), 
 				concoursDirectory);
 		if(docsPathFile.exists()) {
-			File[] files = docsPathFile.listFiles();
+			final File[] files = docsPathFile.listFiles();
 			FileUtils.orderByDate(files, true);
-			if(files != null && files.length > 0)
-				ajlDocuments.setListData(files);
+			if(files != null && files.length > 0) {
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						ajlDocuments.setListData(files);
+					}
+				});
+				
+			}
 		}
 	}
 
@@ -731,8 +739,13 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 				StateProcessor sp = new StateProcessor(currentState, parentframe.profile, ficheConcours);
 				sp.process(jcbDeparts.getSelectedIndex(), jcbSeries.getSelectedIndex(), jcbSave.isSelected());
 				completeListDocuments();
-				jxbPrint.setBusy(false);
-				jxbPrint.setText(""); //$NON-NLS-1$
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						jxbPrint.setBusy(false);
+						jxbPrint.setText(""); //$NON-NLS-1$
+					}
+				});
 			} catch (FileNotFoundException e) {
 				DisplayableErrorHelper.displayException(e);
 				e.printStackTrace();

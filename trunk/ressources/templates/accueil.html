@@ -34,8 +34,12 @@ a {
 				<td>
 					<table>
 						<tr><th colspan="3" align="left"><font size="+1">%home.gestcompet%</font><hr></th></tr>
-						<tr><td colspan="3"><a href="http://new_concours">%home.new%</a></td></tr>
-						<tr><td colspan="3"><td>&nbsp;</td></tr>
+						<tr>
+							<td><img src="file:./ressources/b_new.png" alt="%home.new%" border="0"></td>
+							<td colspan="2"><a href="http://new_concours">%home.new%</a></td>
+						</tr>
+						<tr><td colspan="3">&nbsp;</td></tr>
+						<tr><td colspan="3">Les 10 derniers:</td></tr>
 						<bloc::listconcours>
 						<tr>
 							<td>
@@ -47,6 +51,10 @@ a {
 							</a></td>
 						</tr>
 						</bloc::listconcours>
+						<bloc::extendedlist>
+						<tr><td colspan="3"><td>&nbsp;</td></tr>
+						<tr><td colspan="3"><a href="http://list_all_concours">Concours plus ancien...</a></td></tr>
+						</bloc::extendedlist>
 					</table>
 				</td>
 			</tr>

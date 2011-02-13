@@ -94,6 +94,7 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Collections;
 import java.util.List;
@@ -124,6 +125,7 @@ import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.concours.CategoryContact;
 import org.ajdeveloppement.concours.Contact;
 import org.ajdeveloppement.concours.managers.CategoryContactManager;
+import org.ajdeveloppement.concours.ui.components.CityAutoCompleteDocument;
 import org.ajdeveloppement.concours.ui.components.ContactPanel;
 import org.ajdeveloppement.concours.ui.components.ContactPanel.ContactPanelListener;
 import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
@@ -263,6 +265,14 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 			jcbFederation.addItem(federation);
 		jtfNom.setEditable(false);
 		jftfAgrement.setEditable(false);
+		CityAutoCompleteDocument cityAutoCompleteDocument;
+		try {
+			cityAutoCompleteDocument = new CityAutoCompleteDocument(jtfVille);
+			jtfVille.setDocument(cityAutoCompleteDocument);
+		} catch (SQLException e) {
+			DisplayableErrorHelper.displayException(e);
+			e.printStackTrace();
+		}
 		jtfVille.setEditable(false);
 		jcbType = new JComboBox(new String[] { "Fédération", "Ligue", "Comité Départemental", "Compagnie" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		

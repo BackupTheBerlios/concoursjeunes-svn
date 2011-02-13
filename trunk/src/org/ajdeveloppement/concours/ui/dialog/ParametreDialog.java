@@ -464,6 +464,7 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 		
 		jcbNombreTireurParCible.removeAllItems();
 		jcbNombreTireurParCible.addItem(new RhytmeTir("AB", 2));  //$NON-NLS-1$
+		jcbNombreTireurParCible.addItem(new RhytmeTir("ABC", 3));  //$NON-NLS-1$
 		jcbNombreTireurParCible.addItem(new RhytmeTir("AB/CD", 4));  //$NON-NLS-1$
 		if(parametre.getNbTireur() > 4) {
 			RhytmeTir rythmePers = new RhytmeTir("Personnalisé (" + parametre.getNbTireur() + " archers par cible)", parametre.getNbTireur()); //$NON-NLS-1$ //$NON-NLS-2$
