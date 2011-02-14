@@ -26,11 +26,6 @@ if(dbVersion == 0) {
 		sql.executeScript("01-create_db.sql");
 		
 		sql.executeUpdate("ALTER TABLE ENTITE ADD DATEMODIF DATE DEFAULT CURRENT_DATE()");
-		
-		sql.executeScript("../sql/ImportClubFFTA.sql");
-		sql.executeUpdate("RUNSCRIPT FROM 'ressources/sql/ImportVillesFr.sql'");
-		
-		updateReglements();
 	}
 	
 	if(dbVersion < 21) {
@@ -39,6 +34,10 @@ if(dbVersion == 0) {
 
 	if(dbVersion < 30) {
 		sql.executeScript("02-V21toV30.sql", true);
+		sql.executeScript("../sql/ImportClubFFTA.sql");
+		sql.executeUpdate("RUNSCRIPT FROM 'ressources/sql/ImportVillesFr.sql'");
+		
+		updateReglements();
 	}
 }
 
