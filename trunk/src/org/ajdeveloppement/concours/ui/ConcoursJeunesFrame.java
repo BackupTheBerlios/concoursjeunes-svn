@@ -173,6 +173,8 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	private JMenuItem jmiParametres;
 	private AJTabbedPane tabbedpane;
 	private JEditorPane jepHome;
+	
+	private FicheConcoursPane selectedFicheConcoursPane = null;
 
 	public Profile profile;
 
@@ -244,6 +246,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 
 		if(System.getProperty("noplugin") == null) { //$NON-NLS-1$
 			fillOnDemandPlugin();
+			fillUIStartupPlugin();
 		}
 		
 		jmiParametres = (JMenuItem) frameCreator.getNamedComponent("mi.parametres"); //$NON-NLS-1$
@@ -317,6 +320,44 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 
 			});
 
+		}
+	}
+	
+	private void fillUIStartupPlugin() {
+		PluginLoader pl = new PluginLoader();
+		List<PluginMetadata> plugins = pl.getPlugins(Type.UI_STARTUP);
+
+		for (PluginMetadata pm : plugins) {
+
+			final Class<?> pluginClass = pm.getPluginClass();
+			try {
+				Constructor<?> c = pluginClass.getConstructor(JFrame.class, Profile.class);
+				Object plugin = c.newInstance(ConcoursJeunesFrame.this, profile);
+				for (Method m : pluginClass.getMethods()) {
+					if (m.isAnnotationPresent(PluginEntry.class)) {
+						m.invoke(plugin);
+						break;
+					}
+				}
+			} catch (SecurityException e) {
+				DisplayableErrorHelper.displayException(e);
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				DisplayableErrorHelper.displayException(e);
+				e.printStackTrace();
+			} catch (NoSuchMethodException e) {
+				DisplayableErrorHelper.displayException(e);
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				DisplayableErrorHelper.displayException(e);
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				DisplayableErrorHelper.displayException(e);
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				DisplayableErrorHelper.displayException(e);
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -540,6 +581,12 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 		}
 		System.exit(0);
 	}
+	/**
+	 * @return selectedFicheConcoursPane
+	 */
+	public FicheConcoursPane getSelectedFicheConcoursPane() {
+		return selectedFicheConcoursPane;
+	}
 
 	/**
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
@@ -639,8 +686,10 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			int i = tabbedpane.getSelectedIndex();
 			if (i > 0) {
 				jmiParametres.setEnabled(true);
+				selectedFicheConcoursPane = (FicheConcoursPane)tabbedpane.getSelectedComponent();
 			} else {
 				jmiParametres.setEnabled(false);
+				selectedFicheConcoursPane = null;
 			}
 		}
 	}

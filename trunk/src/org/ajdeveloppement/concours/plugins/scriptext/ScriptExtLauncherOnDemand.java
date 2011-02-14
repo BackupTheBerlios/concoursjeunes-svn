@@ -1,7 +1,7 @@
 /*
- * Créé le 20 févr. 2010 à 18:11:01 pour ConcoursJeunes
+ * Créé le 13 févr. 2011 à 21:58:11 pour ConcoursJeunes / ArcCompétition
  *
- * Copyright 2002-2010 - Aurélien JEOFFRAY
+ * Copyright 2002-2011 - Aurélien JEOFFRAY
  *
  * http://www.concoursjeunes.org
  *
@@ -88,110 +88,40 @@
  */
 package org.ajdeveloppement.concours.plugins.scriptext;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.script.ScriptException;
-import javax.xml.bind.JAXBException;
+import javax.swing.JFrame;
 
-import org.ajdeveloppement.commons.io.FileUtils;
-import org.ajdeveloppement.commons.io.XMLSerializer;
-import org.concoursjeunes.ApplicationCore;
+import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
+import org.concoursjeunes.Profile;
 import org.concoursjeunes.plugins.Plugin;
-import org.concoursjeunes.plugins.PluginEntry;
 
 /**
  * @author Aurélien JEOFFRAY
  *
  */
-@Plugin(type = Plugin.Type.STARTUP)
-public class ScriptExtLauncher {
-	
-	private static List<ScriptExtention> scripts = new ArrayList<ScriptExtention>();
-
-	public ScriptExtLauncher() {
-		if(scripts.size() == 0) {
-			loadScripts();
-		}
-	}
-	
-//	private File getAllUsersScriptsPath() {
-//		return new File(ApplicationCore.userRessources.getAllusersDataPath(), "scripts"); //$NON-NLS-1$
-//	}
-	
-	private File getUserScriptsPath() {
-		return new File(ApplicationCore.userRessources.getUserPath(), "scripts"); //$NON-NLS-1$
-	}
-	
-	public static List<ScriptExtention> getOnDemandScripts() {
-		List<ScriptExtention> onDemandScript = new ArrayList<ScriptExtention>();
-		for(final ScriptExtention extention : scripts) {
-			if(extention.getType() == Plugin.Type.ON_DEMAND) {
-				onDemandScript.add(extention);
-			}
-		}
-		return onDemandScript;
-	}
-	
-	@PluginEntry
-	public void runStartupExtention() {
-		for(final ScriptExtention extention : scripts) {
-			if(extention.getType() == Plugin.Type.STARTUP) {
-				try {
-					if(extention.isAsynchrone()) {
-						Thread t = new Thread(new Runnable() {
-							
-							@Override
-							public void run() {
-								try {
-									extention.runScript();
-								} catch (ScriptException e) {
-									e.printStackTrace();
-								} catch (NoSuchMethodException e) {
-									e.printStackTrace();
-								}
-							}
-						});
-						t.start();
-					} else
-						extention.runScript();
-					
-				} catch (ScriptException e) {
-					e.printStackTrace();
-				} catch (NoSuchMethodException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-	
-	private void loadScripts() {
-		File scriptsPath = getUserScriptsPath();
-		
-		List<File> scriptsFolders = FileUtils.listAllFiles(scriptsPath, ".*", true); //$NON-NLS-1$
-		
-		for(File scriptFolder : scriptsFolders) {
-			if(scriptFolder.isDirectory()) {
-				File scriptFile = new File(scriptFolder, "scriptext.xml"); //$NON-NLS-1$
-				if(scriptFile.exists()) {
-					try {
-						ScriptExtention extention = XMLSerializer.loadMarshallStructure(scriptFile, ScriptExtention.class);
-						extention.setMainPath(scriptFolder.getPath());
-						extention.compileScript();
-						scripts.add(extention);
-					} catch (JAXBException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
-					} catch (ScriptException e) {
-						e.printStackTrace();
-					}
-				}
-			} else if(scriptFolder.getName().endsWith(".zip")) { //$NON-NLS-1$
-				
-			}
+@Plugin(type = Plugin.Type.UI_STARTUP)
+public class ScriptExtLauncherOnDemand {
+	public ScriptExtLauncherOnDemand(JFrame parentframe, Profile profile) {
+		List<ScriptExtention> scripts = ScriptExtLauncher.getOnDemandScripts();
+		for(ScriptExtention script : scripts) {
+			try {
+				//script.compileScript();
+				script.runScript(parentframe, profile);
+			} catch (ScriptException e) {
+				DisplayableErrorHelper.displayException(e);
+				e.printStackTrace();
+			} catch (NoSuchMethodException e) {
+				DisplayableErrorHelper.displayException(e);
+				e.printStackTrace();
+			} /*catch (MalformedURLException e) {
+				DisplayableErrorHelper.displayException(e);
+				e.printStackTrace();
+			} catch (IOException e) {
+				DisplayableErrorHelper.displayException(e);
+				e.printStackTrace();
+			}*/
 		}
 	}
 }

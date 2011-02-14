@@ -283,7 +283,6 @@ public class ApplicationCore {
 			stmt = dbConnection.createStatement();
 			SqlManager sqlManager = new SqlManager(dbConnection, updatePath);
 
-			dbConnection.getMetaData().getTables(null, "PUBLIC", "PARAM", new String[] {"TABLE"}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			// test si la base existe déjà et retourne sa révision si c'est le cas
 			ResultSet rs = dbConnection.getMetaData().getTables(null, "PUBLIC", "PARAM", new String[] {"TABLE"}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			if (rs.first()) {

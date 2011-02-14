@@ -194,7 +194,7 @@ public class ScriptExtention {
 		ScriptEngine scriptEngine = se.getEngineByName("JavaScript"); //$NON-NLS-1$
 		if(scriptEngine != null) {
 			Reader reader = new BufferedReader(new InputStreamReader(
-					new URL(mainPath + "/" + scriptFile).openStream())); //$NON-NLS-1$ 
+					new URL("file://" + mainPath + "/" + scriptFile).openStream())); //$NON-NLS-1$ //$NON-NLS-2$ 
 			scriptEngine.eval(reader);
 			reader.close();
 			
