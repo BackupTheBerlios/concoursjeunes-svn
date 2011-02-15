@@ -106,8 +106,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.swing.Box;
 import javax.swing.DefaultListCellRenderer;
@@ -195,7 +193,6 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	private Archer filter = null;
 	
 	private static Reglement lastActiveReglement;
-	//private static Future<ConcurrentListDialog> concurrentListDialog;
 	private static ConcurrentListDialog concurrentListDialog;
 
 	@Localizable("concurrent.description")
@@ -745,28 +742,10 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	
 	private void initConcurrentListDialog() {
 		if(concurrentListDialog == null || !ficheConcours.getParametre().getReglement().equals(lastActiveReglement)) {
-			//if(concurrentListDialog != null) {
-			//	try {
-		    //        if(concurrentListDialog.isDone())
-		    //        	concurrentListDialog.get().dispose();
-		    //        else
-		    //        	concurrentListDialog.cancel(true);
-		    //    } catch (InterruptedException e) {
-		   //     } catch (ExecutionException e) {
-		   //     }
-			//}
 	        lastActiveReglement = ficheConcours.getParametre().getReglement();
 	        
 	        concurrentListDialog = new ConcurrentListDialog(ConcurrentDialog.this, profile,
 	    					lastActiveReglement, null);
-			//ExecutorService executorService = Executors.newSingleThreadExecutor(new LowFactory());
-			//concurrentListDialog = executorService.submit(new Callable<ConcurrentListDialog>() {
-			//	@Override
-			//	public ConcurrentListDialog call() {
-			//		return new ConcurrentListDialog(ConcurrentDialog.this, profile,
-			//				lastActiveReglement, null);
-			//	}
-			//});
 		}
 	}
 
@@ -1246,27 +1225,14 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			unlock = false;
 			setVisible(false);
 		} else if (ae.getSource() == jbSelectionArcher) {
-			//Le chargement de la liste des concurrents étant asynchrone, on doit attendre que celle ci
-			// soit chargé avant de l'afficher. On place un timeout de 30s pour ne pas bloqué définitivement
-			// l'interface en cas d'echec de chargement ou avoir un délai d'attente trop long sur certain système
-            //try {
-            	//ConcurrentListDialog cld = concurrentListDialog.get(30, TimeUnit.SECONDS);
-	            
+			if(concurrentListDialog != null) {
             	concurrentListDialog.setFilter(filter);
             	concurrentListDialog.setVisible(true);
 				if (concurrentListDialog.isValider()) {
 					concurrent = concurrentListDialog.getSelectedConcurrent();
 					setConcurrent(concurrent);
 				}
-//            } catch (InterruptedException e) {
-//            	DisplayableErrorHelper.displayException(e);
-//	            e.printStackTrace();
-//            } catch (ExecutionException e) {
-//            	DisplayableErrorHelper.displayException(e);
-//	            e.printStackTrace();
-//            } catch (TimeoutException e) {
-//            	JOptionPane.showMessageDialog(this, localisation.getResourceString("concurrent.info.listing.wait")); //$NON-NLS-1$
-//            }
+			}
 		} else if (ae.getSource() == jxhDetailClub) {
 			if (!jtfAgrement.getText().equals("")) { //$NON-NLS-1$
 				EntiteDialog ed = new EntiteDialog(this, profile);
@@ -1388,17 +1354,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	
 	@Override
 	public void dispose() {
-		if(concurrentListDialog != null) {
-//			try {
-//	            if(concurrentListDialog.isDone())
-//	            	concurrentListDialog.get().dispose();
-//	            else
-//	            	concurrentListDialog.cancel(true);
-//	        } catch (InterruptedException e) {
-//	        } catch (ExecutionException e) {
-//	        }
-			concurrentListDialog = null;
-		}
+		concurrentListDialog = null;
 		lastActiveReglement = null;
 
 		super.dispose();
@@ -1408,50 +1364,6 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	public void finalize() throws Throwable {
 		super.finalize();
 	}
-	
-	private abstract static class Factory implements ThreadFactory {
-		protected final ThreadGroup group;
-
-		Factory() {
-			SecurityManager s = System.getSecurityManager();
-			group = (s != null) ? s.getThreadGroup() : Thread.currentThread()
-					.getThreadGroup();
-		}
-
-		@Override
-		public Thread newThread(Runnable r) {
-			Thread t = new Thread(group, r, getThreadName(), 0);
-
-			if (t.isDaemon()) {
-				t.setDaemon(false);
-			}
-
-			return t;
-		}
-
-		protected abstract String getThreadName();
-	}
-	
-	private static class LowFactory extends Factory {
-		private final AtomicInteger lowThreadNumber = new AtomicInteger(1);
-
-		@Override
-		public Thread newThread(Runnable r) {
-			Thread t = super.newThread(r);
-
-			if (t.getPriority() != Thread.MIN_PRIORITY) {
-				t.setPriority(Thread.MIN_PRIORITY);
-			}
-
-			return t;
-		}
-
-		@Override
-		protected String getThreadName() {
-			return "low-thread-" + lowThreadNumber.getAndIncrement(); //$NON-NLS-1$
-		}
-	}
-
 }
 
 

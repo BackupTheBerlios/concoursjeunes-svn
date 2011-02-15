@@ -475,6 +475,8 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 	    	
 	    	entiteBinding.bind();
 	    	// [end]
+	    	
+	    	jcbFederation.setSelectedItem(entite.getFederation());
 			
 			jtfNom.setEditable(fullEditable || entite.getAgrement() == null || entite.getAgrement().isEmpty());
 			jtfVille.setEditable(fullEditable);

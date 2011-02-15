@@ -424,11 +424,11 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 				for (MetaDataFicheConcours metaDataFicheConcours : fiches) {
 					DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM);
 					if(profile.isOpenFicheConcours(metaDataFicheConcours)) {
-						ajtHome.parse("listconcours.STATE", ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$ //$NON-NLS-2$
-								File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.openedcompetition")); //$NON-NLS-1$
+						ajtHome.parse("listconcours.STATE", "./" + ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+								"/" + ApplicationCore.staticParameters.getResourceString("file.icon.openedcompetition")); //$NON-NLS-1$ //$NON-NLS-2$
 					} else {
-						ajtHome.parse("listconcours.STATE", ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$ //$NON-NLS-2$
-								File.separator + ApplicationCore.staticParameters.getResourceString("file.icon.closedcompetition")); //$NON-NLS-1$ //$NON-NLS-2$
+						ajtHome.parse("listconcours.STATE", "./" + ApplicationCore.staticParameters.getResourceString("path.ressources") + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+								"/" + ApplicationCore.staticParameters.getResourceString("file.icon.closedcompetition")); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 					ajtHome.parse("listconcours.ID_CONCOURS", i + ""); //$NON-NLS-1$ //$NON-NLS-2$
 					ajtHome.parse("listconcours.LIBELLE_CONCOURS", df.format(metaDataFicheConcours.getDateConcours()) //$NON-NLS-1$

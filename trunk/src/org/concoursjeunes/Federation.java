@@ -438,7 +438,7 @@ public class Federation implements ObjectPersistence {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + numFederation;
+		//result = prime * result + numFederation;
 		result = prime * result
 				+ ((sigleFederation == null) ? 0 : sigleFederation.hashCode());
 		return result;
@@ -456,8 +456,8 @@ public class Federation implements ObjectPersistence {
 		if (getClass() != obj.getClass())
 			return false;
 		Federation other = (Federation) obj;
-		if (numFederation != other.numFederation)
-			return false;
+		//if (numFederation != other.numFederation)
+		//	return false;
 		if (sigleFederation == null) {
 			if (other.sigleFederation != null)
 				return false;
