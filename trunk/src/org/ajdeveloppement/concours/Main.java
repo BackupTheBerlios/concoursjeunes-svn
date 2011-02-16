@@ -295,7 +295,7 @@ public class Main {
 			try {
 				ApplicationCore.initializeApplication();
 			} catch (SQLException e1) {
-				DisplayableErrorHelper.displayErrorInfo(new ErrorInfo( "SQL Error", e1.toString(), //$NON-NLS-1$
+				DisplayableErrorHelper.displayErrorInfo(new ErrorInfo( "SQL Error", e1.getLocalizedMessage(), //$NON-NLS-1$
 						null, null, e1, Level.SEVERE, null));
 				
 				if(JOptionPane.showConfirmDialog(null, localisation.getResourceString("erreur.breakdb")) == JOptionPane.YES_OPTION) {  //$NON-NLS-1$

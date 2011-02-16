@@ -40,6 +40,7 @@
 	<import file="plugins/build-FFTAImport.xml"/>
 	<import file="plugins/build-PhoenixPlugin.xml"/>
 	<import file="plugins/build-BackupRestorePlugin.xml"/>
+	<import file="plugins/build-ScriptExt.xml"/>
 
 	<!--genere la documentation technique-->
 	<target name="dev_doc" description="genere la documentation développeur">
@@ -282,6 +283,7 @@
 		    	<include name="*"/>
 		    	<exclude name="FFTAImport"/>
 		    	<exclude name="ResultArcImport"/>
+		    	<exclude name="ScriptExt"/>
 		    </dirset>
 			<sequential>
 				<copy todir="${projet.pack.dir}/linux/tar/usr/lib/ConcoursJeunes" >
@@ -429,6 +431,7 @@
 		    	<include name="*"/>
 		    	<exclude name="FFTAImport"/>
 		    	<exclude name="ResultArcImport"/>
+		    	<exclude name="ScriptExt"/>
 		    </dirset>
 			<sequential>
 				<copy todir="${projet.pack.dir}/macosx/${version.name}.app/Contents/Resources/Java" >
@@ -475,6 +478,7 @@
 		<antcall target="pack-PhoenixPlugin" />
 		<antcall target="pack-BackupRestorePlugin" />
 		<antcall target="pack-FFTAImport" />
+		<antcall target="pack-ScriptExt" />
 		<antcall target="revisions" />
 		<antcall target="windows" />
 		<antcall target="linux" />
@@ -503,6 +507,7 @@
 		<antcall target="pack-ResultArcImport" />
 		<antcall target="pack-FFTAImport" />
 		<antcall target="pack-BackupRestorePlugin" />
+		<antcall target="pack-ScriptExt" />
 		<antcall target="revisions" />
 		<antcall target="makensissetup" />
 		<antcall target="makelinuxtargz" />

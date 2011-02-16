@@ -112,7 +112,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.DefaultListSelectionModel;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.RowFilter;
+import javax.swing.SwingUtilities;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.ListSelectionEvent;
@@ -507,7 +521,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 	public void valueChanged(ListSelectionEvent e) {
 		if(e.getSource() instanceof DefaultListSelectionModel) {
 			if(((DefaultListSelectionModel)e.getSource()).getMinSelectionIndex() > -1)
-				jtpDescription.setText(pdtm.getPluginDescriptionAt(((DefaultListSelectionModel)e.getSource()).getMinSelectionIndex()).getLongDescription());
+				jtpDescription.setText(pdtm.getPluginDescriptionAt(((DefaultListSelectionModel)e.getSource()).getMinSelectionIndex()).getLongDescription());  //$NON-NLS-1$//$NON-NLS-2$
 		} else if(e.getSource() == jlCategorie) {
 			List<RowFilter<PluginDescriptionTableModel, Integer>> filters = new ArrayList<RowFilter<PluginDescriptionTableModel, Integer>>();
 			filters.add(RowFilter.<PluginDescriptionTableModel, Integer>regexFilter("(?i)" + jtfSearch.getText())); //$NON-NLS-1$
@@ -686,7 +700,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 				case 2:
 					return currentPluginDescription.getVersion();
 				case 3:
-					return currentPluginDescription.getShortDescription();
+					return "<html>" + currentPluginDescription.getShortDescription() + "</html>"; //$NON-NLS-1$ //$NON-NLS-2$
 				case 4:
 					return currentPluginDescription.getCategory();
 			}

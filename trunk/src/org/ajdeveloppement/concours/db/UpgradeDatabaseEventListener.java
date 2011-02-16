@@ -100,7 +100,7 @@ import org.h2.api.DatabaseEventListener;
  */
 public class UpgradeDatabaseEventListener implements org.h2.upgrade.v1_1.api.DatabaseEventListener,DatabaseEventListener {
 
-	private static ProgressMonitor monitor = new ProgressMonitor(null, "Chargement/Migration de la base\nL'opération peut durer plusieurs minutes\n ", "", 0, 1);
+	private static ProgressMonitor monitor = new ProgressMonitor(null, "Chargement/Migration de la base\nL'opération peut durer plusieurs minutes\n ", "", 0, 1); //$NON-NLS-1$ //$NON-NLS-2$
 	private static boolean enabled = true;
 	
 	public static void forceCloseMonitor() {
