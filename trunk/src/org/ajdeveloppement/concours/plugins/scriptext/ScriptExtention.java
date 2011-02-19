@@ -120,7 +120,7 @@ public class ScriptExtention {
 	@XmlTransient
 	private String mainPath = ""; //$NON-NLS-1$
 	@XmlTransient
-	private Invocable invocableEngine;
+	private ScriptExtInterface invocableEngine;
 	
 	public ScriptExtention() {
 		
@@ -198,20 +198,26 @@ public class ScriptExtention {
 			scriptEngine.eval(reader);
 			reader.close();
 			
-			invocableEngine = (Invocable)scriptEngine;
+			invocableEngine = ((Invocable)scriptEngine).getInterface(ScriptExtInterface.class);
+			//invocableEngine = (Invocable)scriptEngine;
 		}
 	}
 	
-	/**
-	 * Execute le script à la condition qu'il ai été préalablement
-	 * compilé avec {@link #compileScript()}.
-	 * 
-	 * @param args Les arguments de la fonction principal du script
-	 * @throws ScriptException
-	 * @throws NoSuchMethodException
-	 */
-	public void runScript(Object... args) throws ScriptException, NoSuchMethodException {
-		if(invocableEngine != null && mainFunction != null)
-			invocableEngine.invokeFunction(mainFunction, args);
+	public ScriptExtInterface getScriptInterface() {
+		return invocableEngine;
 	}
+	
+//	/**
+//	 * Execute le script à la condition qu'il ai été préalablement
+//	 * compilé avec {@link #compileScript()}.
+//	 * 
+//	 * @param parentframe
+//	 * @param profile
+//	 * @throws ScriptException
+//	 * @throws NoSuchMethodException
+//	 */
+//	public void runScript(Object... args) throws ScriptException, NoSuchMethodException {
+//		if(invocableEngine != null && mainFunction != null)
+//			invocableEngine.invokeFunction(mainFunction, args);
+//	}
 }

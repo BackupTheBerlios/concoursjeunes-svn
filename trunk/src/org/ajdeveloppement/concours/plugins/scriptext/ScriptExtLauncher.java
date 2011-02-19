@@ -138,31 +138,18 @@ public class ScriptExtLauncher {
 	@PluginEntry
 	public void runStartupExtention() {
 		for(final ScriptExtention extention : scripts) {
-			if(extention.getType() == Plugin.Type.STARTUP) {
-				try {
-					if(extention.isAsynchrone()) {
-						Thread t = new Thread(new Runnable() {
-							
-							@Override
-							public void run() {
-								try {
-									extention.runScript();
-								} catch (ScriptException e) {
-									e.printStackTrace();
-								} catch (NoSuchMethodException e) {
-									e.printStackTrace();
-								}
-							}
-						});
-						t.start();
-					} else
-						extention.runScript();
-					
-				} catch (ScriptException e) {
-					e.printStackTrace();
-				} catch (NoSuchMethodException e) {
-					e.printStackTrace();
-				}
+			if(extention.getType() == Plugin.Type.STARTUP && extention.getScriptInterface() != null) {
+				if(extention.isAsynchrone()) {
+					Thread t = new Thread(new Runnable() {
+						
+						@Override
+						public void run() {
+							extention.getScriptInterface().load(null, null);
+						}
+					});
+					t.start();
+				} else
+					extention.getScriptInterface().load(null, null);
 			}
 		}
 	}

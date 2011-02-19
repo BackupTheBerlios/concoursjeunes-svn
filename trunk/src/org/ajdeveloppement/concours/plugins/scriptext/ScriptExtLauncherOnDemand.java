@@ -88,11 +88,18 @@
  */
 package org.ajdeveloppement.concours.plugins.scriptext;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.List;
 
 import javax.script.ScriptException;
 import javax.swing.JFrame;
+import javax.swing.JMenuItem;
 
+import org.ajdeveloppement.commons.ui.MenuBarTools;
+import org.ajdeveloppement.concours.ui.ConcoursJeunesFrame;
 import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
 import org.concoursjeunes.Profile;
 import org.concoursjeunes.plugins.Plugin;
@@ -103,25 +110,46 @@ import org.concoursjeunes.plugins.Plugin;
  */
 @Plugin(type = Plugin.Type.UI_STARTUP)
 public class ScriptExtLauncherOnDemand {
-	public ScriptExtLauncherOnDemand(JFrame parentframe, Profile profile) {
-		List<ScriptExtention> scripts = ScriptExtLauncher.getOnDemandScripts();
-		for(ScriptExtention script : scripts) {
-			try {
-				//script.compileScript();
-				script.runScript(parentframe, profile);
-			} catch (ScriptException e) {
-				DisplayableErrorHelper.displayException(e);
-				e.printStackTrace();
-			} catch (NoSuchMethodException e) {
-				DisplayableErrorHelper.displayException(e);
-				e.printStackTrace();
-			} /*catch (MalformedURLException e) {
-				DisplayableErrorHelper.displayException(e);
-				e.printStackTrace();
-			} catch (IOException e) {
-				DisplayableErrorHelper.displayException(e);
-				e.printStackTrace();
-			}*/
+	private List<ScriptExtention> scripts = null;
+	
+	public ScriptExtLauncherOnDemand(JFrame parentframe, final Profile profile) {
+		if(parentframe instanceof ConcoursJeunesFrame) {
+			
+			final ConcoursJeunesFrame concoursJeunesFrame = (ConcoursJeunesFrame)parentframe;
+			
+			JMenuItem jmiUnloadScript = new JMenuItem("Recharger les scripts");
+			MenuBarTools.addItem(jmiUnloadScript, parentframe.getJMenuBar(), new String[] { "tools", "Scripts", "reloadScript" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			MenuBarTools.addSeparator(parentframe.getJMenuBar(), new String[] { "tools", "Scripts", "" }); //$NON-NLS-1$ //$NON-NLS-2$
+			
+			jmiUnloadScript.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent ae) {
+					for(ScriptExtention script : scripts) {
+						try {
+							if(script.getScriptInterface() != null) {
+								script.getScriptInterface().unload();
+								script.compileScript();
+								script.getScriptInterface().load(concoursJeunesFrame, profile);
+							}
+						} catch (ScriptException e) {
+							DisplayableErrorHelper.displayException(e);
+							e.printStackTrace();
+						} catch (MalformedURLException e) {
+							DisplayableErrorHelper.displayException(e);
+							e.printStackTrace();
+						} catch (IOException e) {
+							DisplayableErrorHelper.displayException(e);
+							e.printStackTrace();
+						}
+					}
+				}
+			});
+			
+			scripts = ScriptExtLauncher.getOnDemandScripts();
+			for(ScriptExtention script : scripts) {
+				if(script.getScriptInterface() != null)
+					script.getScriptInterface().load(concoursJeunesFrame, profile);
+			}
 		}
 	}
 }

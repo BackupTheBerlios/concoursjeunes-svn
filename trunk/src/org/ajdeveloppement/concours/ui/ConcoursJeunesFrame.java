@@ -248,6 +248,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			fillOnDemandPlugin();
 			fillUIStartupPlugin();
 		}
+		MenuBarTools.hideEmptyMenu(getJMenuBar());
 		
 		jmiParametres = (JMenuItem) frameCreator.getNamedComponent("mi.parametres"); //$NON-NLS-1$
 
