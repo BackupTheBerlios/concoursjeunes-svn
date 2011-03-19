@@ -438,11 +438,15 @@ public class DistancesEtBlason implements ObjectPersistence {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((criteriaSet == null) ? 0 : criteriaSet.hashCode());
-		result = prime * result + Arrays.hashCode(distances);
-		result = prime * result
-				+ ((targetFace == null) ? 0 : targetFace.hashCode());
+		if(numdistancesblason == 0) {
+			result = prime * result
+					+ ((criteriaSet == null) ? 0 : criteriaSet.hashCode());
+			result = prime * result + Arrays.hashCode(distances);
+			result = prime * result
+					+ ((targetFace == null) ? 0 : targetFace.hashCode());
+		} else {
+			result = prime * result + numdistancesblason;
+		}
 		return result;
 	}
 

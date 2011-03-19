@@ -142,6 +142,7 @@ public class Federation implements ObjectPersistence {
 	
 	@XmlID
 	@XmlAttribute(name="id")
+	@SuppressWarnings("unused")
 	private String xmlId;
 	
 	@SqlField(name="NUMFEDERATION")

@@ -137,7 +137,10 @@ public class CriteriaSetBuilder {
 					
 					
 					while(rs.next()) {
-						Criterion criterion = reglement.getListCriteria().get(reglement.getListCriteria().indexOf(new Criterion(rs.getString("CODECRITERE")))); //$NON-NLS-1$
+						Criterion protoCriterion = new Criterion(rs.getString("CODECRITERE")); //$NON-NLS-1$
+						protoCriterion.setReglement(reglement);
+						
+						Criterion criterion = reglement.getListCriteria().get(reglement.getListCriteria().indexOf(protoCriterion));
 						CriterionElement tempCriterionElement = new CriterionElement(rs.getString("CODECRITEREELEMENT")); //$NON-NLS-1$
 						tempCriterionElement.setCriterion(criterion);
 						

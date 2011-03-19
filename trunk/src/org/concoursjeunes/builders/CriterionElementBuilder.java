@@ -88,10 +88,11 @@
  */
 package org.concoursjeunes.builders;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.Map;
 
+import org.ajdeveloppement.commons.persistence.LoadHelper;
+import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.sql.SqlLoadHandler;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Criterion;
 import org.concoursjeunes.CriterionElement;
@@ -102,6 +103,14 @@ import org.concoursjeunes.CriterionElement;
  */
 public class CriterionElementBuilder {
 	
+	private static LoadHelper<CriterionElement,Map<String,Object>> loadHelper;
+	static {
+		try {
+			loadHelper = new LoadHelper<CriterionElement,Map<String,Object>>(new SqlLoadHandler<CriterionElement>(ApplicationCore.dbConnection, CriterionElement.class));
+		} catch(ObjectPersistenceException e) {
+			e.printStackTrace();
+		}
+	}
 	/**
 	 * Construit l'élément de critère représenté par son code et appartenant au critére et réglement transmis en parametre 
 	 * 
@@ -111,32 +120,37 @@ public class CriterionElementBuilder {
 	 * @return l'élément de critère construit
 	 */
 	public static CriterionElement getCriterionElement(String codeElement, Criterion criterion) {
-		try {
-			String sql = "select * from CRITEREELEMENT where CODECRITEREELEMENT=?" + //$NON-NLS-1$
-					" and CODECRITERE=? and NUMREGLEMENT=?"; //$NON-NLS-1$
-			
-			PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
 
-			pstmt.setString(1, codeElement);
-			pstmt.setString(2, criterion.getCode());
-			pstmt.setInt(3, criterion.getReglement().getNumReglement());
-	
-			ResultSet rs = pstmt.executeQuery();
-			
-			if(rs.first()) {
-				CriterionElement criterionElement = new CriterionElement();
-				criterionElement.setCriterion(criterion);
-				criterionElement.setCode(codeElement);
-				criterionElement.setLibelle(rs.getString("LIBELLECRITEREELEMENT")); //$NON-NLS-1$
-				criterionElement.setActive(rs.getBoolean("ACTIF")); //$NON-NLS-1$
-				criterionElement.setNumordre(rs.getInt("NUMORDRE")); //$NON-NLS-1$
-				
-				return criterionElement;
-			}
-		} catch (SQLException e) {
+		CriterionElement criterionElement = new CriterionElement();
+		criterionElement.setCriterion(criterion);
+		criterionElement.setCode(codeElement);
+		
+		try {
+			loadHelper.load(criterionElement);
+		} catch (ObjectPersistenceException e) {
 			e.printStackTrace();
 		}
-		return null;
+			
+//			String sql = "select * from CRITEREELEMENT where CODECRITEREELEMENT=?" + //$NON-NLS-1$
+//					" and CODECRITERE=? and NUMREGLEMENT=?"; //$NON-NLS-1$
+//			
+//			PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
+//
+//			pstmt.setString(1, codeElement);
+//			pstmt.setString(2, criterion.getCode());
+//			pstmt.setInt(3, criterion.getReglement().getNumReglement());
+//	
+//			ResultSet rs = pstmt.executeQuery();
+//			
+//			if(rs.first()) {
+//				criterionElement.setLibelle(rs.getString("LIBELLECRITEREELEMENT")); //$NON-NLS-1$
+//				criterionElement.setActive(rs.getBoolean("ACTIF")); //$NON-NLS-1$
+//				criterionElement.setNumordre(rs.getInt("NUMORDRE")); //$NON-NLS-1$
+//				
+//				return criterionElement;
+//			}
+
+		return criterionElement;
 	}
 	
 	/**

@@ -296,27 +296,47 @@ public class Criterion implements ObjectPersistence, Cloneable {
      * @param criterion
      * @return boolean - le résultats de la comparaison de critères
      */
-    public boolean equals(Criterion criterion) {
-        return code.equals(criterion.getCode());
-    }
+//    public boolean equals(Criterion criterion) {
+//        return code.equals(criterion.getCode());
+//    }
     
     /**
      * Test si deux critères sont équivalent en se basant sur la comparaison d'objet
      */
-    @Override
-    public boolean equals(Object criterion) {
-        if(criterion instanceof Criterion)
-            return equals((Criterion)criterion);
-        return false;
-    }
-    
-    /**
-     * donne le hash de l'objet en se basant sur celui de son code
-     */
-    @Override
-    public int hashCode() {
-        return code.hashCode();
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Criterion other = (Criterion) obj;
+		if (code == null) {
+			if (other.code != null)
+				return false;
+		} else if (!code.equals(other.code))
+			return false;
+		if (reglement == null) {
+			if (other.reglement != null)
+				return false;
+		} else if (!reglement.equals(other.reglement))
+			return false;
+		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((code == null) ? 0 : code.hashCode());
+		result = prime * result
+				+ ((reglement == null) ? 0 : reglement.hashCode());
+		return result;
+	}
     
     /**
      * renvoie le libelle du critère

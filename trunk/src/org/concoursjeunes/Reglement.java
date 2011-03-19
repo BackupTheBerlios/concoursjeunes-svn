@@ -1026,7 +1026,14 @@ public class Reglement implements ObjectPersistence {
 		try {
 			Statement stmt = ApplicationCore.dbConnection.createStatement();
 			try {
-				stmt.executeUpdate("delete from DISTANCESBLASONS where NUMREGLEMENT=" + numReglement); //$NON-NLS-1$
+				String codesDB = ""; //$NON-NLS-1$
+				for (DistancesEtBlason db : listDistancesEtBlason) {
+					if(!codesDB.isEmpty())
+						codesDB += ","; //$NON-NLS-1$
+					codesDB += db.getNumdistancesblason();
+				}
+				
+				stmt.executeUpdate("delete from DISTANCESBLASONS where NUMREGLEMENT=" + numReglement + " and NUMDISTANCESBLASONS not in (" + codesDB + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			} finally {
 				stmt.close();
 			}

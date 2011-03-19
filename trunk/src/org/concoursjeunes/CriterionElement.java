@@ -337,9 +337,9 @@ public class CriterionElement implements ObjectPersistence {
      * @param criterionElement - l'objet à comparer
      * @return boolean - le résultats de la comparaison de critères
      */
-    public boolean equals(CriterionElement criterionElement) {
-        return code.equals(criterionElement.getCode());
-    }
+//    public boolean equals(CriterionElement criterionElement) {
+//        return code.equals(criterionElement.getCode());
+//    }
     
     /**
      * donne le hash de l'objet en se basant sur celui de son code

@@ -98,6 +98,7 @@ import javax.script.ScriptException;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 
+import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.MenuBarTools;
 import org.ajdeveloppement.concours.ui.ConcoursJeunesFrame;
 import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
@@ -110,6 +111,8 @@ import org.concoursjeunes.plugins.Plugin;
  */
 @Plugin(type = Plugin.Type.UI_STARTUP)
 public class ScriptExtLauncherOnDemand {
+	private AjResourcesReader pluginLocalisation = new AjResourcesReader("org.ajdeveloppement.concours.plugins.scriptext.ScriptExtLauncherOnDemand_libelle", ScriptExtLauncherOnDemand.class.getClassLoader()); //$NON-NLS-1$
+	
 	private List<ScriptExtention> scripts = null;
 	
 	public ScriptExtLauncherOnDemand(JFrame parentframe, final Profile profile) {
@@ -117,9 +120,9 @@ public class ScriptExtLauncherOnDemand {
 			
 			final ConcoursJeunesFrame concoursJeunesFrame = (ConcoursJeunesFrame)parentframe;
 			
-			JMenuItem jmiUnloadScript = new JMenuItem("Recharger les scripts");
+			JMenuItem jmiUnloadScript = new JMenuItem(pluginLocalisation.getResourceString("menu.reloadscript")); //$NON-NLS-1$
 			MenuBarTools.addItem(jmiUnloadScript, parentframe.getJMenuBar(), new String[] { "tools", "Scripts", "reloadScript" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			MenuBarTools.addSeparator(parentframe.getJMenuBar(), new String[] { "tools", "Scripts", "" }); //$NON-NLS-1$ //$NON-NLS-2$
+			MenuBarTools.addSeparator(parentframe.getJMenuBar(), new String[] { "tools", "Scripts", "" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			
 			jmiUnloadScript.addActionListener(new ActionListener() {
 				@Override

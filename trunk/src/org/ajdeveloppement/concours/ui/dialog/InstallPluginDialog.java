@@ -521,7 +521,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 	public void valueChanged(ListSelectionEvent e) {
 		if(e.getSource() instanceof DefaultListSelectionModel) {
 			if(((DefaultListSelectionModel)e.getSource()).getMinSelectionIndex() > -1)
-				jtpDescription.setText(pdtm.getPluginDescriptionAt(((DefaultListSelectionModel)e.getSource()).getMinSelectionIndex()).getLongDescription());  //$NON-NLS-1$//$NON-NLS-2$
+				jtpDescription.setText(pdtm.getPluginDescriptionAt(((DefaultListSelectionModel)e.getSource()).getMinSelectionIndex()).getLongDescription());
 		} else if(e.getSource() == jlCategorie) {
 			List<RowFilter<PluginDescriptionTableModel, Integer>> filters = new ArrayList<RowFilter<PluginDescriptionTableModel, Integer>>();
 			filters.add(RowFilter.<PluginDescriptionTableModel, Integer>regexFilter("(?i)" + jtfSearch.getText())); //$NON-NLS-1$
