@@ -437,6 +437,8 @@ public class State implements Comparable<State> {
 		writer.setFullCompression();
 		
 		stateScript.printState(ficheConcours, new URL(((isZipped) ? "jar:" : "") + getStateURL().toString() + ((isZipped) ? "!" : "") + "/" + template), document, writer, options);
+		
+		writer.close();
 
 		return true;
 	}
