@@ -260,9 +260,14 @@ public class FFTAImportDialog extends JDialog implements ActionListener, FFTAImp
 	 */
 	@Override
 	public void importFinished() {
-		JOptionPane.showMessageDialog(this, pluginLocalisation.getResourceString("message.import.fin"), //$NON-NLS-1$
-				pluginLocalisation.getResourceString("message.import"), JOptionPane.INFORMATION_MESSAGE); //$NON-NLS-1$
-		setVisible(false);
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				JOptionPane.showMessageDialog(FFTAImportDialog.this, pluginLocalisation.getResourceString("message.import.fin"), //$NON-NLS-1$
+						pluginLocalisation.getResourceString("message.import"), JOptionPane.INFORMATION_MESSAGE); //$NON-NLS-1$
+				setVisible(false);
+			}
+		});
 	}
 
 	/*
