@@ -97,6 +97,7 @@ import java.util.Map;
 
 import org.ajdeveloppement.commons.persistence.LoadHelper;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.sql.ResultSetLoadHandler;
 import org.ajdeveloppement.commons.persistence.sql.SqlLoadHandler;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.DistancesEtBlason;
@@ -109,12 +110,35 @@ import org.concoursjeunes.Reglement;
 public class DistancesEtBlasonBuilder {
 	
 	private static LoadHelper<DistancesEtBlason,Map<String,Object>> loadHelper;
+	private static LoadHelper<DistancesEtBlason,ResultSet> resultSetLoadHelper;
 	static {
 		try {
 			loadHelper = new LoadHelper<DistancesEtBlason,Map<String,Object>>(new SqlLoadHandler<DistancesEtBlason>(ApplicationCore.dbConnection, DistancesEtBlason.class));
+			resultSetLoadHelper = new LoadHelper<DistancesEtBlason,ResultSet>(new ResultSetLoadHandler<DistancesEtBlason>(DistancesEtBlason.class));
 		} catch(ObjectPersistenceException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private static PreparedStatement pstmtDistances = null;
+	
+	/**
+	 * Construit un objet DistancesEtBlason en se basan sur le numero de sa reference
+	 * en base ainsi que le numero de réglement.<br>
+	 * Associe à l'objet DistancesEtBlason l'objet Reglement lié
+	 * 
+	 * @param numdistancesblason Le numero de la ligne en base
+	 * @param reglement Le réglement à lié
+	 * 
+	 * @return l'objet DistancesEtBlason généré
+	 * @throws ObjectPersistenceException 
+	 */
+	public static DistancesEtBlason getDistancesEtBlason(int numdistancesblason, Reglement reglement) throws ObjectPersistenceException {
+		return getDistancesEtBlason(numdistancesblason, reglement, null);
+	}
+	
+	public static DistancesEtBlason getDistancesEtBlason(Reglement reglement, ResultSet rs) throws ObjectPersistenceException {
+		return getDistancesEtBlason(-1, reglement, rs);
 	}
 	
 	/**
@@ -126,41 +150,55 @@ public class DistancesEtBlasonBuilder {
 	 * @param reglement Le réglement à lié
 	 * 
 	 * @return l'objet DistancesEtBlason généré
+	 * @throws ObjectPersistenceException 
 	 */
-	public static DistancesEtBlason getDistancesEtBlason(int numdistancesblason, Reglement reglement) {
-		PreparedStatement pstmt = null;
+	private static DistancesEtBlason getDistancesEtBlason(int numdistancesblason, Reglement reglement, ResultSet rs) throws ObjectPersistenceException {
 		DistancesEtBlason distancesEtBlason = new DistancesEtBlason();
-		distancesEtBlason.setNumdistancesblason(numdistancesblason);
 		distancesEtBlason.setReglement(reglement);
 		
 		try {
-			String sql = "select * from distances where " + //$NON-NLS-1$
-				"NUMDISTANCESBLASONS=? and NUMREGLEMENT=? order by NUMDISTANCES"; //$NON-NLS-1$
-			pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
+			if(rs == null)
+				distancesEtBlason.setNumdistancesblason(numdistancesblason);
+			else
+				numdistancesblason = rs.getInt("DISTANCESBLASONS.NUMDISTANCESBLASONS"); //$NON-NLS-1$
 			
-			pstmt.setInt(1, numdistancesblason);
-			pstmt.setInt(2, reglement.getNumReglement());
-			
-			ResultSet rs = pstmt.executeQuery();
-			List<Integer> distances = new ArrayList<Integer>();
-			while(rs.next()) {
-				distances.add(rs.getInt("DISTANCE")); //$NON-NLS-1$
+			if(pstmtDistances == null) {
+				String sql = "select DISTANCE from DISTANCES where " + //$NON-NLS-1$
+					"NUMDISTANCESBLASONS=? and NUMREGLEMENT=? order by NUMDISTANCES"; //$NON-NLS-1$
+				pstmtDistances = ApplicationCore.dbConnection.prepareStatement(sql);
 			}
-			int[] iDist = new int[distances.size()];
-			for(int i = 0; i < iDist.length; i++)
-				iDist[i] = distances.get(i);
-			distancesEtBlason.setDistance(iDist);
 			
-			pstmt.close();
+			pstmtDistances.setInt(1, numdistancesblason);
+			pstmtDistances.setInt(2, reglement.getNumReglement());
 			
-			Map<Class<?>, Map<String,Object>> foreignKeys = loadHelper.load(distancesEtBlason);
+			ResultSet rs2 = pstmtDistances.executeQuery();
+			try {
+				List<Integer> distances = new ArrayList<Integer>();
+				while(rs2.next()) {
+					distances.add(rs2.getInt("DISTANCE")); //$NON-NLS-1$
+				}
+				int[] iDist = new int[distances.size()];
+				for(int i = 0; i < iDist.length; i++)
+					iDist[i] = distances.get(i);
+				distancesEtBlason.setDistance(iDist);
+			} finally {
+				rs2.close();
+			}
 			
-			distancesEtBlason.setCriteriaSet(CriteriaSetBuilder.getCriteriaSet((Integer)foreignKeys.get(DistancesEtBlason.class).get("NUMCRITERIASET"), reglement)); //$NON-NLS-1$
-			distancesEtBlason.setTargetFace(BlasonBuilder.getBlason((Integer)foreignKeys.get(DistancesEtBlason.class).get("NUMBLASON"))); //$NON-NLS-1$
-		} catch (ObjectPersistenceException e) {
-			e.printStackTrace();
+			Map<Class<?>, Map<String,Object>> foreignKeys = null;
+			
+			if(rs == null) {
+				foreignKeys = loadHelper.load(distancesEtBlason);
+			} else {
+				foreignKeys = resultSetLoadHelper.load(distancesEtBlason, rs);
+			}
+			
+			if(foreignKeys != null) {
+				distancesEtBlason.setCriteriaSet(CriteriaSetBuilder.getCriteriaSet((Integer)foreignKeys.get(DistancesEtBlason.class).get("NUMCRITERIASET"), reglement)); //$NON-NLS-1$
+				distancesEtBlason.setTargetFace(BlasonBuilder.getBlason((Integer)foreignKeys.get(DistancesEtBlason.class).get("NUMBLASON"))); //$NON-NLS-1$
+			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new ObjectPersistenceException(e);
 		}
 		
 		return distancesEtBlason;

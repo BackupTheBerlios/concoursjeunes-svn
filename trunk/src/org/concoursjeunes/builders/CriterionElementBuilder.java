@@ -88,10 +88,12 @@
  */
 package org.concoursjeunes.builders;
 
+import java.sql.ResultSet;
 import java.util.Map;
 
 import org.ajdeveloppement.commons.persistence.LoadHelper;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.sql.ResultSetLoadHandler;
 import org.ajdeveloppement.commons.persistence.sql.SqlLoadHandler;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Criterion;
@@ -104,13 +106,16 @@ import org.concoursjeunes.CriterionElement;
 public class CriterionElementBuilder {
 	
 	private static LoadHelper<CriterionElement,Map<String,Object>> loadHelper;
+	private static LoadHelper<CriterionElement,ResultSet> resultSetLoadHelper;
 	static {
 		try {
 			loadHelper = new LoadHelper<CriterionElement,Map<String,Object>>(new SqlLoadHandler<CriterionElement>(ApplicationCore.dbConnection, CriterionElement.class));
+			resultSetLoadHelper = new LoadHelper<CriterionElement,ResultSet>(new ResultSetLoadHandler<CriterionElement>(CriterionElement.class));
 		} catch(ObjectPersistenceException e) {
 			e.printStackTrace();
 		}
 	}
+	
 	/**
 	 * Construit l'élément de critère représenté par son code et appartenant au critére et réglement transmis en parametre 
 	 * 
@@ -118,37 +123,37 @@ public class CriterionElementBuilder {
 	 * @param criterion le critère parent de l'élément
 	 * 
 	 * @return l'élément de critère construit
+	 * @throws ObjectPersistenceException 
 	 */
-	public static CriterionElement getCriterionElement(String codeElement, Criterion criterion) {
+	public static CriterionElement getCriterionElement(String codeElement, Criterion criterion) throws ObjectPersistenceException {
+		return getCriterionElement(codeElement, criterion, null);
+	}
+	
+	public static CriterionElement getCriterionElement(Criterion criterion, ResultSet rs) throws ObjectPersistenceException {
+		return getCriterionElement(null, criterion, rs);
+	}
+	
+	/**
+	 * Construit l'élément de critère représenté par son code et appartenant au critére et réglement transmis en parametre 
+	 * 
+	 * @param codeElement le code de l'élément à charger
+	 * @param criterion le critère parent de l'élément
+	 * @param rs le resultset contenant les valeurs de l'objet
+	 * 
+	 * @return l'élément de critère construit
+	 * @throws ObjectPersistenceException 
+	 */
+	private static CriterionElement getCriterionElement(String codeElement, Criterion criterion, ResultSet rs) throws ObjectPersistenceException {
 
 		CriterionElement criterionElement = new CriterionElement();
 		criterionElement.setCriterion(criterion);
-		criterionElement.setCode(codeElement);
+		if(rs == null) {
+			criterionElement.setCode(codeElement);
 		
-		try {
 			loadHelper.load(criterionElement);
-		} catch (ObjectPersistenceException e) {
-			e.printStackTrace();
+		} else {
+			resultSetLoadHelper.load(criterionElement, rs);
 		}
-			
-//			String sql = "select * from CRITEREELEMENT where CODECRITEREELEMENT=?" + //$NON-NLS-1$
-//					" and CODECRITERE=? and NUMREGLEMENT=?"; //$NON-NLS-1$
-//			
-//			PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
-//
-//			pstmt.setString(1, codeElement);
-//			pstmt.setString(2, criterion.getCode());
-//			pstmt.setInt(3, criterion.getReglement().getNumReglement());
-//	
-//			ResultSet rs = pstmt.executeQuery();
-//			
-//			if(rs.first()) {
-//				criterionElement.setLibelle(rs.getString("LIBELLECRITEREELEMENT")); //$NON-NLS-1$
-//				criterionElement.setActive(rs.getBoolean("ACTIF")); //$NON-NLS-1$
-//				criterionElement.setNumordre(rs.getInt("NUMORDRE")); //$NON-NLS-1$
-//				
-//				return criterionElement;
-//			}
 
 		return criterionElement;
 	}

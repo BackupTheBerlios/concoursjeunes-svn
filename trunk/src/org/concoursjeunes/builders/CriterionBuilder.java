@@ -88,11 +88,14 @@
  */
 package org.concoursjeunes.builders;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
 import org.ajdeveloppement.commons.persistence.LoadHelper;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.commons.persistence.sql.ResultSetLoadHandler;
 import org.ajdeveloppement.commons.persistence.sql.SqlLoadHandler;
 import org.ajdeveloppement.concours.cache.CriterionCache;
 import org.concoursjeunes.ApplicationCore;
@@ -109,9 +112,11 @@ import org.concoursjeunes.Reglement;
 public class CriterionBuilder {
 	
 	private static LoadHelper<Criterion,Map<String,Object>> loadHelper;
+	private static LoadHelper<Criterion,ResultSet> resultSetLoadHelper;
 	static {
 		try {
 			loadHelper = new LoadHelper<Criterion,Map<String,Object>>(new SqlLoadHandler<Criterion>(ApplicationCore.dbConnection, Criterion.class));
+			resultSetLoadHelper = new LoadHelper<Criterion,ResultSet>(new ResultSetLoadHandler<Criterion>(Criterion.class));
 		} catch(ObjectPersistenceException e) {
 			e.printStackTrace();
 		}
@@ -124,22 +129,39 @@ public class CriterionBuilder {
 	 * @param reglement le réglement parent du critère
 	 * 
 	 * @return le critère correspondant
+	 * @throws ObjectPersistenceException 
 	 */
-	public static Criterion getCriterion(String codeCritere, Reglement reglement) {
+	public static Criterion getCriterion(String codeCritere, Reglement reglement) throws ObjectPersistenceException {
+		return getCriterion(codeCritere, reglement, null);
+	}
+	
+	public static Criterion getCriterion(Reglement reglement, ResultSet rs) throws ObjectPersistenceException {
+		return getCriterion(null, reglement, rs);
+	}
+	
+	private static Criterion getCriterion(String codeCritere, Reglement reglement, ResultSet rs) throws ObjectPersistenceException {
+		if(rs != null) {
+			try {
+				codeCritere = rs.getString("CRITERE.CODECRITERE"); //$NON-NLS-1$
+			} catch (SQLException e) {
+				throw new ObjectPersistenceException(e);
+			}
+		}
+		
 		Criterion criterion = CriterionCache.getInstance().get(new CriterionCache.CriterionPK(codeCritere, reglement));
 		
 		if(criterion == null) {
 			criterion = new Criterion();
-			criterion.setCode(codeCritere);
 			criterion.setReglement(reglement);
+			if(rs == null) {
+				criterion.setCode(codeCritere);
+				
+				loadHelper.load(criterion);
+			} else {
+				resultSetLoadHelper.load(criterion, rs);
+			}
 			
 			CriterionCache.getInstance().add(criterion);
-			
-			try {
-				loadHelper.load(criterion);
-			} catch (ObjectPersistenceException e) {
-				e.printStackTrace();
-			}
 			
 			criterion.setCriterionElements(CriterionElement.getAllCriterionElementsFor(criterion));
 		}

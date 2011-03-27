@@ -233,10 +233,10 @@ public class ReglementBuilder {
 				
 				// Récupération des critères
 				List<Criterion> criteria = new ArrayList<Criterion>();
-				rs = stmt.executeQuery("select CODECRITERE from CRITERE where NUMREGLEMENT=" + numreglement + " order by NUMORDRE"); //$NON-NLS-1$ //$NON-NLS-2$
+				rs = stmt.executeQuery("select * from CRITERE where NUMREGLEMENT=" + numreglement + " order by NUMORDRE"); //$NON-NLS-1$ //$NON-NLS-2$
 				try {
 					while(rs.next()) {
-						criteria.add(CriterionBuilder.getCriterion(rs.getString("CODECRITERE"), reglement)); //$NON-NLS-1$
+						criteria.add(CriterionBuilder.getCriterion(reglement, rs));
 					}
 				} finally {
 					rs.close();
@@ -248,9 +248,7 @@ public class ReglementBuilder {
 				rs = stmt.executeQuery("select * from DISTANCESBLASONS where NUMREGLEMENT=" + numreglement); //$NON-NLS-1$
 				try {
 					while(rs.next()) {
-						int numdb = rs.getInt("NUMDISTANCESBLASONS"); //$NON-NLS-1$
-						
-						DistancesEtBlason db = DistancesEtBlasonBuilder.getDistancesEtBlason(numdb, reglement);
+						DistancesEtBlason db = DistancesEtBlasonBuilder.getDistancesEtBlason(reglement, rs);
 						CriteriaSet[] criteriaSets = CriteriaSet.listCriteriaSet(reglement, reglement.getPlacementFilter());
 						for(CriteriaSet criteriaSet : criteriaSets) {
 							if(criteriaSet.equals(db.getCriteriaSet().getFilteredCriteriaSet(reglement.getPlacementFilter()))) {

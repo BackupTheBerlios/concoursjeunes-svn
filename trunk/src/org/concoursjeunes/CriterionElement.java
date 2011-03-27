@@ -386,21 +386,22 @@ public class CriterionElement implements ObjectPersistence {
      * Retourne l'ensemble des éléments de critère associé à un critère donné
      * 
      * TODO à revoir
+     * @throws ObjectPersistenceException 
      */
-    public static List<CriterionElement> getAllCriterionElementsFor(Criterion criterion) {
+    public static List<CriterionElement> getAllCriterionElementsFor(Criterion criterion) throws ObjectPersistenceException {
     	List<CriterionElement> elements = new ArrayList<CriterionElement>();
     	
     	try {
 			Statement stmt = ApplicationCore.dbConnection.createStatement();
 			
-			String sql = "select CODECRITEREELEMENT from critereelement where " + //$NON-NLS-1$
+			String sql = "select * from critereelement where " + //$NON-NLS-1$
 					"codecritere='" + criterion.getCode() + "' " + //$NON-NLS-1$ //$NON-NLS-2$
 					"and numreglement=" + criterion.getReglement().getNumReglement() + " order by NUMORDRE"; //$NON-NLS-1$ //$NON-NLS-2$
 			
 			ResultSet rs = stmt.executeQuery(sql);
 			
 			while(rs.next()) {
-				elements.add(CriterionElementBuilder.getCriterionElement(rs.getString("CODECRITEREELEMENT"), criterion)); //$NON-NLS-1$
+				elements.add(CriterionElementBuilder.getCriterionElement(criterion, rs));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
