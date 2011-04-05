@@ -128,7 +128,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	private static String[] strLstLangue;
 
 	private String langue           = "fr";               //$NON-NLS-1$
-	private String logoPath         = "ressources/fnd.jpg";   //$NON-NLS-1$
+	private String logoPath         = "ressources/logos/default.jpg";   //$NON-NLS-1$
 	
 	private Federation federation	= new Federation();
 	private String reglementName	= "FFTASJF"; //$NON-NLS-1$

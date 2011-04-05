@@ -1,5 +1,7 @@
 function checkPrintable(ficheConcours, options) {
-	return true;
+	if (ficheConcours.getConcurrentList() != null && ficheConcours.getConcurrentList().countArcher() > 0)
+		return true;
+	return false
 }
 
 function printState(ficheConcours, template, document, writer, options) {

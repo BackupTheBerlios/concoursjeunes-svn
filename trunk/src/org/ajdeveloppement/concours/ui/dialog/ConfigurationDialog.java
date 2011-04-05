@@ -129,6 +129,7 @@ import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.StringUtils;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
+import org.ajdeveloppement.concours.ui.ImagePreview;
 import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
 import org.concoursjeunes.AppConfiguration;
 import org.concoursjeunes.ApplicationCore;
@@ -763,6 +764,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		FileNameExtensionFilter filtreimg = new FileNameExtensionFilter(localisation.getResourceString("filter.gifjpeg"), "jpg", "gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		fileDialog.addChoosableFileFilter(filtreimg);
 		fileDialog.setDialogType(JFileChooser.OPEN_DIALOG);
+		fileDialog.setAccessory(new ImagePreview(fileDialog));
 		fileDialog.showOpenDialog(this);
 		f = fileDialog.getSelectedFile();
 		if (f == null) {

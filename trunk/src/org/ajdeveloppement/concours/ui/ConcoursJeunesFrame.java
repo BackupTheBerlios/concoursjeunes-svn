@@ -651,13 +651,13 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			textDialog.showTextDialog(profile.getLocalisation().getResourceString("licence.title"), new File("Licence.txt")); //$NON-NLS-1$ //$NON-NLS-2$
 		} else if (cmd.equals("menubar.debug.addpoints")) { //$NON-NLS-1$
 			if (jif != null) {
-				org.concoursjeunes.debug.Debug.attributePoints(jif.getFicheConcours().getConcurrentList());
+				org.ajdeveloppement.concours.debug.Debug.attributePoints(jif.getFicheConcours().getConcurrentList());
 			}
 
 			// debugage -> RAZ des points
 		} else if (cmd.equals("menubar.debug.resetpoints")) { //$NON-NLS-1$
 			if (jif != null)
-				org.concoursjeunes.debug.Debug.resetPoints(jif.getFicheConcours());
+				org.ajdeveloppement.concours.debug.Debug.resetPoints(jif.getFicheConcours());
 		} else if (cmd.equals("menubar.debug.launchsqlconsole")) { //$NON-NLS-1$
 			Thread sqlConsole = new Thread() {
 				@Override
