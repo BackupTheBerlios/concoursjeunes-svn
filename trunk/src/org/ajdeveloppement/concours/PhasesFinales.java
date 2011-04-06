@@ -305,7 +305,8 @@ public class PhasesFinales implements PropertyChangeListener,FicheConcoursListen
 		
 		//Si il y a matière à réaliser une petite finale
 		//alors on l'ajoute
-		if(phase == 0 && nombreTotalPhase > 1 && duelsPhasePrecedente != null && duelsPhasePrecedente.size() == 2) {
+		if(phase == 0 && nombreTotalPhase > 1 && duelsPhasePrecedente != null && duelsPhasePrecedente.size() == 2
+				&& duelsPhasePrecedente.get(0).getLooser() != null && duelsPhasePrecedente.get(1).getLooser() !=null) {
 			duels.add(new Duel(
 					duelsPhasePrecedente.get(0).getLooser(), //on prend les 2 perdants de la demi-finale
 					duelsPhasePrecedente.get(1).getLooser(),
@@ -396,14 +397,17 @@ public class PhasesFinales implements PropertyChangeListener,FicheConcoursListen
 	 * @return le classement par catégorie au format HTML
 	 */
 	public String getClassementHTMLPhasesFinalesIndividuel() {
+		Map<CriteriaSet, List<Concurrent>> concurrentsClasse = getClassement();
+		
+		if(concurrentsClasse.size() == 0)
+			return ""; //$NON-NLS-1$
+		
 		AJTemplate tplClassement = templateClassementHTML;
 		
 		tplClassement.reset();
 		
 		tplClassement.parse("LOGO_CLUB_URI", ficheConcours.getProfile().getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		tplClassement.parse("INTITULE_CLUB", ficheConcours.getParametre().getClub().getNom()); //$NON-NLS-1$
-		
-		Map<CriteriaSet, List<Concurrent>> concurrentsClasse = getClassement();
 		
 		Set<CriteriaSet> scnalst = concurrentsClasse.keySet();
 		List<CriteriaSet> scnaUse = new ArrayList<CriteriaSet>(scnalst);

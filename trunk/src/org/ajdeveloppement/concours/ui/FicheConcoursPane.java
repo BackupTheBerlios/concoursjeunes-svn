@@ -967,12 +967,15 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 				((HTMLDocument)jepClassIndiv.getDocument()).processHTMLFrameHyperlinkEvent( 
 						(HTMLFrameHyperlinkEvent)e); 
 			} else {
-				openConcurrentDialog(ficheConcours.getConcurrentList().getConcurrentAt(
-						Integer.parseInt(e.getURL().getRef().substring(0,1)),
-						Integer.parseInt(e.getURL().getRef().substring(2)),
-						Integer.parseInt(e.getURL().getRef().substring(1,2))), null);
-
-				jepClassIndiv.setText(ficheConcours.getClassement());
+				try {
+					openConcurrentDialog(ficheConcours.getConcurrentList().getConcurrentAt(
+							Integer.parseInt(e.getURL().getRef().substring(0,1)),
+							Integer.parseInt(e.getURL().getRef().substring(2)),
+							Integer.parseInt(e.getURL().getRef().substring(1,2))), null);
+	
+					jepClassIndiv.setText(ficheConcours.getClassement());
+				} catch(NumberFormatException ex) {
+				}
 			} 
 		} 
 	}

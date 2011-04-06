@@ -190,11 +190,13 @@ public class Duel {
 	 * @return le perdant du duel ou null si ex-aequo
 	 */
 	public Concurrent getLooser() {
-		int compareResult = concurrent1.compareScorePhaseFinalWith(concurrent2, phase);
-		if(compareResult > 0)
-			return concurrent2;
-		else if(compareResult < 0)
-			return concurrent1;
+		if(concurrent1 != null && concurrent2 != null) {
+			int compareResult = concurrent1.compareScorePhaseFinalWith(concurrent2, phase);
+			if(compareResult > 0)
+				return concurrent2;
+			else if(compareResult < 0)
+				return concurrent1;
+		}
 		return null;
 	}
 }
