@@ -184,6 +184,8 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	private JLabel jlNbVoleeParSerie = new JLabel();
 	@Localizable("reglement.flecheparvolee")
 	private JLabel jlNbFlecheParVolee = new JLabel();
+	@Localizable("reglement.nbpointsparfleche")
+	private JLabel jlNbPointsParFleche = new JLabel();
 	@Localizable("reglement.membresmax")
 	private JLabel jlNbMembresEquipe = new JLabel();
 	@Localizable("reglement.selectionmax")
@@ -214,6 +216,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	private JTextField jtfNbSerie = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
 	private JTextField jtfNbVoleeParSerie = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
 	private JTextField jtfNbFlecheParVolee = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
+	private JTextField jtfNbPointsParFleche = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
 	private JTextField jtfNbMembresEquipe = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
 	private JTextField jtfNbMembresRetenu = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
 	private JTextField jtfDepartages = new JTextField(15);
@@ -384,6 +387,11 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		gridbagComposer.addComponentIntoGrid(jtfNbFlecheParVolee, c);
 		c.gridy++;
 		c.weightx = 0.0;
+		gridbagComposer.addComponentIntoGrid(jlNbPointsParFleche, c);
+		c.weightx = 1.0;
+		gridbagComposer.addComponentIntoGrid(jtfNbPointsParFleche, c);
+		c.gridy++;
+		c.weightx = 0.0;
 		gridbagComposer.addComponentIntoGrid(jlNbMembresEquipe, c);
 		c.weightx = 1.0;
 		gridbagComposer.addComponentIntoGrid(jtfNbMembresEquipe, c);
@@ -545,6 +553,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 			jtfNbSerie.setEditable(false);
 			jtfNbVoleeParSerie.setEditable(false);
 			jtfNbFlecheParVolee.setEditable(false);
+			jtfNbPointsParFleche.setEditable(false);
 			jtfNbMembresEquipe.setEditable(false);
 			jtfNbMembresRetenu.setEditable(false);
 			jtfDepartages.setEditable(false);
@@ -560,6 +569,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		reglementBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, reglement, BeanProperty.create("nbSerie"), jtfNbSerie, BeanProperty.create("text"), "nbSerie")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		reglementBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, reglement, BeanProperty.create("nbVoleeParSerie"), jtfNbVoleeParSerie, BeanProperty.create("text"), "nbVoleeParSerie")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		reglementBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, reglement, BeanProperty.create("nbFlecheParVolee"), jtfNbFlecheParVolee, BeanProperty.create("text"), "nbFlecheParVolee")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		reglementBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, reglement, BeanProperty.create("nbPointsParFleche"), jtfNbPointsParFleche, BeanProperty.create("text"), "nbPointsParFleche")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		reglementBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, reglement, BeanProperty.create("nbMembresEquipe"), jtfNbMembresEquipe, BeanProperty.create("text"), "nbMembresEquipe")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		reglementBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, reglement, BeanProperty.create("nbMembresRetenu"), jtfNbMembresRetenu, BeanProperty.create("text"), "nbMembresRetenu")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		Binding<Reglement, List<String>, JTextField, String> departageBinding = Bindings.<Reglement, List<String>, JTextField, String>createAutoBinding(UpdateStrategy.READ, reglement, BeanProperty.<Reglement, List<String>>create("tie"), jtfDepartages, BeanProperty.<JTextField, String>create("text"), "tie"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

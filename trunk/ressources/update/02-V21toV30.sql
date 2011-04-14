@@ -334,3 +334,6 @@ DROP TABLE TEMP_DISTINGUER;
 -- Comme dans les versions antérieurs de la base il n'y avait que des archers
 -- on associe tous les contact présent en base à la catégorie "archer"
 INSERT INTO ASSOCIER_CATEGORIE_CONTACT (ID_CONTACT, NUM_CATEGORIE_CONTACT) SELECT ID_CONTACT, 1 FROM CONTACT;
+
+-- Réglement: Ajout du nombre de points par flèche
+ALTER TABLE REGLEMENT ADD NBPOINTSPARFLECHE INTEGER DEFAULT 10;

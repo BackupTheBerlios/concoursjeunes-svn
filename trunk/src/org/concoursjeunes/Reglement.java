@@ -192,6 +192,8 @@ public class Reglement implements ObjectPersistence {
 	private int nbVoleeParSerie = 6;
 	@SqlField(name="NBFLECHEPARVOLEE")
 	private int nbFlecheParVolee = 3;
+	@SqlField(name="NBPOINTSPARFLECHE")
+	private int nbPointsParFleche = 10;
 	@SqlField(name="NBMEMBRESEQUIPE")
 	private int nbMembresEquipe = 4;
 	@SqlField(name="NBMEMBRESRETENU")
@@ -594,6 +596,28 @@ public class Reglement implements ObjectPersistence {
 		
 		pcs.firePropertyChange("nbFlecheParVolee", oldValue, nbFlecheParVolee); //$NON-NLS-1$
 	}
+	
+	/**
+	 * Donne le nombre de points maximum possible par flèche avec le réglement
+	 * 
+	 * @return nbPointsParFleche le nombre de points maximum possible par flèche
+	 */
+	public int getNbPointsParFleche() {
+		return nbPointsParFleche;
+	}
+
+	/**
+	 * Définit le nombre de points maximum possible par flèche avec le réglement
+	 * 
+	 * @param nbPointsParFleche le nombre de points maximum possible par flèche
+	 */
+	public void setNbPointsParFleche(int nbPointsParFleche) {
+		Object oldValue = this.nbPointsParFleche;
+		
+		this.nbPointsParFleche = nbPointsParFleche;
+		
+		pcs.firePropertyChange("nbPointsParFleche", oldValue, nbPointsParFleche); //$NON-NLS-1$
+	}
 
 	/**
 	 * Retourne le nombre maximum de concurrents que peut contenir une équipe
@@ -753,7 +777,7 @@ public class Reglement implements ObjectPersistence {
 	public boolean isValidScore(List<Integer> scores) {
 		boolean valid = true;
 		for (int score : scores) {
-			if (score > nbVoleeParSerie * nbFlecheParVolee * 10) {
+			if (score > nbVoleeParSerie * nbFlecheParVolee * nbPointsParFleche) {
 				valid = false;
 				break;
 			}
