@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE itext SYSTEM "itext.dtd" >
+<itext creationdate="{CURRENT_TIME}"
+	producer="{producer}"
+	pagesize="A4"
+	orientation="landscape"
+	author="{author}"
+	title="Feuille de marque"
+	>
+	<!-- entete -->
+	<!-- tableau point -->
+</itext>

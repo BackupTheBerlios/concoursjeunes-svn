@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Tir3d" basedir="../">
+	<target name="pack-Tir3d">
+		<mkdir dir="${projet.pack.dir}/plugins/Tir3d/plugins" />
+		<jar jarfile="${projet.pack.dir}/plugins/Tir3d/plugins/Tir3d.jar"
+			basedir="${projet.pack.dir}/bin"
+			includes="org/ajdeveloppement/concours/plugins/tir3d/**">
+		</jar>
+		<copy todir="${projet.pack.dir}/plugins/Tir3d" >
+			<fileset dir="." >
+				<include name="plugins/properties/Tir3dInitializer.properties" />
+				<include name="ressources/repositories/Tir3d.xml"/>
+				<include name="ressources/update/TIR3D.reglement"/>
+			</fileset>
+		</copy>
+		
+		<taskdef name="revisionscreator" classname="org.ajdeveloppement.updater.ant.RevisionsCreator">
+			<classpath location="lib/ajcommons.jar"/>
+		</taskdef>
+		
+		<revisionscreator 
+				revisionpath="${projet.pack.dir}/plugins/Tir3d/revision.xml.gz"
+				reposname="Tir3d"
+				keystorepath="${projet.keystorepath}"
+				keystorepassword="${projet.keystorepassword}"
+				signkeysalias="${projet.signkeyalias}"
+				signkeysaliaspassword="${projet.signkeyaliaspassword}"
+			>
+			<fileset dir="${projet.pack.dir}/plugins/Tir3d">
+				<include name="**/**"/>
+				
+				<exclude name="*-filelist.txt"/>
+			</fileset>
+		</revisionscreator>
+	</target>
+</project>

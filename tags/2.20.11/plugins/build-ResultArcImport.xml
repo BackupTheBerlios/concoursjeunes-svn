@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ResultArcImport" basedir="../">
+	<target name="pack-ResultArcImport">
+		<mkdir dir="${projet.pack.dir}/plugins/ResultArcImport/plugins" />
+		<jar jarfile="${projet.pack.dir}/plugins/ResultArcImport/plugins/ResultArcImport.jar">
+			<fileset dir="${projet.pack.dir}/bin" >
+				<include name="org/concoursjeunes/plugins/ResultArcImport/**" />
+			</fileset>
+		</jar>
+		<copy todir="${projet.pack.dir}/plugins/ResultArcImport/" >
+			<fileset dir="." >
+				<include name="plugins/properties/ResultArcImportPlugin.properties" />
+				<include name="ExportWinFFTA.exe" />
+				<include name="*.DLL" />
+				<include name="ressources/repositories/ResultArcImport.xml"/>
+			</fileset>
+		</copy>
+		
+		<taskdef name="revisionscreator" classname="org.ajdeveloppement.updater.ant.RevisionsCreator">
+			<classpath location="lib/ajcommons.jar"/>
+		</taskdef>
+
+		<revisionscreator 
+				revisionpath="${projet.pack.dir}/plugins/ResultArcImport/revision.xml.gz"
+				reposname="ResultArcImport"
+				keystorepath="${projet.keystorepath}"
+				keystorepassword="${projet.keystorepassword}"
+				signkeysalias="${projet.signkeyalias}"
+				signkeysaliaspassword="${projet.signkeyaliaspassword}">
+			<system name="windows">
+				<fileset dir="${projet.pack.dir}/plugins/ResultArcImport/">
+					<include name="**/**"/>
+					
+					<exclude name="*-filelist.txt"/>
+				</fileset>
+			</system>
+		</revisionscreator>
+	</target>
+</project>
