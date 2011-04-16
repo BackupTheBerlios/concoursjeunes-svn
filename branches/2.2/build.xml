@@ -40,6 +40,7 @@
 	<import file="plugins/build-FFTAImport.xml"/>
 	<import file="plugins/build-PhoenixPlugin.xml"/>
 	<import file="plugins/build-BackupRestorePlugin.xml"/>
+	<import file="plugins/build-Tir3d.xml"/>
 
 	<!--genere la documentation technique-->
 	<target name="dev_doc" description="genere la documentation développeur">
@@ -88,6 +89,7 @@
 				<exclude name="ressources/states/**"/>
 				<exclude name="ressources/repositories/**"/>
 				<exclude name="config/ffta.properties" />
+				<exclude name="ressources/update/TIR3D.reglement"/>
 			</fileset>
 		</copy>
 		
@@ -188,6 +190,7 @@
 
 			<fileset dir="${projet.pack.dir}/bin">
 				<include name="**/**" />
+				<exclude name="org/ajdeveloppement/concours/plugins/**" />
 				<exclude name="org/concoursjeunes/plugins/**" />
 				<exclude name="org/concoursjeunes/webservices/**" />
 				<exclude name="org/concoursjeunes/Main*" />
@@ -207,6 +210,7 @@
 				alias="${projet.signkeyalias}" keystore="${projet.keystorepath}"
 				storepass="${projet.keystorepassword}"
 				keypass="${projet.signkeyaliaspassword}"
+				storetype="JCEKS"
 				lazy="true" />
 	</target>
 
@@ -274,6 +278,7 @@
 		    	<include name="*"/>
 		    	<exclude name="FFTAImport"/>
 		    	<exclude name="ResultArcImport"/>
+		    	<exclude name="Tir3d"/>
 		    </dirset>
 			<sequential>
 				<copy todir="${projet.pack.dir}/linux/tar/usr/lib/ConcoursJeunes" >
@@ -416,6 +421,7 @@
 		    	<include name="*"/>
 		    	<exclude name="FFTAImport"/>
 		    	<exclude name="ResultArcImport"/>
+		    	<exclude name="Tir3d"/>
 		    </dirset>
 			<sequential>
 				<copy todir="${projet.pack.dir}/macosx/${version.name}.app/Contents/Resources/Java" >
@@ -462,6 +468,7 @@
 		<antcall target="pack-PhoenixPlugin" />
 		<antcall target="pack-BackupRestorePlugin" />
 		<antcall target="pack-FFTAImport" />
+		<antcall target="pack-Tir3d" />
 		<antcall target="revisions" />
 		<antcall target="windows" />
 		<antcall target="linux" />
@@ -490,6 +497,7 @@
 		<antcall target="pack-ResultArcImport" />
 		<antcall target="pack-FFTAImport" />
 		<antcall target="pack-BackupRestorePlugin" />
+		<antcall target="pack-Tir3d" />
 		<antcall target="revisions" />
 		<antcall target="makensissetup" />
 		<antcall target="makelinuxtargz" />

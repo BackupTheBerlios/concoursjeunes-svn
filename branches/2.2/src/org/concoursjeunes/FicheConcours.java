@@ -783,8 +783,8 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if(evt.getSource() == parametre) {
-			if(evt.getPropertyName().equals("arbitres") //$NON-NLS-1$
-					|| evt.getPropertyName().equals("reglement")) { //$NON-NLS-1$
+			if(evt.getPropertyName().equals("nbCible") //$NON-NLS-1$
+					|| evt.getPropertyName().equals("nbTireur")) { //$NON-NLS-1$
 				
 				assert pasDeTir.size() > 0 : "Il doit exister au moins un pas de tir"; //$NON-NLS-1$
 				

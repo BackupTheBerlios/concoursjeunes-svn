@@ -412,4 +412,27 @@ public class Parametre extends DefaultParameters {
 		this.reglementLock = reglementLock;
 		pcs.firePropertyChange("reglementLock", oldValue, reglementLock); //$NON-NLS-1$
 	}
+
+	@Override
+	public void setNbCible(int nbCible) {
+		int oldValue = getNbCible();
+		super.setNbCible(nbCible);
+		pcs.firePropertyChange("nbCible", oldValue, nbCible);
+	}
+
+	@Override
+	public void setNbDepart(int nbDepart) {
+		int oldValue = getNbDepart();
+		super.setNbDepart(nbDepart);
+		pcs.firePropertyChange("nbDepart", oldValue, nbDepart);
+	}
+
+	@Override
+	public void setNbTireur(int nbTireur) {
+		int oldValue = getNbTireur();
+		super.setNbTireur(nbTireur);
+		pcs.firePropertyChange("nbTireur", oldValue, nbTireur);
+	}
+	
+	
 }
