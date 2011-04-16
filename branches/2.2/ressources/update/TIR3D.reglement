@@ -2058,7 +2058,9 @@
     </listdistancesetblason>
     <departages>
         <departage>10</departage>
-        <departage>9</departage>
+        <departage>10X</departage>
+        <departage>8</departage>
+        <departage>5</departage>
     </departages>
     <officialReglement>false</officialReglement>
     <federation>
