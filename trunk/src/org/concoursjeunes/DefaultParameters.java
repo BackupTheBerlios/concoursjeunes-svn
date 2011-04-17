@@ -86,6 +86,9 @@
  */
 package org.concoursjeunes;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
@@ -96,15 +99,25 @@ import javax.xml.bind.annotation.XmlAccessorType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class DefaultParameters {
-	private Entite club = new Entite();
+	private Entite club				= new Entite();
 	private String intituleConcours = "Spécial Jeunes"; //$NON-NLS-1$
 	
 	private int nbCible             = 10;
 	private int nbTireur            = 4;
 	private int nbDepart            = 1;
+	
+	protected transient final PropertyChangeSupport pcs = new PropertyChangeSupport( this );
 
 	public DefaultParameters() {
 
+	}
+	
+	public void addPropertyChangeListener(PropertyChangeListener propertyChangeListener) {
+		pcs.addPropertyChangeListener(propertyChangeListener);
+	}
+	
+	public void removePropertyChangeListener(PropertyChangeListener propertyChangeListener) {
+		pcs.removePropertyChangeListener(propertyChangeListener);
 	}
 
 	/**
@@ -122,7 +135,11 @@ public class DefaultParameters {
 	 * @param intituleConcours l'intitulé du concours
 	 */
 	public void setIntituleConcours(String intituleConcours) {
+		Object oldValue = this.intituleConcours;
+		
 		this.intituleConcours = intituleConcours;
+		
+		pcs.firePropertyChange("intituleConcours", oldValue, intituleConcours); //$NON-NLS-1$
 	}
 	
 	/**
@@ -140,7 +157,11 @@ public class DefaultParameters {
 	 * @param nbCible le nombre de cible
 	 */
 	public void setNbCible(int nbCible) {
+		Object oldValue = this.nbCible;
+		
 		this.nbCible = nbCible;
+		
+		pcs.firePropertyChange("nbCible", oldValue, nbCible); //$NON-NLS-1$
 	}
 
 	/**
@@ -153,15 +174,16 @@ public class DefaultParameters {
 	}
 
 	/**
-	 * Définit le nombre de départ sur le concours. Ce nombre de ne peut excédé 9
+	 * Définit le nombre de départ sur le concours.
 	 * 
-	 * @param nbDepart le nombre de départ du concours. <!--Si le nombre fournit est supérieur à 9,
-	 * 9 sera enregistré-->
+	 * @param nbDepart le nombre de départ du concours.
 	 */
 	public void setNbDepart(int nbDepart) {
-		//if(nbDepart > 9)
-		//	nbDepart = 9;
+		Object oldValue = this.nbDepart;
+		
 		this.nbDepart = nbDepart;
+		
+		pcs.firePropertyChange("nbDepart", oldValue, nbDepart); //$NON-NLS-1$
 	}
 
 	/**
@@ -187,17 +209,21 @@ public class DefaultParameters {
 	 * Ce nombre est de:
 	 * <ul>
 	 * <li>2 pour un rythme AB</li>
-	 * <li>3 pour un rythme ABC (Rare)</li>
+	 * <li>3 pour un rythme ABC</li>
 	 * <li>4 pour un rythme AB.CD</li>
 	 * <li>6 pour un rythme ABC.DEF (Rare)</li>
 	 * </ul>
-	 * A l'heure actuel, l'interface graphique ne supporte que les modes 2 et 4,
-	 * les modes 3 et 6 sont déconseillé car pouvant entraîner des cas non déterminé
+	 * A l'heure actuel, l'interface graphique ne supporte que les modes 2, 3 et 4,
+	 * le 6 est déconseillé car pouvant entraîner des cas non déterminé
 	 * 
 	 * @param nbTireur le nombre de tireur par cible
 	 */
 	public void setNbTireur(int nbTireur) {
+		Object oldValue = this.nbTireur;
+		
 		this.nbTireur = nbTireur;
+		
+		pcs.firePropertyChange("nbTireur", oldValue, nbTireur); //$NON-NLS-1$
 	}
 
 	/**
@@ -215,6 +241,10 @@ public class DefaultParameters {
 	 * @param club le club organisateur
 	 */
 	public void setClub(Entite club) {
+		Object oldValue = this.club;
+		
 		this.club = club;
+		
+		pcs.firePropertyChange("club", oldValue, club); //$NON-NLS-1$
 	}
 }

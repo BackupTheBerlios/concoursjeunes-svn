@@ -184,6 +184,7 @@ public class Reglement implements ObjectPersistence {
 	@SqlField(name="LIBELLE")
 	private String displayName = ""; //$NON-NLS-1$
 	
+	@SqlField(name="TYPEREGLEMENT")
 	private TypeReglement reglementType = TypeReglement.TARGET;
 
 	@SqlField(name="NBSERIE")

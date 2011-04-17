@@ -106,11 +106,11 @@ import org.ajdeveloppement.commons.ui.DefaultDialogReturn;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.concoursjeunes.Criterion;
 import org.concoursjeunes.CriterionElement;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Binding;
 import org.jdesktop.beansbinding.BindingGroup;
 import org.jdesktop.beansbinding.Bindings;
-import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 
 /**
  * 
@@ -235,9 +235,9 @@ public class CriterionElementDialog extends JDialog implements ActionListener {
     	criterionBinding.bind();
         
         jtfCode.setEditable(!criterionElement.getCriterion().getReglement().isOfficialReglement()
-        		&& !editable);
+        		&& editable);
         jcbActive.setEnabled(!criterionElement.getCriterion().getReglement().isOfficialReglement()
-        		&& !editable);
+        		&& editable);
 
     }
     

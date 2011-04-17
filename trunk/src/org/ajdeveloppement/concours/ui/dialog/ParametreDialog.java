@@ -127,6 +127,7 @@ import org.concoursjeunes.Judge;
 import org.concoursjeunes.Parametre;
 import org.concoursjeunes.Profile;
 import org.concoursjeunes.Reglement;
+import org.concoursjeunes.Reglement.TypeReglement;
 import org.concoursjeunes.builders.ReglementBuilder;
 import org.jdesktop.swingx.JXDatePicker;
 
@@ -462,6 +463,11 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 		jcbEnablePhaseFinal.setSelected(parametre.isDuel());
 		jtfNombreCible.setText("" + parametre.getNbCible()); //$NON-NLS-1$
 		
+		if(tempReglement.getReglementType() == TypeReglement.NATURE) {
+			jcbNombreTireurParCible.setEnabled(false);
+			if(parametre.getNbTireur() < 5)
+				parametre.setNbTireur(5);
+		}
 		jcbNombreTireurParCible.removeAllItems();
 		jcbNombreTireurParCible.addItem(new RhytmeTir("AB", 2));  //$NON-NLS-1$
 		jcbNombreTireurParCible.addItem(new RhytmeTir("ABC", 3));  //$NON-NLS-1$
@@ -532,7 +538,10 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 			}
 
 			parametre.setNbCible(Integer.parseInt(jtfNombreCible.getText()));
-			parametre.setNbTireur(((RhytmeTir)jcbNombreTireurParCible.getSelectedItem()).getNbConcurrent());
+			if(tempReglement.getReglementType() != TypeReglement.NATURE)
+				parametre.setNbTireur(((RhytmeTir)jcbNombreTireurParCible.getSelectedItem()).getNbConcurrent());
+			else
+				parametre.setNbTireur(5);
 			parametre.setNbDepart(Integer.parseInt(jtfNombreDepart.getText()));
 			parametre.setReglement(tempReglement);
 			parametre.setReglementLock(true);
@@ -575,12 +584,19 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 			ReglementManagerDialog reglementManagerDialog = new ReglementManagerDialog(parentframe, profile);
 			Reglement reglement = reglementManagerDialog.showReglementManagerDialog(true);
 			if(reglement != null && (tempReglement == null || !tempReglement.equals(reglement))) {
+				
 				tempReglement = reglement;
 				jlSelectedReglement.setText(reglement.getDisplayName());
+				
 				jcbNiveauChampionnat.removeAllItems();
 				for(CompetitionLevel cl : tempReglement.getFederation().getCompetitionLevels(profile.getConfiguration().getLangue()))
 					jcbNiveauChampionnat.addItem(cl);
 				jcbNiveauChampionnat.setSelectedItem(parametre.getNiveauChampionnat());
+				
+				if(tempReglement.getReglementType() == TypeReglement.NATURE) {
+					jcbNombreTireurParCible.setEnabled(false);
+					
+				}
 			}
 		}
 	}

@@ -357,6 +357,12 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 		jbAnnuler.setVisible(selection);
 	}
 	
+	/**
+	 * Affiche la boite de dialogue de gestion des réglements
+	 * @param selection si true, alors permet la sélection d'un réglement, sinon permet juste la sélection mais ne renvoie
+	 * rien.
+	 * @return si selection=true alors renvoie le réglement selectionné
+	 */
 	public Reglement showReglementManagerDialog(boolean selection) {
 		this.selection = selection;
 		completePanel();

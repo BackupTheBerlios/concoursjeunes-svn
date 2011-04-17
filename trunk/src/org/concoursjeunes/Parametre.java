@@ -89,8 +89,6 @@ package org.concoursjeunes;
 
 import static org.concoursjeunes.ApplicationCore.staticParameters;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -130,8 +128,6 @@ public class Parametre extends DefaultParameters {
 			+ staticParameters.getResourceString("extention.concours"); //$NON-NLS-1$
 	
 	private boolean reglementLock = false;
-	
-	private transient final PropertyChangeSupport pcs = new PropertyChangeSupport( this );
 
 	/**
 	 * 
@@ -161,14 +157,6 @@ public class Parametre extends DefaultParameters {
 		setReglement(reglementManager.getReglementByName(configuration.getReglementName()));
 	}
 	
-	public void addPropertyChangeListener(PropertyChangeListener propertyChangeListener) {
-		pcs.addPropertyChangeListener(propertyChangeListener);
-	}
-	
-	public void removePropertyChangeListener(PropertyChangeListener propertyChangeListener) {
-		pcs.removePropertyChangeListener(propertyChangeListener);
-	}
-	
 	/**
 	 * Donne le lieu d'organisation du concours
 	 * 
@@ -185,7 +173,9 @@ public class Parametre extends DefaultParameters {
 	 */
 	public void setLieuConcours(String lieuConcours) {
 		String oldValue = this.lieuConcours;
+		
 		this.lieuConcours = lieuConcours;
+		
 		pcs.firePropertyChange("lieuConcours", oldValue, lieuConcours); //$NON-NLS-1$
 	}
 
@@ -205,7 +195,9 @@ public class Parametre extends DefaultParameters {
 	 */
 	public void setDateFinConcours(Date dateFinConcours) {
 		Date oldValue = this.dateFinConcours;
+		
 		this.dateFinConcours = dateFinConcours;
+		
 		pcs.firePropertyChange("dateFinConcours", oldValue, dateFinConcours); //$NON-NLS-1$
 	}
 
@@ -248,7 +240,9 @@ public class Parametre extends DefaultParameters {
 	 */
 	public void setDateDebutConcours(Date dDateConcours) {
 		Date oldValue = this.dateDebutConcours;
+		
 		this.dateDebutConcours = dDateConcours;
+		
 		pcs.firePropertyChange("dateDebutConcours", oldValue, dDateConcours); //$NON-NLS-1$
 	}
 	
@@ -268,7 +262,9 @@ public class Parametre extends DefaultParameters {
 	 */
 	public void setNiveauChampionnat(CompetitionLevel niveauChampionnat) {
 		CompetitionLevel oldValue = this.niveauChampionnat;
+		
 		this.niveauChampionnat = niveauChampionnat;
+		
 		pcs.firePropertyChange("niveauChampionnat", oldValue, niveauChampionnat); //$NON-NLS-1$
 	}
 
@@ -288,7 +284,9 @@ public class Parametre extends DefaultParameters {
 	 */
 	public void setOpen(boolean open) {
 		boolean oldValue = this.open;
+		
 		this.open = open;
+		
 		pcs.firePropertyChange("open", oldValue, open); //$NON-NLS-1$
 	}
 
@@ -308,7 +306,9 @@ public class Parametre extends DefaultParameters {
 	 */
 	public void setDuel(boolean duel) {
 		boolean oldValue = this.duel;
+		
 		this.duel = duel;
+		
 		pcs.firePropertyChange("duel", oldValue, duel); //$NON-NLS-1$
 	}
 
@@ -354,20 +354,12 @@ public class Parametre extends DefaultParameters {
 	 */
 	public void setJudges(List<Judge> judges) {
 		List<Judge> oldValue = this.judges;
+		
 		this.judges = judges;
+		
 		pcs.firePropertyChange("arbitres", oldValue, judges); //$NON-NLS-1$
 	}
 
-	/* (non-Javadoc)
-	 * @see org.concoursjeunes.DefaultParameters#setIntituleConcours(java.lang.String)
-	 */
-	@Override
-	public void setIntituleConcours(String intituleConcours) {
-		String oldValue = getIntituleConcours();
-		super.setIntituleConcours(intituleConcours);
-		pcs.firePropertyChange("intituleConcours", oldValue, intituleConcours); //$NON-NLS-1$
-	}
-	
 	/**
 	 * Donne le nom du fichier de sauvegarde du concours
 	 * 
@@ -384,7 +376,9 @@ public class Parametre extends DefaultParameters {
 	 */
 	public void setSaveName(String saveName) {
 		String oldValue = this.saveName; 
+		
 		this.saveName = saveName;
+		
 		pcs.firePropertyChange("saveName", oldValue, saveName); //$NON-NLS-1$
 	}
 	
@@ -404,7 +398,9 @@ public class Parametre extends DefaultParameters {
 	 */
 	public void setReglement(Reglement reglement) {
 		Reglement oldValue = this.reglement;
+		
 		this.reglement = reglement;
+		
 		pcs.firePropertyChange("reglement", oldValue, reglement); //$NON-NLS-1$
 	}
 
@@ -424,7 +420,9 @@ public class Parametre extends DefaultParameters {
 	 */
 	public void setReglementLock(boolean reglementLock) {
 		boolean oldValue = this.reglementLock;
+		
 		this.reglementLock = reglementLock;
+		
 		pcs.firePropertyChange("reglementLock", oldValue, reglementLock); //$NON-NLS-1$
 	}
 }
