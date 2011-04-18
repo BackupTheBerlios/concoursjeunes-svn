@@ -121,7 +121,7 @@ public class ZipCodeCitySuggestModel extends AbstractSuggestModel {
 		
 		String sql= "select distinct NOM,CODE_POSTAL from VILLE V " //$NON-NLS-1$
 			+"inner join CODE_POSTAL CP on V.CODE_VILLE=CP.CODE_VILLE " //$NON-NLS-1$
-			+"where upper(NOM) like concat(?, '%') and CODE_POSTAL like ? order by NOM LIMIT 50"; //$NON-NLS-1$
+			+"where upper(NOM) like ? and CODE_POSTAL like ? order by NOM LIMIT 25"; //$NON-NLS-1$
 		
 		pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
 	}
@@ -132,7 +132,7 @@ public class ZipCodeCitySuggestModel extends AbstractSuggestModel {
 	public void setSearchSuggestPattern(String pattern) {
 		try {
 			if(suggestType == SuggestType.CITY) {
-				pstmt.setString(1, pattern.toUpperCase().replace(' ', '-'));
+				pstmt.setString(1, pattern.toUpperCase().replace(' ', '-')+"%"); //$NON-NLS-1$
 				pstmt.setString(2, linkedTextField.getText()+"%"); //$NON-NLS-1$
 			} else {
 				pstmt.setString(1, linkedTextField.getText().toUpperCase().replace(' ', '-')+"%"); //$NON-NLS-1$

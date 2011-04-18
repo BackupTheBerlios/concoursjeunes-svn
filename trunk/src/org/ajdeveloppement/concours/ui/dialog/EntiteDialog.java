@@ -494,17 +494,20 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 				e.printStackTrace();
 			}
 			
-			refreshListContact();
+			refreshListContact(null);
 		}
 	}
 	
-	private void refreshListContact() {
+	private void refreshListContact(Contact selectedContact) {
 		jlResultList.clear();
 		for(Contact contact : contacts) {
 			if((jcbSearchCategoryContact.getSelectedIndex() == 0 || contact.getCategories().contains(jcbSearchCategoryContact.getSelectedItem()))
 					&& (jtfSearch.getText().isEmpty() || contact.getFullNameWithCivility().toUpperCase().contains(jtfSearch.getText().toUpperCase())))
 				jlResultList.add(contact);
 		}
+		
+		if(selectedContact != null)
+			jlResultList.setSelectedValue(selectedContact, true);
 	}
 	
 	/**
@@ -565,7 +568,7 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 
 			setVisible(false);
 		} else if(ae.getSource() == jcbSearchCategoryContact || ae.getSource() == jtfSearch) {
-			refreshListContact();
+			refreshListContact(null);
 		}
 	}
 
@@ -579,7 +582,7 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 
 	@Override
 	public void contactEdited(Contact contact) {
-		refreshListContact();
+		refreshListContact(contact);
 	}
 
 	@Override
@@ -589,7 +592,7 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 		try {
 			contact.save();
 			
-			refreshListContact();
+			refreshListContact(contact);
 		} catch (ObjectPersistenceException e) {
 			DisplayableErrorHelper.displayException(e);
 			e.printStackTrace();

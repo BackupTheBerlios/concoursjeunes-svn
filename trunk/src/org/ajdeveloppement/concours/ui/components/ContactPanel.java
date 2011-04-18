@@ -126,6 +126,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -555,6 +556,8 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 		
 		
 		if(contact != null) {
+			jtfCityContact.beginInit();
+			jtfZipCodeContact.beginInit();
 			contactBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, contact, BeanProperty.create("civility"), jcbCivility, BeanProperty.create("selectedItem")));  //$NON-NLS-1$//$NON-NLS-2$
 			contactBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, contact, BeanProperty.create("name"), jtfName, BeanProperty.create("text"))); //$NON-NLS-1$ //$NON-NLS-2$
 			contactBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, contact, BeanProperty.create("firstName"), jtfFirstName, BeanProperty.create("text"))); //$NON-NLS-1$ //$NON-NLS-2$
@@ -564,6 +567,8 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 			contactBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, contact, BeanProperty.create("note"), jtaNoteContact, BeanProperty.create("text"))); //$NON-NLS-1$ //$NON-NLS-2$
 			
 			contactBinding.bind();
+			jtfCityContact.endInit();
+			jtfZipCodeContact.endInit();
 			
 			categoriesContact = contact.getCategories();
 			
@@ -716,7 +721,13 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 					if(!saveOnlyInMemoryBean)
 						contact.save();
 					
-					jlSateSaveContact.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.success", 16, 16)); //$NON-NLS-1$
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							jlSateSaveContact.setEnabled(true);
+							jlSateSaveContact.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.success", 16, 16)); //$NON-NLS-1$
+						}
+					});
 					
 					if(!create)
 						fireContactEdited(contact);

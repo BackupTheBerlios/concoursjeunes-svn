@@ -321,7 +321,11 @@ public class Contact implements ObjectPersistence, Cloneable {
 	 * @param adress the post address of contact
 	 */
 	public void setAdress(String adress) {
+		Object oldValue = this.adress;
+		
 		this.adress = adress;
+		
+		pcs.firePropertyChange("adress", oldValue, adress); //$NON-NLS-1$
 	}
 
 	/**
@@ -339,7 +343,11 @@ public class Contact implements ObjectPersistence, Cloneable {
 	 * @param zipCode the post zip code of contact
 	 */
 	public void setZipCode(String zipCode) {
+		Object oldValue = this.zipCode;
+		
 		this.zipCode = zipCode;
+		
+		pcs.firePropertyChange("zipCode", oldValue, zipCode); //$NON-NLS-1$
 	}
 
 	/**
@@ -357,7 +365,11 @@ public class Contact implements ObjectPersistence, Cloneable {
 	 * @param city the city of contact
 	 */
 	public void setCity(String city) {
+		Object oldValue = this.city;
+		
 		this.city = city;
+		
+		pcs.firePropertyChange("city", oldValue, city); //$NON-NLS-1$
 	}
 
 	/**
@@ -375,7 +387,11 @@ public class Contact implements ObjectPersistence, Cloneable {
 	 * @param note free note about contact
 	 */
 	public void setNote(String note) {
+		Object oldValue = this.note;
+		
 		this.note = note;
+		
+		pcs.firePropertyChange("note", oldValue, note); //$NON-NLS-1$
 	}
 
 	/**
@@ -395,10 +411,14 @@ public class Contact implements ObjectPersistence, Cloneable {
 	 * @param coordinates coordinates of contact (phone, fax, mail)
 	 */
 	public void setCoordinates(List<Coordinate> coordinates) {
+		Object oldValue = this.coordinates;
+		
 		this.coordinates = coordinates;
 		
 		for(Coordinate coordinate : coordinates)
 			coordinate.setContact(this);
+		
+		pcs.firePropertyChange("coordinates", oldValue, coordinates); //$NON-NLS-1$
 	}
 
 	/**
@@ -418,7 +438,11 @@ public class Contact implements ObjectPersistence, Cloneable {
 	 * @param categories the categories of contact
 	 */
 	public void setCategories(List<CategoryContact> categories) {
+		Object oldValue = categories;
+		
 		this.categories = categories;
+		
+		pcs.firePropertyChange("categories", oldValue, categories); //$NON-NLS-1$
 	}
 
 	/**
