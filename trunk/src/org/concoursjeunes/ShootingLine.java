@@ -172,10 +172,10 @@ public class ShootingLine implements FicheConcoursListener {
 	 * @return le nombre de tireur par cible à utiliser
 	 */
 	private int getOptimalRythme(List<DistancesEtBlason> lDB) {
-		if(ficheConcours.getParametre().getNbTireur() == 3) { //Mode ABC
+		if(ficheConcours.getParametre().getNbTireur() == 3 || ficheConcours.getParametre().getNbTireur() == 5) { //Mode ABC ou peloton de 5
 			Map<DistancesEtBlason, TargetsOccupation> targetsOccupation = getTargetsOccupation(3);
 			if(targetsOccupation != null)
-				return 3;
+				return ficheConcours.getParametre().getNbTireur();
 		} else { //Mode 2/4
 			for(int i = 2; i <= ficheConcours.getParametre().getNbTireur(); i+=2) {
 				Map<DistancesEtBlason, TargetsOccupation> targetsOccupation = getTargetsOccupation(i);

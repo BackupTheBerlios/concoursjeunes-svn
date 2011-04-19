@@ -389,7 +389,7 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 		c.anchor= GridBagConstraints.NORTHWEST;
 		gridbagComposer.addComponentIntoGrid(jlCivility, c);
 		gridbagComposer.addComponentIntoGrid(jcbCivility, c);
-		c.weightx = 1.0;
+		c.weightx = 0.9;
 		c.gridwidth = 2;
 		c.anchor= GridBagConstraints.WEST;
 		gridbagComposer.addComponentIntoGrid(jxhNewCivility, c);
@@ -398,7 +398,7 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 		c.weightx = 0.0;
 		c.anchor= GridBagConstraints.NORTHWEST;
 		gridbagComposer.addComponentIntoGrid(jlNameFirstName, c);
-		c.weightx = 1.0;
+		c.weightx = 0.9;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridwidth = 3;
 		gridbagComposer.addComponentIntoGrid(jpNameFirstName, c);
@@ -425,13 +425,13 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 		c.fill = GridBagConstraints.HORIZONTAL;
 		gridbagComposer.addComponentIntoGrid(jtfZipCodeContact, c);
 		gridbagComposer.addComponentIntoGrid(jlCityContact, c);
-		c.weightx = 1.0;
+		c.weightx = 0.9;
 		gridbagComposer.addComponentIntoGrid(jtfCityContact, c);
 		c.gridy++;
 		c.fill = GridBagConstraints.NONE;
 		c.weightx = 0.0;
 		gridbagComposer.addComponentIntoGrid(jlCoordinates, c);
-		c.weightx = 1.0;
+		c.weightx = 0.9;
 		c.fill = GridBagConstraints.BOTH;
 		c.gridwidth = 3;
 		gridbagComposer.addComponentIntoGrid(new JScrollPane(jlstCoordinates), c);
@@ -447,7 +447,7 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 		c.weighty = 1.0;
 		gridbagComposer.addComponentIntoGrid(jlNoteContact, c);
 		c.gridwidth = 3;
-		c.weightx = 1.0;		
+		c.weightx = 0.9;		
 		c.fill = GridBagConstraints.BOTH;
 		gridbagComposer.addComponentIntoGrid(new JScrollPane(jtaNoteContact), c);
 		c.gridy++;

@@ -110,6 +110,8 @@ public class ZipCodeCitySuggestModel extends AbstractSuggestModel {
 		CITY
 	}
 	private static PreparedStatement pstmt;
+	private static PreparedStatement pstmtOnlyCity;
+	private static PreparedStatement pstmtOnlyZipCode;
 	private List<String> suggestList = new ArrayList<String>();
 	
 	private SuggestType suggestType = SuggestType.CITY;
@@ -119,11 +121,17 @@ public class ZipCodeCitySuggestModel extends AbstractSuggestModel {
 		this.suggestType = suggestType;
 		this.linkedTextField = linkedTextField;
 		
-		String sql= "select distinct NOM,CODE_POSTAL from VILLE V " //$NON-NLS-1$
+		String sql = "select distinct NOM,CODE_POSTAL from VILLE V " //$NON-NLS-1$
 			+"inner join CODE_POSTAL CP on V.CODE_VILLE=CP.CODE_VILLE " //$NON-NLS-1$
-			+"where upper(NOM) like ? and CODE_POSTAL like ? order by NOM LIMIT 25"; //$NON-NLS-1$
+			+"where UPPER_NAME like ? and CODE_POSTAL like ? order by NOM,CODE_POSTAL LIMIT 25"; //$NON-NLS-1$
+		String sqlOnlyCity = "select distinct NOM from VILLE " //$NON-NLS-1$
+			+"where UPPER_NAME like ? order by NOM LIMIT 25"; //$NON-NLS-1$
+		String sqlOnlyZipCode = "select distinct CODE_POSTAL from CODE_POSTAL " //$NON-NLS-1$
+			+"where CODE_POSTAL like ? order by CODE_POSTAL LIMIT 25"; //$NON-NLS-1$
 		
 		pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
+		pstmtOnlyCity = ApplicationCore.dbConnection.prepareStatement(sqlOnlyCity);
+		pstmtOnlyZipCode = ApplicationCore.dbConnection.prepareStatement(sqlOnlyZipCode);
 	}
 	/* (non-Javadoc)
 	 * @see org.ajdeveloppement.commons.ui.SuggestModel#setSearchSuggestPattern(java.lang.String)
@@ -132,14 +140,28 @@ public class ZipCodeCitySuggestModel extends AbstractSuggestModel {
 	public void setSearchSuggestPattern(String pattern) {
 		try {
 			if(suggestType == SuggestType.CITY) {
-				pstmt.setString(1, pattern.toUpperCase().replace(' ', '-')+"%"); //$NON-NLS-1$
-				pstmt.setString(2, linkedTextField.getText()+"%"); //$NON-NLS-1$
+				if(!linkedTextField.getText().isEmpty()) {
+					pstmt.setString(1, pattern.toUpperCase().replace(' ', '-')+"%"); //$NON-NLS-1$
+					pstmt.setString(2, linkedTextField.getText()+"%"); //$NON-NLS-1$
+				} else {
+					pstmtOnlyCity.setString(1, pattern.toUpperCase().replace(' ', '-')+"%"); //$NON-NLS-1$
+				}
 			} else {
-				pstmt.setString(1, linkedTextField.getText().toUpperCase().replace(' ', '-')+"%"); //$NON-NLS-1$
-				pstmt.setString(2, pattern + "%");  //$NON-NLS-1$
+				if(!linkedTextField.getText().isEmpty()) {
+					pstmt.setString(1, linkedTextField.getText().toUpperCase().replace(' ', '-')+"%"); //$NON-NLS-1$
+					pstmt.setString(2, pattern + "%");  //$NON-NLS-1$
+				} else {
+					pstmtOnlyZipCode.setString(1, pattern + "%"); //$NON-NLS-1$
+				}
 			}
 
-			ResultSet rs = pstmt.executeQuery();
+			ResultSet rs = null;
+			if(suggestType == SuggestType.CITY && linkedTextField.getText().isEmpty())
+				rs = pstmtOnlyCity.executeQuery();
+			else if(suggestType == SuggestType.ZIP_CODE && linkedTextField.getText().isEmpty())
+				rs = pstmtOnlyZipCode.executeQuery();
+			else
+				rs = pstmt.executeQuery();
 			try {
 				suggestList.clear();
 				while(rs.next()) {
