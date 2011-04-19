@@ -97,6 +97,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.ajdeveloppement.commons.persistence.ObjectPersistence;
@@ -147,7 +148,7 @@ public class Entite implements ObjectPersistence {
 	private String nom;
 	@SqlField(name = "AGREMENTENTITE")
 	private String agrement;
-	@XmlTransient
+	@XmlIDREF
 	@SqlForeignKey(mappedTo="NUMFEDERATION")
 	private Federation federation;
 	@SqlField(name = "ADRESSEENTITE")
@@ -450,6 +451,7 @@ public class Entite implements ObjectPersistence {
 			// } catch (SQLException e) {
 			// throw new ObjectPersistenceException(e);
 			// }
+			federation.save(session);
 
 			helper.save(this);
 

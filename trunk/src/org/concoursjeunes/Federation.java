@@ -430,6 +430,11 @@ public class Federation implements ObjectPersistence {
 		for(CompetitionLevel competitionLevel : competitionLevels) {
 			competitionLevel.setFederation(this);
 		}
+		try {
+			checkAlreadyExists();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/* (non-Javadoc)
