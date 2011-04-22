@@ -157,6 +157,8 @@ public class Entite implements ObjectPersistence {
 	private String codePostal;
 	@SqlField(name = "VILLEENTITE")
 	private String ville;
+	@SqlField(name = "PAYS")
+	private String pays = "fr"; //$NON-NLS-1$
 	@SqlField(name = "NOTEENTITE")
 	private String note;
 	@SqlField(name = "TYPEENTITE")
@@ -352,6 +354,20 @@ public class Entite implements ObjectPersistence {
 	 */
 	public void setVille(String ville) {
 		this.ville = ville;
+	}
+
+	/**
+	 * @return pays
+	 */
+	public String getPays() {
+		return pays;
+	}
+
+	/**
+	 * @param pays pays à définir
+	 */
+	public void setPays(String pays) {
+		this.pays = pays;
 	}
 
 	/**

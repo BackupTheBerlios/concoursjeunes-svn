@@ -150,6 +150,7 @@ import org.ajdeveloppement.concours.ui.components.ZipCodeCitySuggestModel.Sugges
 import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
 import org.ajdeveloppement.swingxext.localisation.JXHeaderLocalisationHandler;
 import org.concoursjeunes.ApplicationCore;
+import org.concoursjeunes.Entite;
 import org.concoursjeunes.Profile;
 import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 import org.jdesktop.beansbinding.BeanProperty;
@@ -170,7 +171,8 @@ import com.lowagie.text.Font;
  */
 public class ContactPanel extends JPanel implements ActionListener, MouseListener, ListSelectionListener {
 	private Profile profile;
-	private Contact contact = new Contact();
+	private Contact contact;
+	private Entite parentEntite = null;
 	private boolean create = true;
 	
 	private boolean saveOnlyInMemoryBean = false;
@@ -210,6 +212,9 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 	@Localizable("entite.ville")
 	private JLabel jlCityContact = new JLabel();
 	private AJSuggestTextField jtfCityContact = new AJSuggestTextField("", 10); //$NON-NLS-1$
+	@Localizable("entite.pays")
+	private JLabel jlPays = new JLabel();
+	private CountryComboBox ccbPays = new CountryComboBox();
 	@Localizable("entite.coordinates")
 	private JLabel jlCoordinates = new JLabel();
 	private JList jlstCoordinates = new JList();
@@ -270,7 +275,9 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 		JPanel jpCoordinatesAction = new JPanel();
 		JPanel jpContactAction = new JPanel();
 		
-		jpCategories.setSize(new Dimension(100, 25));
+		
+		jpCategories.setMinimumSize(new Dimension(100, 30));
+		jpCategories.setSize(new Dimension(100, 30));
 		
 		jcbCivility.setRenderer(new DefaultListCellRenderer() {
 			
@@ -290,12 +297,14 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 		
 		jlCategories.setEditorKit(new HTMLEditorKit());
 		jlCategories.setOpaque(false);
-		jlCategories.setPreferredSize(new Dimension(100, 35));
+		//jlCategories.setMinimumSize(new Dimension(100, 55));
 		jxhCategories.setFont(jxhCategories.getFont().deriveFont(Font.NORMAL|Font.ITALIC));
 		jxhCategories.addActionListener(this);
 		dropDownRemoveSeparator.setForeground(new Color(150,150,150));
 		dropDownAddSeparator.setForeground(new Color(150,150,150));
 		
+		JScrollPane jspAdressContact = new JScrollPane(jtaAddressContact);
+		jspAdressContact.setMinimumSize(new Dimension(300, 70));
 		try {
 			jtfZipCodeContact.setModel(new ZipCodeCitySuggestModel(SuggestType.ZIP_CODE, jtfCityContact));
 			jtfCityContact.setModel(new ZipCodeCitySuggestModel(SuggestType.CITY, jtfZipCodeContact));
@@ -328,6 +337,8 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 			}
 		});
 		jlstCoordinates.addMouseListener(this);
+		JScrollPane jspCoordinates = new JScrollPane(jlstCoordinates);
+		jspCoordinates.setMinimumSize(new Dimension(150, 70));
 		
 		jpCoordinatesAction.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		
@@ -355,6 +366,9 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 		jbEditCoordinate.setMargin(new Insets(0, 0, 0, 0));
 		jbEditCoordinate.setContentAreaFilled(false);
 		jbEditCoordinate.addActionListener(this);
+		
+		JScrollPane jspNoteContact = new JScrollPane(jtaNoteContact);
+		jspNoteContact.setMinimumSize(new Dimension(150, 70));
 		
 		jxhNewContact.addActionListener(this);
 		jxhSaveContact.addActionListener(this);
@@ -416,7 +430,7 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 		c.weightx = 1.0;
 		c.fill = GridBagConstraints.BOTH;
 		c.gridwidth = 3;
-		gridbagComposer.addComponentIntoGrid(new JScrollPane(jtaAddressContact), c);
+		gridbagComposer.addComponentIntoGrid(jspAdressContact, c);
 		c.gridy++;
 		c.gridwidth = 1;
 		c.weightx = 0.0;
@@ -428,13 +442,23 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 		c.weightx = 0.9;
 		gridbagComposer.addComponentIntoGrid(jtfCityContact, c);
 		c.gridy++;
+		c.gridwidth = 1;
+		c.weightx = 0.0;
+		c.fill = GridBagConstraints.NONE;
+		gridbagComposer.addComponentIntoGrid(jlPays, c);
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridwidth = 3;
+		c.weightx = 0.9;
+		gridbagComposer.addComponentIntoGrid(ccbPays, c);
+		c.gridy++;
 		c.fill = GridBagConstraints.NONE;
 		c.weightx = 0.0;
+		c.gridwidth = 1;
 		gridbagComposer.addComponentIntoGrid(jlCoordinates, c);
 		c.weightx = 0.9;
 		c.fill = GridBagConstraints.BOTH;
 		c.gridwidth = 3;
-		gridbagComposer.addComponentIntoGrid(new JScrollPane(jlstCoordinates), c);
+		gridbagComposer.addComponentIntoGrid(jspCoordinates, c);
 		c.gridy++;
 		c.gridx = 1;
 		c.weightx = 0.0;
@@ -449,7 +473,7 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 		c.gridwidth = 3;
 		c.weightx = 0.9;		
 		c.fill = GridBagConstraints.BOTH;
-		gridbagComposer.addComponentIntoGrid(new JScrollPane(jtaNoteContact), c);
+		gridbagComposer.addComponentIntoGrid(jspNoteContact, c);
 		c.gridy++;
 		c.gridx = 1;
 		gridbagComposer.addComponentIntoGrid(jpContactAction, c);
@@ -502,7 +526,7 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 		
 		c.gridy = 0;
 		c.anchor = GridBagConstraints.WEST;
-		c.fill = GridBagConstraints.NONE;
+		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridwidth = 2;
 		gridbagComposer.addComponentIntoGrid(jxhCoordinate, c);
 		c.gridy++;
@@ -578,12 +602,17 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 				coordinatesModel.setElements(new ArrayList<Coordinate>(Collections.singletonList(new Coordinate())));
 			
 			jlSateSaveContact.setEnabled(true);
+			jxhSaveContact.setEnabled(true);
+			
+			ccbPays.setSelectedCountry(contact.getEntite().getPays());
 		} else {
 			jlSateSaveContact.setEnabled(false);
+			jxhSaveContact.setEnabled(false);
 		}
 		
 		populateCategoriesPanel();
 		
+		jxhNewContact.setEnabled(true);
 		jlSateSaveContact.setIcon(null);
 	}
 	
@@ -669,12 +698,35 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 	 * @param contact le contact à afficher / modifier
 	 */
 	public void setContact(Contact contact) {
+		setContact(contact, false);
+	}
+	
+	/**
+	 * Définit le contact à afficher / modifier
+	 * 
+	 * @param contact le contact à afficher / modifier
+	 */
+	public void setContact(Contact contact, boolean create) {
 		this.contact = contact;
-		create = false;
+		this.create = create;
 		
 		completePanel();
 	}
 	
+	/**
+	 * @return parentEntite
+	 */
+	public Entite getParentEntite() {
+		return parentEntite;
+	}
+
+	/**
+	 * @param parentEntite parentEntite à définir
+	 */
+	public void setParentEntite(Entite parentEntite) {
+		this.parentEntite = parentEntite;
+	}
+
 	public void setEnabledCreateContact(boolean enabledCreateContact) {
 		jxhNewContact.setEnabled(enabledCreateContact);
 	}
@@ -704,9 +756,13 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == jxhNewContact) {
-			setContact(new Contact());
+			Contact contact = new Contact();
+			if(parentEntite != null)
+				contact.setEntite(parentEntite);
+			setContact(contact);
 			
 			create = true;
+			jxhNewContact.setEnabled(false);
 		} else if(e.getSource() == jxhSaveContact) {
 			if(contact != null) {
 				if(contactBinding != null) {

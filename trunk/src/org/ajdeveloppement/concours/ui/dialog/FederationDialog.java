@@ -118,6 +118,8 @@ import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.StringUtils;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
+import org.ajdeveloppement.concours.ui.components.CountryComboBox;
+import org.ajdeveloppement.concours.ui.components.CountryComboBox.Country;
 import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
 import org.ajdeveloppement.swingxext.localisation.JXHeaderLocalisationHandler;
 import org.concoursjeunes.CompetitionLevel;
@@ -144,6 +146,8 @@ public class FederationDialog extends JDialog implements ActionListener {
 	private JLabel jlFederationSigle = new JLabel();
 	@Localizable("federation.name")
 	private JLabel jlFederationName = new JLabel();
+	@Localizable("federation.country")
+	private JLabel jlCountry = new JLabel();
 	@Localizable("federation.level")
 	private JLabel jlFederationNiveau = new JLabel();
 	private JLabel jlFederationLocaleNiveau = new JLabel();
@@ -155,6 +159,7 @@ public class FederationDialog extends JDialog implements ActionListener {
 	private JLabel jlAddLocaleInfo = new JLabel();
 	private JTextField jtfFederatonSigle = new JTextField(10);
 	private JTextField jtfFederatonName = new JTextField(40);
+	private CountryComboBox ccbCountryFederation = new CountryComboBox();
 	private JTextField jtfFederationNiveau = new JTextField(40);
 	private JComboBox jcbAvailableLocale = new JComboBox();
 	@Localizable("bouton.ajouter")
@@ -250,6 +255,11 @@ public class FederationDialog extends JDialog implements ActionListener {
 		gbComposer.addComponentIntoGrid(jtfFederatonName, c);
 		c.gridy++;
 		c.gridwidth = 1;
+		gbComposer.addComponentIntoGrid(jlCountry, c);
+		c.gridwidth = 2;
+		gbComposer.addComponentIntoGrid(ccbCountryFederation, c);
+		c.gridy++;
+		c.gridwidth = 1;
 		gbComposer.addComponentIntoGrid(jlFederationNiveau, c);
 		c.gridwidth = 2;
 		gbComposer.addComponentIntoGrid(jtfFederationNiveau, c);
@@ -295,7 +305,7 @@ public class FederationDialog extends JDialog implements ActionListener {
 		
 		jtfFederatonSigle.setText(federation.getSigleFederation());
 		jtfFederatonName.setText(federation.getNomFederation());
-		
+		ccbCountryFederation.setSelectedCountry(federation.getCodeCountry());
 
 		for(CompetitionLevel cl : federation.getCompetitionLevels()) {
 			if(cl.getLang().equals(profile.getConfiguration().getLangue())) {
@@ -363,7 +373,14 @@ public class FederationDialog extends JDialog implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == jbValider) {
-			federation = new Federation(jtfFederatonName.getText(), jtfFederatonSigle.getText());
+			if(federation == null)
+				federation = new Federation(jtfFederatonName.getText(), jtfFederatonSigle.getText());
+			else {
+				federation.setNomFederation(jtfFederatonName.getText());
+				federation.setSigleFederation(jtfFederatonSigle.getText());
+			}
+			federation.setCodeCountry(((Country)ccbCountryFederation.getSelectedItem()).getCode().toLowerCase());
+			federation.getCompetitionLevels().clear();
 			boolean first = true;
 			for(String level : StringUtils.tokenize(jtfFederationNiveau.getText(), ",")) { //$NON-NLS-1$
 				CompetitionLevel cl = new CompetitionLevel();

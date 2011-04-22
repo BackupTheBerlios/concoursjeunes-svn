@@ -89,11 +89,14 @@ package org.ajdeveloppement.concours.ui.dialog;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Collections;
@@ -107,6 +110,7 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -128,8 +132,11 @@ import org.ajdeveloppement.concours.managers.CategoryContactManager;
 import org.ajdeveloppement.concours.ui.components.CityAutoCompleteDocument;
 import org.ajdeveloppement.concours.ui.components.ContactPanel;
 import org.ajdeveloppement.concours.ui.components.ContactPanel.ContactPanelListener;
+import org.ajdeveloppement.concours.ui.components.CountryComboBox;
+import org.ajdeveloppement.concours.ui.components.CountryComboBox.Country;
 import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
 import org.ajdeveloppement.swingxext.localisation.JXHeaderLocalisationHandler;
+import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Entite;
 import org.concoursjeunes.Federation;
 import org.concoursjeunes.Profile;
@@ -147,7 +154,7 @@ import org.jdesktop.swingx.painter.GlossPainter;
  * @author Aurélien JEOFFRAY
  */
 @Localizable(value="entite.title",textMethod="setTitle")
-public class EntiteDialog extends JDialog implements ActionListener, ListSelectionListener, ContactPanelListener {
+public class EntiteDialog extends JDialog implements ActionListener, ListSelectionListener, ContactPanelListener, ItemListener {
 	private Profile profile;
 	private Entite entite;
 	
@@ -190,6 +197,9 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 	@Localizable("entite.ville")
 	private JLabel jlVille = new JLabel();
 	private JTextField jtfVille = new JTextField("", 10); //$NON-NLS-1$
+	@Localizable("entite.pays")
+	private JLabel jlCountry = new JLabel();
+	private CountryComboBox jcbCountry = new CountryComboBox();
 	@Localizable("entite.type")
 	private JLabel jlType = new JLabel();
 	private JComboBox jcbType;
@@ -204,6 +214,10 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 	private JLabel jlSearch = new JLabel();
 	private JTextField jtfSearch = new JTextField();
 	private AJList<Contact> jlResultList = new AJList<Contact>();
+	@Localizable(value="",tooltip="entite.addcontact")
+	private JButton jbAddContact = new JButton();
+	@Localizable(value="",tooltip="entite.removecontact")
+	private JButton jbRemoveContact = new JButton();
 	@Localizable(value="entite.detailscontact",textMethod="setTitle")
 	private JXTitledSeparator jxtsDetailsContacts = new JXTitledSeparator();
 	ContactPanel contactPanel = null;
@@ -247,7 +261,7 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 		JPanel jpContact = new JPanel();
 		
 		contactPanel = new ContactPanel(profile);
-		contactPanel.setSize(450, 400);
+		//contactPanel.setSize(450, 400);
 		contactPanel.addContactPanelListener(this);
 		// [end]
 		
@@ -265,6 +279,8 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 			jcbFederation.addItem(federation);
 		jtfNom.setEditable(false);
 		jftfAgrement.setEditable(false);
+		//jftfAgrement.setMinimumSize(new Dimension(75,20));
+		jspAdresse.setMinimumSize(new Dimension(300, 70));
 		CityAutoCompleteDocument cityAutoCompleteDocument;
 		try {
 			cityAutoCompleteDocument = new CityAutoCompleteDocument(jtfVille);
@@ -274,9 +290,8 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 			e.printStackTrace();
 		}
 		jtfVille.setEditable(false);
+		jcbCountry.addItemListener(this);
 		jcbType = new JComboBox(new String[] { "Fédération", "Ligue", "Comité Départemental", "Compagnie" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		
-		//jtaAdresse.setPreferredSize(new Dimension(336, 64));
 		
 		jbValider.addActionListener(this);
 		jbAnnuler.addActionListener(this);
@@ -304,9 +319,29 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 		});
 		jcbSearchCategoryContact.addActionListener(this);
 		jtfSearch.addActionListener(this);
+		//jtfSearch.addKeyListener(this);
 		
 		jlResultList.setVisibleRowCount(5);
 		jlResultList.addListSelectionListener(this);
+		JScrollPane jspResultList = new JScrollPane(jlResultList);
+		jspResultList.setMinimumSize(new Dimension(300, 70));
+		
+		jbAddContact.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.add", 16, 16)); //$NON-NLS-1$
+		jbAddContact.setPressedIcon(ApplicationCore.userRessources.getImageIcon("file.icon.add_active", 16, 16)); //$NON-NLS-1$
+		jbAddContact.setDisabledIcon(ApplicationCore.userRessources.getImageIcon("file.icon.add_disable", 16, 16)); //$NON-NLS-1$
+		jbAddContact.setBorderPainted(false);
+		jbAddContact.setFocusPainted(false);
+		jbAddContact.setMargin(new Insets(0, 0, 0, 0));
+		jbAddContact.setContentAreaFilled(false);
+		jbAddContact.addActionListener(this);
+		jbRemoveContact.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.del", 16, 16)); //$NON-NLS-1$
+		jbRemoveContact.setPressedIcon(ApplicationCore.userRessources.getImageIcon("file.icon.del_active", 16, 16)); //$NON-NLS-1$
+		jbRemoveContact.setDisabledIcon(ApplicationCore.userRessources.getImageIcon("file.icon.del_disable", 16, 16)); //$NON-NLS-1$
+		jbRemoveContact.setBorderPainted(false);
+		jbRemoveContact.setFocusPainted(false);
+		jbRemoveContact.setMargin(new Insets(0, 0, 0, 0));
+		jbRemoveContact.setContentAreaFilled(false);
+		jbRemoveContact.addActionListener(this);
 		
 		
 		// [end]
@@ -368,6 +403,12 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 		gridbagComposer.addComponentIntoGrid(jlVille, c);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		gridbagComposer.addComponentIntoGrid(jtfVille, c);
+		c.gridy++;
+		c.fill = GridBagConstraints.NONE;
+		gridbagComposer.addComponentIntoGrid(jlCountry, c);
+		c.gridwidth = 3;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		gridbagComposer.addComponentIntoGrid(jcbCountry, c);
 		// [end]
 		
 		// [start] Divers
@@ -385,6 +426,8 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 		// [end]
 		
 		// [start] Contacts
+		c = new GridBagConstraints();
+		c.insets = new Insets(1, 1, 1, 1);
 		gridbagComposer.setParentPanel(jpContact);
 		c.gridy = 0;
 		c.gridwidth = 1;
@@ -402,19 +445,35 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 		gridbagComposer.addComponentIntoGrid(jlSearch, c);
 		c.weightx = 1.0;
 		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridwidth = 3;
+		c.gridwidth = 2;
 		gridbagComposer.addComponentIntoGrid(jtfSearch, c);
 		c.gridy++;
-		c.gridwidth = 4;
-		gridbagComposer.addComponentIntoGrid(new JScrollPane(jlResultList), c);
+		c.gridwidth = 3;
+		c.gridheight = 2;
+		c.weightx = 1.0;
+		c.fill = GridBagConstraints.BOTH;
+		gridbagComposer.addComponentIntoGrid(jspResultList, c);
+		c.gridwidth = 1;
+		c.gridheight = 1;
+		c.fill = GridBagConstraints.NONE;
+		c.anchor = GridBagConstraints.NORTHEAST;
+		c.weightx = 0.0;
+		gridbagComposer.addComponentIntoGrid(jbAddContact, c);
 		c.gridy++;
+		gridbagComposer.addComponentIntoGrid(jbRemoveContact, c);
+		c.gridy++;
+		c.gridwidth = 4;
+		c.weighty = 0.0;
+		c.fill = GridBagConstraints.HORIZONTAL;
 		gridbagComposer.addComponentIntoGrid(jxtsDetailsContacts, c);
 		c.gridy++;
 		c.gridwidth = 4;
+		c.fill = GridBagConstraints.BOTH;
 		gridbagComposer.addComponentIntoGrid(contactPanel, c);
 		// [end]
 		
 		// [start] General
+		c = new GridBagConstraints();
 		c.gridx = GridBagConstraints.RELATIVE;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weighty = 0.0;
@@ -477,6 +536,13 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 	    	// [end]
 	    	
 	    	jcbFederation.setSelectedItem(entite.getFederation());
+	    	if(entite.getPays() == null) {
+	    		jcbCountry.setSelectedCountry(entite.getFederation().getCodeCountry());
+	    		((CityAutoCompleteDocument)jtfVille.getDocument()).setCodeCountry(entite.getFederation().getCodeCountry());
+	    	} else {
+	    		jcbCountry.setSelectedCountry(entite.getPays());
+	    		((CityAutoCompleteDocument)jtfVille.getDocument()).setCodeCountry(entite.getPays());
+	    	}
 			
 			jtfNom.setEditable(fullEditable || entite.getAgrement() == null || entite.getAgrement().isEmpty());
 			jtfVille.setEditable(fullEditable);
@@ -495,6 +561,8 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 			}
 			
 			refreshListContact(null);
+			
+			contactPanel.setParentEntite(entite);
 		}
 	}
 	
@@ -519,7 +587,8 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 		this.fullEditable = fullEditable;
 		completePanel();
 		
-		setSize(910, 715);
+		//setSize(910, 715);
+		pack();
 		setResizable(false);
 		setLocationRelativeTo(null);
 		
@@ -552,14 +621,9 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
             	}
         	}
 			entite.setFederation((Federation)jcbFederation.getSelectedItem());
-			//entite.setNom(jtfNom.getText());
-			//entite.setAdresse(jtaAdresse.getText());
-			//entite.setVille(jtfVille.getText());
 			entite.setType(jcbType.getSelectedIndex());
-			//entite.setNote(jtaNote.getText());
-			//entite.setAgrement(jftfAgrement.getText());
-			//entite.setCodePostal((String) jftfCodePostal.getValue());
-			
+			entite.setPays(((Country)jcbCountry.getSelectedItem()).getCode().toLowerCase());
+
 			try {
 				entite.save();
 			} catch (ObjectPersistenceException e) {
@@ -570,6 +634,24 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 			setVisible(false);
 		} else if(ae.getSource() == jcbSearchCategoryContact || ae.getSource() == jtfSearch) {
 			refreshListContact(null);
+		} else if(ae.getSource() == jbAddContact) {
+			Contact contact = new Contact();
+			contact.setEntite(entite);
+			contactPanel.setContact(contact, true);
+		} else if(ae.getSource() == jbRemoveContact) {
+			if(jlResultList.getSelectedValue() != null) {
+				if (JOptionPane.showConfirmDialog(this, profile.getLocalisation().getResourceString("entite.confirmation.suppression.contact"), //$NON-NLS-1$
+						profile.getLocalisation().getResourceString("entite.confirmation.suppression.contact.titre"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) { //$NON-NLS-1$
+					Contact selectedContact = (Contact)jlResultList.getSelectedValue();
+					try {
+						selectedContact.delete();
+					} catch (ObjectPersistenceException e) {
+						DisplayableErrorHelper.displayException(e);
+						e.printStackTrace();
+					}
+					jlResultList.remove(selectedContact);
+				}
+			}
 		}
 	}
 
@@ -589,7 +671,7 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 	@Override
 	public void contactAdded(Contact contact) {
 		contact.setEntite(entite);
-		contacts.add(contact);		
+		contacts.add(contact);
 		try {
 			contact.save();
 			
@@ -597,6 +679,13 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 		} catch (ObjectPersistenceException e) {
 			DisplayableErrorHelper.displayException(e);
 			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		if(e.getSource() == jcbCountry) {
+			((CityAutoCompleteDocument)jtfVille.getDocument()).setCodeCountry(((Country)jcbCountry.getSelectedItem()).getCode().toLowerCase());
 		}
 	}
 }

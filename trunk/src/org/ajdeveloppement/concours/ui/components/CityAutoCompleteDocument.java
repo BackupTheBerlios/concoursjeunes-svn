@@ -107,14 +107,34 @@ public class CityAutoCompleteDocument extends PlainDocument {
 	
 	private PreparedStatement pstmt;
 	private JTextField textField;
+	private String codeCountry = "fr"; //$NON-NLS-1$
 	
 	public CityAutoCompleteDocument(JTextField textField) throws SQLException {
+		this(textField, "fr"); //$NON-NLS-1$
+	}
+	
+	public CityAutoCompleteDocument(JTextField textField, String codeCountry) throws SQLException {
 		this.textField = textField;
-		String sql = "select NOM from VILLE where upper(NOM) like concat(?, '%') order by NOM limit 1"; //$NON-NLS-1$
+		String sql = "select NOM from VILLE where UPPER_NAME like concat(?, '%') and PAYS = ? order by NOM limit 1"; //$NON-NLS-1$
+		this.codeCountry = codeCountry;
 		
 		pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
 	}
 	
+	/**
+	 * @return codeCountry
+	 */
+	public String getCodeCountry() {
+		return codeCountry;
+	}
+
+	/**
+	 * @param codeCountry codeCountry à définir
+	 */
+	public void setCodeCountry(String codeCountry) {
+		this.codeCountry = codeCountry;
+	}
+
 	/**
 	 * Invoqué a l'insertion du chaîne dans le champs de saisi
 	 * 
@@ -180,6 +200,7 @@ public class CityAutoCompleteDocument extends PlainDocument {
 		
 		try {
 			pstmt.setString(1, searchString);
+			pstmt.setString(2, codeCountry);
 
 			ResultSet rs = pstmt.executeQuery();
 			try {

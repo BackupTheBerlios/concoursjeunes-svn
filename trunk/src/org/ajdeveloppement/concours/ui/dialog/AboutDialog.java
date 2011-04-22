@@ -179,7 +179,7 @@ public class AboutDialog extends JDialog implements ActionListener, HyperlinkLis
 				localisation.getResourceString("apropos.version") + "<br>" +  //$NON-NLS-1$ //$NON-NLS-2$
 				AppInfos.VERSION + " - " + AppInfos.VERSION_DATE + "<br>" + //$NON-NLS-1$ //$NON-NLS-2$
 				localisation.getResourceString("apropos.codename") + " " + AppInfos.CODENAME + "<br>" + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				AppInfos.COPYR + " " + AppInfos.AUTEURS + "<br>" + //$NON-NLS-1$ //$NON-NLS-2$
+				AppInfos.COPYR + " " + AppInfos.AUTEURS + "<br><br>" + //$NON-NLS-1$ //$NON-NLS-2$
 				"version base: " + ApplicationCore.dbVersion + "<br><br>" //$NON-NLS-1$ //$NON-NLS-2$
 				+ "mémoire utilisé: " + ((memoryBean.getHeapMemoryUsage().getUsed() + memoryBean.getNonHeapMemoryUsage().getUsed()) / 1024 / 1024) + "Mo<br>" //$NON-NLS-1$ //$NON-NLS-2$
 				+ "mémoire réservé: " + ((memoryBean.getHeapMemoryUsage().getCommitted() + memoryBean.getNonHeapMemoryUsage().getCommitted()) / 1024 / 1024) + "Mo<br><br>" //$NON-NLS-1$ //$NON-NLS-2$

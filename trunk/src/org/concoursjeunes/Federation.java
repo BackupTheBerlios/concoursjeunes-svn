@@ -154,6 +154,9 @@ public class Federation implements ObjectPersistence {
 	@SqlField(name="NOMFEDERATION")
 	@XmlElement(name="nom")
 	private String nomFederation = ""; //$NON-NLS-1$
+	@SqlField(name="PAYS")
+	@XmlElement(name="pays")
+	private String codeCountry = "fr"; //$NON-NLS-1$
 	@XmlElementWrapper(name="niveaux",required=true)
 	@XmlElement(name="niveau")
 	private List<CompetitionLevel> competitionLevels = new ArrayList<CompetitionLevel>();
@@ -246,6 +249,20 @@ public class Federation implements ObjectPersistence {
 		this.nomFederation = nomFederation;
 	}
 	
+	/**
+	 * @return codeCountry
+	 */
+	public String getCodeCountry() {
+		return codeCountry;
+	}
+
+	/**
+	 * @param codeCountry codeCountry à définir
+	 */
+	public void setCodeCountry(String codeCountry) {
+		this.codeCountry = codeCountry;
+	}
+
 	/**
 	 * <p>Retourne la liste des niveaux de compétition disponible pour cette fédération.</p>
 	 * <p>Un niveau de compétition peut être retourné plusieurs fois si il est disponible

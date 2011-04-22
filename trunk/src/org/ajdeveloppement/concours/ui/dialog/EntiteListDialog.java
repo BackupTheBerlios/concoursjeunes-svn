@@ -391,6 +391,8 @@ public class EntiteListDialog extends JDialog implements ActionListener, MouseLi
 			setVisible(false);
 		} else if(ae.getSource() == jbAdd) {
 			Entite newEntite = new Entite();
+			newEntite.setFederation((Federation)jcbFederation.getSelectedItem());
+			newEntite.setPays(null);
 			
 			EntiteDialog ed = new EntiteDialog(parentframe, profile);
 			ed.setEntite(newEntite);
