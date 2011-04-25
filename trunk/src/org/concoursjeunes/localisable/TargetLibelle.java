@@ -145,7 +145,8 @@ public class TargetLibelle {
 					if (i == 0 || (i > 0 && !dbs.get(i).getTargetFace().equals(dbs.get(i - 1).getTargetFace()))) {
 						if (i > 0)
 							strCibleLibelle += "/"; //$NON-NLS-1$
-						strCibleLibelle += dbs.get(i).getTargetFace().getName();
+						if(dbs.get(i) != null && dbs.get(i).getTargetFace() != null)
+							strCibleLibelle += dbs.get(i).getTargetFace().getName();
 					}
 				}
 			}

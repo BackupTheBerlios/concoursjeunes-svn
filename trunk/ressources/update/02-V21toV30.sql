@@ -323,6 +323,9 @@ ALTER TABLE ARCHERS DROP COLUMN AGREMENTENTITE;
 
 ALTER TABLE FEDERATION ADD PAYS VARCHAR(2) DEFAULT 'fr';
 
+-- Réglement: Ajout du nombre de points par flèche
+ALTER TABLE REGLEMENT ADD NBPOINTSPARFLECHE INTEGER DEFAULT 10;
+
 -- Ajout du type de réglement (cible ou nature)
 ALTER TABLE REGLEMENT ADD TYPEREGLEMENT VARCHAR(10) NOT NULL DEFAULT 'TARGET' BEFORE REMOVABLE;
 
@@ -343,6 +346,3 @@ DROP TABLE TEMP_DISTINGUER;
 -- Comme dans les versions antérieurs de la base il n'y avait que des archers
 -- on associe tous les contact présent en base à la catégorie "archer"
 INSERT INTO ASSOCIER_CATEGORIE_CONTACT (ID_CONTACT, NUM_CATEGORIE_CONTACT) SELECT ID_CONTACT, 1 FROM CONTACT;
-
--- Réglement: Ajout du nombre de points par flèche
-ALTER TABLE REGLEMENT ADD NBPOINTSPARFLECHE INTEGER DEFAULT 10;

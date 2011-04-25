@@ -440,6 +440,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		jlSelectedReglement.setFont(jlSelectedReglement.getFont().deriveFont(Font.ITALIC));
 		
 		jcbNbTireur.addItem("AB"); //$NON-NLS-1$
+		jcbNbTireur.addItem("ABC"); //$NON-NLS-1$
 		jcbNbTireur.addItem("AB/CD"); //$NON-NLS-1$
 
 		jpEcranConcours.setLayout(new BorderLayout());
@@ -673,8 +674,10 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		jtfNbCible.setText("" + configuration.getNbCible()); //$NON-NLS-1$
 		if(configuration.getNbTireur() == 2)
 			jcbNbTireur.setSelectedIndex(0);
-		else
+		else if(configuration.getNbTireur() == 3)
 			jcbNbTireur.setSelectedIndex(1);
+		else if(configuration.getNbTireur() == 4)
+			jcbNbTireur.setSelectedIndex(2);
 		//jtfNbTireur.setText("" + configuration.getNbTireur()); //$NON-NLS-1$
 		jtfNbDepart.setText("" + configuration.getNbDepart()); //$NON-NLS-1$
 	}
@@ -898,7 +901,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 			workAppConfiguration.setPdfReaderPath(jcbPathPdf.getSelectedItem().toString());
 
 		workConfiguration.setNbCible(Integer.parseInt(jtfNbCible.getText()));
-		workConfiguration.setNbTireur((jcbNbTireur.getSelectedIndex() == 0) ? 2 : 4);
+		workConfiguration.setNbTireur(jcbNbTireur.getSelectedIndex() + 2);
 		workConfiguration.setNbDepart(Integer.parseInt(jtfNbDepart.getText()));
 		workAppConfiguration.setFirstboot(jcbFirstBoot.isSelected());
 
