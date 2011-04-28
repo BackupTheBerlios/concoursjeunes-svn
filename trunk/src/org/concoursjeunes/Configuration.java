@@ -96,10 +96,13 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -115,7 +118,7 @@ import org.ajdeveloppement.concours.Rate;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={"federation", "club", "langue", "logoPath", "reglementName", "tarifs", "pdfReaderPath", "formatPapier",
+@XmlType(propOrder={"federations", "federation", "club", "langue", "logoPath", "reglementName", "tarifs", "pdfReaderPath", "formatPapier",
 		"orientation", "colonneAndLigne", "marges", "espacements", "interfaceResultatCumul", "interfaceAffResultatExEquo",
 		"useProxy", "proxy", "metaDataFichesConcours", "curProfil"})
 public class Configuration extends DefaultParameters implements Cloneable {
@@ -134,6 +137,11 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	private String langue           = "fr";               //$NON-NLS-1$
 	private String logoPath         = "ressources/logos/default.jpg";   //$NON-NLS-1$
 	
+	@XmlElementWrapper(name="federations")
+	@XmlElement(name="federation")
+	private List<Federation> federations = null;
+	
+	@XmlIDREF
 	private Federation federation	= new Federation();
 	private Entite club				= new Entite();
 	private String reglementName	= "FFTASJF"; //$NON-NLS-1$
@@ -537,6 +545,34 @@ public class Configuration extends DefaultParameters implements Cloneable {
 		File f = new File(ApplicationCore.userRessources.getConfigPathForUser(),
 				CONFIG_PROFILE + curProfil + EXT_XML);
 		XMLSerializer.saveMarshallStructure(f, this);
+	}
+	
+	/**
+	 * 
+	 * @param marshaller
+	 */
+	protected void beforeMarshal(Marshaller marshaller) {
+		federations = new ArrayList<Federation>();
+		federations.add(federation);
+		if(club != null && club.getFederation() != null && club.getFederation() != federation)
+			federations.add(club.getFederation());
+	}
+	
+	/**
+	 * 
+	 * @param marshaller
+	 */
+	protected void afterMarshal(Marshaller marshaller) {
+		federations = null;
+	}
+	
+	/**
+	 * 
+	 * @param unmarshaller
+	 * @param parent
+	 */
+	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
+		federations = null;
 	}
 	
 	@Override
