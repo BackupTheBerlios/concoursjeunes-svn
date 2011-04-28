@@ -99,7 +99,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class DefaultParameters {
-	private Entite club				= new Entite();
 	private String intituleConcours = "Spécial Jeunes"; //$NON-NLS-1$
 	
 	private int nbCible             = 10;
@@ -224,27 +223,5 @@ public class DefaultParameters {
 		this.nbTireur = nbTireur;
 		
 		pcs.firePropertyChange("nbTireur", oldValue, nbTireur); //$NON-NLS-1$
-	}
-
-	/**
-	 * Retourne le club organisateur du concours
-	 * 
-	 * @return le club organisateur
-	 */
-	public Entite getClub() {
-		return club;
-	}
-
-	/**
-	 * Définit le club organisateur du concours
-	 * 
-	 * @param club le club organisateur
-	 */
-	public void setClub(Entite club) {
-		Object oldValue = this.club;
-		
-		this.club = club;
-		
-		pcs.firePropertyChange("club", oldValue, club); //$NON-NLS-1$
 	}
 }

@@ -1055,6 +1055,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	@Override
 	public void concurrentNotFound(AutoCompleteDocumentEvent e) {
 		Concurrent newConcurrent = new Concurrent();
+		newConcurrent.setCountryCode(ficheConcours.getParametre().getClub().getPays());
 		newConcurrent.setDepart(ficheConcours.getCurrentDepart());
 		if (e.getSource() == jtfNom) {
 			newConcurrent.setName(jtfNom.getText());

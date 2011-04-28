@@ -98,7 +98,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.Collections;
 import java.util.List;
 
@@ -106,7 +105,6 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -118,7 +116,6 @@ import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.text.MaskFormatter;
 
 import org.ajdeveloppement.apps.localisation.Localizable;
 import org.ajdeveloppement.apps.localisation.LocalizationHandler;
@@ -193,7 +190,7 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 	
 	@Localizable("entite.codepostal")
 	private JLabel jlCodePostal = new JLabel();
-	private JFormattedTextField jftfCodePostal;
+	private JTextField jftfCodePostal;
 	@Localizable("entite.ville")
 	private JLabel jlVille = new JLabel();
 	private JTextField jtfVille = new JTextField("", 10); //$NON-NLS-1$
@@ -213,6 +210,7 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 	@Localizable("entite.search")
 	private JLabel jlSearch = new JLabel();
 	private JTextField jtfSearch = new JTextField();
+	private JButton jbSearch = new JButton();
 	private AJList<Contact> jlResultList = new AJList<Contact>();
 	@Localizable(value="",tooltip="entite.addcontact")
 	private JButton jbAddContact = new JButton();
@@ -296,15 +294,7 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 		jbValider.addActionListener(this);
 		jbAnnuler.addActionListener(this);
 
-		MaskFormatter formatter;
-		try {
-			formatter = new MaskFormatter("#####"); //$NON-NLS-1$
-			formatter.setPlaceholderCharacter('_');
-			jftfCodePostal = new JFormattedTextField(formatter);
-			jftfCodePostal.setColumns(4);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+		jftfCodePostal = new JTextField(4);
 		
 		jcbSearchCategoryContact.setRenderer(new DefaultListCellRenderer() {
 			
@@ -320,6 +310,10 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 		jcbSearchCategoryContact.addActionListener(this);
 		jtfSearch.addActionListener(this);
 		//jtfSearch.addKeyListener(this);
+		jbSearch.addActionListener(this);
+		jbSearch.setMargin(new Insets(0, 0, 0, 0));
+		jbSearch.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.select", 16, 16)); //$NON-NLS-1$
+		jbSearch.addActionListener(this);
 		
 		jlResultList.setVisibleRowCount(5);
 		jlResultList.addListSelectionListener(this);
@@ -447,6 +441,9 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridwidth = 2;
 		gridbagComposer.addComponentIntoGrid(jtfSearch, c);
+		c.gridwidth = 1;
+		c.weightx = 0.0;
+		gridbagComposer.addComponentIntoGrid(jbSearch, c);
 		c.gridy++;
 		c.gridwidth = 3;
 		c.gridheight = 2;
@@ -518,6 +515,15 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 	
 	private void completePanel() {
 		if(entite != null) {
+			
+			if(entite.getPays() == null) {
+	    		jcbCountry.setSelectedCountry(entite.getFederation().getCodeCountry());
+	    		((CityAutoCompleteDocument)jtfVille.getDocument()).setCodeCountry(entite.getFederation().getCodeCountry());
+	    	} else {
+	    		jcbCountry.setSelectedCountry(entite.getPays());
+	    		((CityAutoCompleteDocument)jtfVille.getDocument()).setCodeCountry(entite.getPays());
+	    	}
+			
 			// [start] binding
 			//On annule le précédent binding
 	    	if(entiteBinding != null)
@@ -530,19 +536,12 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 	    	entiteBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, entite, BeanProperty.create("ville"), jtfVille, BeanProperty.create("text"))); //$NON-NLS-1$ //$NON-NLS-2$
 	    	entiteBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, entite, BeanProperty.create("note"), jtaNote, BeanProperty.create("text"))); //$NON-NLS-1$ //$NON-NLS-2$
 	    	entiteBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, entite, BeanProperty.create("agrement"), jftfAgrement, BeanProperty.create("text"))); //$NON-NLS-1$ //$NON-NLS-2$
-	    	entiteBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, entite, BeanProperty.create("codePostal"), jftfCodePostal, BeanProperty.create("value"))); //$NON-NLS-1$ //$NON-NLS-2$
+	    	entiteBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, entite, BeanProperty.create("codePostal"), jftfCodePostal, BeanProperty.create("text"))); //$NON-NLS-1$ //$NON-NLS-2$
 	    	
 	    	entiteBinding.bind();
 	    	// [end]
 	    	
 	    	jcbFederation.setSelectedItem(entite.getFederation());
-	    	if(entite.getPays() == null) {
-	    		jcbCountry.setSelectedCountry(entite.getFederation().getCodeCountry());
-	    		((CityAutoCompleteDocument)jtfVille.getDocument()).setCodeCountry(entite.getFederation().getCodeCountry());
-	    	} else {
-	    		jcbCountry.setSelectedCountry(entite.getPays());
-	    		((CityAutoCompleteDocument)jtfVille.getDocument()).setCodeCountry(entite.getPays());
-	    	}
 			
 			jtfNom.setEditable(fullEditable || entite.getAgrement() == null || entite.getAgrement().isEmpty());
 			jtfVille.setEditable(fullEditable);
@@ -632,10 +631,11 @@ public class EntiteDialog extends JDialog implements ActionListener, ListSelecti
 			}
 
 			setVisible(false);
-		} else if(ae.getSource() == jcbSearchCategoryContact || ae.getSource() == jtfSearch) {
+		} else if(ae.getSource() == jcbSearchCategoryContact || ae.getSource() == jtfSearch || ae.getSource() == jbSearch) {
 			refreshListContact(null);
 		} else if(ae.getSource() == jbAddContact) {
 			Contact contact = new Contact();
+			contact.setCountryCode(entite.getPays());
 			contact.setEntite(entite);
 			contactPanel.setContact(contact, true);
 		} else if(ae.getSource() == jbRemoveContact) {

@@ -952,8 +952,12 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 			}
 		} else if (source == jbParcourir) {
 			EntiteListDialog eld = new EntiteListDialog(null, profile, true);
-			if (eld.getAction() == EntiteListDialog.VALIDER)
-					jtfAgrClub.setText(eld.getSelectedEntite().getAgrement());
+			if (eld.getAction() == EntiteListDialog.VALIDER) {
+				workConfiguration.setClub(eld.getSelectedEntite());
+				
+				jtfAgrClub.setText(eld.getSelectedEntite().getAgrement());
+				jtfNomClub.setText(eld.getSelectedEntite().getNom());
+			}
 		} else if (source == this.jbDetail) {
 			EntiteDialog ed = new EntiteDialog(this, profile);
 			ed.setEntite(workConfiguration.getClub());

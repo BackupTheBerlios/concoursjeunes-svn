@@ -17,6 +17,8 @@ public abstract class AbstractCache<UID, CT> {
 	private Map<UID,SoftReference<CT>> instanceCache = Collections.synchronizedMap(
 			new HashMap<UID,SoftReference<CT>>());
 	
+	private int nbCallBeforeCleanKey = 100;
+	
 	/**
 	 * Ajoute une instance au cache
 	 * 
@@ -31,7 +33,11 @@ public abstract class AbstractCache<UID, CT> {
 	 * @param object l'objet à mettre en cache
 	 */
 	protected void put(UID uniqueObjectId, CT object) {
+		nbCallBeforeCleanKey--;
 		instanceCache.put(uniqueObjectId, new SoftReference<CT>(object));
+		
+		if(nbCallBeforeCleanKey == 0)
+			removeFreeReference();
 	}
 	
 	/**
@@ -76,5 +82,6 @@ public abstract class AbstractCache<UID, CT> {
 			if(instanceCache.get(key).get() == null)
 				instanceCache.remove(key);
 		}
+		nbCallBeforeCleanKey = 100;
 	}
 }

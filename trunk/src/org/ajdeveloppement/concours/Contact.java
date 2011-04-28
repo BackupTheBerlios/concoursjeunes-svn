@@ -171,6 +171,9 @@ public class Contact implements ObjectPersistence, Cloneable {
 	@SqlField(name="CITY")
 	private String city;
 	
+	@SqlField(name="COUNTRY")
+	private String countryCode = "fr";  //$NON-NLS-1$
+	
 	@SqlField(name="NOTE")
 	private String note;
 	
@@ -370,6 +373,20 @@ public class Contact implements ObjectPersistence, Cloneable {
 		this.city = city;
 		
 		pcs.firePropertyChange("city", oldValue, city); //$NON-NLS-1$
+	}
+
+	/**
+	 * @return countryCode
+	 */
+	public String getCountryCode() {
+		return countryCode;
+	}
+
+	/**
+	 * @param countryCode countryCode à définir
+	 */
+	public void setCountryCode(String countryCode) {
+		this.countryCode = countryCode;
 	}
 
 	/**

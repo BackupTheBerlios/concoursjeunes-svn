@@ -146,6 +146,7 @@ import org.ajdeveloppement.concours.Coordinate;
 import org.ajdeveloppement.concours.Coordinate.Type;
 import org.ajdeveloppement.concours.managers.CategoryContactManager;
 import org.ajdeveloppement.concours.managers.CivilityManager;
+import org.ajdeveloppement.concours.ui.components.CountryComboBox.Country;
 import org.ajdeveloppement.concours.ui.components.ZipCodeCitySuggestModel.SuggestType;
 import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
 import org.ajdeveloppement.swingxext.localisation.JXHeaderLocalisationHandler;
@@ -292,16 +293,23 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 						cellHasFocus);
 			}
 		});
+		jcbCivility.setEnabled(false);
 		jxhNewCivility.setFont(jxhNewCivility.getFont().deriveFont(Font.NORMAL|Font.ITALIC));
 		jxhNewCivility.setEnabled(false);
+		
+		jtfFirstName.setEnabled(false);
+		jtfName.setEnabled(false);
 		
 		jlCategories.setEditorKit(new HTMLEditorKit());
 		jlCategories.setOpaque(false);
 		//jlCategories.setMinimumSize(new Dimension(100, 55));
 		jxhCategories.setFont(jxhCategories.getFont().deriveFont(Font.NORMAL|Font.ITALIC));
 		jxhCategories.addActionListener(this);
+		jxhCategories.setEnabled(false);
 		dropDownRemoveSeparator.setForeground(new Color(150,150,150));
 		dropDownAddSeparator.setForeground(new Color(150,150,150));
+		
+		jtaAddressContact.setEnabled(false);
 		
 		JScrollPane jspAdressContact = new JScrollPane(jtaAddressContact);
 		jspAdressContact.setMinimumSize(new Dimension(300, 70));
@@ -312,6 +320,9 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 			DisplayableErrorHelper.displayException(e);
 			e.printStackTrace();
 		}
+		jtfZipCodeContact.setEnabled(false);
+		jtfCityContact.setEnabled(false);
+		ccbPays.setEnabled(false);
 
 		jlstCoordinates.setVisibleRowCount(5);
 		jlstCoordinates.setModel(coordinatesModel);
@@ -350,6 +361,7 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 		jbAddCoordinate.setMargin(new Insets(0, 0, 0, 0));
 		jbAddCoordinate.setContentAreaFilled(false);
 		jbAddCoordinate.addActionListener(this);
+		jbAddCoordinate.setEnabled(false);
 		jbDelCoordinate.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.del", 16, 16)); //$NON-NLS-1$
 		jbDelCoordinate.setPressedIcon(ApplicationCore.userRessources.getImageIcon("file.icon.del_active", 16, 16)); //$NON-NLS-1$
 		jbDelCoordinate.setDisabledIcon(ApplicationCore.userRessources.getImageIcon("file.icon.del_disable", 16, 16)); //$NON-NLS-1$
@@ -358,6 +370,7 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 		jbDelCoordinate.setMargin(new Insets(0, 0, 0, 0));
 		jbDelCoordinate.setContentAreaFilled(false);
 		jbDelCoordinate.addActionListener(this);
+		jbDelCoordinate.setEnabled(false);
 		jbEditCoordinate.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.edit", 16, 16)); //$NON-NLS-1$
 		jbEditCoordinate.setPressedIcon(ApplicationCore.userRessources.getImageIcon("file.icon.edit_active", 16, 16)); //$NON-NLS-1$
 		jbEditCoordinate.setDisabledIcon(ApplicationCore.userRessources.getImageIcon("file.icon.edit_disable", 16, 16)); //$NON-NLS-1$
@@ -366,9 +379,11 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 		jbEditCoordinate.setMargin(new Insets(0, 0, 0, 0));
 		jbEditCoordinate.setContentAreaFilled(false);
 		jbEditCoordinate.addActionListener(this);
+		jbEditCoordinate.setEnabled(false);
 		
 		JScrollPane jspNoteContact = new JScrollPane(jtaNoteContact);
 		jspNoteContact.setMinimumSize(new Dimension(150, 70));
+		jtaNoteContact.setEnabled(false);
 		
 		jxhNewContact.addActionListener(this);
 		jxhSaveContact.addActionListener(this);
@@ -580,6 +595,19 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 		
 		
 		if(contact != null) {
+			jcbCivility.setEnabled(true);
+			jtfFirstName.setEnabled(true);
+			jtfName.setEnabled(true);
+			jxhCategories.setEnabled(true);
+			jtaAddressContact.setEnabled(true);
+			jtfZipCodeContact.setEnabled(true);
+			jtfCityContact.setEnabled(true);
+			ccbPays.setEnabled(true);
+			jbAddCoordinate.setEnabled(true);
+			jbDelCoordinate.setEnabled(true);
+			jbEditCoordinate.setEnabled(true);
+			jtaNoteContact.setEnabled(true);
+			
 			jtfCityContact.beginInit();
 			jtfZipCodeContact.beginInit();
 			contactBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, contact, BeanProperty.create("civility"), jcbCivility, BeanProperty.create("selectedItem")));  //$NON-NLS-1$//$NON-NLS-2$
@@ -604,7 +632,10 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 			jlSateSaveContact.setEnabled(true);
 			jxhSaveContact.setEnabled(true);
 			
-			ccbPays.setSelectedCountry(contact.getEntite().getPays());
+			if(contact.getCountryCode() == null)
+				ccbPays.setSelectedCountry(contact.getEntite().getPays());
+			else
+				ccbPays.setSelectedCountry(contact.getCountryCode());
 		} else {
 			jlSateSaveContact.setEnabled(false);
 			jxhSaveContact.setEnabled(false);
@@ -757,8 +788,10 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == jxhNewContact) {
 			Contact contact = new Contact();
-			if(parentEntite != null)
+			if(parentEntite != null) {
 				contact.setEntite(parentEntite);
+				contact.setCountryCode(parentEntite.getPays());
+			}
 			setContact(contact);
 			
 			create = true;
@@ -772,6 +805,7 @@ public class ContactPanel extends JPanel implements ActionListener, MouseListene
 	        	}
 				contact.setCategories(categoriesContact);
 				contact.setCoordinates(new ArrayList<Coordinate>(coordinatesModel.getElements()));
+				contact.setCountryCode(((Country)ccbPays.getSelectedItem()).getCode());
 				
 				try {
 					if(!saveOnlyInMemoryBean)

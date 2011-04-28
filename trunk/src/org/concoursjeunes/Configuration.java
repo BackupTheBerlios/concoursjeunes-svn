@@ -101,6 +101,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.ajdeveloppement.commons.net.Proxy;
@@ -114,6 +115,9 @@ import org.ajdeveloppement.concours.Rate;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder={"federation", "club", "langue", "logoPath", "reglementName", "tarifs", "pdfReaderPath", "formatPapier",
+		"orientation", "colonneAndLigne", "marges", "espacements", "interfaceResultatCumul", "interfaceAffResultatExEquo",
+		"useProxy", "proxy", "metaDataFichesConcours", "curProfil"})
 public class Configuration extends DefaultParameters implements Cloneable {
 	
 	/**
@@ -131,6 +135,7 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	private String logoPath         = "ressources/logos/default.jpg";   //$NON-NLS-1$
 	
 	private Federation federation	= new Federation();
+	private Entite club				= new Entite();
 	private String reglementName	= "FFTASJF"; //$NON-NLS-1$
 	@XmlElementWrapper(name="tarifs",required=true)
 	private List<Rate> tarifs		= new ArrayList<Rate>(); 
@@ -231,6 +236,28 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	 */
 	public void setFederation(Federation federation) {
 		this.federation = federation;
+	}
+	
+	/**
+	 * Retourne le club organisateur du concours
+	 * 
+	 * @return le club organisateur
+	 */
+	public Entite getClub() {
+		return club;
+	}
+
+	/**
+	 * Définit le club organisateur du concours
+	 * 
+	 * @param club le club organisateur
+	 */
+	public void setClub(Entite club) {
+		Object oldValue = this.club;
+		
+		this.club = club;
+		
+		pcs.firePropertyChange("club", oldValue, club); //$NON-NLS-1$
 	}
 
 	/**

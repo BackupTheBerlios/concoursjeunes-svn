@@ -110,6 +110,7 @@ import org.concoursjeunes.manager.ReglementManager;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Parametre extends DefaultParameters {
 	
+	private Entite club				= new Entite();
 	private String lieuConcours		= ""; //$NON-NLS-1$
 	private CompetitionLevel niveauChampionnat = new CompetitionLevel();
 	private Date dateDebutConcours	= new Date();
@@ -155,6 +156,28 @@ public class Parametre extends DefaultParameters {
 		setNbDepart(configuration.getNbDepart());
 		
 		setReglement(reglementManager.getReglementByName(configuration.getReglementName()));
+	}
+	
+	/**
+	 * Retourne le club organisateur du concours
+	 * 
+	 * @return le club organisateur
+	 */
+	public Entite getClub() {
+		return club;
+	}
+
+	/**
+	 * Définit le club organisateur du concours
+	 * 
+	 * @param club le club organisateur
+	 */
+	public void setClub(Entite club) {
+		Object oldValue = this.club;
+		
+		this.club = club;
+		
+		pcs.firePropertyChange("club", oldValue, club); //$NON-NLS-1$
 	}
 	
 	/**

@@ -164,6 +164,7 @@ public class Federation implements ObjectPersistence {
 	private static PreparedStatement pstmtAlreadyExists = null;
 	
 	public Federation() {
+		//xmlId = UUID.randomUUID().toString();
 	}
 	
 	/**
@@ -191,6 +192,8 @@ public class Federation implements ObjectPersistence {
 		this.nomFederation = nomFederation;
 		this.numFederation = numFederation;
 		this.sigleFederation = sigleFederation;
+		
+		//xmlId = UUID.randomUUID().toString();
 	}
 
 	/**
