@@ -741,7 +741,8 @@ public class FicheConcoursDepartPane extends JPanel
 			}
 		} else {
 			if (e.getClickCount() == 2) {
-				ficheConcoursPane.openConcurrentDialog((Concurrent) lstModelConcurrent.getElementAt(ajxlConcurrent.convertIndexToModel(ajxlConcurrent.getSelectedIndex())), getSortedConcurrentInList());
+				if(ajxlConcurrent.getSelectedIndex() >-1)
+					ficheConcoursPane.openConcurrentDialog((Concurrent) lstModelConcurrent.getElementAt(ajxlConcurrent.convertIndexToModel(ajxlConcurrent.getSelectedIndex())), getSortedConcurrentInList());
 			} else if (e.getModifiers() == InputEvent.BUTTON3_MASK) { //
 				int elemIndex = ajxlConcurrent.locationToIndex(e.getPoint());
 				//elemIndex = ajxlConcurrent.convertIndexToModel(elemIndex);

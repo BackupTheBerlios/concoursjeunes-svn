@@ -205,10 +205,11 @@ public class ReglementManager {
 	 */
 	public void updateReglement(Reglement reglement) throws ObjectPersistenceException {
 		availableReglements.remove(reglement);
+		/*
 		if(getReglementsForCategory(reglement.getCategory()).size() == 0)
 			categorie.remove(new Integer(reglement.getCategory()));
 		if(getReglementsForFederation(reglement.getFederation()).size() == 0)
-			removeFederation(reglement.getFederation());
+			removeFederation(reglement.getFederation());*/
 		addReglement(reglement);
 	}
 	
