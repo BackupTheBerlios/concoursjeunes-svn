@@ -179,7 +179,27 @@ public class ReglementBuilder {
 	 * @return le régalement construit à partir du numéro
 	 */
 	public static Reglement getReglement(int numreglement) throws ObjectPersistenceException {
-		return getReglement(numreglement, null);
+		return getReglement(numreglement, null, false);
+	}
+	
+	/**
+	 * <p>
+	 * Retourne le règlement identifié par son numéro dans la base.
+	 * Si aucun régalement ne correspond au numéro, celui ci est initialisé par défaut
+	 * (équivalent à createReglement()).
+	 * </p>
+	 * <p>
+	 * Pour fonctionner correctement, "ConcoursJeunes.dbConnection" doit auparavant être
+	 * correctement instancié.
+	 * </p>
+	 * 
+	 * @param numreglement le numéro du règlement à construire
+	 * @param doNotUseCache	ne pas utiliser le cache pour le chargement
+	 * 
+	 * @return le régalement construit à partir du numéro
+	 */
+	public static Reglement getReglement(int numreglement, boolean doNotUseCache) throws ObjectPersistenceException {
+		return getReglement(numreglement, null, doNotUseCache);
 	}
 	
 	/**
@@ -187,15 +207,31 @@ public class ReglementBuilder {
 	 * un objet.
 	 * 
 	 * @param rs le jeux de résultat à injecter dans une instance réglement
+	 * 
 	 * @return le réglement construit à partir du jeux de résultat
 	 * @throws ObjectPersistenceException
 	 */
 	public static Reglement getReglement(ResultSet rs)
 			throws ObjectPersistenceException {
-		return getReglement(-1, rs);
+		return getReglement(-1, rs, false);
 	}
 	
-	private static Reglement getReglement(int numreglement, ResultSet rs)
+	/**
+	 * Injecte les données du resultset d'une table reglement dans
+	 * un objet.
+	 * 
+	 * @param rs le jeux de résultat à injecter dans une instance réglement
+	 * @param doNotUseCache	ne pas utiliser le cache pour le chargement
+	 * 
+	 * @return le réglement construit à partir du jeux de résultat
+	 * @throws ObjectPersistenceException
+	 */
+	public static Reglement getReglement(ResultSet rs, boolean doNotUseCache)
+			throws ObjectPersistenceException {
+		return getReglement(-1, rs, doNotUseCache);
+	}
+	
+	private static Reglement getReglement(int numreglement, ResultSet rs, boolean doNotUseCache)
 			throws ObjectPersistenceException {
 
 		Reglement reglement = new Reglement();
@@ -236,7 +272,7 @@ public class ReglementBuilder {
 				rs = stmt.executeQuery("select * from CRITERE where NUMREGLEMENT=" + numreglement + " order by NUMORDRE"); //$NON-NLS-1$ //$NON-NLS-2$
 				try {
 					while(rs.next()) {
-						criteria.add(CriterionBuilder.getCriterion(reglement, rs));
+						criteria.add(CriterionBuilder.getCriterion(reglement, rs, doNotUseCache));
 					}
 				} finally {
 					rs.close();
@@ -248,7 +284,7 @@ public class ReglementBuilder {
 				rs = stmt.executeQuery("select * from DISTANCESBLASONS where NUMREGLEMENT=" + numreglement); //$NON-NLS-1$
 				try {
 					while(rs.next()) {
-						DistancesEtBlason db = DistancesEtBlasonBuilder.getDistancesEtBlason(reglement, rs);
+						DistancesEtBlason db = DistancesEtBlasonBuilder.getDistancesEtBlason(reglement, rs, doNotUseCache);
 						CriteriaSet[] criteriaSets = CriteriaSet.listCriteriaSet(reglement, reglement.getPlacementFilter());
 						for(CriteriaSet criteriaSet : criteriaSets) {
 							if(criteriaSet.equals(db.getCriteriaSet().getFilteredCriteriaSet(reglement.getPlacementFilter()))) {
@@ -270,10 +306,10 @@ public class ReglementBuilder {
 						int numCriteriaSet = rs.getInt("NUMCRITERIASET"); //$NON-NLS-1$
 						int numCriteriaSetSurClasse = rs.getInt("NUMCRITERIASET_SURCLASSE"); //$NON-NLS-1$
 						
-						CriteriaSet criteriaSet = CriteriaSetBuilder.getCriteriaSet(numCriteriaSet, reglement);
+						CriteriaSet criteriaSet = CriteriaSetBuilder.getCriteriaSet(numCriteriaSet, reglement, doNotUseCache);
 						CriteriaSet criteriaSetSurClasse = null;
 						if(!rs.wasNull()) {
-							criteriaSetSurClasse = CriteriaSetBuilder.getCriteriaSet(numCriteriaSetSurClasse, reglement);
+							criteriaSetSurClasse = CriteriaSetBuilder.getCriteriaSet(numCriteriaSetSurClasse, reglement, doNotUseCache);
 						}
 						
 						surclassement.put(criteriaSet, criteriaSetSurClasse);

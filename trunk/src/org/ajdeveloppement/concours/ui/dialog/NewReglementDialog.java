@@ -96,6 +96,7 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -111,6 +112,8 @@ import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.ui.DefaultDialogReturn;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
+import org.concoursjeunes.CriteriaSet;
+import org.concoursjeunes.DistancesEtBlason;
 import org.concoursjeunes.Federation;
 import org.concoursjeunes.Profile;
 import org.concoursjeunes.Reglement;
@@ -252,10 +255,19 @@ public class NewReglementDialog extends JDialog implements ActionListener {
 			if(jcbReference.getSelectedItem() instanceof Reglement) {
 				Reglement reference = (Reglement)jcbReference.getSelectedItem();
 				try {
-					reglement = ReglementBuilder.getReglement(reference.getNumReglement());
+					reglement = ReglementBuilder.getReglement(reference.getNumReglement(), true);
 					reglement.setName("C"+(new Date().getTime())); //$NON-NLS-1$
 					reglement.setNumReglement(0);
 					reglement.setRemovable(true);
+					for(DistancesEtBlason db : reglement.getListDistancesEtBlason()) {
+						db.getCriteriaSet().setNumCriteriaSet(0);
+					}
+					
+					for(Map.Entry<CriteriaSet, CriteriaSet> surclassement : reglement.getSurclassement().entrySet()) {
+						surclassement.getKey().setNumCriteriaSet(0);
+						if(surclassement.getValue() != null)
+							surclassement.getValue().setNumCriteriaSet(0);
+					}
 				} catch (ObjectPersistenceException e1) {
 					DisplayableErrorHelper.displayException(e1);
 				}

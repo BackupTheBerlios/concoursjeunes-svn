@@ -86,6 +86,8 @@
  */
 package org.concoursjeunes;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -131,7 +133,7 @@ import org.ajdeveloppement.concours.cache.CriteriaSetCache.CriteriaSetPK;
 @SqlTable(name="CRITERIASET")
 @SqlPrimaryKey(fields="NUMCRITERIASET",generatedidField=@SqlGeneratedIdField(name="NUMCRITERIASET",type=Types.INTEGER))
 @SqlUnmappedFields(fields={"IDCRITERIASET"})
-public class CriteriaSet implements ObjectPersistence {
+public class CriteriaSet implements ObjectPersistence, PropertyChangeListener {
 
 	@XmlTransient
 	@SqlField(name="NUMCRITERIASET")
@@ -165,7 +167,7 @@ public class CriteriaSet implements ObjectPersistence {
 	
 	public CriteriaSet(Reglement reglement, Map<Criterion, CriterionElement> criteria) {
 		if(reglement != null)
-			this.reglement = reglement;
+			setReglement(reglement);
 		if(criteria != null)
 			this.criteria = criteria;
 	}
@@ -188,6 +190,13 @@ public class CriteriaSet implements ObjectPersistence {
 	 * @param reglement reglement à définir
 	 */
 	public void setReglement(Reglement reglement) {
+		if(this.reglement != reglement) {
+			if(this.reglement != null)
+				this.reglement.removePropertyChangeListener(this);
+			if(reglement != null)
+				reglement.addPropertyChangeListener(this);
+		}
+		
 		this.reglement = reglement;
 		
 		/*for(Entry<Criterion, CriterionElement> entry : criteria.entrySet()) {
@@ -600,5 +609,17 @@ public class CriteriaSet implements ObjectPersistence {
 	@Override
 	public String toString() {
 		return getUID();
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if(evt.getPropertyName().equals("name") && !evt.getNewValue().equals(evt.getOldValue())) { //$NON-NLS-1$
+			//On regenere la map
+			Map<Criterion, CriterionElement> tempCriteria = criteria;
+			criteria = new HashMap<Criterion, CriterionElement>();
+			for(Map.Entry<Criterion, CriterionElement> entry : tempCriteria.entrySet()) {
+				criteria.put(entry.getKey(), entry.getValue());
+			}
+		}
 	}
 }

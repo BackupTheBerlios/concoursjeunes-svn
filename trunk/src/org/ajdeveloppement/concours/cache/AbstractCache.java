@@ -1,8 +1,10 @@
 package org.ajdeveloppement.concours.cache;
 
 import java.lang.ref.SoftReference;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,7 +36,9 @@ public abstract class AbstractCache<UID, CT> {
 	 */
 	protected void put(UID uniqueObjectId, CT object) {
 		nbCallBeforeCleanKey--;
-		instanceCache.put(uniqueObjectId, new SoftReference<CT>(object));
+		synchronized (instanceCache) {
+			instanceCache.put(uniqueObjectId, new SoftReference<CT>(object));
+		}
 		
 		if(nbCallBeforeCleanKey == 0)
 			removeFreeReference();
@@ -47,9 +51,10 @@ public abstract class AbstractCache<UID, CT> {
 	 * @param uniqueObjectId l'identifiant de l'objet à retourner
 	 * @return l'instance en cache ou null si l'instance n'est pas disponible
 	 */
-	public CT get(UID uniqueObjectId) {
+	public synchronized CT get(UID uniqueObjectId) {
 		if(instanceCache.containsKey(uniqueObjectId))
 			return instanceCache.get(uniqueObjectId).get();
+		
 		return null;
 	}
 	
@@ -58,7 +63,7 @@ public abstract class AbstractCache<UID, CT> {
 	 * 
 	 * @param uniqueObjectId l'identifiant de l'instance à retirer du cache
 	 */
-	public void remove(UID uniqueObjectId) {
+	public synchronized void remove(UID uniqueObjectId) {
 		instanceCache.remove(uniqueObjectId);
 	}
 	
@@ -69,7 +74,7 @@ public abstract class AbstractCache<UID, CT> {
 	 * @param uniqueObjectId l'identifiant d'instance à tester
 	 * @return true si l'identifiant est trouvé dans le cache.
 	 */
-	public boolean containsKey(UID uniqueObjectId) {
+	public synchronized boolean containsKey(UID uniqueObjectId) {
 		return instanceCache.containsKey(uniqueObjectId);
 	}
 	
@@ -77,8 +82,9 @@ public abstract class AbstractCache<UID, CT> {
 	 * Retire du cache tous les identifiants d'objet dont les instances ont
 	 * été libéré de la mémoire.
 	 */
-	public void removeFreeReference() {
-		for(UID key : instanceCache.keySet()) {
+	public synchronized void removeFreeReference() {
+		List<UID> keys = new ArrayList<UID>(instanceCache.keySet());
+		for(UID key : keys) {
 			if(instanceCache.get(key).get() == null)
 				instanceCache.remove(key);
 		}

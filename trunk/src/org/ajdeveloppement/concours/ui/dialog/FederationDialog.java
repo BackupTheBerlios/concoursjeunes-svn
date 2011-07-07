@@ -115,7 +115,6 @@ import org.ajdeveloppement.apps.localisation.Localizable;
 import org.ajdeveloppement.apps.localisation.LocalizationHandler;
 import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
-import org.ajdeveloppement.commons.StringUtils;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.concours.ui.components.CountryComboBox;
@@ -382,7 +381,7 @@ public class FederationDialog extends JDialog implements ActionListener {
 			federation.setCodeCountry(((Country)ccbCountryFederation.getSelectedItem()).getCode().toLowerCase());
 			federation.getCompetitionLevels().clear();
 			boolean first = true;
-			for(String level : StringUtils.tokenize(jtfFederationNiveau.getText(), ",")) { //$NON-NLS-1$
+			for(String level : jtfFederationNiveau.getText().split(",")) { //$NON-NLS-1$
 				CompetitionLevel cl = new CompetitionLevel();
 				cl.setDefaut(first);
 				first = false;
@@ -392,7 +391,7 @@ public class FederationDialog extends JDialog implements ActionListener {
 			}
 			for(Entry<String, JTextField> le : mTraduction.entrySet()) {
 				first = true;
-				for(String level : StringUtils.tokenize(le.getValue().getText(), ",")) { //$NON-NLS-1$
+				for(String level : le.getValue().getText().split(",")) { //$NON-NLS-1$
 					CompetitionLevel cl = new CompetitionLevel();
 					cl.setDefaut(first);
 					first = false;

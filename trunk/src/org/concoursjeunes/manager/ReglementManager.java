@@ -143,17 +143,19 @@ public class ReglementManager {
 						"select * from REGLEMENT where NOMREGLEMENT <> 'default' order by LIBELLE"); //$NON-NLS-1$
 
 			ResultSet rs = pstmAllReglementOrdered.executeQuery();
-
-			while (rs.next()) {
-				Reglement reglement = ReglementBuilder.getReglement(rs);
-				
-				if(!federation.contains(reglement.getFederation()))
-					federation.add(reglement.getFederation());
-				if(!categorie.contains(reglement.getCategory()))
-					categorie.add(reglement.getCategory());
-				availableReglements.add(reglement); 
+			try {
+				while (rs.next()) {
+					Reglement reglement = ReglementBuilder.getReglement(rs);
+					
+					if(!federation.contains(reglement.getFederation()))
+						federation.add(reglement.getFederation());
+					if(!categorie.contains(reglement.getCategory()))
+						categorie.add(reglement.getCategory());
+					availableReglements.add(reglement); 
+				}
+			} finally {
+				rs.close();
 			}
-			rs.close();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		} catch (ObjectPersistenceException e) {

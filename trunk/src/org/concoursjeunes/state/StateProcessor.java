@@ -100,6 +100,7 @@ import java.util.Date;
 
 import javax.script.ScriptException;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.concoursjeunes.ApplicationCore;
@@ -187,7 +188,12 @@ public class StateProcessor {
 		boolean isprintable = state.printState(ficheConcours, document, options, new File(filePath));
 		
 		if(!isprintable) {
-			JOptionPane.showMessageDialog(null, profile.getLocalisation().getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					JOptionPane.showMessageDialog(null, profile.getLocalisation().getResourceString("ficheconcours.print.nothing")); //$NON-NLS-1$
+				}
+			});
 		}
 		
 		document.close();

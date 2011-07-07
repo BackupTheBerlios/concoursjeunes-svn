@@ -86,9 +86,9 @@
  */
 package org.concoursjeunes;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -385,23 +385,29 @@ public class CriterionElement implements ObjectPersistence {
     /**
      * Retourne l'ensemble des éléments de critère associé à un critère donné
      * 
-     * TODO à revoir
+     * @param criterion Le critère pour lequel retourner l'ensemble des éléments
+     * 
+     * @return La liste des éléments du critère
      * @throws ObjectPersistenceException 
      */
     public static List<CriterionElement> getAllCriterionElementsFor(Criterion criterion) throws ObjectPersistenceException {
     	List<CriterionElement> elements = new ArrayList<CriterionElement>();
     	
     	try {
-			Statement stmt = ApplicationCore.dbConnection.createStatement();
-			
 			String sql = "select * from critereelement where " + //$NON-NLS-1$
-					"codecritere='" + criterion.getCode() + "' " + //$NON-NLS-1$ //$NON-NLS-2$
-					"and numreglement=" + criterion.getReglement().getNumReglement() + " order by NUMORDRE"; //$NON-NLS-1$ //$NON-NLS-2$
+					"codecritere=? and numreglement=? order by NUMORDRE"; //$NON-NLS-1$
 			
-			ResultSet rs = stmt.executeQuery(sql);
+			PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
+			pstmt.setString(1, criterion.getCode());
+			pstmt.setInt(2, criterion.getReglement().getNumReglement());
 			
-			while(rs.next()) {
-				elements.add(CriterionElementBuilder.getCriterionElement(criterion, rs));
+			ResultSet rs = pstmt.executeQuery();
+			try {
+				while(rs.next()) {
+					elements.add(CriterionElementBuilder.getCriterionElement(criterion, rs));
+				}
+			} finally {
+				rs.close();
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

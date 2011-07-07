@@ -116,17 +116,18 @@ public class CriteriaSetLibelle {
         
         if(criteriaSet != null) {
 	        Map<Criterion, CriterionElement> criteria = criteriaSet.getCriteria();
-	        for(Criterion keyCriterion : criteria.keySet()) {
-	            
-	            if(criteriaSet.getCriterionElement(keyCriterion) != null) {
-	                strSCNA += criteria.get(keyCriterion).getLibelle() + " "; //$NON-NLS-1$
-	            }
+	        
+	        for (Criterion critere : criteriaSet.getReglement().getListCriteria()) {
+	        	if(criteria.containsKey(critere) && criteriaSet.getCriterionElement(critere) != null) {
+	        		strSCNA += criteria.get(critere).getLibelle() + " "; //$NON-NLS-1$
+	        	}
 	        }
 	        
 	        strSCNA = strSCNA.trim();
 	        
 	        //si la chaine est vide (filtre *false) afficher tous le monde
-	        if(strSCNA.equals("")) strSCNA = localisation.getResourceString("equipe.categorie.tous"); //$NON-NLS-1$ //$NON-NLS-2$
+	        if(strSCNA.equals("")) //$NON-NLS-1$
+	        	strSCNA = localisation.getResourceString("equipe.categorie.tous"); //$NON-NLS-1$ 
         }
         
         this.libelle = strSCNA.trim();

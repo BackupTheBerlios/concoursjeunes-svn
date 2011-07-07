@@ -119,10 +119,25 @@ public class CriteriaSetBuilder {
 	 * @return le jeux de critères concerné
 	 */
 	public static CriteriaSet getCriteriaSet(int numCriteriaSet, Reglement reglement) {
+		return getCriteriaSet(numCriteriaSet, reglement, false);
+	}
+	
+	/**
+	 * Construit un jeux de critéres à partir des valeurs de la clé primaire de la table en base
+	 * 
+	 * @param numCriteriaSet le numero d'identifiant du jeux de critères dans la base
+	 * @param reglement le reglement concerné par le jeux de critères
+	 * @param doNotUseCache ne pas utiliser le cache
+	 * 
+	 * @return le jeux de critères concerné
+	 */
+	public static CriteriaSet getCriteriaSet(int numCriteriaSet, Reglement reglement, boolean doNotUseCache) {
 		try {
 			CriteriaSetCache cache = CriteriaSetCache.getInstance();
 			
-			CriteriaSet criteriaSet = cache.get(new CriteriaSetPK(numCriteriaSet, reglement));
+			CriteriaSet criteriaSet = null;
+			if(!doNotUseCache)
+				criteriaSet = cache.get(new CriteriaSetPK(numCriteriaSet, reglement));
 			if(criteriaSet == null) {
 			
 				Map<Criterion, CriterionElement> criteria = new HashMap<Criterion, CriterionElement>();
@@ -157,8 +172,8 @@ public class CriteriaSetBuilder {
 				criteriaSet.setReglement(reglement);
 				criteriaSet.setNumCriteriaSet(numCriteriaSet); 
 				criteriaSet.setCriteria(criteria);
-				
-				cache.add(criteriaSet);
+				if(!doNotUseCache)
+					cache.add(criteriaSet);
 			}
 			
 			return criteriaSet;

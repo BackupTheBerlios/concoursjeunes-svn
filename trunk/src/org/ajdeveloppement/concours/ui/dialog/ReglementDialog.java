@@ -133,7 +133,6 @@ import javax.swing.tree.TreePath;
 import org.ajdeveloppement.apps.localisation.Localizable;
 import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
-import org.ajdeveloppement.commons.StringUtils;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.ui.AJList;
 import org.ajdeveloppement.commons.ui.AJTree;
@@ -577,7 +576,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 			
 			@Override
 			public List<String> convertReverse(String departages) {
-				return Arrays.asList(StringUtils.tokenize(jtfDepartages.getText(), ",")); //$NON-NLS-1$
+				return Arrays.asList(jtfDepartages.getText().split(",")); //$NON-NLS-1$
 			}
 			
 			@Override
@@ -799,6 +798,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 				Criterion criterion = (Criterion) dmtnObj;
 
 				CriterionElementDialog cpd = new CriterionElementDialog(this, criterion, localisation);
+				cpd.setEditable(true);
 
 				if (cpd.showCriterionElementDialog() == DefaultDialogReturn.OK) {
 					criterion.addCriterionElement(cpd.getCriterionElement());

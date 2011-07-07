@@ -20,12 +20,14 @@ Concerned images are exclusive property of Aurélien JEOFFRAY and ConcoursJeunes
 - b_up.png
 - close.png
 - Equipes16x16.png
+- finals.png
 - fnd.jpg
 - iconCible.jpg
 - iconCJ.ico
 - iconCJ.jpg
 - iconCJ.xpm
 - lock.png
+- Logo.png
 - open.png
 - targetface_fita_4O.png
 - targetface_fita_6O.png

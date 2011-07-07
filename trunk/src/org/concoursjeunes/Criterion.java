@@ -218,7 +218,7 @@ public class Criterion implements ObjectPersistence, Cloneable {
 	 * @param reglement le règlement associé au critère
 	 */
 	public void setReglement(Reglement reglement) {
-		if(this.reglement != null && this.reglement != reglement)
+		if(this.reglement != null && !this.reglement.equals(reglement))
 			this.reglement.removeCriterion(this);
 		
 		this.reglement = reglement;

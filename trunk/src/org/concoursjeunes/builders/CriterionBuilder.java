@@ -90,7 +90,6 @@ package org.concoursjeunes.builders;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Map;
 
 import org.ajdeveloppement.commons.persistence.LoadHelper;
@@ -123,7 +122,7 @@ public class CriterionBuilder {
 	}
 	
 	/**
-	 * Construit un critère à partir des informations en base
+	 * Retourne un critère à partir des informations en base
 	 * 
 	 * @param codeCritere le code du critère à construire
 	 * @param reglement le réglement parent du critère
@@ -132,14 +131,93 @@ public class CriterionBuilder {
 	 * @throws ObjectPersistenceException 
 	 */
 	public static Criterion getCriterion(String codeCritere, Reglement reglement) throws ObjectPersistenceException {
-		return getCriterion(codeCritere, reglement, null);
+		return getCriterion(codeCritere, reglement, null, false);
 	}
 	
+	/**
+	 * Retourne un critère à partir des informations en base
+	 * 
+	 * @param codeCritere le code du critère à construire
+	 * @param reglement le réglement parent du critère
+	 * @param doNotUseCache si <code>true</code>, ne pas utiliser le cache (force la création d'une instance à partir de la base)
+	 * 
+	 * @return le critère correspondant
+	 * @throws ObjectPersistenceException 
+	 */
+	public static Criterion getCriterion(String codeCritere, Reglement reglement, boolean doNotUseCache) throws ObjectPersistenceException {
+		return getCriterion(codeCritere, reglement, null, doNotUseCache);
+	}
+	
+	/**
+	 * Retourne un critère à partir des informations en base
+	 * 
+	 * @param reglement le réglement parent du critère
+	 * @param rs le jeux de résultat SQL contenant les informations du critère
+	 * 
+	 * @return le critère correspondant
+	 * @throws ObjectPersistenceException 
+	 */
 	public static Criterion getCriterion(Reglement reglement, ResultSet rs) throws ObjectPersistenceException {
-		return getCriterion(null, reglement, rs);
+		return getCriterion(null, reglement, rs, false);
 	}
 	
-	private static Criterion getCriterion(String codeCritere, Reglement reglement, ResultSet rs) throws ObjectPersistenceException {
+	/**
+	 * Retourne un critère à partir des informations en base
+	 * 
+	 * @param reglement le réglement parent du critère
+	 * @param rs le jeux de résultat SQL contenant les informations du critère
+	 * @param doNotUseCache si <code>true</code>, ne pas utiliser le cache (force la création d'une instance à partir de la base)
+	 * 
+	 * @return le critère correspondant
+	 * @throws ObjectPersistenceException 
+	 */
+	public static Criterion getCriterion(Reglement reglement, ResultSet rs, boolean doNotUseCache) throws ObjectPersistenceException {
+		return getCriterion(null, reglement, rs, doNotUseCache);
+	}
+	
+//	/**
+//	 * Construit un critère à partir des informations fournit en paramètre
+//	 * 
+//	 * @param codeCritere le code du critère
+//	 * @param libelle le libellé du critère
+//	 * @param codeFFTA le code FFTA  associé si nécessaire
+//	 * @param sortOrder
+//	 * @param classement
+//	 * @param classementEquipe
+//	 * @param placement
+//	 * @param numOrdre
+//	 * @param elements
+//	 * @return
+//	 */
+//	public static Criterion getCriterion(String codeCritere, String libelle, String codeFFTA, int sortOrder,
+//			boolean classement, boolean classementEquipe, boolean placement, int numOrdre, List<CriterionElement> elements) {
+//		Criterion criterion = new Criterion();
+//		criterion.setCode(codeCritere);
+//		criterion.setLibelle(libelle); 
+//		criterion.setChampsTableArchers(codeFFTA); 
+//		criterion.setSortOrder(sortOrder); 
+//		criterion.setClassement(classement); 
+//		criterion.setClassementEquipe(classementEquipe); 
+//		criterion.setPlacement(placement); 
+//		criterion.setNumordre(numOrdre); 
+//
+//		criterion.setCriterionElements(elements);
+//		
+//		return criterion;
+//	}
+	
+	/**
+	 * Retourne un critère à partir des informations en base
+	 * 
+	 * @param codeCritere Le code du critère à retourner  (si aucun jeux de résultat n'est fournit)
+	 * @param reglement le réglement associé au critère
+	 * @param rs le jeux de résultat SQL contenant le critère (si le code n'est pas fournit)
+	 * @param doNotUseCache si <code>true</code>, ne pas utiliser le cache (force la création d'une instance à partir de la base)
+	 * 
+	 * @return le critère demandé
+	 * @throws ObjectPersistenceException
+	 */
+	private static Criterion getCriterion(String codeCritere, Reglement reglement, ResultSet rs, boolean doNotUseCache) throws ObjectPersistenceException {
 		if(rs != null) {
 			try {
 				codeCritere = rs.getString("CRITERE.CODECRITERE"); //$NON-NLS-1$
@@ -148,7 +226,10 @@ public class CriterionBuilder {
 			}
 		}
 		
-		Criterion criterion = CriterionCache.getInstance().get(new CriterionCache.CriterionPK(codeCritere, reglement));
+		Criterion criterion = null;
+		
+		if(!doNotUseCache)
+			criterion = CriterionCache.getInstance().get(new CriterionCache.CriterionPK(codeCritere, reglement));
 		
 		if(criterion == null) {
 			criterion = new Criterion();
@@ -161,28 +242,12 @@ public class CriterionBuilder {
 				resultSetLoadHelper.load(criterion, rs);
 			}
 			
-			CriterionCache.getInstance().add(criterion);
+			if(!doNotUseCache)
+				CriterionCache.getInstance().add(criterion);
 			
 			criterion.setCriterionElements(CriterionElement.getAllCriterionElementsFor(criterion));
 		}
 
-		return criterion;
-	}
-	
-	public static Criterion getCriterion(String codeCritere, String libelle, String codeFFTA, int sortOrder,
-			boolean classement, boolean classementEquipe, boolean placement, int numOrdre, List<CriterionElement> elements) {
-		Criterion criterion = new Criterion();
-		criterion.setCode(codeCritere);
-		criterion.setLibelle(libelle); 
-		criterion.setChampsTableArchers(codeFFTA); 
-		criterion.setSortOrder(sortOrder); 
-		criterion.setClassement(classement); 
-		criterion.setClassementEquipe(classementEquipe); 
-		criterion.setPlacement(placement); 
-		criterion.setNumordre(numOrdre); 
-
-		criterion.setCriterionElements(elements);
-		
 		return criterion;
 	}
 }

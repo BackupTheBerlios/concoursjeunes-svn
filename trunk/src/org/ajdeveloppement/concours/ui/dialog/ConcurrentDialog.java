@@ -125,7 +125,6 @@ import javax.swing.text.PlainDocument;
 import org.ajdeveloppement.apps.localisation.Localizable;
 import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
-import org.ajdeveloppement.commons.StringUtils;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
@@ -621,7 +620,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 			jcbCategorieTable.get(key).addItemListener(this);
 		}
 
-		String[] lInscription = StringUtils.tokenize(localisation.getResourceString("concurrent.inscription"), ","); //$NON-NLS-1$ //$NON-NLS-2$
+		String[] lInscription = localisation.getResourceString("concurrent.inscription").split(","); //$NON-NLS-1$ //$NON-NLS-2$
 		jcbInscription.removeAllItems();
 		for (String status : lInscription) {
 			jcbInscription.addItem(status);

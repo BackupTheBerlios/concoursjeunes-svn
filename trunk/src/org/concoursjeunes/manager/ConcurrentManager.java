@@ -237,7 +237,7 @@ public class ConcurrentManager {
 			
 			rs = stmt.executeQuery(String.format(sql, "ARCHERS.*,CONTACT.*"));
 			try {
-				while(rs.next()) {
+				while(!ApplicationCore.dbConnection.isClosed() && rs.next()) {
 					Concurrent concurrent = ConcurrentBuilder.getConcurrent(rs, reglement);
 					if(concurrent != null) {
 						concurrents.add(concurrent);

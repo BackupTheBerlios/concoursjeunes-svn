@@ -126,7 +126,6 @@ import javax.xml.bind.JAXBException;
 import org.ajdeveloppement.apps.localisation.Localizable;
 import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
-import org.ajdeveloppement.commons.StringUtils;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
 import org.ajdeveloppement.concours.ui.ImagePreview;
@@ -749,7 +748,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 
 		} else if (System.getProperty("os.name").contains("Linux")) { //$NON-NLS-1$ //$NON-NLS-2$
 
-			String[] pdfReader = StringUtils.tokenize(ApplicationCore.staticParameters.getResourceString("path.unix.pdf"), ",");  //$NON-NLS-1$ //$NON-NLS-2$
+			String[] pdfReader = ApplicationCore.staticParameters.getResourceString("path.unix.pdf").split(",");  //$NON-NLS-1$ //$NON-NLS-2$
 			for (String reader : pdfReader)
 				pdfPath.add(reader);
 		}

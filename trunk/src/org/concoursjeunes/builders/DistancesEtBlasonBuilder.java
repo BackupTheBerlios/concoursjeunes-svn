@@ -134,11 +134,7 @@ public class DistancesEtBlasonBuilder {
 	 * @throws ObjectPersistenceException 
 	 */
 	public static DistancesEtBlason getDistancesEtBlason(int numdistancesblason, Reglement reglement) throws ObjectPersistenceException {
-		return getDistancesEtBlason(numdistancesblason, reglement, null);
-	}
-	
-	public static DistancesEtBlason getDistancesEtBlason(Reglement reglement, ResultSet rs) throws ObjectPersistenceException {
-		return getDistancesEtBlason(-1, reglement, rs);
+		return getDistancesEtBlason(numdistancesblason, reglement, null, false);
 	}
 	
 	/**
@@ -148,11 +144,52 @@ public class DistancesEtBlasonBuilder {
 	 * 
 	 * @param numdistancesblason Le numero de la ligne en base
 	 * @param reglement Le réglement à lié
+	 * @param doNotUseCache ne pas utiliser le cache
 	 * 
 	 * @return l'objet DistancesEtBlason généré
 	 * @throws ObjectPersistenceException 
 	 */
-	private static DistancesEtBlason getDistancesEtBlason(int numdistancesblason, Reglement reglement, ResultSet rs) throws ObjectPersistenceException {
+	public static DistancesEtBlason getDistancesEtBlason(int numdistancesblason, Reglement reglement, boolean doNotUseCache) throws ObjectPersistenceException {
+		return getDistancesEtBlason(numdistancesblason, reglement, null, doNotUseCache);
+	}
+	
+	/**
+	 * 
+	 * @param reglement
+	 * @param rs
+	 * @return
+	 * @throws ObjectPersistenceException
+	 */
+	public static DistancesEtBlason getDistancesEtBlason(Reglement reglement, ResultSet rs) throws ObjectPersistenceException {
+		return getDistancesEtBlason(-1, reglement, rs, false);
+	}
+	
+	/**
+	 * 
+	 * 
+	 * @param reglement
+	 * @param rs
+	 * @param doNotUseCache ne pas utiliser le cache
+	 * @return
+	 * @throws ObjectPersistenceException
+	 */
+	public static DistancesEtBlason getDistancesEtBlason(Reglement reglement, ResultSet rs, boolean doNotUseCache) throws ObjectPersistenceException {
+		return getDistancesEtBlason(-1, reglement, rs, doNotUseCache);
+	}
+	
+	/**
+	 * Construit un objet DistancesEtBlason en se basan sur le numero de sa reference
+	 * en base ainsi que le numero de réglement.<br>
+	 * Associe à l'objet DistancesEtBlason l'objet Reglement lié
+	 * 
+	 * @param numdistancesblason Le numero de la ligne en base
+	 * @param reglement Le réglement à lié
+	 * @param doNotUseCache le pas utiliser le cache
+	 * 
+	 * @return l'objet DistancesEtBlason généré
+	 * @throws ObjectPersistenceException 
+	 */
+	private static DistancesEtBlason getDistancesEtBlason(int numdistancesblason, Reglement reglement, ResultSet rs, boolean doNotUseCache) throws ObjectPersistenceException {
 		DistancesEtBlason distancesEtBlason = new DistancesEtBlason();
 		distancesEtBlason.setReglement(reglement);
 		
@@ -194,7 +231,7 @@ public class DistancesEtBlasonBuilder {
 			}
 			
 			if(foreignKeys != null) {
-				distancesEtBlason.setCriteriaSet(CriteriaSetBuilder.getCriteriaSet((Integer)foreignKeys.get(DistancesEtBlason.class).get("NUMCRITERIASET"), reglement)); //$NON-NLS-1$
+				distancesEtBlason.setCriteriaSet(CriteriaSetBuilder.getCriteriaSet((Integer)foreignKeys.get(DistancesEtBlason.class).get("NUMCRITERIASET"), reglement, doNotUseCache)); //$NON-NLS-1$
 				distancesEtBlason.setTargetFace(BlasonBuilder.getBlason((Integer)foreignKeys.get(DistancesEtBlason.class).get("NUMBLASON"))); //$NON-NLS-1$
 			}
 		} catch (SQLException e) {

@@ -93,7 +93,6 @@ import java.util.List;
 
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.PluginClassLoader;
-import org.ajdeveloppement.commons.StringUtils;
 import org.concoursjeunes.plugins.Plugin.Type;
 
 /**
@@ -128,7 +127,7 @@ public class PluginLoader {
 						pluginMetadata.setPluginType(cla.getAnnotation(Plugin.class).type());
 						pluginMetadata.setClassName(pluginProperties.getResourceString("plugin.class")); //$NON-NLS-1$
 						pluginMetadata.setVersion(pluginProperties.getResourceString("plugin.version")); //$NON-NLS-1$
-						pluginMetadata.setMenuPath(StringUtils.tokenize(pluginProperties.getResourceString("plugin.menu"), "/")); //$NON-NLS-1$ //$NON-NLS-2$
+						pluginMetadata.setMenuPath(pluginProperties.getResourceString("plugin.menu").split("/")); //$NON-NLS-1$ //$NON-NLS-2$
 						pluginMetadata.setPluginClass(cla);
 	
 						listPlugins.add(pluginMetadata);

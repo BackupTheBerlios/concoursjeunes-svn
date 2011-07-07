@@ -176,63 +176,64 @@ public class ConcurrentBuilder {
 			if(reglement != null) {
 				CriteriaSet differentiationCriteria = null;
 				String sql = "select * from distinguer where ID_CONTACT=? and NUMREGLEMENT=?"; //$NON-NLS-1$
-				
-				PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
-				
-				pstmt.setString(1, concurrent.getIdContact().toString());
-				pstmt.setInt(2, reglement.getNumReglement());
-				
-				try {
-					ResultSet rsCriteriaSet = pstmt.executeQuery();
-	
+				if(!ApplicationCore.dbConnection.isClosed()) {
+					PreparedStatement pstmt = ApplicationCore.dbConnection.prepareStatement(sql);
+					
+					pstmt.setString(1, concurrent.getIdContact().toString());
+					pstmt.setInt(2, reglement.getNumReglement());
+					
 					try {
-						if(rsCriteriaSet.first()) {
-							differentiationCriteria = CriteriaSetBuilder
-									.getCriteriaSet(rsCriteriaSet.getInt("NUMCRITERIASET"), reglement); //$NON-NLS-1$
-						} else {
-							differentiationCriteria = new CriteriaSet(reglement);
-							for(Criterion key : reglement.getListCriteria()) {
-								boolean returnfirstval = true;
-								if(!key.getChampsTableArchers().isEmpty()) {
-									List<CriterionElement> arrayList = key.getCriterionElements();
-
-									Integer value = (Integer)foreignKeyValue.get(Archer.class).get(key.getChampsTableArchers().toUpperCase());
-									if(value == null)
-										continue;
+						ResultSet rsCriteriaSet = pstmt.executeQuery();
+		
+						try {
+							if(rsCriteriaSet.first()) {
+								differentiationCriteria = CriteriaSetBuilder
+										.getCriteriaSet(rsCriteriaSet.getInt("NUMCRITERIASET"), reglement); //$NON-NLS-1$
+							} else {
+								differentiationCriteria = new CriteriaSet(reglement);
+								for(Criterion key : reglement.getListCriteria()) {
+									boolean returnfirstval = true;
+									if(!key.getChampsTableArchers().isEmpty()) {
+										List<CriterionElement> arrayList = key.getCriterionElements();
+	
+										Integer value = (Integer)foreignKeyValue.get(Archer.class).get(key.getChampsTableArchers().toUpperCase());
+										if(value == null)
+											continue;
+										
+										int valindex = value; 
+										if(valindex >= arrayList.size())
+											valindex = arrayList.size() - 1;
+										if(valindex < 0)
+											valindex = 0;
+										
+										if(key.getCriterionElements().get(valindex).isActive())
+											differentiationCriteria.getCriteria().put(key, key.getCriterionElements().get(valindex));
+										else
+											return null;
+										
+										returnfirstval = false;
+									}
 									
-									int valindex = value; 
-									if(valindex >= arrayList.size())
-										valindex = arrayList.size() - 1;
-									if(valindex < 0)
-										valindex = 0;
-									
-									if(key.getCriterionElements().get(valindex).isActive())
-										differentiationCriteria.getCriteria().put(key, key.getCriterionElements().get(valindex));
-									else
-										return null;
-									
-									returnfirstval = false;
-								}
-								
-								if(returnfirstval) {
-									int valindex = 0;
-									while(valindex < key.getCriterionElements().size() 
-											&& !key.getCriterionElements().get(valindex).isActive())
-										valindex++;
-									if(valindex < key.getCriterionElements().size())
-										differentiationCriteria.getCriteria().put(key, key.getCriterionElements().get(valindex));
-									else
-										return null;
+									if(returnfirstval) {
+										int valindex = 0;
+										while(valindex < key.getCriterionElements().size() 
+												&& !key.getCriterionElements().get(valindex).isActive())
+											valindex++;
+										if(valindex < key.getCriterionElements().size())
+											differentiationCriteria.getCriteria().put(key, key.getCriterionElements().get(valindex));
+										else
+											return null;
+									}
 								}
 							}
+						} finally {
+							rsCriteriaSet.close();
+							rsCriteriaSet = null;
 						}
 					} finally {
-						rsCriteriaSet.close();
-						rsCriteriaSet = null;
+						pstmt.close();
+						pstmt = null;
 					}
-				} finally {
-					pstmt.close();
-					pstmt = null;
 				}
 				
 				//régle de surclassement de l'archer
