@@ -87,6 +87,7 @@
 package org.ajdeveloppement.concours.ui.dialog;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -117,6 +118,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.event.TableModelEvent;
@@ -131,6 +133,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import org.ajdeveloppement.apps.localisation.Localizable;
+import org.ajdeveloppement.apps.localisation.LocalizationHandler;
 import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
@@ -140,6 +143,7 @@ import org.ajdeveloppement.commons.ui.DefaultDialogReturn;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
 import org.ajdeveloppement.commons.ui.ToolTipHeader;
+import org.ajdeveloppement.swingxext.localisation.JXHeaderLocalisationHandler;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Blason;
 import org.concoursjeunes.CriteriaSet;
@@ -154,6 +158,8 @@ import org.jdesktop.beansbinding.Binding;
 import org.jdesktop.beansbinding.BindingGroup;
 import org.jdesktop.beansbinding.Bindings;
 import org.jdesktop.beansbinding.Converter;
+import org.jdesktop.swingx.JXHeader;
+import org.jdesktop.swingx.painter.GlossPainter;
 
 /**
  * Boite de dialogue de paramétrage d'un règlement
@@ -171,11 +177,16 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	
 	private BindingGroup reglementBinding = new BindingGroup();
 	
+	@Localizable("reglement.header")
+	private JXHeader jxhReglement = new JXHeader(); 
+	
 	@Localizable("reglement.tabs")
-	JTabbedPane tabbedPane = new JTabbedPane();
+	private JTabbedPane tabbedPane = new JTabbedPane();
 
 	@Localizable("reglement.name")
 	private JLabel jlReglementName = new JLabel();
+	@Localizable("reglement.description")
+	private JLabel jlDescription = new JLabel();
 
 	@Localizable("reglement.serie")
 	private JLabel jlNbSerie = new JLabel();
@@ -212,6 +223,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	private AJTree treeCriteria = new AJTree(treeModel);
 
 	private JTextField jtfReglementName = new JTextField(15);
+	private JTextArea jtaDescription = new JTextArea();
 	private JTextField jtfNbSerie = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
 	private JTextField jtfNbVoleeParSerie = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
 	private JTextField jtfNbFlecheParVolee = new JTextField(new NumberDocument(false, false), "", 3); //$NON-NLS-1$
@@ -270,6 +282,11 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 
 		panel.setLayout(new BorderLayout());
 		jpAction.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		
+		GlossPainter gloss = new GlossPainter();
+		jxhReglement.setBackground(new Color(200,200,255));
+		jxhReglement.setBackgroundPainter(gloss);
+		jxhReglement.setTitleFont(jxhReglement.getTitleFont().deriveFont(16.0f));
 
 		jbValider.addActionListener(this);
 		jbAnnuler.addActionListener(this);
@@ -288,6 +305,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		jpAction.add(jbValider);
 		jpAction.add(jbAnnuler);
 
+		panel.add(jxhReglement, BorderLayout.NORTH);
 		panel.add(tabbedPane, BorderLayout.CENTER);
 		panel.add(jpAction, BorderLayout.SOUTH);
 
@@ -363,7 +381,14 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		gridbagComposer.addComponentIntoGrid(jtfReglementName, c);
 		c.gridy++;
 		c.gridwidth = 2;
-		gridbagComposer.addComponentIntoGrid(Box.createVerticalStrut(30), c);
+		gridbagComposer.addComponentIntoGrid(jlDescription, c);
+		c.gridy++;
+		c.fill = GridBagConstraints.BOTH;
+		c.weighty = 1.0;
+		gridbagComposer.addComponentIntoGrid(new JScrollPane(jtaDescription), c);
+		c.gridy++;
+		c.weighty = 0.0;
+		gridbagComposer.addComponentIntoGrid(Box.createVerticalStrut(10), c);
 		c.gridy++;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		gridbagComposer.addComponentIntoGrid(new JSeparator(), c);
@@ -525,7 +550,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	}
 
 	private void affectLabels() {
-		Localizator.localize(this, localisation);	
+		Localizator.localize(this, localisation, Collections.<Class<?>, LocalizationHandler>singletonMap(JXHeader.class, new JXHeaderLocalisationHandler()));	
 	}
 
 	private void completePanel() {
@@ -565,6 +590,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		}
 		
 		reglementBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, reglement, BeanProperty.create("displayName"), jtfReglementName, BeanProperty.create("text"), "displayName")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		reglementBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, reglement, BeanProperty.create("description"), jtaDescription, BeanProperty.create("text"), "description")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		reglementBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, reglement, BeanProperty.create("nbSerie"), jtfNbSerie, BeanProperty.create("text"), "nbSerie")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		reglementBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, reglement, BeanProperty.create("nbVoleeParSerie"), jtfNbVoleeParSerie, BeanProperty.create("text"), "nbVoleeParSerie")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		reglementBinding.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ, reglement, BeanProperty.create("nbFlecheParVolee"), jtfNbFlecheParVolee, BeanProperty.create("text"), "nbFlecheParVolee")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

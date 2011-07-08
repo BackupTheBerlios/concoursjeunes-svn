@@ -185,8 +185,8 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	private JLabel jlNomClub = new JLabel();
 	@Localizable("configuration.ecran.general.agrement")
 	private JLabel jlAgremClub = new JLabel();
-	@Localizable("configuration.ecran.general.intituleconcours")
-	private JLabel jlIntituleConcours = new JLabel();
+	//@Localizable("configuration.ecran.general.intituleconcours")
+	//private JLabel jlIntituleConcours = new JLabel();
 	@Localizable("configuration.ecran.general.langue")
 	private JLabel jlLangue = new JLabel();
 	@Localizable("configuration.ecran.general.pdf")
@@ -200,7 +200,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	private JButton jbParcourir = new JButton();
 	@Localizable("bouton.detail")
 	private JButton jbDetail = new JButton();
-	private JTextField jtfIntConc = new JTextField(20);
+	//private JTextField jtfIntConc = new JTextField(20);
 	private JComboBox jcbLangue = new JComboBox();
 	private JComboBox jcbPathPdf = new JComboBox();
 	private JButton jbParcourirPdf = new JButton("..."); //$NON-NLS-1$
@@ -394,9 +394,9 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		gridbagComposer.addComponentIntoGrid(jtfNomClub, c);
 		c.gridy++;
 		gridbagComposer.addComponentIntoGrid(new JPanel(), c);
-		c.gridy++;
-		gridbagComposer.addComponentIntoGrid(jlIntituleConcours, c);
-		gridbagComposer.addComponentIntoGrid(jtfIntConc, c);
+		//c.gridy++;
+		//gridbagComposer.addComponentIntoGrid(jlIntituleConcours, c);
+		//gridbagComposer.addComponentIntoGrid(jtfIntConc, c);
 		c.gridy++;
 		gridbagComposer.addComponentIntoGrid(jlLangue, c);
 		gridbagComposer.addComponentIntoGrid(jcbLangue, c);
@@ -624,7 +624,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 
 		jtfNomClub.setText(configuration.getClub().getNom());
 		((AutoCompleteDocument) jtfAgrClub.getDocument()).setText(configuration.getClub().getAgrement());
-		jtfIntConc.setText(configuration.getIntituleConcours());
+		//jtfIntConc.setText(configuration.getIntituleConcours());
 
 		jcbProfil.removeActionListener(this);
 		jcbProfil.removeAllItems();
@@ -894,7 +894,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		workConfiguration.setFederation((Federation)jcbFederation.getSelectedItem());
 		workConfiguration.getClub().setNom(jtfNomClub.getText());
 		workConfiguration.getClub().setAgrement(jtfAgrClub.getText());
-		workConfiguration.setIntituleConcours(jtfIntConc.getText());
+		//workConfiguration.setIntituleConcours(jtfIntConc.getText());
 		workConfiguration.setLangue(Configuration.listLangue()[jcbLangue.getSelectedIndex()]);
 		if(jcbPathPdf.getSelectedItem() != null)
 			workAppConfiguration.setPdfReaderPath(jcbPathPdf.getSelectedItem().toString());

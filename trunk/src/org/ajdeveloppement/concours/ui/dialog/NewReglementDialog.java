@@ -226,6 +226,8 @@ public class NewReglementDialog extends JDialog implements ActionListener {
 		}
 		jcbFederation.addItem(localisation.getResourceString("newreglement.addfederation")); //$NON-NLS-1$
 		
+		jcbFederation.setSelectedItem(profile.getConfiguration().getFederation());
+		
 		ReglementManager reglementManager = new ReglementManager();
 		
 		jcbReference.removeAllItems();
@@ -259,6 +261,7 @@ public class NewReglementDialog extends JDialog implements ActionListener {
 					reglement.setName("C"+(new Date().getTime())); //$NON-NLS-1$
 					reglement.setNumReglement(0);
 					reglement.setRemovable(true);
+					reglement.setOfficialReglement(false);
 					for(DistancesEtBlason db : reglement.getListDistancesEtBlason()) {
 						db.getCriteriaSet().setNumCriteriaSet(0);
 					}

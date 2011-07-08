@@ -184,6 +184,9 @@ public class Reglement implements ObjectPersistence {
 	@SqlField(name="LIBELLE")
 	private String displayName = ""; //$NON-NLS-1$
 	
+	@SqlField(name="DESCRIPTION")
+	private String description = ""; //$NON-NLS-1$
+	
 	@SqlField(name="TYPEREGLEMENT")
 	private TypeReglement reglementType = TypeReglement.TARGET;
 
@@ -343,6 +346,28 @@ public class Reglement implements ObjectPersistence {
 		this.displayName = displayName;
 		
 		pcs.firePropertyChange("displayName", oldValue, displayName); //$NON-NLS-1$
+	}
+	
+	/**
+	 * Retourne la description du réglement
+	 * 
+	 * @return la description du règlement
+	 */
+	public String getDescription() {
+		return description;
+	}
+	
+	/**
+	 * Définit la description du réglement
+	 * 
+	 * @param description la description du règlement
+	 */
+	public void setDescription(String description) {
+		Object oldValue = this.description;
+		
+		this.description = description;
+		
+		pcs.firePropertyChange("description", oldValue, description); //$NON-NLS-1$
 	}
 
 	/**
@@ -1165,6 +1190,6 @@ public class Reglement implements ObjectPersistence {
 	 */
 	@Override
 	public String toString() {
-		return displayName + " (" + federation.getSigleFederation() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+		return federation.getSigleFederation() + " - " + displayName; //$NON-NLS-1$
 	}
 }

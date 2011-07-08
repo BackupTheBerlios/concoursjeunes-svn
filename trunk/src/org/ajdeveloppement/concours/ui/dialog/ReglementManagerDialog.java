@@ -89,6 +89,7 @@
 package org.ajdeveloppement.concours.ui.dialog;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -100,6 +101,7 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Collections;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
@@ -118,6 +120,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.ajdeveloppement.apps.localisation.Localizable;
 import org.ajdeveloppement.apps.localisation.LocalizableString;
+import org.ajdeveloppement.apps.localisation.LocalizationHandler;
 import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
@@ -125,12 +128,17 @@ import org.ajdeveloppement.commons.ui.AJList;
 import org.ajdeveloppement.commons.ui.DefaultDialogReturn;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
+import org.ajdeveloppement.swingxext.localisation.JXHeaderLocalisationHandler;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Federation;
 import org.concoursjeunes.Profile;
 import org.concoursjeunes.Reglement;
 import org.concoursjeunes.manager.FederationManager;
 import org.concoursjeunes.manager.ReglementManager;
+import org.jdesktop.swingx.JXHeader;
+import org.jdesktop.swingx.painter.GlossPainter;
+
+import com.lowagie.text.Font;
 
 /**
  * @author Aurélien JEOFFRAY
@@ -142,6 +150,9 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 	private JFrame parentframe;
 	private Profile profile;
 	private AjResourcesReader localisation;
+	
+	@Localizable("reglementmanager.header")
+	private JXHeader jxhReglementManager = new JXHeader();
 	
 	@Localizable("reglementmanager.federations")
 	private JLabel jlFederations	= new JLabel();
@@ -213,7 +224,12 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 	 */
 	private void init() {
 		GridBagConstraints c = new GridBagConstraints();
-		GridbagComposer gbcomposer = new GridbagComposer(); 
+		GridbagComposer gbcomposer = new GridbagComposer();
+		
+		GlossPainter gloss = new GlossPainter();
+		jxhReglementManager.setBackground(new Color(200,200,255));
+		jxhReglementManager.setBackgroundPainter(gloss);
+		jxhReglementManager.setTitleFont(jxhReglementManager.getTitleFont().deriveFont(16.0f));
 		
 		jbNewFederation.setIcon(ApplicationCore.userRessources.getImageIcon("file.icon.addcriteria")); //$NON-NLS-1$
 		jbEditFederation.setEnabled(false);
@@ -245,6 +261,34 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 		ajlReglements.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		ajlReglements.addListSelectionListener(this);
 		ajlReglements.addMouseListener(this);
+		ajlReglements.setCellRenderer(new DefaultListCellRenderer() {
+			/* (non-Javadoc)
+			 * @see javax.swing.DefaultListCellRenderer#getListCellRendererComponent(javax.swing.JList, java.lang.Object, int, boolean, boolean)
+			 */
+			@Override
+			public Component getListCellRendererComponent(JList list,
+					Object value, int index, boolean isSelected,
+					boolean cellHasFocus) {
+				if(value instanceof Reglement) {
+					Reglement reglement = (Reglement)value;
+					
+					String description = reglement.getDescription();
+					if(description == null)
+						description = ""; //$NON-NLS-1$
+					
+					value = "<html><b>" + reglement.getDisplayName() + "</b> - " + reglement.getFederation().getSigleFederation() //$NON-NLS-1$ //$NON-NLS-2$
+							+ "<p style=\"margin-left: 10px;\"><span style=\"font-style: italic; color: #777777;\">" + description.replace("\n", "<br>") + "</span></p> </html>"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+				}
+				
+				JLabel comp = (JLabel)super.getListCellRendererComponent(list, value, index, isSelected,
+						cellHasFocus);
+				comp.setFont(comp.getFont().deriveFont(Font.NORMAL));
+				if(index % 2 == 0 && !cellHasFocus) {
+					comp.setBackground(new Color(220, 220, 220));
+				}
+				return comp;
+			}
+		});
 		
 		ajlCategories.add(lsAllCategory);
 		ajlCategories.add(lsYoungCategory);
@@ -295,19 +339,23 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 		c.gridy++;
 		c.gridwidth = 3;
 		c.weighty = 1.0;
+		c.weightx = 1.0;
 		c.fill = GridBagConstraints.BOTH;
 		gbcomposer.addComponentIntoGrid(new JScrollPane(ajlFederations), c);
 		c.gridy++;
+		c.weightx = 0.0;
 		c.weighty = 0.0;
 		gbcomposer.addComponentIntoGrid(jlCategories, c);
 		c.gridy++;
 		c.weighty = 1.0;
+		c.weightx = 1.0;
 		gbcomposer.addComponentIntoGrid(new JScrollPane(ajlCategories), c);
 		
 		JPanel jpReglements = new JPanel();
 		gbcomposer.setParentPanel(jpReglements);
 		c.gridy = 0;
 		c.fill = GridBagConstraints.NONE;
+		c.weightx = 0.0;
 		c.weighty = 0.0;
 		c.gridwidth = 5;
 		gbcomposer.addComponentIntoGrid(jlReglements, c);
@@ -334,13 +382,14 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 		
 		setLayout(new BorderLayout());
 		
+		add(jxhReglementManager, BorderLayout.NORTH);
 		add(jpSelection, BorderLayout.WEST);
 		add(jpReglements, BorderLayout.CENTER);
 		add(jpAction, BorderLayout.SOUTH);
 	}
 	
 	private void affectLabels() {
-		Localizator.localize(this, localisation);
+		Localizator.localize(this, localisation, Collections.<Class<?>, LocalizationHandler>singletonMap(JXHeader.class, new JXHeaderLocalisationHandler()));
 	}
 	
 	private void completePanel() {

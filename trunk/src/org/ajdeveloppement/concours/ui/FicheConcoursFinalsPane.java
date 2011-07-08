@@ -309,6 +309,8 @@ public class FicheConcoursFinalsPane extends JPanel implements ActionListener, M
 			
 			for(CriteriaSet criteriaSet : lstCriteriaSet) {
 				int nombrePhaseCategorie = phaseFinal.getNombrePhase(criteriaSet);
+				if(nombrePhaseCategorie == 0)
+					continue;
 				
 				int startHeight = 30;
 				int elementHeight = 120;

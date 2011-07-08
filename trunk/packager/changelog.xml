@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?> 
-<java version="1.6.0_17" class="java.beans.XMLDecoder"> 
+<java version="1.6.0_26" class="java.beans.XMLDecoder"> 
  <object class="java.util.ArrayList"> 
   <void method="add"> 
    <object class="org.ajdeveloppement.updater.Version"> 
@@ -384,6 +384,29 @@
     </void> 
     <void property="version"> 
      <string>2.29.07</string> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="add"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurélien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Corrections de bug
+  * Correction problème de corruption à la création d&apos;un concours
+  * Amelioration de l&apos;interface</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1310131827893</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.29.10</string> 
     </void> 
    </object> 
   </void> 

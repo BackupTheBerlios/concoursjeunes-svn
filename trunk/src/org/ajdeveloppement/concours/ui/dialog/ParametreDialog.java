@@ -584,7 +584,8 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 			ReglementManagerDialog reglementManagerDialog = new ReglementManagerDialog(parentframe, profile);
 			Reglement reglement = reglementManagerDialog.showReglementManagerDialog(true);
 			if(reglement != null && (tempReglement == null || !tempReglement.equals(reglement))) {
-				
+				if(jtfIntituleConcours.getText().equals(tempReglement.getDisplayName()))
+					jtfIntituleConcours.setText(reglement.getDisplayName());
 				tempReglement = reglement;
 				jlSelectedReglement.setText(reglement.getDisplayName());
 				

@@ -149,13 +149,13 @@ public class Parametre extends DefaultParameters {
 		ReglementManager reglementManager = new ReglementManager();
 		
 		setClub(configuration.getClub());
-		setIntituleConcours(configuration.getIntituleConcours());
 		setLieuConcours(configuration.getClub().getVille());
 		setNbCible(configuration.getNbCible());
 		setNbTireur(configuration.getNbTireur());
 		setNbDepart(configuration.getNbDepart());
 		
 		setReglement(reglementManager.getReglementByName(configuration.getReglementName()));
+		setIntituleConcours(reglement.getDisplayName());
 	}
 	
 	/**

@@ -98,22 +98,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.text.PlainDocument;
@@ -122,7 +112,6 @@ import org.ajdeveloppement.apps.localisation.Localizable;
 import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
-import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.Archer;
 import org.concoursjeunes.AutoCompleteDocument;
@@ -143,8 +132,6 @@ import org.concoursjeunes.event.AutoCompleteDocumentListener;
 public class ArbitreDialog extends JDialog implements AutoCompleteDocumentListener, ActionListener, FocusListener {
 	public static final int CONFIRM = 0;
 	public static final int CANCEL = 1;
-	
-	private static Future<ConcurrentListDialog> concurrentListDialog;
 	
 	private AjResourcesReader localisation;
 	
@@ -172,6 +159,8 @@ public class ArbitreDialog extends JDialog implements AutoCompleteDocumentListen
 	@Localizable("bouton.annuler")
 	private JButton jbAnnuler = new JButton();
 	
+	private ConcurrentListDialog concurrentListDialog;
+	
 	private int returnVal = CONFIRM;
 	
 	public ArbitreDialog(JFrame parentframe, Profile profile) {
@@ -179,15 +168,7 @@ public class ArbitreDialog extends JDialog implements AutoCompleteDocumentListen
 		
 		this.localisation = profile.getLocalisation();
 		
-		ExecutorService executorService = Executors.newSingleThreadExecutor(new LowFactory());
-		final Profile threadProfile = profile;
-		concurrentListDialog = executorService.submit(new Callable<ConcurrentListDialog>() {
-			@Override
-			public ConcurrentListDialog call() {
-				return new ConcurrentListDialog(ArbitreDialog.this, threadProfile,
-						null, null);
-			}
-		});
+		concurrentListDialog = new ConcurrentListDialog(this, profile, null, null);
 		
 		init();
 		affectLabels();
@@ -386,25 +367,15 @@ public class ArbitreDialog extends JDialog implements AutoCompleteDocumentListen
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == jbSelectArbitre) {
-			try {
-				Concurrent tmparbitre;
-	        	ConcurrentListDialog cld = concurrentListDialog.get(30, TimeUnit.SECONDS);
-	            
-	            cld.setFilter(filter);
-				cld.setVisible(true);
-				if (cld.isValider()) {
-					tmparbitre = cld.getSelectedConcurrent();
-					setJudge(new Judge(tmparbitre));
-				}
-			} catch (InterruptedException e1) {
-				DisplayableErrorHelper.displayException(e1);
-	            e1.printStackTrace();
-            } catch (ExecutionException e1) {
-            	DisplayableErrorHelper.displayException(e1);
-	            e1.printStackTrace();
-            } catch (TimeoutException e1) {
-            	JOptionPane.showMessageDialog(this, localisation.getResourceString("concurrent.info.listing.wait")); //$NON-NLS-1$
-            }
+			Concurrent tmparbitre;
+        	
+            
+            concurrentListDialog.setFilter(filter);
+            concurrentListDialog.setVisible(true);
+			if (concurrentListDialog.isValider()) {
+				tmparbitre = concurrentListDialog.getSelectedConcurrent();
+				setJudge(new Judge(tmparbitre));
+			}
 		} else if(e.getSource() == jbValider) {
 			judge.setName(jtfNom.getText());
 			judge.setFirstName(jtfPrenom.getText());
@@ -440,64 +411,7 @@ public class ArbitreDialog extends JDialog implements AutoCompleteDocumentListen
 	}
 	
 	@Override
-	public void dispose() {
-		try {
-            if(concurrentListDialog.isDone())
-            	concurrentListDialog.get().dispose();
-            else
-            	concurrentListDialog.cancel(true);
-        } catch (InterruptedException e) {
-        } catch (ExecutionException e) {
-        }
-		concurrentListDialog = null;
-		super.dispose();
-	}
-	
-	@Override
 	public void finalize() throws Throwable {
 		super.finalize();
-	}
-	
-	private abstract static class Factory implements ThreadFactory {
-		protected final ThreadGroup group;
-
-		Factory() {
-			SecurityManager s = System.getSecurityManager();
-			group = (s != null) ? s.getThreadGroup() : Thread.currentThread()
-					.getThreadGroup();
-		}
-
-		@Override
-		public Thread newThread(Runnable r) {
-			Thread t = new Thread(group, r, getThreadName(), 0);
-
-			if (t.isDaemon()) {
-				t.setDaemon(false);
-			}
-
-			return t;
-		}
-
-		protected abstract String getThreadName();
-	}
-	
-	private static class LowFactory extends Factory {
-		private final AtomicInteger lowThreadNumber = new AtomicInteger(1);
-
-		@Override
-		public Thread newThread(Runnable r) {
-			Thread t = super.newThread(r);
-
-			if (t.getPriority() != Thread.MIN_PRIORITY) {
-				t.setPriority(Thread.MIN_PRIORITY);
-			}
-
-			return t;
-		}
-
-		@Override
-		protected String getThreadName() {
-			return "low-thread-" + lowThreadNumber.getAndIncrement(); //$NON-NLS-1$
-		}
 	}
 }
