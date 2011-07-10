@@ -339,7 +339,7 @@ public class PhoenixPlugin implements ProfileListener, ApplicationCoreListener {
 				
 				} else {
 					//si il est initialisé mais ne possède pas d'ancrage
-					if(distancesEtBlason.getTargetFace().getAncrages().size() == 0) {
+					if(distancesEtBlason.getTargetFace().getAncrages() == null || distancesEtBlason.getTargetFace().getAncrages().size() == 0) {
 						//si le blason est present dans la base
 						if(distancesEtBlason.getTargetFace().getNumblason() > 0) {
 							ConcurrentMap<Integer, Ancrage> ancrages = null;
