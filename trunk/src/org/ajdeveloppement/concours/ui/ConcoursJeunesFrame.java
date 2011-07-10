@@ -872,6 +872,25 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 					CompetitionSelectionDialog competitionSelectionDialog = new CompetitionSelectionDialog(this, profile, profile.getLocalisation());
 					if(competitionSelectionDialog.showCompetitionSelectionDialog() == DefaultDialogReturn.OK && competitionSelectionDialog.getSelectedCompetition() != null)
 						openFicheConcours(competitionSelectionDialog.getSelectedCompetition());
+				} else if(e.getURL().getHost().equals("manage_club")) {  //$NON-NLS-1$
+					new EntiteListDialog(this, profile, false);
+				} else if(e.getURL().getHost().equals("manage_reglement")) {  //$NON-NLS-1$
+					ReglementManagerDialog reglementManagerDialog = new ReglementManagerDialog(this, profile);
+					reglementManagerDialog.showReglementManagerDialog(false);
+				} else if(e.getURL().getHost().equals("show_help")) {  //$NON-NLS-1$
+					// affiche le pdf avec le reader pdf standard du systeme
+					try {
+						if (Desktop.isDesktopSupported()) {
+							Desktop.getDesktop().open(new File(staticParameters.getResourceString("path.documentation"))); //$NON-NLS-1$
+						} else {
+							String NAV = ApplicationCore.getAppConfiguration().getPdfReaderPath();
+
+							Runtime.getRuntime().exec(NAV, new String[] { staticParameters.getResourceString("path.documentation") }); //$NON-NLS-1$ 
+						}
+					} catch (IOException e1) {
+						DisplayableErrorHelper.displayException(e1);
+						e1.printStackTrace();
+					}
 				} else if(e.getURL().getProtocol().equals("http")) { //$NON-NLS-1$
 					try {
 						if(Desktop.isDesktopSupported()) {

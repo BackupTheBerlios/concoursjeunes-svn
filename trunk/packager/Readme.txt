@@ -39,4 +39,4 @@ Historique:
 - Octobre 2007 Sortie de la version 2.0 (Nom de code "Deliver Me" en référence au titre de Sarah Brightman & Enya)
 - Octobre 2008 Sortie de la version 2.1 (Nom de code "Univers")
 - Octobre 2009 Sortie de la version 2.2 (Nom de code "On My Way" en référence au titre de Coccoon)
-- 2010 version 2.3 (Nom de code "Ready" en référence au titre de Sophie Zelmani)
+- 2011 version 2.3 (Nom de code "Ready" en référence au titre de Sophie Zelmani)

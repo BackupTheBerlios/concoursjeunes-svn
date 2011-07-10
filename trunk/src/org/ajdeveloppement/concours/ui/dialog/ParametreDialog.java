@@ -89,6 +89,7 @@
 package org.ajdeveloppement.concours.ui.dialog;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -96,6 +97,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DateFormat;
+import java.util.Collections;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
@@ -114,12 +116,14 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.ajdeveloppement.apps.localisation.Localizable;
+import org.ajdeveloppement.apps.localisation.LocalizationHandler;
 import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.AJList;
 import org.ajdeveloppement.commons.ui.DefaultDialogReturn;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
+import org.ajdeveloppement.swingxext.localisation.JXHeaderLocalisationHandler;
 import org.concoursjeunes.ApplicationCore;
 import org.concoursjeunes.CompetitionLevel;
 import org.concoursjeunes.FicheConcours;
@@ -130,6 +134,8 @@ import org.concoursjeunes.Reglement;
 import org.concoursjeunes.Reglement.TypeReglement;
 import org.concoursjeunes.builders.ReglementBuilder;
 import org.jdesktop.swingx.JXDatePicker;
+import org.jdesktop.swingx.JXHeader;
+import org.jdesktop.swingx.painter.GlossPainter;
 
 import com.lowagie.text.Font;
 
@@ -149,6 +155,9 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 
 	private final FicheConcours ficheConcours;
 	private JFrame parentframe;
+	
+	@Localizable("parametre.header")
+	private JXHeader jxhParametre = new JXHeader(); 
 
 	@Localizable(value="parametre.infos",textMethod="setTitle")
 	private TitledBorder infosBorder = new TitledBorder(""); //$NON-NLS-1$
@@ -235,6 +244,11 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 		JPanel jpParametre = new JPanel();
 		JPanel jpValidation = new JPanel();
 		JPanel jpReglement	= new JPanel();
+		
+		GlossPainter gloss = new GlossPainter();
+		jxhParametre.setBackground(new Color(200,200,255));
+		jxhParametre.setBackgroundPainter(gloss);
+		jxhParametre.setTitleFont(jxhParametre.getTitleFont().deriveFont(16.0f));
 		
 		JPanel jpInfos = new JPanel();
 		JPanel jpTypeCompetition = new JPanel();
@@ -427,6 +441,7 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 		gridbagComposer.addComponentIntoGrid(jpArbitres, c);
 
 		getContentPane().setLayout(new BorderLayout());
+		getContentPane().add(jxhParametre, BorderLayout.NORTH);
 		getContentPane().add(jpParametre, BorderLayout.CENTER);
 		getContentPane().add(jpValidation, BorderLayout.SOUTH);
 	}
@@ -441,7 +456,7 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 	}
 
 	private void affectLabels() {
-		Localizator.localize(this, localisation);
+		Localizator.localize(this, localisation, Collections.<Class<?>, LocalizationHandler>singletonMap(JXHeader.class, new JXHeaderLocalisationHandler()));
 	}
 
 	private void completePanel() {

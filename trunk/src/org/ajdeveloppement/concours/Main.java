@@ -207,9 +207,13 @@ public class Main {
 	/**
 	 * Ferme le splash screen
 	 */
-	private static void hideSplashScreen() {
-		if(splash != null)
-			splash.close();
+	private static void hideSplashScreen() {	
+		if(splash != null) {
+			try {
+				splash.close();
+			} catch (IllegalStateException e) {
+			}
+		}
 	}
 	
 	/**
@@ -523,8 +527,10 @@ public class Main {
 			g2d.setColor(Color.BLACK);
 			g2d.drawString(message, 15, 485);
 			
-			splash.update();
-
+			try {
+				splash.update();
+			} catch (IllegalStateException e) {
+			}
 		}
 	}
 }
