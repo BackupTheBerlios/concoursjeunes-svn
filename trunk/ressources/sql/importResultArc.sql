@@ -1,6 +1,6 @@
 -- @author Aurélien JEOFFRAY
 -- Optimise les performances sur les machines multi processeur/core ou Hyper-Threading
-SET MULTI_THREADED 1;
+--SET MULTI_THREADED 1;
 SET LOG 0;
 
 SET @DATE_MODIF = CURRENT_DATE();
