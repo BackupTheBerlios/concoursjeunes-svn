@@ -88,6 +88,10 @@
  */
 package org.ajdeveloppement.concours.db;
 
+import java.awt.Color;
+import java.awt.GradientPaint;
+import java.awt.Graphics2D;
+import java.awt.SplashScreen;
 import java.sql.SQLException;
 
 import javax.swing.ProgressMonitor;
@@ -103,6 +107,8 @@ public class UpgradeDatabaseEventListener implements org.h2.upgrade.v1_1.api.Dat
 	private static ProgressMonitor monitor = new ProgressMonitor(null, "Chargement/Migration de la base\nL'opération peut durer plusieurs minutes\n ", "", 0, 1); //$NON-NLS-1$ //$NON-NLS-2$
 	private static boolean enabled = true;
 	
+	private static SplashScreen splash = null;
+	
 	public static void forceCloseMonitor() {
 		monitor.close();
 	}
@@ -110,6 +116,12 @@ public class UpgradeDatabaseEventListener implements org.h2.upgrade.v1_1.api.Dat
 	public static void setMonitorEnabled(boolean enabled) {
 		UpgradeDatabaseEventListener.enabled = enabled;
 	}
+	
+	public static void setSplashScreen(SplashScreen splash) {
+		UpgradeDatabaseEventListener.splash = splash;
+	}
+	
+	
 	/* (non-Javadoc)
 	 * @see org.h2.api.DatabaseEventListener#closingDatabase()
 	 */
@@ -151,10 +163,31 @@ public class UpgradeDatabaseEventListener implements org.h2.upgrade.v1_1.api.Dat
 	 */
 	@Override
 	public void setProgress(int state, String name, int x, int max) {
-		if(enabled) {
+		/*if(enabled) {
 			monitor.setMaximum(max);
 			monitor.setNote("Traitement de " + name); //$NON-NLS-1$
 			monitor.setProgress((x < max) ? x+1 : x);
+		}*/
+		int percent = (int)Math.round(((double)x / (double)max) * 100.0);
+		if(splash != null) {
+			Graphics2D g2d = splash.createGraphics();
+
+			g2d.setColor(Color.WHITE);
+			g2d.fillRect(10, 440, 480, 20);
+			g2d.setColor(Color.BLACK);
+			g2d.drawRect(10, 440, 480, 20);
+			
+			GradientPaint gp = new GradientPaint(0, 0, new Color(200,200,255, 200), (int)((480.0 / 100.0) * percent) - 11, 0, new Color(100,100,255, 200), true);
+			g2d.setPaint(gp);
+			g2d.fillRect(11, 441, (int)((480.0 / 100.0) * percent), 19); 
+			
+			g2d.setColor(Color.BLACK);
+			g2d.drawString("Opération en base (peut durer plusieurs minutes): " + name, 15, 455); //$NON-NLS-1$
+			
+			try {
+				splash.update();
+			} catch (IllegalStateException e) {
+			}
 		}
 	}
 

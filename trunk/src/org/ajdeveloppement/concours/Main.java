@@ -135,6 +135,7 @@ import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.ajdeveloppement.commons.security.SSLUtils;
 import org.ajdeveloppement.commons.security.SecureSiteAuthenticationStore;
 import org.ajdeveloppement.commons.ui.SwingURLAuthenticator;
+import org.ajdeveloppement.concours.db.UpgradeDatabaseEventListener;
 import org.ajdeveloppement.concours.exceptions.ExceptionHandlingEventQueue;
 import org.ajdeveloppement.concours.ui.ConcoursJeunesFrame;
 import org.ajdeveloppement.swingxext.error.WebErrorReporter;
@@ -192,6 +193,8 @@ public class Main {
 				splash.setImageURL(new URL("file:" + ApplicationCore.staticParameters.getResourceString("path.ressources")  //$NON-NLS-1$//$NON-NLS-2$
 					+ File.separator
 					+ ApplicationCore.staticParameters.getResourceString("file.image.splashscreen"))); //$NON-NLS-1$
+				
+				UpgradeDatabaseEventListener.setSplashScreen(splash);
 			} catch (NullPointerException e1) {
 				e1.printStackTrace();
 			} catch (IllegalStateException e1) {
@@ -211,6 +214,7 @@ public class Main {
 		if(splash != null) {
 			try {
 				splash.close();
+				UpgradeDatabaseEventListener.setSplashScreen(null);
 			} catch (IllegalStateException e) {
 			}
 		}
