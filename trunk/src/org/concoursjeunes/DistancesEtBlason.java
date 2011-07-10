@@ -395,7 +395,7 @@ public class DistancesEtBlason implements ObjectPersistence {
 	/**
 	 * Indique si deux instances ont les mêmes distances et blason ou non
 	 * 
-	 * @param db l'objet avec lequel comparer
+	 * @param other l'objet avec lequel comparer
 	 * @return true si similaire, false sinon
 	 */
 	public boolean haveSameDistancesAndTargetFace(DistancesEtBlason other) {

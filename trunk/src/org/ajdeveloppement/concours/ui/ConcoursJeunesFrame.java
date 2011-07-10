@@ -107,8 +107,10 @@ import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -123,6 +125,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+import javax.swing.text.DateFormatter;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
@@ -411,6 +414,11 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 			ajtHome.parse("LOGO_CLUB_URI", profile.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			ajtHome.parse("INTITULE_CLUB", profile.getConfiguration().getClub().getNom()); //$NON-NLS-1$
 			ajtHome.parse("PROFILE_NAME", profile.getConfiguration().getCurProfil()); //$NON-NLS-1$
+			try {
+				ajtHome.parse("DATE", new DateFormatter(DateFormat.getDateInstance(DateFormat.LONG)).valueToString(new Date()));//$NON-NLS-1$
+			} catch (ParseException e) {
+				e.printStackTrace();
+			} 
 
 			MetaDataFichesConcours metaDataFichesConcours = profile.getConfiguration().getMetaDataFichesConcours();
 			List<MetaDataFicheConcours> fiches = metaDataFichesConcours.getFiches();

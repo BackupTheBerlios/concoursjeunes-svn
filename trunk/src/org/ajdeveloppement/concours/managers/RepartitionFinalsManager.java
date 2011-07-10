@@ -105,10 +105,14 @@ import org.concoursjeunes.ApplicationCore;
  */
 public class RepartitionFinalsManager {
 	private static PreparedStatement pstmtAllRepartitionFinals = null;
+	
 	/**
+	 * Retourne la tableau de répartition des archers sur les phases finales
 	 * 
-	 * @param federation
-	 * @return
+	 * @param typeRepartition ({@link RepartitionFinals#TYPE_INDIV_FRANCAIS} ou {@link RepartitionFinals#TYPE_INDIV_INTERNATIONNAL}
+	 * @return la tableau de répartition des archers sur les phases finales
+	 * 
+	 * @throws ObjectPersistenceException
 	 */
 	public static List<RepartitionFinals> getRepartitionFinals(short typeRepartition) throws ObjectPersistenceException {
 		List<RepartitionFinals> lRepartitionFinals = new ArrayList<RepartitionFinals>();

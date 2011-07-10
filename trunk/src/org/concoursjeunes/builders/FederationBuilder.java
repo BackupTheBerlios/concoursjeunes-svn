@@ -122,9 +122,10 @@ public class FederationBuilder {
 	}
 	
 	/**
+	 * Retourne la fédération qualifié par son identifiant en base
 	 * 
-	 * @param numFederation
-	 * @return
+	 * @param numFederation l'id de la fédération
+	 * @return la fédération a retourner
 	 * @throws ObjectPersistenceException
 	 */
 	public static Federation getFederation(int numFederation) throws ObjectPersistenceException {
@@ -132,9 +133,10 @@ public class FederationBuilder {
 	}
 	
 	/**
+	 * Construit la fédération a partir du jeux de résultat correspondant
 	 * 
-	 * @param rs
-	 * @return
+	 * @param rs le resultset contenant les enregistrement en base permettant de construire la fédération
+	 * @return la fédération a retourner
 	 * @throws ObjectPersistenceException
 	 */
 	public static Federation getFederation(ResultSet rs) throws ObjectPersistenceException {

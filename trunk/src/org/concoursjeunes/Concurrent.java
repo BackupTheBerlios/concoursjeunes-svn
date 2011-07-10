@@ -247,7 +247,7 @@ public class Concurrent extends Archer implements Cloneable {
 	/**
 	 * Définit le tableau des scores des phases finales réalisé par le
 	 * concurrent
-	 * @param scoresPhasesFinales le tableau des scores des phases finales
+	 * @param scoresPhasesFinal le tableau des scores des phases finales
 	 */
 	public void setScoresPhasesFinales(int[] scoresPhasesFinal) {
 		Object oldValue = this.scoresPhasesFinales;
