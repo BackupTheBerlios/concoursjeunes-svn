@@ -95,6 +95,7 @@ import java.awt.SplashScreen;
 import java.sql.SQLException;
 
 import javax.swing.ProgressMonitor;
+import javax.swing.SwingUtilities;
 
 import org.h2.api.DatabaseEventListener;
 
@@ -106,6 +107,9 @@ public class UpgradeDatabaseEventListener implements org.h2.upgrade.v1_1.api.Dat
 
 	private static ProgressMonitor monitor = new ProgressMonitor(null, "Chargement/Migration de la base\nL'opération peut durer plusieurs minutes\n ", "", 0, 1); //$NON-NLS-1$ //$NON-NLS-2$
 	private static boolean enabled = true;
+	
+	private String cuurrentTaskName;
+	private int currentProgress = 0;
 	
 	private static SplashScreen splash = null;
 	
@@ -168,26 +172,38 @@ public class UpgradeDatabaseEventListener implements org.h2.upgrade.v1_1.api.Dat
 			monitor.setNote("Traitement de " + name); //$NON-NLS-1$
 			monitor.setProgress((x < max) ? x+1 : x);
 		}*/
-		int percent = (int)Math.round(((double)x / (double)max) * 100.0);
-		if(splash != null) {
-			Graphics2D g2d = splash.createGraphics();
-
-			g2d.setColor(Color.WHITE);
-			g2d.fillRect(10, 440, 480, 20);
-			g2d.setColor(Color.BLACK);
-			g2d.drawRect(10, 440, 480, 20);
+		final int percent = (int)Math.round(((double)x / (double)max) * 100.0);
+		final String taskName = name;
+		if(percent != currentProgress || !name.equals(cuurrentTaskName)) {
+			currentProgress = percent;
+			cuurrentTaskName = name;
 			
-			GradientPaint gp = new GradientPaint(0, 0, new Color(200,200,255, 200), (int)((480.0 / 100.0) * percent) - 11, 0, new Color(100,100,255, 200), true);
-			g2d.setPaint(gp);
-			g2d.fillRect(11, 441, (int)((480.0 / 100.0) * percent), 19); 
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					if(splash != null) {
+						Graphics2D g2d = splash.createGraphics();
 			
-			g2d.setColor(Color.BLACK);
-			g2d.drawString("Opération en base (peut durer plusieurs minutes): " + name, 15, 455); //$NON-NLS-1$
+						g2d.setColor(Color.WHITE);
+						g2d.fillRect(10, 440, 480, 20);
+						g2d.setColor(Color.BLACK);
+						g2d.drawRect(10, 440, 480, 20);
+						
+						GradientPaint gp = new GradientPaint(0, 0, new Color(200,200,255, 200), (int)((480.0 / 100.0) * percent) - 11, 0, new Color(100,100,255, 200), true);
+						g2d.setPaint(gp);
+						g2d.fillRect(11, 441, (int)((480.0 / 100.0) * percent), 19); 
+						
+						g2d.setColor(Color.BLACK);
+						g2d.drawString("Opération en base (peut durer plusieurs minutes): " + taskName, 15, 455); //$NON-NLS-1$
+						
+						try {
+							splash.update();
+						} catch (IllegalStateException e) {
+						}
+					}
+				}
+			});
 			
-			try {
-				splash.update();
-			} catch (IllegalStateException e) {
-			}
 		}
 	}
 
