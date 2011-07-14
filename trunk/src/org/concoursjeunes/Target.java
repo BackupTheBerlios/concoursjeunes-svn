@@ -396,13 +396,16 @@ public class Target implements PropertyChangeListener {
 		if(concurrents[position] != null)
 			return false;
 		
+		if(blason == null)
+			return false;
+		
 		for(int i = 0; i < concurrents.length; i++) {
 			if(concurrents[i] != null) {
 				DistancesEtBlason db = DistancesEtBlason.getDistancesEtBlasonForConcurrent(reglement, concurrents[i]);
 				Blason otherBlason = db.getTargetFace();
 				
-				if(blason.getNbArcher() > 2 || otherBlason.getNbArcher() > 2) {
-					if(!otherBlason.equals(blason)) {
+				if(blason.getNbArcher() > 2 || (otherBlason != null && otherBlason.getNbArcher() > 2)) {
+					if(otherBlason == null || !otherBlason.equals(blason)) {
 						placable = false;
 						break;
 					}

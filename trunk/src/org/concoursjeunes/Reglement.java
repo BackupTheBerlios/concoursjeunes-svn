@@ -1074,25 +1074,27 @@ public class Reglement implements ObjectPersistence {
 	 */
 	private void saveDistancesAndBlasons(Session session) throws ObjectPersistenceException {
 		try {
-			Statement stmt = ApplicationCore.dbConnection.createStatement();
-			try {
-				String codesDB = ""; //$NON-NLS-1$
-				for (DistancesEtBlason db : listDistancesEtBlason) {
-					if(!codesDB.isEmpty())
-						codesDB += ","; //$NON-NLS-1$
-					codesDB += db.getNumdistancesblason();
-				}
-				
-				stmt.executeUpdate("delete from DISTANCESBLASONS where NUMREGLEMENT=" + numReglement + " and NUMDISTANCESBLASONS not in (" + codesDB + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			} finally {
-				stmt.close();
-			}
-		
 			int i = 1;
 			for (DistancesEtBlason distancesEtBlason : listDistancesEtBlason) {
 				distancesEtBlason.setNumdistancesblason(i++);
 				distancesEtBlason.setReglement(this);
 				distancesEtBlason.save(session);
+			}
+			
+			Statement stmt = ApplicationCore.dbConnection.createStatement();
+			try {
+				String codesDB = ""; //$NON-NLS-1$
+				for (DistancesEtBlason db : listDistancesEtBlason) {
+					if(db.getNumdistancesblason() != 0) {
+						if(!codesDB.isEmpty())
+							codesDB += ","; //$NON-NLS-1$
+						codesDB += db.getNumdistancesblason();
+					}
+				}
+				
+				stmt.executeUpdate("delete from DISTANCESBLASONS where NUMREGLEMENT=" + numReglement + (!codesDB.isEmpty() ? " and NUMDISTANCESBLASONS not in (" + codesDB + ")" : "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+			} finally {
+				stmt.close();
 			}
 		} catch (SQLException e) {
 			throw new ObjectPersistenceException(e);

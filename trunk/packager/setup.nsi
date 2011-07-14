@@ -89,6 +89,8 @@ InstType "Complete"
 Section "Base" SEC0000
     SectionIn RO 1 2
     SetOverwrite on
+    SetOutPath $INSTDIR
+    RmDir /r /REBOOTOK *
     SetOutPath $INSTDIR\config
     File /r config\*
     SetOutPath $INSTDIR\lang
