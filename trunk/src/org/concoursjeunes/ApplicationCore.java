@@ -328,7 +328,7 @@ public class ApplicationCore {
 				if(updateError)
 					throw new RuntimeException("Une erreur est survenue durant la mise à jour de la base de données.\n" //$NON-NLS-1$
 							+ "Il est possible que l'application ne fonctionne pas correctement\n" //$NON-NLS-1$
-							+ "Si tel est le cas il sera necessaire de réinitialisé la base");  //$NON-NLS-1$
+							+ "Si tel est le cas il sera necessaire de réinitialiser la base");  //$NON-NLS-1$
 			} else
 				throw new RuntimeException("Votre machine virtuel java ne supporte pas javascript,\nl'application risque de ne pas fonctionner correctement");  //$NON-NLS-1$
 		} finally {
