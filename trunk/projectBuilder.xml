@@ -7,9 +7,9 @@
    
 		<target name ="buildgenaratedressources" description="Construit la class AppInfos">
 			<copy file="packager/AppInfos.java.tpl" tofile="src/org/concoursjeunes/AppInfos.java" overwrite="true" />
-			<get dest="lib/ajcommons.jar" src="http://hudson.ajdeveloppement.org/job/AjCommons%20Nighly%20Build/lastSuccessfulBuild/artifact/trunk/ajcommons.jar"/>
-			<get dest="lib/ajcommons-ext.jar" src="http://hudson.ajdeveloppement.org/job/AjCommons%20Nighly%20Build/lastSuccessfulBuild/artifact/trunk/ajcommons-ext.jar"/>
-			<get dest="lib/ajcommons-swingx-ext.jar" src="http://hudson.ajdeveloppement.org/job/AjCommons%20SwingX%20Ext%20Nighly%20Build/lastSuccessfulBuild/artifact/trunk/ajcommons-swingx-ext.jar"/>
+			<get dest="lib/ajcommons.jar" src="http://hudson.ajdeveloppement.org/job/AjCommons%201.1%20Release/lastSuccessfulBuild/artifact/1.1/ajcommons.jar"/>
+			<get dest="lib/ajcommons-ext.jar" src="http://hudson.ajdeveloppement.org/job/AjCommons%201.1%20Release/lastSuccessfulBuild/artifact/1.1/ajcommons-ext.jar"/>
+			<get dest="lib/ajcommons-swingx-ext.jar" src="http://hudson.ajdeveloppement.org/job/AjCommons%20SwingX%20Ext%201.1%20Release/lastSuccessfulBuild/artifact/1.1/ajcommons-swingx-ext.jar"/>
 			<replace 
 			    file="src/org/concoursjeunes/AppInfos.java"
 				propertyFile="packager/version.properties"
