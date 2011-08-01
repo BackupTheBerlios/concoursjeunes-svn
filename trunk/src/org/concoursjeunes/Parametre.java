@@ -146,7 +146,7 @@ public class Parametre extends DefaultParameters {
 	 * valeurs de l'objet
 	 */
 	public Parametre(Configuration configuration) {
-		ReglementManager reglementManager = new ReglementManager();
+		ReglementManager reglementManager = ReglementManager.getInstance();
 		
 		setClub(configuration.getClub());
 		setLieuConcours(configuration.getClub().getVille());
@@ -155,7 +155,8 @@ public class Parametre extends DefaultParameters {
 		setNbDepart(configuration.getNbDepart());
 		
 		setReglement(reglementManager.getReglementByName(configuration.getReglementName()));
-		setIntituleConcours(reglement.getDisplayName());
+		if(reglement != null)
+			setIntituleConcours(reglement.getDisplayName());
 	}
 	
 	/**

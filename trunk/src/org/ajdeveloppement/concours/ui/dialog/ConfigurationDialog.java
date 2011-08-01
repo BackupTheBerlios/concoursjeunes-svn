@@ -164,7 +164,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	private Configuration workConfiguration;
 	private AppConfiguration workAppConfiguration;
 	
-	ReglementManager reglementManager = new ReglementManager();
+	ReglementManager reglementManager = ReglementManager.getInstance();
 	
 	@Localizable("configuration.onglet")
 	private JTabbedPane tabbedpane = new JTabbedPane();

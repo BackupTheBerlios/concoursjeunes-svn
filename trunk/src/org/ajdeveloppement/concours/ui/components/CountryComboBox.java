@@ -96,6 +96,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.MissingResourceException;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
@@ -121,7 +122,11 @@ public class CountryComboBox extends JComboBox {
 		Locale[] locales = Locale.getAvailableLocales();
 		List<Country> countries = new ArrayList<Country>();
 		for (Locale locale : locales) {
-			String iso = locale.getISO3Country();
+			String iso = ""; //$NON-NLS-1$
+			try {
+					iso = locale.getISO3Country();
+			} catch (MissingResourceException e) {
+			}
 			String code = locale.getCountry();
 			String name = locale.getDisplayCountry();
 

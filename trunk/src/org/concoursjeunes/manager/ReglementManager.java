@@ -121,12 +121,18 @@ public class ReglementManager {
 	private List<Federation> federation = new ArrayList<Federation>();
 	private List<Integer> categorie = new ArrayList<Integer>();
 	
+	private static ReglementManager instance = new ReglementManager();
+	
 	/**
 	 * Construit une nouvelle instance du gestionnaire de règlement, listant
 	 * tout les règlements présent en base.
 	 */
-	public ReglementManager() {
+	private ReglementManager() {
 		listReglement();
+	}
+	
+	public static ReglementManager getInstance() {
+		return instance;
 	}
 	
 	/**

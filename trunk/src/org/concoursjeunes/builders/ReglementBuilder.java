@@ -158,7 +158,7 @@ public class ReglementBuilder {
 	 */
 	@Deprecated
 	public static Reglement getReglement(String reglementName) {
-		ReglementManager reglementManager = new ReglementManager();
+		ReglementManager reglementManager = ReglementManager.getInstance();
 		
 		return reglementManager.getReglementByName(reglementName);
 	}

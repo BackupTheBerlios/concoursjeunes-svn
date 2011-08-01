@@ -159,7 +159,6 @@ import org.concoursjeunes.Parametre;
 import org.concoursjeunes.Profile;
 import org.concoursjeunes.event.ProfileEvent;
 import org.concoursjeunes.event.ProfileListener;
-import org.concoursjeunes.plugins.Plugin.Type;
 import org.concoursjeunes.plugins.PluginEntry;
 import org.concoursjeunes.plugins.PluginLoader;
 import org.concoursjeunes.plugins.PluginMetadata;
@@ -274,7 +273,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 
 	private void fillOnDemandPlugin() {
 		PluginLoader pl = new PluginLoader();
-		List<PluginMetadata> plugins = pl.getPlugins(Type.ON_DEMAND);
+		List<PluginMetadata> plugins = pl.getPlugins(org.concoursjeunes.plugins.Plugin.Type.ON_DEMAND);
 
 		//if (plugins.size() > 0) {
 		//	importMenu.setVisible(true);
@@ -329,7 +328,7 @@ public class ConcoursJeunesFrame extends JFrame implements ActionListener, Hyper
 	
 	private void fillUIStartupPlugin() {
 		PluginLoader pl = new PluginLoader();
-		List<PluginMetadata> plugins = pl.getPlugins(Type.UI_STARTUP);
+		List<PluginMetadata> plugins = pl.getPlugins(org.concoursjeunes.plugins.Plugin.Type.UI_STARTUP);
 
 		for (PluginMetadata pm : plugins) {
 

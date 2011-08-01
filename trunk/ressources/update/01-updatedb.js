@@ -6,7 +6,7 @@ function updateReglements() {
 	//liste l'ensemble des fichiers de réglements
 	var updatePath = new java.io.File(org.concoursjeunes.ApplicationCore.staticParameters.getResourceString("path.ressources"), "update");
 	var reglements = org.ajdeveloppement.commons.io.FileUtils.listAllFiles(updatePath, ".*\\.reglement");
-	var rManager = new org.concoursjeunes.manager.ReglementManager();
+	var rManager = org.concoursjeunes.manager.ReglementManager.getInstance();
 	for(var i = 0; i < reglements.size(); i++) {
 		rManager.importReglement(reglements.get(i));
 	}

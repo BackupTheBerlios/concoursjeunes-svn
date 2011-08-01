@@ -213,7 +213,7 @@ public class ReglementManagerDialog extends JDialog implements ListSelectionList
 		this.parentframe = parentframe;
 		this.localisation = profile.getLocalisation();
 		
-		reglementManager = new ReglementManager();
+		reglementManager = ReglementManager.getInstance();
 		
 		init();
 		affectLabels();

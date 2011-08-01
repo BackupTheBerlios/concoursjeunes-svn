@@ -228,7 +228,7 @@ public class NewReglementDialog extends JDialog implements ActionListener {
 		
 		jcbFederation.setSelectedItem(profile.getConfiguration().getFederation());
 		
-		ReglementManager reglementManager = new ReglementManager();
+		ReglementManager reglementManager = ReglementManager.getInstance();
 		
 		jcbReference.removeAllItems();
 		jcbReference.addItem(""); //$NON-NLS-1$

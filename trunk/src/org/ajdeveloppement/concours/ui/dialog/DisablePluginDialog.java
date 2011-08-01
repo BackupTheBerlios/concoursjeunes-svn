@@ -116,7 +116,6 @@ import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
 import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.plugins.Plugin.Type;
 import org.concoursjeunes.plugins.PluginLoader;
 import org.concoursjeunes.plugins.PluginMetadata;
 
@@ -149,7 +148,7 @@ public class DisablePluginDialog extends JDialog implements ActionListener {
 		this.localisation = localisation;
 		
 		PluginLoader pl = new PluginLoader();
-		plugins = pl.getPlugins(Type.STARTUP);
+		plugins = pl.getPlugins(org.concoursjeunes.plugins.Plugin.Type.STARTUP);
 		
 		init();
 		affectLabels();

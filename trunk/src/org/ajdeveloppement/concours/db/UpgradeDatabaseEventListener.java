@@ -106,7 +106,7 @@ import org.h2.api.DatabaseEventListener;
 public class UpgradeDatabaseEventListener implements org.h2.upgrade.v1_1.api.DatabaseEventListener,DatabaseEventListener {
 
 	private static ProgressMonitor monitor = new ProgressMonitor(null, "Chargement/Migration de la base\nL'opération peut durer plusieurs minutes\n ", "", 0, 1); //$NON-NLS-1$ //$NON-NLS-2$
-	private static boolean enabled = true;
+	//private static boolean enabled = true;
 	
 	private String cuurrentTaskName;
 	private int currentProgress = 0;
@@ -118,7 +118,7 @@ public class UpgradeDatabaseEventListener implements org.h2.upgrade.v1_1.api.Dat
 	}
 	
 	public static void setMonitorEnabled(boolean enabled) {
-		UpgradeDatabaseEventListener.enabled = enabled;
+		//UpgradeDatabaseEventListener.enabled = enabled;
 	}
 	
 	public static void setSplashScreen(SplashScreen splash) {

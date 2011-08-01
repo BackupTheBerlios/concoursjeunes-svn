@@ -116,7 +116,7 @@ public class TargetTest extends TestCase {
 	public void setUp() throws Exception {
 		ApplicationCore.initializeApplication(); // initialise le noyau
 		
-		ReglementManager reglementManager = new ReglementManager();
+		ReglementManager reglementManager = ReglementManager.getInstance();
 		
 		
 		reglement = reglementManager.getReglementByName("Savoie"); //charge le réglement savoie //$NON-NLS-1$
