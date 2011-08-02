@@ -347,11 +347,6 @@ public class DistancesBlasonsDialog extends JDialog implements ActionListener {
 		
 		cBlasonsAlt.gridy++;
 		gbcBlasonsAlt.addComponentIntoGrid(jpanel, cBlasonsAlt);
-
-		/*lbdBlasonsAlt.add(jbDeleteBlasonAlt);
-		gbcBlasonsAlt.addComponentIntoGrid(new JLabel(localisation.getResourceString("distancesblasons.alt") + " " + lcbBlasonsAlt.size() + ":"), cBlasonsAlt);  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
-		gbcBlasonsAlt.addComponentIntoGrid(jcbBlasons, cBlasonsAlt);
-		gbcBlasonsAlt.addComponentIntoGrid(jbDeleteBlasonAlt, cBlasonsAlt);*/
 	}
 
 	@Override
@@ -389,14 +384,6 @@ public class DistancesBlasonsDialog extends JDialog implements ActionListener {
 			setVisible(false);
 		} else if(e.getSource() == jbAddBlasonAlt) {
 			addBlasonAlterantif(null);
-			/*cBlasonsAlt.gridy++;
-			JComboBox jcbBlasons = new JComboBox();
-			for(Blason b : availableBlason) {
-				jcbBlasons.addItem(b);
-			}
-			lcbBlasonsAlt.add(jcbBlasons);
-			gbcBlasonsAlt.addComponentIntoGrid(new JLabel(localisation.getResourceString("distancesblasons.alt") + " " + lcbBlasonsAlt.size() + ":"), cBlasonsAlt);  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
-			gbcBlasonsAlt.addComponentIntoGrid(jcbBlasons, cBlasonsAlt);*/
 			
 			pack();
 		}

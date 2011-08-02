@@ -871,18 +871,19 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 				Criterion curCriterion = (Criterion) dmtnParent.getUserObject();
 
 				int curIndex = curCriterion.getCriterionElements().indexOf(dmtnObj);
-				if (curIndex > 0)
+				if (curIndex > 0) {
 					Collections.swap(curCriterion.getCriterionElements(), curIndex, curIndex - 1);
 
-				treeModel.removeNodeFromParent(dmtn);
+					treeModel.removeNodeFromParent(dmtn);
 
-				dmtnParent.insert(dmtn, curIndex - 1);
+					dmtnParent.insert(dmtn, curIndex - 1);
 
-				treeModel.reload();
+					treeModel.reload();
 				
-				treeCriteria.setSelectionPath(new TreePath(dmtn.getPath()));
+					treeCriteria.setSelectionPath(new TreePath(dmtn.getPath()));
 
-				reloadTablesModel();
+					reloadTablesModel();
+				}
 			}
 		}
 	}
@@ -1163,13 +1164,5 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 				dbList = new ArrayList<DistancesEtBlason>(dbList);
 			this.dbList = dbList;
 		}
-		
-		/*public void add(DistancesEtBlason distancesEtBlason) {
-			dbList.add(distancesEtBlason);
-		}*/
-		
-		/*public void remove(DistancesEtBlason distancesEtBlason) {
-			dbList.remove(distancesEtBlason);
-		}*/
 	}
 }

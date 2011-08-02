@@ -89,11 +89,11 @@
 package org.ajdeveloppement.concours.plugins.scriptext;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.MalformedURLException;
-import java.net.URL;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
@@ -193,8 +193,8 @@ public class ScriptExtention {
 		ScriptEngineManager se = new ScriptEngineManager();
 		ScriptEngine scriptEngine = se.getEngineByName("JavaScript"); //$NON-NLS-1$
 		if(scriptEngine != null) {
-			Reader reader = new BufferedReader(new InputStreamReader(
-					new URL("file://" + mainPath + "/" + scriptFile).openStream())); //$NON-NLS-1$ //$NON-NLS-2$ 
+			Reader reader = new BufferedReader(new FileReader(
+					new File(mainPath, scriptFile)));
 			scriptEngine.eval(reader);
 			reader.close();
 			
@@ -203,6 +203,11 @@ public class ScriptExtention {
 		}
 	}
 	
+	/**
+	 * Retourne l'instance du script compilé ou null si le scrip n'est pas encore compilé
+	 * 
+	 * @return l'instance du script compilé ou null si le scrip n'est pas encore compilé
+	 */
 	public ScriptExtInterface getScriptInterface() {
 		return invocableEngine;
 	}

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<reglement name="LFBTA2X70BAOC" version="2">
+    <displayName>2x70m BAOC</displayName>
+    <description>Compétition Nationnal Belge 2x70m (BAOC)</description>
+    <reglementType>TARGET</reglementType>
+    <nbSerie>2</nbSerie>
+    <nbVoleeParSerie>12</nbVoleeParSerie>
+    <nbFlecheParVolee>3</nbFlecheParVolee>
+    <nbPointsParFleche>10</nbPointsParFleche>
+    <nbMembresEquipe>4</nbMembresEquipe>
+    <nbMembresRetenu>3</nbMembresRetenu>
+    <criteria>
+        <criterion code="arme">
+            <libelle>Arme</libelle>
+            <sortOrder>1</sortOrder>
+            <classement>true</classement>
+            <classementEquipe>false</classementEquipe>
+            <placement>true</placement>
+            <champsTableArchers></champsTableArchers>
+            <numordre>1</numordre>
+            <criterionelements>
+                <element id="2f953dc0-68c1-4669-bb9e-508622ae1fcd">
+                    <code>R</code>
+                    <libelle>Recurve</libelle>
+                    <active>true</active>
+                    <numordre>1</numordre>
+                </element>
+                <element id="bb7cea0f-0105-4d9f-b5bb-931b4bf42578">
+                    <code>C</code>
+                    <libelle>Compound</libelle>
+                    <active>true</active>
+                    <numordre>2</numordre>
+                </element>
+            </criterionelements>
+        </criterion>
+        <criterion code="categorie">
+            <libelle>Catégorie</libelle>
+            <sortOrder>1</sortOrder>
+            <classement>true</classement>
+            <classementEquipe>false</classementEquipe>
+            <placement>false</placement>
+            <champsTableArchers></champsTableArchers>
+            <numordre>2</numordre>
+            <criterionelements>
+                <element id="37400040-cf23-41cd-8666-58013c974988">
+                    <code>D</code>
+                    <libelle>Dame</libelle>
+                    <active>true</active>
+                    <numordre>1</numordre>
+                </element>
+                <element id="c4d88b18-dae5-4c15-b378-652f6a324819">
+                    <code>H</code>
+                    <libelle>Homme</libelle>
+                    <active>true</active>
+                    <numordre>2</numordre>
+                </element>
+            </criterionelements>
+        </criterion>
+    </criteria>
+    <surclassement>
+        <entry>
+            <key>
+                <criteria/>
+            </key>
+        </entry>
+    </surclassement>
+    <listdistancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>70</distance>
+                <distance>70</distance>
+            </distances>
+            <targetFace>122cm</targetFace>
+            <defaultTargetFace>true</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>arme</key>
+                        <value>2f953dc0-68c1-4669-bb9e-508622ae1fcd</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>50</distance>
+                <distance>50</distance>
+            </distances>
+            <targetFace>80cm</targetFace>
+            <defaultTargetFace>true</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>arme</key>
+                        <value>bb7cea0f-0105-4d9f-b5bb-931b4bf42578</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+    </listdistancesetblason>
+    <departages>
+        <departage>10</departage>
+        <departage>X</departage>
+    </departages>
+    <officialReglement>false</officialReglement>
+    <federation id="02a2a553-efbe-4f00-89f0-ddbe426d9541">
+        <sigle>LFBTA</sigle>
+        <nom>Ligue Francophone Belge de Tir à l'Arc</nom>
+        <pays>be</pays>
+        <niveaux>
+            <niveau>
+                <lang>fr</lang>
+                <libelle>Provinces</libelle>
+                <defaut>true</defaut>
+            </niveau>
+            <niveau>
+                <lang>fr</lang>
+                <libelle> BAIC</libelle>
+                <defaut>false</defaut>
+            </niveau>
+            <niveau>
+                <lang>fr</lang>
+                <libelle> Championnat de Ligue</libelle>
+                <defaut>false</defaut>
+            </niveau>
+            <niveau>
+                <lang>fr</lang>
+                <libelle> Championnat de Belgique</libelle>
+                <defaut>false</defaut>
+            </niveau>
+        </niveaux>
+    </federation>
+    <category>3</category>
+    <removable>true</removable>
+    <inDatabase>true</inDatabase>
+</reglement>
