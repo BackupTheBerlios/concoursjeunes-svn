@@ -19,13 +19,13 @@
             <champsTableArchers></champsTableArchers>
             <numordre>1</numordre>
             <criterionelements>
-                <element id="7dd2510f-8663-4985-9724-d9dc3db53c46">
+                <element id="3d1bc835-45cf-4d87-88fa-50df22c9a046">
                     <code>D</code>
                     <libelle>Dame</libelle>
                     <active>true</active>
                     <numordre>1</numordre>
                 </element>
-                <element id="623261b3-5f0f-4ed6-b85a-cb6127bc5604">
+                <element id="fc4ca6ff-6b6e-4df5-b197-6663f445c3e4">
                     <code>H</code>
                     <libelle>Homme</libelle>
                     <active>true</active>
@@ -42,13 +42,13 @@
             <champsTableArchers></champsTableArchers>
             <numordre>2</numordre>
             <criterionelements>
-                <element id="6435d893-f0b6-458a-a85b-9f2bf1bded14">
+                <element id="66c2c3a4-22c5-4692-9c98-a65841d6feee">
                     <code>R</code>
                     <libelle>Recurve</libelle>
                     <active>true</active>
                     <numordre>1</numordre>
                 </element>
-                <element id="43ea6ea4-8fe2-4974-8347-77d196e7ae34">
+                <element id="07c502b5-04cb-4e9e-9b42-9d013aa2d1e7">
                     <code>C</code>
                     <libelle>Compound</libelle>
                     <active>true</active>
@@ -65,49 +65,49 @@
             <champsTableArchers></champsTableArchers>
             <numordre>3</numordre>
             <criterionelements>
-                <element id="21ee3684-2598-4f54-8c66-c478dec22eb5">
+                <element id="e3f18503-0df2-4d5f-b3d6-445646a1d41a">
                     <code>P</code>
                     <libelle>Pupille</libelle>
                     <active>true</active>
                     <numordre>1</numordre>
                 </element>
-                <element id="cb7633d4-b4a2-4846-bd8f-2a1c817ace2a">
+                <element id="7cb3440b-b0bc-437d-9c6e-7922f33a1fd3">
                     <code>B</code>
                     <libelle>Benjamin</libelle>
                     <active>true</active>
                     <numordre>2</numordre>
                 </element>
-                <element id="8c0c5fa2-0ab0-4674-9b57-038df8caa766">
+                <element id="e5600057-d587-476c-8d8a-94ebc844e0a1">
                     <code>C</code>
                     <libelle>Cadet</libelle>
                     <active>true</active>
                     <numordre>3</numordre>
                 </element>
-                <element id="25d5cba5-5f94-4fc7-9b6e-a75a398b5b76">
+                <element id="3ac20ad3-2952-45d1-9ffc-200d4965bf7e">
                     <code>J</code>
                     <libelle>Junior</libelle>
                     <active>true</active>
                     <numordre>4</numordre>
                 </element>
-                <element id="44432274-045b-4474-a2ba-775a12f9bd33">
+                <element id="69f6dac5-64df-4642-b232-279153923ccb">
                     <code>1</code>
                     <libelle>Senior 1</libelle>
                     <active>true</active>
                     <numordre>5</numordre>
                 </element>
-                <element id="caffae99-95f9-497d-a529-973fc5e4507e">
+                <element id="c8e73cc1-7bf3-48e5-9444-8703203e3fa0">
                     <code>2</code>
                     <libelle>Senior 2</libelle>
                     <active>true</active>
                     <numordre>6</numordre>
                 </element>
-                <element id="ed2710de-f404-400d-9daf-b597be808f27">
+                <element id="c2b0755c-cff8-4591-a4e1-67d89cc31526">
                     <code>M</code>
                     <libelle>Master</libelle>
                     <active>true</active>
                     <numordre>7</numordre>
                 </element>
-                <element id="05c8a3db-da9d-4cf2-b082-9d4482dc8e01">
+                <element id="d92509b8-f04a-482c-8f41-c12e801799f1">
                     <code>V</code>
                     <libelle>Vétéran</libelle>
                     <active>true</active>
@@ -135,11 +135,11 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>21ee3684-2598-4f54-8c66-c478dec22eb5</value>
+                        <value>e3f18503-0df2-4d5f-b3d6-445646a1d41a</value>
                     </entry>
                     <entry>
                         <key>arme</key>
-                        <value>6435d893-f0b6-458a-a85b-9f2bf1bded14</value>
+                        <value>66c2c3a4-22c5-4692-9c98-a65841d6feee</value>
                     </entry>
                 </criteria>
             </criteriaSet>
@@ -155,11 +155,11 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>cb7633d4-b4a2-4846-bd8f-2a1c817ace2a</value>
+                        <value>7cb3440b-b0bc-437d-9c6e-7922f33a1fd3</value>
                     </entry>
                     <entry>
                         <key>arme</key>
-                        <value>6435d893-f0b6-458a-a85b-9f2bf1bded14</value>
+                        <value>66c2c3a4-22c5-4692-9c98-a65841d6feee</value>
                     </entry>
                 </criteria>
             </criteriaSet>
@@ -175,11 +175,11 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>8c0c5fa2-0ab0-4674-9b57-038df8caa766</value>
+                        <value>e5600057-d587-476c-8d8a-94ebc844e0a1</value>
                     </entry>
                     <entry>
                         <key>arme</key>
-                        <value>6435d893-f0b6-458a-a85b-9f2bf1bded14</value>
+                        <value>66c2c3a4-22c5-4692-9c98-a65841d6feee</value>
                     </entry>
                 </criteria>
             </criteriaSet>
@@ -195,11 +195,11 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>25d5cba5-5f94-4fc7-9b6e-a75a398b5b76</value>
+                        <value>3ac20ad3-2952-45d1-9ffc-200d4965bf7e</value>
                     </entry>
                     <entry>
                         <key>arme</key>
-                        <value>6435d893-f0b6-458a-a85b-9f2bf1bded14</value>
+                        <value>66c2c3a4-22c5-4692-9c98-a65841d6feee</value>
                     </entry>
                 </criteria>
             </criteriaSet>
@@ -215,11 +215,11 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>44432274-045b-4474-a2ba-775a12f9bd33</value>
+                        <value>69f6dac5-64df-4642-b232-279153923ccb</value>
                     </entry>
                     <entry>
                         <key>arme</key>
-                        <value>6435d893-f0b6-458a-a85b-9f2bf1bded14</value>
+                        <value>66c2c3a4-22c5-4692-9c98-a65841d6feee</value>
                     </entry>
                 </criteria>
             </criteriaSet>
@@ -235,31 +235,11 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>caffae99-95f9-497d-a529-973fc5e4507e</value>
+                        <value>c8e73cc1-7bf3-48e5-9444-8703203e3fa0</value>
                     </entry>
                     <entry>
                         <key>arme</key>
-                        <value>6435d893-f0b6-458a-a85b-9f2bf1bded14</value>
-                    </entry>
-                </criteria>
-            </criteriaSet>
-        </distancesetblason>
-        <distancesetblason>
-            <distances>
-                <distance>60</distance>
-                <distance>60</distance>
-            </distances>
-            <targetFace>122cm</targetFace>
-            <defaultTargetFace>true</defaultTargetFace>
-            <criteriaSet>
-                <criteria>
-                    <entry>
-                        <key>categorie</key>
-                        <value>ed2710de-f404-400d-9daf-b597be808f27</value>
-                    </entry>
-                    <entry>
-                        <key>arme</key>
-                        <value>6435d893-f0b6-458a-a85b-9f2bf1bded14</value>
+                        <value>66c2c3a4-22c5-4692-9c98-a65841d6feee</value>
                     </entry>
                 </criteria>
             </criteriaSet>
@@ -275,11 +255,31 @@
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>05c8a3db-da9d-4cf2-b082-9d4482dc8e01</value>
+                        <value>c2b0755c-cff8-4591-a4e1-67d89cc31526</value>
                     </entry>
                     <entry>
                         <key>arme</key>
-                        <value>6435d893-f0b6-458a-a85b-9f2bf1bded14</value>
+                        <value>66c2c3a4-22c5-4692-9c98-a65841d6feee</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>60</distance>
+                <distance>60</distance>
+            </distances>
+            <targetFace>122cm</targetFace>
+            <defaultTargetFace>true</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>d92509b8-f04a-482c-8f41-c12e801799f1</value>
+                    </entry>
+                    <entry>
+                        <key>arme</key>
+                        <value>66c2c3a4-22c5-4692-9c98-a65841d6feee</value>
                     </entry>
                 </criteria>
             </criteriaSet>
@@ -289,17 +289,17 @@
                 <distance>20</distance>
                 <distance>20</distance>
             </distances>
-            <targetFace>80cm</targetFace>
+            <targetFace>80cm Réduit (5-10)</targetFace>
             <defaultTargetFace>true</defaultTargetFace>
             <criteriaSet>
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>21ee3684-2598-4f54-8c66-c478dec22eb5</value>
+                        <value>e3f18503-0df2-4d5f-b3d6-445646a1d41a</value>
                     </entry>
                     <entry>
                         <key>arme</key>
-                        <value>43ea6ea4-8fe2-4974-8347-77d196e7ae34</value>
+                        <value>07c502b5-04cb-4e9e-9b42-9d013aa2d1e7</value>
                     </entry>
                 </criteria>
             </criteriaSet>
@@ -309,17 +309,17 @@
                 <distance>40</distance>
                 <distance>40</distance>
             </distances>
-            <targetFace>80cm</targetFace>
+            <targetFace>80cm Réduit (5-10)</targetFace>
             <defaultTargetFace>true</defaultTargetFace>
             <criteriaSet>
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>cb7633d4-b4a2-4846-bd8f-2a1c817ace2a</value>
+                        <value>7cb3440b-b0bc-437d-9c6e-7922f33a1fd3</value>
                     </entry>
                     <entry>
                         <key>arme</key>
-                        <value>43ea6ea4-8fe2-4974-8347-77d196e7ae34</value>
+                        <value>07c502b5-04cb-4e9e-9b42-9d013aa2d1e7</value>
                     </entry>
                 </criteria>
             </criteriaSet>
@@ -329,17 +329,17 @@
                 <distance>50</distance>
                 <distance>50</distance>
             </distances>
-            <targetFace>80cm</targetFace>
+            <targetFace>80cm Réduit (5-10)</targetFace>
             <defaultTargetFace>true</defaultTargetFace>
             <criteriaSet>
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>8c0c5fa2-0ab0-4674-9b57-038df8caa766</value>
+                        <value>e5600057-d587-476c-8d8a-94ebc844e0a1</value>
                     </entry>
                     <entry>
                         <key>arme</key>
-                        <value>43ea6ea4-8fe2-4974-8347-77d196e7ae34</value>
+                        <value>07c502b5-04cb-4e9e-9b42-9d013aa2d1e7</value>
                     </entry>
                 </criteria>
             </criteriaSet>
@@ -349,17 +349,17 @@
                 <distance>50</distance>
                 <distance>50</distance>
             </distances>
-            <targetFace>80cm</targetFace>
+            <targetFace>80cm Réduit (5-10)</targetFace>
             <defaultTargetFace>true</defaultTargetFace>
             <criteriaSet>
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>25d5cba5-5f94-4fc7-9b6e-a75a398b5b76</value>
+                        <value>3ac20ad3-2952-45d1-9ffc-200d4965bf7e</value>
                     </entry>
                     <entry>
                         <key>arme</key>
-                        <value>43ea6ea4-8fe2-4974-8347-77d196e7ae34</value>
+                        <value>07c502b5-04cb-4e9e-9b42-9d013aa2d1e7</value>
                     </entry>
                 </criteria>
             </criteriaSet>
@@ -369,17 +369,17 @@
                 <distance>50</distance>
                 <distance>50</distance>
             </distances>
-            <targetFace>80cm</targetFace>
+            <targetFace>80cm Réduit (5-10)</targetFace>
             <defaultTargetFace>true</defaultTargetFace>
             <criteriaSet>
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>44432274-045b-4474-a2ba-775a12f9bd33</value>
+                        <value>69f6dac5-64df-4642-b232-279153923ccb</value>
                     </entry>
                     <entry>
                         <key>arme</key>
-                        <value>43ea6ea4-8fe2-4974-8347-77d196e7ae34</value>
+                        <value>07c502b5-04cb-4e9e-9b42-9d013aa2d1e7</value>
                     </entry>
                 </criteria>
             </criteriaSet>
@@ -389,17 +389,17 @@
                 <distance>50</distance>
                 <distance>50</distance>
             </distances>
-            <targetFace>80cm</targetFace>
+            <targetFace>80cm Réduit (5-10)</targetFace>
             <defaultTargetFace>true</defaultTargetFace>
             <criteriaSet>
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>caffae99-95f9-497d-a529-973fc5e4507e</value>
+                        <value>c8e73cc1-7bf3-48e5-9444-8703203e3fa0</value>
                     </entry>
                     <entry>
                         <key>arme</key>
-                        <value>43ea6ea4-8fe2-4974-8347-77d196e7ae34</value>
+                        <value>07c502b5-04cb-4e9e-9b42-9d013aa2d1e7</value>
                     </entry>
                 </criteria>
             </criteriaSet>
@@ -409,17 +409,17 @@
                 <distance>50</distance>
                 <distance>50</distance>
             </distances>
-            <targetFace>80cm</targetFace>
+            <targetFace>80cm Réduit (5-10)</targetFace>
             <defaultTargetFace>true</defaultTargetFace>
             <criteriaSet>
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>ed2710de-f404-400d-9daf-b597be808f27</value>
+                        <value>c2b0755c-cff8-4591-a4e1-67d89cc31526</value>
                     </entry>
                     <entry>
                         <key>arme</key>
-                        <value>43ea6ea4-8fe2-4974-8347-77d196e7ae34</value>
+                        <value>07c502b5-04cb-4e9e-9b42-9d013aa2d1e7</value>
                     </entry>
                 </criteria>
             </criteriaSet>
@@ -429,17 +429,17 @@
                 <distance>50</distance>
                 <distance>50</distance>
             </distances>
-            <targetFace>80cm</targetFace>
+            <targetFace>80cm Réduit (5-10)</targetFace>
             <defaultTargetFace>true</defaultTargetFace>
             <criteriaSet>
                 <criteria>
                     <entry>
                         <key>categorie</key>
-                        <value>05c8a3db-da9d-4cf2-b082-9d4482dc8e01</value>
+                        <value>d92509b8-f04a-482c-8f41-c12e801799f1</value>
                     </entry>
                     <entry>
                         <key>arme</key>
-                        <value>43ea6ea4-8fe2-4974-8347-77d196e7ae34</value>
+                        <value>07c502b5-04cb-4e9e-9b42-9d013aa2d1e7</value>
                     </entry>
                 </criteria>
             </criteriaSet>
@@ -450,7 +450,7 @@
         <departage>X</departage>
     </departages>
     <officialReglement>false</officialReglement>
-    <federation id="671060f1-fe05-44c3-ae78-5701f0c7448f">
+    <federation id="edd4627c-2ad7-4c08-9f1e-b96030479ec7">
         <sigle>LFBTA</sigle>
         <nom>Ligue Francophone Belge de Tir à l'Arc</nom>
         <pays>be</pays>

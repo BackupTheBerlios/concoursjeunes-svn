@@ -349,3 +349,10 @@ DROP TABLE TEMP_DISTINGUER;
 -- Comme dans les versions antérieurs de la base il n'y avait que des archers
 -- on associe tous les contact présent en base à la catégorie "archer"
 INSERT INTO ASSOCIER_CATEGORIE_CONTACT (ID_CONTACT, NUM_CATEGORIE_CONTACT) SELECT ID_CONTACT, 1 FROM CONTACT;
+
+-- Ajout du blason 80cm Réduit
+INSERT INTO BLASONS VALUES (10, '80cm Réduit (5-10)', 0.5, 0.5, 1, 79, 'targetface_fita_80_reducted.png');
+INSERT INTO ANCRAGES_BLASONS VALUES (10, 0, 0, 0);
+INSERT INTO ANCRAGES_BLASONS VALUES (10, 1, 0.5, 0);
+INSERT INTO ANCRAGES_BLASONS VALUES (10, 2, 0, 0.5);
+INSERT INTO ANCRAGES_BLASONS VALUES (10, 3, 0.5, 0.5);

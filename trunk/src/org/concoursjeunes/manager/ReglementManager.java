@@ -355,6 +355,7 @@ public class ReglementManager {
 			updateReglement(reglement);
 		} catch (JAXBException e) {
 			e.printStackTrace();
+			System.out.println(importFile);
 		}
 		
 		return reglement;

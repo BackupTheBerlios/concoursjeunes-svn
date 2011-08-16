@@ -20,6 +20,7 @@ if(dbVersion == 0) {
 	//sql.executeScript("../sql/ImportVillesFr.sql");
 	
 	updateReglements();
+	sql.executeScript("../sql/ImportClubLFBTA.sql");
 } else {
 	if(dbVersion < 20) {
 		sql.executeScript("01-dropoldtable.sql");
@@ -38,6 +39,7 @@ if(dbVersion == 0) {
 		sql.executeUpdate("RUNSCRIPT FROM 'ressources/sql/ImportVillesFr.sql'");
 		
 		updateReglements();
+		sql.executeScript("../sql/ImportClubLFBTA.sql");
 	}
 }
 

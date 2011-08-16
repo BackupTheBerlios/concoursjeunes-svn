@@ -597,6 +597,7 @@ public class FicheConcoursFinalsPane extends JPanel implements ActionListener, M
 						continue;
 					float srcWidth = image.getWidth();
 					float srcHeight = image.getHeight();
+					//System.out.println(srcWidth + ";" + srcHeight); //$NON-NLS-1$
 					
 					float destHeight = (float)(height-(margin*2));
 					float destWidth = srcWidth * destHeight / srcHeight;
@@ -604,6 +605,12 @@ public class FicheConcoursFinalsPane extends JPanel implements ActionListener, M
 						destWidth = (float)(width-(margin*2));
 						destHeight = srcHeight * destWidth / srcWidth;
 					}
+					if(destWidth > srcWidth)
+						destWidth = (int)(srcWidth / 2d);
+					if(destHeight > srcHeight)
+						destHeight = (int)(srcHeight / 2d);
+					
+					//System.out.println("d:"+destWidth + ";" + destHeight); //$NON-NLS-1$
 					
 					float x = (float)margin;
 					float y = (float)margin;

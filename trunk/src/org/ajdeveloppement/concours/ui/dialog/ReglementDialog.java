@@ -126,6 +126,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
@@ -644,6 +645,10 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 	//Les surclassements
 	private void completeCriteriaSet() {
 		if(reglement != null) {
+			TableModel oldModel = jtCriteriaSet.getModel();
+			if(oldModel != null)
+				oldModel.removeTableModelListener(this);
+			
 			jtCriteriaSet.setModel(createCriteriaSetTableModel());
 			jtCriteriaSet.getColumnModel().getColumn(0).setMaxWidth(20);
 			
@@ -732,7 +737,6 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 		dtm.addColumn(localisation.getResourceString("reglement.surclassement.enable")); //$NON-NLS-1$
 		dtm.addColumn(localisation.getResourceString("reglement.surclassement.categories")); //$NON-NLS-1$
 		dtm.addColumn(localisation.getResourceString("reglement.surclassement.surclassement")); //$NON-NLS-1$
-		dtm.addTableModelListener(this);
 		
 		//on liste toutes les catégorie de classement
 		CriteriaSet[] differentiationCriteria = CriteriaSet.listCriteriaSet(reglement, reglement.getClassementFilter());
@@ -747,6 +751,7 @@ public class ReglementDialog extends JDialog implements ActionListener, MouseLis
 					criteriaSet
 				});
 		}
+		dtm.addTableModelListener(this);
 		
 		return dtm;
 	}

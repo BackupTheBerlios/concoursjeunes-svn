@@ -19,13 +19,13 @@
             <champsTableArchers></champsTableArchers>
             <numordre>1</numordre>
             <criterionelements>
-                <element id="2f953dc0-68c1-4669-bb9e-508622ae1fcd">
+                <element id="4703fa30-e920-48d1-be9d-d9916a96ea43">
                     <code>R</code>
                     <libelle>Recurve</libelle>
                     <active>true</active>
                     <numordre>1</numordre>
                 </element>
-                <element id="bb7cea0f-0105-4d9f-b5bb-931b4bf42578">
+                <element id="31c8b86c-c18f-4e61-8116-62c46fa7e61c">
                     <code>C</code>
                     <libelle>Compound</libelle>
                     <active>true</active>
@@ -42,13 +42,13 @@
             <champsTableArchers></champsTableArchers>
             <numordre>2</numordre>
             <criterionelements>
-                <element id="37400040-cf23-41cd-8666-58013c974988">
+                <element id="bdacc795-fece-4f19-929f-b9983c58d5f6">
                     <code>D</code>
                     <libelle>Dame</libelle>
                     <active>true</active>
                     <numordre>1</numordre>
                 </element>
-                <element id="c4d88b18-dae5-4c15-b378-652f6a324819">
+                <element id="c0759daa-21dc-49d4-bbb7-33f112c47712">
                     <code>H</code>
                     <libelle>Homme</libelle>
                     <active>true</active>
@@ -76,7 +76,7 @@
                 <criteria>
                     <entry>
                         <key>arme</key>
-                        <value>2f953dc0-68c1-4669-bb9e-508622ae1fcd</value>
+                        <value>4703fa30-e920-48d1-be9d-d9916a96ea43</value>
                     </entry>
                 </criteria>
             </criteriaSet>
@@ -86,13 +86,13 @@
                 <distance>50</distance>
                 <distance>50</distance>
             </distances>
-            <targetFace>80cm</targetFace>
+            <targetFace>80cm Réduit (5-10)</targetFace>
             <defaultTargetFace>true</defaultTargetFace>
             <criteriaSet>
                 <criteria>
                     <entry>
                         <key>arme</key>
-                        <value>bb7cea0f-0105-4d9f-b5bb-931b4bf42578</value>
+                        <value>31c8b86c-c18f-4e61-8116-62c46fa7e61c</value>
                     </entry>
                 </criteria>
             </criteriaSet>
@@ -103,7 +103,7 @@
         <departage>X</departage>
     </departages>
     <officialReglement>false</officialReglement>
-    <federation id="02a2a553-efbe-4f00-89f0-ddbe426d9541">
+    <federation id="3a33927d-41a9-4396-ad27-c18ed09505c7">
         <sigle>LFBTA</sigle>
         <nom>Ligue Francophone Belge de Tir à l'Arc</nom>
         <pays>be</pays>
