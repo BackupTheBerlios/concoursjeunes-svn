@@ -1,0 +1,134 @@
+<html>
+<head>
+<style type="text/css"> 
+body {
+	background-image: url(file:./ressources/fondGauche.png);
+	background-repeat: repeat-y;
+	
+	
+	font-family: Tahoma, Arial, Verdana, sans-serif;
+	
+	margin: 0px;
+	height: 100\%;
+}
+a {
+	text-decoration: none;
+}
+
+.section {
+	font-weight: bold;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.elementMenu {
+	margin-left: 5px;
+}
+
+#menu {
+	/*background-color: #F4F5F5;*/
+	min-height: 100\%;
+}
+
+#date {
+	font-weight: bold;
+	font-style: italic;
+	font-size: 115\%;
+	text-align: center;
+	/*background-color: #000000; /*#A9CDF2;*/
+	/*background-image: url(file:./ressources/fondDate.png);*/
+	color: #888888;
+}
+
+#logo {
+	text-align: center;
+}
+
+#intituleClub {
+	font-weight: bold;
+	font-size: 105\%;
+	text-align: center;
+}
+
+#profil {
+	font-weight: bold;
+}
+</style>
+</head>
+<body>
+	
+	<!-- <table width="100\%">
+		<tr>
+			<td width="100"><img src="file:{LOGO_CLUB_URI}" width="100" height="110"></td>
+			<td><h1>{INTITULE_CLUB}</h1></td>
+			<td><h1>%home.activeprofile% : <a href="http://change_profile">{PROFILE_NAME}</a></h1></td>
+		</tr>
+	</table>
+	<br><br> -->
+	<table width="100\%" height="100\%">
+	<tr>
+		<td width="200px" valign="top" id="menu">
+			<table width="100\%" style="height: 100\%;">
+				<tr><td id="date">{DATE}</td></tr>
+				<tr><td id="logo"><img src="file:{LOGO_CLUB_URI}" width="72" height="72"></td></tr>
+				<tr><td id="intituleClub">{INTITULE_CLUB}</td></tr>
+				<tr><td style="font-size: 105\%;text-align: center;margin-bottom: 15px;">* * *</td></tr>
+				<tr><td id="profil">%home.activeprofile%: <a href="http://change_profile">{PROFILE_NAME}</a></td></tr>
+				<tr><td>
+					<p class="section">
+					%home.actions%
+					</p>
+					<p class="elementMenu">
+						<a href="http://manage_club">%home.manageclub%</a><br>
+						<a href="http://manage_reglement">%home.managereglement%</a>
+					</p>
+					<p class="section">
+					%home.divers%
+					</p>
+					<p class="elementMenu">
+						<a href="http://show_help">%home.showhelp%</a>
+					</p>
+				</td></tr>
+			</table>
+		</td>
+		<td>
+			<center>
+				<table>
+					<tr>
+						<td>
+							<img src="file:./ressources/fnd.jpg" alt="" width="300" height="308">
+						</td>
+						<td>
+							<table>
+								<tr><th colspan="3" align="left"><font size="+1">%home.gestcompet%</font><hr></th></tr>
+								<tr>
+									<td><img src="file:./ressources/b_new.png" alt="%home.new%" border="0"></td>
+									<td colspan="2"><a href="http://new_concours">%home.new%</a></td>
+								</tr>
+								<tr><td colspan="3">&nbsp;</td></tr>
+								<tr><td colspan="3">%home.lastten%</td></tr>
+								<bloc::listconcours>
+								<tr>
+									<td>
+										<img src="file:{STATE}" alt="">
+									</td>
+									<td><a href="http://open_concours#{ID_CONCOURS}">{LIBELLE_CONCOURS}</a></td>
+									<td><a href="http://delete_concours#{ID_CONCOURS}">
+										<img src="file:./ressources/b_drop.png" alt="%home.delete%" border="0">
+									</a></td>
+								</tr>
+								</bloc::listconcours>
+								<bloc::extendedlist>
+								<tr><td colspan="3"><td>&nbsp;</td></tr>
+								<tr><td colspan="3"><a href="http://list_all_concours">Concours plus ancien...</a></td></tr>
+								</bloc::extendedlist>
+							</table>
+						</td>
+					</tr>
+				</table>
+				%home.info%
+			</center>
+		</td>
+	</tr>
+	</table>
+</html>

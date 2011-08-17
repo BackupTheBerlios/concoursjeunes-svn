@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<reglement name="LFBTA2X18BAIC" version="2">
+    <displayName>18m BAIC</displayName>
+    <reglementType>TARGET</reglementType>
+    <nbSerie>2</nbSerie>
+    <nbVoleeParSerie>10</nbVoleeParSerie>
+    <nbFlecheParVolee>3</nbFlecheParVolee>
+    <nbPointsParFleche>10</nbPointsParFleche>
+    <nbMembresEquipe>4</nbMembresEquipe>
+    <nbMembresRetenu>3</nbMembresRetenu>
+    <criteria>
+        <criterion code="arme">
+            <libelle>Arme</libelle>
+            <sortOrder>1</sortOrder>
+            <classement>true</classement>
+            <classementEquipe>false</classementEquipe>
+            <placement>false</placement>
+            <champsTableArchers></champsTableArchers>
+            <numordre>1</numordre>
+            <criterionelements>
+                <element id="da96c9ab-4370-4672-81c3-7a284677b274">
+                    <code>R</code>
+                    <libelle>Recurve</libelle>
+                    <active>true</active>
+                    <numordre>1</numordre>
+                </element>
+                <element id="f0cc64f7-232a-4f87-9cd7-4df2a3d0f19c">
+                    <code>C</code>
+                    <libelle>Compound</libelle>
+                    <active>true</active>
+                    <numordre>2</numordre>
+                </element>
+            </criterionelements>
+        </criterion>
+        <criterion code="categorie">
+            <libelle>Catégorie</libelle>
+            <sortOrder>1</sortOrder>
+            <classement>true</classement>
+            <classementEquipe>false</classementEquipe>
+            <placement>false</placement>
+            <champsTableArchers></champsTableArchers>
+            <numordre>2</numordre>
+            <criterionelements>
+                <element id="a064f1ec-2f3e-4972-adb5-6dbde311e259">
+                    <code>D</code>
+                    <libelle>Dame</libelle>
+                    <active>true</active>
+                    <numordre>1</numordre>
+                </element>
+                <element id="9ddff5e6-75dd-441a-86c9-9455937b49ee">
+                    <code>H</code>
+                    <libelle>Homme</libelle>
+                    <active>true</active>
+                    <numordre>2</numordre>
+                </element>
+            </criterionelements>
+        </criterion>
+    </criteria>
+    <surclassement>
+        <entry>
+            <key>
+                <criteria/>
+            </key>
+        </entry>
+    </surclassement>
+    <listdistancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>18</distance>
+                <distance>18</distance>
+            </distances>
+            <targetFace>Tri Spot Vertical</targetFace>
+            <defaultTargetFace>true</defaultTargetFace>
+            <criteriaSet>
+                <criteria/>
+            </criteriaSet>
+        </distancesetblason>
+    </listdistancesetblason>
+    <departages>
+        <departage>10</departage>
+        <departage>9</departage>
+    </departages>
+    <officialReglement>false</officialReglement>
+    <federation id="65cb1b53-c05d-4df5-a9ce-07b2e3239274">
+        <sigle>LFBTA</sigle>
+        <nom>Ligue Francophone Belge de Tir à l'Arc</nom>
+        <pays>be</pays>
+        <niveaux>
+            <niveau>
+                <lang>fr</lang>
+                <libelle>Provinces</libelle>
+                <defaut>true</defaut>
+            </niveau>
+            <niveau>
+                <lang>fr</lang>
+                <libelle> BAIC</libelle>
+                <defaut>false</defaut>
+            </niveau>
+            <niveau>
+                <lang>fr</lang>
+                <libelle> Championnat de Ligue</libelle>
+                <defaut>false</defaut>
+            </niveau>
+            <niveau>
+                <lang>fr</lang>
+                <libelle> Championnat de Belgique</libelle>
+                <defaut>false</defaut>
+            </niveau>
+        </niveaux>
+    </federation>
+    <category>2</category>
+    <removable>true</removable>
+    <inDatabase>true</inDatabase>
+</reglement>

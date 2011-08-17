@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<reglement name="LFBTA2X25EXT" version="2">
+    <displayName>2x25m en plein air</displayName>
+    <description>Tir à 25m en plein air - 2x36 flèches</description>
+    <reglementType>TARGET</reglementType>
+    <nbSerie>2</nbSerie>
+    <nbVoleeParSerie>12</nbVoleeParSerie>
+    <nbFlecheParVolee>3</nbFlecheParVolee>
+    <nbPointsParFleche>10</nbPointsParFleche>
+    <nbMembresEquipe>4</nbMembresEquipe>
+    <nbMembresRetenu>3</nbMembresRetenu>
+    <criteria>
+        <criterion code="sexe">
+            <libelle>Sexe</libelle>
+            <sortOrder>1</sortOrder>
+            <classement>true</classement>
+            <classementEquipe>false</classementEquipe>
+            <placement>false</placement>
+            <champsTableArchers></champsTableArchers>
+            <numordre>1</numordre>
+            <criterionelements>
+                <element id="bfdda77b-383d-430f-9ac1-8dac293eec88">
+                    <code>D</code>
+                    <libelle>Dame</libelle>
+                    <active>true</active>
+                    <numordre>1</numordre>
+                </element>
+                <element id="29cd2050-7052-4308-83cc-95e80c20a87d">
+                    <code>H</code>
+                    <libelle>Homme</libelle>
+                    <active>true</active>
+                    <numordre>2</numordre>
+                </element>
+            </criterionelements>
+        </criterion>
+        <criterion code="arme">
+            <libelle>Arme</libelle>
+            <sortOrder>1</sortOrder>
+            <classement>true</classement>
+            <classementEquipe>false</classementEquipe>
+            <placement>false</placement>
+            <champsTableArchers></champsTableArchers>
+            <numordre>2</numordre>
+            <criterionelements>
+                <element id="e77c25c7-9296-4623-b445-ab16c06b42a3">
+                    <code>R</code>
+                    <libelle>Recurve</libelle>
+                    <active>true</active>
+                    <numordre>1</numordre>
+                </element>
+                <element id="3818edbc-efb2-43d0-962c-471f161be36a">
+                    <code>C</code>
+                    <libelle>Compound</libelle>
+                    <active>true</active>
+                    <numordre>2</numordre>
+                </element>
+            </criterionelements>
+        </criterion>
+        <criterion code="categorie">
+            <libelle>Catégorie d'Age</libelle>
+            <sortOrder>1</sortOrder>
+            <classement>true</classement>
+            <classementEquipe>false</classementEquipe>
+            <placement>true</placement>
+            <champsTableArchers></champsTableArchers>
+            <numordre>3</numordre>
+            <criterionelements>
+                <element id="3fb7d3b3-5b78-4981-86ba-06667112f934">
+                    <code>B</code>
+                    <libelle>Benjamin</libelle>
+                    <active>true</active>
+                    <numordre>1</numordre>
+                </element>
+                <element id="46aa2703-2759-4784-84f2-ca33cf177c05">
+                    <code>C</code>
+                    <libelle>Cadet</libelle>
+                    <active>true</active>
+                    <numordre>2</numordre>
+                </element>
+                <element id="71bc68f8-1022-4119-acf9-979778998d2b">
+                    <code>J</code>
+                    <libelle>Junior</libelle>
+                    <active>true</active>
+                    <numordre>3</numordre>
+                </element>
+                <element id="64c7891f-7833-429e-9c6f-e13e4e522f24">
+                    <code>1</code>
+                    <libelle>Senior 1</libelle>
+                    <active>true</active>
+                    <numordre>4</numordre>
+                </element>
+                <element id="9086a58e-2427-4e8a-b054-b4e08256a645">
+                    <code>2</code>
+                    <libelle>Senior 2</libelle>
+                    <active>true</active>
+                    <numordre>5</numordre>
+                </element>
+                <element id="2912bbcb-822b-4ff3-8482-aa90e0231333">
+                    <code>M</code>
+                    <libelle>Master</libelle>
+                    <active>true</active>
+                    <numordre>6</numordre>
+                </element>
+                <element id="aea75298-fca8-4e80-9d8a-50543941cc90">
+                    <code>V</code>
+                    <libelle>Vétéran</libelle>
+                    <active>true</active>
+                    <numordre>7</numordre>
+                </element>
+            </criterionelements>
+        </criterion>
+    </criteria>
+    <surclassement>
+        <entry>
+            <key>
+                <criteria/>
+            </key>
+        </entry>
+    </surclassement>
+    <listdistancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>25</distance>
+                <distance>25</distance>
+            </distances>
+            <targetFace>80cm</targetFace>
+            <defaultTargetFace>true</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>3fb7d3b3-5b78-4981-86ba-06667112f934</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>25</distance>
+                <distance>25</distance>
+            </distances>
+            <targetFace>60cm</targetFace>
+            <defaultTargetFace>true</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>46aa2703-2759-4784-84f2-ca33cf177c05</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>25</distance>
+                <distance>25</distance>
+            </distances>
+            <targetFace>60cm</targetFace>
+            <defaultTargetFace>true</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>71bc68f8-1022-4119-acf9-979778998d2b</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>25</distance>
+                <distance>25</distance>
+            </distances>
+            <targetFace>60cm</targetFace>
+            <defaultTargetFace>true</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>64c7891f-7833-429e-9c6f-e13e4e522f24</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>25</distance>
+                <distance>25</distance>
+            </distances>
+            <targetFace>60cm</targetFace>
+            <defaultTargetFace>true</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>9086a58e-2427-4e8a-b054-b4e08256a645</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>25</distance>
+                <distance>25</distance>
+            </distances>
+            <targetFace>60cm</targetFace>
+            <defaultTargetFace>true</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>2912bbcb-822b-4ff3-8482-aa90e0231333</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>25</distance>
+                <distance>25</distance>
+            </distances>
+            <targetFace>60cm</targetFace>
+            <defaultTargetFace>true</defaultTargetFace>
+            <criteriaSet>
+                <criteria>
+                    <entry>
+                        <key>categorie</key>
+                        <value>aea75298-fca8-4e80-9d8a-50543941cc90</value>
+                    </entry>
+                </criteria>
+            </criteriaSet>
+        </distancesetblason>
+    </listdistancesetblason>
+    <departages>
+        <departage>10</departage>
+        <departage>X</departage>
+    </departages>
+    <officialReglement>false</officialReglement>
+    <federation id="bf5ac675-db7a-4f33-b2c2-c2b5b729d897">
+        <sigle>LFBTA</sigle>
+        <nom>Ligue Francophone Belge de Tir à l'Arc</nom>
+        <pays>be</pays>
+        <niveaux>
+            <niveau>
+                <lang>fr</lang>
+                <libelle>Provinces</libelle>
+                <defaut>true</defaut>
+            </niveau>
+            <niveau>
+                <lang>fr</lang>
+                <libelle> BAIC</libelle>
+                <defaut>false</defaut>
+            </niveau>
+            <niveau>
+                <lang>fr</lang>
+                <libelle> Championnat de Ligue</libelle>
+                <defaut>false</defaut>
+            </niveau>
+            <niveau>
+                <lang>fr</lang>
+                <libelle> Championnat de Belgique</libelle>
+                <defaut>false</defaut>
+            </niveau>
+        </niveaux>
+    </federation>
+    <category>3</category>
+    <removable>true</removable>
+    <inDatabase>true</inDatabase>
+</reglement>
