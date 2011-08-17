@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="BackupRestorePlugin" basedir="../">
+	<target name="pack-BackupRestorePlugin">
+		<mkdir dir="${projet.pack.dir}/plugins/BackupRestorePlugin/plugins" />
+		<jar jarfile="${projet.pack.dir}/plugins/BackupRestorePlugin/plugins/BackupRestorePlugin.jar"
+			basedir="${projet.pack.dir}/bin"
+			includes="org/concoursjeunes/plugins/backup/**,org/concoursjeunes/plugins/restore/**">
+		</jar>
+		<copy todir="${projet.pack.dir}/plugins/BackupRestorePlugin" >
+			<fileset dir="." >
+				<include name="plugins/properties/BackupPlugin.properties" />
+				<include name="plugins/properties/RestorePlugin.properties" />
+				<include name="ressources/repositories/BackupRestorePlugin.xml"/>
+			</fileset>
+		</copy>
+		
+		<taskdef name="revisionscreator" classname="org.ajdeveloppement.updater.ant.RevisionsCreator">
+			<classpath location="lib/ajcommons.jar"/>
+		</taskdef>
+
+		<revisionscreator 
+				revisionpath="${projet.pack.dir}/plugins/BackupRestorePlugin/revision.xml.gz"
+				reposname="BackupRestorePlugin"
+				keystorepath="${projet.keystorepath}"
+				keystorepassword="${projet.keystorepassword}"
+				signkeysalias="${projet.signkeyalias}"
+				signkeysaliaspassword="${projet.signkeyaliaspassword}">
+			<fileset dir="${projet.pack.dir}/plugins/BackupRestorePlugin">
+				<include name="**/**"/>
+				
+				<exclude name="*-filelist.txt"/>
+			</fileset>
+		</revisionscreator>
+	</target>
+</project>

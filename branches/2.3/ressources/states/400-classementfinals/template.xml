@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE ITEXT SYSTEM "ressources/templates/itext.dtd">
+<itext creationdate="{CURRENT_TIME}"
+		producer="iTextXML by lowagie.com"
+		pagesize="A4"
+		orientation="portrait"
+		author="{author}"
+		title="%classement.individuel%">
+	<table columns="2" width="100.0\%" widths="20.0;80.0" bottom="true">
+		<row>
+			<cell verticalalign="Middle" rowspan="2">
+				<paragraph leading="18.0" font="unknown" align="Default">
+					<image url="{LOGO_CLUB_URI}" plainwidth="90.0" plainheight="100.0"></image>
+				</paragraph>
+			</cell>
+			<cell verticalalign="Default" leading="18.0">
+				<phrase style="italic">{INTITULE_CLUB}</phrase>
+			</cell>
+		</row>
+		<row>
+			<cell verticalalign="Default" horizontalalign="Center" leading="36.0">
+				<paragraph leading="36.0" size="18.0" fontstyle="normal">
+					<chunk size="18.0" fontstyle="normal">{INTITULE_CONCOURS}</chunk>
+					<newline />
+					<chunk size="18.0" fontstyle="normal">{VILLE_CLUB} %classement.part_date% {DATE_CONCOURS}</chunk>
+				</paragraph>
+			</cell>
+		</row>
+	</table>
+	<newline />
+	<table columns="1" width="100.0\%">
+		<row>
+			<cell>
+				<phrase leading="18.0" font="unknown" align="Default" indentationleft="10.0">
+					<chunk fontstyle="bold">%classement.arbitreresponsable% </chunk>{ARBITRE_RESPONSABLE}
+				</phrase>
+				<newline />
+				<phrase leading="18.0" font="unknown" align="Default">
+					<chunk fontstyle="bold">%classement.arbitres% </chunk>{ARBITRES_ASSISTANT}
+				</phrase>
+				<newline /><chunk color="#FFFFFF">_</chunk>
+			</cell>
+		</row>
+	</table>
+	<newline />
+	<table columns="2" width="100.0\%" widths="50.0;50.0" top="true">
+		<row>
+			<cell>
+				<phrase style="bold">{NB_CLUB} %classement.registerclub%</phrase>
+			</cell>
+			<cell horizontalalign="Right">
+				<phrase style="bold">{NB_TIREURS} %classement.registerconcurrent%</phrase>
+			</cell>
+		</row>
+		<row>
+			<cell colspan="2" horizontalalign="Center" leading="24.0">
+				<paragraph leading="24.0" size="20.0" fontstyle="normal">
+					<chunk size="20.0" fontstyle="normal">%classement.individuel%</chunk>
+				</paragraph>
+			</cell>
+		</row>
+	</table>
+	<newline />
+	<bloc::categories>
+	<table columns="7" width="100.0\%" cellpadding="1.0" widths="4.21;24.21;25.7894;9.4737;9.4737;17.3695;9.4737" lastHeaderRow="1">
+		<row>
+			<cell colspan="7">
+				<phrase style="bold">{CATEGORIE}</phrase>
+			</cell>
+		</row>
+		<row>
+			<cell header="true" horizontalalign="Center" verticalalign="Middle" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" style="bold">%classement.classement%</phrase>
+			</cell>
+			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" style="bold">%classement.namefirstname%</phrase>
+			</cell>
+			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" style="bold">%classement.club%</phrase>
+			</cell>
+			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" style="bold">%classement.licence%</phrase>
+			</cell>
+			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" style="bold">%classement.category%</phrase>
+			</cell>
+			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" style="bold">%classement.phase%</phrase>
+			</cell>
+			<cell header="true" horizontalalign="Center" backgroundcolor="#aaaaaa" top="true" bottom="true" right="true" left="true">
+				<phrase size="10.0" style="bold">%classement.score%</phrase>
+			</cell>
+		</row>
+		<bloc::classement>
+		<row>
+			<cell header="false" horizontalalign="Center" top="true" bottom="true" right="true" left="true">
+				<phrase size="9.0" >{PLACE}</phrase>
+			</cell>
+			<cell header="false" horizontalalign="Default" verticalalign="Middle" top="true" bottom="true" right="true" left="true">
+				<phrase size="9.0" >{IDENTITEE}</phrase>
+			</cell>
+			<cell header="false" horizontalalign="Default" top="true" bottom="true" right="true" left="true">
+				<phrase size="9.0" >{CLUB}</phrase>
+			</cell>
+			<cell header="false" horizontalalign="Center" top="true" bottom="true" right="true" left="true">
+				<phrase size="9.0" >{NUM_LICENCE}</phrase>
+			</cell>
+			<cell header="false" horizontalalign="Center" top="true" bottom="true" right="true" left="true">
+				<phrase size="9.0" >{categorie}</phrase>
+			</cell>
+			<cell header="false" horizontalalign="Center" top="true" bottom="true" right="true" left="true">
+				<phrase size="9.0" >{PHASE}</phrase>
+			</cell>
+			<cell header="false" horizontalalign="Center" top="true" bottom="true" right="true" left="true">
+				<phrase size="9.0" >{SCORE}</phrase>
+			</cell>
+		</row>
+		</bloc::classement>
+	</table>
+	<newline />
+	</bloc::categories>
+</itext>
