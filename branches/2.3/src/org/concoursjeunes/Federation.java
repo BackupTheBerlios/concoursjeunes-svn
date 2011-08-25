@@ -355,8 +355,11 @@ public class Federation implements ObjectPersistence {
 		pstmtAlreadyExists.setString(2, nomFederation);
 		ResultSet rs = pstmtAlreadyExists.executeQuery();
 		try {
-			if(rs.next())
+			if(rs.next()) {
 				numFederation = rs.getInt(1);
+				
+				FederationCache.getInstance().add(this);
+			}
 		} finally {
 			rs.close();
 		}
@@ -438,7 +441,8 @@ public class Federation implements ObjectPersistence {
 	 * @param marshaller
 	 */
 	protected void beforeMarshal(Marshaller marshaller) {
-		xmlId = UUID.randomUUID().toString();
+		if(xmlId == null)
+			xmlId = UUID.randomUUID().toString();
 	}
 	
 	/**

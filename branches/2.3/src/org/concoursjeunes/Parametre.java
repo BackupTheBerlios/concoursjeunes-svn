@@ -98,6 +98,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlIDREF;
 
 import org.concoursjeunes.manager.ReglementManager;
 
@@ -110,6 +111,7 @@ import org.concoursjeunes.manager.ReglementManager;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Parametre extends DefaultParameters {
 	
+	@XmlIDREF
 	private Entite club				= new Entite();
 	private String lieuConcours		= ""; //$NON-NLS-1$
 	private CompetitionLevel niveauChampionnat = new CompetitionLevel();
