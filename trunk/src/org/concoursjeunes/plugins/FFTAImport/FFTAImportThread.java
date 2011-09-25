@@ -110,6 +110,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
 
 import org.ajdeveloppement.apps.AppUtilities;
@@ -198,7 +199,13 @@ public class FFTAImportThread extends Thread {
 			if(keyEntry != null)
 				key = keyEntry.getSecretKey();
 			else {
-				JOptionPane.showMessageDialog(parentframe, pluginLocalisation.getResourceString("erreur.nokey"), "", JOptionPane.WARNING_MESSAGE); //$NON-NLS-1$ //$NON-NLS-2$
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						JOptionPane.showMessageDialog(parentframe, pluginLocalisation.getResourceString("erreur.nokey"), "", JOptionPane.WARNING_MESSAGE); //$NON-NLS-1$ //$NON-NLS-2$
+					}
+				});
+				
 				return;
 			}
 			

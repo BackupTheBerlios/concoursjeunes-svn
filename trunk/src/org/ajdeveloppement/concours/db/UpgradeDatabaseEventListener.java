@@ -182,23 +182,26 @@ public class UpgradeDatabaseEventListener implements org.h2.upgrade.v1_1.api.Dat
 				@Override
 				public void run() {
 					if(splash != null) {
-						Graphics2D g2d = splash.createGraphics();
-			
-						g2d.setColor(Color.WHITE);
-						g2d.fillRect(10, 440, 480, 20);
-						g2d.setColor(Color.BLACK);
-						g2d.drawRect(10, 440, 480, 20);
-						
-						GradientPaint gp = new GradientPaint(0, 0, new Color(200,200,255, 200), (int)((480.0 / 100.0) * percent) - 11, 0, new Color(100,100,255, 200), true);
-						g2d.setPaint(gp);
-						g2d.fillRect(11, 441, (int)((480.0 / 100.0) * percent), 19); 
-						
-						g2d.setColor(Color.BLACK);
-						g2d.drawString("Opération en base (peut durer plusieurs minutes): " + taskName, 15, 455); //$NON-NLS-1$
-						
 						try {
-							splash.update();
-						} catch (IllegalStateException e) {
+							Graphics2D g2d = splash.createGraphics();
+				
+							g2d.setColor(Color.WHITE);
+							g2d.fillRect(10, 440, 480, 20);
+							g2d.setColor(Color.BLACK);
+							g2d.drawRect(10, 440, 480, 20);
+							
+							GradientPaint gp = new GradientPaint(0, 0, new Color(200,200,255, 200), (int)((480.0 / 100.0) * percent) - 11, 0, new Color(100,100,255, 200), true);
+							g2d.setPaint(gp);
+							g2d.fillRect(11, 441, (int)((480.0 / 100.0) * percent), 19); 
+							
+							g2d.setColor(Color.BLACK);
+							g2d.drawString("Opération en base (peut durer plusieurs minutes): " + taskName, 15, 455); //$NON-NLS-1$
+							
+							try {
+								splash.update();
+							} catch (IllegalStateException e) {
+							}
+						} catch (Exception e) {
 						}
 					}
 				}

@@ -510,6 +510,7 @@ public class Main {
 			public void run() {
 				Profile profile = new Profile();
 				core.addProfile(profile);
+
 				new ConcoursJeunesFrame(profile);
 			}
 		});

@@ -447,6 +447,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	 */
 	protected void afterMarshal(Marshaller marshaller) {
 		entitesConcours = null;
+		federations = null;
 	}
 	
 	/**
@@ -458,6 +459,7 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 		parametre.addPropertyChangeListener(this);
 		concurrentList.setParametre(parametre);
 		entitesConcours = null;
+		federations = null;
 		
 		//si la fiche concours est basé synchronisé avec une autre base de données,
 		//on la resynchronise avec la base courante
