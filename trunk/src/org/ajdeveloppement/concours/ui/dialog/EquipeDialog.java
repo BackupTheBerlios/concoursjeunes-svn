@@ -1,7 +1,7 @@
 /*
  * Copyright 2002-2007 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -124,15 +124,15 @@ import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.AJTree;
 import org.ajdeveloppement.commons.ui.GhostGlassPane;
-import org.concoursjeunes.Concurrent;
-import org.concoursjeunes.ConcurrentList;
-import org.concoursjeunes.CriteriaSet;
-import org.concoursjeunes.Criterion;
-import org.concoursjeunes.Entite;
-import org.concoursjeunes.Equipe;
-import org.concoursjeunes.EquipeList;
-import org.concoursjeunes.FicheConcours;
-import org.concoursjeunes.localisable.CriteriaSetLibelle;
+import org.ajdeveloppement.concours.Concurrent;
+import org.ajdeveloppement.concours.ConcurrentList;
+import org.ajdeveloppement.concours.CriteriaSet;
+import org.ajdeveloppement.concours.Criterion;
+import org.ajdeveloppement.concours.Entite;
+import org.ajdeveloppement.concours.Equipe;
+import org.ajdeveloppement.concours.EquipeList;
+import org.ajdeveloppement.concours.FicheConcours;
+import org.ajdeveloppement.concours.localisable.CriteriaSetLibelle;
 
 /**
  * Boite de dialogue de gestion des équipes

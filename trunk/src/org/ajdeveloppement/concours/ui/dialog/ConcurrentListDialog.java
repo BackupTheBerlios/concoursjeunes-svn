@@ -1,7 +1,7 @@
 /*
  * Copyright 2002-2007 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -124,15 +124,15 @@ import org.ajdeveloppement.apps.localisation.Localizable;
 import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
-import org.concoursjeunes.Archer;
-import org.concoursjeunes.Concurrent;
-import org.concoursjeunes.Criterion;
-import org.concoursjeunes.CriterionElement;
-import org.concoursjeunes.Entite;
-import org.concoursjeunes.Profile;
-import org.concoursjeunes.Reglement;
-import org.concoursjeunes.manager.ConcurrentManager;
-import org.concoursjeunes.manager.ConcurrentManagerProgress;
+import org.ajdeveloppement.concours.Archer;
+import org.ajdeveloppement.concours.Concurrent;
+import org.ajdeveloppement.concours.Criterion;
+import org.ajdeveloppement.concours.CriterionElement;
+import org.ajdeveloppement.concours.Entite;
+import org.ajdeveloppement.concours.Profile;
+import org.ajdeveloppement.concours.Reglement;
+import org.ajdeveloppement.concours.managers.ConcurrentManager;
+import org.ajdeveloppement.concours.managers.ConcurrentManagerProgress;
 import org.jdesktop.swingx.JXBusyLabel;
 import org.jdesktop.swingx.JXHyperlink;
 

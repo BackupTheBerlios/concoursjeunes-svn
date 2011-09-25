@@ -18,7 +18,7 @@ function printState(ficheConcours, template, document, writer, options) {
 		var strArbitreResp = "";
 		var strArbitresAss = "";
 		
-		writer.setPageEvent(new org.concoursjeunes.state.PageFooter());
+		writer.setPageEvent(new org.ajdeveloppement.concours.state.PageFooter());
 
 		tplClassement.setLocalisationReader(localeReader);
 		tplClassement.loadTemplate(template);
@@ -62,7 +62,7 @@ function printState(ficheConcours, template, document, writer, options) {
 			strTailleChampsDistance += tailleChampDistance + ";";
 		}
 		
-		org.concoursjeunes.CriteriaSet.sortCriteriaSet(scnaUse, ficheConcours.getParametre().getReglement().getListCriteria());
+		org.ajdeveloppement.concours.CriteriaSet.sortCriteriaSet(scnaUse, ficheConcours.getParametre().getReglement().getListCriteria());
 
 		for (var i = 0; i < scnaUse.size(); i++) {
 
@@ -71,7 +71,7 @@ function printState(ficheConcours, template, document, writer, options) {
 			var strSCNA = "";
 
 			if (sortList.size() > 0) {
-				strSCNA = new org.concoursjeunes.localisable.CriteriaSetLibelle(scnaUse.get(i), localeReader).toString();
+				strSCNA = new org.ajdeveloppement.concours.localisable.CriteriaSetLibelle(scnaUse.get(i), localeReader).toString();
 
 				tplClassement.parse("categories.TAILLE_CHAMPS_DISTANCE", strTailleChampsDistance);
 				tplClassement.parse("categories.CATEGORIE", strSCNA);

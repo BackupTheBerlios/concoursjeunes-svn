@@ -1,9 +1,9 @@
 /*
- * Créé le 16 févr. 2010 à 22:23:32 pour ConcoursJeunes
+ * Créé le 16 févr. 2010 à 22:23:32 pour ArcCompetition
  *
  * Copyright 2002-2010 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -88,7 +88,7 @@
  */
 package org.ajdeveloppement.concours;
 
-import static org.concoursjeunes.ApplicationCore.staticParameters;
+import static org.ajdeveloppement.concours.ApplicationCore.staticParameters;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -107,14 +107,10 @@ import java.util.Set;
 import org.ajdeveloppement.commons.AJTemplate;
 import org.ajdeveloppement.commons.UncheckedException;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.concours.event.FicheConcoursEvent;
+import org.ajdeveloppement.concours.event.FicheConcoursListener;
+import org.ajdeveloppement.concours.localisable.CriteriaSetLibelle;
 import org.ajdeveloppement.concours.managers.RepartitionFinalsManager;
-import org.concoursjeunes.Classement;
-import org.concoursjeunes.Concurrent;
-import org.concoursjeunes.CriteriaSet;
-import org.concoursjeunes.FicheConcours;
-import org.concoursjeunes.event.FicheConcoursEvent;
-import org.concoursjeunes.event.FicheConcoursListener;
-import org.concoursjeunes.localisable.CriteriaSetLibelle;
 
 
 /**

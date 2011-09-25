@@ -1,9 +1,9 @@
 /*
- * Créé le 17 aoû. 08 à 12:54:22 pour ConcoursJeunes
+ * Créé le 17 aoû. 08 à 12:54:22 pour ArcCompetition
  *
  * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -117,14 +117,14 @@ import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
+import org.ajdeveloppement.concours.CompetitionLevel;
+import org.ajdeveloppement.concours.Configuration;
+import org.ajdeveloppement.concours.Federation;
+import org.ajdeveloppement.concours.Profile;
 import org.ajdeveloppement.concours.ui.components.CountryComboBox;
 import org.ajdeveloppement.concours.ui.components.CountryComboBox.Country;
 import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
 import org.ajdeveloppement.swingxext.localisation.JXHeaderLocalisationHandler;
-import org.concoursjeunes.CompetitionLevel;
-import org.concoursjeunes.Configuration;
-import org.concoursjeunes.Federation;
-import org.concoursjeunes.Profile;
 import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.painter.GlossPainter;
 

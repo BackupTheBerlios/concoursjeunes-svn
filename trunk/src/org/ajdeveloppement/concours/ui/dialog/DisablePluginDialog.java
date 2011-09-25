@@ -1,9 +1,9 @@
 /*
- * Créé le 30 déc. 07 à 15:02:57 pour ConcoursJeunes
+ * Créé le 30 déc. 07 à 15:02:57 pour ArcCompetition
  *
  * Copyright 2002-2007 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -114,10 +114,10 @@ import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
+import org.ajdeveloppement.concours.ApplicationCore;
+import org.ajdeveloppement.concours.plugins.PluginLoader;
+import org.ajdeveloppement.concours.plugins.PluginMetadata;
 import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
-import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.plugins.PluginLoader;
-import org.concoursjeunes.plugins.PluginMetadata;
 
 /**
  * @author Aurélien JEOFFRAY
@@ -148,7 +148,7 @@ public class DisablePluginDialog extends JDialog implements ActionListener {
 		this.localisation = localisation;
 		
 		PluginLoader pl = new PluginLoader();
-		plugins = pl.getPlugins(org.concoursjeunes.plugins.Plugin.Type.STARTUP);
+		plugins = pl.getPlugins(org.ajdeveloppement.concours.plugins.Plugin.Type.STARTUP);
 		
 		init();
 		affectLabels();

@@ -1,9 +1,9 @@
 /*
- * Créé le 21 mars 2010 à 16:58:26 pour ConcoursJeunes
+ * Créé le 21 mars 2010 à 16:58:26 pour ArcCompetition
  *
  * Copyright 2002-2010 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -90,7 +90,7 @@ package org.ajdeveloppement.concours.cache;
 
 import java.util.UUID;
 
-import org.concoursjeunes.Entite;
+import org.ajdeveloppement.concours.Entite;
 
 /**
  * @author Aurélien JEOFFRAY

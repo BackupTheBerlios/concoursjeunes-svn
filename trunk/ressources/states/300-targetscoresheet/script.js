@@ -16,7 +16,7 @@ function printState(ficheConcours, template, document, writer, options) {
 
 	try {
 		templateXML.parse("CURRENT_TIME", java.text.DateFormat.getDateInstance(java.text.DateFormat.FULL).format(new Date()));
-		templateXML.parse("producer", org.concoursjeunes.AppInfos.NOM + " " + org.concoursjeunes.AppInfos.VERSION);
+		templateXML.parse("producer", org.ajdeveloppement.concours.AppInfos.NOM + " " + org.ajdeveloppement.concours.AppInfos.VERSION);
 		templateXML.parse("author", profile.getConfiguration().getClub().getNom());
 		
 		var nbVoleeParSerie = ficheConcours.getParametre().getReglement().getNbVoleeParSerie();
@@ -53,7 +53,7 @@ function printState(ficheConcours, template, document, writer, options) {
 					templateXML.parse("scoresheet.positions.cid", concurrent.getNomArcher() + " " + concurrent.getPrenomArcher());
 					templateXML.parse("scoresheet.positions.cclub", concurrent.getClub().toString());
 					templateXML.parse("scoresheet.positions.clicence", concurrent.getNumLicenceArcher());
-					templateXML.parse("scoresheet.positions.emplacement", new org.concoursjeunes.TargetPosition(concurrent.getCible(), concurrent.getPosition()).toString());
+					templateXML.parse("scoresheet.positions.emplacement", new org.ajdeveloppement.concours.TargetPosition(concurrent.getCible(), concurrent.getPosition()).toString());
 				} else {
 					templateXML.parse("scoresheet.positions.cid", "");
 					templateXML.parse("scoresheet.positions.cclub", "");

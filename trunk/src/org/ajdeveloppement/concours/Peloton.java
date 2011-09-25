@@ -3,7 +3,7 @@
  * 
  * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -88,9 +88,6 @@
  */
 package org.ajdeveloppement.concours;
 
-import org.concoursjeunes.Blason;
-import org.concoursjeunes.Reglement;
-import org.concoursjeunes.Target;
 
 /**
  * Utilisé pour les Tirs campagne, 3D et Nature, les pelotons se comporte comme des cibles

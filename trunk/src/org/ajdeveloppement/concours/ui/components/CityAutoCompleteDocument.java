@@ -1,9 +1,9 @@
 /*
- * Créé le 31 déc. 2010 à 13:44:07 pour ConcoursJeunes / ArcCompétition
+ * Créé le 31 déc. 2010 à 13:44:07 pour ArcCompetition / ArcCompétition
  *
  * Copyright 2002-2010 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -97,7 +97,7 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 
-import org.concoursjeunes.ApplicationCore;
+import org.ajdeveloppement.concours.ApplicationCore;
 
 /**
  * @author Aurélien JEOFFRAY

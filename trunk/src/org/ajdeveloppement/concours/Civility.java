@@ -1,9 +1,9 @@
 /*
- * Créé le 13 mars 2010 à 11:28:12 pour ConcoursJeunes
+ * Créé le 13 mars 2010 à 11:28:12 pour ArcCompetition
  *
  * Copyright 2002-2010 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -110,7 +110,6 @@ import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
 import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
 import org.ajdeveloppement.commons.persistence.sql.SqlTable;
 import org.ajdeveloppement.concours.cache.CivilityCache;
-import org.concoursjeunes.ApplicationCore;
 
 /**
  * A physical or moral civility information for a contact

@@ -4,7 +4,7 @@
 		<mkdir dir="${projet.pack.dir}/plugins/FFTAImport/plugins" />
 		<jar jarfile="${projet.pack.dir}/plugins/FFTAImport/plugins/FFTAImport.jar">
 			<fileset dir="${projet.pack.dir}/bin" >
-				<include name="org/concoursjeunes/plugins/FFTAImport/**" />
+				<include name="org/ajdeveloppement/concours/plugins/FFTAImport/**" />
 			</fileset>
 		</jar>
 		<copy todir="${projet.pack.dir}/plugins/FFTAImport/" >

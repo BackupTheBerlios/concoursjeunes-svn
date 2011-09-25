@@ -1,9 +1,9 @@
 /*
- * Créé le 20 févr. 2010 à 18:11:01 pour ConcoursJeunes
+ * Créé le 20 févr. 2010 à 18:11:01 pour ArcCompetition
  *
  * Copyright 2002-2010 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -98,9 +98,9 @@ import javax.xml.bind.JAXBException;
 
 import org.ajdeveloppement.commons.io.FileUtils;
 import org.ajdeveloppement.commons.io.XMLSerializer;
-import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.plugins.Plugin;
-import org.concoursjeunes.plugins.PluginEntry;
+import org.ajdeveloppement.concours.ApplicationCore;
+import org.ajdeveloppement.concours.plugins.Plugin;
+import org.ajdeveloppement.concours.plugins.PluginEntry;
 
 /**
  * @author Aurélien JEOFFRAY

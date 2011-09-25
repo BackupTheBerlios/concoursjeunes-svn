@@ -1,3 +1,0 @@
-USER=root
-PROGRAM=/usr/sbin/concoursjeunes-applyupdate
-SESSION=true

@@ -1,0 +1,11 @@
+#!/bin/sh
+
+cd /usr/lib/ArcCompetition
+
+java -Xmx256m -jar ArcCompetition.jar
+RETVAL=$?
+while [ "$RETVAL" -eq "3" ] ; do
+	echo "Restart ArcCompetition..."
+	java -Xmx256m -jar ArcCompetition.jar
+	RETVAL=$?
+done

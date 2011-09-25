@@ -1,9 +1,9 @@
 /*
- * Créé le 13 févr. 2011 à 16:06:46 pour ConcoursJeunes / ArcCompétition
+ * Créé le 13 févr. 2011 à 16:06:46 pour ArcCompetition / ArcCompétition
  *
  * Copyright 2002-2011 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -113,10 +113,10 @@ import org.ajdeveloppement.apps.localisation.LocalizationHandler;
 import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.DefaultDialogReturn;
+import org.ajdeveloppement.concours.MetaDataFicheConcours;
+import org.ajdeveloppement.concours.MetaDataFichesConcours;
+import org.ajdeveloppement.concours.Profile;
 import org.ajdeveloppement.swingxext.localisation.JXHeaderLocalisationHandler;
-import org.concoursjeunes.MetaDataFicheConcours;
-import org.concoursjeunes.MetaDataFichesConcours;
-import org.concoursjeunes.Profile;
 import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.painter.GlossPainter;
 

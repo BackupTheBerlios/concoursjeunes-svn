@@ -1,7 +1,7 @@
 /*
  * Copyright 2002-2007 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -128,27 +128,27 @@ import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
+import org.ajdeveloppement.concours.ApplicationCore;
+import org.ajdeveloppement.concours.Archer;
+import org.ajdeveloppement.concours.AutoCompleteDocument;
+import org.ajdeveloppement.concours.AutoCompleteDocumentContext;
+import org.ajdeveloppement.concours.Blason;
+import org.ajdeveloppement.concours.Concurrent;
+import org.ajdeveloppement.concours.CriteriaSet;
+import org.ajdeveloppement.concours.Criterion;
+import org.ajdeveloppement.concours.CriterionElement;
+import org.ajdeveloppement.concours.DistancesEtBlason;
+import org.ajdeveloppement.concours.Entite;
+import org.ajdeveloppement.concours.FicheConcours;
 import org.ajdeveloppement.concours.PhasesFinales;
-import org.ajdeveloppement.concours.ui.ConcoursJeunesFrame;
-import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.Archer;
-import org.concoursjeunes.AutoCompleteDocument;
-import org.concoursjeunes.AutoCompleteDocumentContext;
-import org.concoursjeunes.Blason;
-import org.concoursjeunes.Concurrent;
-import org.concoursjeunes.CriteriaSet;
-import org.concoursjeunes.Criterion;
-import org.concoursjeunes.CriterionElement;
-import org.concoursjeunes.DistancesEtBlason;
-import org.concoursjeunes.Entite;
-import org.concoursjeunes.FicheConcours;
-import org.concoursjeunes.Profile;
-import org.concoursjeunes.Reglement;
-import org.concoursjeunes.TargetPosition;
-import org.concoursjeunes.TargetsOccupation;
-import org.concoursjeunes.event.AutoCompleteDocumentEvent;
-import org.concoursjeunes.event.AutoCompleteDocumentListener;
-import org.concoursjeunes.localisable.CriteriaSetLibelle;
+import org.ajdeveloppement.concours.Profile;
+import org.ajdeveloppement.concours.Reglement;
+import org.ajdeveloppement.concours.TargetPosition;
+import org.ajdeveloppement.concours.TargetsOccupation;
+import org.ajdeveloppement.concours.event.AutoCompleteDocumentEvent;
+import org.ajdeveloppement.concours.event.AutoCompleteDocumentListener;
+import org.ajdeveloppement.concours.localisable.CriteriaSetLibelle;
+import org.ajdeveloppement.concours.ui.ArcCompetitionFrame;
 import org.jdesktop.swingx.JXHyperlink;
 import org.jdesktop.swingx.JXTitledSeparator;
 
@@ -310,11 +310,11 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	/**
 	 * Création de la boite de dialogue de gestion de concurrent
 	 * 
-	 * @param concoursJeunesFrame la fenêtre parentes dont dépend la boite de dialogue 
+	 * @param arcCompetitionFrame la fenêtre parentes dont dépend la boite de dialogue 
 	 * @param ficheConcours la fiche concours à laquelle est/doit être rattaché le concurrent
 	 */
-	public ConcurrentDialog(ConcoursJeunesFrame concoursJeunesFrame, Profile profile, FicheConcours ficheConcours) {
-		super(concoursJeunesFrame, "", true); //$NON-NLS-1$
+	public ConcurrentDialog(ArcCompetitionFrame arcCompetitionFrame, Profile profile, FicheConcours ficheConcours) {
+		super(arcCompetitionFrame, "", true); //$NON-NLS-1$
 
 		this.ficheConcours = ficheConcours;
 		this.phaseFinal = new PhasesFinales(ficheConcours);
@@ -657,8 +657,6 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 
 		jbPrecedent.setEnabled(isinit);
 		jbSuivant.setEnabled(!isinit);
-		/*jbSuivant.setText(isinit ? ConcoursJeunes.ajrLibelle.getResourceString("bouton.validersuivant") //$NON-NLS-1$
-				: ConcoursJeunes.ajrLibelle.getResourceString("bouton.validernouveau")); */
 
 		jlPlaceLibre.setText(showPlacesLibre());
 
@@ -1024,7 +1022,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	}
 
 	/**
-	 * @see org.concoursjeunes.event.AutoCompleteDocumentListener#concurrentFinded(org.concoursjeunes.event.AutoCompleteDocumentEvent)
+	 * @see org.ajdeveloppement.concours.event.AutoCompleteDocumentListener#concurrentFinded(org.ajdeveloppement.concours.event.AutoCompleteDocumentEvent)
 	 */
 	@Override
 	public void concurrentFinded(AutoCompleteDocumentEvent e) {
@@ -1049,7 +1047,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
 	}
 
 	/**
-	 * @see org.concoursjeunes.event.AutoCompleteDocumentListener#concurrentNotFound(org.concoursjeunes.event.AutoCompleteDocumentEvent)
+	 * @see org.ajdeveloppement.concours.event.AutoCompleteDocumentListener#concurrentNotFound(org.ajdeveloppement.concours.event.AutoCompleteDocumentEvent)
 	 */
 	@Override
 	public void concurrentNotFound(AutoCompleteDocumentEvent e) {

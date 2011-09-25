@@ -1,7 +1,7 @@
 /*
  * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -142,20 +142,20 @@ import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.io.FileUtils;
 import org.ajdeveloppement.commons.ui.AJList;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
+import org.ajdeveloppement.concours.ApplicationCore;
+import org.ajdeveloppement.concours.Concurrent;
+import org.ajdeveloppement.concours.Criterion;
+import org.ajdeveloppement.concours.FicheConcours;
 import org.ajdeveloppement.concours.PhasesFinales;
+import org.ajdeveloppement.concours.state.State;
+import org.ajdeveloppement.concours.state.StateManager;
+import org.ajdeveloppement.concours.state.StateProcessor;
+import org.ajdeveloppement.concours.state.StateSelector;
+import org.ajdeveloppement.concours.state.Categories.Category;
 import org.ajdeveloppement.concours.ui.dialog.ConcurrentDialog;
 import org.ajdeveloppement.concours.ui.dialog.ParametreDialog;
 import org.ajdeveloppement.concours.ui.dialog.ResultatDialog;
 import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
-import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.Concurrent;
-import org.concoursjeunes.Criterion;
-import org.concoursjeunes.FicheConcours;
-import org.concoursjeunes.state.Categories.Category;
-import org.concoursjeunes.state.State;
-import org.concoursjeunes.state.StateManager;
-import org.concoursjeunes.state.StateProcessor;
-import org.concoursjeunes.state.StateSelector;
 import org.jdesktop.swingx.JXBusyLabel;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.JXPanel;
@@ -180,7 +180,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	private static final int TAB_CLASSEMENT = 3;
 	//private static final int TAB_EDITION= 4;
 	
-	private ConcoursJeunesFrame parentframe;
+	private ArcCompetitionFrame parentframe;
 	private AjResourcesReader localisation;
 
 	@Localizable("onglet.ficheconcours")
@@ -261,7 +261,7 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	 * @param parentframe
 	 * @param ficheConcours
 	 */
-	public FicheConcoursPane(ConcoursJeunesFrame parentframe, FicheConcours ficheConcours) {
+	public FicheConcoursPane(ArcCompetitionFrame parentframe, FicheConcours ficheConcours) {
 		this.parentframe = parentframe;
 		this.ficheConcours = ficheConcours;
 		this.localisation = parentframe.profile.getLocalisation();
@@ -789,14 +789,14 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 	/**
 	 * @return  parentframe
 	 */
-	public ConcoursJeunesFrame getParentframe() {
+	public ArcCompetitionFrame getParentframe() {
 		return parentframe;
 	}
 
 	/**
 	 * @param parentframe  parentframe à définir
 	 */
-	public void setParentframe(ConcoursJeunesFrame parentframe) {
+	public void setParentframe(ArcCompetitionFrame parentframe) {
 		this.parentframe = parentframe;
 	}
 

@@ -16,7 +16,7 @@ function printState(ficheConcours, template, document, writer, options) {
 
 	if (ficheConcours.getEquipes() != null && ficheConcours.getEquipes().countEquipes() > 0) {
 		
-		writer.setPageEvent(new org.concoursjeunes.state.PageFooter());
+		writer.setPageEvent(new org.ajdeveloppement.concours.state.PageFooter());
 		
 		var tplClassementEquipe = new org.ajdeveloppement.commons.AJTemplate();
 		tplClassementEquipe.loadTemplate(template);
@@ -51,13 +51,13 @@ function printState(ficheConcours, template, document, writer, options) {
 
 		sortedTeamCriteriaSets = ficheConcours.getEquipes().listCriteriaSet();
 		
-		org.concoursjeunes.CriteriaSet.sortCriteriaSet(sortedTeamCriteriaSets, ficheConcours.getParametre().getReglement().getListCriteria());
+		org.ajdeveloppement.concours.CriteriaSet.sortCriteriaSet(sortedTeamCriteriaSets, ficheConcours.getParametre().getReglement().getListCriteria());
 		
 		for(var i = 0; i < sortedTeamCriteriaSets.size(); i++) {			
-			tplClassementEquipe.parse("categories.CATEGORIE", new org.concoursjeunes.localisable.CriteriaSetLibelle(sortedTeamCriteriaSets.get(i), profile.getLocalisation()).toString()); //$NON-NLS-1$
+			tplClassementEquipe.parse("categories.CATEGORIE", new org.ajdeveloppement.concours.localisable.CriteriaSetLibelle(sortedTeamCriteriaSets.get(i), profile.getLocalisation()).toString()); //$NON-NLS-1$
 			tplClassementEquipe.parse("categories.NB_EQUIPES", "" + ficheConcours.getEquipes().countEquipes()); //$NON-NLS-1$ //$NON-NLS-2$
 
-			var sortEquipes = org.concoursjeunes.EquipeList.sort(ficheConcours.getEquipes().list(sortedTeamCriteriaSets.get(i)));
+			var sortEquipes = org.ajdeveloppement.concours.EquipeList.sort(ficheConcours.getEquipes().list(sortedTeamCriteriaSets.get(i)));
 
 			for (var j = 0; j < sortEquipes.length; j++) {
 

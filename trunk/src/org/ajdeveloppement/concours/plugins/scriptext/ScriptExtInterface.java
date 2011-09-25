@@ -1,7 +1,7 @@
 package org.ajdeveloppement.concours.plugins.scriptext;
 
-import org.ajdeveloppement.concours.ui.ConcoursJeunesFrame;
-import org.concoursjeunes.Profile;
+import org.ajdeveloppement.concours.Profile;
+import org.ajdeveloppement.concours.ui.ArcCompetitionFrame;
 
 public interface ScriptExtInterface {
 	/**
@@ -10,7 +10,7 @@ public interface ScriptExtInterface {
 	 * @param parentframe
 	 * @param profile
 	 */
-	public void load(ConcoursJeunesFrame parentframe, Profile profile);
+	public void load(ArcCompetitionFrame parentframe, Profile profile);
 	
 	/**
 	 *  Execute les opérations de déchargement du script

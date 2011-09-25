@@ -1,7 +1,7 @@
 /*
  * Copyright 2002-2009 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -109,8 +109,6 @@ import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
 import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
 import org.ajdeveloppement.commons.persistence.sql.SqlTable;
 import org.ajdeveloppement.commons.sql.SqlManager;
-import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.CriteriaSet;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @SqlTable(name="TARIF")

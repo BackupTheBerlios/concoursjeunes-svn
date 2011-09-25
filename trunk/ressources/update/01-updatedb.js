@@ -4,9 +4,9 @@
 
 function updateReglements() {
 	//liste l'ensemble des fichiers de réglements
-	var updatePath = new java.io.File(org.concoursjeunes.ApplicationCore.staticParameters.getResourceString("path.ressources"), "update");
+	var updatePath = new java.io.File(org.ajdeveloppement.concours.ApplicationCore.staticParameters.getResourceString("path.ressources"), "update");
 	var reglements = org.ajdeveloppement.commons.io.FileUtils.listAllFiles(updatePath, ".*\\.reglement");
-	var rManager = org.concoursjeunes.manager.ReglementManager.getInstance();
+	var rManager = org.ajdeveloppement.concours.managers.ReglementManager.getInstance();
 	for(var i = 0; i < reglements.size(); i++) {
 		rManager.importReglement(reglements.get(i));
 	}
@@ -43,7 +43,7 @@ if(dbVersion == 0) {
 	}
 }
 
-if(dbVersion != org.concoursjeunes.ApplicationCore.DB_RELEASE_REQUIRED) {
+if(dbVersion != org.ajdeveloppement.concours.ApplicationCore.DB_RELEASE_REQUIRED) {
 	//mise à jour du numero de version de la base
 	sql.executeScript("99-updatedbver.sql");
 }

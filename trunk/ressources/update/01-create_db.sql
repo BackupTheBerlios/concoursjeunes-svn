@@ -1,4 +1,4 @@
--- Création de la base de données de ConcoursJeunes
+-- Création de la base de données de ArcCompetition
 -- @author Aurélien JEOFFRAY
 CREATE TABLE IF NOT EXISTS PARAM (
 		DBVERSION INTEGER NOT NULL,

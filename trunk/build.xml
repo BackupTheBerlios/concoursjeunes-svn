@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="ConcoursJeunes" default="auto-pack" basedir="./">
+<project name="ArcCompetition" default="auto-pack" basedir="./">
 	<description>
-		Generation de ConcoursJeunes
+		Generation de ArcCompetition
 	</description>
 	
 	<tstamp>
@@ -35,7 +35,7 @@
 	<property file="packager/version.properties" />
 	<property file="packager/security.properties" />
 
-	<import file="plugins/build-ConcoursJeunesUpdate.xml"/>
+	<import file="plugins/build-ArcCompetitionUpdate.xml"/>
 	<import file="plugins/build-ResultArcImport.xml"/>
 	<import file="plugins/build-FFTAImport.xml"/>
 	<import file="plugins/build-PhoenixPlugin.xml"/>
@@ -54,11 +54,7 @@
 			destdir="docs"
 			classpath="${compilclasspath}">
 			<link href="http://java.sun.com/javase/6/docs/api/" />
-			<link href="http://www.ajdeveloppement.org/docs/"/>
-			<!--<packageset dir="src" defaultexcludes="yes">
-				<include name="**/**" />
-				<exclude name="org/concoursjeunes/test/**" />
-			</packageset>-->
+			<link href="http://arccompetion.ajdeveloppement.org/docs/"/>
 		</javadoc>
 		<echo message="Fin de la generation de la doc..."/>
 	</target>
@@ -95,7 +91,7 @@
 		
 		<copy todir="${projet.pack.dir}" >
 			<fileset dir="." >
-				<include name="ressources/repositories/ConcoursJeunes.xml"/>
+				<include name="ressources/repositories/ArcCompetition.xml"/>
 			</fileset>
 		</copy>
 
@@ -137,7 +133,7 @@
 			<fileset dir="packager" >
 				<include name="*.txt" />
 			</fileset>
-			<fileset dir="packager/macosx/ConcoursJeunes.app/Contents/Resources/Java">
+			<fileset dir="packager/macosx/ArcCompetition.app/Contents/Resources/Java">
 				<include name="**" />
 			</fileset>
 		</copy>
@@ -179,7 +175,7 @@
 			<attribute name="Class-Path" value="${classpath}"/>
 			<attribute name="SplashScreen-Image" value="Logo.png" />
         </manifest>
-		<jar jarfile="${projet.pack.dir}/ConcoursJeunes.jar"
+		<jar jarfile="${projet.pack.dir}/ArcCompetition.jar"
 			manifest="${projet.pack.dir}/MANIFEST.MF">
 
 			<fileset dir="${projet.pack.dir}/bin">
@@ -190,28 +186,27 @@
 				<include name="Logo.png"/>
 			</fileset>
 		</jar>
-		<jar jarfile="${projet.pack.dir}/lib/ConcoursJeunes-core.jar"
+		<jar jarfile="${projet.pack.dir}/lib/ArcCompetition-core.jar"
 			manifest="${projet.pack.dir}/MANIFEST.MF">
 
 			<fileset dir="${projet.pack.dir}/bin">
 				<include name="**/**" />
-				<exclude name="org/concoursjeunes/plugins/**" />
 				<exclude name="org/ajdeveloppement/concours/plugins/**" />
-				<exclude name="org/concoursjeunes/webservices/**" />
+				<exclude name="org/ajdeveloppement/concours/webservices/**" />
 				<exclude name="org/ajdeveloppement/concours/Main*" />
 				<exclude name="org/ajdeveloppement/concours/ui/**" />
 			</fileset>
 			<fileset dir="${projet.pack.dir}/bin">
-				<include name="org/concoursjeunes/plugins/*.*" />
+				<include name="org/ajdeveloppement/concours/plugins/*.*" />
 			</fileset>
 		</jar>
-		<jar jarfile="${projet.pack.dir}/ConcoursJeunes-webservices.jar">
+		<jar jarfile="${projet.pack.dir}/ArcCompetition-webservices.jar">
 			<fileset dir="${projet.pack.dir}/bin">
-				<include name="org/concoursjeunes/webservices/**" />
+				<include name="org/ajdeveloppement/concours/webservices/**" />
 			</fileset>
 		</jar>
 		<signjar
-				jar="${projet.pack.dir}/ConcoursJeunes-webservices.jar"
+				jar="${projet.pack.dir}/ArcCompetition-webservices.jar"
 				alias="${projet.signkeyalias}" keystore="${projet.keystorepath}"
 				storetype="JCEKS"
 				storepass="${projet.keystorepassword}"
@@ -227,7 +222,7 @@
 
 		<revisionscreator
 				revisionpath="${projet.pack.dir}/revision.xml.gz"
-				reposname="ConcoursJeunes"
+				reposname="ArcCompetition"
 				changelogXML="packager/changelog.xml"
 				changelogTXT="${projet.pack.dir}/changelog.txt"
 				keystorepath="${projet.keystorepath}"
@@ -241,7 +236,7 @@
 				<include name="lib/**"/>
 				<include name="ressources/**"/>
 				<include name="documentation/**"/>
-				<include name="ConcoursJeunes.jar"/>
+				<include name="ArcCompetition.jar"/>
 				<include name="*.txt"/>
 				<include name="*.pack"/>
 	
@@ -251,7 +246,7 @@
 			<system name="macosx">
 				<fileset dir="${projet.pack.dir}">
 					<include name="lib/js*"/>
-					<include name="concoursjeunes-applyupdate"/>
+					<include name="arccompetition-applyupdate"/>
 					<include name="libAuthKit.jnilib"/>
 				</fileset>
 			</system>
@@ -264,14 +259,14 @@
 	<target name="makelinuxtargz">
 		<mkdir dir="${projet.pack.dir}/linux/tar" />
 		
-		<copy todir="${projet.pack.dir}/linux/tar/usr/lib/ConcoursJeunes/" >
+		<copy todir="${projet.pack.dir}/linux/tar/usr/lib/ArcCompetition/" >
 			<fileset dir="${projet.pack.dir}" >
 				<include name="config/**"/>
 				<include name="lang/**"/>
 				<include name="lib/**"/>
 				<include name="ressources/**"/>
 				<include name="documentation/**"/>
-				<include name="ConcoursJeunes.jar"/>
+				<include name="ArcCompetition.jar"/>
 				<include name="*.txt"/>
 				
 				<exclude name="lib/js*"/>
@@ -286,7 +281,7 @@
 		    	<exclude name="ScriptExt"/>
 		    </dirset>
 			<sequential>
-				<copy todir="${projet.pack.dir}/linux/tar/usr/lib/ConcoursJeunes" >
+				<copy todir="${projet.pack.dir}/linux/tar/usr/lib/ArcCompetition" >
 					<fileset dir="@{plugin}" >
 						<include name="**/**"/>
 						
@@ -305,7 +300,7 @@
 		</copy>
 		
 		<replace 
-		    file="${projet.pack.dir}/linux/tar/usr/share/applications/ConcoursJeunes.desktop"
+		    file="${projet.pack.dir}/linux/tar/usr/share/applications/ArcCompetition.desktop"
 			propertyFile="packager/version.properties">
 			<replacefilter 
 		    token="@version.name@" 
@@ -358,12 +353,12 @@
 
 		<copy todir="${rpm.pack.path}/SPECS" >
 			<fileset dir="packager/linux/">
-				<include name="ConcoursJeunes.spec" />
+				<include name="ArcCompetition.spec" />
 			</fileset>
 		</copy>
 
 		<replace 
-		    file="${rpm.pack.path}/SPECS/ConcoursJeunes.spec"
+		    file="${rpm.pack.path}/SPECS/ArcCompetition.spec"
 			propertyFile="packager/version.properties">
 			<replacefilter 
 		    token="@version.name@" 
@@ -391,7 +386,7 @@
 		    property="en.description" />
 		</replace>
 
-		<rpm specFile="ConcoursJeunes.spec" topDir="${rpm.pack.path}/" cleanBuildDir="true" />
+		<rpm specFile="ArcCompetition.spec" topDir="${rpm.pack.path}/" cleanBuildDir="true" />
 	</target>
 	
 	<target name="makedeb" if="dpkgAvailable">
@@ -419,12 +414,12 @@
 				<include name="lib/**"/>
 				<include name="ressources/**"/>
 				<include name="documentation/**"/>
-				<include name="ConcoursJeunes.jar"/>
+				<include name="ArcCompetition.jar"/>
 				<include name="*.txt"/>
 			</fileset>
 		</copy>
 		<chmod file="${projet.pack.dir}/macosx/${version.name}.app/Contents/MacOS/JavaApplicationStub" perm="a+x"></chmod>
-		<chmod file="${projet.pack.dir}/macosx/${version.name}.app/Contents/Resources/Java/concoursjeunes-applyupdate" perm="a+x"></chmod>
+		<chmod file="${projet.pack.dir}/macosx/${version.name}.app/Contents/Resources/Java/arccompetition-applyupdate" perm="a+x"></chmod>
 		
 		<for param="plugin">
 		    <dirset dir="${projet.pack.dir}/plugins/">
@@ -474,7 +469,7 @@
 	<target name="auto-pack"
 		description="Pack en fonction du système">
 		<antcall target="jar" />
-		<antcall target="pack-ConcoursJeunesUpdate" />
+		<antcall target="pack-ArcCompetitionUpdate" />
 		<antcall target="pack-PhoenixPlugin" />
 		<antcall target="pack-BackupRestorePlugin" />
 		<antcall target="pack-FFTAImport" />
@@ -502,7 +497,7 @@
 	outils de construction deb, rpm et nsis. Les sytstème windows ne supporte que nsis, les red-hat like que rpm -->
 	<target name="all-system" description="Compilation Multi-systeme">
 		<antcall target="jar" />
-		<antcall target="pack-ConcoursJeunesUpdate" />
+		<antcall target="pack-ArcCompetitionUpdate" />
 		<antcall target="pack-PhoenixPlugin" />
 		<antcall target="pack-ResultArcImport" />
 		<antcall target="pack-FFTAImport" />
@@ -517,7 +512,7 @@
 	</target>
 	
 	<target name="deploy" description="deploi les fichier sur le serveur de mise à jour">
-		<copy todir="../ConcoursJeunes.org/update/" >
+		<copy todir="../ArcCompetition.org/update/" >
 			<fileset dir="pack" >
 				<include name="config/**"/>
 				<include name="lang/**"/>
@@ -525,7 +520,7 @@
 				<include name="plugins/**"/>
 				<include name="documentation/**"/>
 				<include name="ressources/**"/>
-				<include name="ConcoursJeunes.jar"/>
+				<include name="ArcCompetition.jar"/>
 				<include name="revision.xml.gz"/>
 				<include name="*.txt"/>
 			</fileset>

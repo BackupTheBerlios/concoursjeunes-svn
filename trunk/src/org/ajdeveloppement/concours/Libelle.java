@@ -1,9 +1,9 @@
 /*
- * Créé le 7 mai 2010 à 18:14:52 pour ConcoursJeunes
+ * Créé le 7 mai 2010 à 18:14:52 pour ArcCompetition
  *
  * Copyright 2002-2010 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -102,7 +102,6 @@ import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
 import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
 import org.ajdeveloppement.commons.persistence.sql.SqlTable;
 import org.ajdeveloppement.concours.cache.LibelleCache;
-import org.concoursjeunes.ApplicationCore;
 
 /**
  * Libellé localisé stocké en base de données

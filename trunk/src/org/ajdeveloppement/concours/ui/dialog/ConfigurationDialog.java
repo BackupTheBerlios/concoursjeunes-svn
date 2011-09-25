@@ -3,7 +3,7 @@
  *
  * Copyright 2002-2007 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -128,29 +128,29 @@ import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
+import org.ajdeveloppement.concours.AppConfiguration;
+import org.ajdeveloppement.concours.ApplicationCore;
+import org.ajdeveloppement.concours.AutoCompleteDocument;
+import org.ajdeveloppement.concours.AutoCompleteDocumentContext;
+import org.ajdeveloppement.concours.Configuration;
+import org.ajdeveloppement.concours.Entite;
+import org.ajdeveloppement.concours.Federation;
+import org.ajdeveloppement.concours.Margin;
+import org.ajdeveloppement.concours.Profile;
+import org.ajdeveloppement.concours.Reglement;
+import org.ajdeveloppement.concours.event.AutoCompleteDocumentEvent;
+import org.ajdeveloppement.concours.event.AutoCompleteDocumentListener;
+import org.ajdeveloppement.concours.managers.ConfigurationManager;
+import org.ajdeveloppement.concours.managers.FederationManager;
+import org.ajdeveloppement.concours.managers.ReglementManager;
 import org.ajdeveloppement.concours.ui.ImagePreview;
 import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
-import org.concoursjeunes.AppConfiguration;
-import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.AutoCompleteDocument;
-import org.concoursjeunes.AutoCompleteDocumentContext;
-import org.concoursjeunes.Configuration;
-import org.concoursjeunes.Entite;
-import org.concoursjeunes.Federation;
-import org.concoursjeunes.Margin;
-import org.concoursjeunes.Profile;
-import org.concoursjeunes.Reglement;
-import org.concoursjeunes.event.AutoCompleteDocumentEvent;
-import org.concoursjeunes.event.AutoCompleteDocumentListener;
-import org.concoursjeunes.manager.ConfigurationManager;
-import org.concoursjeunes.manager.FederationManager;
-import org.concoursjeunes.manager.ReglementManager;
 
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Rectangle;
 
 /**
- * Ecran de configuration de ConcoursJeunes
+ * Ecran de configuration de ArcCompetition
  * 
  * @author Aurélien Jeoffray
  * @version 2.2
@@ -636,7 +636,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		jcbProfil.setSelectedItem(configuration.getCurProfil());
 		jcbProfil.addActionListener(this);
 		
-		if(configuration.getCurProfil().equals("defaut") /*|| !configuration.getCurProfil().equals(ConcoursJeunes.configuration.getCurProfil())*/) //$NON-NLS-1$
+		if(configuration.getCurProfil().equals("defaut")) //$NON-NLS-1$
 			jbRenameProfile.setEnabled(false);
 		else
 			jbRenameProfile.setEnabled(true);
@@ -1029,7 +1029,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.concoursjeunes.AutoCompleteDocumentListener#concurrentFinded(org.concoursjeunes.AutoCompleteDocumentEvent)
+	 * @see org.ajdeveloppement.concours.AutoCompleteDocumentListener#concurrentFinded(org.ajdeveloppement.concours.AutoCompleteDocumentEvent)
 	 */
 	@Override
 	public void concurrentFinded(AutoCompleteDocumentEvent e) {
@@ -1039,7 +1039,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.concoursjeunes.AutoCompleteDocumentListener#concurrentNotFound(org.concoursjeunes.AutoCompleteDocumentEvent)
+	 * @see org.ajdeveloppement.concours.AutoCompleteDocumentListener#concurrentNotFound(org.ajdeveloppement.concours.AutoCompleteDocumentEvent)
 	 */
 	@Override
 	public void concurrentNotFound(AutoCompleteDocumentEvent e) {
@@ -1048,7 +1048,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.concoursjeunes.AutoCompleteDocumentListener#entiteFinded(org.concoursjeunes.AutoCompleteDocumentEvent)
+	 * @see org.ajdeveloppement.concours.AutoCompleteDocumentListener#entiteFinded(org.ajdeveloppement.concours.AutoCompleteDocumentEvent)
 	 */
 	@Override
 	public void entiteFinded(AutoCompleteDocumentEvent e) {
@@ -1062,7 +1062,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.concoursjeunes.AutoCompleteDocumentListener#entiteNotFound(org.concoursjeunes.AutoCompleteDocumentEvent)
+	 * @see org.ajdeveloppement.concours.AutoCompleteDocumentListener#entiteNotFound(org.ajdeveloppement.concours.AutoCompleteDocumentEvent)
 	 */
 	@Override
 	public void entiteNotFound(AutoCompleteDocumentEvent e) {

@@ -10,7 +10,7 @@ function printState(ficheConcours, template, document, writer, options) {
 	var depart = options.getDepart();
 	var profile = options.getProfile();
 	
-	writer.setPageEvent(new org.concoursjeunes.state.PageFooter());
+	writer.setPageEvent(new org.ajdeveloppement.concours.state.PageFooter());
 
 	var listeArcherXML = new org.ajdeveloppement.commons.AJTemplate();
 	listeArcherXML.setLocalisationReader(localeReader);
@@ -20,7 +20,7 @@ function printState(ficheConcours, template, document, writer, options) {
 		listeArcherXML.parse("NB_PARTICIPANTS", "" + ficheConcours.getConcurrentList().countArcher(depart)); //$NON-NLS-1$ //$NON-NLS-2$
 		listeArcherXML.parse("CURRENT_TIME", java.text.DateFormat.getDateInstance(java.text.DateFormat.FULL).format(new java.util.Date())); //$NON-NLS-1$
 
-		var concurrents = org.concoursjeunes.ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), org.concoursjeunes.ConcurrentList.SortCriteria.SORT_BY_NAME);
+		var concurrents = org.ajdeveloppement.concours.ConcurrentList.sort(ficheConcours.getConcurrentList().list(depart), org.ajdeveloppement.concours.ConcurrentList.SortCriteria.SORT_BY_NAME);
 
 		for (var i = 0; i < concurrents.size(); i++) {
 			listeArcherXML.parse("lignes.IDENTITEE", concurrents.get(i).getFullName()); //$NON-NLS-1$
@@ -37,7 +37,7 @@ function printState(ficheConcours, template, document, writer, options) {
 
 			listeArcherXML.parse("lignes.PAYEE", org.ajdeveloppement.commons.StringUtils.tokenize(localeReader.getResourceString("state.inscription"), ",")[concurrents.get(i).getInscription()]);
 			listeArcherXML.parse("lignes.CERTIFICAT", org.ajdeveloppement.commons.StringUtils.tokenize(localeReader.getResourceString("state.certificat"), ",")[concurrents.get(i).isCertificat() ? 0 : 1]);
-			listeArcherXML.parse("lignes.CIBLE", new org.concoursjeunes.TargetPosition(concurrents.get(i).getCible(), concurrents.get(i).getPosition()).toString());
+			listeArcherXML.parse("lignes.CIBLE", new org.ajdeveloppement.concours.TargetPosition(concurrents.get(i).getCible(), concurrents.get(i).getPosition()).toString());
 
 			listeArcherXML.loopBloc("lignes");
 		}

@@ -1,7 +1,7 @@
 /*
  * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -135,21 +135,21 @@ import org.ajdeveloppement.apps.localisation.Localizable;
 import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.ui.AJTree;
 import org.ajdeveloppement.commons.ui.GhostGlassPane;
+import org.ajdeveloppement.concours.ApplicationCore;
+import org.ajdeveloppement.concours.Concurrent;
+import org.ajdeveloppement.concours.FicheConcours;
+import org.ajdeveloppement.concours.Target;
+import org.ajdeveloppement.concours.TargetPosition;
+import org.ajdeveloppement.concours.ConcurrentList.ClubComparator;
+import org.ajdeveloppement.concours.ConcurrentList.NameComparator;
+import org.ajdeveloppement.concours.ConcurrentList.TargetComparator;
+import org.ajdeveloppement.concours.event.FicheConcoursEvent;
+import org.ajdeveloppement.concours.event.FicheConcoursListener;
 import org.ajdeveloppement.concours.exceptions.FicheConcoursException;
 import org.ajdeveloppement.concours.exceptions.FicheConcoursException.Nature;
 import org.ajdeveloppement.concours.exceptions.PlacementException;
 import org.ajdeveloppement.concours.ui.dialog.ConcurrentDialog;
 import org.ajdeveloppement.concours.ui.dialog.EquipeDialog;
-import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.Concurrent;
-import org.concoursjeunes.ConcurrentList.ClubComparator;
-import org.concoursjeunes.ConcurrentList.NameComparator;
-import org.concoursjeunes.ConcurrentList.TargetComparator;
-import org.concoursjeunes.FicheConcours;
-import org.concoursjeunes.Target;
-import org.concoursjeunes.TargetPosition;
-import org.concoursjeunes.event.FicheConcoursEvent;
-import org.concoursjeunes.event.FicheConcoursListener;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.decorator.ColorHighlighter;
@@ -617,7 +617,7 @@ public class FicheConcoursDepartPane extends JPanel
 	/**
 	 * Invoqué lorsque la liste des concurents change (ajout ou suppression d'un concurrent)
 	 * 
-	 * @see org.concoursjeunes.event.FicheConcoursListener#listConcurrentChanged(org.concoursjeunes.event.FicheConcoursEvent)
+	 * @see org.ajdeveloppement.concours.event.FicheConcoursListener#listConcurrentChanged(org.ajdeveloppement.concours.event.FicheConcoursEvent)
 	 */
 	@Override
 	public void listConcurrentChanged(FicheConcoursEvent e) {
@@ -636,7 +636,7 @@ public class FicheConcoursDepartPane extends JPanel
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.concoursjeunes.FicheConcoursListener#pasDeTirChanged(org.concoursjeunes.FicheConcoursEvent)
+	 * @see org.ajdeveloppement.concours.FicheConcoursListener#pasDeTirChanged(org.ajdeveloppement.concours.FicheConcoursEvent)
 	 */
 	@Override
 	public void pasDeTirChanged(FicheConcoursEvent e) {

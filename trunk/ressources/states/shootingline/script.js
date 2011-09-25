@@ -10,5 +10,5 @@ function printState(ficheConcours, template, document, writer, options) {
 	var depart = options.getDepart();
 	var profile = options.getProfile();
 	
-	new org.concoursjeunes.state.ShootingLineState(localeReader, profile, ficheConcours.getPasDeTir(depart), document, writer);
+	new org.ajdeveloppement.concours.state.ShootingLineState(localeReader, profile, ficheConcours.getPasDeTir(depart), document, writer);
 }

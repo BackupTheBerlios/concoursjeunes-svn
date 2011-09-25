@@ -1,9 +1,9 @@
 /*
- * Créé le 13 mars 2010 à 11:42:38 pour ConcoursJeunes
+ * Créé le 13 mars 2010 à 11:42:38 pour ArcCompetition
  *
  * Copyright 2002-2010 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -109,7 +109,6 @@ import org.ajdeveloppement.commons.persistence.sql.SqlForeignKey;
 import org.ajdeveloppement.commons.persistence.sql.SqlPrimaryKey;
 import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
 import org.ajdeveloppement.commons.persistence.sql.SqlTable;
-import org.concoursjeunes.ApplicationCore;
 
 /**
  * Represent a contact coordinate.<br>

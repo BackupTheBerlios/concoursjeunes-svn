@@ -1,9 +1,9 @@
 /*
- * Créé le 7 mai 2010 à 18:24:09 pour ConcoursJeunes
+ * Créé le 7 mai 2010 à 18:24:09 pour ArcCompetition
  *
  * Copyright 2002-2010 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -111,7 +111,6 @@ import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
 import org.ajdeveloppement.commons.persistence.sql.SqlTable;
 import org.ajdeveloppement.concours.cache.CategoryContactCache;
 import org.ajdeveloppement.concours.helpers.LibelleHelper;
-import org.concoursjeunes.ApplicationCore;
 
 /**
  * Category of contact. Use to filter contact by category

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <repository name="ScriptExt" moduleVersion="1.10.00">
-	<url>http://update.concoursjeunes.org/2.3/plugins/ScriptExt</url>
+	<url>http://arccompetition.ajdeveloppement.org/update/1.0/plugins/ScriptExt</url>
 	<mirror>0</mirror>
 	<canDisable>true</canDisable>
 	<mustBeSigned>true</mustBeSigned>

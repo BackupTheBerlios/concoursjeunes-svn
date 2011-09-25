@@ -6,15 +6,15 @@ mkdir deb
 cd deb
 
 # construit le .orig necessaire à la creation du deb
-cp ../ConcoursJeunes-$VERSION.tar.gz concoursjeunes_$VERSION.orig.tar.gz
+cp ../ArcCompetition-$VERSION.tar.gz arccompetition_$VERSION.orig.tar.gz
 
 # crée le repertoire de version décompressé
-mkdir concoursjeunes-$VERSION
+mkdir arccompetition-$VERSION
 # décompresse le contenu du .orig dedans
-cp concoursjeunes_$VERSION.orig.tar.gz concoursjeunes-$VERSION/
-cd concoursjeunes-$VERSION
-tar zxvf concoursjeunes_$VERSION.orig.tar.gz
-rm concoursjeunes_$VERSION.orig.tar.gz
+cp arccompetition_$VERSION.orig.tar.gz arccompetition-$VERSION/
+cd arccompetition-$VERSION
+tar zxvf arccompetition_$VERSION.orig.tar.gz
+rm arccompetition_$VERSION.orig.tar.gz
 #copie le debian
 mkdir debian
 #cp ../../../../packager/linux/debian/compat debian/

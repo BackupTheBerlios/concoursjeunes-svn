@@ -1,7 +1,7 @@
 /*
  * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -91,9 +91,9 @@ package org.ajdeveloppement.concours.debug;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.concoursjeunes.Concurrent;
-import org.concoursjeunes.ConcurrentList;
-import org.concoursjeunes.FicheConcours;
+import org.ajdeveloppement.concours.Concurrent;
+import org.ajdeveloppement.concours.ConcurrentList;
+import org.ajdeveloppement.concours.FicheConcours;
 
 
 /**

@@ -1,9 +1,9 @@
 /*
- * Créé le 21 avr. 2011 à 11:53:04 pour ConcoursJeunes / ArcCompétition
+ * Créé le 21 avr. 2011 à 11:53:04 pour ArcCompetition / ArcCompétition
  *
  * Copyright 2002-2011 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -104,7 +104,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 
-import org.concoursjeunes.ApplicationCore;
+import org.ajdeveloppement.concours.ApplicationCore;
 
 /**
  * @author Aurélien JEOFFRAY

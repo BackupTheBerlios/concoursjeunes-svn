@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<repository name="ArcCompetition" moduleVersion="0.99.00">
+	<url>https://arccompetition.ajdeveloppement.org/update/1.0/</url>
+	<mirror>0</mirror>
+	<canDisable>true</canDisable>
+	<mustBeSigned>true</mustBeSigned>
+</repository>

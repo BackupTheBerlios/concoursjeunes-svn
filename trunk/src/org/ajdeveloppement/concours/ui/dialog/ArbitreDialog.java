@@ -1,9 +1,9 @@
 /*
- * Créé le 8 mai 2009 à 17:07:56 pour ConcoursJeunes
+ * Créé le 8 mai 2009 à 17:07:56 pour ArcCompetition
  *
  * Copyright 2002-2009 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -112,15 +112,15 @@ import org.ajdeveloppement.apps.localisation.Localizable;
 import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
-import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.Archer;
-import org.concoursjeunes.AutoCompleteDocument;
-import org.concoursjeunes.AutoCompleteDocumentContext;
-import org.concoursjeunes.Concurrent;
-import org.concoursjeunes.Judge;
-import org.concoursjeunes.Profile;
-import org.concoursjeunes.event.AutoCompleteDocumentEvent;
-import org.concoursjeunes.event.AutoCompleteDocumentListener;
+import org.ajdeveloppement.concours.ApplicationCore;
+import org.ajdeveloppement.concours.Archer;
+import org.ajdeveloppement.concours.AutoCompleteDocument;
+import org.ajdeveloppement.concours.AutoCompleteDocumentContext;
+import org.ajdeveloppement.concours.Concurrent;
+import org.ajdeveloppement.concours.Judge;
+import org.ajdeveloppement.concours.Profile;
+import org.ajdeveloppement.concours.event.AutoCompleteDocumentEvent;
+import org.ajdeveloppement.concours.event.AutoCompleteDocumentListener;
 
 /**
  * Boite de dialogue de sélection et manipulation d'un arbitre

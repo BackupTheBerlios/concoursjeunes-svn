@@ -6,7 +6,7 @@ function checkPrintable(ficheConcours, options) {
 
 function printState(ficheConcours, template, document, writer, options) {
 	var contexte = JavaImporter(
-						Packages.org.concoursjeunes,
+						Packages.org.ajdeveloppement.concours,
 						Packages.org.ajdeveloppement.commons,
 						Packages.com.lowagie.text,
 						Packages.java.util,

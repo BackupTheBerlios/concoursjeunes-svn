@@ -1,7 +1,7 @@
 /*
  * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -137,16 +137,13 @@ import org.ajdeveloppement.commons.security.SecureSiteAuthenticationStore;
 import org.ajdeveloppement.commons.ui.SwingURLAuthenticator;
 import org.ajdeveloppement.concours.db.UpgradeDatabaseEventListener;
 import org.ajdeveloppement.concours.exceptions.ExceptionHandlingEventQueue;
-import org.ajdeveloppement.concours.ui.ConcoursJeunesFrame;
+import org.ajdeveloppement.concours.plugins.PluginEntry;
+import org.ajdeveloppement.concours.plugins.PluginLoader;
+import org.ajdeveloppement.concours.plugins.PluginMetadata;
+import org.ajdeveloppement.concours.plugins.Plugin.Type;
+import org.ajdeveloppement.concours.ui.ArcCompetitionFrame;
 import org.ajdeveloppement.swingxext.error.WebErrorReporter;
 import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
-import org.concoursjeunes.AppInfos;
-import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.Profile;
-import org.concoursjeunes.plugins.Plugin.Type;
-import org.concoursjeunes.plugins.PluginEntry;
-import org.concoursjeunes.plugins.PluginLoader;
-import org.concoursjeunes.plugins.PluginMetadata;
 import org.h2.tools.DeleteDbFiles;
 import org.jdesktop.swingx.error.ErrorInfo;
 
@@ -511,7 +508,7 @@ public class Main {
 				Profile profile = new Profile();
 				core.addProfile(profile);
 
-				new ConcoursJeunesFrame(profile);
+				new ArcCompetitionFrame(profile);
 			}
 		});
 	}

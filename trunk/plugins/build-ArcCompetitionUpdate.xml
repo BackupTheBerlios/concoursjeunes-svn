@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ArcCompetitionUpdate" basedir="../">
+	<target name="pack-ArcCompetitionUpdate">
+		<mkdir dir="${projet.pack.dir}/plugins/ArcCompetitionUpdate/plugins" />
+		<jar jarfile="${projet.pack.dir}/plugins/ArcCompetitionUpdate/plugins/ArcCompetitionUpdate.jar"
+			basedir="${projet.pack.dir}/bin"
+			includes="org/ajdeveloppement/concours/plugins/update/**">
+		</jar>
+		<copy todir="${projet.pack.dir}/plugins/ArcCompetitionUpdate" >
+			<fileset dir="." >
+				<include name="plugins/properties/ArcCompetitionUpdate.properties" />
+				<include name="ressources/repositories/ArcCompetitionUpdate.xml"/>
+			</fileset>
+		</copy>
+		
+		<taskdef name="revisionscreator" classname="org.ajdeveloppement.updater.ant.RevisionsCreator">
+			<classpath location="lib/ajcommons.jar"/>
+		</taskdef>
+		
+		<revisionscreator 
+				revisionpath="${projet.pack.dir}/plugins/ArcCompetitionUpdate/revision.xml.gz"
+				reposname="ArcCompetitionUpdate"
+				keystorepath="${projet.keystorepath}"
+				keystorepassword="${projet.keystorepassword}"
+				signkeysalias="${projet.signkeyalias}"
+				signkeysaliaspassword="${projet.signkeyaliaspassword}"
+			>
+			<fileset dir="${projet.pack.dir}/plugins/ArcCompetitionUpdate">
+				<include name="**/**"/>
+				
+				<exclude name="*-filelist.txt"/>
+			</fileset>
+		</revisionscreator>
+	</target>
+</project>

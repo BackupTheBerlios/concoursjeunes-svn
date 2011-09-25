@@ -1,9 +1,9 @@
 /*
- * Créé le 13 févr. 2011 à 21:58:11 pour ConcoursJeunes / ArcCompétition
+ * Créé le 13 févr. 2011 à 21:58:11 pour ArcCompetition / ArcCompétition
  *
  * Copyright 2002-2011 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -100,10 +100,10 @@ import javax.swing.JMenuItem;
 
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.MenuBarTools;
-import org.ajdeveloppement.concours.ui.ConcoursJeunesFrame;
+import org.ajdeveloppement.concours.Profile;
+import org.ajdeveloppement.concours.plugins.Plugin;
+import org.ajdeveloppement.concours.ui.ArcCompetitionFrame;
 import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
-import org.concoursjeunes.Profile;
-import org.concoursjeunes.plugins.Plugin;
 
 /**
  * @author Aurélien JEOFFRAY
@@ -116,9 +116,9 @@ public class ScriptExtLauncherOnDemand {
 	private List<ScriptExtention> scripts = null;
 	
 	public ScriptExtLauncherOnDemand(JFrame parentframe, final Profile profile) {
-		if(parentframe instanceof ConcoursJeunesFrame) {
+		if(parentframe instanceof ArcCompetitionFrame) {
 			
-			final ConcoursJeunesFrame concoursJeunesFrame = (ConcoursJeunesFrame)parentframe;
+			final ArcCompetitionFrame arcCompetitionFrame = (ArcCompetitionFrame)parentframe;
 			
 			JMenuItem jmiUnloadScript = new JMenuItem(pluginLocalisation.getResourceString("menu.reloadscript")); //$NON-NLS-1$
 			MenuBarTools.addItem(jmiUnloadScript, parentframe.getJMenuBar(), new String[] { "tools", "Scripts", "reloadScript" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -132,7 +132,7 @@ public class ScriptExtLauncherOnDemand {
 							if(script.getScriptInterface() != null) {
 								script.getScriptInterface().unload();
 								script.compileScript();
-								script.getScriptInterface().load(concoursJeunesFrame, profile);
+								script.getScriptInterface().load(arcCompetitionFrame, profile);
 							}
 						} catch (ScriptException e) {
 							DisplayableErrorHelper.displayException(e);
@@ -151,7 +151,7 @@ public class ScriptExtLauncherOnDemand {
 			scripts = ScriptExtLauncher.getOnDemandScripts();
 			for(ScriptExtention script : scripts) {
 				if(script.getScriptInterface() != null)
-					script.getScriptInterface().load(concoursJeunesFrame, profile);
+					script.getScriptInterface().load(arcCompetitionFrame, profile);
 			}
 		}
 	}

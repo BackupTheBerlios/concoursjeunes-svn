@@ -1,9 +1,9 @@
 /*
- * Créé le 24 oct. 2009 à 11:53:38 pour ConcoursJeunes
+ * Créé le 24 oct. 2009 à 11:53:38 pour ArcCompetition
  *
  * Copyright 2002-2009 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -123,19 +123,19 @@ import javax.swing.SwingUtilities;
 import org.ajdeveloppement.apps.localisation.Localizable;
 import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.Converters;
+import org.ajdeveloppement.concours.ApplicationCore;
+import org.ajdeveloppement.concours.CriteriaSet;
 import org.ajdeveloppement.concours.Duel;
+import org.ajdeveloppement.concours.FicheConcours;
 import org.ajdeveloppement.concours.PhasesFinales;
+import org.ajdeveloppement.concours.localisable.CriteriaSetLibelle;
+import org.ajdeveloppement.concours.state.PageFooter;
+import org.ajdeveloppement.concours.state.State;
+import org.ajdeveloppement.concours.state.StateSelector;
 import org.ajdeveloppement.concours.ui.components.ConcurentMxCell;
 import org.ajdeveloppement.concours.ui.components.DuelMxCell;
 import org.ajdeveloppement.concours.ui.dialog.DuelDialog;
 import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
-import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.CriteriaSet;
-import org.concoursjeunes.FicheConcours;
-import org.concoursjeunes.localisable.CriteriaSetLibelle;
-import org.concoursjeunes.state.PageFooter;
-import org.concoursjeunes.state.State;
-import org.concoursjeunes.state.StateSelector;
 import org.jdesktop.swingx.JXBusyLabel;
 import org.w3c.dom.Document;
 

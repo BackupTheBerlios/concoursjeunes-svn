@@ -1,29 +1,29 @@
-Source: concoursjeunes
+Source: arccompetition
 Section: contrib
 Priority: optional
 Maintainer: Aurelien JEOFFRAY <aurelien.jeoffray@gmail.com>
 Build-Depends: debhelper (>= 7.0.50~)
 Standards-Version: 3.8.4
 
-Package: concoursjeunes
+Package: arccompetition
 Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}, sun-java6-jre | openjdk-6-jre (>= 6b18)
-Description: Logiciel de Gestion des Concours Jeunes de Tir à l'Arc
+Description: Logiciel de Gestion des compétitions de Tir à l'Arc
  .
  Auteur Aurélien Jeoffray
- http://www.concoursjeunes.org
+ http://arccompetition.ajdeveloppement.org
  .
- ConcoursJeunes est un logiciel de gestion des concours jeunes
- pour les compétitions de tir à l'arc.
+ ArcCompetition est un logiciel de gestion des compétitions
+ de tir à l'arc.
  .
- ConcoursJeunes nécessite la machine virtuel java 6.0
+ ArcCompetition nécessite la machine virtuel java 6.0
  disponible sur le CD d'instalation ou téléchargeable sur
  http://www.java.com.
  .
- ConcoursJeunes fonctionne sous toutes les plateformes
+ ArcCompetition fonctionne sous toutes les plateformes
  compatibles jse 6.0 tel que MS Windows, GNU/Linux, Solaris.
  .
- ConcoursJeunes est distribué sous double licences Open Source
+ ArcCompetition est distribué sous double licences Open Source
  CeCILL et GPL
  .
  Ce Logiciel inclut les Librairies

@@ -4,7 +4,7 @@
 		<mkdir dir="${projet.pack.dir}/plugins/BackupRestorePlugin/plugins" />
 		<jar jarfile="${projet.pack.dir}/plugins/BackupRestorePlugin/plugins/BackupRestorePlugin.jar"
 			basedir="${projet.pack.dir}/bin"
-			includes="org/concoursjeunes/plugins/backup/**,org/concoursjeunes/plugins/restore/**">
+			includes="org/ajdeveloppement/concours/plugins/backup/**,org/ajdeveloppement/concours/plugins/restore/**">
 		</jar>
 		<copy todir="${projet.pack.dir}/plugins/BackupRestorePlugin" >
 			<fileset dir="." >

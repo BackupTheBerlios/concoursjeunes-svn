@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<project name="ConcoursJeunes.makeappinfos" default="buildgenaratedressources" basedir=".">
+	<project name="ArcCompetition.makeappinfos" default="buildgenaratedressources" basedir=".">
 		<property file="packager/version.properties" />
 		<tstamp>
 			<format property="version.date" pattern="dd/MM/yyyy" />
 		</tstamp>
    
 		<target name ="buildgenaratedressources" description="Construit la class AppInfos">
-			<copy file="packager/AppInfos.java.tpl" tofile="src/org/concoursjeunes/AppInfos.java" overwrite="true" />
+			<copy file="packager/AppInfos.java.tpl" tofile="src/org/ajdeveloppement/concours/AppInfos.java" overwrite="true" />
 			<get dest="lib/ajcommons.jar" src="http://hudson.ajdeveloppement.org/job/AjCommons%201.1%20Release/lastSuccessfulBuild/artifact/1.1/ajcommons.jar"/>
 			<get dest="lib/ajcommons-ext.jar" src="http://hudson.ajdeveloppement.org/job/AjCommons%201.1%20Release/lastSuccessfulBuild/artifact/1.1/ajcommons-ext.jar"/>
 			<get dest="lib/ajcommons-swingx-ext.jar" src="http://hudson.ajdeveloppement.org/job/AjCommons%20SwingX%20Ext%201.1%20Release/lastSuccessfulBuild/artifact/1.1/ajcommons-swingx-ext.jar"/>
 			<replace 
-			    file="src/org/concoursjeunes/AppInfos.java"
+			    file="src/org/ajdeveloppement/concours/AppInfos.java"
 				propertyFile="packager/version.properties"
 				encoding="UTF-8" >
 				<replacefilter 
@@ -31,7 +31,7 @@
 				    property="version.copyr" />
 			</replace>
 			<replace 
-				file="src/org/concoursjeunes/AppInfos.java"
+				file="src/org/ajdeveloppement/concours/AppInfos.java"
 				token="{versionDate}" 
 				value="${version.date}"
 				encoding="UTF-8" /> 

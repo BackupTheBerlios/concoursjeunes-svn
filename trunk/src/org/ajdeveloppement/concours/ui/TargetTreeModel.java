@@ -1,7 +1,7 @@
 /*
  * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -95,11 +95,11 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
-import org.concoursjeunes.Concurrent;
-import org.concoursjeunes.Target;
-import org.concoursjeunes.TargetPosition;
-import org.concoursjeunes.event.TargetEvent;
-import org.concoursjeunes.event.TargetListener;
+import org.ajdeveloppement.concours.Concurrent;
+import org.ajdeveloppement.concours.Target;
+import org.ajdeveloppement.concours.TargetPosition;
+import org.ajdeveloppement.concours.event.TargetEvent;
+import org.ajdeveloppement.concours.event.TargetListener;
 
 /**
  * @author Aurélien JEOFFRAY
@@ -313,7 +313,7 @@ public class TargetTreeModel implements TreeModel, TargetListener {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.concoursjeunes.CibleListener#concurrentJoined(org.concoursjeunes.CibleEvent)
+	 * @see org.ajdeveloppement.concours.CibleListener#concurrentJoined(org.ajdeveloppement.concours.CibleEvent)
 	 */
 	@Override
 	public void concurrentJoined(TargetEvent e) {
@@ -323,7 +323,7 @@ public class TargetTreeModel implements TreeModel, TargetListener {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.concoursjeunes.CibleListener#concurrentQuit(org.concoursjeunes.CibleEvent)
+	 * @see org.ajdeveloppement.concours.CibleListener#concurrentQuit(org.ajdeveloppement.concours.CibleEvent)
 	 */
 	@Override
 	public void concurrentQuit(TargetEvent e) {

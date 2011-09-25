@@ -1,5 +1,5 @@
 function checkPrintable(ficheConcours, options) {
-	var clubList = org.concoursjeunes.builders.EquipeListBuilder.getClubEquipeList(ficheConcours.getConcurrentList(), ficheConcours.getParametre().getReglement().getNbMembresRetenu());
+	var clubList = org.ajdeveloppement.concours.builders.EquipeListBuilder.getClubEquipeList(ficheConcours.getConcurrentList(), ficheConcours.getParametre().getReglement().getNbMembresRetenu());
 
 	if (clubList != null && clubList.countEquipes() > 0)
 		return true;
@@ -8,11 +8,11 @@ function checkPrintable(ficheConcours, options) {
 
 function printState(ficheConcours, template, document, writer, options) {
 	var contexte = JavaImporter(
-						Packages.org.concoursjeunes,
+						Packages.org.ajdeveloppement.concours,
 						Packages.org.ajdeveloppement.commons,
 						Packages.com.lowagie.text,
 						Packages.java.util,
-						org.concoursjeunes.builders,
+						org.ajdeveloppement.concours.builders,
 						com.lowagie.text.xml.XmlParser,
 						java.text.DateFormat,
 						java.io.StringReader);
@@ -28,7 +28,7 @@ function printState(ficheConcours, template, document, writer, options) {
 		var clubList = EquipeListBuilder.getClubEquipeList(ficheConcours.getConcurrentList(), ficheConcours.getParametre().getReglement().getNbMembresRetenu());
 
 		if (clubList != null && clubList.countEquipes() > 0) {
-			writer.setPageEvent(new org.concoursjeunes.state.PageFooter());
+			writer.setPageEvent(new org.ajdeveloppement.concours.state.PageFooter());
 			
 			var tplClassementEquipe = new AJTemplate();
 			tplClassementEquipe.loadTemplate(template);

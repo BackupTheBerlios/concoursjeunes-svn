@@ -15,7 +15,7 @@ function printState(ficheConcours, template, document, writer, options) {
 	var strClassement = "";
 	if (ficheConcours.getConcurrentList() != null && ficheConcours.getConcurrentList().countArcher() > 0) {
 		
-		writer.setPageEvent(new org.concoursjeunes.state.PageFooter());
+		writer.setPageEvent(new org.ajdeveloppement.concours.state.PageFooter());
 		
 		var tplClassement = new org.ajdeveloppement.commons.AJTemplate();
 		var strArbitreResp = "";
@@ -55,13 +55,13 @@ function printState(ficheConcours, template, document, writer, options) {
 		
 		var scnalst = concurrentsClasse.keySet();
 		var scnaUse = new java.util.ArrayList(scnalst);
-		org.concoursjeunes.CriteriaSet.sortCriteriaSet(scnaUse, ficheConcours.getParametre().getReglement().getListCriteria());
+		org.ajdeveloppement.concours.CriteriaSet.sortCriteriaSet(scnaUse, ficheConcours.getParametre().getReglement().getListCriteria());
 		
 		for (var i = 0; i < scnaUse.size(); i++) {
 			var sortList = concurrentsClasse.get(scnaUse.get(i));
 			
 			if (sortList.size() > 0) {
-				var strSCNA = org.concoursjeunes.localisable.CriteriaSetLibelle.getLibelle(scnaUse.get(i), ficheConcours.getProfile().getLocalisation());
+				var strSCNA = org.ajdeveloppement.concours.localisable.CriteriaSetLibelle.getLibelle(scnaUse.get(i), ficheConcours.getProfile().getLocalisation());
 				
 				tplClassement.parse("categories.CATEGORIE", strSCNA); //$NON-NLS-1$
 				

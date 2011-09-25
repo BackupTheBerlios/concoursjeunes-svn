@@ -1,9 +1,9 @@
 /*
- * Créé le 11 mai 2009 à 15:36:53 pour ConcoursJeunes
+ * Créé le 11 mai 2009 à 15:36:53 pour ArcCompetition
  *
  * Copyright 2002-2009 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -114,11 +114,11 @@ import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
+import org.ajdeveloppement.concours.ApplicationCore;
+import org.ajdeveloppement.concours.Blason;
+import org.ajdeveloppement.concours.DistancesEtBlason;
+import org.ajdeveloppement.concours.localisable.CriteriaSetLibelle;
 import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
-import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.Blason;
-import org.concoursjeunes.DistancesEtBlason;
-import org.concoursjeunes.localisable.CriteriaSetLibelle;
 import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.painter.GlossPainter;
 

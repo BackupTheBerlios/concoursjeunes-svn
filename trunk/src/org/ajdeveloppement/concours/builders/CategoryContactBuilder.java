@@ -1,9 +1,9 @@
 /*
- * Créé le 7 mai 2010 à 23:40:17 pour ConcoursJeunes
+ * Créé le 7 mai 2010 à 23:40:17 pour ArcCompetition
  *
  * Copyright 2002-2010 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -97,9 +97,9 @@ import org.ajdeveloppement.commons.persistence.LoadHelper;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.persistence.sql.ResultSetLoadHandler;
 import org.ajdeveloppement.commons.persistence.sql.SqlLoadHandler;
+import org.ajdeveloppement.concours.ApplicationCore;
 import org.ajdeveloppement.concours.CategoryContact;
 import org.ajdeveloppement.concours.cache.CategoryContactCache;
-import org.concoursjeunes.ApplicationCore;
 
 /**
  * Utilities class to build CategoryContact with database data

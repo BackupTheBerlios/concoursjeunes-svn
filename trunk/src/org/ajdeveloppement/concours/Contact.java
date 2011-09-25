@@ -1,9 +1,9 @@
 /*
- * Créé le 13 mars 2010 à 11:08:19 pour ConcoursJeunes
+ * Créé le 13 mars 2010 à 11:08:19 pour ArcCompetition
  *
  * Copyright 2002-2010 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -117,9 +117,7 @@ import org.ajdeveloppement.commons.persistence.sql.SqlStoreHandler;
 import org.ajdeveloppement.commons.persistence.sql.SqlTable;
 import org.ajdeveloppement.commons.sql.SqlManager;
 import org.ajdeveloppement.concours.managers.CivilityManager;
-import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.Entite;
-import org.concoursjeunes.manager.EntiteManager;
+import org.ajdeveloppement.concours.managers.EntiteManager;
 
 /**
  * Represent a contact person. This class can be serialised with JAXB.

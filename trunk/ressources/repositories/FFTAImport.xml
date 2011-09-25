@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <repository name="FFTAImport" moduleVersion="2.00.00">
-	<url>https://update.concoursjeunes.org/2.3/plugins/FFTAImport</url>
+	<url>https://arccompetition.ajdeveloppement.org/update/1.0/plugins/FFTAImport</url>
 	<mirror>0</mirror>
 	<canDisable>true</canDisable>
 	<mustBeSigned>true</mustBeSigned>

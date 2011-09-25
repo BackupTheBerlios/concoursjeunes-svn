@@ -1,9 +1,9 @@
 /*
- * Créé le 17 août 2008 à 12:30:37 pour ConcoursJeunes
+ * Créé le 17 août 2008 à 12:30:37 pour ArcCompetition
  *
  * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -111,15 +111,15 @@ import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.ui.DefaultDialogReturn;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
+import org.ajdeveloppement.concours.CriteriaSet;
+import org.ajdeveloppement.concours.DistancesEtBlason;
+import org.ajdeveloppement.concours.Federation;
+import org.ajdeveloppement.concours.Profile;
+import org.ajdeveloppement.concours.Reglement;
+import org.ajdeveloppement.concours.builders.ReglementBuilder;
+import org.ajdeveloppement.concours.managers.FederationManager;
+import org.ajdeveloppement.concours.managers.ReglementManager;
 import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
-import org.concoursjeunes.CriteriaSet;
-import org.concoursjeunes.DistancesEtBlason;
-import org.concoursjeunes.Federation;
-import org.concoursjeunes.Profile;
-import org.concoursjeunes.Reglement;
-import org.concoursjeunes.builders.ReglementBuilder;
-import org.concoursjeunes.manager.FederationManager;
-import org.concoursjeunes.manager.ReglementManager;
 import org.jdesktop.swingx.JXHeader;
 import org.jdesktop.swingx.painter.GlossPainter;
 

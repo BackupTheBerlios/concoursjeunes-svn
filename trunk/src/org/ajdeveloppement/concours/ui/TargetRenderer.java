@@ -1,7 +1,7 @@
 /*
  * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -93,11 +93,11 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
 import org.ajdeveloppement.commons.AjResourcesReader;
-import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.Concurrent;
-import org.concoursjeunes.Target;
-import org.concoursjeunes.TargetPosition;
-import org.concoursjeunes.localisable.TargetLibelle;
+import org.ajdeveloppement.concours.ApplicationCore;
+import org.ajdeveloppement.concours.Concurrent;
+import org.ajdeveloppement.concours.Target;
+import org.ajdeveloppement.concours.TargetPosition;
+import org.ajdeveloppement.concours.localisable.TargetLibelle;
 
 /**
  * Affecte les icone à l'arbre des cibles

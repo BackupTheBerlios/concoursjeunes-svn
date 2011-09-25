@@ -1,9 +1,9 @@
 /*
- * Créé le 10 mai 08 à 13:24:05 pour ConcoursJeunes
+ * Créé le 10 mai 08 à 13:24:05 pour ArcCompetition
  *
  * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -114,9 +114,9 @@ import javax.swing.text.html.HTMLEditorKit;
 import org.ajdeveloppement.apps.localisation.Localizable;
 import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
+import org.ajdeveloppement.concours.AppInfos;
+import org.ajdeveloppement.concours.ApplicationCore;
 import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
-import org.concoursjeunes.AppInfos;
-import org.concoursjeunes.ApplicationCore;
 
 /**
  * Boite de dialogue "à propos" de l'application

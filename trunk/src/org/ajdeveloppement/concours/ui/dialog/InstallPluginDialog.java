@@ -1,9 +1,9 @@
 /*
- * Créé le 31 déc. 07 à 16:35:22 pour ConcoursJeunes
+ * Créé le 31 déc. 07 à 16:35:22 pour ArcCompetition
  *
  * Copyright 2002-2007 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -145,7 +145,11 @@ import org.ajdeveloppement.commons.io.XMLSerializer;
 import org.ajdeveloppement.commons.security.JarVerifier;
 import org.ajdeveloppement.commons.ui.AJList;
 import org.ajdeveloppement.commons.ui.DefaultDialogReturn;
+import org.ajdeveloppement.concours.ApplicationCore;
+import org.ajdeveloppement.concours.Profile;
 import org.ajdeveloppement.concours.exceptions.NullConfigurationException;
+import org.ajdeveloppement.concours.plugins.AvailablePluginsManager;
+import org.ajdeveloppement.concours.plugins.PluginDescription;
 import org.ajdeveloppement.concours.ui.GlassPanePanel;
 import org.ajdeveloppement.macosx.PrivilegedRuntime;
 import org.ajdeveloppement.updater.AjUpdater;
@@ -154,10 +158,6 @@ import org.ajdeveloppement.updater.AjUpdaterListener;
 import org.ajdeveloppement.updater.Repository;
 import org.ajdeveloppement.updater.UpdateException;
 import org.ajdeveloppement.updater.ui.AjUpdaterFrame;
-import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.Profile;
-import org.concoursjeunes.plugins.AvailablePluginsManager;
-import org.concoursjeunes.plugins.PluginDescription;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
 import org.jdesktop.swingx.util.OS;
@@ -292,7 +292,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 		File tmJar = null;
 		try {
 			tmJar = File.createTempFile("csws", ".jar"); //$NON-NLS-1$ //$NON-NLS-2$
-			URL webservicesImplURL = new URL(ApplicationCore.staticParameters.getResourceString("url.webservices") + "/ConcoursJeunes-webservices.jar"); //$NON-NLS-1$ //$NON-NLS-2$
+			URL webservicesImplURL = new URL(ApplicationCore.staticParameters.getResourceString("url.webservices") + "/ArcCompetition-webservices.jar"); //$NON-NLS-1$ //$NON-NLS-2$
 			//charge l'implémentation dans un fichier temporaire
 			FileUtils.dumpStreamToFile(webservicesImplURL.openStream(), tmJar);
 			
@@ -303,7 +303,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 			//on s'assure que l'archive a bien été signé
 			if(verifier.isSignedJar()) {
 				Class<?> clazz = Class.forName(
-						"org.concoursjeunes.webservices.AvailablePluginsManagerImpl", //$NON-NLS-1$
+						"org.ajdeveloppement.concours.webservices.AvailablePluginsManagerImpl", //$NON-NLS-1$
 						true,
 						new URLClassLoader(new URL[] { tmJar.toURI().toURL()  }));
 				
@@ -589,7 +589,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 						}
 						
 						Process process = null;
-						String[] command = new String[] { "concoursjeunes-applyupdate", //$NON-NLS-1$
+						String[] command = new String[] { "arccompetition-applyupdate", //$NON-NLS-1$
 								ApplicationCore.userRessources.getUpdatePath().getPath(),
 								System.getProperty("user.dir") }; //$NON-NLS-1$
 						if(OS.isMacOSX()) {
@@ -598,7 +598,7 @@ public class InstallPluginDialog extends JDialog implements ActionListener, Care
 							process = PrivilegedRuntime.getRuntime().exec(command);
 							
 						} else {
-							//sur les systèmes Windows et Linux, invoque le programme "concoursjeunes-applyupdate"
+							//sur les systèmes Windows et Linux, invoque le programme "arccompetition-applyupdate"
 							//qui s'occupe d'élever les privilèges utilisateur si nécessaire.				
 							process = Runtime.getRuntime().exec(command); 
 						}

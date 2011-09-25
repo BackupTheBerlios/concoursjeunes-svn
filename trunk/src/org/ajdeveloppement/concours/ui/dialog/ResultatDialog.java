@@ -1,7 +1,7 @@
 /*
  * Copyright 2002-2007 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -116,11 +116,11 @@ import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.AjResourcesReader;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
 import org.ajdeveloppement.commons.ui.NumberDocument;
-import org.concoursjeunes.Concurrent;
-import org.concoursjeunes.ConcurrentList;
-import org.concoursjeunes.ConcurrentList.SortCriteria;
-import org.concoursjeunes.Parametre;
-import org.concoursjeunes.Profile;
+import org.ajdeveloppement.concours.Concurrent;
+import org.ajdeveloppement.concours.ConcurrentList;
+import org.ajdeveloppement.concours.Parametre;
+import org.ajdeveloppement.concours.Profile;
+import org.ajdeveloppement.concours.ConcurrentList.SortCriteria;
 
 /**
  * Boite de dialogue de saisie des résultats pour une cible

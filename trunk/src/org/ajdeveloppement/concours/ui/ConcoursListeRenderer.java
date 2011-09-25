@@ -3,7 +3,7 @@
  *
  * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -95,8 +95,8 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
-import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.Concurrent;
+import org.ajdeveloppement.concours.ApplicationCore;
+import org.ajdeveloppement.concours.Concurrent;
 
 /**
  * Applique des icones à la liste des archers

@@ -1,9 +1,9 @@
 /*
- * Créé le 5 mai 2009 à 21:26:33 pour ConcoursJeunes
+ * Créé le 5 mai 2009 à 21:26:33 pour ArcCompetition
  *
  * Copyright 2002-2009 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -90,8 +90,8 @@ package org.ajdeveloppement.concours.xml.bind;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import org.concoursjeunes.Blason;
-import org.concoursjeunes.manager.BlasonManager;
+import org.ajdeveloppement.concours.Blason;
+import org.ajdeveloppement.concours.managers.BlasonManager;
 
 /**
  * La liste des blasons étant figé en base de données, l'adapter permet d'enregistrer

@@ -1,9 +1,9 @@
 /*
- * Créé le 22 janv. 08 à 17:08:31 pour ConcoursJeunes
+ * Créé le 22 janv. 08 à 17:08:31 pour ArcCompetition
  *
  * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *

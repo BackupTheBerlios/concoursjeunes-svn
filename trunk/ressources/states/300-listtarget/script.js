@@ -6,7 +6,7 @@ function checkPrintable(ficheConcours, options) {
 
 function printState(ficheConcours, template, document, writer, options) {
 	var contexte = JavaImporter(
-						Packages.org.concoursjeunes,
+						Packages.org.ajdeveloppement.concours,
 						Packages.org.ajdeveloppement.commons,
 						Packages.com.lowagie.text,
 						com.lowagie.text.xml.XmlParser,
@@ -20,7 +20,7 @@ function printState(ficheConcours, template, document, writer, options) {
 	var profile = options.getProfile();
 	
 	with(contexte) {
-		writer.setPageEvent(new org.concoursjeunes.state.PageFooter());
+		writer.setPageEvent(new org.ajdeveloppement.concours.state.PageFooter());
 		
 		var listeArcherXML = new AJTemplate();
 		listeArcherXML.setLocalisationReader(localeReader);

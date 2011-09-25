@@ -1,9 +1,9 @@
 /*
- * Créé le 8 mai 2010 à 16:42:22 pour ConcoursJeunes
+ * Créé le 8 mai 2010 à 16:42:22 pour ArcCompetition
  *
  * Copyright 2002-2010 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -95,9 +95,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
+import org.ajdeveloppement.concours.ApplicationCore;
 import org.ajdeveloppement.concours.Civility;
 import org.ajdeveloppement.concours.builders.CivilityBuilder;
-import org.concoursjeunes.ApplicationCore;
 
 /**
  * @author Aurélien JEOFFRAY

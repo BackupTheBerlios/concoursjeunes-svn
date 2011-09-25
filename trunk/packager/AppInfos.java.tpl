@@ -1,4 +1,4 @@
-package org.concoursjeunes;
+package org.ajdeveloppement.concours;
 
 import javax.annotation.Generated;
 

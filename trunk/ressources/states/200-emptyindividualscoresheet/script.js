@@ -14,7 +14,7 @@ function printState(ficheConcours, template, document, writer, options) {
 
 	try {
 		templateXML.parse("CURRENT_TIME", java.text.DateFormat.getDateInstance(java.text.DateFormat.FULL).format(new java.util.Date())); //$NON-NLS-1$
-		templateXML.parse("producer", org.concoursjeunes.AppInfos.NOM + " " + org.concoursjeunes.AppInfos.VERSION); //$NON-NLS-1$ //$NON-NLS-2$
+		templateXML.parse("producer", org.ajdeveloppement.concours.AppInfos.NOM + " " + org.ajdeveloppement.concours.AppInfos.VERSION); //$NON-NLS-1$ //$NON-NLS-2$
 		templateXML.parse("author", profile.getConfiguration().getClub().getNom()); //$NON-NLS-1$	
 
 		templateXML.parse("scoresheet.LOGO_CLUB_URI", profile.getConfiguration().getLogoPath().replaceAll("\\\\", "\\\\\\\\"));

@@ -4,7 +4,7 @@
 		<mkdir dir="${projet.pack.dir}/plugins/ResultArcImport/plugins" />
 		<jar jarfile="${projet.pack.dir}/plugins/ResultArcImport/plugins/ResultArcImport.jar">
 			<fileset dir="${projet.pack.dir}/bin" >
-				<include name="org/concoursjeunes/plugins/ResultArcImport/**" />
+				<include name="org/ajdeveloppement/concours/plugins/ResultArcImport/**" />
 			</fileset>
 		</jar>
 		<copy todir="${projet.pack.dir}/plugins/ResultArcImport/" >

@@ -1,9 +1,9 @@
 /*
- * Créé le 21 mars 2010 à 17:57:41 pour ConcoursJeunes
+ * Créé le 21 mars 2010 à 17:57:41 pour ArcCompetition
  *
  * Copyright 2002-2010 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -88,8 +88,8 @@
  */
 package org.ajdeveloppement.concours.cache;
 
-import org.concoursjeunes.Criterion;
-import org.concoursjeunes.Reglement;
+import org.ajdeveloppement.concours.Criterion;
+import org.ajdeveloppement.concours.Reglement;
 
 /**
  * @author Aurélien JEOFFRAY

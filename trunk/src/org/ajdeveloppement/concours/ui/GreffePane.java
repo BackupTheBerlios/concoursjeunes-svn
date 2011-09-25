@@ -1,9 +1,9 @@
 /*
- * Créé le 17 févr. 08 à 15:30:37 pour ConcoursJeunes
+ * Créé le 17 févr. 08 à 15:30:37 pour ArcCompetition
  *
  * Copyright 2002-2008 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -125,17 +125,17 @@ import javax.swing.table.TableRowSorter;
 import org.ajdeveloppement.apps.localisation.Localizable;
 import org.ajdeveloppement.apps.localisation.Localizator;
 import org.ajdeveloppement.commons.ui.NumberDocument;
-import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.Concurrent;
-import org.concoursjeunes.ConcurrentList;
-import org.concoursjeunes.Criterion;
-import org.concoursjeunes.CriterionElement;
-import org.concoursjeunes.TargetPosition;
-import org.concoursjeunes.event.FicheConcoursEvent;
-import org.concoursjeunes.event.FicheConcoursListener;
-import org.concoursjeunes.state.State;
-import org.concoursjeunes.state.StateManager;
-import org.concoursjeunes.state.StateSelector;
+import org.ajdeveloppement.concours.ApplicationCore;
+import org.ajdeveloppement.concours.Concurrent;
+import org.ajdeveloppement.concours.ConcurrentList;
+import org.ajdeveloppement.concours.Criterion;
+import org.ajdeveloppement.concours.CriterionElement;
+import org.ajdeveloppement.concours.TargetPosition;
+import org.ajdeveloppement.concours.event.FicheConcoursEvent;
+import org.ajdeveloppement.concours.event.FicheConcoursListener;
+import org.ajdeveloppement.concours.state.State;
+import org.ajdeveloppement.concours.state.StateManager;
+import org.ajdeveloppement.concours.state.StateSelector;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.JXSplitButton;
 import org.jdesktop.swingx.error.ErrorInfo;
@@ -332,7 +332,7 @@ public class GreffePane extends JPanel implements
 	}
 
 	/* (non-Javadoc)
-	 * @see org.concoursjeunes.event.FicheConcoursListener#listConcurrentChanged(org.concoursjeunes.event.FicheConcoursEvent)
+	 * @see org.ajdeveloppement.concours.event.FicheConcoursListener#listConcurrentChanged(org.ajdeveloppement.concours.event.FicheConcoursEvent)
 	 */
 	@Override
 	public void listConcurrentChanged(FicheConcoursEvent e) {
@@ -343,7 +343,7 @@ public class GreffePane extends JPanel implements
 	}
 
 	/* (non-Javadoc)
-	 * @see org.concoursjeunes.event.FicheConcoursListener#pasDeTirChanged(org.concoursjeunes.event.FicheConcoursEvent)
+	 * @see org.ajdeveloppement.concours.event.FicheConcoursListener#pasDeTirChanged(org.ajdeveloppement.concours.event.FicheConcoursEvent)
 	 */
 	@Override
 	public void pasDeTirChanged(FicheConcoursEvent e) {

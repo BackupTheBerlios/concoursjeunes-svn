@@ -1,13 +1,13 @@
 #!/bin/sh
-groupadd -f concoursjeunes
+groupadd -f arccompetition
 
-chmod +s /var/lib/ConcoursJeunes
-chmod -R a+Xrw /var/lib/ConcoursJeunes
+chmod +s /var/lib/ArcCompetition
+chmod -R a+Xrw /var/lib/ArcCompetition
 if [ -x /usr/bin/gksu ] ; then
-	echo "gksu /usr/sbin/concoursjeunes-applyupdate \$1 \$2" > /usr/bin/concoursjeunes-applyupdate
+	echo "gksu /usr/sbin/arccompetition-applyupdate \$1 \$2" > /usr/bin/arccompetition-applyupdate
 else if [ -x /usr/bin/kdesu ] ; then
-	echo "kdesu /usr/sbin/concoursjeunes-applyupdate \$1 \$2" > /usr/bin/concoursjeunes-applyupdate
+	echo "kdesu /usr/sbin/arccompetition-applyupdate \$1 \$2" > /usr/bin/arccompetition-applyupdate
 fi
 fi
 
-chmod 700 /usr/sbin/concoursjeunes-applyupdate
+chmod 700 /usr/sbin/arccompetition-applyupdate

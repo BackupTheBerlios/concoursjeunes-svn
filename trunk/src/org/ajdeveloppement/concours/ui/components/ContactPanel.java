@@ -1,9 +1,9 @@
 /*
- * Créé le 8 mai 2010 à 18:27:57 pour ConcoursJeunes
+ * Créé le 8 mai 2010 à 18:27:57 pour ArcCompetition
  *
  * Copyright 2002-2010 - Aurélien JEOFFRAY
  *
- * http://www.concoursjeunes.org
+ * http://arccompetition.ajdeveloppement.org
  *
  * *** CeCILL Terms *** 
  *
@@ -139,10 +139,13 @@ import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
 import org.ajdeveloppement.commons.ui.AJSuggestTextField;
 import org.ajdeveloppement.commons.ui.GenericListModel;
 import org.ajdeveloppement.commons.ui.GridbagComposer;
+import org.ajdeveloppement.concours.ApplicationCore;
 import org.ajdeveloppement.concours.CategoryContact;
 import org.ajdeveloppement.concours.Civility;
 import org.ajdeveloppement.concours.Contact;
 import org.ajdeveloppement.concours.Coordinate;
+import org.ajdeveloppement.concours.Entite;
+import org.ajdeveloppement.concours.Profile;
 import org.ajdeveloppement.concours.Coordinate.Type;
 import org.ajdeveloppement.concours.managers.CategoryContactManager;
 import org.ajdeveloppement.concours.managers.CivilityManager;
@@ -150,9 +153,6 @@ import org.ajdeveloppement.concours.ui.components.CountryComboBox.Country;
 import org.ajdeveloppement.concours.ui.components.ZipCodeCitySuggestModel.SuggestType;
 import org.ajdeveloppement.swingxext.error.ui.DisplayableErrorHelper;
 import org.ajdeveloppement.swingxext.localisation.JXHeaderLocalisationHandler;
-import org.concoursjeunes.ApplicationCore;
-import org.concoursjeunes.Entite;
-import org.concoursjeunes.Profile;
 import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Binding;
