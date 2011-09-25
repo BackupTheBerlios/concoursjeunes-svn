@@ -425,9 +425,8 @@ public class FicheConcoursPane extends JPanel implements ActionListener, ChangeL
 
 		paneFinals = new FicheConcoursFinalsPane(this);
 		
-		//panneau global
 		tabbedpane.addChangeListener(this);
-		tabbedpane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+		//tabbedpane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		tabbedpane.addTab("onglet.gestionarcher", null, fichesDepart); //$NON-NLS-1$
 		tabbedpane.setTabComponentAt(0, getGestArchersTabComponent());
 		tabbedpane.addTab("onglet.pointage.greffe", ApplicationCore.userRessources.getImageIcon("file.icon.desktop"), //$NON-NLS-1$ //$NON-NLS-2$

@@ -121,12 +121,15 @@ public class ScriptExtLauncher {
 //		return new File(ApplicationCore.userRessources.getAllusersDataPath(), "scripts"); //$NON-NLS-1$
 //	}
 	
-	private File getUserScriptsPath() {
+	private static File getUserScriptsPath() {
 		return new File(ApplicationCore.userRessources.getUserPath(), "scripts"); //$NON-NLS-1$
 	}
 	
 	public static List<ScriptExtention> getOnDemandScripts() {
 		List<ScriptExtention> onDemandScript = new ArrayList<ScriptExtention>();
+		if(scripts.size() == 0) {
+			loadScripts();
+		}
 		for(final ScriptExtention extention : scripts) {
 			if(extention.getType() == Plugin.Type.ON_DEMAND) {
 				onDemandScript.add(extention);
@@ -154,7 +157,7 @@ public class ScriptExtLauncher {
 		}
 	}
 	
-	private void loadScripts() {
+	private static void loadScripts() {
 		File scriptsPath = getUserScriptsPath();
 		
 		List<File> scriptsFolders = FileUtils.listAllFiles(scriptsPath, ".*", true); //$NON-NLS-1$
