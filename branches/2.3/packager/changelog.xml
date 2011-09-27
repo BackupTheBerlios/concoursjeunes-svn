@@ -453,5 +453,26 @@
     </void> 
    </object> 
   </void> 
+  <void method="add"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurélien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Corrections NullReferenceException au changement de version entre 2.20 et 2.30</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1317148503207</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.29.14</string> 
+    </void> 
+   </object> 
+  </void> 
  </object> 
 </java> 
