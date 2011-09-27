@@ -110,6 +110,7 @@ import org.concoursjeunes.CriterionElement;
 import org.concoursjeunes.DistancesEtBlason;
 import org.concoursjeunes.Entite;
 import org.concoursjeunes.EquipeList;
+import org.concoursjeunes.Federation;
 import org.concoursjeunes.FicheConcours;
 import org.concoursjeunes.MetaDataFicheConcours;
 import org.concoursjeunes.MetaDataFichesConcours;
@@ -206,9 +207,10 @@ public class PhoenixPlugin implements ProfileListener, ApplicationCoreListener {
 						}
 						
 						if(parametre != null) {
-							checkFiche(structure);
+							checkFiche(structure, profile);
 							
 							FicheConcours ficheConcours = new FicheConcours(profile, parametre);
+							ficheConcours.setDbUUID(ApplicationCore.dbUUID);
 							for(Concurrent concurrent : ((ConcurrentList)structure[1]).list())
 								ficheConcours.addConcurrent(concurrent, concurrent.getDepart());
 							
@@ -235,9 +237,12 @@ public class PhoenixPlugin implements ProfileListener, ApplicationCoreListener {
 	 * à niveau si besoin.</p>
 	 * <p>Permet de mettre à niveau les fiches sérialisé dans des versions
 	 * inférieur du programme</p>
+	 * 
+	 * @param oldSerializedFiche
+	 * @param profile
 	 */
 	@SuppressWarnings("deprecation")
-	private void checkFiche(Object[] oldSerializedFiche) {
+	private void checkFiche(Object[] oldSerializedFiche, Profile profile) {
 		Parametre parametre = (Parametre)oldSerializedFiche[0];
 		ConcurrentList concurrentList = (ConcurrentList)oldSerializedFiche[1];
 		
@@ -270,6 +275,13 @@ public class PhoenixPlugin implements ProfileListener, ApplicationCoreListener {
 						element.setCriterion(criterion);
 				}
 			}
+			if(parametre.getClub().getFederation() == null)
+				parametre.getClub().setFederation(profile.getConfiguration().getClub().getFederation());
+			if(parametre.getClub().getFederation() == null)
+				parametre.getClub().setFederation(profile.getConfiguration().getFederation());
+			
+			List<Federation> federationCache = new ArrayList<Federation>();
+			federationCache.add(parametre.getClub().getFederation());
 			
 			if(concurrentList != null) {
 				List<Entite> entiteCache = new ArrayList<Entite>();
@@ -282,6 +294,24 @@ public class PhoenixPlugin implements ProfileListener, ApplicationCoreListener {
 						entiteCache.add(concurrent.getEntite());
 					else
 						concurrent.setEntite(entiteCache.get(entiteCache.indexOf(concurrent.getEntite())));
+					
+					//Raccroche une fédé à l'entité si necessaire
+					if(concurrent.getEntite().getFederation() == null) {
+						Federation federation = parametre.getClub().getFederation();
+						if(federation == null)
+							federation = profile.getConfiguration().getFederation();
+						if(federation == null)
+							federation = parametre.getReglement().getFederation();
+						
+						concurrent.getEntite().setFederation(federation);
+					}
+					
+					//S'assure qu'il n'y a qu'une seul instance par fédération
+					if(!federationCache.contains(concurrent.getEntite().getFederation()))
+						federationCache.add(concurrent.getEntite().getFederation());
+					else
+						concurrent.getEntite().setFederation(federationCache.get(federationCache.indexOf(concurrent.getEntite().getFederation())));
+					
 					
 					// En correction corruption suite manipulation Bug 57
 					if(concurrent.getInscription() == Concurrent.UNINIT)

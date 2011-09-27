@@ -433,10 +433,24 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 			if(!entitesConcours.contains(parametre.getClub()))
 				entitesConcours.add(parametre.getClub());
 			
+			//On vérifie qu'on ai concordance sur les instances, sinon on corrige
+			for(Concurrent concurrent : concurrentList.list()) {
+				Entite entiteCache = entitesConcours.get(entitesConcours.indexOf(concurrent.getEntite()));
+				if(concurrent.getEntite() != entiteCache)
+					concurrent.setEntite(entiteCache);
+			}
+			
 			federations = new ArrayList<Federation>();
 			for(Entite entite : entitesConcours) {
 				if(!federations.contains(entite.getFederation()))
 					federations.add(entite.getFederation());
+			}
+			
+			//On vérifie qu'on ai concordance sur les instances, sinon on corrige
+			for(Entite entite : entitesConcours) {
+				Federation federationCache = federations.get(federations.indexOf(entite.getFederation()));
+				if(entite.getFederation() != federationCache)
+					entite.setFederation(federationCache);
 			}
 		}
 	}

@@ -467,7 +467,8 @@ public class Entite implements ObjectPersistence {
 			// } catch (SQLException e) {
 			// throw new ObjectPersistenceException(e);
 			// }
-			federation.save(session);
+			if(federation != null)
+				federation.save(session);
 
 			helper.save(this);
 
