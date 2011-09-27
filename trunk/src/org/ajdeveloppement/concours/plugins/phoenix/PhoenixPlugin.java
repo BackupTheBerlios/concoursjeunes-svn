@@ -90,40 +90,18 @@ package org.ajdeveloppement.concours.plugins.phoenix;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentMap;
 
-import org.ajdeveloppement.commons.io.XMLSerializer;
-import org.ajdeveloppement.commons.persistence.ObjectPersistenceException;
-import org.ajdeveloppement.concours.Ancrage;
 import org.ajdeveloppement.concours.ApplicationCore;
-import org.ajdeveloppement.concours.Blason;
-import org.ajdeveloppement.concours.Concurrent;
-import org.ajdeveloppement.concours.ConcurrentList;
 import org.ajdeveloppement.concours.Configuration;
-import org.ajdeveloppement.concours.CriteriaSet;
-import org.ajdeveloppement.concours.Criterion;
-import org.ajdeveloppement.concours.CriterionElement;
-import org.ajdeveloppement.concours.DistancesEtBlason;
-import org.ajdeveloppement.concours.Entite;
-import org.ajdeveloppement.concours.EquipeList;
 import org.ajdeveloppement.concours.FicheConcours;
 import org.ajdeveloppement.concours.MetaDataFicheConcours;
 import org.ajdeveloppement.concours.MetaDataFichesConcours;
-import org.ajdeveloppement.concours.Parametre;
 import org.ajdeveloppement.concours.Profile;
-import org.ajdeveloppement.concours.Reglement;
-import org.ajdeveloppement.concours.builders.AncragesMapBuilder;
-import org.ajdeveloppement.concours.builders.BlasonBuilder;
 import org.ajdeveloppement.concours.builders.FicheConcoursBuilder;
 import org.ajdeveloppement.concours.event.ApplicationCoreEvent;
 import org.ajdeveloppement.concours.event.ApplicationCoreListener;
 import org.ajdeveloppement.concours.event.ProfileEvent;
 import org.ajdeveloppement.concours.event.ProfileListener;
-import org.ajdeveloppement.concours.managers.BlasonManager;
 import org.ajdeveloppement.concours.plugins.Plugin;
 import org.ajdeveloppement.concours.plugins.PluginEntry;
 
@@ -154,7 +132,7 @@ public class PhoenixPlugin implements ProfileListener, ApplicationCoreListener {
 		
 		File concoursPath = ApplicationCore.userRessources.getConcoursPathForProfile(profile);
 		
-		convertOldFicheConcours(concoursPath, metaDataFichesConcours, profile);
+		//convertOldFicheConcours(concoursPath, metaDataFichesConcours, profile);
 		
 		File[] concoursFiles = concoursPath.listFiles(new FileFilter() {
 			@Override
@@ -181,54 +159,54 @@ public class PhoenixPlugin implements ProfileListener, ApplicationCoreListener {
 		}
 	}
 	
-	private void convertOldFicheConcours(File concoursPath, MetaDataFichesConcours metaDataFichesConcours, Profile profile) {
-		File[] concoursFiles = concoursPath.listFiles(new FileFilter() {
-			@Override
-			public boolean accept(File pathname) {
-				return pathname.getName().endsWith(".cta"); //$NON-NLS-1$
-			}
-		});
-		if(concoursFiles.length > 0)
-			metaDataFichesConcours.removeAll();
-		for(File concoursFile : concoursFiles) {
-			if(concoursFile.isFile()) {
-				try {
-					Object[] structure = XMLSerializer.loadXMLStructure(concoursFile, true);
-					if(structure != null && structure.length == 3) {
-						Parametre parametre = null;
-						if(structure[0] instanceof Parametre) {
-							parametre = (Parametre) structure[0];
-							metaDataFichesConcours.remove(
-									new MetaDataFicheConcours(
-											parametre.getDateDebutConcours(), parametre.getIntituleConcours(), parametre.getSaveName()));
-							parametre.setSaveName(parametre.getSaveName() + "x"); //$NON-NLS-1$
-							
-						}
-						
-						if(parametre != null) {
-							checkFiche(structure);
-							
-							FicheConcours ficheConcours = new FicheConcours(profile, parametre);
-							for(Concurrent concurrent : ((ConcurrentList)structure[1]).list())
-								ficheConcours.addConcurrent(concurrent, concurrent.getDepart());
-							
-							ficheConcours.setEquipes((EquipeList)structure[2]);
-
-							ficheConcours.save();
-							
-							metaDataFichesConcours.add(ficheConcours.getMetaDataFicheConcours());
-							
-							concoursFile.delete();
-						}
-					} else {
-						concoursFile.delete(); //Fichier verolé on supprime
-					}
-				} catch (Exception e) {
-					throw new RuntimeException(e);
-				}
-			}
-		}
-	}
+//	private void convertOldFicheConcours(File concoursPath, MetaDataFichesConcours metaDataFichesConcours, Profile profile) {
+//		File[] concoursFiles = concoursPath.listFiles(new FileFilter() {
+//			@Override
+//			public boolean accept(File pathname) {
+//				return pathname.getName().endsWith(".cta"); //$NON-NLS-1$
+//			}
+//		});
+//		if(concoursFiles.length > 0)
+//			metaDataFichesConcours.removeAll();
+//		for(File concoursFile : concoursFiles) {
+//			if(concoursFile.isFile()) {
+//				try {
+//					Object[] structure = XMLSerializer.loadXMLStructure(concoursFile, true);
+//					if(structure != null && structure.length == 3) {
+//						Parametre parametre = null;
+//						if(structure[0] instanceof Parametre) {
+//							parametre = (Parametre) structure[0];
+//							metaDataFichesConcours.remove(
+//									new MetaDataFicheConcours(
+//											parametre.getDateDebutConcours(), parametre.getIntituleConcours(), parametre.getSaveName()));
+//							parametre.setSaveName(parametre.getSaveName() + "x"); //$NON-NLS-1$
+//							
+//						}
+//						
+//						if(parametre != null) {
+//							checkFiche(structure);
+//							
+//							FicheConcours ficheConcours = new FicheConcours(profile, parametre);
+//							for(Concurrent concurrent : ((ConcurrentList)structure[1]).list())
+//								ficheConcours.addConcurrent(concurrent, concurrent.getDepart());
+//							
+//							ficheConcours.setEquipes((EquipeList)structure[2]);
+//
+//							ficheConcours.save();
+//							
+//							metaDataFichesConcours.add(ficheConcours.getMetaDataFicheConcours());
+//							
+//							concoursFile.delete();
+//						}
+//					} else {
+//						concoursFile.delete(); //Fichier verolé on supprime
+//					}
+//				} catch (Exception e) {
+//					throw new RuntimeException(e);
+//				}
+//			}
+//		}
+//	}
 	
 	/**
 	 * <p>Contrôle la cohérence d'une fiche et effectue une mise
@@ -236,132 +214,132 @@ public class PhoenixPlugin implements ProfileListener, ApplicationCoreListener {
 	 * <p>Permet de mettre à niveau les fiches sérialisé dans des versions
 	 * inférieur du programme</p>
 	 */
-	@SuppressWarnings("deprecation")
-	private void checkFiche(Object[] oldSerializedFiche) {
-		Parametre parametre = (Parametre)oldSerializedFiche[0];
-		ConcurrentList concurrentList = (ConcurrentList)oldSerializedFiche[1];
-		
-		if(parametre != null) {
-			Reglement reglement = parametre.getReglement();
-			
-			if(reglement.getVersion() == 1) {
-				reglement.setTie(new ArrayList<String>(Arrays.asList(new String[] { "10","9" }))); //$NON-NLS-1$ //$NON-NLS-2$
-				reglement.setDisplayName(reglement.getName());
-				reglement.setVersion(Reglement.CURRENT_VERSION);
-				
-				for(Entry<CriteriaSet, CriteriaSet> entry : reglement.getSurclassement().entrySet()) {
-					for(Entry<Criterion, CriterionElement> entry2 : entry.getKey().getCriteria().entrySet()) {
-						if(entry2.getValue().getCriterion() == null)
-							entry2.getValue().setCriterion(entry2.getKey());
-					}
-					for(Entry<Criterion, CriterionElement> entry2 : entry.getValue().getCriteria().entrySet()) {
-						if(entry2.getValue() != null && entry2.getValue().getCriterion() == null)
-							entry2.getValue().setCriterion(entry2.getKey());
-					}
-				}
-			}
-			
-			//contrôle l'affectation du règlement et des critères
-			for(Criterion criterion : reglement.getListCriteria()) {
-				if(criterion.getReglement() == null)
-					criterion.setReglement(reglement);
-				for(CriterionElement element : criterion.getCriterionElements()) {
-					if(element.getCriterion() == null)
-						element.setCriterion(criterion);
-				}
-			}
-			
-			if(concurrentList != null) {
-				List<Entite> entiteCache = new ArrayList<Entite>();
-				for(Concurrent concurrent : concurrentList.list()) {
-					if(concurrent.getCriteriaSet().getReglement() == null)
-						concurrent.getCriteriaSet().setReglement(reglement);
-					
-					//S'assure que pour une entite donnée, il n'ai qu'une seul instance
-					if(!entiteCache.contains(concurrent.getEntite()))
-						entiteCache.add(concurrent.getEntite());
-					else
-						concurrent.setEntite(entiteCache.get(entiteCache.indexOf(concurrent.getEntite())));
-					
-					// En correction corruption suite manipulation Bug 57
-					if(concurrent.getInscription() == Concurrent.UNINIT)
-						concurrent.setInscription(Concurrent.RESERVEE);
-					
-					//si il manque des critères, essaye de les regénérer
-					for(Criterion criterion : reglement.getListCriteria()) {
-						if(!concurrent.getCriteriaSet().getCriteria().containsKey(criterion)) {
-							if(criterion.getCriterionElements().size() == 0) {
-								CriterionElement defElement = new CriterionElement("A"); //$NON-NLS-1$
-								defElement.setLibelle("Tous"); //$NON-NLS-1$
-								List<CriterionElement> lce = new ArrayList<CriterionElement>();
-								lce.add(defElement);
-								criterion.setCriterionElements(lce);
-							}
-							concurrent.getCriteriaSet().addCriterionElement(
-									criterion.getCriterionElements().get(0));
-						}
-					}
-		
-					for(Entry<Criterion, CriterionElement> entry : concurrent.getCriteriaSet().getCriteria().entrySet()) {
-						if(entry.getValue().getCriterion() == null)
-							entry.getValue().setCriterion(entry.getKey());
-					}
-				}
-			}
-			
-			DistancesEtBlason defaultDistancesEtBlason = new DistancesEtBlason();
-			for(DistancesEtBlason distancesEtBlason : reglement.getListDistancesEtBlason()) {
-				
-				if(distancesEtBlason.getCriteriaSet().getReglement() == null)
-					distancesEtBlason.getCriteriaSet().setReglement(reglement);
-				
-				//si le blason n'est pas initialiser
-				if(distancesEtBlason.getTargetFace() == null || distancesEtBlason.getTargetFace().equals(new Blason())) {
-					if(distancesEtBlason.getNumdistancesblason() > 0 && reglement.getNumReglement() > 0) { //si le règlement est dans la base
-						try {
-							distancesEtBlason.setTargetFace(BlasonManager.findBlasonAssociateToDistancesEtBlason(distancesEtBlason));
-						} catch (ObjectPersistenceException e) {
-							e.printStackTrace();
-						}
-					} else {
-						Blason targetFace = null;
-						try { //on tente de retrouver une correspondance pour le blason dans la base
-			                targetFace = BlasonManager.findBlasonByName(distancesEtBlason.getBlason() + "cm"); //$NON-NLS-1$
-		                } catch (ObjectPersistenceException e) {
-			                e.printStackTrace(); //on trace l'erreur mais on ne la fait pas remonter dans l'interface
-		                }
-		                if(targetFace == null) { //si on a pas retrouvé de blason correspondant dans la base alors créer l'entrée
-		                	targetFace = BlasonBuilder.getBlasonBySize(distancesEtBlason.getBlason());
-		                }
-					}
-					//remet la valeur par défaut pour supprimer la section du XML de persistance à la prochaine sauvegarde
-					distancesEtBlason.setBlason(defaultDistancesEtBlason.getBlason());
-				
-				} else {
-					//si il est initialisé mais ne possède pas d'ancrage
-					if(distancesEtBlason.getTargetFace().getAncrages() == null || distancesEtBlason.getTargetFace().getAncrages().size() == 0) {
-						//si le blason est present dans la base
-						if(distancesEtBlason.getTargetFace().getNumblason() > 0) {
-							ConcurrentMap<Integer, Ancrage> ancrages = null;
-							try {
-								ancrages = AncragesMapBuilder.getAncragesMap(distancesEtBlason.getTargetFace());
-	                        } catch (ObjectPersistenceException e) {
-		                        e.printStackTrace(); //on trace l'erreur mais on ne la fait pas remonter dans l'interface
-	                        }
-	                        if(ancrages == null) {
-	                        	ancrages = AncragesMapBuilder.getAncragesMap(distancesEtBlason.getTargetFace().getNbArcher());
-	                        }
-	                        
-	                        distancesEtBlason.getTargetFace().setAncrages(ancrages);
-						} else {
-							ConcurrentMap<Integer, Ancrage> ancrages = AncragesMapBuilder.getAncragesMap(distancesEtBlason.getTargetFace().getNbArcher());
-							distancesEtBlason.getTargetFace().setAncrages(ancrages);
-						}
-					}
-				}
-			}
-		}
-	}
+//	@SuppressWarnings("deprecation")
+//	private void checkFiche(Object[] oldSerializedFiche) {
+//		Parametre parametre = (Parametre)oldSerializedFiche[0];
+//		ConcurrentList concurrentList = (ConcurrentList)oldSerializedFiche[1];
+//		
+//		if(parametre != null) {
+//			Reglement reglement = parametre.getReglement();
+//			
+//			if(reglement.getVersion() == 1) {
+//				reglement.setTie(new ArrayList<String>(Arrays.asList(new String[] { "10","9" }))); //$NON-NLS-1$ //$NON-NLS-2$
+//				reglement.setDisplayName(reglement.getName());
+//				reglement.setVersion(Reglement.CURRENT_VERSION);
+//				
+//				for(Entry<CriteriaSet, CriteriaSet> entry : reglement.getSurclassement().entrySet()) {
+//					for(Entry<Criterion, CriterionElement> entry2 : entry.getKey().getCriteria().entrySet()) {
+//						if(entry2.getValue().getCriterion() == null)
+//							entry2.getValue().setCriterion(entry2.getKey());
+//					}
+//					for(Entry<Criterion, CriterionElement> entry2 : entry.getValue().getCriteria().entrySet()) {
+//						if(entry2.getValue() != null && entry2.getValue().getCriterion() == null)
+//							entry2.getValue().setCriterion(entry2.getKey());
+//					}
+//				}
+//			}
+//			
+//			//contrôle l'affectation du règlement et des critères
+//			for(Criterion criterion : reglement.getListCriteria()) {
+//				if(criterion.getReglement() == null)
+//					criterion.setReglement(reglement);
+//				for(CriterionElement element : criterion.getCriterionElements()) {
+//					if(element.getCriterion() == null)
+//						element.setCriterion(criterion);
+//				}
+//			}
+//			
+//			if(concurrentList != null) {
+//				List<Entite> entiteCache = new ArrayList<Entite>();
+//				for(Concurrent concurrent : concurrentList.list()) {
+//					if(concurrent.getCriteriaSet().getReglement() == null)
+//						concurrent.getCriteriaSet().setReglement(reglement);
+//					
+//					//S'assure que pour une entite donnée, il n'ai qu'une seul instance
+//					if(!entiteCache.contains(concurrent.getEntite()))
+//						entiteCache.add(concurrent.getEntite());
+//					else
+//						concurrent.setEntite(entiteCache.get(entiteCache.indexOf(concurrent.getEntite())));
+//					
+//					// En correction corruption suite manipulation Bug 57
+//					if(concurrent.getInscription() == Concurrent.UNINIT)
+//						concurrent.setInscription(Concurrent.RESERVEE);
+//					
+//					//si il manque des critères, essaye de les regénérer
+//					for(Criterion criterion : reglement.getListCriteria()) {
+//						if(!concurrent.getCriteriaSet().getCriteria().containsKey(criterion)) {
+//							if(criterion.getCriterionElements().size() == 0) {
+//								CriterionElement defElement = new CriterionElement("A"); //$NON-NLS-1$
+//								defElement.setLibelle("Tous"); //$NON-NLS-1$
+//								List<CriterionElement> lce = new ArrayList<CriterionElement>();
+//								lce.add(defElement);
+//								criterion.setCriterionElements(lce);
+//							}
+//							concurrent.getCriteriaSet().addCriterionElement(
+//									criterion.getCriterionElements().get(0));
+//						}
+//					}
+//		
+//					for(Entry<Criterion, CriterionElement> entry : concurrent.getCriteriaSet().getCriteria().entrySet()) {
+//						if(entry.getValue().getCriterion() == null)
+//							entry.getValue().setCriterion(entry.getKey());
+//					}
+//				}
+//			}
+//			
+//			DistancesEtBlason defaultDistancesEtBlason = new DistancesEtBlason();
+//			for(DistancesEtBlason distancesEtBlason : reglement.getListDistancesEtBlason()) {
+//				
+//				if(distancesEtBlason.getCriteriaSet().getReglement() == null)
+//					distancesEtBlason.getCriteriaSet().setReglement(reglement);
+//				
+//				//si le blason n'est pas initialiser
+//				if(distancesEtBlason.getTargetFace() == null || distancesEtBlason.getTargetFace().equals(new Blason())) {
+//					if(distancesEtBlason.getNumdistancesblason() > 0 && reglement.getNumReglement() > 0) { //si le règlement est dans la base
+//						try {
+//							distancesEtBlason.setTargetFace(BlasonManager.findBlasonAssociateToDistancesEtBlason(distancesEtBlason));
+//						} catch (ObjectPersistenceException e) {
+//							e.printStackTrace();
+//						}
+//					} else {
+//						Blason targetFace = null;
+//						try { //on tente de retrouver une correspondance pour le blason dans la base
+//			                targetFace = BlasonManager.findBlasonByName(distancesEtBlason.getBlason() + "cm"); //$NON-NLS-1$
+//		                } catch (ObjectPersistenceException e) {
+//			                e.printStackTrace(); //on trace l'erreur mais on ne la fait pas remonter dans l'interface
+//		                }
+//		                if(targetFace == null) { //si on a pas retrouvé de blason correspondant dans la base alors créer l'entrée
+//		                	targetFace = BlasonBuilder.getBlasonBySize(distancesEtBlason.getBlason());
+//		                }
+//					}
+//					//remet la valeur par défaut pour supprimer la section du XML de persistance à la prochaine sauvegarde
+//					distancesEtBlason.setBlason(defaultDistancesEtBlason.getBlason());
+//				
+//				} else {
+//					//si il est initialisé mais ne possède pas d'ancrage
+//					if(distancesEtBlason.getTargetFace().getAncrages() == null || distancesEtBlason.getTargetFace().getAncrages().size() == 0) {
+//						//si le blason est present dans la base
+//						if(distancesEtBlason.getTargetFace().getNumblason() > 0) {
+//							ConcurrentMap<Integer, Ancrage> ancrages = null;
+//							try {
+//								ancrages = AncragesMapBuilder.getAncragesMap(distancesEtBlason.getTargetFace());
+//	                        } catch (ObjectPersistenceException e) {
+//		                        e.printStackTrace(); //on trace l'erreur mais on ne la fait pas remonter dans l'interface
+//	                        }
+//	                        if(ancrages == null) {
+//	                        	ancrages = AncragesMapBuilder.getAncragesMap(distancesEtBlason.getTargetFace().getNbArcher());
+//	                        }
+//	                        
+//	                        distancesEtBlason.getTargetFace().setAncrages(ancrages);
+//						} else {
+//							ConcurrentMap<Integer, Ancrage> ancrages = AncragesMapBuilder.getAncragesMap(distancesEtBlason.getTargetFace().getNbArcher());
+//							distancesEtBlason.getTargetFace().setAncrages(ancrages);
+//						}
+//					}
+//				}
+//			}
+//		}
+//	}
 
 	/* (non-Javadoc)
 	 * @see org.ajdeveloppement.concours.event.ProfileListener#configurationChanged(org.ajdeveloppement.concours.profileEvent)
