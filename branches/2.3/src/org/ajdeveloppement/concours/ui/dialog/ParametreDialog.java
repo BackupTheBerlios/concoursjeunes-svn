@@ -405,17 +405,20 @@ public class ParametreDialog extends JDialog implements ActionListener, ListSele
 		gridbagComposer.setParentPanel(jpArbitres);
 		c.gridy = 0;
 		c.gridwidth = 1;
+		c.weightx = 0.0;
 		gridbagComposer.addComponentIntoGrid(jlbArbitres, c);
 		c.fill = GridBagConstraints.BOTH;
 		c.gridheight = 3;
+		c.weightx = 1.0;
 		gridbagComposer.addComponentIntoGrid(new JScrollPane(jlArbitres), c);
-		//c.fill = GridBagConstraints.HORIZONTAL;
+		c.fill = GridBagConstraints.NONE;
 		c.gridheight = 1;
+		c.weightx = 0.0;
 		gridbagComposer.addComponentIntoGrid(jbAjouterArbitre, c);
 
 		c.gridy++;
 		c.gridx = 2;
-		c.fill = GridBagConstraints.HORIZONTAL;
+		//c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridwidth = 1;
 		gridbagComposer.addComponentIntoGrid(jbSupprimerArbitre, c);
 		
