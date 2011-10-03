@@ -223,6 +223,8 @@ public class FFTAImportThread extends Thread {
 			uc.setRequestProperty("User-Agent", "Mozilla/5.0 (X11; U; Linux x86_64; fr; rv:1.9.2.7) Gecko/20100723 Fedora/3.6.7-1.fc13 Firefox/3.6.7"); //$NON-NLS-1$ //$NON-NLS-2$
 			EncryptedZipInputStream ezis = new EncryptedZipInputStream(uc.getInputStream());
 			try {
+				//final int contentLength = uc.getContentLength();
+				
 				ezis.setEncryptedPassword(secureProperties.get("ffta.zip.password").getBytes()); //$NON-NLS-1$
 				try {
 					ZipEntry entry;
@@ -232,6 +234,19 @@ public class FFTAImportThread extends Thread {
 		            	if(!temppath.endsWith("\\") && !temppath.endsWith("/")) //$NON-NLS-1$ //$NON-NLS-2$
 		            		temppath += File.separator;
 		            	String outpath = temppath + entry.getName();
+		            	
+//		            	FilterInputStream filterInputStream = new FilterInputStream(ezis) {
+//		            		private int currentPos = 0;
+//		            		@Override
+//		            		public int read(byte[] b) throws IOException {
+//		            			int read = super.read(b);
+//		            			
+//		            			if(read != -1)
+//		            				currentPos += read;
+//		            			fireProgressionInfo((((double)currentPos / (double)contentLength) * 100.0) + " %"); //$NON-NLS-1$
+//		            			return read;
+//		            		}
+//		            	};
 
 		                FileUtils.dumpStreamToFile(ezis, new File(outpath), false);
 		            }

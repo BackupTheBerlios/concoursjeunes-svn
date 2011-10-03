@@ -309,7 +309,7 @@ public class AutoCompleteDocument extends PlainDocument {
 		searchArcher.setName(searchString.toUpperCase() + "%"); //$NON-NLS-1$
 		
 		if(getLength() > 0) {
-			List<Concurrent> concurrents = ConcurrentManager.getArchersInDatabase(searchArcher, context.getReglement(), "NAME", 1); //$NON-NLS-1$
+			List<Concurrent> concurrents = ConcurrentManager.getArchersInDatabase(searchArcher, context.getReglement(), "NAME, FIRSTNAME", 10); //$NON-NLS-1$
 			if(concurrents.size() > 0) {
 				context.setConcurrent(concurrents.get(0));
 				context.setAutocompleteLicence(false);

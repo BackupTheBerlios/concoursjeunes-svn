@@ -166,7 +166,9 @@ public class EntiteBuilder {
 			} else
 				foreignKeyValue = resultSetLoadHelper.load(entite, rs);
 			
-			entite.setFederation(FederationBuilder.getFederation((Integer)foreignKeyValue.get(Entite.class).get("NUMFEDERATION"))); //$NON-NLS-1$
+			Map<String, Object> fkEntite = foreignKeyValue.get(Entite.class);
+			if(fkEntite != null)
+				entite.setFederation(FederationBuilder.getFederation((Integer)fkEntite.get("NUMFEDERATION"))); //$NON-NLS-1$
 			
 			EntiteCache.getInstance().add(entite);
 		}
