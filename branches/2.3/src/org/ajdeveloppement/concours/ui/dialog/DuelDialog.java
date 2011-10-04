@@ -250,7 +250,7 @@ public class DuelDialog extends JDialog implements ActionListener, FocusListener
 		
 		completePanel();
 		
-		setSize(430, 200);
+		setSize(430, 240);
 		setLocationRelativeTo(null);
 		setVisible(true);
 		
