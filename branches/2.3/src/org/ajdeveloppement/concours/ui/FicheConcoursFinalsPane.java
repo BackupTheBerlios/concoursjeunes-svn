@@ -93,6 +93,7 @@ import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.FlowLayout;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -752,7 +753,10 @@ public class FicheConcoursFinalsPane extends JPanel implements ActionListener, M
 						}
 					});
 					popup.add(mi);
-					popup.show(graphComponent, e.getX(), e.getY());
+					
+					Point pMouse = graphComponent.getMousePosition();
+					popup.show(graphComponent, pMouse.x, pMouse.y);
+					//
 
 				} else if(cell instanceof DuelMxCell) {
 					JPopupMenu popup = new JPopupMenu("Edit"); //$NON-NLS-1$
@@ -768,7 +772,9 @@ public class FicheConcoursFinalsPane extends JPanel implements ActionListener, M
 						}
 					});
 					popup.add(mi);
-					popup.show(graphComponent, e.getX(), e.getY());
+					
+					Point pMouse = graphComponent.getMousePosition();
+					popup.show(graphComponent, pMouse.x, pMouse.y);
 				}
 			}
 		} else if(e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2) {
