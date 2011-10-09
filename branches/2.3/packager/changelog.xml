@@ -495,5 +495,26 @@
     </void> 
    </object> 
   </void> 
+  <void method="add"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurélien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction plantage sur les équipes après rechargement d&apos;une compétition</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1318190023507</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.29.16</string> 
+    </void> 
+   </object> 
+  </void> 
  </object> 
 </java> 

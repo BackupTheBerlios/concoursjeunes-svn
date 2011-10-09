@@ -192,8 +192,9 @@ public class Equipe implements Cloneable, Comparable<Equipe> {
 	 * @return Le critère de distinction de l'équipe.
 	 */
     public CriteriaSet getDifferentiationCriteria() {
-        if(differentiationCriteria == null)
+        if(differentiationCriteria == null) {
             differentiationCriteria = new CriteriaSet();
+        }
         
         return differentiationCriteria;
     }

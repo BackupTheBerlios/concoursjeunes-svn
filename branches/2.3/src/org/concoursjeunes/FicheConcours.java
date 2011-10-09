@@ -475,6 +475,11 @@ public class FicheConcours implements PasDeTirListener, PropertyChangeListener {
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
 		parametre.addPropertyChangeListener(this);
 		concurrentList.setParametre(parametre);
+		if(equipes != null) {
+			for(CriteriaSet teamCriteriaSet : equipes.listCriteriaSet()) {
+				teamCriteriaSet.setReglement(parametre.getReglement());
+			}
+		}
 		entitesConcours = null;
 		federations = null;
 		
