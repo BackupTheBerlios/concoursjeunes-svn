@@ -89,6 +89,7 @@
 package org.ajdeveloppement.concours.ui.dialog;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -313,6 +314,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 
 		tabbedpane.addTab("configuration.onglet.genral", null, initEcranGeneral()); //$NON-NLS-1$
 		tabbedpane.addTab("configuration.onglet.concours", null, initEcranConcours()); //$NON-NLS-1$
+		tabbedpane.addTab("configuration.onglet.tarifs", null, initEcranTarif()); //$NON-NLS-1$
 		tabbedpane.addTab("configuration.onglet.etiquettes", null, initEcranEtiquette()); //$NON-NLS-1$
 		tabbedpane.addTab("configuration.onglet.interface", null, initEcranAdvanced()); //$NON-NLS-1$
 
@@ -324,6 +326,8 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		pack();
 		setLocationRelativeTo(null);
 	}
+
+	
 
 	/**
 	 * Genere l'onglet general
@@ -470,6 +474,17 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 		jpEcranConcours.add(jpPasDeTir, BorderLayout.CENTER);
 
 		return jpEcranConcours;
+	}
+	
+	/**
+	 * Genere l'onglet de parametrage des tarifs
+	 * 
+	 * @return ecran tarif
+	 */
+	private Component initEcranTarif() {
+		JPanel jpEcranTarif = new JPanel();
+		
+		return jpEcranTarif;
 	}
 
 	/**

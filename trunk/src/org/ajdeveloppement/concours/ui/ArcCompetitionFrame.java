@@ -196,7 +196,10 @@ public class ArcCompetitionFrame extends JFrame implements ActionListener, Hyper
 			// affiche la boite de dialogue si le fichier de configuration
 			// n'existe pas ou si il est
 			// configurer pour un affichage
-			if (ApplicationCore.getAppConfiguration().isFirstboot()) {
+			if (ApplicationCore.getAppConfiguration().isFirstboot() || profile.getConfiguration().getFederation() == null
+					|| profile.getConfiguration().getFederation().getNomFederation().isEmpty()) {
+				if(profile.getConfiguration().getFederation().getNomFederation().isEmpty())
+					profile.getConfiguration().setFederation(null);
 				showConfigurationDialog();
 			}
 			init();

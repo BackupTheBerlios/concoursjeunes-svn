@@ -203,7 +203,7 @@ public class ConcurrentManager {
 					filters.add("NUMLICENCEARCHER like '" + aGeneric.getNumLicenceArcher().replaceAll("'", "''").replaceAll("%", "%%") + "'");
 				}
 				if(aGeneric.getName() != null && !aGeneric.getName().isEmpty()) {
-					filters.add("UPPER(NAME) like '" + aGeneric.getName().toUpperCase().replaceAll("'", "''").replaceAll("%", "%%") + "'");
+					filters.add("UPPER_NAME like '" + aGeneric.getName().toUpperCase().replaceAll("'", "''").replaceAll("%", "%%") + "'");
 				}
 				if(aGeneric.getFirstName() != null && !aGeneric.getFirstName().isEmpty()) {
 					filters.add("UPPER(FIRSTNAME) like '" + aGeneric.getFirstName().toUpperCase().replaceAll("'", "''").replaceAll("%", "%%") + "'");

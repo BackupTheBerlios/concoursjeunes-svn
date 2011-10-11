@@ -167,6 +167,18 @@ public class ConfigurationManager {
 		
 		if(configuration == null) {
 			configuration = ConfigurationBuilder.getDefaultConfiguration();
+		} else if(configuration.getFederation().getNomFederation().isEmpty() && configuration.getFederation().getSigleFederation().isEmpty()) {
+			try {
+				org.ajdeveloppement.concours.legacy.Configuration configurationLegacy = XMLSerializer.loadMarshallStructure(confFile, org.ajdeveloppement.concours.legacy.Configuration.class);
+				if(!configurationLegacy.getFederation().getNomFederation().isEmpty()) {
+					configuration.setFederation(configurationLegacy.getFederation());
+					configuration.getClub().setFederation(configurationLegacy.getFederation());
+				}
+			} catch (JAXBException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		return configuration;

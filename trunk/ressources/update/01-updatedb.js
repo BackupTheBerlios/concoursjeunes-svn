@@ -40,6 +40,9 @@ if(dbVersion == 0) {
 		
 		updateReglements();
 		sql.executeScript("../sql/ImportClubLFBTA.sql");
+	} else if(dbVersion < 31) {
+		sql.executeUpdate("ALTER TABLE CONTACT ADD UPPER_NAME VARCHAR(128) as UPPER(NAME)");
+		sql.executeUpdate("CREATE INDEX IF NOT EXISTS I_UPPER_NAME ON CONTACT (UPPER_NAME ASC)");
 	}
 }
 

@@ -100,6 +100,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
@@ -133,6 +134,9 @@ public class Configuration extends DefaultParameters implements Cloneable {
 	
 	private static String[] strLstLangue;
 
+	@XmlAttribute
+	@SuppressWarnings("unused")
+	private String version			= "2"; //$NON-NLS-1$
 	private String langue           = "fr";               //$NON-NLS-1$
 	private String logoPath         = "ressources/logos/default.jpg";   //$NON-NLS-1$
 	

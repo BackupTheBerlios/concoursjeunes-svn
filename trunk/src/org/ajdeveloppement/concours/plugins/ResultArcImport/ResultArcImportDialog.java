@@ -106,6 +106,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 import org.ajdeveloppement.apps.localisation.Localizable;
 import org.ajdeveloppement.apps.localisation.Localizator;
@@ -234,9 +235,15 @@ public class ResultArcImportDialog extends JDialog implements ActionListener, Re
 	 */
 	@Override
 	public void importFinished() {
-		JOptionPane.showMessageDialog(this, pluginLocalisation.getResourceString("message.import.fin"), //$NON-NLS-1$
-				pluginLocalisation.getResourceString("message.import"), JOptionPane.INFORMATION_MESSAGE);  //$NON-NLS-1$
-		setVisible(false);
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				JOptionPane.showMessageDialog(ResultArcImportDialog.this, pluginLocalisation.getResourceString("message.import.fin"), //$NON-NLS-1$
+						pluginLocalisation.getResourceString("message.import"), JOptionPane.INFORMATION_MESSAGE);  //$NON-NLS-1$
+				ResultArcImportDialog.this.setVisible(false);
+			}
+		});
+		
 	}
 
 	/*
@@ -246,7 +253,16 @@ public class ResultArcImportDialog extends JDialog implements ActionListener, Re
 	 */
 	@Override
 	public void progressionInfo(String info) {
-		jpbProgression.setString(info);
+		
+		final String fInfo = info;
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				jpbProgression.setString(fInfo);
+			}
+		});
+			
 		// jlProgression.repaint();
 	}
 }
