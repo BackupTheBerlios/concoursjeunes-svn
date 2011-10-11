@@ -291,8 +291,9 @@ public class Federation implements ObjectPersistence {
 	public void setCompetitionLevels(List<CompetitionLevel> competitionLevels) {
 		this.competitionLevels = competitionLevels;
 		
-		for(CompetitionLevel competitionLevel : competitionLevels)
+		for(CompetitionLevel competitionLevel : competitionLevels) {
 			competitionLevel.setFederation(this);
+		}
 	}
 	
 	/**
@@ -450,8 +451,10 @@ public class Federation implements ObjectPersistence {
 	 * @param parent
 	 */
 	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
+		int i = 1;
 		for(CompetitionLevel competitionLevel : competitionLevels) {
 			competitionLevel.setFederation(this);
+			competitionLevel.setNumLevel(i++);
 		}
 		try {
 			checkAlreadyExists();
