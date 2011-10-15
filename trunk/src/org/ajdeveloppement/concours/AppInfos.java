@@ -23,7 +23,7 @@ public class AppInfos {
 	/**
 	 * Date de la version
 	 */
-	public static final String VERSION_DATE = new String("06/10/2011"); //$NON-NLS-1$
+	public static final String VERSION_DATE = new String("15/10/2011"); //$NON-NLS-1$
 	
 	/**
 	 * Nom de code de l'application

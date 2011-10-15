@@ -47,12 +47,12 @@ clean:
 	# Add here commands to clean up after the build process.
 	-$(MAKE) clean
 
-	dh_clean 
+	dh_prep
 
 install: build
 	dh_testdir
 	dh_testroot
-	dh_clean -k 
+	dh_prep -k 
 	dh_installdirs
 
 	# Add here commands to install the package into debian/arccompetition.

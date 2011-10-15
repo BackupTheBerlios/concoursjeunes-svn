@@ -1,4 +1,4 @@
-#Sun Sep 25 16:25:28 CEST 2011
+#Sat Oct 15 22:28:10 CEST 2011
 eclipse.preferences.version=1
 encoding//config/parametre.properties=UTF-8
 encoding//lang/libelle.properties=UTF-8
@@ -21,4 +21,3 @@ encoding//src/org/ajdeveloppement/concours/plugins/update/ArcCompetitionUpdate_l
 encoding//src/org/ajdeveloppement/concours/plugins/update/ArcCompetitionUpdate_libelle_en.properties=UTF-8
 encoding//src/windows-specific/concoursjeunes-applyupdate/Program.cs=ISO-8859-1
 encoding/<project>=UTF-8
-instance/org.eclipse.core.net/org.eclipse.core.net.hasMigrated=true

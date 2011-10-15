@@ -453,5 +453,26 @@
     </void> 
    </object> 
   </void> 
+  <void method="add"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
+    <void property="appname"> 
+     <string>arccompetition</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurélien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * First Alpha release</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1318711116946</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>0.99.00</string> 
+    </void> 
+   </object> 
+  </void> 
  </object> 
 </java> 
