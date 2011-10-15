@@ -950,6 +950,8 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 				System.err.println("Aucune sauvegarde possible. Action annulé");  //$NON-NLS-1$
 			}
 		} else if (source == jbParcourir) {
+			Federation baseFederation = profile.getConfiguration().getFederation();
+			profile.getConfiguration().setFederation((Federation)jcbFederation.getSelectedItem());
 			EntiteListDialog eld = new EntiteListDialog(null, profile, true);
 			if (eld.getAction() == EntiteListDialog.VALIDER) {
 				workConfiguration.setClub(eld.getSelectedEntite());
@@ -957,6 +959,7 @@ public class ConfigurationDialog extends JDialog implements ActionListener, Auto
 				jtfAgrClub.setText(eld.getSelectedEntite().getAgrement());
 				jtfNomClub.setText(eld.getSelectedEntite().getNom());
 			}
+			profile.getConfiguration().setFederation(baseFederation);
 		} else if (source == this.jbDetail) {
 			EntiteDialog ed = new EntiteDialog(this, profile);
 			ed.setEntite(workConfiguration.getClub());

@@ -329,7 +329,7 @@ public class PhasesFinales implements PropertyChangeListener,FicheConcoursListen
 		
 		for(int i = 0; i < nbTotalPhases; i++) {
 			List<Duel> duels = getDuelsPhase(categorie, i);
-			if(duels.size() == 2 && duels.get(0).getPhase() == 0) {
+			if((duels.size() == 1 || duels.size() == 2) && duels.get(0).getPhase() == 0) {
 				Duel duel = duels.get(0);
 				if(duel.getWinner() != null) {
 					concurrents.add(duel.getWinner());
@@ -339,14 +339,16 @@ public class PhasesFinales implements PropertyChangeListener,FicheConcoursListen
 					concurrents.add(duel.getConcurrent2());
 				}
 				
-				//Petite finale
-				duel = duels.get(1);
-				if(duel.getWinner() != null) {
-					concurrents.add(duel.getWinner());
-					concurrents.add(duel.getLooser());
-				} else {
-					concurrents.add(duel.getConcurrent1());
-					concurrents.add(duel.getConcurrent2());
+				if(duels.size() == 2) {
+					//Petite finale
+					duel = duels.get(1);
+					if(duel.getWinner() != null) {
+						concurrents.add(duel.getWinner());
+						concurrents.add(duel.getLooser());
+					} else {
+						concurrents.add(duel.getConcurrent1());
+						concurrents.add(duel.getConcurrent2());
+					}
 				}
 			} else if(duels.size() > 2 || concurrents.size() == 0 ) {
 				List<Concurrent> perdants = new ArrayList<Concurrent>();
@@ -413,6 +415,7 @@ public class PhasesFinales implements PropertyChangeListener,FicheConcoursListen
 		List<CriteriaSet> scnaUse = new ArrayList<CriteriaSet>(scnalst);
 		CriteriaSet.sortCriteriaSet(scnaUse, ficheConcours.getParametre().getReglement().getListCriteria());
 		
+		boolean concurrentInserted = false;
 		for (CriteriaSet scna : scnaUse) {
 			List<Concurrent> sortList = concurrentsClasse.get(scna);
 			
@@ -455,11 +458,16 @@ public class PhasesFinales implements PropertyChangeListener,FicheConcoursListen
 					tplClassement.parse("categories.classement.SCORE", String.valueOf(concurrent.getScorePhasefinale(phase))); //$NON-NLS-1$
 					
 					tplClassement.loopBloc("categories.classement"); //$NON-NLS-1$
+					
+					concurrentInserted = true;
 				}
 				
 				tplClassement.loopBloc("categories"); //$NON-NLS-1$
 			}
 		}
+		
+		if(!concurrentInserted)
+			return ficheConcours.getProfile().getLocalisation().getResourceString("duel.classement.noclassement"); //$NON-NLS-1$
 		
 		return tplClassement.output();
 	}
