@@ -325,7 +325,7 @@ public class PhasesFinales implements PropertyChangeListener,FicheConcoursListen
 		
 		for(int i = 0; i < nbTotalPhases; i++) {
 			List<Duel> duels = getDuelsPhase(categorie, i);
-			if(duels.size() == 2 && duels.get(0).getPhase() == 0) {
+			if((duels.size() == 1 || duels.size() == 2) && duels.get(0).getPhase() == 0) {
 				Duel duel = duels.get(0);
 				if(duel.getWinner() != null) {
 					concurrents.add(duel.getWinner());
@@ -335,14 +335,16 @@ public class PhasesFinales implements PropertyChangeListener,FicheConcoursListen
 					concurrents.add(duel.getConcurrent2());
 				}
 				
-				//Petite finale
-				duel = duels.get(1);
-				if(duel.getWinner() != null) {
-					concurrents.add(duel.getWinner());
-					concurrents.add(duel.getLooser());
-				} else {
-					concurrents.add(duel.getConcurrent1());
-					concurrents.add(duel.getConcurrent2());
+				if(duels.size() == 2) {
+					//Petite finale
+					duel = duels.get(1);
+					if(duel.getWinner() != null) {
+						concurrents.add(duel.getWinner());
+						concurrents.add(duel.getLooser());
+					} else {
+						concurrents.add(duel.getConcurrent1());
+						concurrents.add(duel.getConcurrent2());
+					}
 				}
 			} else if(duels.size() > 2 || concurrents.size() == 0 ) {
 				List<Concurrent> perdants = new ArrayList<Concurrent>();

@@ -57,6 +57,7 @@ function printState(ficheConcours, template, document, writer, options) {
 		var scnaUse = new java.util.ArrayList(scnalst);
 		org.ajdeveloppement.concours.CriteriaSet.sortCriteriaSet(scnaUse, ficheConcours.getParametre().getReglement().getListCriteria());
 		
+		var concurrentInserted = false;
 		for (var i = 0; i < scnaUse.size(); i++) {
 			var sortList = concurrentsClasse.get(scnaUse.get(i));
 			
@@ -103,10 +104,15 @@ function printState(ficheConcours, template, document, writer, options) {
 					tplClassement.parse("categories.classement.SCORE", "" + concurrent.getScorePhasefinale(phase)); //$NON-NLS-1$
 					
 					tplClassement.loopBloc("categories.classement"); //$NON-NLS-1$
+					
+					concurrentInserted = true;
 				}
 				
 				tplClassement.loopBloc("categories"); //$NON-NLS-1$
 			}
+			
+			if(!concurrentInserted)
+				tplClassement.parseBloc("categories","");
 		}
 		com.lowagie.text.xml.XmlParser.parse(document, new java.io.StringReader(tplClassement.output()));
 	}
