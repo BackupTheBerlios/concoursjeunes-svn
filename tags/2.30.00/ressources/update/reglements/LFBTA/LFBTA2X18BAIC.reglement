@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<reglement name="LFBTA2X18BAIC" version="2">
+    <displayName>2x18m BAIC</displayName>
+    <description>Compétition Nationnal Belge 2x18m (BAIC)
+Tir sur Tri-Spot</description>
+    <reglementType>TARGET</reglementType>
+    <nbSerie>2</nbSerie>
+    <nbVoleeParSerie>10</nbVoleeParSerie>
+    <nbFlecheParVolee>3</nbFlecheParVolee>
+    <nbPointsParFleche>10</nbPointsParFleche>
+    <nbMembresEquipe>4</nbMembresEquipe>
+    <nbMembresRetenu>3</nbMembresRetenu>
+    <criteria>
+        <criterion code="arme">
+            <libelle>Arme</libelle>
+            <sortOrder>1</sortOrder>
+            <classement>true</classement>
+            <classementEquipe>false</classementEquipe>
+            <placement>false</placement>
+            <champsTableArchers></champsTableArchers>
+            <numordre>1</numordre>
+            <criterionelements>
+                <element id="3339c2c4-b261-46dc-9348-1243eefe4dae">
+                    <code>R</code>
+                    <libelle>Recurve</libelle>
+                    <active>true</active>
+                    <numordre>1</numordre>
+                </element>
+                <element id="1e7913d3-ccee-479f-8e8d-07c30dcdb402">
+                    <code>C</code>
+                    <libelle>Compound</libelle>
+                    <active>true</active>
+                    <numordre>2</numordre>
+                </element>
+            </criterionelements>
+        </criterion>
+        <criterion code="categorie">
+            <libelle>Catégorie</libelle>
+            <sortOrder>1</sortOrder>
+            <classement>true</classement>
+            <classementEquipe>false</classementEquipe>
+            <placement>false</placement>
+            <champsTableArchers></champsTableArchers>
+            <numordre>2</numordre>
+            <criterionelements>
+                <element id="bc8a9879-3d40-419b-a669-5c59f9dd71d2">
+                    <code>D</code>
+                    <libelle>Dame</libelle>
+                    <active>true</active>
+                    <numordre>1</numordre>
+                </element>
+                <element id="a720fd01-00e6-4dba-ac16-3f12992686d4">
+                    <code>H</code>
+                    <libelle>Homme</libelle>
+                    <active>true</active>
+                    <numordre>2</numordre>
+                </element>
+            </criterionelements>
+        </criterion>
+    </criteria>
+    <surclassement>
+        <entry>
+            <key>
+                <criteria/>
+            </key>
+        </entry>
+    </surclassement>
+    <listdistancesetblason>
+        <distancesetblason>
+            <distances>
+                <distance>18</distance>
+                <distance>18</distance>
+            </distances>
+            <targetFace>Tri Spot Vertical</targetFace>
+            <defaultTargetFace>true</defaultTargetFace>
+            <criteriaSet>
+                <criteria/>
+            </criteriaSet>
+        </distancesetblason>
+    </listdistancesetblason>
+    <departages>
+        <departage>10</departage>
+        <departage>9</departage>
+    </departages>
+    <officialReglement>false</officialReglement>
+    <federation id="ffdd3ab1-c55e-41f6-9f02-85bb22a59bfa">
+        <sigle>LFBTA</sigle>
+        <nom>Ligue Francophone Belge de Tir à l'Arc</nom>
+        <pays>be</pays>
+        <niveaux>
+            <niveau>
+                <lang>fr</lang>
+                <libelle>Provinces</libelle>
+                <defaut>true</defaut>
+            </niveau>
+            <niveau>
+                <lang>fr</lang>
+                <libelle> BAIC</libelle>
+                <defaut>false</defaut>
+            </niveau>
+            <niveau>
+                <lang>fr</lang>
+                <libelle> Championnat de Ligue</libelle>
+                <defaut>false</defaut>
+            </niveau>
+            <niveau>
+                <lang>fr</lang>
+                <libelle> Championnat de Belgique</libelle>
+                <defaut>false</defaut>
+            </niveau>
+        </niveaux>
+    </federation>
+    <category>2</category>
+    <removable>true</removable>
+    <inDatabase>true</inDatabase>
+</reglement>

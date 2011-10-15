@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<pluginDescription>
+	<logicalName>FFTAImport</logicalName>
+	<displayName>Import FFTA</displayName>
+	<version>1.10.00</version>
+	<shortDescription>Importation de la base des archers depuis le Site de la FFTA</shortDescription>
+	<longDescription>Permet de récupérer la base des clubs et des licenciés de la FFTA via FTP ou via le fichier result_data.zip préalablement téléchargé</longDescription>
+	<minVersionApp>2.29.00</minVersionApp>
+	<maxVersionApp>2.38.99</maxVersionApp>
+	<category>manual</category>
+	<reposURL>https://update.concoursjeunes.org/2.3/plugins/FFTAImport</reposURL>
+</pluginDescription>

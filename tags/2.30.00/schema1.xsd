@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="concurrentList" type="concurrentList"/>
+
+  <xs:element name="ficheConcours" type="ficheConcours"/>
+
+  <xs:element name="jaxbMapEntryRef" type="jaxbMapEntryRef"/>
+
+  <xs:element name="reglement" type="reglement"/>
+
+  <xs:complexType name="ficheConcours">
+    <xs:sequence>
+      <xs:element name="entitesConcours" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="entite" type="entite" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="parametre" type="parametre" minOccurs="0"/>
+      <xs:element name="concurrents" type="concurrentList" minOccurs="0"/>
+      <xs:element name="equipes" type="equipeList" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="entite">
+    <xs:sequence>
+      <xs:element name="nom" type="xs:string" minOccurs="0"/>
+      <xs:element name="agrement" type="xs:string" minOccurs="0"/>
+      <xs:element name="adresse" type="xs:string" minOccurs="0"/>
+      <xs:element name="codePostal" type="xs:string" minOccurs="0"/>
+      <xs:element name="ville" type="xs:string" minOccurs="0"/>
+      <xs:element name="note" type="xs:string" minOccurs="0"/>
+      <xs:element name="type" type="xs:int"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:ID" use="required"/>
+    <xs:attribute name="removable" type="xs:boolean" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="parametre">
+    <xs:complexContent>
+      <xs:extension base="defaultParameters">
+        <xs:sequence>
+          <xs:element name="lieuConcours" type="xs:string" minOccurs="0"/>
+          <xs:element name="niveauChampionnat" type="competitionLevel" minOccurs="0"/>
+          <xs:element name="dateDebutConcours" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="dateFinConcours" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="open" type="xs:boolean"/>
+          <xs:element name="duel" type="xs:boolean"/>
+          <xs:element name="arbitres" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="arbitre" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="judges" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="judge" type="judge" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element ref="reglement" minOccurs="0"/>
+          <xs:element name="saveName" type="xs:string" minOccurs="0"/>
+          <xs:element name="reglementLock" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="defaultParameters">
+    <xs:sequence>
+      <xs:element name="club" type="entite" minOccurs="0"/>
+      <xs:element name="intituleConcours" type="xs:string" minOccurs="0"/>
+      <xs:element name="nbCible" type="xs:int"/>
+      <xs:element name="nbTireur" type="xs:int"/>
+      <xs:element name="nbDepart" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="competitionLevel">
+    <xs:sequence>
+      <xs:element name="lang" type="xs:string" minOccurs="0"/>
+      <xs:element name="libelle" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaut" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="judge">
+    <xs:complexContent>
+      <xs:extension base="archer">
+        <xs:sequence>
+          <xs:element name="responsable" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="archer">
+    <xs:complexContent>
+      <xs:extension base="contact">
+        <xs:sequence>
+          <xs:element name="numLicenceArcher" type="xs:string" minOccurs="0"/>
+          <xs:element name="certificat" type="xs:boolean"/>
+          <xs:element name="handicape" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="contact">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="firstName" type="xs:string" minOccurs="0"/>
+      <xs:element name="civility" type="civility" minOccurs="0"/>
+      <xs:element name="adress" type="xs:string" minOccurs="0"/>
+      <xs:element name="zipCode" type="xs:string" minOccurs="0"/>
+      <xs:element name="city" type="xs:string" minOccurs="0"/>
+      <xs:element name="note" type="xs:string" minOccurs="0"/>
+      <xs:element name="entite" type="xs:IDREF" minOccurs="0"/>
+      <xs:element name="coordinates" type="coordinate" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="categories" type="categoryContact" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:ID"/>
+  </xs:complexType>
+
+  <xs:complexType name="civility">
+    <xs:sequence>
+      <xs:element name="abreviation" type="xs:string" minOccurs="0"/>
+      <xs:element name="libelle" type="xs:string" minOccurs="0"/>
+      <xs:element name="morale" type="xs:boolean"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:ID" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="coordinate">
+    <xs:sequence>
+      <xs:element name="coordinateType" type="type" minOccurs="0"/>
+      <xs:element name="value" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="categoryContact">
+    <xs:sequence>
+      <xs:element name="numCategoryContact" type="xs:int"/>
+      <xs:element name="idLibelle" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="reglement">
+    <xs:sequence>
+      <xs:element name="displayName" type="xs:string" minOccurs="0"/>
+      <xs:element name="reglementType" type="typeReglement" minOccurs="0"/>
+      <xs:element name="nbSerie" type="xs:int"/>
+      <xs:element name="nbVoleeParSerie" type="xs:int"/>
+      <xs:element name="nbFlecheParVolee" type="xs:int"/>
+      <xs:element name="nbMembresEquipe" type="xs:int"/>
+      <xs:element name="nbMembresRetenu" type="xs:int"/>
+      <xs:element name="criteria">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="criterion" type="criterion" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="surclassement">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="key" minOccurs="0" type="criteriaSet"/>
+                  <xs:element name="value" minOccurs="0" type="criteriaSet"/>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="listdistancesetblason">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="distancesetblason" type="distancesEtBlason" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="departages">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="departage" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="officialReglement" type="xs:boolean"/>
+      <xs:element name="federation" type="federation" minOccurs="0"/>
+      <xs:element name="category" type="xs:int"/>
+      <xs:element name="removable" type="xs:boolean"/>
+      <xs:element name="inDatabase" type="xs:boolean"/>
+    </xs:sequence>
+    <xs:attribute name="version" type="xs:int" use="required"/>
+    <xs:attribute name="name" type="xs:ID"/>
+  </xs:complexType>
+
+  <xs:complexType name="criterion">
+    <xs:sequence>
+      <xs:element name="libelle" type="xs:string" minOccurs="0"/>
+      <xs:element name="sortOrder" type="xs:int"/>
+      <xs:element name="classement" type="xs:boolean"/>
+      <xs:element name="classementEquipe" type="xs:boolean"/>
+      <xs:element name="placement" type="xs:boolean"/>
+      <xs:element name="champsTableArchers" type="xs:string" minOccurs="0"/>
+      <xs:element name="numordre" type="xs:int"/>
+      <xs:element name="criterionelements">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="element" type="criterionElement" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="code" type="xs:ID"/>
+  </xs:complexType>
+
+  <xs:complexType name="criterionElement">
+    <xs:sequence>
+      <xs:element name="code" type="xs:string" minOccurs="0"/>
+      <xs:element name="libelle" type="xs:string" minOccurs="0"/>
+      <xs:element name="active" type="xs:boolean"/>
+      <xs:element name="numordre" type="xs:int"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:ID"/>
+  </xs:complexType>
+
+  <xs:complexType name="criteriaSet">
+    <xs:sequence>
+      <xs:element name="criteria" type="jaxbMapRef" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="jaxbMapRef">
+    <xs:sequence>
+      <xs:element name="entry" type="jaxbMapEntryRef" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="jaxbMapEntryRef">
+    <xs:sequence>
+      <xs:element name="key" type="xs:IDREF" minOccurs="0"/>
+      <xs:element name="value" type="xs:IDREF" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="distancesEtBlason">
+    <xs:sequence>
+      <xs:element name="distances">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="distance" type="xs:int" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="targetFace" type="xs:string" minOccurs="0"/>
+      <xs:element name="defaultTargetFace" type="xs:boolean"/>
+      <xs:element name="criteriaSet" type="criteriaSet" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="federation">
+    <xs:sequence>
+      <xs:element name="sigle" type="xs:string" minOccurs="0"/>
+      <xs:element name="nom" type="xs:string" minOccurs="0"/>
+      <xs:element name="niveaux">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="niveau" type="competitionLevel" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="concurrentList">
+    <xs:sequence>
+      <xs:element name="concurrent" type="concurrent" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="concurrent">
+    <xs:complexContent>
+      <xs:extension base="archer">
+        <xs:sequence>
+          <xs:element name="criteriaSet" type="criteriaSet" minOccurs="0"/>
+          <xs:element name="depart" type="xs:int"/>
+          <xs:element name="targetPosition" type="targetPosition" minOccurs="0"/>
+          <xs:element name="points" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="serie" type="xs:int" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="departages" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="departage" type="xs:int" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="scoresPhasesFinal" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="scorePhaseFinal" type="xs:int" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="inscription" type="xs:int"/>
+          <xs:element name="presence" type="xs:boolean"/>
+          <xs:element name="surclassement" type="xs:boolean"/>
+          <xs:element name="alternativeTargetFace" type="blason" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="targetPosition">
+    <xs:sequence>
+      <xs:element name="target" type="xs:int"/>
+      <xs:element name="position" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="blason">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="horizontalRatio" type="xs:double"/>
+      <xs:element name="verticalRatio" type="xs:double"/>
+      <xs:element name="nbArcher" type="xs:int"/>
+      <xs:element name="numordre" type="xs:int"/>
+      <xs:element name="targetFaceImage" type="xs:string" minOccurs="0"/>
+      <xs:element name="ancrages">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="key" minOccurs="0" type="xs:int"/>
+                  <xs:element name="value" minOccurs="0" type="ancrage"/>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="numblason" type="xs:int" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="ancrage">
+    <xs:sequence>
+      <xs:element name="emplacement" type="xs:int"/>
+      <xs:element name="x" type="xs:double"/>
+      <xs:element name="y" type="xs:double"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="equipeList">
+    <xs:sequence>
+      <xs:element name="equipe" type="equipe" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="nbMembresRetenu" type="xs:int"/>
+      <xs:element name="limitedByClub" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="equipe">
+    <xs:sequence>
+      <xs:element name="membres" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="concurrent" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="nomEquipe" type="xs:string" minOccurs="0"/>
+      <xs:element name="nbRetenu" type="xs:int"/>
+      <xs:element name="differentiationCriteria" type="criteriaSet" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:simpleType name="type">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="HOME_PHONE"/>
+      <xs:enumeration value="WORK_PHONE"/>
+      <xs:enumeration value="MOBILE_PHONE"/>
+      <xs:enumeration value="MAIL"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="typeReglement">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="TARGET"/>
+      <xs:enumeration value="NATURE"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>
+
