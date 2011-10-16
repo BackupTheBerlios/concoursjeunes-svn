@@ -259,7 +259,7 @@
 	<target name="makelinuxtargz">
 		<mkdir dir="${projet.pack.dir}/linux/tar" />
 		
-		<copy todir="${projet.pack.dir}/linux/tar/usr/lib/ArcCompetition/" >
+		<copy todir="${projet.pack.dir}/linux/tar/usr/share/ArcCompetition/" >
 			<fileset dir="${projet.pack.dir}" >
 				<include name="config/**"/>
 				<include name="lang/**"/>
@@ -281,7 +281,7 @@
 		    	<exclude name="ScriptExt"/>
 		    </dirset>
 			<sequential>
-				<copy todir="${projet.pack.dir}/linux/tar/usr/lib/ArcCompetition" >
+				<copy todir="${projet.pack.dir}/linux/tar/usr/share/ArcCompetition" >
 					<fileset dir="@{plugin}" >
 						<include name="**/**"/>
 						

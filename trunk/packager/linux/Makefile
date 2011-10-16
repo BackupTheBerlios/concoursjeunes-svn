@@ -7,16 +7,16 @@ all:
 install:
 	groupadd -f arccompetition
 	
-	mkdir -p "$(DESTDIR)/usr/lib/ArcCompetition"
+	mkdir -p "$(DESTDIR)/usr/share/ArcCompetition"
 	mkdir -p "$(DESTDIR)/var/lib/ArcCompetition"
 	mkdir -p "$(DESTDIR)/usr/bin/"
 	mkdir -p "$(DESTDIR)/usr/sbin/"
 	mkdir -p "$(DESTDIR)/usr/share/pixmaps"
 	mkdir -p "$(DESTDIR)/usr/share/applications"
 	
-	cp -r usr/lib/ArcCompetition/. "$(DESTDIR)/usr/lib/ArcCompetition/"
-	chmod -R a+Xr,u+w "$(DESTDIR)/usr/lib/ArcCompetition"
-	chown -R root:root "$(DESTDIR)/usr/lib/ArcCompetition"
+	cp -r usr/share/ArcCompetition/. "$(DESTDIR)/usr/share/ArcCompetition/"
+	chmod -R a+Xr,u+w "$(DESTDIR)/usr/share/ArcCompetition"
+	chown -R root:root "$(DESTDIR)/usr/share/ArcCompetition"
 	install -m755 usr/bin/ArcCompetition "$(DESTDIR)/usr/bin/ArcCompetition"
 	install -m644 usr/share/pixmaps/ArcCompetition.xpm "$(DESTDIR)/usr/share/pixmaps/ArcCompetition.xpm"
 	install -m644 usr/share/applications/ArcCompetition.desktop "$(DESTDIR)/usr/share/applications/ArcCompetition.desktop"
@@ -24,7 +24,7 @@ install:
 	chmod +s "$(DESTDIR)/var/lib/ArcCompetition"
 	chmod -R a+Xrw "$(DESTDIR)/var/lib/ArcCompetition"
 	chown -R root:arccompetition "$(DESTDIR)/var/lib/ArcCompetition"
-	install -m700 usr/sbin/arccompetition-applyupdate "$(DESTDIR)/usr/sbin/arccompetition-applyupdate"
+	install -m750 usr/sbin/arccompetition-applyupdate "$(DESTDIR)/usr/sbin/arccompetition-applyupdate"
 
 	
 ifeq ($(USE_CONSOLEHELPER), yes)
@@ -33,10 +33,12 @@ ifeq ($(USE_CONSOLEHELPER), yes)
 	
 	ln -s consolehelper "$(DESTDIR)/usr/bin/arccompetition-applyupdate"
 else ifeq ($(USE_GKSU), yes)
-	echo "gksu /usr/sbin/arccompetition-applyupdate \$$1 \$$2" > "$(DESTDIR)/usr/bin/arccompetition-applyupdate"
+	echo "#!/bin/sh" > "$(DESTDIR)/usr/bin/arccompetition-applyupdate"
+	echo "gksu /usr/sbin/arccompetition-applyupdate \$$1 \$$2" >> "$(DESTDIR)/usr/bin/arccompetition-applyupdate"
 	chmod 755 "$(DESTDIR)/usr/bin/arccompetition-applyupdate"
 else ifeq ($(USE_KDESU), yes)
-	echo "kdesu /usr/sbin/arccompetition-applyupdate \$$1 \$$2" > "$(DESTDIR)/usr/bin/arccompetition-applyupdate"
+	echo "#!/bin/sh" > "$(DESTDIR)/usr/bin/arccompetition-applyupdate"
+	echo "kdesu /usr/sbin/arccompetition-applyupdate \$$1 \$$2" >> "$(DESTDIR)/usr/bin/arccompetition-applyupdate"
 	chmod 755 "$(DESTDIR)/usr/bin/arccompetition-applyupdate"
 endif
 
@@ -45,7 +47,7 @@ clean:
 
 
 remove:
-	rm -rf "$(DESTDIR)/usr/lib/ArcCompetition"
+	rm -rf "$(DESTDIR)/usr/share/ArcCompetition"
 	rm -f "$(DESTDIR)/usr/bin/ArcCompetition"
 	rm -f "$(DESTDIR)/usr/sbin/arccompetition-applyupdate"
 	rm -f "$(DESTDIR)/usr/bin/arccompetition-applyupdate"

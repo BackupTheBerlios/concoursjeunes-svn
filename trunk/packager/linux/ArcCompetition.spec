@@ -44,14 +44,14 @@ rm -rf "$RPM_BUILD_ROOT/Makefile"
 
 %files
 %defattr(-,root,root)
-/usr/lib/ArcCompetition/*.txt
-/usr/lib/ArcCompetition/config/*
-/usr/lib/ArcCompetition/lang/*
-/usr/lib/ArcCompetition/lib/*
-/usr/lib/ArcCompetition/documentation/*
-/usr/lib/ArcCompetition/plugins/*
-/usr/lib/ArcCompetition/ressources/*
-/usr/lib/ArcCompetition/ArcCompetition.jar
+/usr/share/ArcCompetition/*.txt
+/usr/share/ArcCompetition/config/*
+/usr/share/ArcCompetition/lang/*
+/usr/share/ArcCompetition/lib/*
+/usr/share/ArcCompetition/documentation/*
+/usr/share/ArcCompetition/plugins/*
+/usr/share/ArcCompetition/ressources/*
+/usr/share/ArcCompetition/ArcCompetition.jar
 %attr(755, -, root) %{_bindir}/ArcCompetition
 %attr(755, -, root) %{_bindir}/arccompetition-applyupdate
 %attr(700, root, root) /usr/sbin/arccompetition-applyupdate

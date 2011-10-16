@@ -1,13 +1,18 @@
 #!/bin/sh
+#DEBHELPER#
+
+set -e
+
 groupadd -f arccompetition
 
 chmod +s /var/lib/ArcCompetition
 chmod -R a+Xrw /var/lib/ArcCompetition
+echo "#!/bin/sh" > /usr/bin/arccompetition-applyupdate
 if [ -x /usr/bin/gksu ] ; then
-	echo "gksu /usr/sbin/arccompetition-applyupdate \$1 \$2" > /usr/bin/arccompetition-applyupdate
+	echo "gksu /usr/sbin/arccompetition-applyupdate \$1 \$2" >> /usr/bin/arccompetition-applyupdate
 else if [ -x /usr/bin/kdesu ] ; then
-	echo "kdesu /usr/sbin/arccompetition-applyupdate \$1 \$2" > /usr/bin/arccompetition-applyupdate
+	echo "kdesu /usr/sbin/arccompetition-applyupdate \$1 \$2" >> /usr/bin/arccompetition-applyupdate
 fi
 fi
 
-chmod 700 /usr/sbin/arccompetition-applyupdate
+chmod 755 /usr/bin/arccompetition-applyupdate

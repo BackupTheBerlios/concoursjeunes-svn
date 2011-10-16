@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd /usr/lib/ArcCompetition
+cd /usr/share/ArcCompetition
 
 java -Xmx256m -jar ArcCompetition.jar
 RETVAL=$?

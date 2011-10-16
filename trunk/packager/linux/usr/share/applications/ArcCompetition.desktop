@@ -10,5 +10,5 @@ Exec=/usr/bin/ArcCompetition
 Icon=/usr/share/pixmaps/ArcCompetition.xpm
 Terminal=false
 Type=Application
-Categories=Application;Archery;Other
+Categories=Office;Java;Sports
 Version=@version.numero@

@@ -1,35 +1,35 @@
 Source: arccompetition
-Section: contrib
+Section: contrib/java
 Priority: optional
-Maintainer: Aurelien JEOFFRAY <aurelien.jeoffray@gmail.com>
+Maintainer: Aur√©lien JEOFFRAY <aurelien.jeoffray@gmail.com>
 Build-Depends: debhelper (>= 7.0.50~)
-Standards-Version: 3.8.4
+Standards-Version: 3.9.2
 
 Package: arccompetition
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, sun-java6-jre | openjdk-6-jre (>= 6b18)
-Description: Logiciel de Gestion des compÈtitions de Tir ‡ l'Arc
+Depends: ${misc:Depends}, sun-java6-jre | openjdk-6-jre (>= 6b20) | openjdk-7-jre
+Description: Logiciel de Gestion des comp√©titions de Tir √† l'Arc
+ Auteur: Aur√©lien Jeoffray.
+ http://arccompetition.ajdeveloppement.org.
  .
- Auteur AurÈlien Jeoffray
- http://arccompetition.ajdeveloppement.org
+ ArcCompetition est un logiciel de gestion des comp√©titions
+ de tir √† l'arc.
  .
- ArcCompetition est un logiciel de gestion des compÈtitions
- de tir ‡ l'arc.
- .
- ArcCompetition nÈcessite la machine virtuel java 6.0
- disponible sur le CD d'instalation ou tÈlÈchargeable sur
+ ArcCompetition n√©cessite la machine virtuel java 6.0
+ disponible sur le CD d'instalation ou t√©l√©chargeable sur
  http://www.java.com.
  .
  ArcCompetition fonctionne sous toutes les plateformes
  compatibles jse 6.0 tel que MS Windows, GNU/Linux, Solaris.
  .
- ArcCompetition est distribuÈ sous double licences Open Source
+ ArcCompetition est distribu√© sous double licences Open Source
  CeCILL et GPL
  .
- Ce Logiciel inclut les Librairies
- * iText (http://www.lowagie.com/iText/) - Licence MPL et LGPL
- * H2 Database (http://www.h2database.com) - Licensed under the H2 License, Version 1.0 (http://h2database.com/html/license.html)
- * SwingX (https://swingx.dev.java.net/) - Licence LGPL
- * AjCommons (http://www.ajdeveloppement.org) - Licence CeCILL-C
- * AjCommons-ext (http://www.ajdeveloppement.org) - Licence GPL V2 with Sun "Classpath" exception
-
+ Ce Logiciel inclut les Librairies:
+   * iText (http://www.lowagie.com/iText/) - Licence MPL et LGPL
+   * H2 Database (http://www.h2database.com) - Licensed under the H2 License, 
+   Version 1.0 (http://h2database.com/html/license.html)
+   * SwingX (https://swingx.dev.java.net/) - Licence LGPL
+   * AjCommons (http://www.ajdeveloppement.org) - Licence CeCILL-C
+   * AjCommons-ext (http://www.ajdeveloppement.org) - Licence GPL V2 with
+   Sun "Classpath" exception
