@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<categories>
+	<categorie>
+		<name>preparation</name>
+		<libelle>preparation</libelle>
+	</categorie>
+	<categorie>
+		<name>marque</name>
+		<libelle>marque</libelle>
+	</categorie>
+	<categorie>
+		<name>greffe</name>
+		<libelle>greffe</libelle>
+	</categorie>
+	<categorie>
+		<name>result</name>
+		<libelle>result</libelle>
+	</categorie>
+	<categorie>
+		<name>other</name>
+		<libelle>other</libelle>
+	</categorie>
+</categories>
