@@ -257,8 +257,8 @@ public class NewReglementDialog extends JDialog implements ActionListener {
 			if(jcbReference.getSelectedItem() instanceof Reglement) {
 				Reglement reference = (Reglement)jcbReference.getSelectedItem();
 				try {
-					reglement = ReglementBuilder.getReglement(reference.getNumReglement(), true);
-					reglement.setName("C"+(new Date().getTime())); //$NON-NLS-1$
+					reglement = ReglementBuilder.getReglement(reference.getNumReglement(), true, "C"+(new Date().getTime())); //$NON-NLS-1$
+					//reglement.setName("C"+(new Date().getTime())); //$NON-NLS-1$
 					reglement.setNumReglement(0);
 					reglement.setRemovable(true);
 					reglement.setOfficialReglement(false);

@@ -190,12 +190,12 @@ public class CriteriaSet implements ObjectPersistence, PropertyChangeListener {
 	 * @param reglement reglement à définir
 	 */
 	public void setReglement(Reglement reglement) {
-		if(this.reglement != reglement) {
-			if(this.reglement != null)
-				this.reglement.removePropertyChangeListener(this);
-			if(reglement != null)
-				reglement.addPropertyChangeListener(this);
-		}
+//		if(this.reglement != reglement) {
+//			if(this.reglement != null)
+//				this.reglement.removePropertyChangeListener(this);
+//			if(reglement != null)
+//				reglement.addPropertyChangeListener(this);
+//		}
 		
 		this.reglement = reglement;
 		
@@ -613,13 +613,13 @@ public class CriteriaSet implements ObjectPersistence, PropertyChangeListener {
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		if(evt.getPropertyName().equals("name") && !evt.getNewValue().equals(evt.getOldValue())) { //$NON-NLS-1$
+		/*if(evt.getPropertyName().equals("name") && !evt.getNewValue().equals(evt.getOldValue())) { //$NON-NLS-1$
 			//On regenere la map
 			Map<Criterion, CriterionElement> tempCriteria = criteria;
 			criteria = new HashMap<Criterion, CriterionElement>();
 			for(Map.Entry<Criterion, CriterionElement> entry : tempCriteria.entrySet()) {
 				criteria.put(entry.getKey(), entry.getValue());
 			}
-		}
+		}*/
 	}
 }

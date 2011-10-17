@@ -179,7 +179,7 @@ public class ReglementBuilder {
 	 * @return le régalement construit à partir du numéro
 	 */
 	public static Reglement getReglement(int numreglement) throws ObjectPersistenceException {
-		return getReglement(numreglement, null, false);
+		return getReglement(numreglement, null, false, null);
 	}
 	
 	/**
@@ -199,7 +199,28 @@ public class ReglementBuilder {
 	 * @return le régalement construit à partir du numéro
 	 */
 	public static Reglement getReglement(int numreglement, boolean doNotUseCache) throws ObjectPersistenceException {
-		return getReglement(numreglement, null, doNotUseCache);
+		return getReglement(numreglement, null, doNotUseCache, null);
+	}
+	
+	/**
+	 * <p>
+	 * Retourne le règlement identifié par son numéro dans la base.
+	 * Si aucun régalement ne correspond au numéro, celui ci est initialisé par défaut
+	 * (équivalent à createReglement()).
+	 * </p>
+	 * <p>
+	 * Pour fonctionner correctement, "ConcoursJeunes.dbConnection" doit auparavant être
+	 * correctement instancié.
+	 * </p>
+	 * 
+	 * @param numreglement le numéro du règlement à construire
+	 * @param doNotUseCache	ne pas utiliser le cache pour le chargement
+	 * @param newInternalName nouveau nom interne pour le concours
+	 * 
+	 * @return le régalement construit à partir du numéro
+	 */
+	public static Reglement getReglement(int numreglement, boolean doNotUseCache, String newInternalName) throws ObjectPersistenceException {
+		return getReglement(numreglement, null, doNotUseCache, newInternalName);
 	}
 	
 	/**
@@ -213,7 +234,7 @@ public class ReglementBuilder {
 	 */
 	public static Reglement getReglement(ResultSet rs)
 			throws ObjectPersistenceException {
-		return getReglement(-1, rs, false);
+		return getReglement(-1, rs, false, null);
 	}
 	
 	/**
@@ -228,10 +249,10 @@ public class ReglementBuilder {
 	 */
 	public static Reglement getReglement(ResultSet rs, boolean doNotUseCache)
 			throws ObjectPersistenceException {
-		return getReglement(-1, rs, doNotUseCache);
+		return getReglement(-1, rs, doNotUseCache, null);
 	}
 	
-	private static Reglement getReglement(int numreglement, ResultSet rs, boolean doNotUseCache)
+	private static Reglement getReglement(int numreglement, ResultSet rs, boolean doNotUseCache, String newInternalName)
 			throws ObjectPersistenceException {
 
 		Reglement reglement = new Reglement();
@@ -266,6 +287,9 @@ public class ReglementBuilder {
 					rs.close();
 				}
 				reglement.setTie(ties);
+				
+				if(newInternalName != null)
+					reglement.setName(newInternalName);
 				
 				// Récupération des critères
 				List<Criterion> criteria = new ArrayList<Criterion>();
