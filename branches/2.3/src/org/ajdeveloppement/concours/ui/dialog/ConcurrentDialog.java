@@ -1230,6 +1230,7 @@ public class ConcurrentDialog extends JDialog implements ActionListener, FocusLi
             	concurrentListDialog.setVisible(true);
 				if (concurrentListDialog.isValider()) {
 					concurrent = concurrentListDialog.getSelectedConcurrent();
+					concurrent.setDepart(ficheConcours.getCurrentDepart());
 					setConcurrent(concurrent);
 				}
 			}

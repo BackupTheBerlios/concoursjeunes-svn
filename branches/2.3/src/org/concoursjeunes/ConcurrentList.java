@@ -133,6 +133,7 @@ public class ConcurrentList {
 	private ArrayList<Concurrent> archList  = new ArrayList<Concurrent>();
 	@XmlTransient
 	private Parametre parametre;
+	private transient Classement classement;
 
 	//Constructeur Obligatoire pour la sérialisation XML
 	public ConcurrentList() { }
@@ -409,8 +410,10 @@ public class ConcurrentList {
 	 * @return map contenant une liste de concurrent trié par jeux de critère de classement
 	 */
 	public Classement classement() {
-
-		Classement classement = new Classement();
+		if(classement == null) {
+			classement = new Classement();
+			parametre.getReglement().addPropertyChangeListener("numReglement", classement); //$NON-NLS-1$
+		}
 		Map<CriteriaSet, List<Concurrent>> concurrentsClasse = new HashMap<CriteriaSet, List<Concurrent>>();
 
 		CriteriaSet[] catList = CriteriaSet.listCriteriaSet(parametre.getReglement(), parametre.getReglement().getClassementFilter());

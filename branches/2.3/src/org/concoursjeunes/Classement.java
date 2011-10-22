@@ -88,6 +88,9 @@
  */
 package org.concoursjeunes;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -97,7 +100,7 @@ import java.util.Map;
  * @author Aurélien JEOFFRAY
  *
  */
-public class Classement {
+public class Classement implements PropertyChangeListener {
 	private Map<CriteriaSet, List<Concurrent>> classementPhaseQualificative;
 	
 	public Classement() {
@@ -120,5 +123,11 @@ public class Classement {
 	public void setClassementPhaseQualificative(
 			Map<CriteriaSet, List<Concurrent>> classementPhaseQualificative) {
 		this.classementPhaseQualificative = classementPhaseQualificative;
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if(evt.getSource() instanceof Reglement && evt.getPropertyName().equals("numReglement")) //$NON-NLS-1$
+			this.classementPhaseQualificative = new HashMap<CriteriaSet, List<Concurrent>>(this.classementPhaseQualificative);
 	}
 }

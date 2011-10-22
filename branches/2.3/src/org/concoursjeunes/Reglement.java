@@ -255,10 +255,19 @@ public class Reglement implements ObjectPersistence {
 	
 	public void addPropertyChangeListener(PropertyChangeListener l) {
 		pcs.addPropertyChangeListener(l);
+		
+	}
+	
+	public void addPropertyChangeListener(String propertyName, PropertyChangeListener l) {
+		pcs.addPropertyChangeListener(propertyName, l);
 	}
 	
 	public void removePropertyChangeListener(PropertyChangeListener l) {
 		pcs.removePropertyChangeListener(l);
+	}
+	
+	public void removePropertyChangeListener(String propertyName, PropertyChangeListener l) {
+		pcs.removePropertyChangeListener(propertyName, l);
 	}
 
 	/**
@@ -298,7 +307,7 @@ public class Reglement implements ObjectPersistence {
 	 * @param numReglement Identifiant du réglement en base
 	 */
 	public void setNumReglement(int numReglement) {
-		this.numReglement = numReglement;
+		pcs.firePropertyChange("numReglement", this.numReglement, this.numReglement = numReglement); //$NON-NLS-1$
 		
 		//force le recalcul du hashCode des Entry
 		surclassement = new HashMap<CriteriaSet, CriteriaSet>(surclassement);

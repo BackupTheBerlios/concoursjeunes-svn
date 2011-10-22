@@ -688,6 +688,7 @@ public class FicheConcoursFinalsPane extends JPanel implements ActionListener, M
 	}
 	
 	public void updateGraph() {
+		//phaseFinal.refreshClassement();
 		completePanel();
 	}
 	/* (non-Javadoc)
