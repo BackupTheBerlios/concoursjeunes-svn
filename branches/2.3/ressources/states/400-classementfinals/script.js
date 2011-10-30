@@ -57,20 +57,21 @@ function printState(ficheConcours, template, document, writer, options) {
 		var scnaUse = new java.util.ArrayList(scnalst);
 		org.concoursjeunes.CriteriaSet.sortCriteriaSet(scnaUse, ficheConcours.getParametre().getReglement().getListCriteria());
 		
-		var concurrentInserted = false;
 		for (var i = 0; i < scnaUse.size(); i++) {
+			var concurrentInserted = false;
 			var sortList = concurrentsClasse.get(scnaUse.get(i));
 			
 			if (sortList.size() > 0) {
 				var strSCNA = org.concoursjeunes.localisable.CriteriaSetLibelle.getLibelle(scnaUse.get(i), ficheConcours.getProfile().getLocalisation());
 				
 				tplClassement.parse("categories.CATEGORIE", strSCNA); //$NON-NLS-1$
-				
+
 				var place = 0;
 				var scorePrecedent = -1;
 				var phasePrecedente = -1;
 				for(var j = 0; j < sortList.size(); j++) {
 					var concurrent = sortList.get(j);
+					println(concurrent);
 					if(concurrent == null)
 						continue;
 					
@@ -81,7 +82,6 @@ function printState(ficheConcours, template, document, writer, options) {
 							break;
 						}
 					}
-					
 					if(phase == -1)
 						continue;
 					
@@ -108,11 +108,12 @@ function printState(ficheConcours, template, document, writer, options) {
 					concurrentInserted = true;
 				}
 				
-				tplClassement.loopBloc("categories"); //$NON-NLS-1$
+				if(concurrentInserted)
+					tplClassement.loopBloc("categories"); //$NON-NLS-1$
 			}
 			
-			if(!concurrentInserted)
-				tplClassement.parseBloc("categories","");
+			//if(!concurrentInserted)
+			//	tplClassement.parseBloc("categories","");
 		}
 		com.lowagie.text.xml.XmlParser.parse(document, new java.io.StringReader(tplClassement.output()));
 	}

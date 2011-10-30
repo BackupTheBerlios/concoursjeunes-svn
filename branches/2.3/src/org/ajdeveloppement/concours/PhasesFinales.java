@@ -415,8 +415,9 @@ public class PhasesFinales implements PropertyChangeListener,FicheConcoursListen
 		List<CriteriaSet> scnaUse = new ArrayList<CriteriaSet>(scnalst);
 		CriteriaSet.sortCriteriaSet(scnaUse, ficheConcours.getParametre().getReglement().getListCriteria());
 		
-		boolean concurrentInserted = false;
+		boolean classementPossible = false;
 		for (CriteriaSet scna : scnaUse) {
+			boolean concurrentInserted = false;
 			List<Concurrent> sortList = concurrentsClasse.get(scna);
 			
 			if (sortList.size() > 0) {
@@ -460,13 +461,15 @@ public class PhasesFinales implements PropertyChangeListener,FicheConcoursListen
 					tplClassement.loopBloc("categories.classement"); //$NON-NLS-1$
 					
 					concurrentInserted = true;
+					classementPossible = true;
 				}
 				
-				tplClassement.loopBloc("categories"); //$NON-NLS-1$
+				if(concurrentInserted)
+					tplClassement.loopBloc("categories"); //$NON-NLS-1$
 			}
 		}
 		
-		if(!concurrentInserted)
+		if(!classementPossible)
 			return ficheConcours.getProfile().getLocalisation().getResourceString("duel.classement.noclassement"); //$NON-NLS-1$
 		
 		return tplClassement.output();

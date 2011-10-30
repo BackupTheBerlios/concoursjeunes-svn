@@ -44,6 +44,11 @@ if(dbVersion == 0) {
 		sql.executeUpdate("ALTER TABLE CONTACT ADD UPPER_NAME VARCHAR(128) as UPPER(NAME)");
 		sql.executeUpdate("CREATE INDEX IF NOT EXISTS I_UPPER_NAME ON CONTACT (UPPER_NAME ASC)");
 	}
+	
+	if(dbVersion < 32) {
+		sql.executeUpdate("UPDATE BLASONS SET IMAGE='targetface_ffta_beursault.gif' WHERE NUMBLASON=8");
+		//sql.executeUpdate("UPDATE BLASONS SET IMAGE='targetface_ffta_beursault.gif' WHERE NUMBLASON=8");
+	}
 }
 
 if(dbVersion != org.concoursjeunes.ApplicationCore.DB_RELEASE_REQUIRED) {

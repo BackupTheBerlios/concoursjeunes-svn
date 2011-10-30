@@ -302,7 +302,7 @@ INSERT INTO BLASONS VALUES (4, '40cm', 0.5, 0.5, 1, 40, 'targetface_fita_40.png'
 INSERT INTO BLASONS VALUES (5, 'Tri Spot "Vegas"', 0.5, 0.5, 1, 39, 'targetface_fita_trispot_vegas.png');
 INSERT INTO BLASONS VALUES (6, 'Tri Spot Vertical', 0.25, 1, 1, 24, 'targetface_fita_trispot.png');
 INSERT INTO BLASONS VALUES (7, 'Tri Spot 60 Vertical', 0.25, 1, 1, 59, 'targetface_fita_trispot_60.png');
-INSERT INTO BLASONS VALUES (8, 'Carte Beursault (Championnats)', 1, 1, 4, 23, 'targetface_ffta_beursault.png');
+INSERT INTO BLASONS VALUES (8, 'Carte Beursault (Championnats)', 1, 1, 4, 23, 'targetface_ffta_beursault.gif');
 INSERT INTO BLASONS VALUES (9, 'Carte Beursault (Bouquet)', 1, 1, 4, 23, 'targetface_ffta_beursault_bouquet.png');
 INSERT INTO BLASONS VALUES (10, '80cm Réduit (5-10)', 0.5, 0.5, 1, 79, 'targetface_fita_80_reducted.png');
 

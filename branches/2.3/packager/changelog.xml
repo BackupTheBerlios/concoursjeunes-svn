@@ -578,7 +578,7 @@
      </object> 
     </void> 
     <void property="version"> 
-     <string>2.30.01-1</string> 
+     <string>2.30.01</string> 
     </void> 
    </object> 
   </void> 
@@ -600,7 +600,30 @@
      </object> 
     </void> 
     <void property="version"> 
-     <string>2.30.02-1</string> 
+     <string>2.30.02</string> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="add"> 
+   <object class="org.ajdeveloppement.updater.Version"> 
+    <void property="appname"> 
+     <string>concoursjeunes</string> 
+    </void> 
+    <void property="author"> 
+     <string>Aurélien JEOFFRAY &lt;aurelien.jeoffray@gmail.com&gt;</string> 
+    </void> 
+    <void property="changeInfos"> 
+     <string>  * Correction bug #65 - correction de fautes de grammaire
+  * Correction image cible beursault absente provoquant un plantage à l&apos;edition d&apos;un pas de tir beursault
+  * Correction édition des résultats des phases finales incompléte.</string> 
+    </void> 
+    <void property="dateVersion"> 
+     <object class="java.util.Date"> 
+      <long>1320005452898</long> 
+     </object> 
+    </void> 
+    <void property="version"> 
+     <string>2.30.03</string> 
     </void> 
    </object> 
   </void> 
